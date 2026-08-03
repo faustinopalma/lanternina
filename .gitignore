@@ -1,0 +1,107 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Lanternina — .gitignore
+#
+# This repository will be public. Two categories below are not "untidy files",
+# they are things that must never leave the device:
+#   (1) key material — the sealing keys are what make the safety and approval
+#       guarantees real; a leaked key lets anyone forge approved content;
+#   (2) anything about the learner — scans of her work, her profile, her
+#       routines, the approval ledger. None of it is ever committed, not even
+#       as a test fixture or a screenshot.
+# When in doubt, add it here first and ask later.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Key material ─────────────────────────────────────────────────────────────
+secrets/
+*.key
+*.pem
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+.env
+.env.*
+!.env.example
+# ESP32 Wi-Fi + broker credentials, generated from the template
+wifi_secrets.h
+
+# Local overrides of any kind. The pattern is deliberately broad.
+*.local.yaml
+*.local.yml
+*.local.json
+*.local.toml
+secrets.local.*
+
+# Azure CLI / MSAL token caches, if a tool ever drops one in the tree
+.azure/
+.msal*
+
+# ── Learner data — never committed, in any form ──────────────────────────────
+data/
+captures/
+pages/
+scans/
+sessions/
+ledger/
+approved/
+profiles/
+# Any image that might be a real page rather than a synthetic fixture.
+# Demo fixtures live in tests/fixtures/ and are explicitly re-included below.
+*.png
+*.jpg
+*.jpeg
+*.pdf
+!docs/diagrams/*.png
+!tests/fixtures/**/*.png
+
+# ── Local models ─────────────────────────────────────────────────────────────
+models/
+*.gguf
+*.onnx
+*.safetensors
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ── Firmware build output ────────────────────────────────────────────────────
+firmware/**/build/
+*.uf2
+*.elf
+*.bin
+*.hex
+
+# ── Editor / OS ──────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ── Scratch ──────────────────────────────────────────────────────────────────
+tmp/
+*.tmp
+*.log
+_scratch*
+
+# ── Reference code from other projects ───────────────────────────────────────
+# Read-only material kept in the workspace to study while porting. Never part of
+# this repository: it carries another project's licence, history and config.
+_reference/
+
+# ── Internal / employer material ─────────────────────────────────────────────
+# Hackathon rules, policies and anything else pasted from an internal source.
+# This repository is public; internal documents do not belong in it.
+microsoftinfo/

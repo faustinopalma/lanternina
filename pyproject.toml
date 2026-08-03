@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lanternina"
+version = "0.0.1"
+description = "A home system that keeps a teenager engaged, with her parent steering."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# Deliberately small. The router is the only component allowed to grow cloud
+# dependencies, and it keeps them behind an extra.
+dependencies = [
+    "pydantic>=2.7,<3",
+    "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+# ArUco lives in opencv-contrib, not base opencv. Headless: the mini-PC has no desktop.
+vision = ["opencv-contrib-python-headless>=4.9", "numpy>=1.24", "Pillow>=10.0"]
+# Azure AI Foundry + Content Safety. Entra ID only, no API keys.
+cloud = [
+    "azure-identity>=1.17",
+    "azure-ai-contentsafety>=1.0",
+    "agent-framework>=1.10",
+    "httpx>=0.27",
+]
+# On-device small language model for the offline path. TODO(hackathon): pick a runtime.
+local-model = []
+panel = ["fastapi>=0.110", "uvicorn>=0.29", "itsdangerous>=2.2"]
+# Serial link to the ESP32 devices.
+devices = ["pyserial>=3.5"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["shared*", "orchestrator*", "agents*", "vision*", "panel*"]
+
+[tool.setuptools.package-data]
+shared = ["py.typed"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+# Third-party stubs are patchy for OpenCV; the vision package is checked loosely.
+module = ["cv2.*"]
+ignore_missing_imports = true

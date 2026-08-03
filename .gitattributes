@@ -1,0 +1,12 @@
+# Normalise line endings so the repo is identical on Linux, macOS and Windows.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.uf2 binary
+*.bin binary
+
+# Firmware and shell scripts must keep LF even when checked out on Windows.
+*.sh text eol=lf
+*.ino text eol=lf
