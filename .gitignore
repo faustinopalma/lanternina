@@ -54,7 +54,9 @@ profiles/
 !docs/diagrams/*.png
 !tests/fixtures/**/*.png
 
-# ── Local models ─────────────────────────────────────────────────────────────
+# ── Model weights ───────────────────────────────────────────────────────────
+# Nothing infers on the device, so these should never appear. Ignored anyway, so an
+# experiment never turns into an accidental multi-gigabyte commit.
 models/
 *.gguf
 *.onnx

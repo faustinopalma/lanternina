@@ -12,15 +12,16 @@ is what makes the guarantees checkable.
 
 ## Router (`router.py`)
 
-- The only module in the repo that may import an Azure SDK or a local model runtime. If
-  another module needs a model, extend the router — do not add a second path.
+- The only module in the repo that may import an Azure SDK. **No model runs on the
+  device**: if something needs inference, it goes to Foundry through the router. Never add
+  a local runtime — `tests/test_boundaries.py` fails if one is imported anywhere.
 - `generate_for_user()` must screen before returning. There is no code path that returns
   unscreened text to a caller, and no flag that disables screening.
 - `analyze()` returns raw text for internal reasoning only. Never hand its output to a
   display or a proposal payload.
-- Must never raise because the cloud is unreachable. Fall back down the ladder
-  `CLOUD_FOUNDRY → LOCAL_SLM → CACHED_FALLBACK`, and report the tier and degradation level
-  on every response. Only when even the cache is empty may it raise `NoCapacityError`.
+- Must never raise because the cloud is unreachable. Fall back to `CACHED_FALLBACK`
+  (previously approved content) and report the tier and degradation level on every
+  response. Only when the reserve is empty too may it raise `NoCapacityError`.
 - Report degradation honestly to the parent panel. Never present degraded output as if it
   were full capability.
 - Redact before sending: prompts may contain `learner_hints`, never a name, id, or history.

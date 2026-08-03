@@ -27,8 +27,8 @@ cloud = [
     "agent-framework>=1.10",
     "httpx>=0.27",
 ]
-# On-device small language model for the offline path. TODO(hackathon): pick a runtime.
-local-model = []
+# On-device inference is deliberately out of scope: every model call goes to Azure.
+# See docs/ARCHITECTURE.md; tests/test_boundaries.py fails if a local runtime is imported.
 panel = ["fastapi>=0.110", "uvicorn>=0.29", "itsdangerous>=2.2"]
 # Serial link to the ESP32 devices.
 devices = ["pyserial>=3.5"]

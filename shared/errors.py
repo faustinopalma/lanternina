@@ -49,12 +49,8 @@ class CloudUnavailable(OperationalError):
     """Azure AI Foundry could not be reached or refused the request."""
 
 
-class LocalModelUnavailable(OperationalError):
-    """The on-device small language model is not loaded or failed."""
-
-
 class NoCapacityError(OperationalError):
-    """No tier — cloud, local, or cache — can serve the request.
+    """Neither the cloud nor the approved-content cache can serve the request.
 
     The orchestrator must translate this into a calm, pre-approved fallback for the
     user. It must never surface as a stack trace on a device the learner can see.

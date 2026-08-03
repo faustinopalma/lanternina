@@ -53,8 +53,9 @@ one, stop and raise it.
   is deliberately no status field an agent could set. Approval lives in the ledger, which
   agents are never handed.
 - **One model router.** `orchestrator/router.py` is the only module permitted to import an
-  Azure SDK or touch a local model runtime. Agents receive a `ModelRouter` and nothing
-  lower-level. No agent imports another agent — the planner composes them.
+  Azure SDK. **No model runs on the device** — every LLM and vision call goes to Azure AI
+  Foundry, and the mini-PC runs conventional code only. Agents receive a `ModelRouter` and
+  nothing lower-level. No agent imports another agent — the planner composes them.
 - **One content-safety chokepoint.** Model output that can reach her exists only as
   `ScreenedPayload`, produced by the gate and sealed by it. Never add a user-facing type
   with a bare `str` field; that is how the chokepoint gets bypassed.
@@ -64,8 +65,9 @@ one, stop and raise it.
   streaming endpoint, no timer loop, no motion trigger, no preview in the parent panel —
   not now, not as a debug aid. Only the rectified region inside the ArUco quad is retained;
   the full frame is never written to disk, serialised, or sent anywhere.
-- **Never dark.** Cloud unavailable means reduced capability, never a stopped system. The
-  degradation ladder is full → local model → pre-approved cached content. There is no
+- **Never dark.** Cloud unavailable means reduced capability, never a stopped system.
+  Since nothing infers on the device, the only offline path is content the parent already
+  approved — so the reserve must be kept stocked. There is no
   "unavailable" state, and error text must never reach a display she can see.
 
 ## 4. Data and privacy

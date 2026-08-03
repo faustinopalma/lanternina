@@ -6,8 +6,8 @@ it rather than being freed from it**.
 
 It runs on a Linux mini-PC in the house, drives e-paper displays, an LCD, physical buttons
 and a printer over ESP32 microcontrollers, and reads completed worksheets back through a
-desk camera. Language and vision models run on Azure AI Foundry, with a local model for
-the offline path.
+desk camera. Every language and vision model call goes to Azure AI Foundry — **no model
+runs on the device**; offline means serving content the parent already approved.
 
 ## The point
 

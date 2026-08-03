@@ -110,8 +110,8 @@ Not a security threat, but a harm.
 
 | Failure | Behaviour |
 | --- | --- |
-| Azure unreachable | Fall back to local model, then to pre-approved cached content |
-| Local model unavailable | Fall back to cached content |
+| Azure unreachable | Serve previously approved cached content; read only locally-readable cells |
+| Nothing approved in reserve | The system has nothing to show. With no on-device model this is the **only** offline path, so keeping a reserve stocked is a hard product requirement |
 | Nothing approved in reserve | The system has nothing to show — a real gap. Keeping a reserve stocked is a product requirement |
 | Mini-PC down | Devices show their last content; no error text on her displays |
 

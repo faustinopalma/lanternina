@@ -105,21 +105,32 @@ def test_agents_reach_the_world_only_through_the_router() -> None:
 
 # ── One router, one door to the models ───────────────────────────────────────────────
 
-MODEL_SDKS = {
+# Cloud inference SDKs: permitted only inside the router and the safety gate.
+CLOUD_SDKS = {
     "azure",
     "openai",
     "agent_framework",
     "anthropic",
+}
+
+# On-device inference runtimes: forbidden everywhere, including the router.
+# No model runs on this device — the mini-PC executes conventional code only and every
+# LLM/vision call goes to Azure AI Foundry. One inference path, not two.
+LOCAL_RUNTIMES = {
     "transformers",
     "llama_cpp",
+    "ctransformers",
     "onnxruntime",
     "onnxruntime_genai",
     "ollama",
     "vllm",
+    "torch",
+    "tensorflow",
+    "mlx",
 }
 
 
-def test_only_the_router_touches_a_model_backend() -> None:
+def test_only_the_router_touches_a_cloud_model_backend() -> None:
     """Every model call goes through orchestrator/router.py, so degradation and
     screening cannot be routed around by adding a second client somewhere."""
     allowed = {REPO / "orchestrator" / "router.py", REPO / "orchestrator" / "safety.py"}
@@ -127,16 +138,33 @@ def test_only_the_router_touches_a_model_backend() -> None:
         for path in _python_files(package):
             if path in allowed:
                 continue
-            leaked = _imported_modules(path) & MODEL_SDKS
+            leaked = _imported_modules(path) & CLOUD_SDKS
             assert not leaked, (
                 f"{path.relative_to(REPO)} imports {sorted(leaked)}. Only the router may "
                 "hold a model backend."
             )
 
 
+def test_nothing_runs_a_model_on_the_device() -> None:
+    """Inference is an Azure concern. The device does OpenCV, a web panel and serial.
+
+    Adding an on-device runtime would create a second inference path with its own failure
+    modes, its own content-safety story, and weights to ship and update. If that ever
+    becomes the right call, it is a design decision — not something that arrives with a
+    convenient import.
+    """
+    for package in PACKAGES:
+        for path in _python_files(package):
+            leaked = _imported_modules(path) & LOCAL_RUNTIMES
+            assert not leaked, (
+                f"{path.relative_to(REPO)} imports {sorted(leaked)}. No model runs on the "
+                "device; see docs/ARCHITECTURE.md."
+            )
+
+
 def test_shared_stays_dependency_free() -> None:
     """`shared` is types and protocols. If it grows I/O, every package inherits it."""
-    banned = MODEL_SDKS | {"cv2", "fastapi", "uvicorn", "serial", "requests", "httpx"}
+    banned = CLOUD_SDKS | LOCAL_RUNTIMES | {"cv2", "fastapi", "uvicorn", "serial", "requests", "httpx"}
     for path in _python_files("shared"):
         leaked = _imported_modules(path) & banned
         assert not leaked, f"{path.relative_to(REPO)} imports {sorted(leaked)}"

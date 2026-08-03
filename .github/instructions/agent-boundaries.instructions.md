@@ -16,7 +16,7 @@ is all.
   enforces this.
 - Permitted imports: `shared`, the standard library, and pure helper libraries.
 - Forbidden imports: `orchestrator`, `panel`, `vision`, any Azure SDK, any HTTP client, any
-  local model runtime. All model access goes through the `ModelRouter` in `AgentContext`.
+  model runtime. All model access goes through the `ModelRouter` in `AgentContext`.
 - An agent must not read or write the filesystem, open sockets, or hold global state
   between calls. Everything it needs arrives in `AgentContext`.
 

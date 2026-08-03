@@ -1,8 +1,12 @@
 """The model-routing contract.
 
 Exactly one implementation exists (``orchestrator/router.py``) and it is the **only**
-module in the repo permitted to import an Azure SDK or touch the local model runtime.
-Agents receive a :class:`ModelRouter` and nothing lower-level.
+module in the repo permitted to import an Azure SDK. Agents receive a
+:class:`ModelRouter` and nothing lower-level.
+
+**No model runs on the device.** Every LLM and vision call goes to Azure AI Foundry; the
+mini-PC runs conventional code only. That is a deliberate simplification, and it has a
+consequence: the offline path serves *previously approved* content and nothing else.
 
 Two entry points, deliberately different types:
 
@@ -37,20 +41,20 @@ class Capability(StrEnum):
 
 
 class ModelTier(StrEnum):
-    """Where a request was served. Ordered from most to least capable."""
+    """Where a request was served. There is no on-device model tier, by design."""
 
     CLOUD_FOUNDRY = "cloud_foundry"
-    LOCAL_SLM = "local_slm"
     CACHED_FALLBACK = "cached_fallback"
 
 
 class DegradationLevel(IntEnum):
     """How reduced the current capability is. Surfaced to the parent panel, never hidden."""
 
-    FULL = 0  # cloud reachable, everything available
-    REDUCED = 1  # local model only: simpler content, no vision reading of handwriting
-    MINIMAL = 2  # pre-approved cached content only; no generation at all
+    FULL = 0  # cloud reachable: generation and handwriting reading available
+    CACHED_ONLY = 1  # no generation; previously approved content, locally-readable cells
     # There is no level for "system unavailable". Going dark is not an allowed state.
+    # With no on-device model, CACHED_ONLY is the *only* offline path, which makes
+    # keeping an approved reserve stocked a product requirement, not an optimisation.
 
 
 @dataclass(frozen=True, slots=True)

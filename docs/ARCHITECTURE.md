@@ -38,8 +38,9 @@ depends on nothing. No agent imports another agent.
 
 ## 2. Why a single model router
 
-`orchestrator/router.py` is the only module permitted to import an Azure SDK or touch a
-local model runtime. Everyone else receives a `ModelRouter` protocol.
+`orchestrator/router.py` is the only module permitted to import an Azure SDK. No module
+anywhere may import a local model runtime — there is no on-device inference. Everyone else
+receives a `ModelRouter` protocol.
 
 Concentrating it buys three things that are hard to get otherwise:
 
@@ -63,19 +64,29 @@ model output is *structurally* unable to reach a user-facing path.
 ### Degradation: reduced, never dark
 
 ```
-CLOUD_FOUNDRY  ──unreachable──▶  LOCAL_SLM  ──unavailable──▶  CACHED_FALLBACK
-   full                            reduced                       minimal
+CLOUD_FOUNDRY  ──unreachable──▶  CACHED_FALLBACK
+   full                            cached only
 ```
+
+**No model runs on the device.** Every LLM and vision call goes to Azure AI Foundry; the
+mini-PC runs conventional code only — OpenCV, the panel, the serial link. That is a
+deliberate choice: one inference path instead of two, no model weights to ship or update,
+no second set of failure modes, and a device small enough to be powered over Ethernet.
 
 `DegradationLevel` has no "unavailable" member. Going dark is not a state the type system
 can express, because for this user an unexplained dead device is worse than a simpler
 activity. The router never raises because the cloud is down; it reports which tier served
-the request and how reduced capability currently is, and the parent panel shows it.
+the request and whether capability is reduced, and the parent panel shows it.
 
-The consequence, which is easy to miss: the `CACHED_FALLBACK` tier serves **previously
-approved** content. If the parent has approved nothing in reserve, "never dark" is a
-promise with nothing behind it. Keeping a reserve stocked is a product requirement, not an
-implementation detail.
+The consequence is sharper than it looks: `CACHED_FALLBACK` serves **previously approved**
+content, and it is now the *only* offline path. If the parent has approved nothing in
+reserve, "never dark" is a promise with nothing behind it. Keeping a reserve stocked is a
+product requirement, not an implementation detail.
+
+Reading degrades the same way. Without the cloud, only the cell kinds in
+`sheet.LOCALLY_READABLE` — filled checkboxes and choice boxes, which are ink-coverage
+measurements OpenCV can do on its own — are attempted. Handwriting is marked
+`needs_review` rather than guessed.
 
 ## 3. Why content safety is a type, not a call
 
