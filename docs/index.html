@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lanternina — Architecture</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a212b; --panel-2: #222b38; --border: #2c3849;
+    --text: #e6edf3; --muted: #9fb0c3; --accent: #4ea1ff; --accent-2: #7ee0a1;
+    --warn: #ffcf5c; --danger: #ff7a7a; --purple: #c08cff;
+    --mono: "Cascadia Code", "Consolas", "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: linear-gradient(180deg, #0c1117 0%, #0f1419 100%);
+    color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+  header.hero {
+    padding: 56px 24px 40px; text-align: center;
+    background: radial-gradient(1200px 400px at 50% -120px, rgba(78,161,255,0.18), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 2.1rem; letter-spacing: -0.5px; }
+  header.hero .sub { color: var(--muted); font-size: 1.05rem; max-width: 860px; margin: 0 auto; }
+  .pill {
+    display: inline-block; margin-top: 18px; padding: 6px 14px; border-radius: 999px;
+    background: rgba(78,161,255,0.12); border: 1px solid rgba(78,161,255,0.35);
+    color: var(--accent); font-size: 0.82rem; font-weight: 600;
+  }
+  .doclinks { margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .doclinks a {
+    text-decoration: none; padding: 9px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    border: 1px solid var(--border); color: var(--text); background: var(--panel);
+  }
+  .doclinks a:hover { border-color: var(--accent); color: var(--accent); }
+  .doclinks a.primary { background: rgba(78,161,255,0.15); border-color: rgba(78,161,255,0.5); color: var(--accent); }
+  nav.toc {
+    position: sticky; top: 0; z-index: 20; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center;
+  }
+  nav.toc a { color: var(--muted); text-decoration: none; font-size: 0.86rem; font-weight: 500; }
+  nav.toc a:hover { color: var(--accent); }
+  section { margin-top: 48px; }
+  h2 { font-size: 1.5rem; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  h2 .num { font-size: 0.85rem; color: var(--accent); border: 1px solid rgba(78,161,255,0.4); border-radius: 8px; padding: 2px 8px; font-weight: 700; }
+  h3 { font-size: 1.12rem; margin: 28px 0 10px; color: var(--accent-2); }
+  p { margin: 10px 0; color: var(--text); }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin: 16px 0; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 820px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-2); }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; background: rgba(255,255,255,0.02); }
+  tr:hover td { background: rgba(78,161,255,0.04); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .b-ok    { background: rgba(126,224,161,0.15); color: var(--accent-2); border: 1px solid rgba(126,224,161,0.4); }
+  .b-todo  { background: rgba(255,207,92,0.13); color: var(--warn); border: 1px solid rgba(255,207,92,0.38); }
+  .b-no    { background: rgba(255,122,122,0.13); color: var(--danger); border: 1px solid rgba(255,122,122,0.38); }
+  .b-data  { background: rgba(192,140,255,0.14); color: var(--purple); border: 1px solid rgba(192,140,255,0.4); }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); background: rgba(255,207,92,0.06); }
+  .callout.danger { border-left-color: var(--danger); background: rgba(255,122,122,0.06); }
+  .callout.good { border-left-color: var(--accent-2); background: rgba(126,224,161,0.06); }
+  .callout strong { color: var(--text); }
+  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 16px 0; text-align: center; }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); margin: 8px 0 0; justify-content: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+  .metric { font-size: 1.9rem; font-weight: 700; color: var(--accent-2); line-height: 1.1; }
+  .metric-label { font-size: 0.82rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Lanternina</h1>
+  <div class="sub">A home system that keeps one teenager with cognitive disabilities engaged, <strong>with her parent steering</strong>. Content is generated in the cloud and printed on paper; her handwriting is read back by a scanner. Nothing reaches her that a parent has not approved — and the approval is sealed <em>in the house</em>, not in the cloud.</div>
+  <div class="pill">Azure · swedencentral (+ westeurope for the Static Web App) · Cosmos DB serverless · Container Apps</div>
+  <div class="doclinks">
+    <a class="primary" href="ARCHITECTURE.md">ARCHITECTURE.md (the reasoning) →</a>
+    <a href="DEPLOY.md">DEPLOY.md (how to reproduce it)</a>
+    <a href="THREAT-MODEL.md">Threat model</a>
+    <a href="NON-GOALS.md">Non-goals</a>
+    <a href="HARDWARE.md">Hardware</a>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#what">What it is</a>
+  <a href="#shape">The shape</a>
+  <a href="#seal">Who can approve</a>
+  <a href="#paper">The paper loop</a>
+  <a href="#cloud">Cloud tier</a>
+  <a href="#boundary">What crosses the boundary</a>
+  <a href="#costs">Decisions and their cost</a>
+  <a href="#status">Status</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ WHAT ============ -->
+<section id="what">
+  <h2><span class="num">01</span> What it is, and the two things it will not do</h2>
+  <p>Most systems built for someone with a disability quietly optimise for <em>engagement</em>. This one does not, and the refusal is structural rather than aspirational — it is encoded in the types, the tests and the deployment.</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0">The parent is the point</h3>
+      <p class="muted">Not a bottleneck to be automated away. No feature is built whose value is <em>"the parent no longer has to think about this"</em>. Agents may only <strong>propose</strong>; there is no field anywhere in which an agent can record that its own output is acceptable.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Nothing is a judgement about her</h3>
+      <p class="muted">No score, no grade, no progress trend, no ability estimate — not in types, storage, prompts, logs or UI. Vision output describes ink on paper (<em>"cell 3 is empty"</em>), never what that means about her.</p>
+    </div>
+  </div>
+
+  <div class="callout danger">
+    <strong>Never built, including as an intermediate step:</strong> streaks, daily goals, variable reward schedules, leaderboards, notifications triggered by <em>inactivity</em>, engagement metrics of any kind — and, on the vision side, facial recognition, face or person detection, emotion or attention inference, gaze estimation, biometrics. <span class="muted">Enforced by <code>tests/test_boundaries.py</code>, which fails the build if <code>vision/</code> so much as references them.</span>
+  </div>
+
+  <div class="callout">
+    <strong>Stopping is a legitimate outcome.</strong> Every flow can be abandoned at any point, with no penalty and no follow-up prompt. <code>SessionOutcome.ABANDONED</code> is a normal value, not a failure.
+  </div>
+</section>
+
+<!-- ============ SHAPE ============ -->
+<section id="shape">
+  <h2><span class="num">02</span> The shape</h2>
+  <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches her is made of paper.</p>
+
+  <div class="mermaid">
+flowchart TB
+    subgraph WORLD["🌍 anywhere"]
+      PAR["Parent<br/><i>phone or laptop</i>"]:::person
+      SWA["Static Web App<br/><i>westeurope · static assets</i>"]:::cloud
+    end
+
+    subgraph AZ["☁️ Azure — swedencentral"]
+      API["Container App: api<br/><i>HTTP scale 0→N</i>"]:::cloud
+      WRK["Container App: worker<br/><i>queue scale 0→N</i>"]:::cloud
+      Q[("Storage queue")]:::data
+      COS[("Cosmos DB serverless<br/><i>households as opaque ids</i>")]:::data
+      MOD["Model backend<br/><i>generation · vision · safety</i>"]:::cloud
+    end
+
+    subgraph HOME["🏠 the house"]
+      DEV["Mini-PC<br/><i>sealing keys · ledger</i>"]:::home
+      PROF[("Learner profile<br/>scans · sessions")]:::home
+      PRN["Printer"]:::paper
+      SCN["Scanner"]:::paper
+      SHEET["Sheet of paper"]:::paper
+      GIRL["The learner"]:::person
+    end
+
+    PAR -->|"authenticated"| SWA
+    SWA -->|"fetch"| API
+    API -->|"enqueue long work"| Q
+    Q --> WRK
+    WRK -->|"prompts only"| MOD
+    API --- COS
+    WRK --- COS
+
+    DEV -->|"outbound poll · every 10 min"| API
+    DEV --- PROF
+    DEV -->|"seals the approval"| PRN
+    PRN --> SHEET
+    SHEET --> GIRL
+    GIRL -->|"handwriting"| SHEET
+    SHEET --> SCN
+    SCN -->|"rectified crop"| DEV
+
+    classDef cloud fill:#16324a,stroke:#4ea1ff,color:#e6edf3;
+    classDef data fill:#2a2140,stroke:#c08cff,color:#e6edf3;
+    classDef home fill:#143026,stroke:#7ee0a1,color:#e6edf3;
+    classDef paper fill:#3a3020,stroke:#ffcf5c,color:#e6edf3;
+    classDef person fill:#222b38,stroke:#9fb0c3,color:#e6edf3,stroke-dasharray: 4 3;
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:#16324a;border:1px solid #4ea1ff"></i> cloud compute</span>
+    <span><i class="swatch" style="background:#2a2140;border:1px solid #c08cff"></i> cloud data</span>
+    <span><i class="swatch" style="background:#143026;border:1px solid #7ee0a1"></i> stays in the house</span>
+    <span><i class="swatch" style="background:#3a3020;border:1px solid #ffcf5c"></i> paper</span>
+    <span><i class="swatch" style="background:#222b38;border:1px dashed #9fb0c3"></i> people</span>
+  </div>
+
+  <div class="callout">
+    <strong>Read the arrows into the house.</strong> There are none. The device opens every connection itself, outbound. No open ports, no port forwarding, no tunnel that lets anything dial in — the same reason Azure Arc and IoT Edge were both rejected earlier: an inbound control channel to a device in a minor's home is a liability whatever protocol wears it.
+  </div>
+</section>
+
+<!-- ============ SEAL ============ -->
+<section id="seal">
+  <h2><span class="num">03</span> Who can approve content for a child</h2>
+  <p>This is the single most important property of the design, and the reason the cloud tier is deliberately less powerful than it could be.</p>
+
+  <div class="callout good">
+    <strong>The cloud is a mailbox and a user interface. The device is the authority.</strong> The parent taps <em>approve</em> in the cloud, but the cloud can only record an <em>intention</em>. The seal that makes an item deliverable is minted on the mini-PC, with a key that never leaves the house. <span class="muted">Consequence worth saying out loud: even the operator of the service cannot approve content for your child.</span>
+  </div>
+
+  <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant P as Parent
+    participant C as Cloud (api)
+    participant D as Device (home)
+    participant G as The learner
+
+    C->>C: agent proposes content
+    Note over C: a Proposal has no "approved" field.<br/>It is inert by construction.
+    C->>C: content safety screens it
+    P->>C: reviews, taps approve
+    C->>C: records the intention, signed by the cloud
+    D->>C: outbound poll (every 10 min)
+    C-->>D: "household H has a pending intention"
+    D->>D: verifies the parent assertion
+    D->>D: mints the PARENT_APPROVAL seal 🔑
+    Note over D: only now does an ApprovedItem exist
+    D->>G: prints the sheet
+  </div>
+
+  <table>
+    <thead><tr><th>Guarantee</th><th>How it is made real</th></tr></thead>
+    <tbody>
+      <tr><td>An agent cannot approve its own output</td><td><code>Proposal</code> has no <code>approved</code> flag, no <code>status</code>, no <code>publish()</code>. Agents are never handed a ledger.</td></tr>
+      <tr><td>Only the parent's decision is deliverable</td><td><code>ApprovedItem.__post_init__</code> refuses any seal whose purpose is not <code>PARENT_APPROVAL</code>, and any decision that does not refer to that exact proposal.</td></tr>
+      <tr><td>The safety gate cannot mint approvals</td><td><strong>Two different keys.</strong> Sharing one would let the content-safety gate forge parent consent.</td></tr>
+      <tr><td>Approval can be revoked</td><td><code>ApprovalLedger.withdraw</code> takes effect before the next delivery.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ PAPER ============ -->
+<section id="paper">
+  <h2><span class="num">04</span> The paper loop — proven on real hardware</h2>
+  <p>Not simulated. Measured on a printed and handwritten sheet, on hardware the household already owned, with nothing bought and no firmware written.</p>
+
+  <div class="grid grid-3">
+    <div class="card" style="text-align:center">
+      <div class="metric">50.0 mm</div>
+      <div class="metric-label">the 50 mm calibration ruler, measured by hand on the printed page. The chain does not rescale.</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="metric">176–178 px</div>
+      <div class="metric-label">ArUco marker sides on paper, against 177.2 expected at 300 dpi.</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="metric">13 / 13</div>
+      <div class="metric-label">cells read correctly. Every empty cell at exactly 0.0 % ink; freeform cells correctly reported as <em>needs review</em>.</div>
+    </div>
+  </div>
+
+  <div class="mermaid">
+flowchart TB
+    SPEC["SheetSpec<br/><i>normalised 0–1 coords over<br/>the markers' INNER corners</i>"]:::code
+    SVG["Vector SVG · exact millimetres"]:::code
+    PDF["PDF at true A4<br/><i>595.3 × 841.9 pt</i>"]:::code
+    CUPS["CUPS · IPP Everywhere<br/><i>driverless, no vendor driver</i>"]:::paper
+    PAPER["Printed sheet<br/>4 ArUco markers + QR"]:::paper
+    HAND["She writes on it"]:::paper
+    ESCL["Scanner · eSCL<br/><i>300 dpi ≈ 11.8 px/mm</i>"]:::paper
+    RECT["Detect markers → rectify"]:::code
+    INK["Ink fraction per declared cell"]:::code
+    PARENT["needs review → the parent"]:::person
+
+    SPEC --> SVG
+    SVG --> PDF
+    PDF --> CUPS
+    CUPS --> PAPER
+    PAPER --> HAND
+    HAND --> ESCL
+    ESCL --> RECT
+    RECT --> INK
+    INK -->|"not locally readable"| PARENT
+    RECT -.->|"the QR carries the spec version;<br/>an unknown version is REFUSED"| SPEC
+
+    classDef code fill:#16324a,stroke:#4ea1ff,color:#e6edf3;
+    classDef paper fill:#3a3020,stroke:#ffcf5c,color:#e6edf3;
+    classDef person fill:#222b38,stroke:#9fb0c3,color:#e6edf3,stroke-dasharray: 4 3;
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0">Why the coordinates are normalised</h3>
+      <p class="muted">Cells are defined as 0–1 over the quadrilateral of the markers' <strong>inner</strong> corners, so their positions are independent of paper size, printer margins, camera distance and DPI. If the generator and the reader ever disagreed on the geometry, answers would be attributed to the wrong questions — a failure that looks like data rather than a bug. The QR carries the spec version, and a sheet the reader does not understand is <strong>refused</strong>, not guessed at.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Degradation is honest</h3>
+      <p class="muted">Without the cloud, only checkbox-like cells are attempted; everything else is marked <code>needs_review</code> and the reading is flagged <code>degraded</code>. The system prefers <em>"the parent should look at this"</em> to a confident wrong answer. A smiley drawn <em>outside</em> every declared cell is invisible to the pipeline — correct behaviour, and now a known design property.</p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Known and unfixed:</strong> the ink threshold is badly centred. <code>INK_PRESENT = 0.04</code> against a lightest real mark of <strong>0.045</strong> — about 8 % headroom, calibrated on <em>one</em> sheet, one pen, one scanner. The proposal is to move ambiguity into <em>needs review</em>, which routes to the parent: the correct direction to fail in.
+  </div>
+</section>
+
+<!-- ============ CLOUD ============ -->
+<section id="cloud">
+  <h2><span class="num">05</span> The cloud tier, as deployed</h2>
+  <p>34 resources across five resource groups, entirely from Bicep. Nothing tenant-specific appears anywhere in the templates, which is what makes moving to a different tenant a redeploy rather than a migration.</p>
+
+  <table>
+    <thead><tr><th>Resource group</th><th>Holds</th><th>Lifetime</th></tr></thead>
+    <tbody>
+      <tr><td><code>…-core</code></td><td>VNet, private DNS zones, Log Analytics, Container Registry, two managed identities</td><td>Long. Survives app redeploys.</td></tr>
+      <tr><td><code>…-data</code></td><td>Cosmos DB serverless, storage queue, private endpoints</td><td><span class="badge b-no">Longest — deleting it loses households</span></td></tr>
+      <tr><td><code>…-app</code></td><td>Container Apps environment, <code>api</code> and <code>worker</code></td><td>Disposable. Safe to delete and recreate.</td></tr>
+      <tr><td><code>…-web</code></td><td>Static Web App</td><td>Independent.</td></tr>
+      <tr><td><code>…-identity</code></td><td>Entra External ID directory</td><td>Migrates differently from everything else.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="muted">Resource groups are split by <strong>lifetime</strong>, not by layer, precisely so that redeploying the application never puts the data at risk.</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0">No keys, anywhere</h3>
+      <p class="muted">Cosmos has <code>disableLocalAuth: true</code>; the storage account has <code>allowSharedKeyAccess: false</code>; the registry has no admin user. Everything authenticates with a managed identity. Cosmos keys in particular cannot be scoped down, so a leaked one is total — which is why there are none.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">The data tier is private</h3>
+      <p class="muted">Cosmos and the queue are <code>publicNetworkAccess=Disabled</code>, reachable only through private endpoints from inside the Container Apps environment. The compute tier stays publicly reachable — that is the product. Partition key is the household id, so tenant isolation is structural rather than a <code>WHERE</code> clause somebody eventually forgets.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Two apps, because they answer to different signals.</strong> <code>api</code> scales on HTTP: a request to a zero-scaled app triggers activation and <em>is served</em>. <code>worker</code> scales on the queue, for content generation, vision reads and safety checks that genuinely take tens of seconds. Putting a queue in front of an interactive API would not make it faster — it would make it asynchronous.
+  </div>
+</section>
+
+<!-- ============ BOUNDARY ============ -->
+<section id="boundary">
+  <h2><span class="num">06</span> What crosses the boundary</h2>
+  <p>The list is short on purpose, and it is the claim the whole design exists to be able to make.</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-ok">leaves the device</span></h3>
+      <ul class="muted">
+        <li>content-generation prompts</li>
+        <li>rectified page crops</li>
+      </ul>
+      <p class="muted">That is the entire list.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-no">never leaves the device</span></h3>
+      <ul class="muted">
+        <li>her name, her profile, her interests as an identified person</li>
+        <li>the sealing keys</li>
+        <li>the approval ledger</li>
+        <li>scans and session records</li>
+        <li>the mapping from an opaque household id to a real person</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Treated as data, never as instructions:</strong> text recognised from her handwriting, free text the parent types, anything decoded from a QR code. A worksheet is a piece of paper that a model reads — anyone who can put text on a page can attempt prompt injection, so recognised text is never concatenated into an instruction position.
+  </div>
+
+  <div class="callout">
+    <strong>A rule that also has a second, unrelated reason.</strong> The sheet preview is streamed through our own endpoint rather than handed to the browser as a storage URL. That keeps the storage account private <em>and</em> lets us apply a content security policy — an SVG can carry a <code>&lt;script&gt;</code>, and the strings inside ours come from a model and from parent-typed text.
+  </div>
+</section>
+
+<!-- ============ COSTS ============ -->
+<section id="costs">
+  <h2><span class="num">07</span> Decisions, and what they cost</h2>
+  <p>Recorded here rather than discovered later. A design that only documents its happy path is not documentation.</p>
+
+  <h3>The device polls every 10 minutes</h3>
+  <p>Nothing here is real-time: the parent approves a worksheet, and a few minutes later it can be printed. Ten minutes is invisible in that flow — and it is the interval that buys the idle time, because a long-poll would hold the connection open and the app would never scale down at all.</p>
+
+  <div class="callout warn">
+    <strong>The constraint that shapes this.</strong> The Azure subscriptions available to the project <strong>restrict publicly reachable resources</strong>. The natural design would have the device ask cheap always-on object storage instead of expensive scale-to-zero compute — but under the restriction, storage sits behind a private endpoint that a device on a home LAN cannot reach. So the only thing the device can talk to is the one component that must be public anyway: the API. Which is precisely the component we wanted to leave asleep.
+    <br /><br />
+    <strong>It does not break anything. It costs roughly half the idle savings.</strong>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">💡 Deferred: the doorbell blob</h3>
+    <p class="muted">If a future subscription permits a publicly <em>routable</em> storage endpoint — still with no anonymous access and no shared keys — the device could issue a conditional <code>GET</code> against a per-household revision blob. A <strong>304 Not Modified</strong> means nothing happened: no compute wakes, and the request costs a fraction of a cent. A total compromise of that blob would reveal only <em>"household X has something pending"</em>.</p>
+    <p class="muted"><strong>Revisit when</strong> the subscription allows it, or when idle cost measurably exceeds the free grant. <strong>Do not build it before then</strong> — it is a second reachable surface bought to solve a cost problem not yet shown to exist.</p>
+  </div>
+
+  <h3>Cold start, measured rather than estimated</h3>
+  <table>
+    <thead><tr><th>Condition</th><th>Latency</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>First request from zero replicas</td><td><strong>23.1 s</strong></td><td>with a placeholder image pulled cross-region from MCR</td></tr>
+      <tr><td>Warm replica</td><td><strong>0.25 s</strong></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Mitigated by firing a warm-up request the moment the parent opens the page, so the container boots while they are still reading. To be re-measured with a small image in the in-region registry before <code>minReplicas: 0</code> is confirmed.</p>
+</section>
+
+<!-- ============ STATUS ============ -->
+<section id="status">
+  <h2><span class="num">08</span> Honest status</h2>
+  <p>So that nobody mistakes scaffolding for a system. Stubs in this repository raise <code>NotImplementedError</code> or return obviously fake data — if something looks like it works, it works.</p>
+
+  <table>
+    <thead><tr><th>Area</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td><code>shared/</code> contracts, seals, delivery boundary</td><td><span class="badge b-ok">written and tested</span></td></tr>
+      <tr><td>boundary tests</td><td><span class="badge b-ok">written and mutation-checked</span></td></tr>
+      <tr><td><code>printing/</code> renderer</td><td><span class="badge b-ok">proven on real paper</span></td></tr>
+      <tr><td><code>tools/check_scan.py</code> read-back</td><td><span class="badge b-ok">proven end to end</span></td></tr>
+      <tr><td><code>infra/</code> cloud tier</td><td><span class="badge b-ok">deployed and verified</span></td></tr>
+      <tr><td><code>orchestrator/router.py</code></td><td><span class="badge b-todo">written · never called with real credentials</span></td></tr>
+      <tr><td>safety gate, ledger, planner</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td><code>agents/</code> content, vision, scheduling, print</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td><code>vision/</code> as a package</td><td><span class="badge b-todo">logic exists in <code>tools/</code></span></td></tr>
+      <tr><td><code>panel/</code> parent UI, api, worker</td><td><span class="badge b-no">not written · containers run a placeholder</span></td></tr>
+      <tr><td><code>firmware/</code> e-paper, LCD, buttons</td><td><span class="badge b-no">not written</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout danger">
+    <strong>Open risk, unresolved.</strong> If the mini-PC dies, an e-paper display keeps its last image forever: she looks at a sheet frozen on yesterday and everything appears normal. The hardware watchdog covers kernel hangs, not <em>"the device is off"</em>. Three options exist; the parent has not yet chosen one.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Lanternina · architecture overview · generated from the repository documentation.<br />
+  Every number on this page was measured, not estimated. Where something is unverified, it says so.
+</footer>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { fontFamily: "Segoe UI, sans-serif", fontSize: "14px" } });
+</script>
+</body>
+</html>
