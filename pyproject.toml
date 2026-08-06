@@ -36,7 +36,7 @@ dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["shared*", "orchestrator*", "agents*", "vision*", "panel*"]
+include = ["shared*", "orchestrator*", "agents*", "vision*", "panel*", "printing*"]
 
 [tool.setuptools.package-data]
 shared = ["py.typed"]

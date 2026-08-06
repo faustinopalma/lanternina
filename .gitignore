@@ -17,8 +17,17 @@ secrets/
 *.pem
 *.pfx
 *.p12
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+*.kdbx
+*.ppk
 id_rsa*
 id_ed25519*
+known_hosts*
+authorized_keys
 .env
 .env.*
 !.env.example
@@ -45,14 +54,66 @@ sessions/
 ledger/
 approved/
 profiles/
-# Any image that might be a real page rather than a synthetic fixture.
-# Demo fixtures live in tests/fixtures/ and are explicitly re-included below.
+# Working photographs of the bench, the hardware and the printed sheets. Not
+# deliverables, and too easy for a real page or a face to end up in one.
+pictures/
+# Any image that might be a real page rather than a synthetic fixture. Scanners
+# emit TIFF, phones emit HEIC, the renderer emits SVG — all of them can carry a
+# page of her handwriting, so the list is by intent, not by convenience.
 *.png
 *.jpg
 *.jpeg
+*.jpe
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.webp
+*.heic
+*.heif
+*.dng
+*.raw
+*.ppm
+*.pgm
+*.pnm
+*.svg
 *.pdf
+*.ps
 !docs/diagrams/*.png
+!docs/diagrams/*.svg
 !tests/fixtures/**/*.png
+
+# Anything recorded in the house. The pitch video and its raw footage are
+# working material and large; neither belongs in git.
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.flac
+
+# Local stores the running system writes: the approval ledger and session
+# records land here if a backend is ever pointed at a file.
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.parquet
+
+# Backups pulled off the device, and archives generally — a CM5 backup is a
+# couple of gigabytes and contains everything above.
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.7z
+*.rar
+*.img
 
 # ── Model weights ───────────────────────────────────────────────────────────
 # Nothing infers on the device, so these should never appear. Ignored anyway, so an
@@ -95,8 +156,13 @@ Thumbs.db
 # ── Scratch ──────────────────────────────────────────────────────────────────
 tmp/
 *.tmp
+*.bak
+*.orig
+*.rej
 *.log
 _scratch*
+notes/
+.ipynb_checkpoints/
 
 # ── Reference code from other projects ───────────────────────────────────────
 # Read-only material kept in the workspace to study while porting. Never part of
@@ -107,3 +173,17 @@ _reference/
 # Hackathon rules, policies and anything else pasted from an internal source.
 # This repository is public; internal documents do not belong in it.
 microsoftinfo/
+hack_plan/
+# Session handovers are working memory: they carry addresses, host names and
+# half-finished judgements written for the next session, not for a reader.
+HANDOVER*.md
+**/HANDOVER*.md
+
+# Office documents. Decks, pitch drafts and anything exported from an internal
+# template arrive with metadata and comments nobody re-reads before committing.
+*.docx
+*.doc
+*.pptx
+*.ppt
+*.xlsx
+*.xls
