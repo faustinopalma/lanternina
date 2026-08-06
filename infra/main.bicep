@@ -5,11 +5,15 @@
 // redeploy rather than a migration — see docs/DEPLOY.md.
 //
 // Resource groups are split by LIFETIME, not by layer:
-//   core     plumbing that outlives the app (network, registry, logs, identities)
-//   data     the precious one (Cosmos, queue). Deleting this loses families.
-//   app      disposable (Container Apps environment and the two apps)
-//   web      the Static Web App, which must live outside swedencentral
-//   identity the Entra External ID directory, which migrates differently from the rest
+//   core  plumbing that outlives the app (network, registry, logs, identities)
+//   data  the precious one. Deleting this loses families: their records in Cosmos, and
+//         the External ID directory that holds the parents' sign-ins.
+//   app   disposable. Container Apps and the Static Web App can be rebuilt from the
+//         repository in minutes, and are the tier you would tear down to stop spending.
+//
+// Three, not one per layer: a group whose only job is to hold a single resource buys
+// nothing, and a group per region buys nothing either, since a group's location is only
+// metadata about the group.
 
 targetScope = 'subscription'
 
@@ -81,8 +85,6 @@ var tags = {
 var rgCoreName = 'rg-${projectName}-${environmentName}-core'
 var rgDataName = 'rg-${projectName}-${environmentName}-data'
 var rgAppName = 'rg-${projectName}-${environmentName}-app'
-var rgWebName = 'rg-${projectName}-${environmentName}-web'
-var rgIdentityName = 'rg-${projectName}-${environmentName}-identity'
 
 resource rgCore 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: rgCoreName
@@ -96,20 +98,10 @@ resource rgData 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   tags: tags
 }
 
+// The Static Web App lives here too, in a different region. A resource group's location
+// is metadata about the group, not a constraint on what it can hold.
 resource rgApp 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: rgAppName
-  location: location
-  tags: tags
-}
-
-resource rgWeb 'Microsoft.Resources/resourceGroups@2024-11-01' = {
-  name: rgWebName
-  location: webLocation
-  tags: tags
-}
-
-resource rgIdentity 'Microsoft.Resources/resourceGroups@2024-11-01' = if (deployExternalId) {
-  name: rgIdentityName
   location: location
   tags: tags
 }
@@ -170,7 +162,7 @@ module app 'modules/app.bicep' = {
 }
 
 module web 'modules/web.bicep' = {
-  scope: rgWeb
+  scope: rgApp
   name: 'web'
   params: {
     projectName: projectName
@@ -182,7 +174,7 @@ module web 'modules/web.bicep' = {
 }
 
 module identity 'modules/identity.bicep' = if (deployExternalId) {
-  scope: rgIdentity
+  scope: rgData
   name: 'identity'
   params: {
     // Capped at 10 characters: see the note on domainPrefix in modules/identity.bicep.
@@ -202,7 +194,7 @@ module budget 'modules/budget.bicep' = if (!empty(budgetContactEmail)) {
     budgetName: 'budget-${projectName}-${environmentName}'
     amount: monthlyBudgetAmount
     contactEmail: budgetContactEmail
-    resourceGroupNames: [rgCoreName, rgDataName, rgAppName, rgWebName]
+    resourceGroupNames: [rgCoreName, rgDataName, rgAppName]
   }
 }
 
@@ -210,8 +202,6 @@ output resourceGroups object = {
   core: rgCoreName
   data: rgDataName
   app: rgAppName
-  web: rgWebName
-  identity: deployExternalId ? rgIdentityName : ''
 }
 output registryName string = core.outputs.registryName
 output registryLoginServer string = core.outputs.registryLoginServer

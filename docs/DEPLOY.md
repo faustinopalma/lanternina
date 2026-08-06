@@ -18,16 +18,19 @@ a child. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## 1. What gets created
 
-Five resource groups, split by **lifetime** rather than by layer, so that redeploying the
+Three resource groups, split by **lifetime** rather than by layer, so that redeploying the
 application never risks the data.
 
 | Resource group | Holds | Lifetime |
 | --- | --- | --- |
 | `rg-lanternina-<env>-core` | VNet, private DNS zones, Log Analytics, Container Registry, two managed identities | Long. Survives app redeploys. |
-| `rg-lanternina-<env>-data` | Cosmos DB (serverless), Storage queue, private endpoints | Longest. **Deleting this loses households.** |
-| `rg-lanternina-<env>-app` | Container Apps environment, `api` and `worker` | Disposable. Safe to delete and recreate. |
-| `rg-lanternina-<env>-web` | Static Web App | Independent. |
-| `rg-lanternina-<env>-identity` | Entra External ID directory | Migrates differently from everything else. |
+| `rg-lanternina-<env>-data` | Cosmos DB (serverless), Storage queue, private endpoints, Entra External ID directory | Longest. **Deleting this loses households, and the parents' ability to sign in.** |
+| `rg-lanternina-<env>-app` | Container Apps environment, `api`, `worker`, Static Web App | Disposable. Safe to delete and recreate. |
+
+Three rather than one per layer. A group whose only job is to hold a single resource buys
+nothing, and a group per region buys nothing either: a group's location is metadata about
+the group, not a constraint on what it can hold. The line worth drawing is the one between
+what you can rebuild in minutes and what you cannot rebuild at all.
 
 ```
 browser ──► Static Web App (westeurope, static assets only)
@@ -157,16 +160,61 @@ bring the tenant into existence.
 
 ### What ARM does *not* create — you must do this yourself
 
-Everything *inside* the directory is tenant-scoped and outside ARM's reach:
+Everything *inside* the directory is tenant-scoped and outside ARM's reach. These four
+steps are the **entire manual surface of a deployment**; everything else in this document
+is scripted.
 
-1. **App registration** for the panel, with a redirect URI pointing at the Static Web App
-   hostname (an output of the deployment).
-2. **User flow** for sign-up and sign-in.
-3. **The parent accounts** themselves.
+Do them in this order. Steps 1 and 2 come first because a redirect URI is matched
+exactly — register the generated Static Web App hostname now and you will redo both the
+app registration and the front end when the real domain arrives.
 
-These are done in the Entra admin centre for the new tenant, or through Microsoft Graph.
-They are also precisely why moving to a new tenant is a **rebuild, not a migration** — see
-§6.
+#### 1. Point the domain at the Static Web App *(your DNS provider)*
+
+Add a `CNAME` for the hostname you intend to use, pointing at the deployment's
+`staticWebAppHostname` output.
+
+> ⚠️ **If your DNS is behind a proxy — Cloudflare's orange cloud, or equivalent — turn it
+> off for this record.** Azure validates ownership and renews the certificate by resolving
+> the name to the static web app over the public internet. A proxy answers with its own
+> addresses, and the failure is not an error today: it is a certificate that silently fails
+> to renew in about three months. Static Web Apps already provides a global CDN and a free
+> auto-renewed certificate, so a proxy in front duplicates the one and endangers the other.
+
+#### 2. Add the custom domain *(Azure portal)*
+
+Static Web App → **Custom domains** → **+ Add** → **Custom domain on other DNS**. Add the
+`TXT` record it asks for, and wait for the status to read **Ready** before continuing. The
+certificate is issued automatically.
+
+#### 3. Register the application *(Entra admin centre, external tenant)*
+
+Sign in at `entra.microsoft.com` and switch directory to the external tenant.
+
+- **App registrations → New registration**, accounts in this directory only.
+- Platform **Single-page application**, redirect URI = `https://<your-domain>`.
+- **Expose an API**: accept the default Application ID URI, add a scope.
+- **API permissions**: add that scope from *My APIs*, then grant admin consent.
+
+#### 4. Create the user flow and attach the app *(same place)*
+
+**External Identities → User flows → New user flow**. Include **Email** among the
+attributes returned, since the panel shows it to whoever approves the account. Then, inside
+the flow, **Applications → Add application**.
+
+#### Then feed two values back to the deployment
+
+| Value | Where it goes |
+| --- | --- |
+| Application (client) ID | `panelOidcAudience` |
+| Authority URL for the tenant | `panelOidcAuthority` |
+
+> **Read the audience, do not derive it.** Sign in once, decode the access token, and use
+> the `aud` claim verbatim. The verifier compares it literally, and a guess produces a 401
+> that looks like a credentials problem and is not one.
+
+These four steps are also precisely why moving to a new tenant is a **rebuild, not a
+migration** — see §6. They are scriptable through Microsoft Graph, which is the obvious
+next improvement; until that exists, this list is the whole of it.
 
 ---
 
@@ -251,14 +299,12 @@ That is the intended trade: no traffic, no bill.
 
 ```powershell
 az group delete -n rg-lanternina-dev-app --yes      # disposable
-az group delete -n rg-lanternina-dev-web --yes
 az group delete -n rg-lanternina-dev-core --yes
-az group delete -n rg-lanternina-dev-data --yes     # ⚠️ this is the one with the households
-az group delete -n rg-lanternina-dev-identity --yes
+az group delete -n rg-lanternina-dev-data --yes     # ⚠️ households, and the directory
 ```
 
-Deleting the identity resource group deletes the External ID directory and every account
-in it. There is no undo.
+Deleting the data resource group deletes the External ID directory and every account in
+it, along with the households in Cosmos. There is no undo.
 
 ---
 
