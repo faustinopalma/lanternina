@@ -188,7 +188,84 @@ A worksheet is a piece of paper that a model reads. Anyone who can put text on a
 attempt prompt injection, so recognised text is never concatenated into an instruction
 position. See [THREAT-MODEL.md](THREAT-MODEL.md).
 
-## 9. What is not built yet
+## 9. How the device learns there is something to fetch
+
+The cloud tier is a mailbox and a user interface; the device in the home is the authority.
+Nothing is approved until the device seals it. That leaves one mechanical question: **how
+does the device find out that the parent approved something?**
+
+### The device pulls. The cloud never calls the house.
+
+Non-negotiable, and it is the same reason Azure Arc and IoT Edge were rejected earlier: an
+inbound channel to a device in a minor's home is a liability whatever protocol wears it. So
+the device opens an outbound request on a timer and asks. No open ports, no port forwarding,
+no tunnel that lets anything dial in — and, incidentally, no NAT to fight.
+
+### ✅ Decided: a fixed 10-minute poll
+
+Nothing here is real-time. The parent approves a worksheet; a few minutes later it can be
+printed. Ten minutes is invisible in that flow.
+
+Two consequences, stated plainly rather than discovered later:
+
+- **The API cannot be truly serverless while a device is online.** The Container Apps
+  scale-down stabilisation window is 300 seconds. A poll every 10 minutes therefore wakes
+  the app, keeps it up for ~5 minutes, and lets it sleep for ~5. It idles at roughly half
+  duty cycle rather than at zero, so `minReplicas: 0` is honest but only half-effective.
+- **A long-poll would be worse.** Holding the connection open is still traffic, so the app
+  would never scale down at all. The interval is what buys the idle time.
+
+### ⚠️ The constraint that shapes this
+
+The Azure subscriptions available to this project **restrict publicly reachable
+resources**. That is a legitimate governance rule and we design inside it rather than
+around it — but it has a real cost, and pretending otherwise would make this document
+useless to anyone reading it.
+
+The natural design would be for the device to ask a *cheap, always-on* service — object
+storage — rather than an *expensive, scale-to-zero* one. Under the restriction, storage is
+private behind a private endpoint, and a device sitting on a home LAN cannot reach a private
+endpoint. So the only thing the device can talk to is the one component that must be
+publicly reachable anyway: the API. Which is precisely the component we wanted to leave
+asleep.
+
+**The constraint does not break anything. It costs us roughly half the idle savings.**
+
+### 💡 Deferred: the doorbell blob
+
+Recorded here so it is not rediscovered, and so the trade-off is visible to anyone
+evaluating this design.
+
+If a future subscription permits a publicly *routable* storage endpoint — still with no
+anonymous access and no shared keys — the wake-up path becomes almost free:
+
+1. One tiny blob per household, `signal/<householdId>`, holding a revision number and
+   nothing else: `{"rev": 42}`.
+2. When the parent approves something, the API — already warm, because the parent is using
+   it at that moment — increments `rev`.
+3. The device issues a conditional `GET` with `If-None-Match` every couple of minutes.
+   **304 Not Modified** means nothing happened: no compute woke, and the request costs a
+   fraction of a cent.
+4. Only a **200** makes the device call the API, which then wakes because there is genuine
+   work.
+
+The API would sleep whenever nobody is doing anything, and the polling interval could drop
+from ten minutes to two without costing more.
+
+**Why it is safe to expose:** `allowBlobPublicAccess=false`, `allowSharedKeyAccess=false`,
+and an Entra token required on every request, from an identity holding
+`Storage Blob Data Reader` on that container alone. The payload is an opaque household id
+and an integer — a total compromise of the blob would reveal only *"household X has
+something pending"*. No name, no content, nothing about her.
+
+**Revisit when:** the deployment subscription allows a storage account with
+`publicNetworkAccess=Enabled`, **or** the Container Apps idle cost measurably exceeds the
+free grant.
+
+**Do not build it before then.** It is a second reachable surface and a second thing to
+authenticate, bought to solve a cost problem that has not yet been shown to exist.
+
+## 10. What is not built yet
 
 Honest status, so nobody mistakes scaffolding for a system:
 
@@ -197,10 +274,14 @@ Honest status, so nobody mistakes scaffolding for a system:
 | `shared/` contracts | written |
 | seals, delivery boundary | written and tested |
 | boundary tests | written and mutation-checked |
-| `orchestrator/` router, safety gate, ledger, planner | **not written** |
+| `printing/` renderer | written, and **proven on real paper**: the 50 mm ruler measures 50 mm |
+| `tools/check_scan.py` read-back | written, and proven end to end on a scanned sheet |
+| `orchestrator/router.py` | written, with a stub backend; **never called with real credentials** |
+| `infra/` cloud tier | deployed and verified — see [DEPLOY.md](DEPLOY.md) |
+| orchestrator safety gate, ledger, planner | **not written** |
 | `agents/` content, vision, scheduling, print | **not written** |
-| `vision/` capture, ArUco, rectify, QR, cell read | **not written** |
-| `panel/` parent UI | **not written** |
+| `vision/` capture, ArUco, rectify, QR, cell read | **not written** as a package; the logic exists in `tools/` |
+| `panel/` parent UI, API, worker | **not written** — the container apps run a placeholder image |
 | `firmware/` e-paper, LCD, buttons | **not written** |
 
 Stubs in this repository raise `NotImplementedError` or return obviously fake data. If
