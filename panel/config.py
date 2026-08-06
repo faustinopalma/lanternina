@@ -17,6 +17,15 @@ class Settings:
     dev_auth: bool
     # The one address allowed to self-activate, and only while no account is active yet.
     bootstrap_contact: str
+    # Base URL of the identity provider. Its discovery document supplies issuer and keys.
+    oidc_authority: str = ""
+    # Our own application id. Without it, a token minted for any other application in the
+    # same directory would be accepted.
+    oidc_audience: str = ""
+
+    @property
+    def oidc_configured(self) -> bool:
+        return bool(self.oidc_authority and self.oidc_audience)
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -25,4 +34,6 @@ class Settings:
             bootstrap_contact=os.environ.get("LANTERNINA_BOOTSTRAP_CONTACT", "")
             .strip()
             .casefold(),
+            oidc_authority=os.environ.get("LANTERNINA_OIDC_AUTHORITY", "").strip(),
+            oidc_audience=os.environ.get("LANTERNINA_OIDC_AUDIENCE", "").strip(),
         )

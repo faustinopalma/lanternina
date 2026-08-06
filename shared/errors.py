@@ -92,6 +92,15 @@ class AccessDenied(LanterninaError):
     """Authenticated, but not permitted."""
 
 
+class NotAuthenticated(AccessDenied):
+    """No usable proof of identity was presented.
+
+    Distinct from :class:`AccountNotApproved` because the remedy differs: sign in, rather
+    than wait for someone to approve you. It reveals nothing, since it is reached before
+    any account is looked up.
+    """
+
+
 class AccountNotApproved(AccessDenied):
     """The account exists but no administrator has activated it yet."""
 
