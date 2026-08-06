@@ -1,0 +1,280 @@
+# Deploying Lanternina
+
+Everything below has been run against a real subscription. Where a step could not be
+automated it says so plainly rather than pretending.
+
+Lanternina has two halves that are deployed separately:
+
+- **the cloud tier** — the parent-facing panel and its API. This document.
+- **the device** — the mini-PC in the home, which holds the learner profile, the sealing
+  keys and the scans. It is never provisioned from here; see [HARDWARE.md](HARDWARE.md).
+
+The split is deliberate and is the core of the design: **the cloud is a mailbox and a user
+interface, the device is the authority.** Approvals are only ever sealed on the device, so
+neither the operator of the service nor anyone who compromises it can approve content for
+a child. See [ARCHITECTURE.md](ARCHITECTURE.md).
+
+---
+
+## 1. What gets created
+
+Five resource groups, split by **lifetime** rather than by layer, so that redeploying the
+application never risks the data.
+
+| Resource group | Holds | Lifetime |
+| --- | --- | --- |
+| `rg-lanternina-<env>-core` | VNet, private DNS zones, Log Analytics, Container Registry, two managed identities | Long. Survives app redeploys. |
+| `rg-lanternina-<env>-data` | Cosmos DB (serverless), Storage queue, private endpoints | Longest. **Deleting this loses households.** |
+| `rg-lanternina-<env>-app` | Container Apps environment, `api` and `worker` | Disposable. Safe to delete and recreate. |
+| `rg-lanternina-<env>-web` | Static Web App | Independent. |
+| `rg-lanternina-<env>-identity` | Entra External ID directory | Migrates differently from everything else. |
+
+```
+browser ──► Static Web App (westeurope, static assets only)
+                │ authenticated fetch
+                ▼
+          ca-…-api (swedencentral, HTTP scale 0→N, VNet-integrated)
+                │                                  ▲
+                │ enqueue                          │ outbound poll
+                ▼                                  │
+          Storage queue ──► ca-…-worker      [ device in the home ]
+                │                             (seals approvals; holds the
+                ▼ private endpoint             profile and the scans)
+          Cosmos DB serverless
+```
+
+### Why the region split
+
+Everything is in **swedencentral**. The single exception is the Static Web App, whose
+Standard SKU is not offered there. `westeurope` is otherwise avoided because it has
+capacity constraints; a Static Web App is globally distributed, so its region only decides
+where the metadata lives.
+
+### Why two container apps
+
+They scale on different signals, and conflating them is a common and expensive mistake:
+
+- **`api` scales on HTTP.** An incoming request to an app that has scaled to zero triggers
+  activation and *is served* — the platform holds it while the replica starts. Putting a
+  queue in front of an interactive API does not make it faster, it makes it asynchronous:
+  you would have to return `202` and poll.
+- **`worker` scales on the queue.** Content generation, vision reads and content-safety
+  checks take tens of seconds and are genuinely asynchronous.
+
+Two consequences worth knowing before they surprise you:
+
+- After the last queue message the worker stays up for a **300 second cool-down** before
+  returning to zero. That is KEDA behaviour, not a bug — but it is on the bill.
+- **A device holding a long-lived HTTP connection open would keep `api` from ever scaling
+  to zero.** The device therefore *polls on an interval* instead of long-polling.
+
+---
+
+## 2. Prerequisites
+
+| | |
+| --- | --- |
+| Azure CLI | 2.86 or newer (`az version`) |
+| PowerShell | 7+ on Windows, or `pwsh` on Linux/macOS |
+| Permissions | **Owner** *and* **User Access Administrator** on the target subscription |
+
+The second permission is not optional and is the usual place a first attempt fails: the
+templates create role assignments (managed identity → registry, → Cosmos data plane,
+→ queue). `Contributor` alone cannot write role assignments.
+
+Check yours:
+
+```powershell
+az role assignment list --assignee <your-upn> --include-inherited --query "[].roleDefinitionName" -o tsv
+```
+
+---
+
+## 3. Deploy
+
+```powershell
+git clone https://github.com/faustinopalma/lanternina.git
+cd lanternina
+
+# Signs in with a device code into a workspace-local, gitignored CLI profile.
+./scripts/deploy.ps1 -Login
+
+# See the plan without changing anything.
+./scripts/deploy.ps1 -WhatIf
+
+# Do it.
+./scripts/deploy.ps1 -SubscriptionId <guid> -Owner <you> -BudgetContactEmail <you@example.com>
+```
+
+The script is **idempotent**: run it as many times as you like.
+
+### The CLI session is isolated on purpose
+
+`scripts/deploy.ps1` sets `AZURE_CONFIG_DIR` to `.azure/` inside the repository, which is
+gitignored. Signing in here does **not** disturb `az` sessions in your other terminals, and
+signing out elsewhere does not break this one. If you run `az` commands by hand against
+this deployment, set the same variable first:
+
+```powershell
+$env:AZURE_CONFIG_DIR = "$PWD/.azure"
+```
+
+### Parameters
+
+Committed defaults live in [infra/main.bicepparam](../infra/main.bicepparam). The three
+values that are *not* committed — subscription, owner, budget contact — are passed on the
+command line, because they are specific to whoever is deploying.
+
+| Parameter | Default | Notes |
+| --- | --- | --- |
+| `projectName` | `lanternina` | Part of every resource name. |
+| `environmentName` | `dev` | Deploy `prod` alongside `dev` without collisions. |
+| `location` | `swedencentral` | Everything except the Static Web App. |
+| `webLocation` | `westeurope` | Static Web App only. |
+| `dataPublicNetworkAccess` | `Disabled` | See §5. |
+| `deployExternalId` | `true` | Set `false` to reuse an existing directory. |
+| `externalIdDomainPrefix` | derived | **Maximum 10 characters** — see §4. |
+| `monthlyBudgetAmount` | `50` | Alerts at 50 / 80 / 100 per cent. |
+
+Resource names end in a five-character hash of the subscription id plus project and
+environment. It is deterministic, so redeploys are stable, and it is different per
+subscription, so two forks never collide on a globally unique name.
+
+---
+
+## 4. Entra External ID
+
+The directory **is created by the deployment** — it is a real ARM resource
+(`Microsoft.AzureActiveDirectory/ciamDirectories`), so no manual portal step is needed to
+bring the tenant into existence.
+
+> ⚠️ **The resource name is `<prefix>.onmicrosoft.com` and ARM caps it at 26 characters**,
+> so the prefix cannot exceed **10**. This is not in the documentation; the Bicep compiler
+> is what caught it. A longer prefix fails at deploy time.
+
+> ⚠️ **`countryCode` sets data residency and cannot be changed afterwards.** Choose it
+> deliberately.
+
+### What ARM does *not* create — you must do this yourself
+
+Everything *inside* the directory is tenant-scoped and outside ARM's reach:
+
+1. **App registration** for the panel, with a redirect URI pointing at the Static Web App
+   hostname (an output of the deployment).
+2. **User flow** for sign-up and sign-in.
+3. **The parent accounts** themselves.
+
+These are done in the Entra admin centre for the new tenant, or through Microsoft Graph.
+They are also precisely why moving to a new tenant is a **rebuild, not a migration** — see
+§6.
+
+---
+
+## 5. The data tier is private by default
+
+Cosmos DB and the storage account ship with `publicNetworkAccess = Disabled` and are
+reachable only through private endpoints from inside the Container Apps environment.
+
+The consequence, which you will hit within five minutes of development: **you cannot query
+Cosmos from your laptop.** That is intended. Two ways forward:
+
+- **Preferred** — never let a browser or a laptop touch the data tier directly. The API
+  proxies what it needs to, using its managed identity. This is also why the sheet preview
+  is streamed through our own endpoint rather than handed out as a SAS URL: an SVG can
+  carry a `<script>`, and serving it from our origin lets us apply a content security
+  policy.
+- **When you genuinely need direct access** — redeploy with
+  `-p dataPublicNetworkAccess=Enabled`, do the work, then set it back. The private
+  endpoints are created either way, so nothing else changes.
+
+**No keys anywhere.** Cosmos has `disableLocalAuth: true`, the storage account has
+`allowSharedKeyAccess: false`, and the registry has the admin user disabled. Everything
+authenticates with the managed identity. Cosmos keys in particular cannot be scoped down,
+so a leaked one is total.
+
+### A note for the MCAPS-style subscriptions
+
+If you deploy into a Microsoft-sponsored subscription, you may have read that public
+endpoints are forbidden. Checked against the actual policy set on 6 Aug 2026: the deny
+initiative contains eleven policies and **none of them concerns `publicNetworkAccess`** —
+it is covered by an *audit* initiative. You are therefore not blocked on day one, but
+audit findings are still findings, and the posture above is the right one anyway.
+
+---
+
+## 6. Moving to a different subscription or tenant
+
+This is designed for. No tenant id, subscription id, object id or email appears anywhere in
+`infra/`.
+
+**A different subscription** is a redeploy: point the script at the new one.
+
+**A different tenant is a rebuild, not a migration.** Identities do not move. You will
+recreate:
+
+- the app registrations (their client ids change)
+- the External ID user flows and the accounts inside them
+- every managed identity — and therefore **every role assignment**, including the Cosmos
+  data-plane ones that reference principal ids
+
+The templates handle all of that automatically. What does not come along is the *contents*
+of the old External ID directory: accounts must be created again. Plan for it rather than
+discovering it.
+
+Data in Cosmos is a separate export/import exercise and is out of scope here.
+
+---
+
+## 7. Verifying a deployment
+
+```powershell
+$env:AZURE_CONFIG_DIR = "$PWD/.azure"
+
+# Everything tagged as ours, and nothing else.
+az resource list --tag project=lanternina --query "[].{name:name,type:type,rg:resourceGroup}" -o table
+
+# The data tier really is closed.
+az cosmosdb list -g rg-lanternina-dev-data --query "[].{n:name,public:publicNetworkAccess,localAuth:disableLocalAuth}" -o table
+az storage account list -g rg-lanternina-dev-data --query "[].{n:name,public:publicNetworkAccess,sharedKey:allowSharedKeyAccess}" -o table
+
+# The API answers.
+$fqdn = az containerapp show -n ca-lanternina-dev-api -g rg-lanternina-dev-app --query properties.configuration.ingress.fqdn -o tsv
+curl "https://$fqdn/"
+```
+
+The first request after an idle period pays a cold start, because `minReplicas` is zero.
+That is the intended trade: no traffic, no bill.
+
+---
+
+## 8. Tearing it down
+
+```powershell
+az group delete -n rg-lanternina-dev-app --yes      # disposable
+az group delete -n rg-lanternina-dev-web --yes
+az group delete -n rg-lanternina-dev-core --yes
+az group delete -n rg-lanternina-dev-data --yes     # ⚠️ this is the one with the households
+az group delete -n rg-lanternina-dev-identity --yes
+```
+
+Deleting the identity resource group deletes the External ID directory and every account
+in it. There is no undo.
+
+---
+
+## 9. Things that will bite you
+
+Collected from actually doing this, not from documentation.
+
+- **`az acr build` crashes on Windows** with `UnicodeEncodeError` while streaming build
+  logs through the console's default encoding. The server-side build *succeeds* and pushes
+  the image; only the local process dies, so any later step in your script is silently
+  skipped. Use `--no-logs`, or set `$env:PYTHONUTF8 = '1'` first.
+- **PowerShell eats `||` inside a JMESPath `--query`**, even between double quotes: the
+  argument is truncated at the first `||`. Filter with `Select-String` instead.
+- **Import the base image into your registry** (`az acr import`) rather than pulling from
+  Docker Hub on every build, or you will meet the anonymous rate limit at the worst moment.
+- **Keep the registry in the same region as the Container Apps environment.** Image pull
+  time is a large part of cold start.
+- **Log Analytics is the quiet cost driver**, not Cosmos. The template caps retention at 30
+  days and daily ingestion at 1 GB. Raise it deliberately, not by accident.
