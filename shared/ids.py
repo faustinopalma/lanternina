@@ -18,6 +18,11 @@ SessionId = NewType("SessionId", str)
 RequestId = NewType("RequestId", str)
 RoutineId = NewType("RoutineId", str)
 
+# A household is what the cloud knows about. It is deliberately NOT a LearnerId: the
+# mapping from a household to a real person exists only on the device in her home.
+HouseholdId = NewType("HouseholdId", str)
+AccountId = NewType("AccountId", str)
+
 _ID_BYTES = 8
 
 
@@ -44,3 +49,11 @@ def new_session_id() -> SessionId:
 
 def new_request_id() -> RequestId:
     return RequestId(new_id("rq"))
+
+
+def new_household_id() -> HouseholdId:
+    return HouseholdId(new_id("hh"))
+
+
+def new_account_id() -> AccountId:
+    return AccountId(new_id("ac"))

@@ -71,3 +71,26 @@ class MarkersNotFound(VisionError):
 
 class SheetNotRecognised(VisionError):
     """The QR code was unreadable or references an unknown sheet."""
+
+
+# -- access control: the caller proved who they are, and is still not allowed -----------
+#
+# Deliberately neither a BoundaryViolation nor an OperationalError. Refusing an
+# unapproved account is the system working, so it must not be logged as a bug, and it
+# must not be degraded around either.
+
+
+class AccessDenied(LanterninaError):
+    """Authenticated, but not permitted."""
+
+
+class AccountNotApproved(AccessDenied):
+    """The account exists but no administrator has activated it yet."""
+
+
+class AccountNotFound(AccessDenied):
+    """A valid token presented a subject this system has never seen.
+
+    Denied rather than auto-provisioned: signing in to the identity provider must not be
+    enough to obtain an account.
+    """
