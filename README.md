@@ -31,6 +31,20 @@ Two consequences run through the whole codebase:
 Read [docs/NON-GOALS.md](docs/NON-GOALS.md) before contributing. It is the most important
 file here.
 
+## Documentation
+
+Start with the overview page — one screen, three diagrams, and the numbers that were
+actually measured rather than estimated.
+
+| | |
+| --- | --- |
+| [docs/architecture-overview.html](docs/architecture-overview.html) | **Start here.** The whole system on one page, with diagrams. |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Why each boundary exists, and what the design costs. |
+| [docs/NON-GOALS.md](docs/NON-GOALS.md) | What will never be built, and why. |
+| [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Reproducing the cloud tier in your own subscription. |
+| [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware reasoning, with what is verified and what is a guess. |
+
 ## How the guarantees are enforced
 
 Not by convention — by types, seals and tests, so they survive a fork whose author never
