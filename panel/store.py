@@ -55,6 +55,10 @@ class InMemoryAccountStore:
             waiting = [a for a in self._by_id.values() if a.status is AccountStatus.PENDING]
         return sorted(waiting, key=lambda a: a.created_at)
 
+    def has_active(self) -> bool:
+        with self._lock:
+            return any(a.status is AccountStatus.ACTIVE for a in self._by_id.values())
+
     def decide(
         self,
         account_id: AccountId,

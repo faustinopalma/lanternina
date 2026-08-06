@@ -73,6 +73,14 @@ class SheetNotRecognised(VisionError):
     """The QR code was unreadable or references an unknown sheet."""
 
 
+class AuthNotConfigured(OperationalError):
+    """No way to establish who is calling.
+
+    Refused rather than waved through: an unconfigured panel must serve nobody, not
+    everybody.
+    """
+
+
 # -- access control: the caller proved who they are, and is still not allowed -----------
 #
 # Deliberately neither a BoundaryViolation nor an OperationalError. Refusing an

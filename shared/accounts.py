@@ -94,6 +94,10 @@ class AccountStore(Protocol):
         """Accounts awaiting a decision, oldest first."""
         ...
 
+    def has_active(self) -> bool:
+        """Whether any account has been activated. Gates the one-shot bootstrap."""
+        ...
+
     def decide(
         self,
         account_id: AccountId,
