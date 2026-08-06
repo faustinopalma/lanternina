@@ -54,6 +54,18 @@ param monthlyBudgetAmount int = 50
 @description('Address that receives budget alerts. Empty disables the budget.')
 param budgetContactEmail string = ''
 
+@description('Container image for the API. Left at the placeholder, the first deploy succeeds before any build exists.')
+param apiImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
+
+@description('Port the API image listens on. Moves together with apiImage: the placeholder serves on 80, the uvicorn image on 8000.')
+param apiTargetPort int = 80
+
+@description('Trust the caller identity from a plain request header. Development only — on an internet-reachable app this lets anyone claim to be anyone.')
+param panelDevAuth bool = false
+
+@description('The one address allowed to self-activate, and only while no account is active yet.')
+param panelBootstrapContact string = ''
+
 // Deterministic across redeploys, and different per subscription+environment, so two
 // forks of this repo never collide on a globally-unique name.
 var suffix = take(uniqueString(subscription().id, projectName, environmentName), 5)
@@ -150,6 +162,10 @@ module app 'modules/app.bicep' = {
     cosmosDatabaseName: data.outputs.cosmosDatabaseName
     storageAccountName: data.outputs.storageAccountName
     workQueueName: data.outputs.workQueueName
+    apiImage: apiImage
+    apiTargetPort: apiTargetPort
+    panelDevAuth: panelDevAuth
+    panelBootstrapContact: panelBootstrapContact
   }
 }
 

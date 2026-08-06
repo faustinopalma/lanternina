@@ -1,0 +1,37 @@
+# The build context is uploaded to ACR, so anything not excluded here leaves the machine.
+# Keep this at least as strict as .gitignore.
+
+.git/
+.github/
+.azure/
+.venv/
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Never leaves this machine.
+pictures/
+secrets.local.yaml
+hack_plan/
+microsoftinfo/
+_reference/
+notes/
+
+# Not needed to run the panel.
+docs/
+infra/
+scripts/
+tests/
+tools/
+firmware/
+vision/
+agents/
+orchestrator/
+printing/
+*.md
+!README.md

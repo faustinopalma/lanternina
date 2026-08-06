@@ -37,6 +37,12 @@ param apiTargetPort int = 80
 param apiMaxReplicas int = 5
 param workerMaxReplicas int = 3
 
+@description('Trust the caller identity from a plain request header. Development only.')
+param panelDevAuth bool = false
+
+@description('The one address allowed to self-activate, and only while no account is active yet.')
+param panelBootstrapContact string = ''
+
 var namePrefix = '${projectName}-${environmentName}'
 
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' = {
@@ -90,6 +96,19 @@ var commonEnv = [
   }
 ]
 
+// Only the API is reachable from outside, so only the API carries the settings that
+// decide who may in.
+var apiEnv = concat(commonEnv, [
+  {
+    name: 'LANTERNINA_DEV_AUTH'
+    value: panelDevAuth ? '1' : '0'
+  }
+  {
+    name: 'LANTERNINA_BOOTSTRAP_CONTACT'
+    value: panelBootstrapContact
+  }
+])
+
 resource api 'Microsoft.App/containerApps@2025-01-01' = {
   name: 'ca-${namePrefix}-api'
   location: location
@@ -133,7 +152,7 @@ resource api 'Microsoft.App/containerApps@2025-01-01' = {
             cpu: json('0.5')
             memory: '1Gi'
           }
-          env: commonEnv
+          env: apiEnv
         }
       ]
       scale: {
