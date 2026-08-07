@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lanternina — How a parent signs in</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a212b; --panel-2: #222b38; --border: #2c3849;
+    --text: #e6edf3; --muted: #9fb0c3; --accent: #4ea1ff; --accent-2: #7ee0a1;
+    --warn: #ffcf5c; --danger: #ff7a7a; --purple: #c08cff;
+    --mono: "Cascadia Code", "Consolas", "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: linear-gradient(180deg, #0c1117 0%, #0f1419 100%);
+    color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+  header.hero {
+    padding: 56px 24px 40px; text-align: center;
+    background: radial-gradient(1200px 400px at 50% -120px, rgba(78,161,255,0.18), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 2.1rem; letter-spacing: -0.5px; }
+  header.hero .sub { color: var(--muted); font-size: 1.05rem; max-width: 860px; margin: 0 auto; }
+  .pill {
+    display: inline-block; margin-top: 18px; padding: 6px 14px; border-radius: 999px;
+    background: rgba(78,161,255,0.12); border: 1px solid rgba(78,161,255,0.35);
+    color: var(--accent); font-size: 0.82rem; font-weight: 600;
+  }
+  .doclinks { margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .doclinks a {
+    text-decoration: none; padding: 9px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    border: 1px solid var(--border); color: var(--text); background: var(--panel);
+  }
+  .doclinks a:hover { border-color: var(--accent); color: var(--accent); }
+  .doclinks a.primary { background: rgba(78,161,255,0.15); border-color: rgba(78,161,255,0.5); color: var(--accent); }
+  nav.toc {
+    position: sticky; top: 0; z-index: 20; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center;
+  }
+  nav.toc a { color: var(--muted); text-decoration: none; font-size: 0.86rem; font-weight: 500; }
+  nav.toc a:hover { color: var(--accent); }
+  section { margin-top: 48px; }
+  h2 { font-size: 1.5rem; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  h2 .num { font-size: 0.85rem; color: var(--accent); border: 1px solid rgba(78,161,255,0.4); border-radius: 8px; padding: 2px 8px; font-weight: 700; }
+  h3 { font-size: 1.12rem; margin: 28px 0 10px; color: var(--accent-2); }
+  p { margin: 10px 0; color: var(--text); }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin: 16px 0; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 820px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-2); }
+  pre { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 0.82rem; color: var(--text); }
+  pre code { background: none; padding: 0; color: inherit; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; background: rgba(255,255,255,0.02); }
+  tr:hover td { background: rgba(78,161,255,0.04); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .b-ok    { background: rgba(126,224,161,0.15); color: var(--accent-2); border: 1px solid rgba(126,224,161,0.4); }
+  .b-todo  { background: rgba(255,207,92,0.13); color: var(--warn); border: 1px solid rgba(255,207,92,0.38); }
+  .b-no    { background: rgba(255,122,122,0.13); color: var(--danger); border: 1px solid rgba(255,122,122,0.38); }
+  .b-data  { background: rgba(192,140,255,0.14); color: var(--purple); border: 1px solid rgba(192,140,255,0.4); }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); background: rgba(255,207,92,0.06); }
+  .callout.danger { border-left-color: var(--danger); background: rgba(255,122,122,0.06); }
+  .callout.good { border-left-color: var(--accent-2); background: rgba(126,224,161,0.06); }
+  .callout strong { color: var(--text); }
+  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 16px 0; text-align: center; }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center; }
+  details.drill {
+    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--purple);
+    border-radius: 0 10px 10px 0; margin: 10px 0; padding: 0;
+  }
+  details.drill > summary {
+    cursor: pointer; padding: 11px 16px; font-weight: 600; font-size: 0.92rem;
+    color: var(--purple); list-style: none; display: flex; align-items: center; gap: 9px;
+  }
+  details.drill > summary::-webkit-details-marker { display: none; }
+  details.drill > summary::before { content: "▸"; font-size: 0.85rem; transition: transform 0.15s; }
+  details.drill[open] > summary::before { transform: rotate(90deg); }
+  details.drill > summary:hover { color: var(--accent); }
+  details.drill .body { padding: 0 18px 16px 33px; font-size: 0.94rem; color: var(--muted); }
+  details.drill .body p { color: var(--muted); margin: 8px 0; }
+  details.drill .body strong { color: var(--text); }
+  details.drill .body table { font-size: 0.88rem; }
+  .steptag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;
+             background: rgba(78,161,255,0.14); color: var(--accent); border: 1px solid rgba(78,161,255,0.35); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>How a parent signs in</h1>
+  <div class="sub">Signing in and being allowed are two different things, and Lanternina keeps them in two different places. This page explains the mechanism, the pieces it is made of, and the alternatives that were considered and set aside.</div>
+  <div class="pill">Microsoft Entra External ID · OAuth 2.0 authorization code with PKCE · RS256</div>
+  <div class="doclinks">
+    <a class="primary" href="architecture-overview.html">← Architecture overview</a>
+    <a href="DEPLOY.md">DEPLOY.md</a>
+    <a href="THREAT-MODEL.md">Threat model</a>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#three">Three questions</a>
+  <a href="#pieces">The pieces</a>
+  <a href="#where">Where it lives</a>
+  <a href="#flow">The sign-in</a>
+  <a href="#trust">Who verifies what</a>
+  <a href="#gate">The gate</a>
+  <a href="#boundaries">Boundaries and data</a>
+  <a href="#choices">Choices</a>
+  <a href="#steps">Your steps, decoded</a>
+  <a href="#failure">When a piece is down</a>
+  <a href="#open">Not done yet</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ THREE QUESTIONS ============ -->
+<section id="three">
+  <h2><span class="num">01</span> Three questions that are usually confused</h2>
+  <p>Most of the difficulty here comes from treating one problem as three, or three problems as one. Lanternina answers them separately, in three different places, and that separation is the design.</p>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3 style="margin-top:0">Who are you?</h3>
+      <p class="muted"><strong>Authentication.</strong> Answered by Microsoft Entra External ID. It checks an email and a password and hands back a signed statement. It knows nothing about Lanternina.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Is that statement genuine?</h3>
+      <p class="muted"><strong>Token validation.</strong> Answered by the API, in <code>panel/tokens.py</code>. It checks the signature, the issuer, the audience and the expiry. It has no opinion about whether you may proceed.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">May you proceed?</h3>
+      <p class="muted"><strong>Authorisation.</strong> Answered by the account gate, in <code>shared/accounts.py</code>. A record in our own database says <code>pending</code>, <code>active</code>, <code>rejected</code> or <code>suspended</code>. Only <code>active</code> passes.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Why not let Entra answer all three.</strong> It can answer the first two. It cannot hold a sign-up open for days while a human decides, and a directory does not survive the tenant rebuild this project already expects. Keeping the third answer in our own database costs one more lookup per request and buys a decision that migrates with the data.
+  </div>
+
+  <details class="drill">
+    <summary>What "the tenant rebuild this project already expects" means</summary>
+    <div class="body">
+      <p>The External ID directory is created by the deployment as an ARM resource, but everything <em>inside</em> it — app registrations, user flows, accounts — is tenant-scoped and outside ARM's reach. Moving Lanternina to a different tenant is therefore a rebuild, not a migration. See DEPLOY.md §6.</p>
+      <p>Records in Cosmos DB move with a data export. Directory contents do not. Anything we want to survive that move has to live on the Cosmos side of the line, and account approval is exactly that kind of thing.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ PIECES ============ -->
+<section id="pieces">
+  <h2><span class="num">02</span> The pieces, and what each one is for</h2>
+
+  <table>
+    <thead><tr><th>Piece</th><th>What it is</th><th>What it decides</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>External ID directory</strong><br><code class="muted">lantepwhrr.onmicrosoft.com</code></td>
+        <td>A directory of people, separate from the one that administers Azure.</td>
+        <td>Whether an email and password match an account it holds.</td>
+      </tr>
+      <tr>
+        <td><strong>App registration</strong><br><code class="muted">5717163c-…</code></td>
+        <td>The declaration that an application exists, what it is called, and where it may be sent back after signing in.</td>
+        <td>Which redirect addresses are acceptable, and which scopes exist.</td>
+      </tr>
+      <tr>
+        <td><strong>User flow</strong><br><code class="muted">panel-signup-signin</code></td>
+        <td>The pages a person actually sees, and the attributes collected from them.</td>
+        <td>Which sign-in methods are offered, and which claims end up in the token.</td>
+      </tr>
+      <tr>
+        <td><strong>Scope</strong><br><code class="muted">access_as_parent</code></td>
+        <td>A named permission the application exposes on itself.</td>
+        <td>What the token is <em>for</em>. Requesting it is what makes Entra issue an access token addressed to us.</td>
+      </tr>
+      <tr>
+        <td><strong>Access token</strong></td>
+        <td>A signed JSON document, valid for about an hour.</td>
+        <td>Nothing by itself. It is evidence, and evidence has to be checked.</td>
+      </tr>
+      <tr>
+        <td><strong>Account record</strong><br><code class="muted">shared/accounts.py</code></td>
+        <td>Our own row: subject, contact, status, who decided and when.</td>
+        <td>Whether this person may use the panel at all.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <details class="drill">
+    <summary>Why an application needs a scope pointed at itself</summary>
+    <div class="body">
+      <p>The panel is one application playing two roles: the page in the browser is the <em>client</em>, and the API in the container is the <em>resource</em>. OAuth has no notion of "the same app", so the resource role has to be named before the client role can ask for a token addressed to it.</p>
+      <p>That is what <code>Expose an API</code> does. Without it, MSAL can only obtain a token for Microsoft Graph or an ID token, and neither is addressed to our API. An ID token is a statement about who signed in, meant for the client that requested it; using one as an access token is a common and quiet mistake, because it often works right up until an audience check is added.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Two directories, on purpose</summary>
+    <div class="body">
+      <p>The Azure subscription is administered from a workforce tenant. Parents live in a separate External ID directory. The same human being can hold an identity in both, and they remain unrelated accounts.</p>
+      <p><strong>What this buys:</strong> if the panel is ever compromised, whoever is inside has nothing at all towards the Azure subscription — no resources, no data tier, no billing.</p>
+      <p><strong>What it costs:</strong> two places to look when something is wrong, and an administrator who cannot test the parent experience with the account they already have.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ WHERE ============ -->
+<section id="where">
+  <h2><span class="num">03</span> Where each piece lives</h2>
+  <p>The dividing line that matters is not between services. It is between what the deployment template can create and what it cannot.</p>
+
+  <div class="mermaid">
+flowchart TB
+    subgraph BR["Parent's browser"]
+      MSAL["The page, and MSAL with it"]
+    end
+    subgraph EID["External ID directory · outside the template"]
+      UF["User flow<br/>panel-signup-signin"]
+      APP["App registration<br/>redirect · scope"]
+      DISC["Discovery document<br/>and signing keys"]
+    end
+    subgraph AZ["Azure subscription · created by the template"]
+      subgraph APPG["Application group"]
+        SWA["Static Web App<br/>app.lanternina.com"]
+        CA["Container App<br/>the panel API"]
+      end
+      subgraph DATG["Data group"]
+        COS["Cosmos DB<br/>behind a private endpoint"]
+      end
+    end
+    MSAL -->|"sign-in"| UF
+    APP -.->|"defines what UF may issue"| UF
+    MSAL -->|"the page itself"| SWA
+    MSAL -->|"bearer token"| CA
+    CA -->|"public keys, cached"| DISC
+    CA -->|"account record"| COS
+
+    style EID fill:#2f2942,stroke:#c08cff,color:#e9dcff
+    style DATG fill:#1c2733,stroke:#4ea1ff,color:#d6e8ff
+  </div>
+
+  <div class="callout warn">
+    <strong>The dotted line is the whole problem.</strong> Everything inside the External ID box is tenant-scoped: it does not appear in the Bicep template, it is not recreated by a redeployment, and it does not move with a data export. That is the reason four steps had to be done by hand, and the reason approval was not put there.
+  </div>
+
+  <h3>Which file answers which question</h3>
+  <table>
+    <thead><tr><th>Module</th><th>Responsibility</th><th>Refuses by</th></tr></thead>
+    <tbody>
+      <tr><td><code>panel/config.py</code></td><td>Reads the four environment variables. <code>oidc_configured</code> is the single test for whether the panel can serve at all.</td><td>Raising <code>AuthNotConfigured</code> → 503</td></tr>
+      <tr><td><code>panel/tokens.py</code></td><td>Discovery, key cache, signature, issuer, audience, expiry. Algorithm pinned to RS256.</td><td><code>NotAuthenticated</code> → 403</td></tr>
+      <tr><td><code>panel/principal.py</code></td><td>Turns headers into a subject and a contact. The token path is tried first, so a development setting cannot downgrade a configured deployment.</td><td><code>NotAuthenticated</code> → 403</td></tr>
+      <tr><td><code>panel/gate.py</code></td><td>Lookup, register as pending, the one-shot bootstrap, then <code>require_active</code>.</td><td><code>AccountNotApproved</code> → 403</td></tr>
+      <tr><td><code>shared/accounts.py</code></td><td>The record, the four statuses, and the store contract. Holds the rule; knows nothing about HTTP.</td><td>—</td></tr>
+      <tr><td><code>shared/errors.py</code></td><td>Separates a bug from a recoverable condition from a refusal. That separation is what the two handlers key on.</td><td>—</td></tr>
+      <tr><td><code>panel/app.py</code></td><td>One dependency every protected route takes, two exception handlers, the routes.</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <details class="drill">
+    <summary>Why the gate is a dependency and not middleware</summary>
+    <div class="body">
+      <p>Middleware runs before routing, so it has to be told which paths to skip, and that list is a place to forget an entry. A dependency is the opposite shape: a route is unprotected only if someone wrote it that way, and the protection is visible in the signature.</p>
+      <p><strong>Cost:</strong> the dependency has to be repeated per route rather than declared once. <strong>Buys:</strong> forgetting it is visible in the file you are reading, not in a configuration list somewhere else.</p>
+      <p>One detail cost an hour and is worth recording: with <code>from __future__ import annotations</code>, FastAPI resolves annotations by name against module scope. A dependency defined inside a factory function is unresolvable, and FastAPI silently treats the parameter as a query string instead — answering 422 to every authenticated request. The dependency therefore sits at module scope.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section id="flow">
+  <h2><span class="num">04</span> What happens when a parent signs in</h2>
+  <p>Eleven exchanges, none of which carry a password to us. The parent's password is seen only by Entra.</p>
+
+  <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant P as Parent's browser
+    participant S as Static Web App
+    participant E as Entra External ID
+    participant A as API in Container Apps
+    P->>S: opens app.lanternina.com
+    S-->>P: the page, and MSAL with it
+    Note over P,E: MSAL generates a random verifier<br/>and sends only its hash
+    P->>E: redirected to the user flow, with the hash
+    E-->>P: sign-up or sign-in page
+    P->>E: email and password
+    E-->>P: back to app.lanternina.com with a short-lived code
+    P->>E: the code, plus the original verifier
+    E-->>P: access token, signed with RS256
+    P->>A: GET /api/me, Authorization: Bearer …
+    A->>E: public signing keys, fetched once and cached
+    A->>A: signature, issuer, audience, expiry
+    A->>A: account lookup, and the gate
+    A-->>P: 200 with the account, or 403
+  </div>
+
+  <details class="drill">
+    <summary>Step 3 and 7 — why the code is exchanged with a verifier (PKCE)</summary>
+    <div class="body">
+      <p>A page running in a browser cannot keep a secret. Anything shipped to the browser is readable by whoever holds the browser, so the classic "client secret" is not available to us.</p>
+      <p>PKCE replaces the secret with something generated fresh for each sign-in. MSAL invents a random string, sends only its SHA-256 hash when starting, and presents the original string when redeeming the code. An attacker who steals the code from the redirect cannot use it, because they do not have the string that hashes to what Entra recorded.</p>
+      <p><strong>Limit:</strong> PKCE protects the code in transit. It does not protect a token already sitting in the browser. That is why tokens are short-lived, and why the gate is checked again on every request rather than once at sign-in.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Step 10 — where the public keys come from, and why not from a URL we wrote</summary>
+    <div class="body">
+      <p>The token is signed with a private key that only Entra holds. To check the signature the API needs the matching public key, which Entra publishes at a JWKS endpoint.</p>
+      <p>The API does not hold that address as a constant. It reads the OIDC discovery document at the configured authority and takes both <code>issuer</code> and <code>jwks_uri</code> from it. The reason is in the next section: the issuer for this tenant is not what the authority URL suggests, and a template would have produced a value that looks plausible and rejects every real token.</p>
+      <p><strong>Cost:</strong> one HTTPS request the first time, then a cache with a five-minute lifetime. If the discovery document cannot be read, the panel refuses rather than guessing.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section id="trust">
+  <h2><span class="num">05</span> Who verifies what, and the value that surprised us</h2>
+
+  <div class="mermaid">
+flowchart TB
+    T["Access token arrives"] --> ALG
+    ALG{"Algorithm is RS256?"} -->|no| NO["401 · token rejected"]
+    ALG -->|yes| SIG{"Signature matches<br/>a key from the JWKS?"}
+    SIG -->|no| NO
+    SIG -->|yes| ISS{"iss equals the issuer<br/>from the discovery document?"}
+    ISS -->|no| NO
+    ISS -->|yes| AUD{"aud equals our<br/>application id?"}
+    AUD -->|no| NO
+    AUD -->|yes| EXP{"exp, iat and sub<br/>all present and valid?"}
+    EXP -->|no| NO
+    EXP -->|yes| OK["Authenticated.<br/>Nothing granted yet."]
+    OK --> GATE["→ the account gate"]
+
+    style NO fill:#3a1f24,stroke:#ff7a7a,color:#ffd7d7
+    style OK fill:#1f3328,stroke:#7ee0a1,color:#d7ffe9
+    style GATE fill:#22304a,stroke:#4ea1ff,color:#d6e8ff
+  </div>
+
+  <p>Every one of those refusals returns the same message. An endpoint that explains <em>which</em> check failed is an oracle: an attacker fixes one field at a time until it stops complaining.</p>
+
+  <div class="callout warn">
+    <strong>Measured, not assumed.</strong> The discovery document for this tenant reports its issuer as
+    <code>https://07702e41-….ciamlogin.com/07702e41-…/v2.0</code> — the subdomain is the tenant id, not <code>lantepwhrr</code>. Nobody would derive that from the authority URL.
+    <br><br>
+    The same tenant also answers at <code>login.microsoftonline.com</code>, and there it reports a <em>different</em> issuer. A front end pointed at that address would receive tokens that look entirely valid and would be refused by our API, producing a 401 that reads like a credentials problem and is a wrong URL in a configuration file.
+  </div>
+
+  <details class="drill">
+    <summary>Why the algorithm is pinned, and how we know the pinning is what refuses the forgery</summary>
+    <div class="body">
+      <p>A JWT states, in its own header, which algorithm was used to sign it. A verifier that honours that statement can be attacked: the public key is public, so an attacker can switch the header to HS256, sign with the public key as a shared secret, and present a token that verifies.</p>
+      <p>The API therefore passes <code>algorithms=["RS256"]</code> rather than trusting the header.</p>
+      <p><strong>The test for this was wrong at first, and it is worth recording why.</strong> The original test forged an HS256 token signed with the public key in PEM form. It passed — but measuring showed PyJWT has its own guard that refuses PEM keys as HMAC secrets, on decode as well as encode. The same forgery was refused even with the algorithm list left wide open. The test proved the forgery failed; it did not prove our pinning is what failed it.</p>
+      <p>The replacement isolates the pinning: a genuinely valid HS256 token, signed with exactly the key the resolver returns, and not in PEM form so the library guard stays out of the way. Widening the algorithm list makes the permissive version accept <code>sub=attacker</code>; ours refuses.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ GATE ============ -->
+<section id="gate">
+  <h2><span class="num">06</span> The gate — where a valid token still gets nothing</h2>
+  <p>A parent who completes sign-up has an account in the directory and no account in Lanternina. The two are created at different moments, by different parties, and only the second one grants anything.</p>
+
+  <div class="mermaid">
+flowchart TB
+    IN["Valid token · subject known"] --> LOOK{"A record for<br/>this subject?"}
+    LOOK -->|no| REG["Record it as pending"]
+    LOOK -->|yes| BOOT
+    REG --> BOOT{"Bootstrap address,<br/>and nobody active yet?"}
+    BOOT -->|yes| ACT["Activate · decided_by = bootstrap"]
+    BOOT -->|no| STAT
+    ACT --> STAT{"Status is active?"}
+    STAT -->|no| DENY["403 · not_authorised"]
+    STAT -->|yes| PASS["The route runs"]
+
+    style DENY fill:#3a1f24,stroke:#ff7a7a,color:#ffd7d7
+    style PASS fill:#1f3328,stroke:#7ee0a1,color:#d7ffe9
+    style ACT fill:#2f2942,stroke:#c08cff,color:#e9dcff
+  </div>
+
+  <div class="callout good">
+    <strong>Written as an allowlist.</strong> The check is "status must be <code>active</code>", not "status must not be one of the blocked ones". A status added in a year's time is then refused by default instead of quietly granted. Two tests hold that shape: one parametrised over the enum, so new members are covered without anyone remembering, and one that simulates a status nobody has invented yet.
+  </div>
+
+  <details class="drill">
+    <summary>The bootstrap, and why it is guarded on "nobody is active" rather than on a flag</summary>
+    <div class="body">
+      <p>The gate creates a problem the moment it exists: the first parent lands in <code>pending</code>, and there is no administrator yet to approve them. Wiring authentication without solving this locks the owner out of their own system.</p>
+      <p>One configured address self-activates, and only while no account is active yet. Once anyone is in, the setting is inert — even if it is left in place. That guard was chosen over "remember to remove the variable" because someone will not remember.</p>
+      <p>It runs as a separate recorded decision rather than a special case inside <code>register</code>, so the store keeps its promise that signing up never produces an active account, and <code>decided_by = bootstrap</code> stays in the record permanently.</p>
+      <p><strong>Verified by removing the guard:</strong> without it, a second caller at the same address is admitted with 200. With it, 403.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Why a pending account costs nothing</summary>
+    <div class="body">
+      <p>Generating content calls paid models. A pending account generates nothing, so it calls nothing, so it costs nothing. The gate is therefore also the cost control, which is why it sits before any route rather than inside each one.</p>
+      <p>This ties to the budget alerts already deployed at 50, 80 and 100 per cent of a monthly figure set at deployment time.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ BOUNDARIES ============ -->
+<section id="boundaries">
+  <h2><span class="num">07</span> Trust boundaries, and what is kept</h2>
+
+  <table>
+    <thead><tr><th>Boundary</th><th>What crosses it</th><th>What is assumed on the far side</th></tr></thead>
+    <tbody>
+      <tr><td>Parent → Entra</td><td>Email and password.</td><td>Nothing about Lanternina. We never see the password, and cannot.</td></tr>
+      <tr><td>Browser → API</td><td>A bearer token, over TLS.</td><td>Nothing. Every field of the token is checked on arrival, on every request.</td></tr>
+      <tr><td>API → Entra</td><td>An unauthenticated fetch of public signing keys.</td><td>TLS and the certificate chain. The keys are public by design.</td></tr>
+      <tr><td>API → Cosmos</td><td>A read and sometimes a write, over a private endpoint, authenticated with a managed identity.</td><td>Nothing leaves the virtual network. There is no connection string to leak.</td></tr>
+      <tr><td>Administrator → Cosmos</td><td class="muted">Nothing. There is no path.</td><td>Control-plane ownership grants no data access in Cosmos, and the account is unreachable from outside the network besides.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>What the account record holds</h3>
+  <p>Subject, contact address, status, the timestamp and author of the decision, and a free-text note. Household is an opaque identifier.</p>
+
+  <div class="callout good">
+    <strong>What it deliberately does not hold.</strong> Nothing about the learner — no name, no age, no diagnosis, no history. The authentication layer knows there is a household and does not know who is in it. That is not privacy applied afterwards; it is the reason the record has the shape it has.
+  </div>
+
+  <details class="drill">
+    <summary>What is not stored anywhere</summary>
+    <div class="body">
+      <p><strong>Passwords</strong> — never seen. <strong>Tokens</strong> — never written down; they are checked and discarded within the request. <strong>Signing keys</strong> — only the public half, cached in memory for five minutes.</p>
+      <p>The consequence is worth stating plainly: a full read of our database yields a list of email addresses and their approval status, and nothing that would let anyone sign in.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Why the administrator has no route to the data, and why that was chosen</summary>
+    <div class="body">
+      <p>Measured on the deployed account: <code>publicNetworkAccess</code> disabled, <code>disableLocalAuth</code> true, and exactly one data-plane role assignment — held by the runtime identity, not by the administrator. Two independent locks, either of which alone would be enough.</p>
+      <p><strong>Buys:</strong> a stolen administrator credential reaches no family's data. <strong>Costs:</strong> approving the second parent needs a job running inside the network, which is not built yet. The cost is visible and the alternative — opening the firewall to a laptop — would not have been.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ CHOICES ============ -->
+<section id="choices">
+  <h2><span class="num">08</span> What was chosen, and what was set aside</h2>
+  <p>Each row is a fork that was actually open. The reason for not taking a branch matters more than the branch itself, because the reason is what tells you when to revisit it.</p>
+
+  <table>
+    <thead><tr><th>Question</th><th>Taken</th><th>Set aside, and why</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Where does approval live?</td>
+        <td><span class="badge b-ok">Our database</span></td>
+        <td><strong>Inside Entra.</strong> A custom authentication extension can block a sign-up, but synchronously — it implements an allowlist, not a queue a human works through. And directory contents do not survive a tenant move.</td>
+      </tr>
+      <tr>
+        <td>How does the front end prove identity?</td>
+        <td><span class="badge b-ok">Bearer token, validated by us</span></td>
+        <td><strong>The Static Web App's built-in auth.</strong> Less code: the platform would do the whole dance and pass a header. But then the API's security rests entirely on the linked-backend restriction holding. Validating the token means the rule lives in code, not in a portal setting someone can change without seeing the consequence.</td>
+      </tr>
+      <tr>
+        <td>Which authority?</td>
+        <td><span class="badge b-ok">ciamlogin.com</span></td>
+        <td><strong>login.microsoftonline.com.</strong> It answers, and issues tokens, with a different issuer. Not a preference — a wrong answer that fails late.</td>
+      </tr>
+      <tr>
+        <td>How is the client secured?</td>
+        <td><span class="badge b-ok">PKCE</span></td>
+        <td><strong>A client secret.</strong> Not available: a single-page application cannot hold one. Anything shipped to a browser is readable.</td>
+      </tr>
+      <tr>
+        <td>Does the parent see a consent screen?</td>
+        <td><span class="badge b-ok">No — pre-authorised</span></td>
+        <td><strong>Letting consent happen.</strong> It would work. But the person arriving here is the parent of a teenager with cognitive disabilities, and the first thing in front of them should not be a dialog listing OAuth scopes.</td>
+      </tr>
+      <tr>
+        <td>Which claim carries identity?</td>
+        <td><span class="badge b-ok"><code>sub</code></span></td>
+        <td><strong>Email.</strong> An address can be changed, reassigned, or claimed by someone else. <code>sub</code> is opaque and stable. Email is kept only as something to show the person deciding on an account.</td>
+      </tr>
+      <tr>
+        <td>Domain in front of the app</td>
+        <td><span class="badge b-ok">DNS only</span></td>
+        <td><strong>Proxying through Cloudflare.</strong> The static web app renews its certificate by resolving to itself over the public internet. A proxy answers with its own addresses, and the failure is not an error today — it is a certificate that stops renewing in about three months.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <details class="drill">
+    <summary>The one that is still genuinely open: session lifetime</summary>
+    <div class="body">
+      <p>An access token lasts about an hour. What happens after that hour is not yet decided.</p>
+      <p><strong>Silent renewal</strong> keeps the parent signed in and means a stolen refresh token is useful for longer. <strong>Signing in again</strong> is safer and is friction in a system whose whole point is that a parent stays involved without being worn down.</p>
+      <p>This is a product decision more than a technical one, and it has not been made. Nothing in the code assumes either answer yet.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ STEPS ============ -->
+<section id="steps">
+  <h2><span class="num">09</span> The four portal steps, decoded</h2>
+  <p>Each of these had to be done by hand because everything inside a directory is tenant-scoped and outside the reach of the deployment template. Here is what each one actually changed.</p>
+
+  <div class="card">
+    <p><span class="steptag">STEP 1</span> &nbsp;<strong>App registration, platform "Single-page application", redirect <code>https://app.lanternina.com</code></strong></p>
+    <p class="muted">Created the identity of the application and the list of addresses Entra will send a person back to. Choosing the SPA platform rather than "Web" is what makes Entra require PKCE and refuse to issue tokens against a client secret.</p>
+    <details class="drill">
+      <summary>Why the redirect had to be the real domain, and not the generated one</summary>
+      <div class="body">
+        <p>Redirect addresses are matched exactly, character for character, and are case-sensitive on the path. Registering the generated Static Web App hostname would have meant redoing both this registration and the front end configuration once the domain arrived. That is the reason the DNS and certificate work came first.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <p><span class="steptag">STEP 2</span> &nbsp;<strong>Expose an API · <code>api://5717163c-…</code> · scope <code>access_as_parent</code></strong></p>
+    <p class="muted">Declared the resource role. Before this, there was nothing for a token to be addressed to. This is what makes the <code>aud</code> claim in the eventual token point at us, which is the claim the API compares literally.</p>
+  </div>
+
+  <div class="card">
+    <p><span class="steptag">STEP 3</span> &nbsp;<strong>API permissions, then admin consent</strong></p>
+    <p class="muted">Recorded that the client role intends to ask for that scope, and that an administrator has agreed in advance on behalf of everyone in the directory.</p>
+    <details class="drill">
+      <summary>Why "My APIs" was empty and "APIs my organization uses" was not</summary>
+      <div class="body">
+        <p>The first tab filters to applications the signed-in user owns; the second lists every service principal in the directory that exposes an API. Creating an app in a CIAM tenant does not always record the creator as an owner, which is enough to empty the first list while the second one works.</p>
+        <p>Nothing was broken. The two tabs answer different questions and only one of them was the question being asked.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <p><span class="steptag">STEP 4</span> &nbsp;<strong>User flow <code>panel-signup-signin</code>, with Email among the attributes, attached to the app</strong></p>
+    <p class="muted">Chose what a parent actually sees, and what comes back in the token. Email was included because the panel shows it to whoever decides on an account — without it, an account arrives with nothing to look at.</p>
+    <details class="drill">
+      <summary>The extra step, and the reason it is not cosmetic</summary>
+      <div class="body">
+        <p>Adding the application to its own <em>Authorized client applications</em> list tells Entra the API trusts this client, and the consent screen is skipped. Thirty seconds now, and one obstacle permanently removed from the path of every parent who ever signs up.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ FAILURE ============ -->
+<section id="failure">
+  <h2><span class="num">10</span> When a piece is unavailable</h2>
+  <p>Every branch here ends in a refusal or a reduced service. None ends in a guess.</p>
+
+  <table>
+    <thead><tr><th>Unavailable</th><th>What happens</th><th>Who notices</th></tr></thead>
+    <tbody>
+      <tr><td>The discovery document or the key endpoint</td><td>Keys cannot be fetched, so no token can be checked. Every protected route answers 503. Already-cached keys keep working for up to five minutes.</td><td>Everyone, immediately.</td></tr>
+      <tr><td>Entra sign-in</td><td>Nobody new can sign in. Tokens already issued keep working until they expire, so a parent mid-session may not notice for up to an hour.</td><td>Only people signing in.</td></tr>
+      <tr><td>Cosmos DB</td><td>The gate cannot read a status. It refuses rather than assuming the previous answer.</td><td>Everyone, immediately.</td></tr>
+      <tr><td>The Static Web App</td><td>No front end. The API is unaffected and would still answer a token presented to it directly.</td><td>Everyone, immediately.</td></tr>
+      <tr><td>The API scaled to zero</td><td>The first request pays a cold start. Measured at 23.1 seconds from zero replicas against 0.25 seconds warm — with a placeholder image pulled from another region, so it is an upper bound and has not been re-measured with the real image.</td><td>The first person after an idle period.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>The direction of every failure is the same.</strong> Unsure becomes refused, never allowed. That is why the panel needs no separate emergency switch: leaving the authority unconfigured is already a closed door, and it was verified as one — the deployed API answers 503 to a request that forges the bootstrap address in a header.
+  </div>
+</section>
+
+<!-- ============ OPEN ============ -->
+<section id="open">
+  <h2><span class="num">11</span> What is not done, stated plainly</h2>
+
+  <table>
+    <thead><tr><th>Piece</th><th>State</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Token validation</td><td><span class="badge b-ok">Written and tested</span></td><td>13 tests, including two forgeries and an algorithm substitution.</td></tr>
+      <tr><td>The account gate</td><td><span class="badge b-ok">Written and tested</span></td><td>Verified by removing the guard and watching the test fail.</td></tr>
+      <tr><td>Directory, app, user flow</td><td><span class="badge b-ok">Configured</span></td><td>By hand. Scriptable through Microsoft Graph; not scripted yet.</td></tr>
+      <tr><td>Front end with MSAL</td><td><span class="badge b-todo">Next</span></td><td>The Static Web App currently serves the Azure placeholder page.</td></tr>
+      <tr><td>The <code>aud</code> value</td><td><span class="badge b-todo">To be read</span></td><td>Will be taken from the first real token, not derived. See below.</td></tr>
+      <tr><td>Account store</td><td><span class="badge b-todo">In memory</span></td><td>A restart forgets every decision — as <code>pending</code>, never as <code>active</code>.</td></tr>
+      <tr><td>Approving anyone but the first</td><td><span class="badge b-no">Not possible yet</span></td><td>Cosmos DB sits behind a private endpoint, so no script from a laptop can reach it.</td></tr>
+      <tr><td>Session lifetime after an hour</td><td><span class="badge b-no">Undecided</span></td><td>Left open on purpose. See §8.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>The audience is read, not derived.</strong> With the v2 endpoint it should be the application id. "Should be" is not a measurement. At the first sign-in the token is decoded and the <code>aud</code> claim is used verbatim, because the API compares it literally and a wrong guess produces a 401 that looks like a credentials problem and is not one.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Lanternina · this page describes the mechanism as configured on 7 August 2026 · values marked as measured were read from the live tenant, not from documentation
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "dark",
+    themeVariables: { fontFamily: "Segoe UI, sans-serif", fontSize: "14px" }
+  });
+</script>
+</body>
+</html>

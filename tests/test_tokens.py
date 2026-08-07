@@ -70,6 +70,21 @@ def make_token(private: Any, **overrides: Any) -> str:
     return jwt.encode(claims, private, algorithm="RS256")
 
 
+def test_either_audience_form_is_accepted_and_a_third_is_not(keypair: tuple[Any, Any]) -> None:
+    """Both forms name this same application, so accepting both excludes nothing. A value
+    that is neither must still be refused, or the check has stopped being a check."""
+    private, public = keypair
+    both = TokenVerifier(
+        issuer=ISSUER, audience=(AUDIENCE, f"api://{AUDIENCE}"), keys=FixedKey(public)
+    )
+
+    assert both.verify(make_token(private, aud=AUDIENCE)).subject == SUBJECT
+    assert both.verify(make_token(private, aud=f"api://{AUDIENCE}")).subject == SUBJECT
+
+    with pytest.raises(NotAuthenticated):
+        both.verify(make_token(private, aud="99999999-0000-0000-0000-000000000000"))
+
+
 def test_a_well_formed_token_yields_the_subject(
     verifier: TokenVerifier, keypair: tuple[Any, Any]
 ) -> None:

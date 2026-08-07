@@ -27,6 +27,9 @@ param(
 
     [switch]$Login,
 
+    # Required when the account is a guest: without it az lands on the account's home tenant.
+    [string]$Tenant = '',
+
     # Show the plan without changing anything.
     [switch]$WhatIf
 )
@@ -53,7 +56,10 @@ if ($Login) {
     Write-Step 'Signing in (device code)'
     # The WAM broker often fails to surface its window; disable it for this config only.
     az config set core.enable_broker_on_windows=false --only-show-errors | Out-Null
-    az login --use-device-code --allow-no-subscriptions --only-show-errors | Out-Null
+    $loginArgs = @('login', '--use-device-code', '--allow-no-subscriptions', '--only-show-errors')
+    if ($Tenant) { $loginArgs += @('--tenant', $Tenant) }
+    # Not silenced: this is where the device code is printed.
+    az @loginArgs
 }
 
 $account = az account show -o json 2>$null | ConvertFrom-Json

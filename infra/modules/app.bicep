@@ -43,6 +43,12 @@ param panelDevAuth bool = false
 @description('The one address allowed to self-activate, and only while no account is active yet.')
 param panelBootstrapContact string = ''
 
+@description('Identity provider base URL. Empty leaves the panel closed to everyone.')
+param panelOidcAuthority string = ''
+
+@description('Audiences a token may carry, comma separated.')
+param panelOidcAudience string = ''
+
 var namePrefix = '${projectName}-${environmentName}'
 
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' = {
@@ -106,6 +112,14 @@ var apiEnv = concat(commonEnv, [
   {
     name: 'LANTERNINA_BOOTSTRAP_CONTACT'
     value: panelBootstrapContact
+  }
+  {
+    name: 'LANTERNINA_OIDC_AUTHORITY'
+    value: panelOidcAuthority
+  }
+  {
+    name: 'LANTERNINA_OIDC_AUDIENCE'
+    value: panelOidcAudience
   }
 ])
 

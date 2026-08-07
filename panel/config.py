@@ -27,6 +27,11 @@ class Settings:
     def oidc_configured(self) -> bool:
         return bool(self.oidc_authority and self.oidc_audience)
 
+    @property
+    def oidc_audiences(self) -> tuple[str, ...]:
+        """Comma separated, because which form Entra emits has not been measured."""
+        return tuple(value.strip() for value in self.oidc_audience.split(",") if value.strip())
+
     @classmethod
     def from_env(cls) -> Settings:
         return cls(

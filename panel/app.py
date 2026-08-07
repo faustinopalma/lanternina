@@ -20,13 +20,29 @@ from .config import Settings
 from .gate import resolve_account
 from .principal import principal_from_headers
 from .store import InMemoryAccountStore
+from .tokens import TokenVerifier
+
+
+def verifier_for(app: FastAPI) -> TokenVerifier | None:
+    """Built on first use, so an identity provider that is unreachable at startup answers
+    503 rather than stopping the container from starting at all."""
+    settings: Settings = app.state.settings
+    if not settings.oidc_configured:
+        return None
+    if app.state.verifier is None:
+        app.state.verifier = TokenVerifier.from_authority(
+            settings.oidc_authority, settings.oidc_audiences
+        )
+    return app.state.verifier
 
 
 def current_account(request: Request) -> Account:
     """Module scope on purpose: `from __future__ import annotations` postpones the
     annotation, and FastAPI cannot resolve a name that only exists inside a closure."""
     settings: Settings = request.app.state.settings
-    principal = principal_from_headers(request.headers, settings)
+    principal = principal_from_headers(
+        request.headers, settings, verifier_for(request.app)
+    )
     return resolve_account(principal, request.app.state.store, settings)
 
 
@@ -37,6 +53,7 @@ def create_app(store: AccountStore | None = None, settings: Settings | None = No
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.store = store if store is not None else InMemoryAccountStore()
     app.state.settings = settings if settings is not None else Settings.from_env()
+    app.state.verifier = None
 
     @app.exception_handler(AccessDenied)
     async def _denied(_: Request, __: AccessDenied) -> JSONResponse:

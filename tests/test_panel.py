@@ -10,12 +10,14 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
+from panel import app as panel_app
 from panel.app import create_app
 from panel.config import Settings
 from panel.gate import BOOTSTRAP_DECIDER
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 from shared.accounts import AccountStatus
+from shared.errors import NotAuthenticated
 
 PARENT = "parent@example.test"
 
@@ -37,6 +39,32 @@ def test_health_needs_no_auth_and_no_store() -> None:
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+
+class RefusingVerifier:
+    def verify(self, token: str) -> object:
+        raise NotAuthenticated("token rejected")
+
+
+def test_a_configured_provider_beats_dev_auth(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The bootstrap address is the one case a dev header would otherwise open, which is
+    why it is the case worth pinning: with a provider configured it must still be shut."""
+    monkeypatch.setattr(
+        panel_app.TokenVerifier,
+        "from_authority",
+        classmethod(lambda cls, *_: RefusingVerifier()),
+    )
+    settings = Settings(
+        dev_auth=True,
+        bootstrap_contact=PARENT,
+        oidc_authority="https://provider.example.test/v2.0",
+        oidc_audience="an-application-id",
+    )
+    client = TestClient(create_app(store=InMemoryAccountStore(), settings=settings))
+
+    response = client.get("/api/me", headers=headers("sub-abc"))
+
+    assert response.status_code == 403
 
 
 def test_without_dev_auth_the_panel_serves_nobody() -> None:

@@ -18,6 +18,12 @@ param(
     [switch]$DevAuth,
 
     [string]$BootstrapContact = '',
+
+    # Both empty leaves the panel closed to everyone, which is the safe direction: the
+    # audience is read from a real token rather than derived, so it arrives late.
+    [string]$OidcAuthority = '',
+    [string]$OidcAudience = '',
+
     [string]$Location = 'swedencentral'
 )
 
@@ -73,6 +79,8 @@ az deployment sub create `
         apiTargetPort=8000 `
         panelDevAuth=$($DevAuth.IsPresent.ToString().ToLower()) `
         panelBootstrapContact=$BootstrapContact `
+        panelOidcAuthority=$OidcAuthority `
+        panelOidcAudience=$OidcAudience `
     --output none
 
 Write-Step 'Verifying'

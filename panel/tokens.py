@@ -14,6 +14,7 @@ The parts that matter are the ones easy to get subtly wrong:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -50,13 +51,18 @@ class _JwksKeys:
 class TokenVerifier:
     """Validates tokens from one issuer, for one audience."""
 
-    def __init__(self, *, issuer: str, audience: str, keys: SigningKeys) -> None:
+    def __init__(
+        self, *, issuer: str, audience: str | Sequence[str], keys: SigningKeys
+    ) -> None:
         self._issuer = issuer
-        self._audience = audience
+        # A token matching any one of these is accepted. Entra emits the application id
+        # for some configurations and its api:// form for others, and both name this same
+        # application, so accepting both admits nothing a single value would exclude.
+        self._audiences = [audience] if isinstance(audience, str) else list(audience)
         self._keys = keys
 
     @classmethod
-    def from_authority(cls, authority: str, audience: str) -> TokenVerifier:
+    def from_authority(cls, authority: str, audience: str | Sequence[str]) -> TokenVerifier:
         """Read issuer and jwks_uri from the authority's discovery document."""
         url = authority.rstrip("/") + DISCOVERY_PATH
         try:
@@ -75,7 +81,7 @@ class TokenVerifier:
                 token,
                 key,
                 algorithms=[SIGNING_ALGORITHM],
-                audience=self._audience,
+                audience=self._audiences,
                 issuer=self._issuer,
                 options={"require": ["exp", "iat", "iss", "aud", "sub"]},
             )

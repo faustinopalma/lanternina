@@ -70,6 +70,12 @@ param panelDevAuth bool = false
 @description('The one address allowed to self-activate, and only while no account is active yet.')
 param panelBootstrapContact string = ''
 
+@description('Identity provider base URL. Its discovery document supplies issuer and keys. Empty leaves the panel closed to everyone.')
+param panelOidcAuthority string = ''
+
+@description('Audiences a token may carry, comma separated. Entra emits either the application id or its api:// form, and both name the same application.')
+param panelOidcAudience string = ''
+
 // Deterministic across redeploys, and different per subscription+environment, so two
 // forks of this repo never collide on a globally-unique name.
 var suffix = take(uniqueString(subscription().id, projectName, environmentName), 5)
@@ -158,6 +164,8 @@ module app 'modules/app.bicep' = {
     apiTargetPort: apiTargetPort
     panelDevAuth: panelDevAuth
     panelBootstrapContact: panelBootstrapContact
+    panelOidcAuthority: panelOidcAuthority
+    panelOidcAudience: panelOidcAudience
   }
 }
 
