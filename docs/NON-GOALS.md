@@ -1,6 +1,6 @@
 # Non-goals
 
-This file lists things Lanternina **will not do**. They are not missing features, not a
+This file lists things Lanternina will not do. They are not missing features, not a
 roadmap, and not subject to "it would be easy to add". Several of them would be easy to
 add — that is precisely why they are written down.
 
@@ -9,8 +9,8 @@ functioning, curated day to day by her parent. Every item below is here because 
 would harm that specific person, or would quietly turn the system into something other
 than what her parent agreed to.
 
-If you fork this project, these are the lines that make it Lanternina rather than
-something else wearing its name.
+If you fork this project, these are the lines that make it Lanternina rather than a
+different project with the same name.
 
 ---
 
@@ -50,8 +50,9 @@ The only trigger is a physical button press.
 - **No scores, grades, ranks, percentages, ability estimates, mastery levels, or progress
   trends.** Not stored, not computed, not displayed, not sent to a model.
 - **No automated decisions about the person.** The system can propose; the parent decides.
-  Difficulty and pacing do not change silently in response to how she performed — silent
-  adaptation is assessment with a friendlier name.
+  Difficulty and pacing do not change silently in response to how she performed. Silent
+  adaptation is assessment under another name: it builds a model of her ability and acts on
+  it, without anyone having agreed to that.
 - **No comparison** to peers, to norms, to age expectations, or to her own past.
 
 Vision output describes ink on paper: "cell 3 is empty", "cell 4 has a mark". What that

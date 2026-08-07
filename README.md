@@ -1,44 +1,45 @@
 # Lanternina
 
 A home system that generates daily activity — interactive games, printed exercises,
-routine prompts — for a teenager with cognitive disabilities, **with her parent steering
-it rather than being freed from it**.
+routine prompts — for a teenager with cognitive disabilities. Her parent steers it, and
+the design does not try to remove that role.
 
 It runs on a Linux mini-PC in the house, drives e-paper displays, an LCD, physical buttons
 and a printer over ESP32 microcontrollers, and reads completed worksheets back through a
-desk camera. Every language and vision model call goes to Azure AI Foundry — **no model
-runs on the device**; offline means serving content the parent already approved.
+desk camera. Every language and vision model call goes to Azure AI Foundry; no model runs
+on the device. Offline means serving content the parent has already approved.
 
 ## The point
 
-Software for this situation is either clinical — assuming a diagnosis — or built for small
-children, which is humiliating for a teenager. So there is usually nothing, and the whole
-load falls on a parent.
+Software for this situation tends to be either clinical, which assumes a diagnosis, or
+made for small children, which does not fit a teenager. So there is usually nothing, and
+the load falls on a parent.
 
-Lanternina is not built to reduce that load by removing the parent. **It succeeds if the
-parent uses it actively** — reviewing, correcting, deciding what it should offer this week.
-Anything an agent produces is a proposal until a parent greenlights it.
+Lanternina does not try to reduce that load by removing the parent. It works when the
+parent uses it actively — reviewing, correcting, deciding what it should offer this week.
+Anything an agent produces is a proposal until a parent approves it.
 
-Two consequences run through the whole codebase:
+Two consequences run through the codebase:
 
-- **It never optimises for engagement.** No streaks, no daily goals, no variable rewards,
-  no nudges triggered by inactivity, no "time spent" anywhere. For this user, engagement
-  optimisation is the easy failure mode and the one that does real harm.
-- **Nothing it produces is a judgement about her.** No scores, no grades, no ability
-  estimates, no progress trends, no diagnosis-adjacent inference. Vision output describes
-  ink on paper; what it means is for her parent to decide.
+- It does not optimise for engagement. No streaks, no daily goals, no variable rewards, no
+  nudges triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
+  to add here and would harm her, which is why it is a written rule rather than a matter of
+  judgement.
+- Nothing it produces is a judgement about her. No scores, no grades, no ability estimates,
+  no progress trends, no diagnosis-adjacent inference. Vision output describes ink on
+  paper; what that means is for her parent to decide.
 
-Read [docs/NON-GOALS.md](docs/NON-GOALS.md) before contributing. It is the most important
-file here.
+[docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why. It is worth
+reading before contributing.
 
 ## Documentation
 
-Start with the overview page — one screen, three diagrams, and the numbers that were
-actually measured rather than estimated.
+The overview page is the shortest route in: one screen, three diagrams, and each number
+marked as measured or estimated.
 
 | | |
 | --- | --- |
-| [docs/architecture-overview.html](docs/architecture-overview.html) | **Start here.** The whole system on one page, with diagrams. |
+| [docs/architecture-overview.html](docs/architecture-overview.html) | The whole system on one page, with diagrams. Start here. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Why each boundary exists, and what the design costs. |
 | [docs/NON-GOALS.md](docs/NON-GOALS.md) | What will never be built, and why. |
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
@@ -47,8 +48,8 @@ actually measured rather than estimated.
 
 ## How the guarantees are enforced
 
-Not by convention — by types, seals and tests, so they survive a fork whose author never
-read the docs.
+By types, seals and tests rather than by convention, so that removing one is a deliberate
+change rather than an omission.
 
 | Guarantee | Mechanism | Test |
 | --- | --- | --- |
@@ -114,8 +115,8 @@ pip install -e ".[devices]"   # serial link to the ESP32s
 ## Status
 
 Early scaffolding. The contracts, the seals, the delivery boundary and the tests are
-written and green. The router, agents, vision pipeline, panel and firmware are **not
-written yet** — see the table at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+written and green. The router, agents, vision pipeline, panel and firmware are not written
+yet — see the table at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
 pretends to work.

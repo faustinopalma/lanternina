@@ -67,3 +67,27 @@ the gap with `TODO(poc)`, move on:
   check a package with `file_search` before adding to it.
 - Verify empirically rather than from memory: probe the API, print the numbers, and prefer
   a test that fails on the broken version over one that merely passes on the fixed one.
+
+## 5. How we write
+
+Applies to everything that stays in the repository: README, `docs/`, commit messages,
+code comments, issue and PR text, in Italian and in English alike.
+
+The reference for the tone is the author's thesis, <https://laquantistica.com> — technical
+prose that is plain, unhurried and specific, and that never raises its voice.
+
+- **Declarative and calm.** State what a thing does. Do not tell the reader how important
+  it is, and do not use bold as emphasis-by-shouting.
+- **Direct concepts over metaphors.** An analogy is allowed only when it does explanatory
+  work, and it is made literal in the next sentence. Never decorative.
+- **No superlatives and no marketing adjectives** — not "powerful", "seamless", "robust",
+  "the most important file here". When something is hard or unresolved, say so plainly.
+- **Numbers with units, and their provenance.** Say whether a figure was measured,
+  computed or estimated. Marking the difference is not pedantry: it is the part a reader
+  cannot reconstruct on their own.
+- **Limits next to the claim,** in the same paragraph, not in a footnote.
+- **A choice is explained by its tradeoff,** in one sentence: what it buys and what it costs.
+- **No comparison that flatters us.** Describe what was done and why; do not rank this work
+  against other people's work, other tools, or a hypothetical worse author.
+- **Short sentences.** A subordinate clause has to carry a reason, otherwise cut it.
+- Credits, acknowledgements and open questions stay factual and brief.

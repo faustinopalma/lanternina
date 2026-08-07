@@ -1,9 +1,9 @@
 # Threat model
 
-Most threat models protect a company from an attacker. This one mostly protects **one
-teenager from the system that was built for her**, and secondarily protects her family's
-data from the outside. The ordering is deliberate: the likeliest harm here is not a
-break-in, it is the software drifting into doing something nobody decided it should do.
+This model puts one asset first: protecting one teenager from the system that was built
+for her. Protecting her family's data from the outside comes second. The ordering is
+deliberate — the likeliest harm here is not a break-in, it is the software drifting into
+doing something nobody decided it should do.
 
 Scope: the mini-PC, the ESP32 devices, the camera, the printed sheets, the parent panel,
 and the Azure services the router calls.
@@ -101,8 +101,8 @@ The mini-PC and the ESP32s share a home LAN with phones, TVs and guests.
 | A device spoofing a button press | Same channel; the mitigation is the same |
 | Physical access to the mini-PC | Out of scope. Disk encryption is the answer and it is the household's choice |
 
-**This is the weakest area today**, and it is weak in a way that matters: the device
-transport delivers text to a screen she reads.
+This is the weakest area today, and the weakness matters: the device transport delivers
+text to a screen she reads.
 
 ## T7 — Availability
 
@@ -111,8 +111,7 @@ Not a security threat, but a harm.
 | Failure | Behaviour |
 | --- | --- |
 | Azure unreachable | Serve previously approved cached content; read only locally-readable cells |
-| Nothing approved in reserve | The system has nothing to show. With no on-device model this is the **only** offline path, so keeping a reserve stocked is a hard product requirement |
-| Nothing approved in reserve | The system has nothing to show — a real gap. Keeping a reserve stocked is a product requirement |
+| Nothing approved in reserve | The system has nothing to show. With no on-device model this is the only offline path, so keeping a reserve stocked is a hard product requirement |
 | Mini-PC down | Devices show their last content; no error text on her displays |
 
 ---

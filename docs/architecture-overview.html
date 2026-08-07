@@ -112,7 +112,7 @@
 <!-- ============ WHAT ============ -->
 <section id="what">
   <h2><span class="num">01</span> What it is, and the two things it will not do</h2>
-  <p>Most systems built for someone with a disability quietly optimise for <em>engagement</em>. This one does not, and the refusal is structural rather than aspirational — it is encoded in the types, the tests and the deployment.</p>
+  <p>A system like this can easily end up optimising for <em>engagement</em>. This one does not, and the refusal is structural rather than aspirational — it is encoded in the types, the tests and the deployment.</p>
 
   <div class="grid grid-2">
     <div class="card">
@@ -196,17 +196,17 @@ flowchart TB
   </div>
 
   <div class="callout">
-    <strong>Read the arrows into the house.</strong> There are none. The device opens every connection itself, outbound. No open ports, no port forwarding, no tunnel that lets anything dial in — the same reason Azure Arc and IoT Edge were both rejected earlier: an inbound control channel to a device in a minor's home is a liability whatever protocol wears it.
+    <strong>Read the arrows into the house.</strong> There are none. The device opens every connection itself, outbound. No open ports, no port forwarding, no tunnel that lets anything dial in — the same reason Azure Arc and IoT Edge were both rejected earlier: an inbound control channel to a device in a minor's home is a liability whatever protocol it uses.
   </div>
 </section>
 
 <!-- ============ SEAL ============ -->
 <section id="seal">
   <h2><span class="num">03</span> Who can approve content for a child</h2>
-  <p>This is the single most important property of the design, and the reason the cloud tier is deliberately less powerful than it could be.</p>
+  <p>The answer shapes the rest of the design: the cloud tier is deliberately given less authority than it could have.</p>
 
   <div class="callout good">
-    <strong>The cloud is a mailbox and a user interface. The device is the authority.</strong> The parent taps <em>approve</em> in the cloud, but the cloud can only record an <em>intention</em>. The seal that makes an item deliverable is minted on the mini-PC, with a key that never leaves the house. <span class="muted">Consequence worth saying out loud: even the operator of the service cannot approve content for your child.</span>
+    <strong>The cloud records and displays. The device decides.</strong> The parent taps <em>approve</em> in the cloud, but the cloud can only record an <em>intention</em>. The seal that makes an item deliverable is minted on the mini-PC, with a key that never leaves the house. <span class="muted">Consequence: even the operator of the service cannot approve content for your child.</span>
   </div>
 
   <div class="mermaid">
@@ -322,7 +322,7 @@ flowchart TB
     </tbody>
   </table>
 
-  <p class="muted">Resource groups are split by <strong>lifetime</strong>, not by layer, precisely so that redeploying the application never puts the data at risk.</p>
+  <p class="muted">Resource groups are split by <strong>lifetime</strong>, not by layer, so that redeploying the application never puts the data at risk.</p>
 
   <div class="grid grid-2">
     <div class="card">

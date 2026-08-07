@@ -3,13 +3,13 @@
 ESP32 code for the devices in the house: e-paper displays, the LCD, and the physical
 buttons.
 
-**Nothing is written yet.** This directory holds the boundary, not an implementation.
+Nothing is written yet. This directory holds the boundary, not an implementation.
 
 ## Rules for anything added here
 
 - A device shows what it is told to show. It does not decide, generate, or cache content
   beyond the last message it received.
-- The capture button is the **only** capture trigger in the entire system. No timer, no
+- The capture button is the only capture trigger in the entire system. No timer, no
   auto-trigger, no repeat.
 - A device must never display an error code, a stack trace, or anything that implies the
   person reading it did something wrong. Faults go to the parent panel; the display either

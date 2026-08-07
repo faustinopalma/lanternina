@@ -1,8 +1,8 @@
 # Architecture
 
-This document explains the boundaries in the codebase and **why each one exists**. The
-"why" matters more than the "what": the constraints here are unusual, and without the
-reasoning the next person will file them as ceremony and route around them.
+This document explains the boundaries in the codebase and why each one exists. The
+reasoning matters more than the rule: the constraints here are unusual, and without the
+reasoning the next person will read them as ceremony and route around them.
 
 Read [NON-GOALS.md](NON-GOALS.md) first. This document describes how the code makes those
 non-goals structural rather than aspirational.
@@ -68,7 +68,7 @@ CLOUD_FOUNDRY  ──unreachable──▶  CACHED_FALLBACK
    full                            cached only
 ```
 
-**No model runs on the device.** Every LLM and vision call goes to Azure AI Foundry; the
+No model runs on the device. Every LLM and vision call goes to Azure AI Foundry; the
 mini-PC runs conventional code only — OpenCV, the panel, the serial link. That is a
 deliberate choice: one inference path instead of two, no model weights to ship or update,
 no second set of failure modes, and a device small enough to be powered over Ethernet.
@@ -78,10 +78,10 @@ can express, because for this user an unexplained dead device is worse than a si
 activity. The router never raises because the cloud is down; it reports which tier served
 the request and whether capability is reduced, and the parent panel shows it.
 
-The consequence is sharper than it looks: `CACHED_FALLBACK` serves **previously approved**
-content, and it is now the *only* offline path. If the parent has approved nothing in
-reserve, "never dark" is a promise with nothing behind it. Keeping a reserve stocked is a
-product requirement, not an implementation detail.
+One consequence follows from it: `CACHED_FALLBACK` serves previously approved content, and
+it is the only offline path. If the parent has approved nothing in reserve, "never dark"
+is a promise with nothing behind it. Keeping a reserve stocked is a product requirement,
+not an implementation detail.
 
 Reading degrades the same way. Without the cloud, only the cell kinds in
 `sheet.LOCALLY_READABLE` — filled checkboxes and choice boxes, which are ink-coverage
@@ -95,8 +95,8 @@ agent makes, that rule survives until someone adds an agent in a hurry.
 
 Instead, the gate is the only thing that produces `ScreenedPayload`, and it **signs** what
 it produces (`shared/seal.py`). Anything user-facing accepts only that type. There is no
-user-facing type in `shared/` with a bare `str` field, and adding one is the single easiest
-way to break this design — so don't.
+user-facing type in `shared/` with a bare `str` field, and adding one is the easiest way
+to break this design.
 
 A `BLOCK` verdict is a normal outcome, not an exception to swallow. The system falls back
 and tells the parent; it never retries until something slips through.
@@ -111,8 +111,8 @@ Approval lives in `orchestrator/approval.py`, an append-only ledger that agents 
 handed. `AgentContext` contains a router, a learner id, redacted hints, and a clock. It
 contains no ledger, no gate, and no key.
 
-This is the commitment that keeps the parent in the loop, so it gets the strongest
-enforcement in the repo.
+This is the commitment that keeps the parent in the loop, so it is the one enforced most
+strictly.
 
 ## 5. Why two keys and HMAC seals
 
@@ -190,14 +190,14 @@ position. See [THREAT-MODEL.md](THREAT-MODEL.md).
 
 ## 9. How the device learns there is something to fetch
 
-The cloud tier is a mailbox and a user interface; the device in the home is the authority.
-Nothing is approved until the device seals it. That leaves one mechanical question: **how
-does the device find out that the parent approved something?**
+The cloud tier holds pending items and shows them to the parent; the device in the home is
+the authority. Nothing is approved until the device seals it. That leaves one mechanical
+question: **how does the device find out that the parent approved something?**
 
 ### The device pulls. The cloud never calls the house.
 
 Non-negotiable, and it is the same reason Azure Arc and IoT Edge were rejected earlier: an
-inbound channel to a device in a minor's home is a liability whatever protocol wears it. So
+inbound channel to a device in a minor's home is a liability whatever protocol it uses. So
 the device opens an outbound request on a timer and asks. No open ports, no port forwarding,
 no tunnel that lets anything dial in — and, incidentally, no NAT to fight.
 
@@ -229,7 +229,7 @@ endpoint. So the only thing the device can talk to is the one component that mus
 publicly reachable anyway: the API. Which is precisely the component we wanted to leave
 asleep.
 
-**The constraint does not break anything. It costs us roughly half the idle savings.**
+The constraint does not break anything. It costs roughly half the idle savings.
 
 ### 💡 Deferred: the doorbell blob
 
@@ -262,7 +262,7 @@ something pending"*. No name, no content, nothing about her.
 `publicNetworkAccess=Enabled`, **or** the Container Apps idle cost measurably exceeds the
 free grant.
 
-**Do not build it before then.** It is a second reachable surface and a second thing to
+Do not build it before then. It is a second reachable surface and a second thing to
 authenticate, bought to solve a cost problem that has not yet been shown to exist.
 
 ## 10. What is not built yet
@@ -274,15 +274,15 @@ Honest status, so nobody mistakes scaffolding for a system:
 | `shared/` contracts | written |
 | seals, delivery boundary | written and tested |
 | boundary tests | written and mutation-checked |
-| `printing/` renderer | written, and **proven on real paper**: the 50 mm ruler measures 50 mm |
+| `printing/` renderer | written, and checked on real paper: the 50 mm ruler measures 50 mm |
 | `tools/check_scan.py` read-back | written, and proven end to end on a scanned sheet |
-| `orchestrator/router.py` | written, with a stub backend; **never called with real credentials** |
+| `orchestrator/router.py` | written, with a stub backend; never called with real credentials |
 | `infra/` cloud tier | deployed and verified — see [DEPLOY.md](DEPLOY.md) |
-| orchestrator safety gate, ledger, planner | **not written** |
-| `agents/` content, vision, scheduling, print | **not written** |
-| `vision/` capture, ArUco, rectify, QR, cell read | **not written** as a package; the logic exists in `tools/` |
-| `panel/` parent UI, API, worker | **not written** — the container apps run a placeholder image |
-| `firmware/` e-paper, LCD, buttons | **not written** |
+| orchestrator safety gate, ledger, planner | not written |
+| `agents/` content, vision, scheduling, print | not written |
+| `vision/` capture, ArUco, rectify, QR, cell read | not written as a package; the logic exists in `tools/` |
+| `panel/` parent UI, API, worker | not written — the container apps run a placeholder image |
+| `firmware/` e-paper, LCD, buttons | not written |
 
 Stubs in this repository raise `NotImplementedError` or return obviously fake data. If
 something looks like it works, it works.

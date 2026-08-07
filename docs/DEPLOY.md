@@ -9,10 +9,10 @@ Lanternina has two halves that are deployed separately:
 - **the device** — the mini-PC in the home, which holds the learner profile, the sealing
   keys and the scans. It is never provisioned from here; see [HARDWARE.md](HARDWARE.md).
 
-The split is deliberate and is the core of the design: **the cloud is a mailbox and a user
-interface, the device is the authority.** Approvals are only ever sealed on the device, so
-neither the operator of the service nor anyone who compromises it can approve content for
-a child. See [ARCHITECTURE.md](ARCHITECTURE.md).
+The split is deliberate and is the core of the design: the cloud holds pending items and
+shows them to the parent, the device decides. Approvals are only ever sealed on the device,
+so neither the operator of the service nor anyone who compromises it can approve content
+for a child. See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
@@ -24,7 +24,7 @@ application never risks the data.
 | Resource group | Holds | Lifetime |
 | --- | --- | --- |
 | `rg-lanternina-<env>-core` | VNet, private DNS zones, Log Analytics, Container Registry, two managed identities | Long. Survives app redeploys. |
-| `rg-lanternina-<env>-data` | Cosmos DB (serverless), Storage queue, private endpoints, Entra External ID directory | Longest. **Deleting this loses households, and the parents' ability to sign in.** |
+| `rg-lanternina-<env>-data` | Cosmos DB (serverless), Storage queue, private endpoints, Entra External ID directory | Longest. Deleting this loses households, and the parents' ability to sign in. |
 | `rg-lanternina-<env>-app` | Container Apps environment, `api`, `worker`, Static Web App | Disposable. Safe to delete and recreate. |
 
 Three rather than one per layer. A group whose only job is to hold a single resource buys
@@ -55,7 +55,7 @@ where the metadata lives.
 
 ### Why two container apps
 
-They scale on different signals, and conflating them is a common and expensive mistake:
+They scale on different signals, and conflating them costs money:
 
 - **`api` scales on HTTP.** An incoming request to an app that has scaled to zero triggers
   activation and *is served* — the platform holds it while the replica starts. Putting a
@@ -68,8 +68,8 @@ Two consequences worth knowing before they surprise you:
 
 - After the last queue message the worker stays up for a **300 second cool-down** before
   returning to zero. That is KEDA behaviour, not a bug — but it is on the bill.
-- **A device holding a long-lived HTTP connection open would keep `api` from ever scaling
-  to zero.** The device therefore *polls on an interval* instead of long-polling.
+- A device holding a long-lived HTTP connection open would keep `api` from ever scaling
+  to zero. The device therefore *polls on an interval* instead of long-polling.
 
 ---
 
@@ -223,8 +223,8 @@ next improvement; until that exists, this list is the whole of it.
 Cosmos DB and the storage account ship with `publicNetworkAccess = Disabled` and are
 reachable only through private endpoints from inside the Container Apps environment.
 
-The consequence, which you will hit within five minutes of development: **you cannot query
-Cosmos from your laptop.** That is intended. Two ways forward:
+The consequence, which you will hit within five minutes of development: you cannot query
+Cosmos from your laptop. That is intended. Two ways forward:
 
 - **Preferred** — never let a browser or a laptop touch the data tier directly. The API
   proxies what it needs to, using its managed identity. This is also why the sheet preview
@@ -238,7 +238,7 @@ Cosmos from your laptop.** That is intended. Two ways forward:
 **No keys anywhere.** Cosmos has `disableLocalAuth: true`, the storage account has
 `allowSharedKeyAccess: false`, and the registry has the admin user disabled. Everything
 authenticates with the managed identity. Cosmos keys in particular cannot be scoped down,
-so a leaked one is total.
+so a leaked one gives full access.
 
 ### A note for the MCAPS-style subscriptions
 
@@ -262,7 +262,7 @@ recreate:
 
 - the app registrations (their client ids change)
 - the External ID user flows and the accounts inside them
-- every managed identity — and therefore **every role assignment**, including the Cosmos
+- every managed identity — and therefore every role assignment, including the Cosmos
   data-plane ones that reference principal ids
 
 The templates handle all of that automatically. What does not come along is the *contents*
@@ -310,7 +310,7 @@ it, along with the households in Cosmos. There is no undo.
 
 ## 9. Things that will bite you
 
-Collected from actually doing this, not from documentation.
+Collected from doing this, not from documentation.
 
 - **`az acr build` crashes on Windows** with `UnicodeEncodeError` while streaming build
   logs through the console's default encoding. The server-side build *succeeds* and pushes

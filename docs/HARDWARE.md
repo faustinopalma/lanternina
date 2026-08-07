@@ -84,14 +84,14 @@ Everything in this section was fetched from a primary source during research on
 Also BYOD (own device, their server) and BYOD/S (own both). No firmware recompilation
 needed to self-host. There is an ImageMagick guide for producing conformant images.
 
-**Why this fits the architecture unusually well:**
+**Why this fits the architecture:**
 
 - Rendering happens on the Pi with Pillow, which is exactly where `shared.delivery` lives.
   The device cannot draw anything except a PNG we produced after the seals were checked.
   The chokepoint stops being a convention and becomes topology.
 - The accented-character problem disappears. Pillow with a TTF handles UTF-8 natively —
-  no `fontconvert`, no U8g2, no Latin-1 byte juggling. This was the single most likely
-  source of a late surprise.
+  no `fontconvert`, no U8g2, no Latin-1 byte juggling. This was a likely source of a late
+  surprise.
 - The **server** dictates the next poll interval in its response. So latency is a
   parameter we control per-response: fifteen minutes normally, sixty seconds when
   something is pending. The deep-sleep latency limit becomes tunable rather than fixed.
@@ -138,7 +138,7 @@ ASIN `B07MB7SVHQ`. Bundle contains panel, ESP32 driver board, adapter, 24-pin FF
 | Refresh | 5 s full (Waveshare figure), **1.6 s differential** via GxEPD2 |
 | Power | 38 mW refreshing, **<0.017 mW standby** |
 
-**Library situation is the best of the three.** GxEPD2 (1.5k stars, v1.6.9, 67 releases,
+Library support is the best of the three. GxEPD2 (1.5k stars, v1.6.9, 67 releases,
 8 years) supports both `GDEW075T7` and `GDEY075T7`, and ships a dedicated example named
 `GxEPD2_WS_ESP32_Driver` for exactly this board. It also ships
 `GxEPD2_U8G2_Fonts_Example` specifically for accented characters ("ÄÖÜäéöü").
@@ -206,7 +206,7 @@ produces catalogues and organising by experience produces ideas.
 
 ### 3.1 Things that appear
 
-**Thermal receipt printer** — 💡 idea, and possibly the best one in this document.
+**Thermal receipt printer** — 💡 idea, and the simplest one in this document.
 ESC/POS 58 or 80 mm, ~€25–40, no ink, no toner, no fumes, no cartridges ever. A prompt or
 a tiny exercise prints *instantly* with a sound, and she tears it off. Paper as an event
 rather than a document. It sidesteps the whole inkjet/laser question for short content,
@@ -229,7 +229,7 @@ never pulse or animate to attract attention.
 **Split-flap display** — 💡 idea. The mechanical clatter of an airport board. Vestaboard
 is ~€3000 and out of scope, but DIY split-flap modules exist and single-word units are
 buildable. The sound *is* the notification, and it happens once, and then it is quiet.
-Almost perfectly aligned with "announce, then stop".
+That matches "announce, then stop".
 
 **Flip-dot panel** — 💡 idea, same family. Mechanical, audible, holds state with no power.
 Salvaged bus-sign panels turn up secondhand.
@@ -281,7 +281,7 @@ was closed. Cheap, invisible, no power. ⚠️ Same caution — this is very clo
 surveillance of a person by proxy. Probably rejected, kept here to be argued about.
 
 **Conductive paint / Makey Makey style contacts** — 💡 idea. Turn a drawing, a piece of
-fruit, or a strip of foil into a switch. Extremely charming, physically fragile.
+fruit, or a strip of foil into a switch. Charming, and physically fragile.
 
 ### 3.3 Time made physical
 
@@ -327,9 +327,9 @@ timeline where a marker moves with the actual time. The day as a place rather th
 the app" into "see it while making coffee". The point is not automation; the point is
 lowering the cost of staying involved.
 
-**A physical approve button for the parent** — 💡 idea. A single satisfying button that
-approves whatever is waiting. Absurdly simple, and possibly the single highest-value
-object in the system: it makes the parent's role a *gesture* rather than a chore.
+**A physical approve button for the parent** — 💡 idea. A single button that approves
+whatever is waiting. Simple to build, and it turns the parent's role into a gesture rather
+than a chore.
 
 **A shared token** — 💡 idea. An object the parent physically places to mean "this one,
 today". Steering becomes something you do with your hands, in the room, in front of her,
@@ -339,8 +339,8 @@ rather than something configured in an interface she never sees.
 
 - **CM5 + carrier + NVMe** — ✅ **owned, settled, no longer a blocker.**
   Raspberry Pi CM5, 8 GB RAM, 16 GB eMMC, **no onboard radio**; Waveshare CM5 IO Board
-  (PoE variant) with case and PSU; Patriot P300 256 GB NVMe. Wildly overspecified for the
-  job, which is the correct direction to be wrong in. Three notes that follow from it:
+  (PoE variant) with case and PSU; Patriot P300 256 GB NVMe. Overspecified for the job,
+  which is the right direction to be wrong in. Three notes that follow from it:
   - **Boot from eMMC, put writes on NVMe.** The OS on soldered eMMC cannot be knocked
     loose and needs no NVMe-boot bootloader configuration. `/var/log`, the ARASAAC cache,
     the approved-content reserve and the rectified crops go on the NVMe, which keeps the
@@ -373,9 +373,9 @@ noise, similar to a tinnitus"*. Another measured **38–48 °C at low CPU utilis
 the passive heatsink alone**, and concluded that on a CM5 passive-only and fan-only cool
 about equally well.
 
-This matters more than it looks. **A device that whines in a hallway is a device someone
-unplugs, and an unplugged device is a dead system** — the stupidest available failure mode
-and one no amount of correct software prevents.
+This matters more than it looks. A device that whines in a hallway is a device someone
+unplugs, and an unplugged device is a dead system. No amount of correct software prevents
+that.
 
 The fix is free, and it falls out of a rule the project already has. Because **nothing
 infers on the device** — every model call goes to Foundry — the thermal envelope here is
@@ -400,7 +400,7 @@ CSR8510 clones, which are widely counterfeited and flaky on Linux. Buy it early 
 that BLE input can actually be tried, not late enough that it becomes a "next version"
 feature.
 
-### 3.8 The assistive-technology ecosystem — ✅ verified, and the best find of the night
+### 3.8 The assistive-technology ecosystem — ✅ verified
 
 There is an entire industry that has spent forty years designing physical controls for
 people with disabilities, and I had been about to specify a €3 arcade button without
@@ -419,7 +419,7 @@ looking at it. Prices below from AbleNet, the sector's reference manufacturer.
 | Jelly Beamer — wireless, 9 m, non-interfering | 6.4 cm | — | $145 + $120 receiver |
 | Blue2 FT / BIG Candy Corn 2 — **proximity**, no contact needed | — | 0 g | $255–260 |
 
-**Four things this teaches that a maker catalogue never would:**
+**Four things a maker catalogue does not record:**
 
 **Actuation force is a published specification.** 156 g, 150 g, 11.3 g. No arcade button
 lists this, because for a general audience it does not matter. Here it is *the*
@@ -438,24 +438,22 @@ without tools.
 **🔑 And the one that changes the architecture: these switches all terminate in a mono
 3.5 mm jack.** It is the de-facto standard of the entire field.
 
-> **If the system exposes a 3.5 mm switch jack instead of a soldered button, it becomes
-> compatible with every assistive switch ever made** — feather-touch, proximity, foam,
-> submersible, head-operated, wireless. The physical interface stops being a thing we chose
-> for her and becomes a thing she can be met at, whatever her motor ability is today or in
-> five years.
+> **If the system exposes a 3.5 mm switch jack instead of a soldered button, it accepts any
+> switch built to that connector** — feather-touch, proximity, foam, submersible,
+> head-operated, wireless. The physical interface stops being a thing we chose for her and
+> becomes a thing she can be met at, whatever her motor ability is today or in five years.
 
 That is a one-euro socket and a pull-up resistor. It costs nothing, it is trivially
-testable, and it is the difference between a device that works for one person and a device
-that works for a population. It also lets the parent buy a switch from any therapy supplier
-without us being involved — which is precisely the "parent steers" posture, expressed in
-hardware.
+testable, and it widens the set of people the device works for. It also lets the parent buy
+a switch from any therapy supplier without us being involved — which is the "parent steers"
+posture, expressed in hardware.
 
 Recommendation: **put a 3.5 mm jack on everything that takes a press.** Keep a cheap arcade
 button for development, and let real switches be plugged in later. Cheap Chinese
 equivalents of these switches exist at €10–20 for prototyping; buy the real one once the
 shape of the interaction is known.
 
-### 3.9 Pictograms — ✅ verified — ARASAAC, and why it matters more than any screen
+### 3.9 Pictograms — ✅ verified — ARASAAC
 
 `https://api.arasaac.org` — a full public REST API from the **Gobierno de Aragón**, the
 regional government of Aragón, Spain. Free, institutional, and the de-facto standard AAC
@@ -474,25 +472,24 @@ Endpoints that matter:
 
 Italian is supported.
 
-**Why this is the most important thing in this document.**
+**Why this matters.**
 
-The system does not have to invent a visual language. It can speak **the one she may
-already have been taught.** ARASAAC pictograms are what Italian speech therapists,
-special-education teachers and AAC apps use. If she has ever used a communication book, a
-visual schedule at school, or a PECS-style board, these are very likely the exact images
-she already reads. A prompt drawn in ARASAAC is not a new thing to learn — it is a
-continuation of something she already knows, made by people who are not us.
+The system does not have to invent a visual language. It can use the one she may already
+have been taught. ARASAAC pictograms are what Italian speech therapists, special-education
+teachers and AAC apps use. If she has ever used a communication book, a visual schedule at
+school, or a PECS-style board, these are very likely the exact images she already reads. A
+prompt drawn in ARASAAC is not a new thing to learn — it is a continuation of something she
+already knows, made by people who are not us.
 
-That reframes the display question entirely. We are not designing icons. We are rendering
-a public, standard, professionally-designed symbol set that predates this project and will
-outlive it.
+That changes the display question. We are not designing icons. We are rendering a public,
+standard symbol set that predates this project and will outlive it.
 
 **Three architectural consequences:**
 
 1. **The whole set can be cached locally.** `/pictograms/{language}/all` plus the image
    files is a finite download. That means pictograms are available with no network, which
-   feeds `CACHED_FALLBACK` directly — the offline reserve becomes *genuinely rich* rather
-   than a handful of pre-approved sheets. This materially strengthens "never dark".
+   feeds `CACHED_FALLBACK` directly — the offline reserve becomes larger than a handful of
+   pre-approved sheets, which is what "never dark" depends on.
 2. **`phrases/flex` is doing exactly the job the content agent needs** — sentence in,
    pictogram sequence out — with no model call, no cloud round trip, and no risk of an LLM
    inventing an image. Deterministic, inspectable, and it can be reviewed by the parent
@@ -520,7 +517,7 @@ than rediscover it.
 | ⛔ Wearables — watches, bands, trackers, rings | Biometrics, explicitly forbidden. Also the one device category she cannot walk away from. |
 | ⛔ Always-on microphones | Voice-stress and affect inference are forbidden, and an always-listening device in a child's home is not defensible regardless of what it does with the audio. |
 | ⛔ Eye tracking, gaze, attention estimation | Explicitly forbidden. Also: the entire concept treats her attention as a metric to optimise. |
-| ⛔ Emotion / affect recognition cameras | Explicitly forbidden, and scientifically dubious besides. |
+| ⛔ Emotion / affect recognition cameras | Explicitly forbidden. The inference it claims to make is also not well supported by evidence. |
 | ⛔ Sleep trackers, smart scales, health devices | Health surveillance of a minor by a system that has no clinical role. |
 | ⛔ Any display of a streak, a score, a level, a percentage, a trend | Rule 1. The device would be fine; what we would put on it would not. |
 | ⛔ Anything that escalates when ignored | Ignorability is a requirement. A device that gets louder is a device that punishes stopping. |
@@ -542,7 +539,7 @@ on purpose.
    §3.7. The open sub-question is now only the **USB Bluetooth dongle**, which is a €10
    part, not a decision.
 2. ~~**Has the CM5 already been ordered?**~~ ✅ **Resolved** — already in the house. The
-   longest pole in the plan turned out not to be a pole at all.
+   item expected to take longest was already done.
 3. **Which printer is already in the house?** Determines whether anything needs buying
    at all, and whether the thermal-printer idea should be prototyped first.
 4. **Reading distance for the routine prompt.** Decides 5.79" vs 7.5" vs larger. Cannot be
@@ -553,15 +550,15 @@ on purpose.
    whether text, pictograms or speech is the primary channel — and it is the parent's
    answer to give, verbally, once.
 7. **Has she already been taught a pictogram system?** ARASAAC, PECS, Widgit, something
-   from school or therapy? If yes, the system should use that one and no other. This is
-   the highest-value question in this list and it costs one conversation to answer.
+   from school or therapy? If yes, the system should use that one and no other. It costs
+   one conversation to answer and it decides what everything else renders.
 8. **What kind of press works for her?** A stiff arcade button, a light-touch switch, a
    proximity switch, something mounted rather than held? Do not guess — but design so the
    answer can change, which is what the 3.5 mm jack buys.
 
 ---
 
-## 6. What I would actually do
+## 6. What I would do
 
 If the answers were mine to give:
 
@@ -575,8 +572,8 @@ confirm it is inaudible before anything else gets attached to it. Add a **USB Bl
 dongle (~€10)** so the wireless-switch category stays open.
 
 **Order tonight, cheap.** Camera Module 3 Wide, the 22-to-15-pin adapter cable, a desk
-arm, two arcade buttons, a diffuse light. Total maybe €90, and it unblocks the paper loop
-which is the actual novel part of this system.
+arm, two arcade buttons, a diffuse light. Total maybe €90, and it unblocks the paper loop,
+which is the part of this system with no off-the-shelf equivalent.
 
 **Buy one thermal printer** (~€30) and try it before committing to the A4 pipeline. If a
 torn-off strip turns out to be a better object than a printed sheet, that changes the
@@ -585,12 +582,12 @@ design in a good direction and it is cheap to find out.
 **Buy one Time Timer** (~€35), not to integrate but to study.
 
 **Buy an NFC reader and a handful of tags** (~€15) and try making three wooden discs that
-mean three things. If tangible choosing works, it may be more important than any screen
-in this document.
+mean three things. If tangible choosing works, it may matter more than any screen in this
+document.
 
 **Put a 3.5 mm jack on every input**, from the first prototype. It costs one euro and it
-makes the system compatible with the entire assistive-switch industry. This is the single
-highest-leverage decision in this document and it has nothing to do with what we buy.
+makes the system accept switches from the whole assistive-switch industry. It is the
+cheapest decision here with the widest effect, and it has nothing to do with what we buy.
 
 **Cache the ARASAAC set locally before writing any rendering code.** It is free, it is
 finite, it makes the offline reserve real, and it means the system speaks a visual language
@@ -603,16 +600,15 @@ the first loop runs end to end.
 
 ## 7. The thought I keep returning to
 
-Every hour of this research pushed in the same direction: **the interesting part of this
-system is not the screen.**
+Every hour of this research pushed in the same direction: the interesting part of this
+system is not the screen.
 
 The screen was where we spent the day because it is the part that looks like a product.
 But a display shows a prompt, and a prompt is the least of it. What the research turned up
 — the assistive switch that meets her wherever her hands are, the pictogram set she may
 already read, the token she can put down instead of a menu she has to navigate, the strip
 of paper she can tear off and carry to the room where the thing happens — those are the
-parts where this stops being a dashboard on a wall and becomes something that belongs to a
-person.
+parts that belong to a person rather than to a wall.
 
 And almost all of them are cheap. The €146 device is the least interesting purchase on
 this list.
