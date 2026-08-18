@@ -16,11 +16,14 @@ param publicNetworkAccess string
 param privateEndpointSubnetId string
 param cosmosDnsZoneId string
 param queueDnsZoneId string
+param blobDnsZoneId string
 
 @description('Principal that the running containers use. Gets data-plane access, never control-plane.')
 param runtimeIdentityPrincipalId string
 
 param databaseName string = 'lanternina'
+// Every picture a display has shown, kept so it can be put back later.
+param picturesContainerName string = 'pictures'
 
 var namePrefix = '${projectName}-${environmentName}'
 var workQueueName = 'work'
@@ -73,6 +76,9 @@ var containers = [
   { name: 'proposals', partitionKey: '/familyId' }
   { name: 'outbox', partitionKey: '/familyId' }
   { name: 'sources', partitionKey: '/familyId' }
+  // One document per model call, append-only. Separate from 'sources' because it grows
+  // per call rather than per parent decision.
+  { name: 'usage', partitionKey: '/familyId' }
 ]
 
 resource sqlContainers 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = [
@@ -105,8 +111,8 @@ resource cosmosDataRole 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignment
   }
 }
 
-// The queue is what lets the interactive API stay fast: it hands long work (generation,
-// vision, content safety) to the worker instead of making the parent wait.
+// Dashboard writes never reach this queue. It is reserved for work explicitly initiated
+// by a request from the server in the home.
 resource storage 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   // Storage account names are capped at 24 characters and allow no dashes.
   #disable-next-line BCP334 // projectName is minLength(3) and suffix is always 5, so this cannot be too short.
@@ -141,6 +147,33 @@ resource workQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-
 }
 
 var storageQueueDataContributorId = '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+var storageBlobDataContributorId = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
+  parent: storage
+  name: 'default'
+}
+
+resource picturesContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: blobService
+  name: picturesContainerName
+  properties: {
+    publicAccess: 'None'
+  }
+}
+
+resource blobDataRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: storage
+  name: guid(storage.id, runtimeIdentityPrincipalId, storageBlobDataContributorId)
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      storageBlobDataContributorId
+    )
+    principalId: runtimeIdentityPrincipalId
+    principalType: 'ServicePrincipal'
+  }
+}
 
 resource queueDataRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: storage
@@ -225,8 +258,45 @@ resource queuePrivateDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroup
   }
 }
 
+resource blobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = {
+  name: 'pe-blob-${namePrefix}-${suffix}'
+  location: location
+  tags: tags
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'blob'
+        properties: {
+          privateLinkServiceId: storage.id
+          groupIds: ['blob']
+        }
+      }
+    ]
+  }
+}
+
+resource blobPrivateDns 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  parent: blobPrivateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'blob'
+        properties: {
+          privateDnsZoneId: blobDnsZoneId
+        }
+      }
+    ]
+  }
+}
+
 output cosmosAccountName string = cosmos.name
 output cosmosEndpoint string = cosmos.properties.documentEndpoint
 output cosmosDatabaseName string = databaseName
 output storageAccountName string = storage.name
 output workQueueName string = workQueueName
+output blobEndpoint string = storage.properties.primaryEndpoints.blob
+output picturesContainerName string = picturesContainerName

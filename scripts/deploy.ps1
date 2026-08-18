@@ -22,6 +22,11 @@ param(
     [string]$SubscriptionId,
     [string]$EnvironmentName = 'dev',
     [string]$Location = 'swedencentral',
+
+    # Static Web Apps exist in five regions only, and a subscription may be barred from any
+    # of them; westeurope is the sole European one, so overriding this leaves the EU.
+    [string]$WebLocation = 'eastus2',
+
     [string]$Owner = $env:USERNAME,
     [string]$BudgetContactEmail = '',
 
@@ -29,6 +34,10 @@ param(
 
     # Required when the account is a guest: without it az lands on the account's home tenant.
     [string]$Tenant = '',
+
+    # Deploy knowing the home server will lose its only credential. The device routes then
+    # answer 503 and the display keeps the picture it has.
+    [switch]$WithoutDeviceKey,
 
     # Show the plan without changing anything.
     [switch]$WhatIf
@@ -79,6 +88,7 @@ Write-Step "Tenant:       $($account.tenantId)"
 Write-Step 'Registering resource providers (no-op when already registered)'
 $providers = @(
     'Microsoft.App'
+    'Microsoft.CognitiveServices'
     'Microsoft.ContainerRegistry'
     'Microsoft.DocumentDB'
     'Microsoft.KeyVault'
@@ -102,11 +112,73 @@ $deploymentName = "lanternina-$EnvironmentName-$(Get-Date -Format 'yyyyMMdd-HHmm
 $parameters = @(
     "environmentName=$EnvironmentName"
     "location=$Location"
+    "webLocation=$WebLocation"
     "owner=$Owner"
 )
+
+$dataResourceGroup = "rg-lanternina-$EnvironmentName-data"
+$dataGroupExists = az group exists --name $dataResourceGroup | ConvertFrom-Json
+$externalIdCount = if ($dataGroupExists) {
+    $externalIdResources = az resource list `
+        --resource-group $dataResourceGroup `
+        --resource-type Microsoft.AzureActiveDirectory/ciamDirectories `
+        -o json | ConvertFrom-Json
+    @($externalIdResources).Count
+} else {
+    0
+}
+$deployExternalId = [int]$externalIdCount -eq 0
+$parameters += "deployExternalId=$($deployExternalId.ToString().ToLowerInvariant())"
+
 if ($BudgetContactEmail) {
     $parameters += "budgetContactEmail=$BudgetContactEmail"
 }
+
+# Bicep is declarative: anything the template does not carry is reset to its default. A
+# plain run would therefore replace the API with the placeholder image and blank the
+# sign-in configuration. Read what is running and hand it back in.
+$appResourceGroup = "rg-lanternina-$EnvironmentName-app"
+$liveApi = az containerapp show --name "ca-lanternina-$EnvironmentName-api" --resource-group $appResourceGroup -o json 2>$null | ConvertFrom-Json
+
+if ($liveApi) {
+    Write-Step 'Preserving what the API is already running'
+    $liveEnv = @{}
+    foreach ($item in $liveApi.properties.template.containers[0].env) { $liveEnv[$item.name] = $item.value }
+
+    $parameters += "apiImage=$($liveApi.properties.template.containers[0].image)"
+    $parameters += "apiTargetPort=$($liveApi.properties.configuration.ingress.targetPort)"
+    $parameters += "panelDevAuth=$(if ($liveEnv['LANTERNINA_DEV_AUTH'] -eq '1') { 'true' } else { 'false' })"
+
+    $carried = @{
+        panelOidcAuthority   = 'LANTERNINA_OIDC_AUTHORITY'
+        panelOidcAudience    = 'LANTERNINA_OIDC_AUDIENCE'
+        panelAllowedOrigins  = 'LANTERNINA_ALLOWED_ORIGINS'
+        panelBootstrapContact = 'LANTERNINA_BOOTSTRAP_CONTACT'
+    }
+    foreach ($name in $carried.Keys) {
+        $value = $liveEnv[$carried[$name]]
+        if ($value) { $parameters += "$name=$value" }
+    }
+
+    $liveWorker = az containerapp show --name "ca-lanternina-$EnvironmentName-worker" --resource-group $appResourceGroup -o json 2>$null | ConvertFrom-Json
+    if ($liveWorker) { $parameters += "workerImage=$($liveWorker.properties.template.containers[0].image)" }
+} else {
+    Write-Step 'No API app yet: this is a first deploy'
+}
+
+# The key is the only credential the house holds, and it is not in the repository.
+$secretsFile = Join-Path $repoRoot 'secrets.local.yaml'
+$deviceKey = ''
+if (Test-Path $secretsFile) {
+    $found = Select-String -Path $secretsFile -Pattern '^\s*device_key\s*:\s*(.+)$' | Select-Object -First 1
+    if ($found) { $deviceKey = $found.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'") }
+}
+if (-not $deviceKey -and -not $WithoutDeviceKey) {
+    throw "No device_key in $secretsFile. Deploying without it removes the home server's only credential. Add it, or pass -WithoutDeviceKey to accept that."
+}
+# Inline, because az refuses a JSON parameter file alongside a .bicepparam file. The cost
+# is that the key appears in this process's command line while the deployment runs.
+if ($deviceKey) { $parameters += "deviceKey=$deviceKey" }
 
 $command = if ($WhatIf) { 'what-if' } else { 'create' }
 Write-Step "Running az deployment sub $command"

@@ -59,11 +59,11 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-// One zone per service that gets a private endpoint. Foundry, when it arrives, needs
-// three of its own (cognitiveservices + openai + services.ai).
+// One zone per data service that gets a private endpoint.
 var privateDnsZoneNames = [
   'privatelink.documents.azure.com'
   'privatelink.queue.${environment().suffixes.storage}'
+  'privatelink.blob.${environment().suffixes.storage}'
 ]
 
 resource privateDnsZones 'Microsoft.Network/privateDnsZones@2024-06-01' = [
@@ -164,6 +164,7 @@ output acaSubnetId string = vnet.properties.subnets[0].id
 output privateEndpointSubnetId string = vnet.properties.subnets[1].id
 output cosmosDnsZoneId string = privateDnsZones[0].id
 output queueDnsZoneId string = privateDnsZones[1].id
+output blobDnsZoneId string = privateDnsZones[2].id
 output logAnalyticsId string = logAnalytics.id
 output logAnalyticsCustomerId string = logAnalytics.properties.customerId
 output registryName string = registry.name

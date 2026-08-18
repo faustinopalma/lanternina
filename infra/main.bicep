@@ -30,8 +30,8 @@ param environmentName string = 'dev'
 @description('Region for everything except the Static Web App.')
 param location string = 'swedencentral'
 
-@description('Static Web App region. The Standard SKU is not offered in swedencentral.')
-param webLocation string = 'westeurope'
+@description('Static Web App region. The existing dev resource was created in eastus2.')
+param webLocation string = 'eastus2'
 
 @description('Who owns this deployment. Only used as a tag.')
 param owner string = 'unknown'
@@ -61,6 +61,9 @@ param budgetContactEmail string = ''
 @description('Container image for the API. Left at the placeholder, the first deploy succeeds before any build exists.')
 param apiImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 
+@description('Container image for the worker. Left at the placeholder for the first deploy.')
+param workerImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
+
 @description('Port the API image listens on. Moves together with apiImage: the placeholder serves on 80, the uvicorn image on 8000.')
 param apiTargetPort int = 80
 
@@ -73,8 +76,36 @@ param panelBootstrapContact string = ''
 @description('Identity provider base URL. Its discovery document supplies issuer and keys. Empty leaves the panel closed to everyone.')
 param panelOidcAuthority string = ''
 
-@description('Audiences a token may carry, comma separated. Entra emits either the application id or its api:// form, and both name the same application.')
+@description('Exact audience the API accepts. Read this value from a token issued by the configured user flow.')
 param panelOidcAudience string = ''
+
+@description('Comma-separated browser origins allowed to call the panel API. Empty allows none.')
+param panelAllowedOrigins string = ''
+
+@description('Shared key the home server presents. Empty closes the device routes, which is the safe direction: the house keeps the picture it has.')
+@secure()
+param deviceKey string = ''
+
+param aiFrontierModelNames array = [
+  'gpt-5.6-sol'
+  'gpt-5.6-terra'
+  'gpt-5.6-luna'
+]
+
+param aiFrontierModelVersion string = '2026-07-09'
+param aiFrontierModelSku string = 'GlobalStandard'
+
+@description('Thousands of tokens per minute assigned from existing quota.')
+@minValue(1)
+param aiFrontierModelCapacity int = 1000
+
+param aiImageModelName string = 'gpt-image-2'
+param aiImageModelVersion string = '2026-04-21'
+param aiImageModelSku string = 'GlobalStandard'
+
+@description('Images per minute assigned from existing quota.')
+@minValue(1)
+param aiImageModelCapacity int = 2
 
 // Deterministic across redeploys, and different per subscription+environment, so two
 // forks of this repo never collide on a globally-unique name.
@@ -137,7 +168,29 @@ module data 'modules/data.bicep' = {
     privateEndpointSubnetId: core.outputs.privateEndpointSubnetId
     cosmosDnsZoneId: core.outputs.cosmosDnsZoneId
     queueDnsZoneId: core.outputs.queueDnsZoneId
+    blobDnsZoneId: core.outputs.blobDnsZoneId
     runtimeIdentityPrincipalId: core.outputs.runtimeIdentityPrincipalId
+  }
+}
+
+module ai 'modules/ai.bicep' = {
+  scope: rgApp
+  name: 'ai'
+  params: {
+    projectName: projectName
+    environmentName: environmentName
+    location: location
+    suffix: suffix
+    tags: tags
+    runtimeIdentityPrincipalId: core.outputs.runtimeIdentityPrincipalId
+    frontierModelNames: aiFrontierModelNames
+    frontierModelVersion: aiFrontierModelVersion
+    frontierModelSku: aiFrontierModelSku
+    frontierModelCapacity: aiFrontierModelCapacity
+    imageModelName: aiImageModelName
+    imageModelVersion: aiImageModelVersion
+    imageModelSku: aiImageModelSku
+    imageModelCapacity: aiImageModelCapacity
   }
 }
 
@@ -160,12 +213,22 @@ module app 'modules/app.bicep' = {
     cosmosDatabaseName: data.outputs.cosmosDatabaseName
     storageAccountName: data.outputs.storageAccountName
     workQueueName: data.outputs.workQueueName
+    blobEndpoint: data.outputs.blobEndpoint
+    picturesContainerName: data.outputs.picturesContainerName
+    foundryEndpoint: ai.outputs.projectEndpoint
+    foundryDeployment: ai.outputs.defaultDeploymentName
+    foundryFrontierDeployments: join(ai.outputs.frontierDeploymentNames, ',')
+    foundryImageDeployment: ai.outputs.imageDeploymentName
+    aiAccountEndpoint: ai.outputs.accountEndpoint
+    deviceKey: deviceKey
     apiImage: apiImage
     apiTargetPort: apiTargetPort
     panelDevAuth: panelDevAuth
     panelBootstrapContact: panelBootstrapContact
     panelOidcAuthority: panelOidcAuthority
     panelOidcAudience: panelOidcAudience
+    panelAllowedOrigins: panelAllowedOrigins
+    workerImage: workerImage
   }
 }
 
@@ -219,6 +282,12 @@ output workerAppName string = app.outputs.workerAppName
 output staticWebAppHostname string = web.outputs.defaultHostname
 output staticWebAppName string = web.outputs.name
 output cosmosEndpoint string = data.outputs.cosmosEndpoint
+output aiAccountName string = ai.outputs.accountName
+output aiProjectName string = ai.outputs.projectName
+output aiProjectEndpoint string = ai.outputs.projectEndpoint
+output aiDefaultDeploymentName string = ai.outputs.defaultDeploymentName
+output aiFrontierDeploymentNames array = ai.outputs.frontierDeploymentNames
+output aiImageDeploymentName string = ai.outputs.imageDeploymentName
 output runtimeIdentityClientId string = core.outputs.runtimeIdentityClientId
 output deployIdentityClientId string = core.outputs.deployIdentityClientId
 output externalIdTenantId string = deployExternalId ? identity!.outputs.tenantId : ''

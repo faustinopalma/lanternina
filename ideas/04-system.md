@@ -32,21 +32,33 @@ answer to a failure upstream.
 
 ---
 
-## 3. Closing the drift with Bicep
+## 3. Closed: the drift between the templates and what runs
 
-**What it is.** Some live things are not described in the templates: the device key, the AI
-endpoint variables, and the roles assigned by hand.
+**What it was.** Some live configuration was not described in the templates, so a plain
+`./scripts/deploy.ps1` would have reset it.
 
-**Why.** A full deploy today would do predictable damage: `apiImage` would fall back to the
-placeholder image, the panel would answer 404 on every route, and the device key would
-disappear. It is not a theoretical risk, it is a guaranteed regression.
+**What it turned out to be, measured on 18 August 2026.** Three of the nineteen environment
+variables on the API were absent from the template: `LANTERNINA_DEVICE_KEY`,
+`LANTERNINA_CONTENT_SAFETY_ENDPOINT` and `LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT`. Worse, and
+not noticed before: the script passed five parameters and none of them were `apiImage`,
+`apiTargetPort` or the sign-in settings. A run would therefore have replaced the API with
+the placeholder image on port 80 and blanked the identity configuration — the panel would
+have answered 404, then 503.
 
-**How.** A secure parameter for the key, read by `scripts/deploy.ps1` from the local file;
-the AI endpoints as outputs of the `ai.bicep` module; the data-plane roles added next to the
-one that already exists for the project.
+**How it was closed.** The two endpoints are the same AIServices host, so they are now
+derived from `ai.outputs.accountEndpoint` rather than passed by hand — a value nobody can
+forget. The device key is a `@secure()` parameter carried into a container-app secret, read
+by the script from `secrets.local.yaml`. The script also reads the running app and hands
+its image, port and sign-in settings back in, so a plain run re-applies what is there
+instead of resetting it. Without a key it refuses to run at all.
 
-**What it costs.** Half a day and a `what-if` read line by line. It is not urgent while
-nobody runs the deploy, and that is exactly why it gets forgotten.
+**What it cost.** The key travels on the command line while the deployment runs: `az`
+refuses a JSON parameter file alongside a `.bicepparam` file, which was measured rather
+than assumed. On a shared machine that would matter.
+
+**How it was checked.** `what-if` plans no change to the image or the port, keeps all four
+restored variables, and removes only three ARM defaults. Hiding `secrets.local.yaml` makes
+the script refuse, which was watched rather than trusted.
 
 ---
 
@@ -81,6 +93,12 @@ after.
 **Why.** Some things exist only on the hub — the seal keys, the device key, the display
 registry with its tokens, the Wi-Fi configuration. The weekly backup exists and has been
 tested, but the **restore** never has. An unverified backup is a hope.
+
+⚠️ "Only on the hub" is too strong, and was corrected on 18 August 2026: `secrets.local.yaml`
+on the development machine holds `device_key`, `approval_key` and `safety_key`. The device
+key there was verified to be the one the live API accepts. Whether the other two match what
+the hub uses is **not** verified, and that is the thing to check first — it is minutes of
+work and it changes how bad a lost card would be.
 
 **How.** The installer `deploy/install-trmnl-byos.sh` already covers the display service.
 The rest is missing, and what is missing most is knowing which secrets have to be

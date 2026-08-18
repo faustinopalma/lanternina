@@ -24,6 +24,8 @@ param(
     [string]$OidcAuthority = '',
     [string]$OidcAudience = '',
 
+    [string]$AllowedOrigins = '',
+
     [string]$Location = 'swedencentral'
 )
 
@@ -68,19 +70,28 @@ Write-Step "Confirmed: $($registry.loginServer)/$image"
 
 Write-Step 'Deploying infrastructure against the new image'
 $deploymentName = "lanternina-panel-$(Get-Date -Format 'yyyyMMddHHmmss')"
+$workerImage = az containerapp show `
+    --name ca-lanternina-dev-worker `
+    --resource-group rg-lanternina-dev-app `
+    --query 'properties.template.containers[0].image' `
+    -o tsv
 az deployment sub create `
     --name $deploymentName `
     --location $Location `
     --template-file (Join-Path $repoRoot 'infra/main.bicep') `
+    --parameters (Join-Path $repoRoot 'infra/main.bicepparam') `
     --parameters `
         owner=$Owner `
         budgetContactEmail=$BudgetContactEmail `
+        deployExternalId=false `
         apiImage="$($registry.loginServer)/$image" `
+        workerImage=$workerImage `
         apiTargetPort=8000 `
         panelDevAuth=$($DevAuth.IsPresent.ToString().ToLower()) `
         panelBootstrapContact=$BootstrapContact `
         panelOidcAuthority=$OidcAuthority `
         panelOidcAudience=$OidcAudience `
+        panelAllowedOrigins=$AllowedOrigins `
     --output none
 
 Write-Step 'Verifying'

@@ -2,8 +2,9 @@
 //
 // Two apps on purpose, because they scale on different signals:
 //   api     HTTP rule. A request to a zero-scaled app triggers activation and is served;
-//           no queue is needed to wake it, and a queue in front would force 202+polling.
-//   worker  queue rule. Genuinely asynchronous work — generation, vision, content safety.
+//           the home server may wait through this cold start.
+//   worker  queue rule. Only home-server-initiated work may enter the queue; dashboard
+//           writes persist state and stop.
 
 param projectName string
 param environmentName string
@@ -22,6 +23,12 @@ param cosmosEndpoint string
 param cosmosDatabaseName string
 param storageAccountName string
 param workQueueName string
+param blobEndpoint string
+param picturesContainerName string
+param foundryEndpoint string
+param foundryDeployment string
+param foundryFrontierDeployments string
+param foundryImageDeployment string
 
 @description('Image for the API. Defaults to a placeholder so the first deploy succeeds before any build exists.')
 param apiImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
@@ -46,8 +53,32 @@ param panelBootstrapContact string = ''
 @description('Identity provider base URL. Empty leaves the panel closed to everyone.')
 param panelOidcAuthority string = ''
 
-@description('Audiences a token may carry, comma separated.')
+@description('Exact audience the API accepts.')
 param panelOidcAudience string = ''
+
+@description('Comma-separated browser origins allowed to call the panel API. Empty allows none.')
+param panelAllowedOrigins string = ''
+
+@description('AIServices account endpoint. One host serves both image generation and Content Safety.')
+param aiAccountEndpoint string = ''
+
+@description('Shared key the home server presents. Empty closes the device routes.')
+@secure()
+param deviceKey string = ''
+
+// Held as a secret rather than a plain value: it is the only credential the house has.
+var deviceKeySecrets = empty(deviceKey) ? [] : [
+  {
+    name: 'device-key'
+    value: deviceKey
+  }
+]
+var deviceKeyEnv = empty(deviceKey) ? [] : [
+  {
+    name: 'LANTERNINA_DEVICE_KEY'
+    secretRef: 'device-key'
+  }
+]
 
 var namePrefix = '${projectName}-${environmentName}'
 
@@ -100,6 +131,38 @@ var commonEnv = [
     name: 'LANTERNINA_WORK_QUEUE'
     value: workQueueName
   }
+  {
+    name: 'LANTERNINA_BLOB_ENDPOINT'
+    value: blobEndpoint
+  }
+  {
+    name: 'LANTERNINA_PICTURES_CONTAINER'
+    value: picturesContainerName
+  }
+  {
+    name: 'LANTERNINA_FOUNDRY_ENDPOINT'
+    value: foundryEndpoint
+  }
+  {
+    name: 'LANTERNINA_FOUNDRY_DEPLOYMENT'
+    value: foundryDeployment
+  }
+  {
+    name: 'LANTERNINA_FOUNDRY_FRONTIER_DEPLOYMENTS'
+    value: foundryFrontierDeployments
+  }
+  {
+    name: 'LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT'
+    value: foundryImageDeployment
+  }
+  {
+    name: 'LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT'
+    value: aiAccountEndpoint
+  }
+  {
+    name: 'LANTERNINA_CONTENT_SAFETY_ENDPOINT'
+    value: aiAccountEndpoint
+  }
 ]
 
 // Only the API is reachable from outside, so only the API carries the settings that
@@ -120,6 +183,10 @@ var apiEnv = concat(commonEnv, [
   {
     name: 'LANTERNINA_OIDC_AUDIENCE'
     value: panelOidcAudience
+  }
+  {
+    name: 'LANTERNINA_ALLOWED_ORIGINS'
+    value: panelAllowedOrigins
   }
 ])
 
@@ -156,6 +223,7 @@ resource api 'Microsoft.App/containerApps@2025-01-01' = {
           identity: runtimeIdentityId
         }
       ]
+      secrets: deviceKeySecrets
     }
     template: {
       containers: [
@@ -166,7 +234,7 @@ resource api 'Microsoft.App/containerApps@2025-01-01' = {
             cpu: json('0.5')
             memory: '1Gi'
           }
-          env: apiEnv
+          env: concat(apiEnv, deviceKeyEnv)
         }
       ]
       scale: {

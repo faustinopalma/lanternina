@@ -39,8 +39,8 @@ and the file wins for judging whether the thing is worth doing at all.
 
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
-| 1 | Close the drift between the templates and what is running | 04 §3 | A full deploy today is a guaranteed regression: the device key disappears and the panel answers 404. Every later change is deployed across this. |
-| 2 | Rebuild the hub from a blank card, once | 04 §5 | The seal keys exist in one place. The backup has never been restored, so it is a hope rather than a backup. |
+| 1 | ~~Close the drift between the templates and what is running~~ — **done, 18 August 2026** | 04 §3 | It was worse than recorded: the script passed no image, no port and no sign-in settings, so a plain run would have left the panel answering 404 and then 503. `deploy.ps1` now re-applies what is running and refuses without the device key. |
+| 2 | Rebuild the hub from a blank card, once | 04 §5 | The backup has never been restored, so it is a hope rather than a backup. Less dire than first written: the keys also exist in `secrets.local.yaml`, and the device key there is verified to be the live one. Start by checking whether the other two match the hub's. |
 
 ### Then: the foundations
 
