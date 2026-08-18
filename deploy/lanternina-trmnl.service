@@ -1,0 +1,25 @@
+[Unit]
+Description=Lanternina TRMNL local display server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.trmnl_byos
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+# The one place this service may write: what each display reported on its last poll.
+ReadWritePaths=/var/lib/lanternina/state
+
+[Install]
+WantedBy=multi-user.target

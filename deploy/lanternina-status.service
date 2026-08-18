@@ -1,0 +1,19 @@
+[Unit]
+Description=Report Lanternina display status to the panel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.push_status
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina

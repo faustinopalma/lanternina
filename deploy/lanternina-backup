@@ -1,0 +1,38 @@
+#!/bin/bash
+# Immagine di ripristino della eMMC sull'NVMe. Se la eMMC muore, si riflasha da qui.
+set -e
+DEST=/srv/lanternina/backup
+STAMP=$(date +%Y%m%d)
+
+mountpoint -q /srv/lanternina || { echo "NVMe non montato, salto il backup"; exit 0; }
+
+# Partizione di boot: piccola e quasi statica, copia a blocchi
+dd if=/dev/mmcblk0p1 of="$DEST/bootfs.img" bs=4M conv=fsync status=none
+
+# Rootfs: --one-file-system non attraversa /proc /sys /dev /run /tmp /srv /var/log
+NEW="$DEST/rootfs-$STAMP.tar.gz"
+set +e
+tar --one-file-system -czf "$NEW" -C / .
+status=$?
+set -e
+
+# 1 significa "un file e cambiato mentre lo leggevo": normale su un filesystem vivo, e
+# l'archivio resta valido. Da 2 in su l'archivio e troncato e non va tenuto.
+if [ "$status" -ge 2 ]; then
+    rm -f "$NEW"
+    echo "tar uscito con $status: archivio scartato, le copie precedenti restano"
+    exit 1
+fi
+
+# Rileggerlo per intero e l'unica cosa che distingue un backup da un file grande.
+if ! tar -tzf "$NEW" > /dev/null; then
+    rm -f "$NEW"
+    echo "archivio illeggibile: scartato, le copie precedenti restano"
+    exit 1
+fi
+
+# Le vecchie copie si tolgono solo dopo che la nuova e stata riletta.
+ls -1t "$DEST"/rootfs-*.tar.gz 2>/dev/null | tail -n +4 | xargs -r rm -f
+
+sync
+echo "backup completato e riletto: $(ls -lh "$NEW" | awk '{print $5}')"

@@ -1,7 +1,7 @@
 # Threat model
 
-This model puts one asset first: protecting one teenager from the system that was built
-for her. Protecting her family's data from the outside comes second. The ordering is
+This model puts one asset first: protecting the adolescent from the system built for
+them. Protecting the family's data from the outside comes second. The ordering is
 deliberate — the likeliest harm here is not a break-in, it is the software drifting into
 doing something nobody decided it should do.
 
@@ -16,7 +16,7 @@ and the Azure services the router calls.
 | --- | --- | --- |
 | 1 | Her dignity and autonomy | The system can humiliate, pressure, or label her. No firewall prevents this. |
 | 2 | Scans of her work | Images of a minor's handwriting, produced daily. The most sensitive artefact the system creates. |
-| 3 | Her profile and routines | Reveals a disability and the household's daily pattern. |
+| 3 | Their profile and routines | Reveals private preferences and the household's daily pattern. |
 | 4 | The two sealing keys | Whoever holds them can forge screened, approved content and put it in front of her. |
 | 5 | Azure credentials | Cost and blast radius beyond this house. |
 | 6 | Wi-Fi / device credentials | Foothold on the home network. |
@@ -31,6 +31,8 @@ and the Azure services the router calls.
 | --- | --- | --- |
 | Engagement optimisation creeps in | A streak "to help motivation"; a nudge after two quiet days | Forbidden by [NON-GOALS.md](NON-GOALS.md); `tests/test_boundaries.py` fails on the vocabulary; no metric is stored to optimise against |
 | The system starts assessing her | Adaptive difficulty needs a performance model, and a model of her is an assessment | No score/ability/progress fields exist; adaptation must go through proposal → parent approval |
+| The system infers boredom or attention | Speed, stopping or repeated choices are treated as behavioural signals | Variety is an explicit preference; behaviour is not an adaptation input |
+| A dashboard change starts work in the house | A configuration route also enqueues generation or signals the device | Dashboard mutations persist only; processing begins only on an authenticated request initiated by the home server |
 | Content reaches her unreviewed | An agent renders directly; a "fast path" for the demo | `Proposal` has no approval field; delivery verifies two seals; agents never hold the ledger |
 | She is told something unkind or infantilising | Model drift, a bad prompt, a tone setting | Content Safety chokepoint, parent approval, age-appropriateness rules in `.github/instructions/agent-boundaries.instructions.md` |
 | An error message blames her | A stack trace on a display she can see | Errors surface on the parent panel; her surfaces stay calm and non-blaming |
@@ -49,7 +51,7 @@ anyone can print one.
 | --- | --- |
 | Handwritten "ignore previous instructions…" | Recognised text is data, never placed in an instruction position |
 | Free text the parent types (interests, notes) | Same treatment; the parent is trusted as a person, not as a prompt author |
-| A QR code from another sheet, or a hand-made one | Fixed `LNT1|version|sheet|exercise` grammar, parsed strictly; unknown ids rejected; unknown spec versions refused rather than guessed |
+| A QR code from another sheet, or a hand-made one | Fixed `LNT1\|version\|sheet\|exercise` grammar, parsed strictly; unknown ids rejected; unknown spec versions refused rather than guessed |
 | A sheet crafted to trigger a "safety" alert | Escalation covers system faults and blocked content, not inferences about her |
 
 **Residual risk:** a sufficiently clever injection could still influence generated content.

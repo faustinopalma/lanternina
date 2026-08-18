@@ -146,16 +146,8 @@
   </div>
 
   <div class="callout">
-    <strong>Why not let Entra answer all three.</strong> It can answer the first two. It cannot hold a sign-up open for days while a human decides, and a directory does not survive the tenant rebuild this project already expects. Keeping the third answer in our own database costs one more lookup per request and buys a decision that migrates with the data.
+    <strong>Why not let Entra answer all three.</strong> It can answer the first two. It cannot hold a sign-up open for days while a human decides — a directory records that an account exists, not that a person has looked at it and agreed. Keeping the third answer in our own database costs one more lookup per request and buys a decision we control.
   </div>
-
-  <details class="drill">
-    <summary>What "the tenant rebuild this project already expects" means</summary>
-    <div class="body">
-      <p>The External ID directory is created by the deployment as an ARM resource, but everything <em>inside</em> it — app registrations, user flows, accounts — is tenant-scoped and outside ARM's reach. Moving Lanternina to a different tenant is therefore a rebuild, not a migration. See DEPLOY.md §6.</p>
-      <p>Records in Cosmos DB move with a data export. Directory contents do not. Anything we want to survive that move has to live on the Cosmos side of the line, and account approval is exactly that kind of thing.</p>
-    </div>
-  </details>
 </section>
 
 <!-- ============ PIECES ============ -->
@@ -166,12 +158,12 @@
     <thead><tr><th>Piece</th><th>What it is</th><th>What it decides</th></tr></thead>
     <tbody>
       <tr>
-        <td><strong>External ID directory</strong><br><code class="muted">lantepwhrr.onmicrosoft.com</code></td>
+        <td><strong>External ID directory</strong><br><code class="muted">lantessveb.onmicrosoft.com</code></td>
         <td>A directory of people, separate from the one that administers Azure.</td>
         <td>Whether an email and password match an account it holds.</td>
       </tr>
       <tr>
-        <td><strong>App registration</strong><br><code class="muted">5717163c-…</code></td>
+        <td><strong>App registration</strong><br><code class="muted">e80af2eb-…</code></td>
         <td>The declaration that an application exists, what it is called, and where it may be sent back after signing in.</td>
         <td>Which redirect addresses are acceptable, and which scopes exist.</td>
       </tr>
@@ -353,8 +345,11 @@ flowchart TB
   <p>Every one of those refusals returns the same message. An endpoint that explains <em>which</em> check failed is an oracle: an attacker fixes one field at a time until it stops complaining.</p>
 
   <div class="callout warn">
-    <strong>Measured, not assumed.</strong> The discovery document for this tenant reports its issuer as
-    <code>https://07702e41-….ciamlogin.com/07702e41-…/v2.0</code> — the subdomain is the tenant id, not <code>lantepwhrr</code>. Nobody would derive that from the authority URL.
+    <strong>Read the issuer, do not derive it.</strong> Measured from the discovery document on 7 August 2026. The authority we configure is
+    <code>https://lantessveb.ciamlogin.com/lantessveb.onmicrosoft.com/v2.0</code>, and the issuer it reports back is
+    <code>https://79825125-….ciamlogin.com/79825125-…/v2.0</code> — the subdomain is the <em>tenant id</em>, not <code>lantessveb</code>. Nobody would derive that from the authority URL, and the same substitution happened on the previous directory, so it is the rule rather than an accident.
+    <br><br>
+    This is why <code>TokenVerifier.from_authority</code> reads the issuer out of the discovery document instead of composing it. The one place the value could have been hard-coded is the one place it would have been wrong.
     <br><br>
     The same tenant also answers at <code>login.microsoftonline.com</code>, and there it reports a <em>different</em> issuer. A front end pointed at that address would receive tokens that look entirely valid and would be refused by our API, producing a 401 that reads like a credentials problem and is a wrong URL in a configuration file.
   </div>
@@ -485,7 +480,7 @@ flowchart TB
       <tr>
         <td>Does the parent see a consent screen?</td>
         <td><span class="badge b-ok">No — pre-authorised</span></td>
-        <td><strong>Letting consent happen.</strong> It would work. But the person arriving here is the parent of a teenager with cognitive disabilities, and the first thing in front of them should not be a dialog listing OAuth scopes.</td>
+        <td><strong>Letting consent happen.</strong> It would work. But the person arriving here is a parent trying to review activities, and the first thing in front of them should not be a dialog listing OAuth scopes.</td>
       </tr>
       <tr>
         <td>Which claim carries identity?</td>
@@ -519,15 +514,16 @@ flowchart TB
     <p><span class="steptag">STEP 1</span> &nbsp;<strong>App registration, platform "Single-page application", redirect <code>https://app.lanternina.com</code></strong></p>
     <p class="muted">Created the identity of the application and the list of addresses Entra will send a person back to. Choosing the SPA platform rather than "Web" is what makes Entra require PKCE and refuse to issue tokens against a client secret.</p>
     <details class="drill">
-      <summary>Why the redirect had to be the real domain, and not the generated one</summary>
+      <summary>Why two redirect addresses are registered, not one</summary>
       <div class="body">
-        <p>Redirect addresses are matched exactly, character for character, and are case-sensitive on the path. Registering the generated Static Web App hostname would have meant redoing both this registration and the front end configuration once the domain arrived. That is the reason the DNS and certificate work came first.</p>
+        <p>Redirect addresses are matched exactly, character for character, and are case-sensitive on the path. Both <code>https://app.lanternina.com</code> and the generated Static Web App hostname are registered, because Entra accepts several on one registration and there is no cost to holding both.</p>
+        <p>The benefit is that the front end can be exercised on the generated hostname before DNS and the certificate are in place, without a second trip through the portal afterwards.</p>
       </div>
     </details>
   </div>
 
   <div class="card">
-    <p><span class="steptag">STEP 2</span> &nbsp;<strong>Expose an API · <code>api://5717163c-…</code> · scope <code>access_as_parent</code></strong></p>
+    <p><span class="steptag">STEP 2</span> &nbsp;<strong>Expose an API · <code>api://e80af2eb-…</code> · scope <code>access_as_parent</code></strong></p>
     <p class="muted">Declared the resource role. Before this, there was nothing for a token to be addressed to. This is what makes the <code>aud</code> claim in the eventual token point at us, which is the claim the API compares literally.</p>
   </div>
 

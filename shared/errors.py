@@ -61,6 +61,14 @@ class SafetyBlocked(OperationalError):
     """Content Safety rejected the payload. Not an error in the system; a normal outcome."""
 
 
+class UnusableGeneration(OperationalError):
+    """The model returned something the agent cannot use, e.g. malformed structure.
+
+    Normal, and never shown to anyone: the caller drops this item and keeps going. The
+    text cannot be repaired in place, because editing it would break the safety seal.
+    """
+
+
 class VisionError(OperationalError):
     """The vision pipeline could not produce a reliable reading."""
 

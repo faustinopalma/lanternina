@@ -1,0 +1,15 @@
+[Unit]
+Description=Provision Lanternina TRMNL display on %I
+After=lanternina-trmnl.service
+Requires=lanternina-trmnl.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/lanternina
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m devices.trmnl_provision --port /dev/%I
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/etc/lanternina /var/lib/lanternina/trmnl-backups

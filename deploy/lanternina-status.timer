@@ -1,0 +1,12 @@
+[Unit]
+Description=Report display status to the panel every few minutes
+
+[Timer]
+# Five minutes is far more often than a fault needs to surface, and far less often than
+# the displays poll. It costs one request.
+OnBootSec=2min
+OnUnitActiveSec=5min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

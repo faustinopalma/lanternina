@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lanternina — The claims in a token, spelled out</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a212b; --panel-2: #222b38; --border: #2c3849;
+    --text: #e6edf3; --muted: #9fb0c3; --accent: #4ea1ff; --accent-2: #7ee0a1;
+    --warn: #ffcf5c; --danger: #ff7a7a; --purple: #c08cff;
+    --mono: "Cascadia Code", "Consolas", "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: linear-gradient(180deg, #0c1117 0%, #0f1419 100%);
+    color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+  header.hero {
+    padding: 56px 24px 40px; text-align: center;
+    background: radial-gradient(1200px 400px at 50% -120px, rgba(78,161,255,0.18), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 2.1rem; letter-spacing: -0.5px; }
+  header.hero .sub { color: var(--muted); font-size: 1.05rem; max-width: 860px; margin: 0 auto; }
+  .pill {
+    display: inline-block; margin-top: 18px; padding: 6px 14px; border-radius: 999px;
+    background: rgba(78,161,255,0.12); border: 1px solid rgba(78,161,255,0.35);
+    color: var(--accent); font-size: 0.82rem; font-weight: 600;
+  }
+  .doclinks { margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .doclinks a {
+    text-decoration: none; padding: 9px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+    border: 1px solid var(--border); color: var(--text); background: var(--panel);
+  }
+  .doclinks a:hover { border-color: var(--accent); color: var(--accent); }
+  .doclinks a.primary { background: rgba(78,161,255,0.15); border-color: rgba(78,161,255,0.5); color: var(--accent); }
+  nav.toc {
+    position: sticky; top: 0; z-index: 20; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center;
+  }
+  nav.toc a { color: var(--muted); text-decoration: none; font-size: 0.86rem; font-weight: 500; }
+  nav.toc a:hover { color: var(--accent); }
+  section { margin-top: 48px; }
+  h2 { font-size: 1.5rem; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  h2 .num { font-size: 0.85rem; color: var(--accent); border: 1px solid rgba(78,161,255,0.4); border-radius: 8px; padding: 2px 8px; font-weight: 700; }
+  h3 { font-size: 1.12rem; margin: 28px 0 10px; color: var(--accent-2); }
+  p { margin: 10px 0; color: var(--text); }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin: 16px 0; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 820px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-2); }
+  pre { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 0.82rem; color: var(--text); }
+  pre code { background: none; padding: 0; color: inherit; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; background: rgba(255,255,255,0.02); }
+  tr:hover td { background: rgba(78,161,255,0.04); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .b-ok    { background: rgba(126,224,161,0.15); color: var(--accent-2); border: 1px solid rgba(126,224,161,0.4); }
+  .b-todo  { background: rgba(255,207,92,0.13); color: var(--warn); border: 1px solid rgba(255,207,92,0.38); }
+  .b-no    { background: rgba(255,122,122,0.13); color: var(--danger); border: 1px solid rgba(255,122,122,0.38); }
+  .b-data  { background: rgba(192,140,255,0.14); color: var(--purple); border: 1px solid rgba(192,140,255,0.4); }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); background: rgba(255,207,92,0.06); }
+  .callout.danger { border-left-color: var(--danger); background: rgba(255,122,122,0.06); }
+  .callout.good { border-left-color: var(--accent-2); background: rgba(126,224,161,0.06); }
+  .callout strong { color: var(--text); }
+  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 16px 0; text-align: center; }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center; }
+  details.drill {
+    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--purple);
+    border-radius: 0 10px 10px 0; margin: 10px 0; padding: 0;
+  }
+  details.drill > summary {
+    cursor: pointer; padding: 11px 16px; font-weight: 600; font-size: 0.92rem;
+    color: var(--purple); list-style: none; display: flex; align-items: center; gap: 9px;
+  }
+  details.drill > summary::-webkit-details-marker { display: none; }
+  details.drill > summary::before { content: "▸"; font-size: 0.85rem; transition: transform 0.15s; }
+  details.drill[open] > summary::before { transform: rotate(90deg); }
+  details.drill > summary:hover { color: var(--accent); }
+  details.drill .body { padding: 0 18px 16px 33px; font-size: 0.94rem; color: var(--muted); }
+  details.drill .body p { color: var(--muted); margin: 8px 0; }
+  details.drill .body strong { color: var(--text); }
+  details.drill .body table { font-size: 0.88rem; }
+  .full { font-family: var(--mono); color: var(--accent-2); }
+  .src { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>The claims in a token, spelled out</h1>
+  <div class="sub">A token is a list of three-letter names. Each one is an abbreviation of an ordinary word, and the words are more general than the situation we are using them in. This page writes them out in full, says where each name is defined, and marks the ones nobody has ever spelled out officially.</div>
+  <div class="pill">RFC 7519 · OpenID Connect · Microsoft Entra v2.0 access tokens</div>
+  <div class="doclinks">
+    <a class="primary" href="authentication.html">← How a parent signs in</a>
+    <a href="architecture-overview.html">Architecture overview</a>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#why">Why three letters</a>
+  <a href="#seven">The seven registered</a>
+  <a href="#entra">What Entra adds</a>
+  <a href="#ours">The ones that matter to us</a>
+  <a href="#traps">Useful-looking traps</a>
+  <a href="#checked">What we check</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ WHY ============ -->
+<section id="why">
+  <h2><span class="num">01</span> Why the names are three letters, and not words</h2>
+
+  <p>A token travels in an HTTP header — <code>Authorization: Bearer eyJ…</code> — on every single request, and headers have size limits that servers enforce. Every character in every claim name is paid for again on each call. Writing <code>subject</code> instead of <code>sub</code> costs four bytes per request, which is nothing once and is not nothing a million times a day. Compactness is a stated goal of the JWT format, and short names are its direct consequence.</p>
+
+  <p>The harder question is not why they are short. It is why they are <em>those words</em>.</p>
+
+  <div class="mermaid">
+flowchart LR
+  ISS["iss<br/>issuer"] --> STMT["a signed<br/>statement"]
+  STMT --> SUB["sub<br/>subject"]
+  STMT --> AUD["aud<br/>audience"]
+  ISS -.- Q1["who says it"]
+  SUB -.- Q2["about whom"]
+  AUD -.- Q3["to whom"]
+  style STMT fill:#22304a,stroke:#4ea1ff,color:#d6e8ff
+  style ISS fill:#1f3328,stroke:#7ee0a1,color:#d7ffe9
+  style SUB fill:#1f3328,stroke:#7ee0a1,color:#d7ffe9
+  style AUD fill:#1f3328,stroke:#7ee0a1,color:#d7ffe9
+  style Q1 fill:#1a212b,stroke:#2c3849,color:#9fb0c3
+  style Q2 fill:#1a212b,stroke:#2c3849,color:#9fb0c3
+  style Q3 fill:#1a212b,stroke:#2c3849,color:#9fb0c3
+  </div>
+
+  <p><code>iss</code>, <code>sub</code> and <code>aud</code> are not authentication vocabulary. They are the vocabulary of <strong>any signed assertion</strong>: a notary, a subject, a recipient. The triad is older than JWT — SAML spelled the same three out in XML as <code>Issuer</code>, <code>Subject</code> and <code>AudienceRestriction</code>.</p>
+
+  <div class="callout">
+    <strong>Why the obvious words would be wrong.</strong> It is tempting to read <code>sub</code> as "user" and <code>aud</code> as "resource". Both readings break on real cases.
+    <br><br>
+    <code>sub</code> is not always a user: in the client-credentials flow, where one service calls another with no person involved, the subject <em>is an application</em>. And <code>aud</code> is not always a resource: in an <strong>ID token</strong> — the one that tells the front end who signed in — the audience is the client itself. Same claim, opposite role.
+    <br><br>
+    The generic names are not obscurity for its own sake. They are correct in cases where the specific names would lie.
+  </div>
+</section>
+
+<!-- ============ SEVEN ============ -->
+<section id="seven">
+  <h2><span class="num">02</span> The seven names registered by RFC 7519</h2>
+
+  <p>The JWT specification registers exactly seven claim names. Everything else in a token comes from a later layer — OpenID Connect, or the identity provider's own vocabulary.</p>
+
+  <table>
+    <thead><tr><th style="width:70px">Claim</th><th style="width:180px">In full</th><th>What it asserts</th><th style="width:110px">Do we use it</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>iss</code></td><td class="full">issuer</td>
+        <td>The principal that issued the token. Microsoft: identifies the security token service and the tenant of the authenticated user. In v2.0 tokens the URI ends in <code>/v2.0</code>.</td>
+        <td><span class="badge b-ok">checked</span></td>
+      </tr>
+      <tr>
+        <td><code>sub</code></td><td class="full">subject</td>
+        <td>The principal the token is about. Immutable. See §04 — it behaves in a way that is easy to get wrong.</td>
+        <td><span class="badge b-ok">checked</span></td>
+      </tr>
+      <tr>
+        <td><code>aud</code></td><td class="full">audience</td>
+        <td>The recipients the token is intended for. A party that does not find itself listed must reject the token — the specification words this as an obligation on the reader, not as a label on the token.</td>
+        <td><span class="badge b-ok">checked</span></td>
+      </tr>
+      <tr>
+        <td><code>exp</code></td><td class="full">expiration time</td>
+        <td>The time after which the token must not be accepted. Microsoft notes a resource may also reject it earlier.</td>
+        <td><span class="badge b-ok">checked</span></td>
+      </tr>
+      <tr>
+        <td><code>nbf</code></td><td class="full">not before</td>
+        <td>The time before which the token must not be processed. Guards against a token minted for later use.</td>
+        <td><span class="badge b-todo">not required</span></td>
+      </tr>
+      <tr>
+        <td><code>iat</code></td><td class="full">issued at</td>
+        <td>Microsoft's own wording is narrower than the name: "specifies when the <em>authentication</em> for this token occurred".</td>
+        <td><span class="badge b-ok">checked</span></td>
+      </tr>
+      <tr>
+        <td><code>jti</code></td><td class="full">JWT ID</td>
+        <td>A unique identifier for the token, for replay detection. <strong>Entra does not emit it</strong> — it emits <code>uti</code> instead, described in its own documentation as "equivalent to <code>jti</code> in the JWT specification".</td>
+        <td><span class="badge b-no">not emitted</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="muted">Note what is absent from this list: <code>azp</code> and <code>scp</code>. Neither is part of RFC 7519, which is why they feel like a different kind of word. They are.</p>
+</section>
+
+<!-- ============ ENTRA ============ -->
+<section id="entra">
+  <h2><span class="num">03</span> What Entra adds, written out</h2>
+
+  <p>The column on the right is the honest part. Some of these abbreviations are expanded in an official document; others are universally read a certain way without anyone having written it down. Marking the difference costs a column and prevents a confident wrong answer later.</p>
+
+  <table>
+    <thead><tr><th style="width:90px">Claim</th><th style="width:200px">In full</th><th>What Microsoft says it is</th><th style="width:130px">Expansion source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>azp</code></td><td class="full">authorized party</td>
+        <td>"A replacement for <code>appid</code>. The application ID of the client using the token." Present only in v2.0 tokens. May be used in authorization decisions.</td>
+        <td class="src">OpenID Connect</td>
+      </tr>
+      <tr>
+        <td><code>appid</code></td><td class="full">application ID</td>
+        <td>The v1.0 predecessor of <code>azp</code>. Same meaning, older token version.</td>
+        <td class="src">Microsoft</td>
+      </tr>
+      <tr>
+        <td><code>scp</code></td><td class="full">scope</td>
+        <td>"The set of scopes exposed by the application for which the client application has requested (and received) consent." Space-separated. Included only for user tokens.</td>
+        <td class="src">not spelled out</td>
+      </tr>
+      <tr>
+        <td><code>roles</code></td><td class="full">roles</td>
+        <td>Permissions granted to the caller. The client-credentials flow uses these <em>in place of</em> scopes, because there is no user to act for.</td>
+        <td class="src">already a word</td>
+      </tr>
+      <tr>
+        <td><code>oid</code></td><td class="full">object identifier</td>
+        <td>"The immutable identifier for the requestor." Unlike <code>sub</code>, it is the same value across every application in a tenant. Requires the <code>profile</code> scope.</td>
+        <td class="src">Microsoft usage</td>
+      </tr>
+      <tr>
+        <td><code>tid</code></td><td class="full">tenant identifier</td>
+        <td>"Represents the tenant that the user is signing in to." Requires the <code>profile</code> scope.</td>
+        <td class="src">Microsoft usage</td>
+      </tr>
+      <tr>
+        <td><code>sid</code></td><td class="full">session identifier</td>
+        <td>"A unique identifier for a session", generated when a new session is established.</td>
+        <td class="src">Microsoft usage</td>
+      </tr>
+      <tr>
+        <td><code>uti</code></td><td class="full">token identifier</td>
+        <td>Microsoft's own text calls it "token identifier claim, equivalent to <code>jti</code>" without expanding the three letters. It is commonly read as "unique token identifier"; that reading is convention, not documentation.</td>
+        <td class="src">not spelled out</td>
+      </tr>
+      <tr>
+        <td><code>ver</code></td><td class="full">version</td>
+        <td>Either <code>1.0</code> or <code>2.0</code>. Decides how several of the other claims behave, including <code>aud</code>.</td>
+        <td class="src">Microsoft usage</td>
+      </tr>
+      <tr>
+        <td><code>amr</code></td><td class="full">authentication methods references</td>
+        <td>How the subject authenticated: an array such as <code>["mfa","rsa","pwd"]</code>.</td>
+        <td class="src">OpenID Connect</td>
+      </tr>
+      <tr>
+        <td><code>acr</code></td><td class="full">authentication context class reference</td>
+        <td>Microsoft writes the middle of the phrase itself — "the <em>Authentication context class</em> claim" — and uses <code>0</code> or <code>1</code>, v1.0 tokens only.</td>
+        <td class="src">partly Microsoft</td>
+      </tr>
+      <tr>
+        <td><code>azpacr</code></td><td class="full">authorized party — authentication context class reference</td>
+        <td>How the <em>client</em> authenticated. <strong><code>0</code> means a public client</strong>, <code>1</code> a client secret, <code>2</code> a certificate. Our front end will show <code>0</code>, and that is correct rather than a weakness — see §04.</td>
+        <td class="src">composed</td>
+      </tr>
+      <tr>
+        <td><code>wids</code></td><td class="full">— not expanded anywhere</td>
+        <td>Tenant-wide directory roles assigned to the user, as role template GUIDs. This is the claim we decoded to confirm a PIM activation had taken effect before retrying a deployment.</td>
+        <td class="src">not spelled out</td>
+      </tr>
+      <tr>
+        <td><code>aio</code>, <code>rh</code></td><td class="full">— not expanded anywhere</td>
+        <td>Internal to Entra. The documentation says plainly that resources should not use them. We do not.</td>
+        <td class="src">not spelled out</td>
+      </tr>
+      <tr>
+        <td><code>xms_cc</code></td><td class="full">Microsoft extension · client capabilities</td>
+        <td>Whether the client can handle a claims challenge. The <code>xms_</code> prefix marks Microsoft extension claims generally; the expansion of <code>cc</code> follows from the description, not from a definition.</td>
+        <td class="src">inferred</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ OURS ============ -->
+<section id="ours">
+  <h2><span class="num">04</span> The four that matter to us, and one surprise</h2>
+
+  <p>Read as a sentence, the token we expect says: <em>this person authenticated; this client acts for them; within this permission; at this door.</em></p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0"><code>sub</code> — the parent</h3>
+      <p class="muted">The key our account store is built on. Immutable, and never reassigned.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><code>azp</code> — the front end</h3>
+      <p class="muted">The application that asked for the token on the parent's behalf. Not the same thing as the parent.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><code>scp</code> — <code>access_as_parent</code></h3>
+      <p class="muted">What that client may do in the parent's name. Declared by us when we exposed the API.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><code>aud</code> — the panel</h3>
+      <p class="muted">Who the token is addressed to. In v2.0 tokens, always the client ID of the API.</p>
+    </div>
+  </div>
+
+  <div class="callout good">
+    <strong>The surprise: <code>sub</code> is not a user id.</strong> Microsoft's documentation states that the subject is "a pairwise identifier that's unique to a particular application ID. If a single user signs into two different applications using two different client IDs, those applications receive two different values for the subject claim."
+    <br><br>
+    So the same parent, signing into a hypothetical second application in the same directory, would arrive there under a different <code>sub</code>. The two applications cannot correlate her by comparing that field. For a project whose rules say personal data stays local and nothing about her leaves the device unnecessarily, that is a property worth keeping rather than working around.
+    <br><br>
+    <strong>The consequence to remember:</strong> <code>sub</code> is the right key <em>for us</em>, and it is the wrong key to hand to anyone else, because outside our application it means nothing. If we ever need an identifier that is stable across applications in the tenant, that is <code>oid</code>, and it is a different privacy trade — it is exactly what lets applications correlate a person.
+  </div>
+
+  <details class="drill">
+    <summary>Why <code>azpacr = 0</code> is the correct value and not a weakness</summary>
+    <div class="body">
+      <p>The value records how the <em>client</em> authenticated: <code>0</code> public client, <code>1</code> client secret, <code>2</code> certificate. Our front end runs in the parent's browser, where any secret we shipped would be readable by anyone who opens the developer tools. A secret visible to everyone is not a secret, so Entra classifies a single-page application as a public client and refuses to issue it one.</p>
+      <p>That is what the <strong>Single-page application</strong> platform choice declares at registration, and it is why PKCE is required rather than optional. The client is not authenticated; it is <em>identified</em>, and the only thing binding it to something real is the list of registered redirect addresses. That is the reason that list is kept short and exact.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ TRAPS ============ -->
+<section id="traps">
+  <h2><span class="num">05</span> Claims that look useful and are not</h2>
+
+  <p>Three of these carry an explicit warning in Microsoft's own reference. They are the ones most likely to be reached for by someone writing an authorisation check in a hurry.</p>
+
+  <table>
+    <thead><tr><th style="width:170px">Claim</th><th>Why it is tempting</th><th>Why it must not decide anything</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>name</code></td>
+        <td>Human-readable, and right there.</td>
+        <td>"The value can vary, it's mutable, and is for display purposes only. <strong>Don't use this value to make authorization decisions.</strong>"</td>
+      </tr>
+      <tr>
+        <td><code>preferred_username</code></td>
+        <td>Looks like an account name; often an email address.</td>
+        <td>"Since this value is mutable, <strong>don't use it to make authorization decisions.</strong>" An email address can be reassigned; a subject cannot.</td>
+      </tr>
+      <tr>
+        <td><code>aio</code>, <code>rh</code></td>
+        <td>Present in every token, so they look meaningful.</td>
+        <td>Internal to Entra, opaque, and documented as claims "resources shouldn't use".</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>The shape of the mistake.</strong> All three fail the same way: they work perfectly in testing, because in testing the name and the email never change. They fail the first time a parent changes her email address — and they fail <em>open</em> or <em>closed</em> unpredictably, depending on which record changed first. An identifier used for a decision has to be immutable, and only <code>sub</code> and <code>oid</code> are.
+  </div>
+</section>
+
+<!-- ============ CHECKED ============ -->
+<section id="checked">
+  <h2><span class="num">06</span> What the panel checks today, and what it does not</h2>
+
+  <p>From <code>panel/tokens.py</code>, the verifier requires five claims to be present and validates issuer and audience against configured values:</p>
+
+<pre><code>audience=self._audiences,
+options={"require": ["exp", "iat", "iss", "aud", "sub"]},</code></pre>
+
+  <table>
+    <thead><tr><th style="width:120px">Claim</th><th>Status</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td><code>iss</code></td><td><span class="badge b-ok">required and compared</span></td><td>Read from the discovery document, never derived from the authority URL.</td></tr>
+      <tr><td><code>aud</code></td><td><span class="badge b-ok">required and compared</span></td><td>Compared literally against the configured value.</td></tr>
+      <tr><td><code>exp</code>, <code>iat</code></td><td><span class="badge b-ok">required</span></td><td>Expiry enforced by the library.</td></tr>
+      <tr><td><code>sub</code></td><td><span class="badge b-ok">required</span></td><td>Then used as the key for the account lookup, which is a separate decision.</td></tr>
+      <tr><td><code>scp</code></td><td><span class="badge b-todo">not checked</span></td><td>See below. Harmless today, a real gap the moment a second scope exists.</td></tr>
+      <tr><td><code>azp</code></td><td><span class="badge b-todo">not checked</span></td><td>Only one client exists. Checking it would add nothing that <code>aud</code> does not already give.</td></tr>
+      <tr><td><code>nbf</code></td><td><span class="badge b-todo">not required</span></td><td>Present in practice; not demanded.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>The gap, stated plainly.</strong> Microsoft's reference says of <code>scp</code>: "The application should verify that these scopes are valid ones exposed by the application, and make authorization decisions based on the value of these scopes." We do not.
+    <br><br>
+    With a single scope in existence the omission changes no outcome — any token addressed to us carries <code>access_as_parent</code> and nothing else. It becomes a defect the day a second scope is added and someone assumes it separates permissions. It will not, until something reads it.
+  </div>
+
+  <div class="callout">
+    <strong>Two questions, two answers.</strong> Everything above establishes <em>who is knocking</em>. Whether the door opens is decided afterwards, by the account gate, from a record in our own database. A token can be perfectly valid and still be refused, and that is the intended behaviour rather than a rough edge.
+  </div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources">
+  <h2><span class="num">07</span> Sources</h2>
+
+  <p>Every quotation on this page was retrieved from Microsoft Learn while writing it, not recalled. Where an expansion is not documented anywhere, the table says so rather than supplying a plausible one.</p>
+
+  <ul>
+    <li><a href="https://learn.microsoft.com/entra/identity-platform/access-token-claims-reference">Access token claims reference</a> — the full claim table, including the warnings on <code>name</code> and <code>preferred_username</code>, the pairwise behaviour of <code>sub</code>, and the <code>azpacr</code> values.</li>
+    <li><a href="https://learn.microsoft.com/entra/identity-platform/claims-validation">Secure applications and APIs by validating claims</a> — which claims an API is expected to validate, and in what order.</li>
+    <li><a href="https://learn.microsoft.com/azure/attestation/claim-sets">Claim sets</a> — quotes RFC 7519 with the registered names written out: <code>jti</code> (JWT ID), <code>iss</code> (Issuer), <code>iat</code> (Issued At), <code>exp</code> (Expiration Time), <code>nbf</code> (Not Before).</li>
+    <li><a href="https://learn.microsoft.com/troubleshoot/entra/entra-id/app-integration/troubleshooting-signature-validation-errors">Troubleshoot access token signature validation errors</a> — states that the audience is determined by the requested scope.</li>
+    <li><a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">RFC 7519 §4.1.3</a> — the obligation to reject a token whose audience does not include you.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>What is not yet measured.</strong> No real token has been issued against the current directory. The claim <em>values</em> on this page are what the documentation says to expect; the first token we obtain will be decoded and this page corrected if it disagrees. Documented behaviour and observed behaviour are different kinds of fact, and only the second one settles an argument.
+  </div>
+</section>
+
+<footer>
+  Lanternina · docs/token-claims.html · written 7 August 2026 · claims verified against Microsoft Learn on the same day
+</footer>
+
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "dark", themeVariables: { fontSize: "14px" } });
+</script>
+</body>
+</html>

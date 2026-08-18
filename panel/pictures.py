@@ -16,6 +16,12 @@ import threading
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
+# How many pictures the gallery shows at once. The parent picks one of these; anything
+# else is refused rather than rounded, so a hand-typed URL cannot ask for the whole
+# archive in one page.
+PAGE_SIZES = (10, 20, 30, 50)
+DEFAULT_PAGE_SIZE = 20
+
 
 @dataclass(frozen=True, slots=True)
 class PictureRecord:
@@ -42,6 +48,10 @@ class PictureArchive(Protocol):
 
     def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]: ...
 
+    def page(
+        self, household_id: str, *, offset: int, limit: int
+    ) -> tuple[list[PictureRecord], int]: ...
+
     def get(self, household_id: str, picture_id: str) -> tuple[PictureRecord, bytes]: ...
 
 
@@ -55,14 +65,23 @@ class InMemoryPictureArchive:
             self._rows[(record.household_id, record.id)] = (record, image)
         return record
 
-    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+    def _newest_first(self, household_id: str) -> list[PictureRecord]:
         with self._lock:
             rows = [
                 record
                 for (household, _), (record, _image) in self._rows.items()
                 if household == household_id
             ]
-        return sorted(rows, key=lambda r: r.created_at, reverse=True)[:limit]
+        return sorted(rows, key=lambda r: r.created_at, reverse=True)
+
+    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+        return self._newest_first(household_id)[:limit]
+
+    def page(
+        self, household_id: str, *, offset: int, limit: int
+    ) -> tuple[list[PictureRecord], int]:
+        rows = self._newest_first(household_id)
+        return rows[offset : offset + limit], len(rows)
 
     def get(self, household_id: str, picture_id: str) -> tuple[PictureRecord, bytes]:
         with self._lock:
@@ -98,14 +117,25 @@ class BlobPictureArchive:
         )
         return record
 
-    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+    def _newest_first(self, household_id: str) -> list[PictureRecord]:
+        # Blob listing has no ordering and no count, so the prefix is read whole and
+        # sorted here. One household's pictures are the unit, which bounds it.
         rows = [
             _to_record(household_id, blob)
             for blob in self._container.list_blobs(
                 name_starts_with=f"{household_id}/", include=["metadata"]
             )
         ]
-        return sorted(rows, key=lambda r: r.created_at, reverse=True)[:limit]
+        return sorted(rows, key=lambda r: r.created_at, reverse=True)
+
+    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+        return self._newest_first(household_id)[:limit]
+
+    def page(
+        self, household_id: str, *, offset: int, limit: int
+    ) -> tuple[list[PictureRecord], int]:
+        rows = self._newest_first(household_id)
+        return rows[offset : offset + limit], len(rows)
 
     def get(self, household_id: str, picture_id: str) -> tuple[PictureRecord, bytes]:
         blob = self._container.get_blob_client(self._name(household_id, picture_id))

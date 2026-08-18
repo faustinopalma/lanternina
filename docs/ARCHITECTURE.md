@@ -36,6 +36,17 @@ non-goals structural rather than aspirational.
 `shared/` holds types and protocols and nothing else. Everything else depends on it; it
 depends on nothing. No agent imports another agent.
 
+Two names are used throughout, because "the device" and "the cloud" stopped being precise
+once both grew parts:
+
+- **Lanternina Hub** — the machine in the house. It holds the sealing keys, the ledger, the
+  camera and the link to the display. It is the only initiator of work.
+- **Lanternina Cloud** — the Azure tier: the parent dashboard, the stored themes and
+  approvals, and the single door to the models.
+
+The diagram above is the paper loop, which lives entirely in the Hub. The picture loop,
+added later, is described in section 10 and crosses the boundary in the other direction.
+
 ## 2. Why a single model router
 
 `orchestrator/router.py` is the only module permitted to import an Azure SDK. No module
@@ -188,84 +199,190 @@ A worksheet is a piece of paper that a model reads. Anyone who can put text on a
 attempt prompt injection, so recognised text is never concatenated into an instruction
 position. See [THREAT-MODEL.md](THREAT-MODEL.md).
 
-## 9. How the device learns there is something to fetch
+## 9. Work begins in the house
 
-The cloud tier holds pending items and shows them to the parent; the device in the home is
-the authority. Nothing is approved until the device seals it. That leaves one mechanical
-question: **how does the device find out that the parent approved something?**
+The dashboard stores parent-authored content, approvals and configuration. A write ends
+when that state is durable. It does not call a model, put a message on the work queue,
+notify the device, create a timer or schedule processing for later. There is deliberately
+no cloud-to-house wake-up path.
 
-### The device pulls. The cloud never calls the house.
+The server in the home is the sole initiator. From time to time it decides that it wants
+something and opens an outbound request to the API. The rule for when it decides is not
+designed yet; it belongs to local orchestration and will be built separately. The cloud
+answers using the latest persisted state it can see.
 
-Non-negotiable, and it is the same reason Azure Arc and IoT Edge were rejected earlier: an
-inbound channel to a device in a minor's home is a liability whatever protocol it uses. So
-the device opens an outbound request on a timer and asks. No open ports, no port forwarding,
-no tunnel that lets anything dial in — and, incidentally, no NAT to fight.
+### Scale from zero is part of the request
 
-### ✅ Decided: a fixed 10-minute poll
+The API and worker may both be at zero replicas when the home server asks. The request is
+not an interactive user action, so the server can wait through Container Apps activation,
+model inference and content-safety checks. No browser returns `202`, no parent polls for a
+result, and no adolescent sees a loading state caused by cloud cold start.
 
-Nothing here is real-time. The parent approves a worksheet; a few minutes later it can be
-printed. Ten minutes is invisible in that flow.
+Container Apps HTTP ingress has a documented **240 second timeout**. Work expected to fit
+inside it can return on the same request. Longer work needs a correlation id and durable
+result. If the request times out, the home server waits according to its local policy and
+contacts the API again with that correlation id. That is not dashboard polling, and
+completion does not trigger a notification or an inbound call to the house.
 
-Two consequences, stated plainly rather than discovered later:
+This buys actual idle time: dashboard inactivity and device inactivity both allow compute
+to remain at zero. It costs latency on a device-initiated request. That trade is acceptable
+because the person does not experience the request as an immediate action.
 
-- **The API cannot be truly serverless while a device is online.** The Container Apps
-  scale-down stabilisation window is 300 seconds. A poll every 10 minutes therefore wakes
-  the app, keeps it up for ~5 minutes, and lets it sleep for ~5. It idles at roughly half
-  duty cycle rather than at zero, so `minReplicas: 0` is honest but only half-effective.
-- **A long-poll would be worse.** Holding the connection open is still traffic, so the app
-  would never scale down at all. The interval is what buys the idle time.
+### The queue has one permitted origin
 
-### ⚠️ The constraint that shapes this
+The queue remains available for work that must outlive the HTTP process. A message may be
+created only while handling an authenticated request from the home server. Dashboard
+routes do not receive dispatch authority. Whether the first implementation waits on HTTP,
+uses a queue with a correlation id, or combines both is still open; none of those choices
+may change who initiated the work.
 
-The Azure subscriptions available to this project **restrict publicly reachable
-resources**. That is a legitimate governance rule and we design inside it rather than
-around it — but it has a real cost, and pretending otherwise would make this document
-useless to anyone reading it.
+### Public mailbox options, measured 8 August 2026
 
-The natural design would be for the device to ask a *cheap, always-on* service — object
-storage — rather than an *expensive, scale-to-zero* one. Under the restriction, storage is
-private behind a private endpoint, and a device sitting on a home LAN cannot reach a private
-endpoint. So the only thing the device can talk to is the one component that must be
-publicly reachable anyway: the API. Which is precisely the component we wanted to leave
-asleep.
+The tenant policy forces Storage and Cosmos public access off. It does not currently
+apply an equivalent `Deny` or `Modify` policy to Service Bus, IoT Hub, Event Grid or Front
+Door. Two disposable probes confirmed the distinction; both resource groups were deleted
+after the readback.
 
-The constraint does not break anything. It costs roughly half the idle savings.
+| Option | Idle list price | What was verified | Limit next to the claim |
+| --- | ---: | --- | --- |
+| Existing Container Apps API | No additional resource | The home server can wait through scale-from-zero, then contact the API again with a correlation id after the 240 second ingress timeout | Each retry can pay cold-start latency; the durable result remains behind the API |
+| Service Bus Basic | No base charge listed; $0.05 per million operations | A Basic namespace and queue reached `Succeeded` with public access enabled and local/SAS authentication disabled; the public DNS name resolved | No sessions or duplicate detection. Direct device access needs an Entra application identity, preferably with a certificate. Household isolation requires queue-scoped RBAC and, for this design, a response queue per household |
+| IoT Hub F1 | $0; 8,000 messages/day | An F1 hub in Germany West Central reached `Active` with public access enabled and device/module SAS disabled; its public endpoint resolved | Not available in Sweden Central. Cloud-to-device queues hold at most 50 messages per device, with TTL up to 2 days. HTTPS receive should not poll more often than every 25 minutes; MQTT/AMQP can wait on an outbound connection |
+| Event Grid namespace MQTT | $0.04 per throughput-unit hour, about $29.20/month for one unit | Documentation supports X.509, Entra ID and external OAuth clients, persistent sessions and QoS 1 | More protocol and access-control machinery than this PoC needs; it is pub/sub, not a simple request/result queue |
+| Front Door Standard | $35/month base | Public HTTP(S) proxy | No Private Link, so it cannot reach the private origin we are trying to expose |
+| Front Door Premium | $330/month base | Private Link supports Container Apps, APIM, Blob and static website origins | Queue Storage is not a supported direct Private Link origin. Front Door is HTTP(S), not an AMQP or queue endpoint, and it does not support client mTLS |
 
-### 💡 Deferred: the doorbell blob
+Front Door is therefore not a way to make the private Storage queue public. It can expose
+an API that mediates the queue, but Container Apps already provides that API without a
+Front Door base fee.
 
-Recorded here so it is not rediscovered, and so the trade-off is visible to anyone
-evaluating this design.
+### Dashboard startup is a separate path
 
-If a future subscription permits a publicly *routable* storage endpoint — still with no
-anonymous access and no shared keys — the wake-up path becomes almost free:
+Service Bus cannot make the browser's first authenticated read synchronous: the browser
+still needs an HTTP endpoint for account and configuration data. The deployed dashboard
+solves perceived startup without adding an always-on resource:
 
-1. One tiny blob per household, `signal/<householdId>`, holding a revision number and
-   nothing else: `{"rev": 42}`.
-2. When the parent approves something, the API — already warm, because the parent is using
-   it at that moment — increments `rev`.
-3. The device issues a conditional `GET` with `If-None-Match` every couple of minutes.
-   **304 Not Modified** means nothing happened: no compute woke, and the request costs a
-   fraction of a cent.
-4. Only a **200** makes the device call the API, which then wakes because there is genuine
-   work.
+1. Static Web Apps serves the shell immediately.
+2. Page load starts `/health` without awaiting it, overlapping Container Apps activation
+  with MSAL initialization and token acquisition.
+3. Once MSAL finds a session, the browser shows a neutral authenticated shell while
+  `/api/me` loads account data.
 
-The API would sleep whenever nobody is doing anything, and the polling interval could drop
-from ten minutes to two without costing more.
+Measured on 8 August 2026 with the API at zero replicas, `/health` took **25.99 seconds**
+from cold and **0.21 seconds** immediately afterwards. The warm-up runs only when a browser
+opens the dashboard, so compute can still stay at zero when nobody connects. It is allowed
+to wake the dashboard API; it does not call a model, enqueue work or signal the house.
 
-**Why it is safe to expose:** `allowBlobPublicAccess=false`, `allowSharedKeyAccess=false`,
-and an Entra token required on every request, from an identity holding
-`Storage Blob Data Reader` on that container alone. The payload is an opaque household id
-and an integer — a total compromise of the blob would reveal only *"household X has
-something pending"*. No name, no content, nothing about her.
+For the first implementation, keep the existing API and correlation-id retry because it
+matches the functional contract with no new identity plane. If the 240 second boundary or
+repeated cold starts become a measured problem, test Service Bus Basic next. IoT Hub F1 is
+the stronger candidate if per-device provisioning, X.509 identity and fleet messaging are
+needed together; adopting it only as a queue would buy more lifecycle machinery than the
+PoC currently uses.
 
-**Revisit when:** the deployment subscription allows a storage account with
-`publicNetworkAccess=Enabled`, **or** the Container Apps idle cost measurably exceeds the
-free grant.
+## 10. The picture loop
 
-Do not build it before then. It is a second reachable surface and a second thing to
-authenticate, bought to solve a cost problem that has not yet been shown to exist.
+The display shows a picture that nobody in the house drew. The loop has four steps and one
+initiator:
 
-## 10. What is not built yet
+```
+Hub timer (hourly) ──▶ POST /api/device/{household}/paint ──▶ Cloud
+                                                               │
+                            picture bytes ◀── screening ◀── model
+                                 │
+            install screen.bmp (atomic replace)
+                                 │
+        display asks the Hub ──▶ BYOS server serves those bytes
+```
+
+The Hub asks; the Cloud never calls the house. The pause (22:00–07:00 by default) and the
+spacing between pictures are Hub-side decisions, so a sleeping house makes no requests for
+pictures at all.
+
+Painting happens in the Cloud rather than the house because the container already holds a
+managed identity with access to the models, and nothing in the house then needs a
+long-lived credential. The cost is stated where it is paid: a picture painted in the Cloud
+carries no parent-approval seal, because that key lives on the device and stays there. Its
+subject is a theme the parent approved and its bytes are screened, but the seal ceremony
+is genuinely absent. That is why this path is only ever used for pictures, never for words.
+
+A refusal from the safety gate returns `409`, and an unavailable Cloud returns `503` or
+nothing at all. `devices/pull_picture.py` treats both as ordinary: it keeps the picture
+already on the wall. Going blank is never the answer to a failure upstream.
+
+### The link to the display is deliberately dumb
+
+The display is a battery e-paper device running stock firmware. It wakes, asks the Hub what
+to show, downloads a BMP, and sleeps. Two details in `devices/trmnl_byos.py` exist because
+of measurements rather than preference:
+
+- **The picture URL is built from the address the display just reached**, read off the
+  socket of the request being served, not from a configured hostname. The hostname was
+  `lanternina.local`, which forced an mDNS lookup at every download; on 17 August 2026 that
+  lookup failed often enough that the server never saw the request arrive. An address the
+  device has already connected on cannot fail to resolve, and it follows DHCP without a
+  setting to keep in sync.
+- **The mains cadence is 60 seconds.** It was 10, which had the display associating to the
+  access point roughly 8,600 times a day. Sixty seconds still feels immediate to anyone
+  watching and costs a sixth of the airtime.
+
+What the link does *not* do is as deliberate: the Hub cannot push to the display, cannot
+wake it, and holds no way to reach it between wakes. A display that stops asking simply
+keeps its last picture — which is the open risk recorded at the end of this document.
+
+## 11. Counting what the models cost
+
+The Cloud panel is the only place where a model call happens on behalf of a household, so
+it is the only place that can attribute a cost to one. Azure's own telemetry cannot do it:
+from the platform's view every call comes from the same managed identity, so resource-level
+diagnostics give totals, never per-household attribution.
+
+What each call cost is read off the response rather than inferred from a price list. Three
+figures measured on 17 August 2026 are the reason `ModelUsage` has the fields it has:
+
+| Reported | Measured | Why it matters |
+| --- | --- | --- |
+| image usage | 12 input, 196 output tokens for 1024×1024 | a picture is billed in tokens, not per picture |
+| `quality` | `"low"`, echoed back | we send none, so we are on a default nobody chose |
+| `cached_tokens` | 2,816 of 3,325 on an identical second call | cache reads are billed at a discount |
+| `reasoning_tokens` | 66 of 101 output tokens | two thirds of the output never appears in the text |
+| `apim-request-id` | present on every response | the key to reconciling our figures with Azure's bill |
+
+`panel/usage.py` holds the event and the cap; `CosmosUsageStore` writes one append-only
+document per call to the `usage` container. Each event carries its own id, so a replayed
+write cannot count twice. A call the safety gate refused is still counted, because it was
+still paid for. A failed write is logged and swallowed: the picture was already paid for,
+and failing there would spend the money and deliver nothing.
+
+The cap is a monthly count of paid calls, defaulting to 1,000 — an hourly picture is at
+most 744 a month, which leaves room for a parent asking for a few by hand while still
+stopping a loop that has lost its mind. Reaching it returns `429`, which the hub already
+treats like the other calm refusals: the display keeps the picture it has.
+
+### Where the analysis goes, when it goes anywhere
+
+Not built. The direction is recorded so the first implementation does not re-derive it.
+
+Cosmos is the ledger, because a limit has to be checked inside the request it might refuse.
+A Log Analytics workspace is the analytical surface: Fabric can read one directly — a KQL
+queryset runs cross-service queries against it, and the Mirror Azure Monitor feature exposes
+its tables to Eventhouse and Lakehouse through OneLake shortcuts without copying the data.
+
+That decides the shape. Because the data stays in Azure Monitor, Fabric adds no second
+ingestion charge and bills only for the capacity used to query it, so a Fabric capacity can
+be paused between analyses without losing anything. Streaming into an Eventhouse through
+Eventstream would invert that: the capacity would become part of the ingestion path, and
+pausing it would drop events.
+
+API Management is deliberately deferred. It buys a limit enforced outside our own code,
+which matters at multi-tenant scale and not at one house. The event schema is what keeps
+that option cheap: whoever produces it can change without disturbing anything downstream.
+
+The limit next to the claim: Mirror Azure Monitor is in public preview, so its billing and
+permissions may change; none of the analytical half is deployed; and only the image path
+reports usage, because it is the only path the Cloud panel takes today.
+
+## 12. What is not built yet
 
 Honest status, so nobody mistakes scaffolding for a system:
 
@@ -276,13 +393,18 @@ Honest status, so nobody mistakes scaffolding for a system:
 | boundary tests | written and mutation-checked |
 | `printing/` renderer | written, and checked on real paper: the 50 mm ruler measures 50 mm |
 | `tools/check_scan.py` read-back | written, and proven end to end on a scanned sheet |
-| `orchestrator/router.py` | written, with a stub backend; never called with real credentials |
+| `orchestrator/router.py` | written, and called with real credentials from the Cloud panel |
 | `infra/` cloud tier | deployed and verified — see [DEPLOY.md](DEPLOY.md) |
-| orchestrator safety gate, ledger, planner | not written |
-| `agents/` content, vision, scheduling, print | not written |
+| `panel/` parent dashboard and API | written and deployed: proposals, themes, pictures, devices |
+| safety gate | written, and on the path of everything the Cloud paints |
+| `devices/` Hub services | written: BYOS display server, hourly picture pull, status push |
+| picture archive and restore | written: blob-backed, restores byte-identical |
+| approval ledger, planner | not written |
+| `agents/` vision, scheduling, print | not written |
 | `vision/` capture, ArUco, rectify, QR, cell read | not written as a package; the logic exists in `tools/` |
-| `panel/` parent UI, API, worker | not written — the container apps run a placeholder image |
-| `firmware/` e-paper, LCD, buttons | not written |
+| usage accounting and per-household cap | written and deployed — see section 11 |
+| analytical surface for those figures | not written — direction in section 11 |
+| `firmware/` | not written, and may never be: the display runs stock firmware and the Hub serves it |
 
 Stubs in this repository raise `NotImplementedError` or return obviously fake data. If
 something looks like it works, it works.

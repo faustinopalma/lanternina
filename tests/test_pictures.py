@@ -113,14 +113,40 @@ def test_an_unknown_picture_is_a_404_not_a_crash() -> None:
     assert response.status_code == 404
 
 
-def test_the_history_is_paged_and_the_page_size_is_bounded() -> None:
-    """An hourly picture makes about 740 a month, so the gallery asks for a page at a time."""
+def test_the_history_is_paged_and_the_page_size_is_one_of_the_offered_ones() -> None:
+    """A picture every few minutes makes thousands a month, so the gallery asks for a page
+    at a time and the parent says how big a page is."""
     client = client_for()
     household = household_of(client)
-    for index in range(5):
-        archive(client, household, f"pic_{index}")
+    for index in range(25):
+        archive(client, household, f"pic_{index:02d}")
 
-    assert len(client.get("/api/pictures?limit=2", headers=headers()).json()["pictures"]) == 2
-    # Neither a silly request nor a greedy one is honoured as asked.
-    assert len(client.get("/api/pictures?limit=0", headers=headers()).json()["pictures"]) == 1
-    assert len(client.get("/api/pictures?limit=9999", headers=headers()).json()["pictures"]) == 5
+    first = client.get("/api/pictures?page=1&perPage=10", headers=headers()).json()
+    assert len(first["pictures"]) == 10
+    assert (first["page"], first["pages"], first["total"]) == (1, 3, 25)
+    assert first["pageSizes"] == [10, 20, 30, 50]
+
+    last = client.get("/api/pictures?page=3&perPage=10", headers=headers()).json()
+    assert len(last["pictures"]) == 5
+    assert not {row["id"] for row in first["pictures"]} & {row["id"] for row in last["pictures"]}
+
+    # A size nobody offered falls back to the default rather than being honoured.
+    assert client.get("/api/pictures?perPage=500", headers=headers()).json()["perPage"] == 20
+    assert client.get("/api/pictures?perPage=0", headers=headers()).json()["perPage"] == 20
+
+
+def test_a_page_past_the_end_shows_the_last_one_rather_than_nothing() -> None:
+    """Choosing a larger page while standing on the last one must not empty the gallery."""
+    client = client_for()
+    household = household_of(client)
+    for index in range(12):
+        archive(client, household, f"pic_{index:02d}")
+
+    answer = client.get("/api/pictures?page=9&perPage=10", headers=headers()).json()
+    assert answer["page"] == 2
+    assert len(answer["pictures"]) == 2
+
+
+def test_an_empty_archive_still_has_one_page() -> None:
+    answer = client_for().get("/api/pictures", headers=headers()).json()
+    assert (answer["pictures"], answer["page"], answer["pages"]) == ([], 1, 1)

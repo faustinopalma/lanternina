@@ -2,8 +2,9 @@
 
 ## 1. Quiet hours — built
 
-**What it is.** The picture changes every hour, but not at night. The parent sets both ends
-of the pause, and how often the picture changes when the pause is over.
+**What it is.** The picture changes on a spacing the parent chooses, but not at night. The
+parent sets both ends of the pause, to the minute, and how many minutes pass between one
+picture and the next.
 
 **Why.** E-paper emits no light, so it does not disturb sleep — but a night-time update
 spends battery on an image nobody will look at, and battery is the scarce resource. It is
@@ -16,10 +17,15 @@ inside the quiet window it does not ask for a picture at all. Spacing is enforce
 the screen file's own timestamp, so there is no second copy of the truth. If the panel
 cannot be reached the hub keeps working to its last known shape.
 
-**What it cost.** The cadence cannot be finer than the timer that asks, which fires once an
-hour, so the panel offers 1 to 24 hours and not half an hour. The comparison also needs a
-ten-minute tolerance: systemd adds up to five minutes of jitter, and a strict comparison
-skips a turn and silently doubles the spacing the parent chose.
+**What it cost.** The spacing is a count of minutes and both ends of the pause are written
+to the minute, so the timer had to become the thing that can honour them: it fires once a
+minute instead of once an hour. That is one small request to the panel per minute when no
+picture is due — 1440 a day, computed from the period and not measured — which is what a
+spacing of thirteen minutes costs. The comparison keeps a tolerance, now thirty seconds
+rather than ten minutes: without one, a run landing a second early skips its turn and
+thirteen minutes silently becomes fourteen. One limit is not ours to fix: on battery the
+display wakes about every ten minutes, so below that spacing some pictures are generated
+and nobody sees them. The panel says so next to the field rather than refusing the choice.
 
 ---
 

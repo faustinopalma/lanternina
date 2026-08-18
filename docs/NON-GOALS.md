@@ -4,10 +4,10 @@ This file lists things Lanternina will not do. They are not missing features, no
 roadmap, and not subject to "it would be easy to add". Several of them would be easy to
 add — that is precisely why they are written down.
 
-Lanternina is built for one teenager with significantly below-average cognitive
-functioning, curated day to day by her parent. Every item below is here because doing it
-would harm that specific person, or would quietly turn the system into something other
-than what her parent agreed to.
+Lanternina is built for adolescents across cognitive profiles, including adolescents with
+cognitive disabilities and adolescents who prefer frequent novelty. A parent curates what
+the system offers. Every item below prevents the system from turning differences in
+preference, communication or performance into labels about the person.
 
 If you fork this project, these are the lines that make it Lanternina rather than a
 different project with the same name.
@@ -53,6 +53,9 @@ The only trigger is a physical button press.
   Difficulty and pacing do not change silently in response to how she performed. Silent
   adaptation is assessment under another name: it builds a model of her ability and acts on
   it, without anyone having agreed to that.
+- **No inferred boredom or attention profile.** Content variety is an explicit setting.
+  The system may rotate topics and formats within that setting, but it does not interpret
+  stopping, speed, errors or repeated choices as evidence about attention or motivation.
 - **No comparison** to peers, to norms, to age expectations, or to her own past.
 
 Vision output describes ink on paper: "cell 3 is empty", "cell 4 has a mark". What that
@@ -80,8 +83,12 @@ consequence and no follow-up.
   to think about this" are rejected, not prioritised.
 - **No agent self-approval.** Nothing an agent generates reaches her without the parent
   greenlighting it.
-- **No hidden adaptation.** If the system thinks something should change, it proposes it in
-  words the parent can read and refuse.
+- **No hidden adaptation.** Interests, difficulty, tone, reading support and content
+  variety are explicit settings. Changes outside those settings are proposed in words the
+  parent and adolescent can read and refuse.
+- **No dashboard-triggered work.** A parent write persists state and returns. It does not
+  call a model, enqueue generation, notify or wake the home server, or schedule work for
+  later. Only the home server can initiate processing, when it chooses to make a request.
 
 ## Data does not leave the house
 

@@ -1,8 +1,8 @@
 # Lanternina
 
-A home system that generates daily activity — interactive games, printed exercises,
-routine prompts — for a teenager with cognitive disabilities. Her parent steers it, and
-the design does not try to remove that role.
+A home system that generates activities — interactive games, printed exercises and
+routine prompts — for adolescents across cognitive profiles. A parent steers it, and the
+design does not try to remove that role.
 
 It runs on a Linux mini-PC in the house, drives e-paper displays, an LCD, physical buttons
 and a printer over ESP32 microcontrollers, and reads completed worksheets back through a
@@ -11,13 +11,21 @@ on the device. Offline means serving content the parent has already approved.
 
 ## The point
 
-Software for this situation tends to be either clinical, which assumes a diagnosis, or
-made for small children, which does not fit a teenager. So there is usually nothing, and
-the load falls on a parent.
+Adolescents differ in what holds their interest, how much novelty they want and what
+presentation helps them start. These differences do not require a diagnosis. Lanternina
+uses explicit settings for interests, difficulty, reading support and content variety.
+It can change topics and formats within those settings without constructing an estimate
+of ability, boredom or attention.
 
 Lanternina does not try to reduce that load by removing the parent. It works when the
 parent uses it actively — reviewing, correcting, deciding what it should offer this week.
 Anything an agent produces is a proposal until a parent approves it.
+
+The dashboard is not a remote control for the house. Adding material or changing a
+setting only stores the new state. It does not generate content, enqueue work, notify the
+device or make anything happen immediately. The server in the home decides when to ask
+for work. Its request may remain open while the cloud scales from zero and computes the
+answer; no person is waiting in an interactive flow.
 
 Two consequences run through the codebase:
 
@@ -25,9 +33,9 @@ Two consequences run through the codebase:
   nudges triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
   to add here and would harm her, which is why it is a written rule rather than a matter of
   judgement.
-- Nothing it produces is a judgement about her. No scores, no grades, no ability estimates,
+- Nothing it produces is a judgement about the adolescent. No scores, no grades, no ability estimates,
   no progress trends, no diagnosis-adjacent inference. Vision output describes ink on
-  paper; what that means is for her parent to decide.
+  paper; what that means is for the adolescent and parent to decide.
 
 [docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why. It is worth
 reading before contributing.
@@ -68,7 +76,7 @@ than the test.
 
 ## Layout
 
-```
+```text
 shared/         types and protocols every package depends on; depends on nothing itself
 orchestrator/   planner + the three things nothing else may hold:
                   router.py    — the only door to a model backend

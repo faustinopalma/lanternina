@@ -1,0 +1,13 @@
+[Unit]
+Description=A new picture as often as the parent asked, while the house is awake
+
+[Timer]
+# Once a minute, because the spacing is the parent's to choose to the minute: an hourly
+# timer cannot honour thirteen. When the picture is not due the run is one small GET to
+# the panel, which is what the finer choice costs.
+OnCalendar=*:*:00
+AccuracySec=10s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

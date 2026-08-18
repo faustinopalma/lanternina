@@ -85,7 +85,7 @@
 
 <header class="hero">
   <h1>Lanternina</h1>
-  <div class="sub">A home system that keeps one teenager with cognitive disabilities engaged, <strong>with her parent steering</strong>. Content is generated in the cloud and printed on paper; her handwriting is read back by a scanner. Nothing reaches her that a parent has not approved — and the approval is sealed <em>in the house</em>, not in the cloud.</div>
+  <div class="sub">A home system that offers activities to adolescents across cognitive profiles, <strong>with a parent steering</strong>. Interests, difficulty, reading support and content variety are explicit settings. Content is generated in the cloud and printed on paper; handwriting is read back by a scanner. Nothing reaches the adolescent that a parent has not approved.</div>
   <div class="pill">Azure · swedencentral (+ westeurope for the Static Web App) · Cosmos DB serverless · Container Apps</div>
   <div class="doclinks">
     <a class="primary" href="ARCHITECTURE.md">ARCHITECTURE.md (the reasoning) →</a>
@@ -132,12 +132,17 @@
   <div class="callout">
     <strong>Stopping is a legitimate outcome.</strong> Every flow can be abandoned at any point, with no penalty and no follow-up prompt. <code>SessionOutcome.ABANDONED</code> is a normal value, not a failure.
   </div>
+
+  <div class="callout good">
+    <strong>Variety is chosen, not inferred.</strong> Lanternina can rotate topics and formats frequently for an adolescent who wants novelty, or keep a familiar structure. It never derives that choice from speed, errors, stopping, presumed boredom or attention.
+  </div>
 </section>
 
 <!-- ============ SHAPE ============ -->
 <section id="shape">
   <h2><span class="num">02</span> The shape</h2>
   <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches her is made of paper.</p>
+  <p>Two names are used from here on, because <em>the device</em> and <em>the cloud</em> stopped being precise once both grew parts. <strong>Lanternina Hub</strong> is the machine in the house: sealing keys, ledger, camera, and the link to the display. <strong>Lanternina Cloud</strong> is the Azure tier: the parent dashboard, the stored themes and approvals, and the single door to the models.</p>
 
   <div class="mermaid">
 flowchart TB
@@ -164,14 +169,14 @@ flowchart TB
     end
 
     PAR -->|"authenticated"| SWA
-    SWA -->|"fetch"| API
-    API -->|"enqueue long work"| Q
+    SWA -->|"state reads / writes only"| API
+    DEV -->|"request when locally chosen"| API
+    API -->|"dispatch for this request only"| Q
     Q --> WRK
     WRK -->|"prompts only"| MOD
     API --- COS
     WRK --- COS
 
-    DEV -->|"outbound poll · every 10 min"| API
     DEV --- PROF
     DEV -->|"seals the approval"| PRN
     PRN --> SHEET
@@ -198,6 +203,10 @@ flowchart TB
   <div class="callout">
     <strong>Read the arrows into the house.</strong> There are none. The device opens every connection itself, outbound. No open ports, no port forwarding, no tunnel that lets anything dial in — the same reason Azure Arc and IoT Edge were both rejected earlier: an inbound control channel to a device in a minor's home is a liability whatever protocol it uses.
   </div>
+
+  <div class="callout good">
+    <strong>A dashboard write stops at storage.</strong> Adding content, approving it or changing configuration does not call a model, enqueue work, notify the house or schedule anything. The server in the home starts work only when its own local logic chooses to make a request.
+  </div>
 </section>
 
 <!-- ============ SEAL ============ -->
@@ -217,13 +226,15 @@ sequenceDiagram
     participant D as Device (home)
     participant G as The learner
 
+    D->>C: outbound request, chosen locally
     C->>C: agent proposes content
     Note over C: a Proposal has no "approved" field.<br/>It is inert by construction.
     C->>C: content safety screens it
+    C-->>D: no deliverable item yet
     P->>C: reviews, taps approve
-    C->>C: records the intention, signed by the cloud
-    D->>C: outbound poll (every 10 min)
-    C-->>D: "household H has a pending intention"
+    C->>C: persists the decision; starts no work
+    D->>C: a later outbound request, chosen locally
+    C-->>D: returns the approved assertion
     D->>D: verifies the parent assertion
     D->>D: mints the PARENT_APPROVAL seal 🔑
     Note over D: only now does an ApprovedItem exist
@@ -309,18 +320,18 @@ flowchart TB
 <!-- ============ CLOUD ============ -->
 <section id="cloud">
   <h2><span class="num">05</span> The cloud tier, as deployed</h2>
-  <p>34 resources across five resource groups, entirely from Bicep. Nothing tenant-specific appears anywhere in the templates, which is what makes moving to a different tenant a redeploy rather than a migration.</p>
+  <p>20 resources across three resource groups, entirely from Bicep. Counted with <code>az resource list</code> on 7 August 2026; the numbers below are that count, not an estimate.</p>
 
   <table>
-    <thead><tr><th>Resource group</th><th>Holds</th><th>Lifetime</th></tr></thead>
+    <thead><tr><th>Resource group</th><th>Holds</th><th>Count</th><th>Lifetime</th></tr></thead>
     <tbody>
-      <tr><td><code>…-core</code></td><td>VNet, private DNS zones, Log Analytics, Container Registry, two managed identities</td><td>Long. Survives app redeploys.</td></tr>
-      <tr><td><code>…-data</code></td><td>Cosmos DB serverless, storage queue, private endpoints</td><td><span class="badge b-no">Longest — deleting it loses households</span></td></tr>
-      <tr><td><code>…-app</code></td><td>Container Apps environment, <code>api</code> and <code>worker</code></td><td>Disposable. Safe to delete and recreate.</td></tr>
-      <tr><td><code>…-web</code></td><td>Static Web App</td><td>Independent.</td></tr>
-      <tr><td><code>…-identity</code></td><td>Entra External ID directory</td><td>Migrates differently from everything else.</td></tr>
+      <tr><td><code>…-core</code></td><td>VNet, private DNS zones, Log Analytics, Container Registry, two managed identities</td><td>9</td><td>Long. Survives app redeploys.</td></tr>
+      <tr><td><code>…-data</code></td><td>Cosmos DB serverless, storage queue, private endpoints</td><td>7</td><td><span class="badge b-no">Longest — deleting it loses households</span></td></tr>
+      <tr><td><code>…-app</code></td><td>Container Apps environment, <code>worker</code>, Static Web App</td><td>4</td><td>Disposable. Safe to delete and recreate.</td></tr>
     </tbody>
   </table>
+
+  <p class="muted">Azure adds a fourth group of its own, <code>ME_cae-…</code>, holding the infrastructure behind the Container Apps environment. It is created and deleted by the platform, not by our template.</p>
 
   <p class="muted">Resource groups are split by <strong>lifetime</strong>, not by layer, so that redeploying the application never puts the data at risk.</p>
 
@@ -380,19 +391,17 @@ flowchart TB
   <h2><span class="num">07</span> Decisions, and what they cost</h2>
   <p>Recorded here rather than discovered later. A design that only documents its happy path is not documentation.</p>
 
-  <h3>The device polls every 10 minutes</h3>
-  <p>Nothing here is real-time: the parent approves a worksheet, and a few minutes later it can be printed. Ten minutes is invisible in that flow — and it is the interval that buys the idle time, because a long-poll would hold the connection open and the app would never scale down at all.</p>
+  <h3>Work begins on a request from the house</h3>
+  <p>The dashboard persists state and returns. It never wakes compute on behalf of the device. The server in the home decides when to ask for something; the frequency and decision rule are intentionally still open.</p>
 
-  <div class="callout warn">
-    <strong>The constraint that shapes this.</strong> The Azure subscriptions available to the project <strong>restrict publicly reachable resources</strong>. The natural design would have the device ask cheap always-on object storage instead of expensive scale-to-zero compute — but under the restriction, storage sits behind a private endpoint that a device on a home LAN cannot reach. So the only thing the device can talk to is the one component that must be public anyway: the API. Which is precisely the component we wanted to leave asleep.
-    <br /><br />
-    <strong>It does not break anything. It costs roughly half the idle savings.</strong>
+  <div class="callout good">
+    <strong>Cold start is machine-facing latency.</strong> API and worker can both be at zero. The home server keeps its request open while Container Apps activates and the cloud computes. No parent or adolescent is waiting on that request, so the interface does not need a spinner, a completion notification or a follow-up prompt.
   </div>
 
-  <div class="card">
-    <h3 style="margin-top:0">💡 Deferred: the doorbell blob</h3>
-    <p class="muted">If a future subscription permits a publicly <em>routable</em> storage endpoint — still with no anonymous access and no shared keys — the device could issue a conditional <code>GET</code> against a per-household revision blob. A <strong>304 Not Modified</strong> means nothing happened: no compute wakes, and the request costs a fraction of a cent. A total compromise of that blob would reveal only <em>"household X has something pending"</em>.</p>
-    <p class="muted"><strong>Revisit when</strong> the subscription allows it, or when idle cost measurably exceeds the free grant. <strong>Do not build it before then</strong> — it is a second reachable surface bought to solve a cost problem not yet shown to exist.</p>
+  <p class="muted">Container Apps HTTP ingress has a documented <strong>240 second timeout</strong>. Longer work uses a correlation id and durable result. If the request expires, the home server waits according to its local policy and contacts the API again. Completion still does not call the house or notify a person.</p>
+
+  <div class="callout warn">
+    <strong>One origin for queued work.</strong> If the implementation uses the queue, a message may be created only while handling an authenticated home-server request. Dashboard routes do not receive dispatch authority.
   </div>
 
   <h3>Cold start, measured rather than estimated</h3>
@@ -403,7 +412,7 @@ flowchart TB
       <tr><td>Warm replica</td><td><strong>0.25 s</strong></td><td></td></tr>
     </tbody>
   </table>
-  <p class="muted">Mitigated by firing a warm-up request the moment the parent opens the page, so the container boots while they are still reading. To be re-measured with a small image in the in-region registry before <code>minReplicas: 0</code> is confirmed.</p>
+  <p class="muted">A second measurement on 8 August 2026 found 25.99 s from zero and 0.21 s warm. Static Web Apps now renders the shell immediately and starts <code>/health</code> while MSAL initializes. This wakes only the dashboard API when someone opens the page; it does not enqueue work or signal the house.</p>
 </section>
 
 <!-- ============ STATUS ============ -->
@@ -419,12 +428,16 @@ flowchart TB
       <tr><td><code>printing/</code> renderer</td><td><span class="badge b-ok">proven on real paper</span></td></tr>
       <tr><td><code>tools/check_scan.py</code> read-back</td><td><span class="badge b-ok">proven end to end</span></td></tr>
       <tr><td><code>infra/</code> cloud tier</td><td><span class="badge b-ok">deployed and verified</span></td></tr>
-      <tr><td><code>orchestrator/router.py</code></td><td><span class="badge b-todo">written · never called with real credentials</span></td></tr>
-      <tr><td>safety gate, ledger, planner</td><td><span class="badge b-no">not written</span></td></tr>
-      <tr><td><code>agents/</code> content, vision, scheduling, print</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td><code>orchestrator/router.py</code></td><td><span class="badge b-ok">called with real credentials from the Cloud panel</span></td></tr>
+      <tr><td><code>panel/</code> parent dashboard and API</td><td><span class="badge b-ok">deployed · proposals, themes, pictures, devices</span></td></tr>
+      <tr><td>safety gate</td><td><span class="badge b-ok">on the path of everything the Cloud paints</span></td></tr>
+      <tr><td><code>devices/</code> Hub services</td><td><span class="badge b-ok">display server · hourly picture pull · status push</span></td></tr>
+      <tr><td>picture archive and restore</td><td><span class="badge b-ok">restores byte-identical</span></td></tr>
+      <tr><td>approval ledger, planner</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td><code>agents/</code> vision, scheduling, print</td><td><span class="badge b-no">not written</span></td></tr>
       <tr><td><code>vision/</code> as a package</td><td><span class="badge b-todo">logic exists in <code>tools/</code></span></td></tr>
-      <tr><td><code>panel/</code> parent UI, api, worker</td><td><span class="badge b-no">not written · containers run a placeholder</span></td></tr>
-      <tr><td><code>firmware/</code> e-paper, LCD, buttons</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td>usage accounting and per-household cap</td><td><span class="badge b-ok">deployed · tokens, cache reads, reasoning, request id</span></td></tr>
+      <tr><td><code>firmware/</code></td><td><span class="badge b-todo">may never be needed · the display runs stock firmware</span></td></tr>
     </tbody>
   </table>
 

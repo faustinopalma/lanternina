@@ -7,39 +7,65 @@ the room rather than on us.
 The parent writes it here and nothing happens. The hub reads it on its next run and
 decides for itself, which is the only order that keeps the panel unable to reach into the
 house.
+
+Everything is minutes past midnight, in one unit: the two ends of the pause and the
+spacing between pictures are all clock arithmetic, and a second unit is the usual way that
+goes wrong. What crosses the API is "HH:MM" for the ends and a count of minutes for the
+spacing.
 """
 
 from __future__ import annotations
 
+import re
 import threading
 import time
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
-# The hub asks once an hour, so anything finer cannot be honoured and is not offered.
-CADENCE_CHOICES = (1, 2, 3, 4, 6, 8, 12, 24)
+# The hub's timer fires once a minute, so a minute is the finest spacing it can honour.
+# Above a day the setting stops being a rhythm.
+MIN_CADENCE_MINUTES = 1
+MAX_CADENCE_MINUTES = 24 * 60
 
-DEFAULT_QUIET_FROM_HOUR = 22
-DEFAULT_QUIET_UNTIL_HOUR = 7
-DEFAULT_CADENCE_HOURS = 1
+DEFAULT_QUIET_FROM_MINUTES = 22 * 60
+DEFAULT_QUIET_UNTIL_MINUTES = 7 * 60
+DEFAULT_CADENCE_MINUTES = 60
+
+_CLOCK = re.compile(r"^(\d{1,2}):(\d{2})$")
+
+
+def clock(minutes: int) -> str:
+    """Minutes past midnight as the parent wrote them: 1350 is "22:30"."""
+    return f"{minutes // 60:02d}:{minutes % 60:02d}"
+
+
+def minutes_of(value: Any, name: str) -> int:
+    """Parse "HH:MM". Raises ValueError if it is not a time on the clock."""
+    if not isinstance(value, str) or not _CLOCK.match(value.strip()):
+        raise ValueError(f"{name} is written as HH:MM")
+    hour, minute = (int(part) for part in value.strip().split(":"))
+    if hour > 23 or minute > 59:
+        raise ValueError(f"{name} must be a time between 00:00 and 23:59")
+    return hour * 60 + minute
 
 
 @dataclass(frozen=True, slots=True)
 class Rhythm:
     household_id: str
-    quiet_from_hour: int = DEFAULT_QUIET_FROM_HOUR
-    quiet_until_hour: int = DEFAULT_QUIET_UNTIL_HOUR
-    cadence_hours: int = DEFAULT_CADENCE_HOURS
+    quiet_from_minutes: int = DEFAULT_QUIET_FROM_MINUTES
+    quiet_until_minutes: int = DEFAULT_QUIET_UNTIL_MINUTES
+    cadence_minutes: int = DEFAULT_CADENCE_MINUTES
     updated_at: float = 0.0
     updated_by: str = ""
 
     def to_public(self) -> dict[str, Any]:
         return {
-            "quietFromHour": self.quiet_from_hour,
-            "quietUntilHour": self.quiet_until_hour,
-            "cadenceHours": self.cadence_hours,
+            "quietFrom": clock(self.quiet_from_minutes),
+            "quietUntil": clock(self.quiet_until_minutes),
+            "cadenceMinutes": self.cadence_minutes,
             "updatedAt": self.updated_at,
-            "cadenceChoices": list(CADENCE_CHOICES),
+            "minCadenceMinutes": MIN_CADENCE_MINUTES,
+            "maxCadenceMinutes": MAX_CADENCE_MINUTES,
         }
 
 
@@ -67,39 +93,36 @@ class InMemoryRhythmStore:
             return rhythm
 
 
-def _clean_hour(value: Any, name: str) -> int:
-    if isinstance(value, bool) or not isinstance(value, int):
-        raise ValueError(f"{name} must be a whole hour")
-    if not 0 <= value <= 23:
-        raise ValueError(f"{name} must be between 0 and 23")
-    return value
-
-
 def clean_rhythm(
     household_id: str,
     *,
-    quiet_from_hour: Any,
-    quiet_until_hour: Any,
-    cadence_hours: Any,
+    quiet_from: Any,
+    quiet_until: Any,
+    cadence_minutes: Any,
     updated_by: str = "",
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
-    if isinstance(cadence_hours, bool) or cadence_hours not in CADENCE_CHOICES:
-        raise ValueError(f"the cadence must be one of {list(CADENCE_CHOICES)} hours")
+    if isinstance(cadence_minutes, bool) or not isinstance(cadence_minutes, int):
+        raise ValueError("the spacing is a whole number of minutes")
+    if not MIN_CADENCE_MINUTES <= cadence_minutes <= MAX_CADENCE_MINUTES:
+        raise ValueError(
+            f"the spacing must be between {MIN_CADENCE_MINUTES} and "
+            f"{MAX_CADENCE_MINUTES} minutes"
+        )
     return Rhythm(
         household_id=household_id,
-        quiet_from_hour=_clean_hour(quiet_from_hour, "the start of quiet hours"),
-        quiet_until_hour=_clean_hour(quiet_until_hour, "the end of quiet hours"),
-        cadence_hours=int(cadence_hours),
+        quiet_from_minutes=minutes_of(quiet_from, "the start of the pause"),
+        quiet_until_minutes=minutes_of(quiet_until, "the end of the pause"),
+        cadence_minutes=cadence_minutes,
         updated_at=time.time(),
         updated_by=updated_by,
     )
 
 
-def in_quiet_hours(hour: int, start: int, end: int) -> bool:
-    """Equal ends mean no quiet hours at all, so a parent can turn the window off."""
+def in_quiet_window(now_minutes: int, start: int, end: int) -> bool:
+    """Equal ends mean no pause at all, so a parent can turn the window off."""
     if start == end:
         return False
     if start < end:
-        return start <= hour < end
-    return hour >= start or hour < end
+        return start <= now_minutes < end
+    return now_minutes >= start or now_minutes < end

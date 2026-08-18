@@ -24,6 +24,13 @@ from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 
 from .devices import DeviceStatus
+from .preferences import (
+    DEFAULT_DIFFICULTY,
+    DEFAULT_LANGUAGE,
+    DEFAULT_VARIETY,
+    DEFAULT_WORDS_PER_LINE,
+    Preferences,
+)
 from .proposals import ProposalRecord
 from .rhythm import Rhythm
 from .themes import Theme
@@ -34,6 +41,7 @@ PROPOSALS_CONTAINER = "proposals"
 THEMES_CONTAINER = "sources"
 DEVICES_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
+PREFERENCES_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
 
@@ -258,9 +266,9 @@ class CosmosRhythmStore:
                 "id": f"rhythm-{rhythm.household_id}",
                 "familyId": rhythm.household_id,
                 "type": "rhythm",
-                "quietFromHour": rhythm.quiet_from_hour,
-                "quietUntilHour": rhythm.quiet_until_hour,
-                "cadenceHours": rhythm.cadence_hours,
+                "quietFromMinutes": rhythm.quiet_from_minutes,
+                "quietUntilMinutes": rhythm.quiet_until_minutes,
+                "cadenceMinutes": rhythm.cadence_minutes,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
             }
@@ -271,9 +279,77 @@ class CosmosRhythmStore:
 def _to_rhythm(document: dict[str, Any]) -> Rhythm:
     return Rhythm(
         household_id=str(document["familyId"]),
-        quiet_from_hour=int(document.get("quietFromHour", 22)),
-        quiet_until_hour=int(document.get("quietUntilHour", 7)),
-        cadence_hours=int(document.get("cadenceHours", 1)),
+        quiet_from_minutes=_minutes(document, "quietFromMinutes", "quietFromHour", 22 * 60),
+        quiet_until_minutes=_minutes(document, "quietUntilMinutes", "quietUntilHour", 7 * 60),
+        cadence_minutes=_minutes(document, "cadenceMinutes", "cadenceHours", 60),
+        updated_at=float(document.get("updatedAt") or 0.0),
+        updated_by=str(document.get("updatedBy") or ""),
+    )
+
+
+def _minutes(document: dict[str, Any], key: str, hours_key: str, default: int) -> int:
+    """Documents written before the rhythm was minutes still hold whole hours."""
+    if document.get(key) is not None:
+        return int(document[key])
+    if document.get(hours_key) is not None:
+        return int(document[hours_key]) * 60
+    return default
+
+
+class CosmosPreferencesStore:
+    """Conforms to :class:`~panel.preferences.PreferencesStore`.
+
+    One document per household, overwritten. The document carries the settings and nothing
+    else: there is no field for her name here, and the hub never sends one.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(PREFERENCES_CONTAINER)
+        )
+
+    def get(self, household_id: str) -> Preferences:
+        rows = list(
+            self._container.query_items(
+                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'preferences'",
+                parameters=[{"name": "@family", "value": household_id}],
+                partition_key=household_id,
+            )
+        )
+        if not rows:
+            return Preferences(household_id=household_id)
+        return _to_preferences(rows[0])
+
+    def set(self, preferences: Preferences) -> Preferences:
+        self._container.upsert_item(
+            {
+                "id": f"preferences-{preferences.household_id}",
+                "familyId": preferences.household_id,
+                "type": "preferences",
+                "interests": list(preferences.interests),
+                "avoid": list(preferences.avoid),
+                "difficulty": preferences.difficulty,
+                "variety": preferences.variety,
+                "maxWordsPerLine": preferences.max_words_per_line,
+                "language": preferences.language,
+                "updatedAt": preferences.updated_at,
+                "updatedBy": preferences.updated_by,
+            }
+        )
+        return preferences
+
+
+def _to_preferences(document: dict[str, Any]) -> Preferences:
+    return Preferences(
+        household_id=str(document["familyId"]),
+        interests=tuple(str(item) for item in document.get("interests") or ()),
+        avoid=tuple(str(item) for item in document.get("avoid") or ()),
+        difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
+        variety=str(document.get("variety") or DEFAULT_VARIETY),
+        max_words_per_line=int(document.get("maxWordsPerLine") or DEFAULT_WORDS_PER_LINE),
+        language=str(document.get("language") or DEFAULT_LANGUAGE),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )

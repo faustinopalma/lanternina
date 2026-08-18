@@ -36,6 +36,7 @@ class Capability(StrEnum):
 
     TEXT_GENERATION = "text_generation"
     STRUCTURED_GENERATION = "structured_generation"
+    IMAGE_GENERATION = "image_generation"
     VISION_READ = "vision_read"
     PLANNING = "planning"
 
@@ -90,6 +91,31 @@ class RoutingDecision:
     tier: ModelTier
     degradation: DegradationLevel
     reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class ModelUsage:
+    """What one call to a backend cost, as the backend itself reported it.
+
+    Every field here was read off a real response on 17 August 2026, not inferred from
+    pricing pages. Three of them are the reason this type exists at all: images are billed
+    in tokens rather than per picture, two thirds of the output tokens of a reasoning model
+    never appear in its text, and a repeated prefix comes back as `cached_tokens` at a
+    discount. A count built on "one picture, one unit" would have been wrong three ways.
+    """
+
+    deployment: str = ""
+    # The provider's own id for the call, so our figures can be reconciled with its bill.
+    request_id: str = ""
+    input_tokens: int = 0
+    output_tokens: int = 0
+    # Part of input_tokens, billed at a discount.
+    cached_input_tokens: int = 0
+    # Part of output_tokens, and invisible in the returned text.
+    reasoning_tokens: int = 0
+    # Images only: both change the price, and both have defaults we did not choose.
+    size: str = ""
+    quality: str = ""
 
 
 @dataclass(frozen=True, slots=True)

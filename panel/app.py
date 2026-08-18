@@ -21,7 +21,7 @@ from typing import Annotated, Any
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from shared.accounts import Account, AccountStore
 from shared.approval import ApprovalState
@@ -37,9 +37,16 @@ from .config import Settings
 from .devices import DeviceStatus, DeviceStatusStore, InMemoryDeviceStatusStore
 from .gate import resolve_account
 from .pictures import (
+    DEFAULT_PAGE_SIZE,
+    PAGE_SIZES,
     InMemoryPictureArchive,
     PictureArchive,
     PictureRecord,
+)
+from .preferences import (
+    InMemoryPreferencesStore,
+    PreferencesStore,
+    clean_preferences,
 )
 from .principal import principal_from_headers
 from .proposals import DECIDABLE, InMemoryProposalStore, ProposalRecord, ProposalStore
@@ -121,9 +128,26 @@ class NewTheme(BaseModel):
 class NewRhythm(BaseModel):
     """When the display may change, and how often. Saving it starts nothing."""
 
-    quietFromHour: int
-    quietUntilHour: int
-    cadenceHours: int
+    quietFrom: str
+    quietUntil: str
+    cadenceMinutes: int
+
+
+class NewPreferences(BaseModel):
+    """What her content is made of. These are the fields the hub may put in a prompt.
+
+    Unknown fields are refused rather than dropped: a body carrying her name would
+    otherwise be accepted and quietly ignored, which reads as working.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    interests: list[str] = Field(default_factory=list)
+    avoid: list[str] = Field(default_factory=list)
+    difficulty: str
+    variety: str
+    maxWordsPerLine: int
+    language: str
 
 
 class ReportedDevice(BaseModel):
@@ -163,6 +187,7 @@ def create_app(
     devices: DeviceStatusStore | None = None,
     usage: UsageStore | None = None,
     rhythm: RhythmStore | None = None,
+    preferences: PreferencesStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -177,6 +202,9 @@ def create_app(
     app.state.devices = devices if devices is not None else _device_store(app.state.settings)
     app.state.usage = usage if usage is not None else _usage_store(app.state.settings)
     app.state.rhythm = rhythm if rhythm is not None else _rhythm_store(app.state.settings)
+    app.state.preferences = (
+        preferences if preferences is not None else _preferences_store(app.state.settings)
+    )
     app.state.verifier = None
 
     # Named origins only. The token travels in a header, not a cookie, so credentials stay
@@ -311,12 +339,31 @@ def create_app(
         return {**record.to_public(), "imageBase64": base64.b64encode(image).decode()}
 
     @app.get("/api/pictures")
-    def list_pictures(account: CurrentAccount, request: Request, limit: int = 60) -> Any:
+    def list_pictures(
+        account: CurrentAccount,
+        request: Request,
+        page: int = 1,
+        perPage: int = DEFAULT_PAGE_SIZE,
+    ) -> Any:
         archive: PictureArchive = request.app.state.pictures
-        # Capped rather than unbounded: the panel draws what it is given, and an hourly
-        # picture makes about 740 a month.
-        rows = archive.list(str(account.household_id), max(1, min(limit, 500)))
-        return {"pictures": [row.to_public() for row in rows]}
+        size = perPage if perPage in PAGE_SIZES else DEFAULT_PAGE_SIZE
+        household = str(account.household_id)
+        wanted = max(1, page)
+        rows, total = archive.page(household, offset=(wanted - 1) * size, limit=size)
+        pages = max(1, -(-total // size))
+        if wanted > pages:
+            # A larger page size can leave the parent standing past the end. Show the last
+            # page rather than an empty one.
+            wanted = pages
+            rows, total = archive.page(household, offset=(wanted - 1) * size, limit=size)
+        return {
+            "pictures": [row.to_public() for row in rows],
+            "page": wanted,
+            "perPage": size,
+            "pages": pages,
+            "total": total,
+            "pageSizes": list(PAGE_SIZES),
+        }
 
     @app.get("/api/pictures/{picture_id}/content")
     def picture_content(picture_id: str, account: CurrentAccount, request: Request) -> Response:
@@ -371,9 +418,9 @@ def create_app(
         try:
             chosen = clean_rhythm(
                 str(account.household_id),
-                quiet_from_hour=new.quietFromHour,
-                quiet_until_hour=new.quietUntilHour,
-                cadence_hours=new.cadenceHours,
+                quiet_from=new.quietFrom,
+                quiet_until=new.quietUntil,
+                cadence_minutes=new.cadenceMinutes,
                 updated_by=str(account.id),
             )
         except ValueError as exc:
@@ -384,6 +431,38 @@ def create_app(
     def device_rhythm(household_id: str, _: DeviceKey, request: Request) -> Any:
         """The hours and the spacing the hub applies, as the parent last left them."""
         store: RhythmStore = request.app.state.rhythm
+        return store.get(household_id).to_public()
+
+    @app.get("/api/preferences")
+    def read_preferences(account: CurrentAccount, request: Request) -> Any:
+        store: PreferencesStore = request.app.state.preferences
+        return store.get(str(account.household_id)).to_public()
+
+    @app.post("/api/preferences")
+    def write_preferences(new: NewPreferences, account: CurrentAccount, request: Request) -> Any:
+        """Record what her content is made of. It persists and returns: the hub reads it
+        on its next run, and nothing here starts a generation."""
+        store: PreferencesStore = request.app.state.preferences
+        try:
+            chosen = clean_preferences(
+                str(account.household_id),
+                interests=new.interests,
+                avoid=new.avoid,
+                difficulty=new.difficulty,
+                variety=new.variety,
+                max_words_per_line=new.maxWordsPerLine,
+                language=new.language,
+                updated_by=str(account.id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return store.set(chosen).to_public()
+
+    @app.get("/api/device/{household_id}/preferences")
+    def device_preferences(household_id: str, _: DeviceKey, request: Request) -> Any:
+        """The settings the hub generates from, as the parent last left them. The hub adds
+        her name locally; nothing that identifies her has a field on this route."""
+        store: PreferencesStore = request.app.state.preferences
         return store.get(household_id).to_public()
 
     @app.post("/api/device/{household_id}/devices")
@@ -564,6 +643,14 @@ def _rhythm_store(settings: Settings) -> RhythmStore:
     from .cosmos_store import CosmosRhythmStore
 
     return CosmosRhythmStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _preferences_store(settings: Settings) -> PreferencesStore:
+    if not settings.cosmos_configured:
+        return InMemoryPreferencesStore()
+    from .cosmos_store import CosmosPreferencesStore
+
+    return CosmosPreferencesStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

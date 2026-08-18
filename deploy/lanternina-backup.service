@@ -1,0 +1,9 @@
+[Unit]
+Description=Immagine di ripristino della eMMC sull'NVMe
+ConditionPathIsMountPoint=/srv/lanternina
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=idle
+ExecStart=/usr/local/sbin/lanternina-backup

@@ -31,7 +31,6 @@ tools/
 firmware/
 vision/
 agents/
-orchestrator/
 printing/
 *.md
 !README.md

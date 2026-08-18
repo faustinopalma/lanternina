@@ -1,0 +1,142 @@
+diff --git a/include/wifi_network.h b/include/wifi_network.h
+index 839e179..8ac8f26 100644
+--- a/include/wifi_network.h
++++ b/include/wifi_network.h
+@@ -15,6 +15,9 @@ WiFiStatus getWiFiStatus(void);
+ ///        otherwise the board prefix plus friendly ID (e.g. "TRMNL-ABC123")
+ String getWifiClientHostname(void);
+ 
++/// @brief Start mDNS after either saved-WiFi or captive-portal connection.
++bool ensureMdnsStarted(void);
++
+ /// @brief Connect using credentials saved in WifiCaptivePortal
+ bool connectWithSavedCredentials(void);
+ 
+diff --git a/lib/trmnl/include/http_client.h b/lib/trmnl/include/http_client.h
+index fc4a921..a6df1a6 100644
+--- a/lib/trmnl/include/http_client.h
++++ b/lib/trmnl/include/http_client.h
+@@ -2,6 +2,7 @@
+ #define HTTP_UTILS_H
+ 
+ #include <Arduino.h>
++#include <ESPmDNS.h>
+ #include <HTTPClient.h>
+ #include <WiFiClient.h>
+ #include <WiFiClientSecure.h>
+@@ -17,6 +18,32 @@ enum HttpError {
+   HTTPCLIENT_HTTPCLIENT_ERROR = 102  // Failed to connect
+ };
+ 
++inline String resolveMdnsUrl(const String &url) {
++  int schemeEnd = url.indexOf("://");
++  if (schemeEnd < 0) return url;
++
++  int hostStart = schemeEnd + 3;
++  int hostEnd = url.indexOf('/', hostStart);
++  if (hostEnd < 0) hostEnd = url.length();
++  int portStart = url.indexOf(':', hostStart);
++  if (portStart >= 0 && portStart < hostEnd) hostEnd = portStart;
++
++  String host = url.substring(hostStart, hostEnd);
++  if (!host.endsWith(".local")) return url;
++
++  String mdnsName = host.substring(0, host.length() - 6);
++  IPAddress address = MDNS.queryHost(mdnsName.c_str(), 3000);
++  if (address == IPAddress()) {
++    Log_error("mDNS could not resolve %s", host.c_str());
++    return url;
++  }
++
++  String resolved = url;
++  resolved = resolved.substring(0, hostStart) + address.toString() + resolved.substring(hostEnd);
++  Log_info("mDNS resolved %s", host.c_str());
++  return resolved;
++}
++
+ /**
+  * @brief Higher-order function that sets up WiFiClient and HTTPClient, then runs a callback
+  * @param url The initial URL to connect to
+@@ -27,8 +54,10 @@ template <typename Callback, typename ReturnType = decltype(std::declval<Callbac
+ ReturnType withHttp(const String &url, Callback callback, bool resumable = false) {
+   Log_info("==== withHttp() %s", url.c_str());
+ 
+-  bool isHttps = (url.indexOf("https://") != -1);
+-  bool isTrmnlApi = (url.indexOf("https://trmnl.app") != -1);
++  String requestUrl = resolveMdnsUrl(url);
++
++  bool isHttps = (requestUrl.indexOf("https://") != -1);
++  bool isTrmnlApi = (requestUrl.indexOf("https://trmnl.app") != -1);
+ 
+   // Conditionally allocate only the client we need
+   WiFiClient *client = nullptr;
+@@ -55,7 +84,7 @@ ReturnType withHttp(const String &url, Callback callback, bool resumable = false
+   { // Add a scoping block for HTTPClient https to make sure it is destroyed before WiFiClientSecure *client is
+ 
+     HTTPClient https;
+-    if (https.begin(*client, url)) {
++    if (https.begin(*client, requestUrl)) {
+       https.setReuse(false);  // Disable keep-alive to ensure connection closes properly
+       result = callback(&https, HTTPCLIENT_SUCCESS);
+       https.end();
+diff --git a/src/bl.cpp b/src/bl.cpp
+index 9243a1d..3cfc401 100644
+--- a/src/bl.cpp
++++ b/src/bl.cpp
+@@ -1386,6 +1386,8 @@ void bl_init(void)
+ 
+ #endif
+ 
++  ensureMdnsStarted();
++
+   // clock synchronization
+   if (setClock())
+   {
+diff --git a/src/wifi_network.cpp b/src/wifi_network.cpp
+index e5a5404..416ec6a 100644
+--- a/src/wifi_network.cpp
++++ b/src/wifi_network.cpp
+@@ -14,6 +14,7 @@ extern Modem *g_modem;
+ 
+ namespace {
+   constexpr unsigned long WIFI_RECONNECT_TIMEOUT_MS = 10000;
++  bool mdnsStarted = false;
+ }
+ 
+ String getWifiClientHostname(void) {
+@@ -33,6 +34,19 @@ String getWifiClientHostname(void) {
+   return hostname;
+ }
+ 
++bool ensureMdnsStarted(void) {
++  if (mdnsStarted) return true;
++
++  String hostname = getWifiClientHostname();
++  mdnsStarted = MDNS.begin(hostname.c_str());
++  if (mdnsStarted) {
++    Log_info("mDNS started: %s.local", hostname.c_str());
++  } else {
++    Log_error("mDNS failed to start");
++  }
++  return mdnsStarted;
++}
++
+ WiFiStatus getWiFiStatus(void) {
+   WiFiStatus status;
+   status.rssi = WiFi.RSSI();
+@@ -61,13 +75,6 @@ bool connectWithSavedCredentials(void) {
+ #endif
+ 
+   bool connected = WifiCaptivePortal.autoConnect();
+-  if (connected) {
+-    String hostname = getWifiClientHostname();
+-    if (MDNS.begin(hostname.c_str())) {
+-      Log_info("mDNS started: %s.local", hostname.c_str());
+-    } else {
+-      Log_error("mDNS failed to start");
+-    }
+-  }
++  if (connected) ensureMdnsStarted();
+   return connected;
+ }
+ 

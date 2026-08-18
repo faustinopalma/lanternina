@@ -1,0 +1,20 @@
+[Unit]
+Description=Ask the panel for a new picture for the displays
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.pull_picture
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+ReadWritePaths=/var/lib/lanternina/state

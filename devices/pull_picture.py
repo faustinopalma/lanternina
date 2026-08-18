@@ -24,30 +24,40 @@ from pathlib import Path
 from devices.trmnl_byos import validate_screen
 
 # Nobody looks at a picture at four in the morning, and every refresh costs a generation.
-# Both ends are the parent's to choose; these are the defaults used until the panel says
+# All three are the parent's to choose; these are the defaults used until the panel says
 # otherwise, and when it cannot be reached at all.
-QUIET_FROM_HOUR = 22
-QUIET_UNTIL_HOUR = 7
-DEFAULT_CADENCE_HOURS = 1
+QUIET_FROM = "22:00"
+QUIET_UNTIL = "07:00"
+DEFAULT_CADENCE_MINUTES = 60
 
-# The timer fires with up to five minutes of jitter. Comparing strictly would skip a turn
-# and silently double the spacing the parent asked for.
-CADENCE_GRACE_SECONDS = 10 * 60
+# The timer fires once a minute. The tolerance is what keeps a spacing of thirteen minutes
+# from becoming fourteen: without it the run that lands a second early skips its turn.
+CADENCE_GRACE_SECONDS = 30
 
 
-def in_quiet_hours(now: time.struct_time, start: int, end: int) -> bool:
-    hour = now.tm_hour
+def minutes_of(value: str) -> int:
+    """"HH:MM" as minutes past midnight. Raises ValueError on anything else."""
+    hour, _, minute = value.strip().partition(":")
+    hour_number, minute_number = int(hour), int(minute)
+    if not (0 <= hour_number <= 23 and 0 <= minute_number <= 59):
+        raise ValueError(f"not a time on the clock: {value}")
+    return hour_number * 60 + minute_number
+
+
+def in_quiet_window(now: time.struct_time, start: int, end: int) -> bool:
+    minutes = now.tm_hour * 60 + now.tm_min
     if start == end:
         return False
     if start < end:
-        return start <= hour < end
-    return hour >= start or hour < end
+        return start <= minutes < end
+    return minutes >= start or minutes < end
 
 
 def read_rhythm(
     panel: str, household: str, key: str, fallback: tuple[int, int, int]
 ) -> tuple[int, int, int]:
-    """The hours and spacing the parent chose, or the fallback if the panel is silent.
+    """The pause and the spacing the parent chose, in minutes, or the fallback if the
+    panel is silent.
 
     An unreachable panel means the house keeps working to its last known shape, not that
     it stops.
@@ -59,16 +69,16 @@ def read_rhythm(
         with urllib.request.urlopen(request, timeout=30) as response:
             answer = json.loads(response.read())
         return (
-            int(answer["quietFromHour"]),
-            int(answer["quietUntilHour"]),
-            int(answer["cadenceHours"]),
+            minutes_of(str(answer["quietFrom"])),
+            minutes_of(str(answer["quietUntil"])),
+            int(answer["cadenceMinutes"]),
         )
     except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError) as exc:
         print(f"cannot read the rhythm ({exc}); using {fallback}")
         return fallback
 
 
-def due(screen_file: Path, cadence_hours: int, now: float) -> bool:
+def due(screen_file: Path, cadence_minutes: int, now: float) -> bool:
     """Whether enough time has passed since the picture last changed.
 
     The file's own timestamp is the record of that, so there is no second copy of the
@@ -78,7 +88,7 @@ def due(screen_file: Path, cadence_hours: int, now: float) -> bool:
         last_change = screen_file.stat().st_mtime
     except OSError:
         return True  # nothing on the display yet
-    return now - last_change >= cadence_hours * 3600 - CADENCE_GRACE_SECONDS
+    return now - last_change >= cadence_minutes * 60 - CADENCE_GRACE_SECONDS
 
 
 def install(screen_file: Path, image: bytes) -> None:
@@ -98,17 +108,18 @@ def main() -> int:
         print("missing panel URL, household, device key or screen file")
         return 1
 
-    start = int(os.environ.get("LANTERNINA_QUIET_FROM", QUIET_FROM_HOUR))
-    end = int(os.environ.get("LANTERNINA_QUIET_UNTIL", QUIET_UNTIL_HOUR))
-    cadence = int(os.environ.get("LANTERNINA_CADENCE_HOURS", DEFAULT_CADENCE_HOURS))
+    start = minutes_of(os.environ.get("LANTERNINA_QUIET_FROM", QUIET_FROM))
+    end = minutes_of(os.environ.get("LANTERNINA_QUIET_UNTIL", QUIET_UNTIL))
+    cadence = int(os.environ.get("LANTERNINA_CADENCE_MINUTES", DEFAULT_CADENCE_MINUTES))
     start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
 
-    if in_quiet_hours(time.localtime(), start, end):
-        print(f"quiet hours ({start}:00-{end}:00): leaving the picture alone")
+    if in_quiet_window(time.localtime(), start, end):
+        print(f"pause ({start // 60:02d}:{start % 60:02d}–{end // 60:02d}:{end % 60:02d}): "
+              "leaving the picture alone")
         return 0
 
     if not due(screen_file, cadence, time.time()):
-        print(f"less than {cadence}h since the last picture: leaving it alone")
+        print(f"less than {cadence} minutes since the last picture: leaving it alone")
         return 0
 
     request = urllib.request.Request(

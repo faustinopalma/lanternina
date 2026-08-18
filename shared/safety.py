@@ -46,6 +46,9 @@ class ContentKind(StrEnum):
     ROUTINE_PROMPT = "routine_prompt"
     FEEDBACK_TEXT = "feedback_text"
     PRINT_LAYOUT_JSON = "print_layout_json"
+    # A generated picture, base64-encoded PNG. Still a str, so the seal covers it the same
+    # way it covers a sentence, and no user-facing type gains a bytes field.
+    IMAGE_PNG = "image_png"
 
 
 @dataclass(frozen=True, slots=True)

@@ -24,6 +24,9 @@ class ProposalKind(StrEnum):
     FEEDBACK = "feedback"
     SCHEDULE = "schedule"
     PRINT_LAYOUT = "print_layout"
+    # A picture for a display. Approved by theme rather than one by one — see the
+    # tradeoff recorded in tools/home_server.py.
+    PICTURE = "picture"
 
 
 @dataclass(frozen=True, slots=True)

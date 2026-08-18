@@ -29,6 +29,14 @@ class Difficulty(StrEnum):
     STRETCH = "stretch"
 
 
+class ContentVariety(StrEnum):
+    """How often content changes form. Chosen explicitly, never inferred from behaviour."""
+
+    FAMILIAR = "familiar"
+    BALANCED = "balanced"
+    FREQUENT = "frequent"
+
+
 @dataclass(frozen=True, slots=True)
 class LearnerProfile:
     """Local-only profile. Never serialised into a model prompt.
@@ -43,6 +51,7 @@ class LearnerProfile:
     interests: tuple[str, ...] = ()
     avoid: tuple[str, ...] = ()
     default_difficulty: Difficulty = Difficulty.GENTLE
+    content_variety: ContentVariety = ContentVariety.BALANCED
     # Reading support: max words per line the displays should show.
     max_words_per_line: int = 6
     language: str = "it"
@@ -53,6 +62,7 @@ class LearnerProfile:
             "interests": list(self.interests),
             "avoid": list(self.avoid),
             "difficulty": str(self.default_difficulty),
+            "content_variety": str(self.content_variety),
             "language": self.language,
             "max_words_per_line": self.max_words_per_line,
         }
