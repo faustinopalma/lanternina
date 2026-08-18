@@ -633,11 +633,22 @@ async function run() {
   show("error", "lede.failed");
 }
 
+/* A rejected redirect leaves MSAL's interaction flag set, so every later click is refused
+ * with interaction_in_progress and the button just stops responding. Say so instead. */
+function reportInteractionFailure(e) {
+  el("error-text").textContent = e?.errorCode ?? e?.message ?? String(e);
+  showDiagnostics(undefined, String(e));
+  show("error", "lede.failed");
+}
+
 el("btn-signin").onclick = () =>
-  msalInstance.loginRedirect({ scopes: cfg.scopes });
+  msalInstance.loginRedirect({ scopes: cfg.scopes }).catch(reportInteractionFailure);
 el("theme-form").onsubmit = submitTheme;
 
-const signOut = () => msalInstance.logoutRedirect({ postLogoutRedirectUri: window.location.origin });
+const signOut = () =>
+  msalInstance
+    .logoutRedirect({ postLogoutRedirectUri: window.location.origin })
+    .catch(reportInteractionFailure);
 el("btn-signout").onclick = signOut;
 el("btn-signout-pending").onclick = signOut;
 el("btn-signout-error").onclick = signOut;

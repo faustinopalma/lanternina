@@ -147,8 +147,9 @@
 
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@5.18.0/lib/msal-browser.min.js"
-  integrity="sha384-FQfSZjxaWBhzqI7u0+3M2/K/kFajbcK45G1GMnQdDzVZszPTSjjvWY9YEnJ9tEia"
+<!-- Deliberately unpinned. The cost is that a release changes this panel without us
+     acting, and that SRI cannot be used: its hash is tied to one exact file. -->
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@latest/lib/msal-browser.min.js"
   crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script src="i18n.js"></script>

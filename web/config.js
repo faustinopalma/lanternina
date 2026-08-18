@@ -4,9 +4,11 @@
 window.LANTERNINA = {
   clientId: "e80af2eb-6eb5-4524-b8d1-aef90717e10a",
 
-  // No /v2.0 here on purpose: MSAL appends it when fetching authority metadata, and a
-  // doubled segment produces a metadata fetch that fails without saying why.
-  authority: "https://lantessveb.ciamlogin.com/lantessveb.onmicrosoft.com",
+  // The tenant GUID, not the domain form: msal-browser 5 fetches the domain form's
+  // metadata (HTTP 200) and then rejects it with endpoints_resolution_error. Measured
+  // 18 August 2026; both forms publish the same issuer, endpoints and keys.
+  // No /v2.0 here: MSAL appends it, and a doubled segment fails without saying why.
+  authority: "https://lantessveb.ciamlogin.com/79825125-8a69-4adc-8eba-831c7decedad",
 
   // Required for any authority outside login.microsoftonline.com. Without it MSAL refuses
   // the authority as untrusted before a single request leaves the browser.
