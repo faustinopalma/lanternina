@@ -25,9 +25,9 @@ function LanguageChooser() {
   );
 }
 
-/** The page around whichever view is showing: the name, the language of this page, and one
- *  line saying where the parent is. */
-export function Shell({ lede, children }: { lede: MessageKey; children: ReactNode }) {
+/** The page around whichever view is showing: the name, the language of this page, and —
+ *  when there is something worth saying — one line about where the parent is. */
+export function Shell({ lede, children }: { lede: MessageKey | null; children: ReactNode }) {
   const { t } = useWords();
   return (
     <main className="mx-auto max-w-[78rem] px-5 pt-10 pb-18 wide:px-7">
@@ -36,7 +36,7 @@ export function Shell({ lede, children }: { lede: MessageKey; children: ReactNod
           <h1 className="mb-1 text-[1.7rem] font-semibold tracking-tight">Lanternina</h1>
           <LanguageChooser />
         </div>
-        <Quiet>{t(lede)}</Quiet>
+        {lede === null ? null : <Quiet>{t(lede)}</Quiet>}
       </header>
       {children}
     </main>

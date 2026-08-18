@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 import { useApi } from "@/api/client";
 import type { Preferences as Settings } from "@/api/types";
@@ -26,31 +26,19 @@ interface Draft {
   language: string;
 }
 
-export function Preferences() {
+function Form({ settings }: { settings: Settings }) {
   const { t } = useWords();
   const api = useApi();
-  const [state] = useLoad(() => api.preferences());
-  const [draft, setDraft] = useState<Draft | null>(null);
   const [status, setStatus] = useState<MessageKey | null>(null);
+  const [draft, setDraft] = useState<Draft>(() => ({
+    interests: asLines(settings.interests),
+    avoid: asLines(settings.avoid),
+    difficulty: settings.difficulty,
+    variety: settings.variety,
+    maxWordsPerLine: String(settings.maxWordsPerLine),
+    language: settings.language,
+  }));
 
-  useEffect(() => {
-    if (state.status !== "ready") return;
-    const settings: Settings = state.data;
-    setDraft({
-      interests: asLines(settings.interests),
-      avoid: asLines(settings.avoid),
-      difficulty: settings.difficulty,
-      variety: settings.variety,
-      maxWordsPerLine: String(settings.maxWordsPerLine),
-      language: settings.language,
-    });
-  }, [state]);
-
-  if (state.status === "loading") return <Quiet>{t("preferences.loading")}</Quiet>;
-  if (state.status === "failed") return <Quiet>{t("preferences.unreadable")}</Quiet>;
-  if (draft === null) return <Quiet>{t("preferences.loading")}</Quiet>;
-
-  const settings = state.data;
   const edit = (change: Partial<Draft>) => setDraft({ ...draft, ...change });
 
   /* The words for each choice, written out rather than built from the value: a key that
@@ -72,7 +60,6 @@ export function Preferences() {
    * her name, and the panel refuses a body that invents one. */
   async function save(event: FormEvent) {
     event.preventDefault();
-    if (draft === null) return;
     try {
       await api.savePreferences({
         interests: fromLines(draft.interests),
@@ -92,7 +79,7 @@ export function Preferences() {
     <>
       <form
         onSubmit={save}
-        className="my-3.5 flex max-w-[42rem] flex-col gap-4 rounded-[--radius-control] border border-edge bg-paper p-4"
+        className="my-3.5 flex max-w-[42rem] flex-col gap-4 rounded-control border border-edge bg-paper p-4"
       >
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="pref-interests">{t("preferences.interests")}</Label>
@@ -182,4 +169,14 @@ export function Preferences() {
       <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );
+}
+
+export function Preferences() {
+  const { t } = useWords();
+  const api = useApi();
+  const [state] = useLoad(() => api.preferences());
+
+  if (state.status === "loading") return <Quiet>{t("preferences.loading")}</Quiet>;
+  if (state.status === "failed") return <Quiet>{t("preferences.unreadable")}</Quiet>;
+  return <Form settings={state.data} />;
 }

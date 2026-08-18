@@ -23,9 +23,8 @@ if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("prev
     root.render(
       <StrictMode>
         <LanguageProvider>
-          <Shell lede="lede.in">
+          <Shell lede={null}>
             <Dashboard
-              me={{ accountId: "acct-demo", householdId: "house-demo", status: "active" }}
               api={fakeApi()}
               username="genitore@example.invalid"
               onSignOut={() => undefined}

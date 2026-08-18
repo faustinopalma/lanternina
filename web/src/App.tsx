@@ -3,10 +3,9 @@ import { useMsal } from "@azure/msal-react";
 import { useEffect, useState } from "react";
 
 import { httpApi } from "@/api/client";
-import type { Api, Me } from "@/api/types";
+import type { Api } from "@/api/types";
 import { bearerFor, signIn, signOut } from "@/auth/msal";
 import { Dashboard } from "@/components/Dashboard";
-import { Facts } from "@/components/Facts";
 import { Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, Quiet } from "@/components/ui/card";
@@ -17,15 +16,18 @@ type Stage =
   | { view: "signedout" }
   | { view: "connecting"; username: string }
   | { view: "pending" }
-  | { view: "dashboard"; me: Me; api: Api; username: string }
+  | { view: "dashboard"; api: Api; username: string }
   | { view: "error"; message: MessageKey };
 
-const LEDE: Record<Stage["view"], MessageKey> = {
+// One line under the name, saying where the parent is. The dashboard says nothing: the
+// section headings are already there, and a running commentary on what the program is
+// doing is a thing for us, not for whoever is holding the phone.
+const LEDE: Record<Stage["view"], MessageKey | null> = {
   loading: "lede.checking",
   signedout: "lede.signedout",
-  connecting: "lede.ready",
+  connecting: "lede.checking",
   pending: "lede.pending",
-  dashboard: "lede.in",
+  dashboard: null,
   error: "lede.failed",
 };
 
@@ -53,7 +55,7 @@ export function App() {
       const admission = await api.admission();
       if (!live) return;
       if (admission.kind === "in") {
-        setStage({ view: "dashboard", me: admission.me, api, username: account.username });
+        setStage({ view: "dashboard", api, username: account.username });
       } else if (admission.kind === "pending") {
         setStage({ view: "pending" });
       } else {
@@ -75,12 +77,6 @@ export function App() {
 
   return (
     <Shell lede={LEDE[stage.view]}>
-      {stage.view === "loading" ? (
-        <Card className="max-w-[34rem]">
-          <Quiet>{t("loading.moment")}</Quiet>
-        </Card>
-      ) : null}
-
       {stage.view === "signedout" ? (
         <Card className="max-w-[34rem]">
           <CardTitle>{t("signin.title")}</CardTitle>
@@ -95,12 +91,10 @@ export function App() {
 
       {stage.view === "connecting" ? (
         <Card className="max-w-[34rem]" aria-live="polite">
-          <CardTitle>{t("panel.title")}</CardTitle>
           <Quiet>
             {stage.username ? t("signin.as", { user: stage.username }) : t("signin.anon")}
           </Quiet>
-          <Facts rows={[{ label: t("facts.status"), value: t("connecting.loading") }]} />
-          <Quiet className="mt-4">{t("connecting.note")}</Quiet>
+          <Quiet className="mt-3">{t("connecting.note")}</Quiet>
         </Card>
       ) : null}
 
@@ -117,7 +111,6 @@ export function App() {
 
       {stage.view === "dashboard" ? (
         <Dashboard
-          me={stage.me}
           api={stage.api}
           username={stage.username}
           onSignOut={() => void signOut()}

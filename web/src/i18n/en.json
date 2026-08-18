@@ -1,12 +1,10 @@
 {
-  "lede.checking": "Checking whether you are already signed in.",
-  "lede.ready": "The panel is ready. Loading your data.",
-  "lede.signedout": "You are not signed in yet.",
-  "lede.in": "You are in.",
-  "lede.pending": "Signed in, but the account is not enabled yet.",
+  "lede.checking": "One moment.",
+  "lede.signedout": "The parent's panel.",
+  "lede.pending": "Signing in worked; the account is not enabled yet.",
   "lede.failed": "Something did not work.",
 
-  "loading.moment": "One moment.",
+  "section.broken": "This section did not open. You can move to another one from the menu and come back later.",
 
   "signin.title": "Sign in",
   "signin.body": "The panel needs an account. You can create one the first time you sign in.",
@@ -15,17 +13,11 @@
   "signin.anon": "Signed in.",
   "signout": "Sign out",
 
-  "panel.title": "Panel",
-  "connecting.loading": "Loading your data",
   "connecting.note": "You can leave this page open. The service may be starting from zero while the panel is already visible.",
 
   "pending.title": "Account waiting",
   "pending.body": "Signing in worked. The account is not enabled yet: a person has to approve it.",
   "pending.note": "There is nothing to do from here. This page will not change on its own: reload it once the approval has happened.",
-
-  "facts.status": "Status",
-  "facts.account": "Account",
-  "facts.household": "Household",
 
   "proposals.title": "To approve",
   "proposals.note": "None of this has reached her. What you approve is kept ready and shown later, when it is needed.",

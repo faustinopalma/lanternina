@@ -22,7 +22,7 @@ function Chip({
   const [removing, setRemoving] = useState(false);
 
   return (
-    <div className="mt-2 flex max-w-[42rem] items-center justify-between gap-3 rounded-[--radius-control] border border-edge bg-paper py-2 pr-2 pl-3.5">
+    <div className="mt-2 flex max-w-[42rem] items-center justify-between gap-3 rounded-control border border-edge bg-paper py-2 pr-2 pl-3.5">
       <span>{theme.label}</span>
       <Button
         size="small"
@@ -72,7 +72,7 @@ export function Themes() {
     <>
       <form
         onSubmit={add}
-        className="my-3.5 flex max-w-[42rem] gap-2.5 rounded-[--radius-control] border border-edge bg-paper p-4"
+        className="my-3.5 flex max-w-[42rem] gap-2.5 rounded-control border border-edge bg-paper p-4"
       >
         <Input
           className="min-w-0 flex-auto"

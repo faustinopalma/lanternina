@@ -74,17 +74,21 @@ function Tile({ picture }: { picture: Picture }) {
   return (
     <figure
       ref={frame}
-      className="m-0 overflow-hidden rounded-[--radius-control] border border-edge bg-paper"
+      className="m-0 overflow-hidden rounded-control border border-edge bg-paper"
     >
-      {url !== null ? (
-        <img
-          src={url}
-          alt={picture.theme || t("pictures.untitled")}
-          /* Two levels and no greys: smoothing would show the parent something softer
-             than the display does. */
-          className="block h-auto w-full border-b border-edge bg-white [image-rendering:pixelated]"
-        />
-      ) : null}
+      {/* The tile holds the display's own proportions before the bytes arrive, so the
+          grid does not jump as the pictures come in one by one. */}
+      <div className="aspect-[5/3] border-b border-edge bg-white">
+        {url !== null ? (
+          <img
+            src={url}
+            alt={picture.theme || t("pictures.untitled")}
+            /* Two levels and no greys: smoothing would show the parent something softer
+               than the display does. */
+            className="h-full w-full object-contain [image-rendering:pixelated]"
+          />
+        ) : null}
+      </div>
       <figcaption className="flex flex-col gap-0.5 px-3 pt-2.5 pb-3 text-[0.85rem]">
         <strong className="font-semibold">{title}</strong>
         <span className="text-quiet">{dateTime(picture.createdAt)}</span>

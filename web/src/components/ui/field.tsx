@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 /* One appearance for every control the parent types into or picks from. The classic panel
    had four near-copies of these rules, which is how they drift apart. */
 const control =
-  "min-h-11 rounded-[--radius-control] border border-edge bg-card px-3 py-2 " +
+  "min-h-11 rounded-control border border-edge bg-card px-3 py-2 " +
   "font-sans text-base text-ink";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {

@@ -1,12 +1,10 @@
 {
-  "lede.checking": "Sto controllando se hai già effettuato l'accesso.",
-  "lede.ready": "Il pannello è pronto. Sto caricando i dati.",
-  "lede.signedout": "Non hai ancora effettuato l'accesso.",
-  "lede.in": "Sei dentro.",
-  "lede.pending": "Accesso riuscito, account non ancora abilitato.",
+  "lede.checking": "Un momento.",
+  "lede.signedout": "Il pannello del genitore.",
+  "lede.pending": "L'accesso è riuscito, l'account non è ancora abilitato.",
   "lede.failed": "Qualcosa non ha funzionato.",
 
-  "loading.moment": "Un momento.",
+  "section.broken": "Questa sezione non si è aperta. Puoi passare a un'altra dal menu e tornare qui più tardi.",
 
   "signin.title": "Accesso",
   "signin.body": "Per usare il pannello serve un account. Puoi crearlo al primo accesso.",
@@ -15,17 +13,11 @@
   "signin.anon": "Accesso effettuato.",
   "signout": "Esci",
 
-  "panel.title": "Pannello",
-  "connecting.loading": "Caricamento dei dati",
   "connecting.note": "Puoi lasciare aperta questa pagina. Il servizio può avviarsi da zero mentre il pannello è già visibile.",
 
   "pending.title": "Account in attesa",
   "pending.body": "L'accesso è riuscito. L'account però non è ancora abilitato: serve che una persona lo approvi.",
   "pending.note": "Non c'è niente da fare da qui. Questa pagina non cambierà da sola: ricaricala quando l'approvazione è avvenuta.",
-
-  "facts.status": "Stato",
-  "facts.account": "Account",
-  "facts.household": "Nucleo",
 
   "proposals.title": "Da approvare",
   "proposals.note": "Niente di tutto questo è già arrivato a lei. Quello che approvi resta pronto e viene mostrato più avanti, quando serve.",

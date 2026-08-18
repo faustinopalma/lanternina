@@ -1,31 +1,25 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 import { useApi } from "@/api/client";
+import type { Rhythm as Spacing } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
-export function Rhythm() {
+/* The form takes what was read as a prop, so the fields hold the parent's choice from the
+ * first paint. Copying it in afterwards showed an empty form for a moment, which reads as
+ * "nothing has been chosen yet". */
+function Form({ spacing }: { spacing: Spacing }) {
   const { t } = useWords();
   const api = useApi();
-  const [state] = useLoad(() => api.rhythm());
-  const [quietFrom, setQuietFrom] = useState("");
-  const [quietUntil, setQuietUntil] = useState("");
-  const [cadence, setCadence] = useState("");
-  const [status, setStatus] = useState<MessageKey | null>(null);
-
-  useEffect(() => {
-    if (state.status !== "ready") return;
-    setQuietFrom(state.data.quietFrom);
-    setQuietUntil(state.data.quietUntil);
-    setCadence(String(state.data.cadenceMinutes));
-    setStatus(state.data.quietFrom === state.data.quietUntil ? "rhythm.quietOff" : null);
-  }, [state]);
-
-  if (state.status === "loading") return <Quiet>{t("rhythm.loading")}</Quiet>;
-  if (state.status === "failed") return <Quiet>{t("rhythm.unreadable")}</Quiet>;
+  const [quietFrom, setQuietFrom] = useState(spacing.quietFrom);
+  const [quietUntil, setQuietUntil] = useState(spacing.quietUntil);
+  const [cadence, setCadence] = useState(String(spacing.cadenceMinutes));
+  const [status, setStatus] = useState<MessageKey | null>(
+    spacing.quietFrom === spacing.quietUntil ? "rhythm.quietOff" : null,
+  );
 
   /* Saving persists a choice and returns. The house reads it on its next run and decides
    * for itself, so nothing here reaches into the room. */
@@ -43,7 +37,7 @@ export function Rhythm() {
     <>
       <form
         onSubmit={save}
-        className="my-3.5 flex max-w-[42rem] flex-wrap items-center gap-x-4 gap-y-3 rounded-[--radius-control] border border-edge bg-paper p-4"
+        className="my-3.5 flex max-w-[42rem] flex-wrap items-center gap-x-4 gap-y-3 rounded-control border border-edge bg-paper p-4"
       >
         <span className="flex items-center gap-2">
           <Label htmlFor="quiet-from">{t("rhythm.quietFrom")}</Label>
@@ -74,8 +68,8 @@ export function Rhythm() {
             type="number"
             required
             step={1}
-            min={state.data.minCadenceMinutes}
-            max={state.data.maxCadenceMinutes}
+            min={spacing.minCadenceMinutes}
+            max={spacing.maxCadenceMinutes}
             className="w-26"
             value={cadence}
             onChange={(event) => setCadence(event.target.value)}
@@ -90,4 +84,14 @@ export function Rhythm() {
       <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );
+}
+
+export function Rhythm() {
+  const { t } = useWords();
+  const api = useApi();
+  const [state] = useLoad(() => api.rhythm());
+
+  if (state.status === "loading") return <Quiet>{t("rhythm.loading")}</Quiet>;
+  if (state.status === "failed") return <Quiet>{t("rhythm.unreadable")}</Quiet>;
+  return <Form spacing={state.data} />;
 }

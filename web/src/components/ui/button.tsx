@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 /* One filled button per view, so the next step is never ambiguous; everything else is
    outlined. Minimum height 44px: this panel is used on a phone, one-handed. */
 const button = cva(
-  "inline-flex items-center justify-center gap-2 rounded-[--radius-control] font-sans " +
+  "inline-flex items-center justify-center gap-2 rounded-control font-sans " +
     "text-base whitespace-nowrap cursor-pointer transition-[color,background-color,border-color] " +
     "disabled:cursor-default disabled:opacity-50",
   {

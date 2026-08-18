@@ -70,7 +70,7 @@ function Card({ proposal, onDecided }: { proposal: Proposal; onDecided: () => vo
     : proposal.kind;
 
   return (
-    <article className="mt-3.5 rounded-[--radius-control] border border-edge bg-paper p-[18px] pb-4">
+    <article className="mt-3.5 rounded-control border border-edge bg-paper p-[18px] pb-4">
       <p className="text-[0.82rem] tracking-wider text-quiet uppercase">{kind}</p>
       <Body proposal={proposal} />
       <p className="text-[0.92rem] text-quiet">{proposal.rationale}</p>

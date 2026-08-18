@@ -2,8 +2,8 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState, type ComponentType } from "react";
 
 import { ApiProvider } from "@/api/client";
-import type { Api, Me } from "@/api/types";
-import { Facts } from "@/components/Facts";
+import type { Api } from "@/api/types";
+import { Boundary } from "@/components/Boundary";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
@@ -24,12 +24,10 @@ interface Section {
 }
 
 export function Dashboard({
-  me,
   api,
   username,
   onSignOut,
 }: {
-  me: Me;
   api: Api;
   username: string;
   onSignOut: () => void;
@@ -66,45 +64,27 @@ export function Dashboard({
 
   return (
     <ApiProvider api={api}>
-      <section className="rounded-[--radius-panel] border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
+      <section className="rounded-panel border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
         <div className="border-b border-edge pb-5">
-          <h2 className="mb-2.5 text-[1.3rem] font-semibold tracking-tight">{t("panel.title")}</h2>
           <Quiet>{username ? t("signin.as", { user: username }) : t("signin.anon")}</Quiet>
-          <Facts
-            className="max-w-[34rem]"
-            rows={[
-              { label: t("facts.status"), value: me.status },
-              {
-                label: t("facts.account"),
-                value: <code className="font-mono text-[0.85em]">{me.accountId}</code>,
-              },
-              {
-                label: t("facts.household"),
-                value: (
-                  <code className="font-mono text-[0.85em]">{me.householdId ?? "\u2014"}</code>
-                ),
-              },
-            ]}
-          />
         </div>
 
         <div className="mt-6 wide:mt-7 wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
+          {/* Icon only: the heading right below already names the section, and saying it
+              twice on a phone reads as a mistake. */}
           <Button
-            className="mb-4 wide:hidden"
+            className="mb-4 w-12 px-0 wide:hidden"
             aria-label={t("menu.open")}
             aria-expanded={drawerOpen}
             onClick={() => setDrawerOpen(true)}
           >
             <Menu aria-hidden className="size-5" />
-            {section.title}
           </Button>
 
           {drawerOpen ? (
-            <button
-              type="button"
+            <div
               aria-hidden
-              tabIndex={-1}
-              className="fixed inset-0 z-10 cursor-default border-0 bg-black/30 wide:hidden"
+              className="fixed inset-0 z-10 bg-black/30 wide:hidden"
               onClick={() => setDrawerOpen(false)}
             />
           ) : null}
@@ -138,7 +118,7 @@ export function Dashboard({
                     setDrawerOpen(false);
                   }}
                   className={cn(
-                    "w-full cursor-pointer rounded-r-[--radius-control] border-0 border-l-[3px]",
+                    "w-full cursor-pointer rounded-r-control border-0 border-l-[3px]",
                     "border-transparent px-3 py-2.5 pl-3.5 text-left font-sans text-base",
                     entry.name === current
                       ? "border-l-accent bg-accent-soft font-semibold text-ink"
@@ -158,7 +138,9 @@ export function Dashboard({
               {section.title}
             </h3>
             <Quiet>{section.note}</Quiet>
-            <section.Body />
+            <Boundary resetOn={current} fallback={<Quiet>{t("section.broken")}</Quiet>}>
+              <section.Body />
+            </Boundary>
           </div>
         </div>
 
