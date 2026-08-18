@@ -243,19 +243,23 @@ This is the obstacle in front of multilingual content, and it is in front of it 
 beside it.
 
 **How.** Neutral keys — `title`, `instructions`, `exercises`, `question`, `choices`,
-`answer` — changed in four places at once: the prompt and the validation in
+`answer` — changed in five places at once: the prompt and the validation in
 `agents/content.py`, the renderer in `devices/epaper.py`, the batch tool in
-`tools/generate_batch.py`, and the fixtures in `tests/test_content_agent.py`.
+`tools/generate_batch.py`, the fixtures in `tests/test_content_agent.py`, and the panel in
+`web/src/sections/Proposals.tsx`, which reads the same keys to show the parent what they
+are approving. `printing/` does not touch them.
 
 **What it costs.** Content already approved and stored carries the old keys. Either the
 reader accepts both for a while, which is a small amount of code and an honest migration,
 or previously approved items stop rendering — which is not acceptable, because approval is
-the expensive part. Decide before starting, not halfway.
+the expensive part. Decide before starting, not halfway. Note that the reader is now in two
+languages: whatever is decided has to hold in Python and in TypeScript.
 
 **Where it starts.** `agents/content.py`, then follow the field names outward.
 
-**Done when.** No Italian field name appears in `agents/`, `devices/` or `tools/`, and a
-document produced before the change still renders on the display.
+**Done when.** No Italian field name appears in `agents/`, `devices/`, `tools/` or
+`web/src/`, and a document produced before the change still renders on the display and in
+the panel.
 
 ---
 
