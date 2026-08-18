@@ -8,7 +8,8 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { fakeApi } from "@/test/fakeApi";
+import type { Proposal } from "@/api/types";
+import { fakeApi, SAMPLE_PROPOSALS } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
 
 describe("to approve", () => {
@@ -93,6 +94,26 @@ describe("to approve", () => {
   it("says nothing is waiting rather than showing an empty page", async () => {
     renderPanel(fakeApi({ proposals: async () => [] }));
     expect(await screen.findByText("Nessuna proposta in attesa.")).toBeInTheDocument();
+  });
+
+  it("shows a sheet written before the field names changed", async () => {
+    /* Content approved before 18 August 2026 carries Italian keys and cannot be rewritten:
+     * the safety seal covers the body byte for byte. It has to read the same here. */
+    const stored: Proposal = {
+      ...SAMPLE_PROPOSALS[0]!,
+      body: JSON.stringify({
+        titolo: "Le stagioni",
+        istruzioni: "Scegli la parola giusta.",
+        esercizi: [
+          { domanda: "In che stagione cadono le foglie?", scelte: ["estate", "autunno"] },
+        ],
+      }),
+    };
+    renderPanel(fakeApi({ proposals: async () => [stored] }));
+
+    expect(await screen.findByText("Le stagioni")).toBeInTheDocument();
+    expect(screen.getByText("In che stagione cadono le foglie?")).toBeInTheDocument();
+    expect(screen.getByText("estate · autunno")).toBeInTheDocument();
   });
 
   it("stays calm when the list cannot be read, with no code and no stack", async () => {

@@ -5,17 +5,19 @@ import type { Decision, Proposal } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords, type MessageKey } from "@/i18n";
+import {
+  exerciseChoices,
+  exerciseQuestion,
+  sheetExercises,
+  sheetInstructions,
+  sheetTitle,
+  type Sheet,
+} from "@/lib/sheet";
 import { useLoad } from "@/lib/useLoad";
 
 // Unknown kinds show their raw name rather than a missing-key placeholder: the panel is
 // allowed to meet a kind this build has never heard of.
 const KNOWN_KINDS = ["exercise", "routine_prompt", "feedback", "schedule", "print_layout"];
-
-interface Sheet {
-  titolo?: string;
-  istruzioni?: string;
-  esercizi?: { domanda?: string; scelte?: string[] }[];
-}
 
 /* Everything here is rendered as text. This body was written by a model and reaches the
  * page as words, never as markup. */
@@ -31,14 +33,14 @@ function Body({ proposal }: { proposal: Proposal }) {
 
   return (
     <>
-      <h3 className="mb-1 text-[1.05rem] font-semibold">{sheet.titolo ?? ""}</h3>
-      <p className="mb-2">{sheet.istruzioni ?? ""}</p>
+      <h3 className="mb-1 text-[1.05rem] font-semibold">{sheetTitle(sheet)}</h3>
+      <p className="mb-2">{sheetInstructions(sheet)}</p>
       <ul className="mb-2.5 list-disc pl-5">
-        {(sheet.esercizi ?? []).map((entry, index) => (
+        {sheetExercises(sheet).map((entry, index) => (
           <li key={index} className="mb-1.5">
-            {entry.domanda ?? ""}
+            {exerciseQuestion(entry)}
             <span className="block text-[0.92rem] text-quiet">
-              {(entry.scelte ?? []).join(" · ")}
+              {exerciseChoices(entry).join(" · ")}
             </span>
           </li>
         ))}

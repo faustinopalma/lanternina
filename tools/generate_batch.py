@@ -31,6 +31,7 @@ from shared.agents import AgentContext
 from shared.approval import ApprovalState
 from shared.domain import ActivityKind, ContentVariety, Difficulty, LearnerProfile
 from shared.errors import SafetyBlocked, UnusableGeneration
+from shared.exercise import CHOICES, EXERCISES, INSTRUCTIONS, QUESTION, TITLE, field
 from shared.ids import LearnerId
 from shared.proposal import Proposal, ProposalKind
 from shared.seal import Sealer, SealPurpose
@@ -72,11 +73,11 @@ def _show(proposal: Proposal, index: int) -> None:
     print("-" * 78)
     if payload.kind.value.endswith("json"):
         content = json.loads(payload.body)
-        print(f"  {content.get('titolo', '')}")
-        print(f"  {content.get('istruzioni', '')}")
-        for entry in content.get("esercizi", []):
-            print(f"   · {entry.get('domanda', '')}")
-            for choice in entry.get("scelte", []):
+        print(f"  {field(content, TITLE, '')}")
+        print(f"  {field(content, INSTRUCTIONS, '')}")
+        for entry in field(content, EXERCISES, []):
+            print(f"   · {field(entry, QUESTION, '')}")
+            for choice in field(entry, CHOICES, []):
                 print(f"       [ ] {choice}")
     else:
         print(f"  {payload.body.strip()}")

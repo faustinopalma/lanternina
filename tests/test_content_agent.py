@@ -12,15 +12,16 @@ import time
 import pytest
 
 from agents.content import HouseholdContentAgent
+from devices.epaper import render_epaper_png
 from orchestrator.approval import InMemoryLedger
 from orchestrator.safety import AzureContentSafetyGate, ContentSafetyConfig
 from shared.agents import AgentContext
-from shared.approval import ApprovalState
+from shared.approval import ApprovalState, ApprovedItem
 from shared.delivery import assert_deliverable, is_deliverable
 from shared.domain import ActivityKind, Difficulty, LearnerProfile
 from shared.errors import SafetyBlocked, UnusableGeneration
-from shared.ids import LearnerId
-from shared.proposal import ProposalKind
+from shared.ids import LearnerId, new_proposal_id
+from shared.proposal import Proposal, ProposalKind
 from shared.routing import ModelRequest
 from shared.safety import ContentKind, SafetyCategory, ScreenedPayload
 from shared.seal import Sealer, SealPurpose
@@ -29,6 +30,17 @@ SAFETY_KEY = b"safety-key-for-tests"
 APPROVAL_KEY = b"approval-key-for-tests"
 
 EXERCISE_JSON = json.dumps(
+    {
+        "title": "Animali",
+        "instructions": "Barra una scelta.",
+        "exercises": [{"question": "Chi ha gli aculei?", "choices": ["riccio", "volpe"]}],
+        "rationale": "tema scelto dal genitore",
+    }
+)
+
+# The same sheet as it was written before 18 August 2026. Kept verbatim: a body approved
+# then is sealed byte for byte and reaches the renderer in this shape forever.
+LEGACY_EXERCISE_JSON = json.dumps(
     {
         "titolo": "Animali",
         "istruzioni": "Barra una scelta.",
@@ -137,3 +149,45 @@ async def test_a_rejected_proposal_yields_nothing_to_deliver() -> None:
     ledger.submit(proposal)
     assert ledger.decide(proposal.id, ApprovalState.REJECTED, decided_by="parent") is None
     assert ledger.approved(proposal.learner_id) == []
+
+
+async def _approved_sheet(body: str) -> ApprovedItem:
+    """Approve a body directly, bypassing the agent: the old shape no longer generates."""
+    payload = await _gate().screen(ContentKind.EXERCISE_JSON, body)
+    proposal = Proposal(
+        id=new_proposal_id(),
+        kind=ProposalKind.EXERCISE,
+        agent="content",
+        learner_id=LearnerId("lr_test"),
+        payload=payload,
+        rationale="foglio archiviato",
+        created_at=time.time(),
+    )
+    ledger = InMemoryLedger(Sealer(SealPurpose.PARENT_APPROVAL, APPROVAL_KEY, "panel"))
+    ledger.submit(proposal)
+    item = ledger.decide(proposal.id, ApprovalState.APPROVED, decided_by="parent")
+    assert item is not None
+    return item
+
+
+async def test_a_sheet_approved_before_the_rename_still_renders() -> None:
+    """Both key spellings draw the same page, pixel for pixel.
+
+    Stored bodies keep the Italian keys because the safety seal covers them byte for byte;
+    only the reader knows about both. If the fallback goes, this render comes back blank.
+    """
+    old_sheet = await _approved_sheet(LEGACY_EXERCISE_JSON)
+    new_sheet = await _approved_sheet(EXERCISE_JSON)
+    old = render_epaper_png(old_sheet, safety_key=SAFETY_KEY, approval_key=APPROVAL_KEY)
+    new = render_epaper_png(new_sheet, safety_key=SAFETY_KEY, approval_key=APPROVAL_KEY)
+    assert old == new
+
+
+async def test_generation_asks_for_the_new_field_names_only() -> None:
+    """Reading both is a concession to what is stored, not a second accepted form."""
+    with pytest.raises(UnusableGeneration):
+        await HouseholdContentAgent().propose_exercise(
+            _context(reply=LEGACY_EXERCISE_JSON),
+            kind=ActivityKind.PRINTED_EXERCISE,
+            difficulty=Difficulty.GENTLE,
+        )

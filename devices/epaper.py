@@ -25,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from shared.approval import ApprovedItem
 from shared.delivery import assert_deliverable
+from shared.exercise import CHOICES, EXERCISES, INSTRUCTIONS, QUESTION, TITLE, field
 from shared.safety import ContentKind
 
 WIDTH: Final = 800
@@ -165,13 +166,13 @@ def _render(
 
     if payload.kind is ContentKind.EXERCISE_JSON:
         content = json.loads(payload.body)
-        y = _draw_block(draw, str(content.get("titolo", "")), fonts.title, MARGIN, inner, 52)
-        y = _draw_block(draw, str(content.get("istruzioni", "")), fonts.body, y + 8, inner, 40)
-        for entry in content.get("esercizi", []):
+        y = _draw_block(draw, str(field(content, TITLE, "")), fonts.title, MARGIN, inner, 52)
+        y = _draw_block(draw, str(field(content, INSTRUCTIONS, "")), fonts.body, y + 8, inner, 40)
+        for entry in field(content, EXERCISES, []):
             if y > HEIGHT - 90:
                 break
-            question = str(entry.get("domanda", ""))
-            choices = "   ".join(f"[ ] {c}" for c in entry.get("scelte", []))
+            question = str(field(entry, QUESTION, ""))
+            choices = "   ".join(f"[ ] {c}" for c in field(entry, CHOICES, []))
             y = _draw_block(draw, question, fonts.body, y + 14, inner, 38)
             y = _draw_block(draw, choices, fonts.small, y, inner, 32)
     else:

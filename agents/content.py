@@ -19,6 +19,7 @@ from typing import Any
 
 from shared.domain import ActivityKind, Difficulty
 from shared.errors import UnusableGeneration
+from shared.exercise import EXERCISES, INSTRUCTIONS, RATIONALE, TITLE
 from shared.ids import new_proposal_id, new_request_id
 from shared.proposal import Proposal, ProposalKind
 from shared.routing import Capability, ModelRequest
@@ -41,9 +42,9 @@ _KIND_GLOSS = {
 }
 
 _EXERCISE_SHAPE = (
-    '{"titolo": "...", "istruzioni": "...", '
-    '"esercizi": [{"domanda": "...", "scelte": ["...", "..."], "risposta": "..."}], '
-    '"perche": "..."}'
+    '{"title": "...", "instructions": "...", '
+    '"exercises": [{"question": "...", "choices": ["...", "..."], "answer": "..."}], '
+    '"rationale": "..."}'
 )
 
 
@@ -72,7 +73,7 @@ class HouseholdContentAgent:
             )
         )
         body = self._parsed(payload)
-        for field_name in ("titolo", "istruzioni", "esercizi"):
+        for field_name in (TITLE, INSTRUCTIONS, EXERCISES):
             if not body.get(field_name):
                 raise UnusableGeneration(f"generated exercise has no {field_name}")
 
@@ -82,7 +83,7 @@ class HouseholdContentAgent:
             agent=self.name,
             learner_id=ctx.learner_id,
             payload=payload,
-            rationale=str(body.get("perche") or f"attivita {kind} richiesta dal genitore"),
+            rationale=str(body.get(RATIONALE) or f"attivita {kind} richiesta dal genitore"),
             created_at=ctx.now,
         )
 
@@ -190,7 +191,7 @@ class HouseholdContentAgent:
             "senza lettere o numeri iniziali. Le caselle le disegna il foglio.\n"
             f"Le righe di testo non superano {hints.get('max_words_per_line', 6)} parole.\n"
             f"{self._boundaries(hints)}\n"
-            "In 'perche' spiega al genitore in una frase perche proponi questo.\n"
+            f"In '{RATIONALE}' spiega al genitore in una frase perche proponi questo.\n"
             f"Rispondi con solo JSON, senza ``` e senza altro testo, in questa forma: "
             f"{_EXERCISE_SHAPE}"
         )

@@ -231,35 +231,48 @@ involved.
 
 ---
 
-## 7. Field names that are not Italian
+## 7. Closed: field names that are not Italian
 
-**What it is.** Renaming the keys the content agent produces: `titolo`, `istruzioni`,
-`esercizi`, `domanda`, `scelte`, `risposta`.
+**What it was.** The keys the content agent produced were Italian: `titolo`, `istruzioni`,
+`esercizi`, `domanda`, `scelte`, `risposta`. A seventh, `perche`, carried the sentence the
+parent reads with the proposal; it was in the same JSON and had the same problem.
 
-**Why.** The household's content language is meant to be a setting. It cannot be, while the
-language is baked into the shape of the data: a sheet in English would still be a document
-with a field called `domanda`, and the prompt that produces it asks for that field by name.
-This is the obstacle in front of multilingual content, and it is in front of it rather than
-beside it.
+**Why.** The household's content language is a setting. It could not be one while the
+language was baked into the shape of the data: a sheet in English would still have been a
+document with a field called `domanda`, and the prompt that produced it asked for that
+field by name.
 
-**How.** Neutral keys — `title`, `instructions`, `exercises`, `question`, `choices`,
-`answer` — changed in five places at once: the prompt and the validation in
-`agents/content.py`, the renderer in `devices/epaper.py`, the batch tool in
-`tools/generate_batch.py`, the fixtures in `tests/test_content_agent.py`, and the panel in
-`web/src/sections/Proposals.tsx`, which reads the same keys to show the parent what they
-are approving. `printing/` does not touch them.
+**The decision, taken before starting.** Content approved before the change is not
+rewritten; the readers accept both spellings. The choice was not a matter of taste. The
+safety seal covers `body` byte for byte and the approval seal covers the payload that holds
+it, so renaming a key inside stored content invalidates both, and re-sealing would mint an
+approval the parent never gave. Migrating the data would therefore have meant an agent
+setting approval, which is the one thing the seals exist to prevent.
 
-**What it costs.** Content already approved and stored carries the old keys. Either the
-reader accepts both for a while, which is a small amount of code and an honest migration,
-or previously approved items stop rendering — which is not acceptable, because approval is
-the expensive part. Decide before starting, not halfway. Note that the reader is now in two
-languages: whatever is decided has to hold in Python and in TypeScript.
+**How it was closed, 18 August 2026.** The keys are now `title`, `instructions`,
+`exercises`, `question`, `choices`, `answer` and `rationale`. Generation asks for those and
+validates those; a body in the old shape is refused as unusable, because it can no longer
+come from us. Reading goes through one function per language — `field()` in
+`shared/exercise.py`, six named readers in `web/src/lib/sheet.ts` — which try the current
+key and fall back to the Italian one. Those two files are the only places in the running
+system where an Italian key is named, and a test in `tests/test_boundaries.py` says so:
+`agents/`, `devices/`, `tools/`, `printing/`, the rest of `shared/`, `orchestrator/`,
+`panel/`, `vision/` and `web/src/` may not name one. The check looks for a key, not a word,
+so the Italian prose in the prompts — "da 2 a 4 scelte" — is left alone.
 
-**Where it starts.** `agents/content.py`, then follow the field names outward.
+**What it cost.** Two small files that would not exist if the data could be migrated, and
+one dictionary lookup per field when a body carries the current keys. The cost is
+permanent: as long as one approved body from before the change survives, the fallback
+cannot go. Nothing removes it later, because nothing can tell from the outside whether the
+last old body has been withdrawn.
 
-**Done when.** No Italian field name appears in `agents/`, `devices/`, `tools/` or
-`web/src/`, and a document produced before the change still renders on the display and in
-the panel.
+**How it was checked.** Three claims, each broken on purpose and watched to fail before it
+was restored. Removing the Python fallback makes the display render of an old sheet differ
+from the new one at byte 35 of the PNG. Removing the TypeScript fallback makes the panel
+show an empty title. Reintroducing `entry.get("domanda")` in `devices/epaper.py` and
+`sheet.titolo` in `Proposals.tsx` makes the boundary test name both files. The suite went
+from 198 to 201 pytest tests and from 25 to 26 in the panel; `ruff check` and `tsc
+--noEmit` stay clean.
 
 ---
 

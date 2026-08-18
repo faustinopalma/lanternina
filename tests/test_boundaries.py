@@ -357,3 +357,44 @@ def test_the_panel_in_the_browser_uses_none_of_that_vocabulary_either() -> None:
     assert not offences, "engagement/assessment vocabulary in the panel:\n" + "\n".join(
         offences
     )
+
+
+# ── The content language is a setting, not a property of the data ────────────────────
+
+# The two files that translate between the stored shape and the current one. They are the
+# only place in the running system where an Italian key may be named; everywhere else it
+# would put the language back into the data. `web/src/test/` is excluded for the same
+# reason `tests/` is not scanned at all: a fixture has to be able to spell the old shape.
+LEGACY_KEY_READERS = ("shared/exercise.py", "web/src/lib/sheet.ts")
+LEGACY_KEY_FIXTURES = "web/src/test/"
+
+
+def test_no_italian_field_name_outside_the_two_readers() -> None:
+    """A body in English would otherwise still be a document with a field called `domanda`.
+
+    Prose is not the target: the prompts are written in Italian and say "scelte" in a
+    sentence. What is forbidden is naming a key. In Python that means a quoted literal,
+    because a dict key always carries its quotes; in TypeScript also a property access or
+    an object-literal key, because there it usually does not.
+    """
+    from shared.exercise import LEGACY_KEYS
+
+    words = "|".join(sorted(LEGACY_KEYS.values()))
+    in_python = re.compile(rf"""["']({words})["']""")
+    in_typescript = re.compile(rf"""[.'"]({words})\b|\b({words})\s*\??\s*:""")
+
+    offences: list[str] = []
+    for package in (*PACKAGES, "devices", "tools", "printing"):
+        for path in _python_files(package):
+            where = path.relative_to(REPO).as_posix()
+            found = sorted({m.group(1) for m in in_python.finditer(path.read_text("utf-8"))})
+            if found and where not in LEGACY_KEY_READERS:
+                offences.append(f"{where}: {found}")
+    for path in (REPO / "web" / "src").rglob("*.ts*"):
+        where = path.relative_to(REPO).as_posix()
+        if where in LEGACY_KEY_READERS or where.startswith(LEGACY_KEY_FIXTURES):
+            continue
+        found = sorted({m.group(0) for m in in_typescript.finditer(path.read_text("utf-8"))})
+        if found:
+            offences.append(f"{where}: {found}")
+    assert not offences, "Italian field names outside the readers:\n" + "\n".join(offences)

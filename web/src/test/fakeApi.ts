@@ -42,11 +42,11 @@ export const SAMPLE_PROPOSALS: Proposal[] = [
     state: "pending",
     contentKind: "application/json",
     body: JSON.stringify({
-      titolo: "Le stagioni",
-      istruzioni: "Scegli la parola giusta.",
-      esercizi: [
-        { domanda: "In che stagione cadono le foglie?", scelte: ["estate", "autunno"] },
-        { domanda: "Quando fiorisce il ciliegio?", scelte: ["primavera", "inverno"] },
+      title: "Le stagioni",
+      instructions: "Scegli la parola giusta.",
+      exercises: [
+        { question: "In che stagione cadono le foglie?", choices: ["estate", "autunno"] },
+        { question: "Quando fiorisce il ciliegio?", choices: ["primavera", "inverno"] },
       ],
     }),
   },
