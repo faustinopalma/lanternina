@@ -23,15 +23,7 @@ interface Section {
   Body: ComponentType;
 }
 
-export function Dashboard({
-  api,
-  username,
-  onSignOut,
-}: {
-  api: Api;
-  username: string;
-  onSignOut: () => void;
-}) {
+export function Dashboard({ api }: { api: Api }) {
   const { t } = useWords();
   const [current, setCurrent] = useState("proposals");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -65,11 +57,7 @@ export function Dashboard({
   return (
     <ApiProvider api={api}>
       <section className="rounded-panel border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
-        <div className="border-b border-edge pb-5">
-          <Quiet>{username ? t("signin.as", { user: username }) : t("signin.anon")}</Quiet>
-        </div>
-
-        <div className="mt-6 wide:mt-7 wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
+        <div className="wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
           {/* Icon only: the heading right below already names the section, and saying it
               twice on a phone reads as a mistake. */}
           <Button
@@ -142,10 +130,6 @@ export function Dashboard({
               <section.Body />
             </Boundary>
           </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-2.5">
-          <Button onClick={onSignOut}>{t("signout")}</Button>
         </div>
       </section>
     </ApiProvider>

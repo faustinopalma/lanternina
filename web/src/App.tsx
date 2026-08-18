@@ -14,9 +14,9 @@ import { useWords, type MessageKey } from "@/i18n";
 type Stage =
   | { view: "loading" }
   | { view: "signedout" }
-  | { view: "connecting"; username: string }
+  | { view: "connecting" }
   | { view: "pending" }
-  | { view: "dashboard"; api: Api; username: string }
+  | { view: "dashboard"; api: Api }
   | { view: "error"; message: MessageKey };
 
 // One line under the name, saying where the parent is. The dashboard says nothing: the
@@ -45,7 +45,7 @@ export function App() {
     }
 
     let live = true;
-    setStage({ view: "connecting", username: account.username });
+    setStage({ view: "connecting" });
 
     (async () => {
       const token = await bearerFor(account);
@@ -55,7 +55,7 @@ export function App() {
       const admission = await api.admission();
       if (!live) return;
       if (admission.kind === "in") {
-        setStage({ view: "dashboard", api, username: account.username });
+        setStage({ view: "dashboard", api });
       } else if (admission.kind === "pending") {
         setStage({ view: "pending" });
       } else {
@@ -75,8 +75,17 @@ export function App() {
     };
   }, [accounts, inProgress]);
 
+  const signedIn = accounts[0];
+
   return (
-    <Shell lede={LEDE[stage.view]}>
+    <Shell
+      lede={LEDE[stage.view]}
+      account={
+        signedIn === undefined
+          ? null
+          : { username: signedIn.username, onSignOut: () => void signOut() }
+      }
+    >
       {stage.view === "signedout" ? (
         <Card className="max-w-[34rem]">
           <CardTitle>{t("signin.title")}</CardTitle>
@@ -91,10 +100,7 @@ export function App() {
 
       {stage.view === "connecting" ? (
         <Card className="max-w-[34rem]" aria-live="polite">
-          <Quiet>
-            {stage.username ? t("signin.as", { user: stage.username }) : t("signin.anon")}
-          </Quiet>
-          <Quiet className="mt-3">{t("connecting.note")}</Quiet>
+          <Quiet>{t("connecting.note")}</Quiet>
         </Card>
       ) : null}
 
@@ -103,19 +109,10 @@ export function App() {
           <CardTitle>{t("pending.title")}</CardTitle>
           <p className="mb-3">{t("pending.body")}</p>
           <Quiet>{t("pending.note")}</Quiet>
-          <div className="mt-6 flex flex-wrap gap-2.5">
-            <Button onClick={() => void signOut()}>{t("signout")}</Button>
-          </div>
         </Card>
       ) : null}
 
-      {stage.view === "dashboard" ? (
-        <Dashboard
-          api={stage.api}
-          username={stage.username}
-          onSignOut={() => void signOut()}
-        />
-      ) : null}
+      {stage.view === "dashboard" ? <Dashboard api={stage.api} /> : null}
 
       {stage.view === "error" ? (
         <Card className="max-w-[34rem]">
@@ -123,7 +120,6 @@ export function App() {
           <p>{t(stage.message)}</p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <Button onClick={() => window.location.reload()}>{t("error.retry")}</Button>
-            <Button onClick={() => void signOut()}>{t("signout")}</Button>
           </div>
         </Card>
       ) : null}

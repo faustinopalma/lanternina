@@ -23,12 +23,11 @@ if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("prev
     root.render(
       <StrictMode>
         <LanguageProvider>
-          <Shell lede={null}>
-            <Dashboard
-              api={fakeApi()}
-              username="genitore@example.invalid"
-              onSignOut={() => undefined}
-            />
+          <Shell
+            lede={null}
+            account={{ username: "genitore@example.invalid", onSignOut: () => undefined }}
+          >
+            <Dashboard api={fakeApi()} />
           </Shell>
         </LanguageProvider>
       </StrictMode>,

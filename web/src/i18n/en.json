@@ -9,9 +9,8 @@
   "signin.title": "Sign in",
   "signin.body": "The panel needs an account. You can create one the first time you sign in.",
   "signin.button": "Sign in",
-  "signin.as": "Signed in as {user}.",
-  "signin.anon": "Signed in.",
   "signout": "Sign out",
+  "account.aria": "The account you signed in with",
 
   "connecting.note": "You can leave this page open. The service may be starting from zero while the panel is already visible.",
 

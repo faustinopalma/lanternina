@@ -11,6 +11,28 @@ async function open(user: ReturnType<typeof userEvent.setup>, name: string) {
   await user.click(within(screen.getByRole("navigation")).getByRole("button", { name }));
 }
 
+describe("the page around the sections", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("keeps one way out, in the header rather than under the content", () => {
+    renderPanel(fakeApi());
+
+    const out = screen.getAllByRole("button", { name: "Esci" });
+    expect(out).toHaveLength(1);
+    // Before the menu, so it is where a reader looks for it rather than past everything.
+    expect(out[0]!.compareDocumentPosition(screen.getByRole("navigation"))).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
+  it("shows the account as an address, not as a sentence about one", () => {
+    renderPanel(fakeApi());
+    expect(screen.getByLabelText("Account con cui sei entrato")).toHaveTextContent(
+      /^genitore@example\.invalid$/,
+    );
+  });
+});
+
 describe("the gallery", () => {
   beforeEach(() => window.localStorage.clear());
 

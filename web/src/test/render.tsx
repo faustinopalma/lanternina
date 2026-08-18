@@ -12,10 +12,11 @@ export function renderPanel(api: Api, children?: ReactNode): RenderResult {
   window.localStorage.setItem("lanternina.language", "it");
   return render(
     <LanguageProvider>
-      <Shell lede={null}>
-        {children ?? (
-          <Dashboard api={api} username="genitore@example.invalid" onSignOut={() => undefined} />
-        )}
+      <Shell
+        lede={null}
+        account={{ username: "genitore@example.invalid", onSignOut: () => undefined }}
+      >
+        {children ?? <Dashboard api={api} />}
       </Shell>
     </LanguageProvider>,
   );

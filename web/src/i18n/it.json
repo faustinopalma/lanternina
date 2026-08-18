@@ -9,9 +9,8 @@
   "signin.title": "Accesso",
   "signin.body": "Per usare il pannello serve un account. Puoi crearlo al primo accesso.",
   "signin.button": "Entra",
-  "signin.as": "Accesso effettuato come {user}.",
-  "signin.anon": "Accesso effettuato.",
   "signout": "Esci",
+  "account.aria": "Account con cui sei entrato",
 
   "connecting.note": "Puoi lasciare aperta questa pagina. Il servizio può avviarsi da zero mentre il pannello è già visibile.",
 
