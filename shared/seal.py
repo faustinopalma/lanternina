@@ -117,5 +117,6 @@ def verify_seal(seal: Seal, payload: Any, key: bytes, expected_purpose: SealPurp
 
 
 def _sign(key: bytes, purpose: SealPurpose, digest: str, issued_at: float, issuer: str) -> str:
-    message = f"{SEAL_VERSION}|{purpose}|{digest}|{issued_at!r}|{issuer}".encode("utf-8")
-    return hmac.new(key, message, hashlib.sha256).hexdigest()
+    # utf-8 named as in digest_payload: issuer is free text, so the bytes decide the signature.
+    message = f"{SEAL_VERSION}|{purpose}|{digest}|{issued_at!r}|{issuer}"
+    return hmac.new(key, message.encode("utf-8"), hashlib.sha256).hexdigest()

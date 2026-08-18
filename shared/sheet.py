@@ -172,7 +172,7 @@ class QrPayload:
         return f"LNT1|{self.spec_version}|{self.sheet_id}|{self.exercise_id}"
 
     @staticmethod
-    def decode(raw: str) -> "QrPayload":
+    def decode(raw: str) -> QrPayload:
         """Parse a scanned QR string. Raises ValueError on anything unrecognised."""
         parts = raw.strip().split("|")
         if len(parts) != 4 or parts[0] != "LNT1":

@@ -79,24 +79,26 @@ ruled out, under a kinder name.
 
 ---
 
-## 5. The real settings
+## 5. The real settings — built
 
 **What it is.** Interests, things to avoid, difficulty, variety, words per line, language.
 
-**Why.** Today they are a `LearnerProfile` written into the home server's code, with
-invented names. Every piece of content generated so far is tuned to a person who does not
-exist.
+**Why.** They were a `LearnerProfile` written into the home server's code, with invented
+names. Every piece of content generated until now was tuned to a person who does not exist.
 
-**How.** The same shape as the themes: a Cosmos container, a route for the parent, a route
-for the device. The home server asks for them along with the themes.
+**How.** The same shape as the themes, and it is now built: a document per household in
+Cosmos, `GET`/`POST /api/preferences` for the parent, `GET /api/device/{household}/preferences`
+for the home server, which asks for them alongside the themes and adds her name locally.
 
-**What it costs.** Her name must **not** enter the cloud. The profile that goes up is
-already redacted (`prompt_hints()` excludes name and id): that function has to be respected
-here too, or the separation between household and person is lost in a text field.
+**What it cost.** Her name must **not** enter the cloud, and the way that is held is
+mechanical rather than remembered: what the panel stores is exactly the field list
+`prompt_hints()` allows out, a test compares the two, and a body carrying an unknown field
+is refused rather than accepted and ignored. The hub reads her name and her id from its own
+environment; neither has anywhere to be written down up here.
 
-One of these settings is now load-bearing rather than cosmetic. The **content language** —
-what she reads on paper and on the display — belongs to the household and must not follow
-the parent's browser. A parent switching their phone to another language would otherwise
+One of these settings is load-bearing rather than cosmetic. The **content language** — what
+she reads on paper and on the display — belongs to the household and does not follow the
+parent's browser. A parent switching their phone to another language would otherwise
 silently change what she reads, and content approved in one language is not approved in
 another.
 
@@ -139,30 +141,29 @@ decisions have to be written down rather than discovered: what happens when two 
 arrive before the hub looks — the last one wins is the simplest answer — and how long a
 request nobody collected stays alive.
 
-**Where it starts.** `panel/pictures.py` and `panel/app.py` for the two routes, `web/app.js`
-for the gallery tile, `devices/pull_picture.py` for the side that acts.
+**Where it starts.** `panel/pictures.py` and `panel/app.py` for the two routes,
+`web/src/sections/Pictures.tsx` for the gallery tile, `devices/pull_picture.py` for the side
+that acts.
 
 **Done when.** With the hub's timer stopped, the request is still there. On the next run the
 chosen picture is on the display, and the request is gone.
 
 ---
 
-## 8. Retiring the diagnostics block
+## 8. Retiring the diagnostics block — done, 18 August 2026
 
-**What it is.** Removing the `Technical details` block at the foot of the panel.
+**What it was.** The `Technical details` block at the foot of the panel.
 
-**Why.** It prints the token's claims and the raw body of `/api/me`. It is marked
+**Why.** It printed the token's claims and the raw body of `/api/me`. It was marked
 `TODO(poc)` in the markup because it is a development aid, and it is the kind of thing that
-stays for a year. Nothing there is meant for a parent.
+stays for a year. Nothing there was meant for a parent.
 
-**How.** Delete the `<details>` element, the `showDiagnostics` calls, and the three catalog
-keys in both languages.
+**How it went.** It was removed while the panel was rewritten as a React application: the
+block, the calls that filled it, and the three catalog keys in both languages are gone.
+Two other numbers went with it. A refused request used to say `HTTP {status}`, and a failed
+sign-in printed MSAL's error code; both now say what happened in a sentence, because a
+status code is our problem and not something a parent can act on.
 
-**What it costs.** The fastest way to see why a token was refused. It is worth replacing
-with one line that names the cause — audience, issuer, expiry — without printing the claims
-themselves.
-
-**Where it starts.** `web/index.html`, `web/app.js`, `web/i18n.js`.
-
-**Done when.** The served page no longer contains `id="diagnostics"`, and
-`tests/test_web_i18n.py` still passes with the keys removed from both catalogs.
+**What it cost.** The fastest way to see why a token was refused. `/api/me` still answers
+the three cases apart — 200, 403, 503 — so the cause is one `curl` away for whoever is
+debugging; it is simply no longer on the parent's screen.

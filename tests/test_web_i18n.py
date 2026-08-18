@@ -1,39 +1,49 @@
 """The panel's translation catalogs.
 
-Adding a language is meant to be adding one object to `CATALOGS` and nothing else. That
-claim only holds if two things stay true, and both fail silently in a browser: every
-catalog has to carry the same keys, and every key the panel asks for has to exist. A missing
-string shows the key itself to a parent, which is exactly the kind of fault nobody reports.
+Adding a language is meant to be adding one JSON file and one entry in `CATALOGS`. That
+claim only holds if two things stay true, and both fail silently in a browser: every catalog
+has to carry the same keys, and every key the panel asks for has to exist. A missing string
+shows the key itself to a parent, which is exactly the kind of fault nobody reports.
 
-These tests read the shipped files rather than a copy, so they break when the panel drifts.
+TypeScript says the second thing too, from inside — `MessageKey` is `keyof typeof it`. These
+tests say it from outside, on the shipped files, so the guarantee survives a build that is
+never run and a type that is loosened.
 """
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
 WEB = Path(__file__).resolve().parent.parent / "web"
+SRC = WEB / "src"
+CATALOGS = SRC / "i18n"
 
-# A catalog entry: two spaces of indent inside `strings: {`, a quoted key, a quoted value.
-ENTRY = re.compile(r'^\s{6}"([\w.]+)":', re.MULTILINE)
-LANGUAGE = re.compile(r'^  (\w+): \{$', re.MULTILINE)
-USED_IN_JS = re.compile(r'\bt\(\s*"([\w.]+)"')
-# The three attribute forms i18n.js knows how to fill.
-USED_IN_HTML = re.compile(r'data-i18n(?:-placeholder|-label)?="([\w.]+)"')
-# Built at runtime from a value, so the literal key never appears in the source.
-COMPUTED_PREFIXES = ("kind.", "level.")
+# Fixtures and assertions are allowed to hold Italian: they are content and expectations,
+# not words the panel puts on a screen.
+TESTS = SRC / "test"
+
+USED = re.compile(r'\bt\(\s*"([\w.]+)"')
+# Keys built from a value, so the literal never appears: `kind.exercise`, `level.ok`.
+COMPUTED = re.compile(r'`(\w+)\.\$\{')
 
 
-def catalogs() -> dict[str, set[str]]:
-    source = (WEB / "i18n.js").read_text(encoding="utf-8")
-    head, _, tail = source.partition("const CATALOGS = {")
-    assert tail, "i18n.js no longer declares CATALOGS"
-    blocks = LANGUAGE.split(tail)
-    # split() gives [before, name, body, name, body, ...]
-    found: dict[str, set[str]] = {}
-    for index in range(1, len(blocks) - 1, 2):
-        found[blocks[index]] = set(ENTRY.findall(blocks[index + 1]))
+def sources() -> list[Path]:
+    """Every file the panel is built from, minus its own tests."""
+    return [
+        path
+        for path in SRC.rglob("*.ts*")
+        if TESTS not in path.parents and not path.name.endswith(".d.ts")
+    ]
+
+
+def catalogs() -> dict[str, dict[str, str]]:
+    found = {
+        path.stem: json.loads(path.read_text(encoding="utf-8"))
+        for path in CATALOGS.glob("*.json")
+    }
+    assert found, f"no catalogs in {CATALOGS}"
     return found
 
 
@@ -41,77 +51,107 @@ def test_every_catalog_carries_the_same_keys() -> None:
     found = catalogs()
     assert len(found) >= 2, f"expected at least two languages, found {sorted(found)}"
     reference = sorted(found)[0]
-    for language, keys in found.items():
-        missing = found[reference] - keys
-        extra = keys - found[reference]
+    for language, table in found.items():
+        missing = set(found[reference]) - set(table)
+        extra = set(table) - set(found[reference])
         assert not missing, f"{language} is missing {sorted(missing)}"
         assert not extra, f"{language} has keys no other catalog has: {sorted(extra)}"
 
 
-def test_no_catalog_is_empty() -> None:
-    for language, keys in catalogs().items():
-        assert len(keys) > 20, f"{language} looks truncated: {len(keys)} keys"
+def test_no_catalog_is_empty_or_holds_an_empty_string() -> None:
+    for language, table in catalogs().items():
+        assert len(table) > 20, f"{language} looks truncated: {len(table)} keys"
+        blank = sorted(key for key, text in table.items() if not str(text).strip())
+        assert not blank, f"{language} has nothing to say for {blank}"
 
 
 def used_keys() -> set[str]:
-    keys = set(USED_IN_JS.findall((WEB / "app.js").read_text(encoding="utf-8")))
-    keys |= set(USED_IN_HTML.findall((WEB / "index.html").read_text(encoding="utf-8")))
+    keys: set[str] = set()
+    for path in sources():
+        keys |= set(USED.findall(path.read_text(encoding="utf-8")))
     return keys
 
 
 def test_every_key_the_panel_asks_for_exists() -> None:
-    known = set().union(*catalogs().values())
-    unknown = {key for key in used_keys() if key not in known}
-    assert not unknown, f"the panel asks for keys no catalog has: {sorted(unknown)}"
+    known = set().union(*(set(table) for table in catalogs().values()))
+    unknown = sorted(key for key in used_keys() if key not in known)
+    assert not unknown, f"the panel asks for keys no catalog has: {unknown}"
 
 
 def test_the_computed_keys_are_all_present() -> None:
-    """`kind.*` and `level.*` are built from a value, so nothing else would catch a gap."""
-    known = set().union(*catalogs().values())
-    app = (WEB / "app.js").read_text(encoding="utf-8")
-    for prefix in COMPUTED_PREFIXES:
-        listed = re.search(rf'KNOWN_{prefix[:-1].upper()}S = \[([^\]]+)\]', app)
-        assert listed, f"app.js no longer lists the {prefix} values"
-        for value in re.findall(r'"(\w+)"', listed.group(1)):
-            assert f"{prefix}{value}" in known, f"no catalog entry for {prefix}{value}"
+    """`kind.*` and `level.*` are built from a value, so nothing else would catch a gap.
+
+    The panel lists the values it knows how to name; every one of them must be in the
+    catalogs, and the list is what this test reads.
+    """
+    known = set().union(*(set(table) for table in catalogs().values()))
+    text = {path: path.read_text(encoding="utf-8") for path in sources()}
+
+    prefixes: set[str] = set()
+    for body in text.values():
+        prefixes |= set(COMPUTED.findall(body))
+    assert prefixes, "no computed keys found; the pattern in this test has gone stale"
+
+    for prefix in sorted(prefixes):
+        listed = next(
+            (
+                found.group(1)
+                for body in text.values()
+                if (found := re.search(rf"KNOWN_{prefix.upper()}S = \[([^\]]+)\]", body))
+            ),
+            None,
+        )
+        assert listed, f"nothing lists the values behind `{prefix}.`"
+        for value in re.findall(r'"(\w+)"', listed):
+            assert f"{prefix}.{value}" in known, f"no catalog entry for {prefix}.{value}"
 
 
 def test_the_panel_keeps_no_italian_sentences() -> None:
     """The words live in the catalogs. A sentence left in the code cannot be translated."""
     marker = re.compile(
-        r'(?i)(?<![\w-])(perch\u00e9|gi\u00e0|della|delle|questo|questa|sono|viene|'
-        r'nessun\w*|caricando|riesco|riprova)(?![\w-])'
+        r"(?i)(?<![\w-])(perch\u00e9|gi\u00e0|della|delle|questo|questa|sono|viene|"
+        r"nessun\w*|caricando|riesco|riprova)(?![\w-])"
     )
-    for name in ("app.js", "index.html"):
-        text = (WEB / name).read_text(encoding="utf-8")
-        found = sorted({match.group(0) for match in marker.finditer(text)})
-        assert not found, f"{name} still holds Italian words: {found}"
+    offences: list[str] = []
+    for path in [*sources(), WEB / "index.html"]:
+        body = path.read_text(encoding="utf-8")
+        found = sorted({match.group(0) for match in marker.finditer(body)})
+        if found:
+            offences.append(f"{path.relative_to(WEB)}: {found}")
+    assert not offences, "Italian left in the sources:\n" + "\n".join(offences)
 
 
-def test_the_translation_module_keeps_its_names_to_itself() -> None:
-    """i18n.js and app.js are classic scripts sharing one global scope.
+def test_the_content_language_is_not_the_language_of_the_page() -> None:
+    """The one wiring that must not exist.
 
-    Measured on 17 August 2026: a bare `function t()` in i18n.js collided with
-    `const { t } = ...` in app.js, and the resulting SyntaxError stopped app.js from running
-    at all — the page rendered its words and then did nothing, which reads like a network
-    problem rather than a syntax one. The wrapper is what prevents it; only the exported
-    object is allowed out.
+    The household's content language is what she reads on paper and on the display. The
+    page's language is a display preference of whoever is holding the phone. If the second
+    ever writes the first, a parent switching their phone changes what she reads, and
+    content approved in one language becomes content shown in another.
     """
-    source = (WEB / "i18n.js").read_text(encoding="utf-8").strip()
-    assert "(function () {" in source, "i18n.js no longer wraps its declarations"
-    assert source.endswith("})();"), "i18n.js no longer closes its wrapper"
-
-    exported = set(
-        re.findall(
-            r'const \{([^}]+)\} = window\.LanterninaI18n',
-            (WEB / "app.js").read_text(encoding="utf-8"),
+    module = (CATALOGS / "index.tsx").read_text(encoding="utf-8")
+    for reach in ("/api/preferences", "savePreferences", "useApi"):
+        assert reach not in module, (
+            f"web/src/i18n/index.tsx mentions {reach}. The page's language selector must "
+            "not reach the settings; see the note at the head of that file."
         )
+
+    # And from the other side: saving the settings must not change this page.
+    settings = (SRC / "sections" / "Preferences.tsx").read_text(encoding="utf-8")
+    assert "setLanguage" not in settings, (
+        "web/src/sections/Preferences.tsx calls setLanguage. Saving the content language "
+        "must not change the language of this page either."
     )
-    assert exported, "app.js no longer takes its names from the exported object"
 
 
-def test_the_panel_touches_only_the_exported_object() -> None:
-    """One global, so the two files cannot collide again through a second one."""
-    source = (WEB / "i18n.js").read_text(encoding="utf-8")
-    globals_assigned = set(re.findall(r'^\s*window\.(\w+)\s*=', source, re.MULTILINE))
-    assert globals_assigned == {"LanterninaI18n"}, f"i18n.js sets {sorted(globals_assigned)}"
+def test_relative_times_are_not_written_down() -> None:
+    """Intl already says "5 minuti fa" in every language, plurals included."""
+    module = (CATALOGS / "index.tsx").read_text(encoding="utf-8")
+    assert "Intl.RelativeTimeFormat" in module, "relative times no longer come from Intl"
+    for language, table in catalogs().items():
+        stale = sorted(
+            key
+            for key, text in table.items()
+            if re.search(r"(?i)\b(minuti fa|ore fa|minutes ago|hours ago)\b", str(text))
+        )
+        assert not stale, f"{language} writes relative times by hand: {stale}"

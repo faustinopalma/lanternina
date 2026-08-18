@@ -16,7 +16,7 @@ from shared.errors import NotApprovedError, SealVerificationError
 from shared.ids import LearnerId, new_proposal_id
 from shared.proposal import Proposal, ProposalKind
 from shared.safety import ContentKind, SafetyVerdict, ScreenedPayload, ScreeningRecord
-from shared.seal import SealPurpose, Sealer
+from shared.seal import Sealer, SealPurpose
 
 SAFETY_KEY = b"safety-key-for-tests"
 APPROVAL_KEY = b"approval-key-for-tests"
@@ -24,7 +24,10 @@ APPROVAL_KEY = b"approval-key-for-tests"
 
 def _screened(body: str = "Ecco tre parole da ricopiare.") -> ScreenedPayload:
     record = ScreeningRecord(
-        verdict=SafetyVerdict.ALLOW, screener="test-gate", policy_version="1", screened_at=time.time()
+        verdict=SafetyVerdict.ALLOW,
+        screener="test-gate",
+        policy_version="1",
+        screened_at=time.time(),
     )
     gate = Sealer(SealPurpose.CONTENT_SAFETY, SAFETY_KEY, "test-gate")
     unsealed = {"kind": str(ContentKind.FEEDBACK_TEXT), "body": body, "record": record.to_dict()}
@@ -63,7 +66,11 @@ def test_an_agent_cannot_forge_an_approval() -> None:
     decision = ApprovalDecision(proposal.id, ApprovalState.APPROVED, "content-agent", time.time())
     forged = Sealer(SealPurpose.PARENT_APPROVAL, b"a-key-the-agent-invented", "content-agent")
     item = ApprovedItem(
-        proposal, decision, forged.seal({"proposal": proposal.sealable(), "decision": decision.to_dict()})
+        proposal,
+        decision,
+        forged.seal(
+            {"proposal": proposal.sealable(), "decision": decision.to_dict()}
+        ),
     )
     with pytest.raises(SealVerificationError):
         assert_deliverable(item, safety_key=SAFETY_KEY, approval_key=APPROVAL_KEY)
@@ -76,7 +83,10 @@ def test_content_cannot_be_swapped_after_approval() -> None:
     item = _approve(original)
 
     swapped_payload = ScreenedPayload(
-        original.payload.kind, "something else entirely", original.payload.record, original.payload.seal
+        original.payload.kind,
+        "something else entirely",
+        original.payload.record,
+        original.payload.seal,
     )
     swapped = Proposal(
         id=original.id,

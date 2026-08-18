@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* The palette is the classic panel's, unchanged. Light and dark follow the operating
+   system: there is no switch to set, and nothing to remember about the reader. */
+:root {
+  color-scheme: light dark;
+  --paper: #f6f3ee;
+  --card: #fffdfa;
+  --edge: #e0d9cd;
+  --ink: #1d1a16;
+  --quiet: #5f594f;
+  --accent: #2f6152;
+  --accent-ink: #ffffff;
+  --accent-soft: #e7efeb;
+  --focus: #b4551f;
+  /* Two shadows: one hairline to seat an edge, one wide and faint to lift the card off
+     the page. A single strong shadow reads as a drop rather than as depth. */
+  --card-shadow: 0 1px 1px rgb(29 26 22 / 0.04), 0 10px 30px rgb(29 26 22 / 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16181b;
+    --card: #1e2126;
+    --edge: #333941;
+    --ink: #ece9e3;
+    --quiet: #a8a49b;
+    --accent: #8fd3bf;
+    --accent-ink: #14201c;
+    --accent-soft: #232f2b;
+    --focus: #f0a06a;
+    --card-shadow: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35);
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-edge: var(--edge);
+  --color-ink: var(--ink);
+  --color-quiet: var(--quiet);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-focus: var(--focus);
+
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-mono: "Cascadia Code", Consolas, monospace;
+
+  --radius-panel: 14px;
+  --radius-control: 9px;
+  --shadow-card: var(--card-shadow);
+
+  /* Where the drawer stops being a drawer and becomes a column beside the work. */
+  --breakpoint-wide: 56rem;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.06rem;
+  line-height: 1.65;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}

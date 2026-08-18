@@ -1,7 +1,8 @@
-// Values that change between environments. Kept out of app.js so they can be read and
-// corrected without touching logic. None of these is a secret: a single-page application
-// cannot hold one.
-window.LANTERNINA = {
+/* Values that change between environments. Kept apart from the components so they can be
+ * read and corrected without touching logic. None of these is a secret: a single-page
+ * application cannot hold one.
+ */
+export const config = {
   clientId: "e80af2eb-6eb5-4524-b8d1-aef90717e10a",
 
   // The tenant GUID, not the domain form: msal-browser 5 fetches the domain form's
@@ -18,5 +19,6 @@ window.LANTERNINA = {
   // a valid token the panel will refuse.
   scopes: ["api://e80af2eb-6eb5-4524-b8d1-aef90717e10a/access_as_parent"],
 
-  apiBase: "https://ca-lanternina-dev-api.graystone-035aecb2.swedencentral.azurecontainerapps.io",
-};
+  apiBase:
+    "https://ca-lanternina-dev-api.graystone-035aecb2.swedencentral.azurecontainerapps.io",
+} as const;

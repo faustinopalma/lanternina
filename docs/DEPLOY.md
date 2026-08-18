@@ -9,10 +9,11 @@ Lanternina has two halves that are deployed separately:
 - **the device** — the mini-PC in the home, which holds the learner profile, the sealing
   keys and the scans. It is never provisioned from here; see [HARDWARE.md](HARDWARE.md).
 
-The split is deliberate and is the core of the design: the cloud holds pending items and
-shows them to the parent, the device decides. Approvals are only ever sealed on the device,
-so neither the operator of the service nor anyone who compromises it can approve content
-for a child. See [ARCHITECTURE.md](ARCHITECTURE.md).
+The split is deliberate and is the core of the design: the cloud stores dashboard state;
+the device decides when work begins. A dashboard write never enqueues work or wakes the
+house. Approvals are only ever sealed on the device, so neither the operator of the service
+nor anyone who compromises it can approve content for an adolescent. See
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
@@ -32,15 +33,15 @@ nothing, and a group per region buys nothing either: a group's location is metad
 the group, not a constraint on what it can hold. The line worth drawing is the one between
 what you can rebuild in minutes and what you cannot rebuild at all.
 
-```
+```text
 browser ──► Static Web App (westeurope, static assets only)
                 │ authenticated fetch
                 ▼
           ca-…-api (swedencentral, HTTP scale 0→N, VNet-integrated)
                 │                                  ▲
-                │ enqueue                          │ outbound poll
-                ▼                                  │
-          Storage queue ──► ca-…-worker      [ device in the home ]
+                    │                                  ▲ device-initiated request
+                    ▼                                  │ (may wait through cold start)
+                  Storage queue ──► ca-…-worker      [ server in the home ]
                 │                             (seals approvals; holds the
                 ▼ private endpoint             profile and the scans)
           Cosmos DB serverless
@@ -61,15 +62,17 @@ They scale on different signals, and conflating them costs money:
   activation and *is served* — the platform holds it while the replica starts. Putting a
   queue in front of an interactive API does not make it faster, it makes it asynchronous:
   you would have to return `202` and poll.
-- **`worker` scales on the queue.** Content generation, vision reads and content-safety
-  checks take tens of seconds and are genuinely asynchronous.
+- **`worker` scales on the queue.** A message can be created only as part of a request
+  initiated by the home server. Dashboard writes never put work on this queue.
 
 Two consequences worth knowing before they surprise you:
 
 - After the last queue message the worker stays up for a **300 second cool-down** before
   returning to zero. That is KEDA behaviour, not a bug — but it is on the bill.
-- A device holding a long-lived HTTP connection open would keep `api` from ever scaling
-  to zero. The device therefore *polls on an interval* instead of long-polling.
+- A home-server request may remain open while the API scales from zero. It is occasional
+  work chosen locally, not a permanent long-poll and not traffic caused by a parent write.
+  HTTP ingress times out after **240 seconds**; longer work must persist a correlated result
+  for the home server to retrieve when it contacts the API again.
 
 ---
 
@@ -143,6 +146,40 @@ Resource names end in a five-character hash of the subscription id plus project 
 environment. It is deterministic, so redeploys are stable, and it is different per
 subscription, so two forks never collide on a globally unique name.
 
+### The panel in the browser
+
+`deploy.ps1` creates the Static Web App; it does not fill it. The panel is a React
+application in [web/](../web), built with Vite into `web/dist`, and published by
+[.github/workflows/panel.yml](../.github/workflows/panel.yml) on any push to `main` that
+touches `web/`. The workflow runs the component tests and `tsc` before publishing, so a
+type error stops the release rather than shipping.
+
+It needs one repository secret, `AZURE_STATIC_WEB_APPS_API_TOKEN`, which is the site's
+deployment token:
+
+```powershell
+az staticwebapp secrets list --name <staticWebAppName> --query "properties.apiKey" -o tsv
+```
+
+To publish by hand, or to look at the panel locally:
+
+```powershell
+cd web
+npm ci
+npm run dev      # http://localhost:5173
+npm run build    # web/dist, including staticwebapp.config.json
+```
+
+`http://localhost:5173/?preview` opens the panel against a fake API with invented content,
+so the layout can be looked at without an identity provider and without a household. It
+exists only in the dev server: the branch is behind `import.meta.env.DEV` and no fixture
+text appears in `web/dist`.
+
+`web/public/staticwebapp.config.json` carries the content security policy. It allows
+scripts from this origin only — the identity library comes from npm, not a CDN — and `blob:`
+images, because a picture is fetched with the bearer token and handed to the `<img>` as a
+blob URL.
+
 ---
 
 ## 4. Entra External ID
@@ -154,7 +191,6 @@ bring the tenant into existence.
 > ⚠️ **The resource name is `<prefix>.onmicrosoft.com` and ARM caps it at 26 characters**,
 > so the prefix cannot exceed **10**. This is not in the documentation; the Bicep compiler
 > is what caught it. A longer prefix fails at deploy time.
-
 > ⚠️ **`countryCode` sets data residency and cannot be changed afterwards.** Choose it
 > deliberately.
 

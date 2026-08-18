@@ -42,7 +42,7 @@ class AgentContext:
     @staticmethod
     def for_learner(
         router: ModelRouter, profile: LearnerProfile, now: float
-    ) -> "AgentContext":
+    ) -> AgentContext:
         return AgentContext(
             router=router,
             learner_id=profile.id,

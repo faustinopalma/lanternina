@@ -12,6 +12,7 @@ module that cannot be imported (missing optional dependency, syntax under constr
 from __future__ import annotations
 
 import ast
+import re
 from dataclasses import fields
 from pathlib import Path
 
@@ -192,7 +193,11 @@ def test_nothing_runs_a_model_on_the_device() -> None:
 
 def test_shared_stays_dependency_free() -> None:
     """`shared` is types and protocols. If it grows I/O, every package inherits it."""
-    banned = CLOUD_SDKS | LOCAL_RUNTIMES | {"cv2", "fastapi", "uvicorn", "serial", "requests", "httpx"}
+    banned = (
+        CLOUD_SDKS
+        | LOCAL_RUNTIMES
+        | {"cv2", "fastapi", "uvicorn", "serial", "requests", "httpx"}
+    )
     for path in _python_files("shared"):
         leaked = _imported_modules(path) & banned
         assert not leaked, f"{path.relative_to(REPO)} imports {sorted(leaked)}"
@@ -331,3 +336,24 @@ def test_no_engagement_or_assessment_vocabulary_anywhere() -> None:
             if leaked:
                 offences.append(f"{path.relative_to(REPO)}: {sorted(leaked)}")
     assert not offences, "engagement/assessment vocabulary found:\n" + "\n".join(offences)
+
+
+def test_the_panel_in_the_browser_uses_none_of_that_vocabulary_either() -> None:
+    """The same rule, on the other side of the wire.
+
+    The panel is where a number about a person would be easiest to add and hardest to
+    notice: it already draws counts, dates and lists. `_` is optional in the pattern so a
+    camelCase spelling — `timeSpent`, `dailyGoal` — is caught as readily as a snake_case
+    one.
+    """
+    words = "|".join(term.replace("_", "_?") for term in sorted(ENGAGEMENT_AND_ASSESSMENT))
+    marker = re.compile(rf"(?i)(?<![\w-])({words})(?![\w-])")
+
+    offences: list[str] = []
+    for path in (REPO / "web" / "src").rglob("*.ts*"):
+        found = sorted({m.group(0) for m in marker.finditer(path.read_text(encoding="utf-8"))})
+        if found:
+            offences.append(f"{path.relative_to(REPO)}: {found}")
+    assert not offences, "engagement/assessment vocabulary in the panel:\n" + "\n".join(
+        offences
+    )

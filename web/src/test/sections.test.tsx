@@ -1,0 +1,111 @@
+/* The gallery, the rhythm and the devices — the three sections whose behaviour is not
+ * obvious from their markup. */
+import { screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { fakeApi } from "@/test/fakeApi";
+import { renderPanel } from "@/test/render";
+
+async function open(user: ReturnType<typeof userEvent.setup>, name: string) {
+  await user.click(within(screen.getByRole("navigation")).getByRole("button", { name }));
+}
+
+describe("the gallery", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("fetches each bitmap itself, because an <img> sends no token", async () => {
+    const api = fakeApi();
+    const asked = vi.spyOn(api, "pictureContent");
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    await waitFor(() => expect(asked).toHaveBeenCalled());
+    const images = await screen.findAllByRole("img");
+    expect(images[0]).toHaveAttribute("src", expect.stringContaining("blob:"));
+  });
+
+  it("goes back to the first page when the page size changes, and remembers the size", async () => {
+    const api = fakeApi();
+    const asked = vi.spyOn(api, "pictures");
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    await screen.findByLabelText("Per pagina");
+
+    await user.click(screen.getByRole("button", { name: "Successivi" }));
+    await waitFor(() => expect(asked).toHaveBeenLastCalledWith(2, 20));
+
+    await user.selectOptions(screen.getByLabelText("Per pagina"), "50");
+    await waitFor(() => expect(asked).toHaveBeenLastCalledWith(1, 50));
+    expect(window.localStorage.getItem("lanternina.picturesPerPage")).toBe("50");
+  });
+});
+
+describe("the rhythm", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("saves the hours and the spacing, and says the house applies them later", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    const cadence = await screen.findByLabelText("Quadro nuovo ogni");
+    expect(cadence).toHaveValue(60);
+
+    await user.clear(cadence);
+    await user.type(cadence, "90");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
+    expect(api.recorded.rhythm[0]).toEqual({
+      quietFrom: "21:30",
+      quietUntil: "07:00",
+      cadenceMinutes: 90,
+    });
+    expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
+  });
+
+  it("keeps the note about the display waking about every ten minutes", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+    await open(user, "Ritmo");
+    expect(await screen.findByText(/circa ogni dieci minuti/)).toBeInTheDocument();
+  });
+});
+
+describe("the devices", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("says the charge in words, never as a percentage", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Dispositivi");
+    expect(await screen.findByText(/batteria carica/)).toBeInTheDocument();
+    expect(screen.getByText(/da ricaricare presto/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\d+\s?%/);
+  });
+});
+
+describe("the themes", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("adds one and takes one away", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Temi dei quadri");
+    await user.type(await screen.findByLabelText("Nuovo tema"), "barche a remi");
+    await user.click(screen.getByRole("button", { name: "Aggiungi" }));
+    await waitFor(() => expect(api.recorded.themesAdded).toEqual(["barche a remi"]));
+
+    await user.click(screen.getAllByRole("button", { name: "Togli" })[0]!);
+    await waitFor(() => expect(api.recorded.themesRemoved).toEqual(["theme-1"]));
+    expect(screen.queryByText("gatti che dormono")).not.toBeInTheDocument();
+  });
+});

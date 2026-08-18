@@ -42,13 +42,13 @@ class RawFrame:
 
     __slots__ = ("_pixels", "_captured_at", "_released")
 
-    def __init__(self, pixels: "np.ndarray", captured_at: float) -> None:
+    def __init__(self, pixels: np.ndarray, captured_at: float) -> None:
         self._pixels = pixels
         self._captured_at = captured_at
         self._released = False
 
     @property
-    def pixels(self) -> "np.ndarray":
+    def pixels(self) -> np.ndarray:
         """The BGR array. Valid only inside the capture scope; never persist this."""
         if self._released:
             raise RetentionViolation("this frame was already released")
@@ -72,7 +72,7 @@ class RawFrame:
             self._pixels = None  # type: ignore[assignment]
             self._released = True
 
-    def __enter__(self) -> "RawFrame":
+    def __enter__(self) -> RawFrame:
         return self
 
     def __exit__(self, *exc: object) -> None:

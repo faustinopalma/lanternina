@@ -1,0 +1,171 @@
+import { Menu, X } from "lucide-react";
+import { useEffect, useState, type ComponentType } from "react";
+
+import { ApiProvider } from "@/api/client";
+import type { Api, Me } from "@/api/types";
+import { Facts } from "@/components/Facts";
+import { Button } from "@/components/ui/button";
+import { Quiet } from "@/components/ui/card";
+import { useWords } from "@/i18n";
+import { cn } from "@/lib/utils";
+import { Devices } from "@/sections/Devices";
+import { Pictures } from "@/sections/Pictures";
+import { Preferences } from "@/sections/Preferences";
+import { Proposals } from "@/sections/Proposals";
+import { Rhythm } from "@/sections/Rhythm";
+import { Themes } from "@/sections/Themes";
+import { Usage } from "@/sections/Usage";
+
+interface Section {
+  name: string;
+  title: string;
+  note: string;
+  Body: ComponentType;
+}
+
+export function Dashboard({
+  me,
+  api,
+  username,
+  onSignOut,
+}: {
+  me: Me;
+  api: Api;
+  username: string;
+  onSignOut: () => void;
+}) {
+  const { t } = useWords();
+  const [current, setCurrent] = useState("proposals");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Written out one by one rather than built from the name: a key that only exists at
+  // runtime is a key no test can find missing.
+  const sections: Section[] = [
+    { name: "proposals", title: t("proposals.title"), note: t("proposals.note"), Body: Proposals },
+    { name: "pictures", title: t("pictures.title"), note: t("pictures.note"), Body: Pictures },
+    { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
+    { name: "rhythm", title: t("rhythm.title"), note: t("rhythm.note"), Body: Rhythm },
+    {
+      name: "preferences",
+      title: t("preferences.title"),
+      note: t("preferences.note"),
+      Body: Preferences,
+    },
+    { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
+    { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
+  ];
+
+  const section = sections.find((entry) => entry.name === current) ?? sections[0]!;
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const close = (event: KeyboardEvent) => event.key === "Escape" && setDrawerOpen(false);
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, [drawerOpen]);
+
+  return (
+    <ApiProvider api={api}>
+      <section className="rounded-[--radius-panel] border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
+        <div className="border-b border-edge pb-5">
+          <h2 className="mb-2.5 text-[1.3rem] font-semibold tracking-tight">{t("panel.title")}</h2>
+          <Quiet>{username ? t("signin.as", { user: username }) : t("signin.anon")}</Quiet>
+          <Facts
+            className="max-w-[34rem]"
+            rows={[
+              { label: t("facts.status"), value: me.status },
+              {
+                label: t("facts.account"),
+                value: <code className="font-mono text-[0.85em]">{me.accountId}</code>,
+              },
+              {
+                label: t("facts.household"),
+                value: (
+                  <code className="font-mono text-[0.85em]">{me.householdId ?? "\u2014"}</code>
+                ),
+              },
+            ]}
+          />
+        </div>
+
+        <div className="mt-6 wide:mt-7 wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
+          <Button
+            className="mb-4 wide:hidden"
+            aria-label={t("menu.open")}
+            aria-expanded={drawerOpen}
+            onClick={() => setDrawerOpen(true)}
+          >
+            <Menu aria-hidden className="size-5" />
+            {section.title}
+          </Button>
+
+          {drawerOpen ? (
+            <button
+              type="button"
+              aria-hidden
+              tabIndex={-1}
+              className="fixed inset-0 z-10 cursor-default border-0 bg-black/30 wide:hidden"
+              onClick={() => setDrawerOpen(false)}
+            />
+          ) : null}
+
+          <aside
+            className={cn(
+              "fixed inset-y-0 left-0 z-20 h-dvh w-[min(19rem,calc(100vw-48px))] overflow-y-auto",
+              "border-r border-edge bg-card p-5 shadow-[12px_0_32px_rgb(0_0_0/0.18)]",
+              drawerOpen ? "block" : "hidden",
+              "wide:sticky wide:top-6 wide:z-auto wide:block wide:h-auto wide:w-auto wide:overflow-visible",
+              "wide:border-0 wide:bg-transparent wide:p-0 wide:shadow-none",
+            )}
+          >
+            <Button
+              variant="ghost"
+              className="mb-3.5 ml-auto flex w-11 px-0 wide:hidden"
+              aria-label={t("menu.close")}
+              autoFocus={drawerOpen}
+              onClick={() => setDrawerOpen(false)}
+            >
+              <X aria-hidden className="size-5" />
+            </Button>
+            <nav aria-label={t("menu.aria")} className="flex flex-col gap-0.5">
+              {sections.map((entry) => (
+                <button
+                  key={entry.name}
+                  type="button"
+                  aria-current={entry.name === current ? "true" : undefined}
+                  onClick={() => {
+                    setCurrent(entry.name);
+                    setDrawerOpen(false);
+                  }}
+                  className={cn(
+                    "w-full cursor-pointer rounded-r-[--radius-control] border-0 border-l-[3px]",
+                    "border-transparent px-3 py-2.5 pl-3.5 text-left font-sans text-base",
+                    entry.name === current
+                      ? "border-l-accent bg-accent-soft font-semibold text-ink"
+                      : "bg-transparent text-quiet hover:bg-paper hover:text-ink",
+                  )}
+                >
+                  {entry.title}
+                </button>
+              ))}
+            </nav>
+          </aside>
+
+          <div className="min-w-0">
+            {/* The menu says which section is open; the heading says it again where the
+                reading actually starts, and is the only title on a phone. */}
+            <h3 className="mb-1.5 text-[1.15rem] font-semibold tracking-tight">
+              {section.title}
+            </h3>
+            <Quiet>{section.note}</Quiet>
+            <section.Body />
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2.5">
+          <Button onClick={onSignOut}>{t("signout")}</Button>
+        </div>
+      </section>
+    </ApiProvider>
+  );
+}

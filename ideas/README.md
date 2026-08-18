@@ -40,13 +40,13 @@ and the file wins for judging whether the thing is worth doing at all.
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
 | 1 | ~~Close the drift between the templates and what is running~~ — **done, 18 August 2026** | 04 §3 | It was worse than recorded: the script passed no image, no port and no sign-in settings, so a plain run would have left the panel answering 404 and then 503. `deploy.ps1` now re-applies what is running and refuses without the device key. |
-| 2 | Rebuild the hub from a blank card, once | 04 §5 | The backup has never been restored, so it is a hope rather than a backup. Less dire than first written: the keys also exist in `secrets.local.yaml`, and the device key there is verified to be the live one. Start by checking whether the other two match the hub's. |
+| 2 | Rebuild the hub from a blank card, once | 04 §5 | Still never restored, but no longer only a hope: on 18 August the keys were compared, the archive was read end to end, and the nine files a hub cannot start without were extracted and matched against the live ones, owner and mode included. Three of the four gaps found are closed. What is left needs a second card. |
 
 ### Then: the foundations
 
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
-| 3 | Household settings, replacing the invented profile | 01 §5 | Routines, content language, difficulty and tone all need somewhere to live. Four later entries are blocked on this one. |
+| 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so her name has no field to sit in. |
 | 4 | Field names that are not Italian | 04 §7 | Cheapest now and dearer every week: the language is baked into the data, and every new piece of content code inherits it. |
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
 | 6 | The layout agent: exercise → sheet | 03 §1 | The missing half of the paper loop. Two entries that give her the initiative cannot exist without it. |
@@ -76,7 +76,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | --- | --- | --- | --- |
 | 21 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
 | 22 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
-| 23 | Retiring the diagnostics block | 01 §8 | Must happen before anyone outside this project uses the panel. |
+| 23 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
 | 24 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
 | 25 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
 | 26 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
@@ -89,6 +89,9 @@ Because an idea is judged against what exists, not against nothing:
 
 - The parent signs in to the panel, sees the proposals, approves or refuses. The decisions
   live in Cosmos and survive a restart.
+- The panel is a React application built with Vite and published to the Static Web App by a
+  workflow. Its words are two JSON catalogs; the identity library comes from npm, so the
+  page loads scripts from its own origin and nothing else.
 - The parent writes the picture themes. The home server asks the panel for them.
 - The cloud paints when the house asks. The house holds no Azure credential.
 - Every picture shown ends up in a storage account and can be restored byte for byte.
@@ -96,9 +99,14 @@ Because an idea is judged against what exists, not against nothing:
   advance, and sleeps for longer.
 - Generated text passes through Content Safety; so do the images, through image analysis.
 - The panel shows the state of each display: charge, signal, when it was last heard from.
-- A timer on the hub asks for a new picture every hour and installs it, quiet hours aside.
-- The quiet window and the spacing between pictures are chosen by the parent in the panel.
-  The hub reads them on its next run and decides for itself; saving them starts nothing.
+- A timer on the hub asks for a new picture once a minute, installs one when the spacing
+  the parent chose has passed, and asks for nothing inside the pause.
+- The pause and the spacing between pictures are chosen by the parent in the panel, in
+  minutes. The hub reads them on its next run and decides for itself; saving them starts
+  nothing.
+- Interests, things to avoid, difficulty, variety, words per line and the content language
+  are the parent's too, and travel the same way. Her name is not among them: it stays on
+  the hub, and the panel has no field for it.
 - Every model call is counted per household, with the tokens, the cache reads and the
   provider's request id, and a monthly cap refuses calmly once it is reached.
 
@@ -108,9 +116,13 @@ Because an idea is judged against what exists, not against nothing:
   estimate from a standard LiPo curve, not measured on this cell.
 - Picture approval is **per theme**, not per image: she sees pictures no adult has seen
   before.
-- Her profile is invented and lives in the code (`DEMO_PROFILE`).
+- Her name and her id live only on the hub, in the environment it reads at start. The
+  invented profile is left in `tools/generate_batch.py`, which generates without a panel.
 - The approval ledger in the cloud does not mint the delivery seal: that stays on the
   device. Losing the database costs the memory of the decisions, not the safety.
+- The approval seal is minted and checked inside one process run, so `approval_key` can be
+  replaced with a fresh random value at no cost. The safety seal is the one that outlives a
+  process: `safety_key` is what already-screened content depends on.
 - Only the image path reports what it consumed. The text path is not instrumented.
 
 ## The timer

@@ -46,6 +46,12 @@ secrets.local.*
 .msal*
 
 # ── Learner data — never committed, in any form ──────────────────────────────
+# A place to keep something that has to stay on this machine and has no rule of its
+# own yet. Putting a file here is the answer to "where do I park this for now".
+private/
+# Browser tooling drops screenshots, accessibility snapshots and console dumps here;
+# any of the three can carry a page of the panel with real content in it.
+.playwright-mcp/
 data/
 captures/
 pages/
