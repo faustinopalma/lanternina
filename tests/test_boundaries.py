@@ -47,6 +47,18 @@ def _imported_modules(path: Path) -> set[str]:
     return found
 
 
+def _imported_paths(path: Path) -> set[str]:
+    """Full dotted module names imported by `path`, e.g. {'azure.cosmos'}."""
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    found: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            found.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            found.add(node.module)
+    return found
+
+
 def _identifiers(path: Path) -> set[str]:
     """Identifiers defined or referenced in `path`. Excludes comments and docstrings."""
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -106,6 +118,18 @@ def test_agents_reach_the_world_only_through_the_router() -> None:
 # ── One router, one door to the models ───────────────────────────────────────────────
 
 # Cloud inference SDKs: permitted only inside the router and the safety gate.
+# Matched on the full dotted path, because `azure` alone is too coarse: `azure.identity`
+# and `azure.cosmos` are infrastructure, not model backends. This rule protects the single
+# door to inference, not the choice of database.
+MODEL_SDK_PREFIXES = (
+    "azure.ai.",
+    "openai",
+    "agent_framework",
+    "anthropic",
+)
+
+# Everything `shared` must stay clear of. It is types and protocols: any SDK here would be
+# inherited by every package that imports it.
 CLOUD_SDKS = {
     "azure",
     "openai",
@@ -138,10 +162,14 @@ def test_only_the_router_touches_a_cloud_model_backend() -> None:
         for path in _python_files(package):
             if path in allowed:
                 continue
-            leaked = _imported_modules(path) & CLOUD_SDKS
+            leaked = sorted(
+                module
+                for module in _imported_paths(path)
+                if module.startswith(MODEL_SDK_PREFIXES)
+            )
             assert not leaked, (
-                f"{path.relative_to(REPO)} imports {sorted(leaked)}. Only the router may "
-                "hold a model backend."
+                f"{path.relative_to(REPO)} imports {leaked}. "
+                "Only the router may hold a model backend."
             )
 
 

@@ -293,6 +293,66 @@ async function loadThemes() {
   themes.forEach((theme) => host.appendChild(themeChip(theme)));
 }
 
+function fillHourChoices(select, chosen) {
+  select.textContent = "";
+  for (let hour = 0; hour < 24; hour += 1) {
+    const option = document.createElement("option");
+    option.value = String(hour);
+    option.textContent = `${String(hour).padStart(2, "0")}:00`;
+    select.appendChild(option);
+  }
+  select.value = String(chosen);
+}
+
+function fillCadenceChoices(select, choices, chosen) {
+  select.textContent = "";
+  choices.forEach((hours) => {
+    const option = document.createElement("option");
+    option.value = String(hours);
+    option.textContent = hours === 1 ? t("rhythm.everyHour") : t("rhythm.everyHours", { hours });
+    select.appendChild(option);
+  });
+  select.value = String(chosen);
+}
+
+async function loadRhythm() {
+  const status = el("rhythm-status");
+  status.textContent = t("rhythm.loading");
+  let response;
+  try {
+    response = await api("/api/rhythm");
+  } catch {
+    status.textContent = t("rhythm.unreadable");
+    return;
+  }
+  if (!response.ok) {
+    status.textContent = t("rhythm.unreadable");
+    return;
+  }
+  const rhythm = await response.json();
+  fillHourChoices(el("quiet-from"), rhythm.quietFromHour);
+  fillHourChoices(el("quiet-until"), rhythm.quietUntilHour);
+  fillCadenceChoices(el("cadence"), rhythm.cadenceChoices, rhythm.cadenceHours);
+  status.textContent =
+    rhythm.quietFromHour === rhythm.quietUntilHour ? t("rhythm.quietOff") : "";
+}
+
+/* Saving persists a choice and returns. The house reads it on its next run and decides
+ * for itself, so nothing here reaches into the room. */
+async function submitRhythm(event) {
+  event.preventDefault();
+  const status = el("rhythm-status");
+  const response = await api("/api/rhythm", {
+    method: "POST",
+    body: JSON.stringify({
+      quietFromHour: Number(el("quiet-from").value),
+      quietUntilHour: Number(el("quiet-until").value),
+      cadenceHours: Number(el("cadence").value),
+    }),
+  });
+  status.textContent = response.ok ? t("rhythm.saved") : t("rhythm.saveFailed");
+}
+
 const KNOWN_LEVELS = ["mains", "ok", "low", "critical"];
 const levelLabel = (level) => (KNOWN_LEVELS.includes(level) ? t(`level.${level}`) : level);
 
@@ -509,6 +569,7 @@ const PANELS = {
   proposals: loadProposals,
   pictures: loadPictures,
   themes: loadThemes,
+  rhythm: loadRhythm,
   devices: loadDevices,
   usage: loadUsage,
 };
@@ -644,6 +705,7 @@ function reportInteractionFailure(e) {
 el("btn-signin").onclick = () =>
   msalInstance.loginRedirect({ scopes: cfg.scopes }).catch(reportInteractionFailure);
 el("theme-form").onsubmit = submitTheme;
+el("rhythm-form").onsubmit = submitRhythm;
 
 const signOut = () =>
   msalInstance

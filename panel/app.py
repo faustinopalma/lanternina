@@ -4,23 +4,60 @@ Deliberately thin for now: a health check, and one route behind the gate. What i
 already careful about is the shape of a refusal — every denial returns the same body and
 says nothing about whether the account exists, so the endpoint cannot be used to find out
 which addresses are registered.
+
+Future dashboard mutation routes persist state and return. They do not call models,
+enqueue work, notify the home server or schedule processing. Work starts only on a
+separate request initiated by the server in the home.
 """
 
 from __future__ import annotations
 
+import base64
+import logging
+import secrets
+import time
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
 from shared.accounts import Account, AccountStore
-from shared.errors import AccessDenied, AuthNotConfigured
+from shared.approval import ApprovalState
+from shared.errors import (
+    AccessDenied,
+    AuthNotConfigured,
+    CloudUnavailable,
+    NoCapacityError,
+    SafetyBlocked,
+)
 
 from .config import Settings
+from .devices import DeviceStatus, DeviceStatusStore, InMemoryDeviceStatusStore
 from .gate import resolve_account
+from .pictures import (
+    InMemoryPictureArchive,
+    PictureArchive,
+    PictureRecord,
+)
 from .principal import principal_from_headers
+from .proposals import DECIDABLE, InMemoryProposalStore, ProposalRecord, ProposalStore
+from .rhythm import InMemoryRhythmStore, RhythmStore, clean_rhythm
 from .store import InMemoryAccountStore
+from .themes import InMemoryThemeStore, ThemeStore, clean_label, make_theme
 from .tokens import TokenVerifier
+from .usage import (
+    FAILED,
+    KIND_IMAGE,
+    REFUSED,
+    SERVED,
+    InMemoryUsageStore,
+    UsageStore,
+    event_from,
+    month_of,
+    over_cap,
+)
 
 
 def verifier_for(app: FastAPI) -> TokenVerifier | None:
@@ -31,7 +68,7 @@ def verifier_for(app: FastAPI) -> TokenVerifier | None:
         return None
     if app.state.verifier is None:
         app.state.verifier = TokenVerifier.from_authority(
-            settings.oidc_authority, settings.oidc_audiences
+            settings.oidc_authority, settings.oidc_audience
         )
     return app.state.verifier
 
@@ -49,11 +86,109 @@ def current_account(request: Request) -> Account:
 CurrentAccount = Annotated[Account, Depends(current_account)]
 
 
-def create_app(store: AccountStore | None = None, settings: Settings | None = None) -> FastAPI:
+class Decision(BaseModel):
+    state: str
+    note: str = ""
+
+
+class SubmittedProposal(BaseModel):
+    """What the home server sends up for review, sealed exactly as the gate left it."""
+
+    id: str
+    kind: str
+    agent: str
+    rationale: str = ""
+    createdAt: float = 0.0
+    payload: dict[str, Any] = Field(default_factory=dict)
+    payloadSeal: dict[str, Any] = Field(default_factory=dict)
+    expiresAt: float | None = None
+
+
+class ShownPicture(BaseModel):
+    """A picture a display has shown, archived so it can be put back later."""
+
+    id: str
+    theme: str = ""
+    kind: str = "ok"
+    createdAt: float = 0.0
+    imageBase64: str
+
+
+class NewTheme(BaseModel):
+    label: str
+
+
+class NewRhythm(BaseModel):
+    """When the display may change, and how often. Saving it starts nothing."""
+
+    quietFromHour: int
+    quietUntilHour: int
+    cadenceHours: int
+
+
+class ReportedDevice(BaseModel):
+    """What the hub says about one display. The hub decides the level: it holds the
+    thresholds and knows whether the display is declared mains powered."""
+
+    id: str
+    name: str = ""
+    lastSeen: float = 0.0
+    level: str = "ok"
+    voltage: float | None = None
+    rssi: float | None = None
+    firmware: str = ""
+    model: str = ""
+
+
+def require_device(request: Request) -> str:
+    """Identify the server in the home. Closed unless a key is configured."""
+    settings: Settings = request.app.state.settings
+    if not settings.device_configured:
+        raise HTTPException(status_code=503, detail="device_not_configured")
+    presented = request.headers.get("X-Device-Key", "")
+    if not secrets.compare_digest(presented, settings.device_key):
+        raise HTTPException(status_code=403, detail="not_authorised")
+    return presented
+
+
+DeviceKey = Annotated[str, Depends(require_device)]
+
+
+def create_app(
+    store: AccountStore | None = None,
+    settings: Settings | None = None,
+    proposals: ProposalStore | None = None,
+    pictures: PictureArchive | None = None,
+    themes: ThemeStore | None = None,
+    devices: DeviceStatusStore | None = None,
+    usage: UsageStore | None = None,
+    rhythm: RhythmStore | None = None,
+) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
-    app.state.store = store if store is not None else InMemoryAccountStore()
     app.state.settings = settings if settings is not None else Settings.from_env()
+    app.state.store = store if store is not None else _account_store(app.state.settings)
+    app.state.proposals = (
+        proposals if proposals is not None else _proposal_store(app.state.settings)
+    )
+    app.state.pictures = (
+        pictures if pictures is not None else _picture_archive(app.state.settings)
+    )
+    app.state.themes = themes if themes is not None else _theme_store(app.state.settings)
+    app.state.devices = devices if devices is not None else _device_store(app.state.settings)
+    app.state.usage = usage if usage is not None else _usage_store(app.state.settings)
+    app.state.rhythm = rhythm if rhythm is not None else _rhythm_store(app.state.settings)
     app.state.verifier = None
+
+    # Named origins only. The token travels in a header, not a cookie, so credentials stay
+    # off and a wildcard would buy nothing except a wider blast radius.
+    if app.state.settings.origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(app.state.settings.origins),
+            allow_credentials=False,
+            allow_methods=["GET", "POST"],
+            allow_headers=["Authorization", "Content-Type"],
+        )
 
     @app.exception_handler(AccessDenied)
     async def _denied(_: Request, __: AccessDenied) -> JSONResponse:
@@ -78,7 +213,357 @@ def create_app(store: AccountStore | None = None, settings: Settings | None = No
             "status": account.status,
         }
 
+    @app.get("/api/proposals")
+    def list_proposals(account: CurrentAccount, request: Request, state: str = "pending") -> Any:
+        store: ProposalStore = request.app.state.proposals
+        rows = store.list(str(account.household_id), state or None)
+        return {"proposals": [row.to_public() for row in rows]}
+
+    @app.post("/api/proposals/{proposal_id}/decision")
+    def decide_proposal(
+        proposal_id: str, decision: Decision, account: CurrentAccount, request: Request
+    ) -> Any:
+        """Record what the parent decided. This is the whole effect: it starts nothing."""
+        if decision.state not in {s.value for s in DECIDABLE}:
+            raise HTTPException(status_code=400, detail="unsupported_state")
+        store: ProposalStore = request.app.state.proposals
+        try:
+            row = store.decide(
+                str(account.household_id),
+                proposal_id,
+                decision.state,
+                decided_by=str(account.id),
+                note=decision.note,
+            )
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="unknown_proposal") from exc
+        return row.to_public()
+
+    @app.post("/api/device/{household_id}/proposals")
+    def submit_proposals(
+        household_id: str, submitted: list[SubmittedProposal], _: DeviceKey, request: Request
+    ) -> Any:
+        """The home server offers a batch for review. Nothing is shown to anyone yet."""
+        store: ProposalStore = request.app.state.proposals
+        stored = [
+            store.submit(
+                ProposalRecord(
+                    id=item.id,
+                    household_id=household_id,
+                    kind=item.kind,
+                    agent=item.agent,
+                    rationale=item.rationale,
+                    created_at=item.createdAt or time.time(),
+                    payload=item.payload,
+                    payload_seal=item.payloadSeal,
+                    expires_at=item.expiresAt,
+                )
+            )
+            for item in submitted
+        ]
+        return {"stored": [row.id for row in stored]}
+
+    @app.get("/api/device/{household_id}/proposals")
+    def device_proposals(
+        household_id: str,
+        _: DeviceKey,
+        request: Request,
+        state: str = ApprovalState.APPROVED.value,
+    ) -> Any:
+        """What the home server asked for. It pulls; nothing is ever pushed to the house."""
+        store: ProposalStore = request.app.state.proposals
+        rows = store.list(household_id, state or None)
+        return {"proposals": [row.to_device() for row in rows]}
+
+    @app.post("/api/device/{household_id}/pictures")
+    def archive_picture(
+        household_id: str, shown: ShownPicture, _: DeviceKey, request: Request
+    ) -> Any:
+        """Keep a picture that was shown, so it can be put back on a display later."""
+        archive: PictureArchive = request.app.state.pictures
+        record = archive.save(
+            PictureRecord(
+                id=shown.id,
+                household_id=household_id,
+                theme=shown.theme,
+                created_at=shown.createdAt or time.time(),
+                kind=shown.kind,
+            ),
+            base64.b64decode(shown.imageBase64),
+        )
+        return record.to_public()
+
+    @app.get("/api/device/{household_id}/pictures")
+    def device_pictures(household_id: str, _: DeviceKey, request: Request) -> Any:
+        archive: PictureArchive = request.app.state.pictures
+        return {"pictures": [row.to_public() for row in archive.list(household_id)]}
+
+    @app.get("/api/device/{household_id}/pictures/{picture_id}")
+    def device_picture(
+        household_id: str, picture_id: str, _: DeviceKey, request: Request
+    ) -> Any:
+        """Hand back one archived picture, so the home server can show it again."""
+        archive: PictureArchive = request.app.state.pictures
+        try:
+            record, image = archive.get(household_id, picture_id)
+        except Exception as exc:  # storage SDKs raise their own not-found types
+            raise HTTPException(status_code=404, detail="unknown_picture") from exc
+        return {**record.to_public(), "imageBase64": base64.b64encode(image).decode()}
+
+    @app.get("/api/pictures")
+    def list_pictures(account: CurrentAccount, request: Request, limit: int = 60) -> Any:
+        archive: PictureArchive = request.app.state.pictures
+        # Capped rather than unbounded: the panel draws what it is given, and an hourly
+        # picture makes about 740 a month.
+        rows = archive.list(str(account.household_id), max(1, min(limit, 500)))
+        return {"pictures": [row.to_public() for row in rows]}
+
+    @app.get("/api/pictures/{picture_id}/content")
+    def picture_content(picture_id: str, account: CurrentAccount, request: Request) -> Response:
+        archive: PictureArchive = request.app.state.pictures
+        try:
+            _record, image = archive.get(str(account.household_id), picture_id)
+        except Exception as exc:
+            raise HTTPException(status_code=404, detail="unknown_picture") from exc
+        return Response(content=image, media_type="image/bmp")
+
+    @app.get("/api/themes")
+    def list_themes(account: CurrentAccount, request: Request) -> Any:
+        themes: ThemeStore = request.app.state.themes
+        return {"themes": [row.to_public() for row in themes.list(str(account.household_id))]}
+
+    @app.post("/api/themes")
+    def add_theme(new: NewTheme, account: CurrentAccount, request: Request) -> Any:
+        """Approve a subject her pictures may be about. It starts nothing on its own."""
+        themes: ThemeStore = request.app.state.themes
+        try:
+            label = clean_label(new.label)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        theme = themes.add(make_theme(str(account.household_id), label, str(account.id)))
+        return theme.to_public()
+
+    @app.post("/api/themes/{theme_id}/remove")
+    def remove_theme(theme_id: str, account: CurrentAccount, request: Request) -> Any:
+        themes: ThemeStore = request.app.state.themes
+        try:
+            theme = themes.remove(str(account.household_id), theme_id)
+        except Exception as exc:  # storage SDKs raise their own not-found types
+            raise HTTPException(status_code=404, detail="unknown_theme") from exc
+        return theme.to_public()
+
+    @app.get("/api/device/{household_id}/themes")
+    def device_themes(household_id: str, _: DeviceKey, request: Request) -> Any:
+        """What the home server may paint about, as the parent last left it."""
+        themes: ThemeStore = request.app.state.themes
+        return {"themes": [row.to_public() for row in themes.list(household_id)]}
+
+    @app.get("/api/rhythm")
+    def read_rhythm(account: CurrentAccount, request: Request) -> Any:
+        store: RhythmStore = request.app.state.rhythm
+        return store.get(str(account.household_id)).to_public()
+
+    @app.post("/api/rhythm")
+    def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> Any:
+        """Record when the display may change. It persists and returns: the hub reads it
+        on its next run, and nothing here reaches into the house."""
+        store: RhythmStore = request.app.state.rhythm
+        try:
+            chosen = clean_rhythm(
+                str(account.household_id),
+                quiet_from_hour=new.quietFromHour,
+                quiet_until_hour=new.quietUntilHour,
+                cadence_hours=new.cadenceHours,
+                updated_by=str(account.id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return store.set(chosen).to_public()
+
+    @app.get("/api/device/{household_id}/rhythm")
+    def device_rhythm(household_id: str, _: DeviceKey, request: Request) -> Any:
+        """The hours and the spacing the hub applies, as the parent last left them."""
+        store: RhythmStore = request.app.state.rhythm
+        return store.get(household_id).to_public()
+
+    @app.post("/api/device/{household_id}/devices")
+    def report_devices(
+        household_id: str, reported: list[ReportedDevice], _: DeviceKey, request: Request
+    ) -> Any:
+        """The hub tells the panel how its displays are doing. State, not history."""
+        store: DeviceStatusStore = request.app.state.devices
+        recorded = [
+            store.record(
+                DeviceStatus(
+                    id=item.id,
+                    household_id=household_id,
+                    name=item.name or item.id,
+                    last_seen=item.lastSeen or time.time(),
+                    level=item.level,
+                    voltage=item.voltage,
+                    rssi=item.rssi,
+                    firmware=item.firmware,
+                    model=item.model,
+                )
+            )
+            for item in reported
+        ]
+        return {"recorded": [row.id for row in recorded]}
+
+    @app.get("/api/device/{household_id}/whoami")
+    def whoami(household_id: str, _: DeviceKey) -> Any:
+        """Which identity this container authenticates as. Claims only, never the token."""
+        from .painting import identity_claims
+
+        try:
+            return identity_claims()
+        except Exception as exc:
+            raise HTTPException(status_code=503, detail=f"no token: {exc}") from exc
+
+    @app.get("/api/devices")
+    def list_devices(account: CurrentAccount, request: Request) -> Any:
+        store: DeviceStatusStore = request.app.state.devices
+        rows = store.list(str(account.household_id))
+        return {"devices": [row.to_public() for row in rows]}
+
+    @app.post("/api/device/{household_id}/paint")
+    async def paint_picture(
+        household_id: str, _: DeviceKey, request: Request, theme: str = ""
+    ) -> Any:
+        """Paint one picture now, and hand back the bitmap ready for the panel.
+
+        The home server calls this when it wants a new picture. Nothing here is scheduled:
+        the cadence belongs to the house, which is the only place that knows what is
+        happening in the room.
+        """
+        from devices.epaper import render_picture_bytes
+        from shared.ids import new_id
+
+        from .painting import choose_theme, paint
+
+        settings: Settings = request.app.state.settings
+        counter: UsageStore = request.app.state.usage
+        if over_cap(counter, household_id, settings.monthly_picture_cap):
+            # Reaching the cap is a decision, not a fault: the display keeps its picture.
+            raise HTTPException(status_code=429, detail="monthly_cap_reached")
+
+        themes: ThemeStore = request.app.state.themes
+        chosen = theme or choose_theme([row.label for row in themes.list(household_id)])
+
+        reported: list[Any] = []
+        outcome = FAILED
+        try:
+            picture_id, image_b64, _ = await paint(chosen, on_usage=reported.append)
+            outcome = SERVED
+        except SafetyBlocked as exc:
+            # A refused picture is a normal outcome: the display keeps what it has.
+            outcome = REFUSED
+            raise HTTPException(status_code=409, detail=f"refused: {exc}") from exc
+        except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+            raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
+        finally:
+            try:
+                counter.record(
+                    event_from(
+                        household_id,
+                        KIND_IMAGE,
+                        outcome,
+                        reported[0] if reported else None,
+                        event_id=str(new_id("use")),
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a picture
+                # The call was already made and paid for; failing here would spend the
+                # money and deliver nothing. Loud in the log, silent to the house.
+                logging.getLogger(__name__).warning("usage not recorded: %s", exc)
+
+        bitmap = render_picture_bytes(image_b64)
+        archive: PictureArchive = request.app.state.pictures
+        archive.save(
+            PictureRecord(
+                id=picture_id,
+                household_id=household_id,
+                theme=chosen,
+                created_at=time.time(),
+            ),
+            bitmap,
+        )
+        return {
+            "id": picture_id,
+            "theme": chosen,
+            "imageBase64": base64.b64encode(bitmap).decode(),
+        }
+
+    @app.get("/api/usage")
+    def read_usage(account: CurrentAccount, request: Request, period: str = "") -> Any:
+        """What this household's pictures consumed this month, as the backend reported it.
+
+        Numbers about machines, never about her, and never a target to hit.
+        """
+        counter: UsageStore = request.app.state.usage
+        settings: Settings = request.app.state.settings
+        summary = counter.summary(
+            str(account.household_id), period or month_of(time.time())
+        )
+        return {"usage": summary.to_public(), "cap": settings.monthly_picture_cap}
+
     return app
+
+
+def _account_store(settings: Settings) -> AccountStore:
+    if not settings.cosmos_configured:
+        return InMemoryAccountStore()
+    from .cosmos_store import CosmosAccountStore
+
+    return CosmosAccountStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _proposal_store(settings: Settings) -> ProposalStore:
+    if not settings.cosmos_configured:
+        return InMemoryProposalStore()
+    from .cosmos_store import CosmosProposalStore
+
+    return CosmosProposalStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _picture_archive(settings: Settings) -> PictureArchive:
+    if not settings.blob_configured:
+        return InMemoryPictureArchive()
+    from .pictures import BlobPictureArchive
+
+    return BlobPictureArchive(settings.blob_endpoint, settings.pictures_container)
+
+
+def _theme_store(settings: Settings) -> ThemeStore:
+    if not settings.cosmos_configured:
+        return InMemoryThemeStore()
+    from .cosmos_store import CosmosThemeStore
+
+    return CosmosThemeStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _device_store(settings: Settings) -> DeviceStatusStore:
+    if not settings.cosmos_configured:
+        return InMemoryDeviceStatusStore()
+    from .cosmos_store import CosmosDeviceStatusStore
+
+    return CosmosDeviceStatusStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _usage_store(settings: Settings) -> UsageStore:
+    if not settings.cosmos_configured:
+        return InMemoryUsageStore()
+    from .cosmos_store import CosmosUsageStore
+
+    return CosmosUsageStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _rhythm_store(settings: Settings) -> RhythmStore:
+    if not settings.cosmos_configured:
+        return InMemoryRhythmStore()
+    from .cosmos_store import CosmosRhythmStore
+
+    return CosmosRhythmStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

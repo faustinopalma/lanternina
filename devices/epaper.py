@@ -1,0 +1,199 @@
+"""Render an approved item for a TRMNL-class e-paper display.
+
+The device draws nothing on its own: it fetches a PNG this module produced. That makes
+the delivery boundary topological rather than customary — the panel cannot show content
+that did not come through here, and this function refuses anything whose seals do not
+verify.
+
+Output is 800x480, 1-bit. The panel is 4-greyscale, but pure black on white is what stays
+readable at a distance on e-paper, and it keeps the file small.
+
+Nothing here can render a fault: if the item is not deliverable this raises, and the
+caller leaves the previous image on the display. Faults belong in the parent panel.
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+import sys
+from dataclasses import dataclass
+from io import BytesIO
+from typing import Final
+
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+from shared.approval import ApprovedItem
+from shared.delivery import assert_deliverable
+from shared.safety import ContentKind
+
+WIDTH: Final = 800
+HEIGHT: Final = 480
+MARGIN: Final = 36
+
+# Tried in order. The first two are what the mini-PC and this workstation actually have;
+# the bitmap fallback keeps the function total, at the cost of an ugly render.
+_FONT_CANDIDATES: Final = (
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "C:/Windows/Fonts/segoeui.ttf",
+    "/Library/Fonts/Arial.ttf",
+)
+_BOLD_CANDIDATES: Final = (
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "C:/Windows/Fonts/segoeuib.ttf",
+    "/Library/Fonts/Arial Bold.ttf",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class _Fonts:
+    title: ImageFont.FreeTypeFont | ImageFont.ImageFont
+    body: ImageFont.FreeTypeFont | ImageFont.ImageFont
+    small: ImageFont.FreeTypeFont | ImageFont.ImageFont
+
+
+def _load(candidates: tuple[str, ...], size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    for path in candidates:
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            continue
+    print("no TTF found; falling back to the bitmap font", file=sys.stderr)
+    return ImageFont.load_default()
+
+
+def _fonts() -> _Fonts:
+    return _Fonts(
+        title=_load(_BOLD_CANDIDATES, 44),
+        body=_load(_FONT_CANDIDATES, 32),
+        small=_load(_FONT_CANDIDATES, 26),
+    )
+
+
+def _wrap(draw: ImageDraw.ImageDraw, text: str, font: object, max_width: int) -> list[str]:
+    lines: list[str] = []
+    for paragraph in text.split("\n"):
+        words = paragraph.split()
+        current = ""
+        for word in words:
+            candidate = f"{current} {word}".strip()
+            if draw.textlength(candidate, font=font) <= max_width or not current:  # type: ignore[arg-type]
+                current = candidate
+            else:
+                lines.append(current)
+                current = word
+        lines.append(current)
+    return lines
+
+
+def render_epaper_png(
+    item: ApprovedItem, *, safety_key: bytes, approval_key: bytes, now: float | None = None
+) -> bytes:
+    """Return the 1-bit PNG for ``item``, or raise if it may not be shown."""
+    return _encode(
+        _render(item, safety_key=safety_key, approval_key=approval_key, now=now), "PNG"
+    )
+
+
+def render_epaper_bmp(
+    item: ApprovedItem, *, safety_key: bytes, approval_key: bytes, now: float | None = None
+) -> bytes:
+    """Return the 1-bit BMP the TRMNL firmware expects."""
+    return _encode(
+        _render(item, safety_key=safety_key, approval_key=approval_key, now=now), "BMP"
+    )
+
+
+def _encode(canvas: Image.Image, image_format: str) -> bytes:
+    buffer = BytesIO()
+    canvas.save(buffer, format=image_format)
+    return buffer.getvalue()
+
+
+def render_picture_bmp(
+    item: ApprovedItem, *, safety_key: bytes, approval_key: bytes, now: float | None = None
+) -> bytes:
+    """Return an approved picture as a full-bleed, dithered 1-bit BMP."""
+    assert_deliverable(item, safety_key=safety_key, approval_key=approval_key, now=now)
+    payload = item.proposal.payload
+    if payload.kind is not ContentKind.IMAGE_PNG:
+        raise ValueError(f"not a picture: {payload.kind}")
+    return render_picture_bytes(payload.body)
+
+
+def render_picture_bytes(image_b64: str) -> bytes:
+    """Render a base64 PNG for the panel, with no approval ceremony.
+
+    Used where the picture was screened but no parent seal exists, which is the case when
+    the cloud paints from a theme the parent approved once. The caller is responsible for
+    having screened it: this function only knows about pixels.
+    """
+    picture = Image.open(BytesIO(base64.b64decode(image_b64))).convert("L")
+    # Autocontrast first: e-paper has no backlight, and a flat midtone image reads as grey
+    # mush once it is reduced to two levels.
+    canvas = ImageOps.autocontrast(_cover(picture), cutoff=1)
+    # Then flatten the extremes. Without this, paper-white areas sit a few levels below 255
+    # and the dither scatters visible speckle across what should be empty background.
+    canvas = canvas.point(lambda v: 255 if v > 240 else (0 if v < 15 else v))
+    # Floyd-Steinberg, the opposite choice from text: a picture needs the dither that a
+    # sentence would only blur.
+    return _encode(canvas.convert("1"), "BMP")
+
+
+def _cover(picture: Image.Image) -> Image.Image:
+    """Scale to fill 800x480 and centre-crop, so nothing is letterboxed."""
+    scale = max(WIDTH / picture.width, HEIGHT / picture.height)
+    resized = picture.resize(
+        (max(WIDTH, round(picture.width * scale)), max(HEIGHT, round(picture.height * scale))),
+        Image.LANCZOS,
+    )
+    left = (resized.width - WIDTH) // 2
+    top = (resized.height - HEIGHT) // 2
+    return resized.crop((left, top, left + WIDTH, top + HEIGHT))
+
+
+def _render(
+    item: ApprovedItem, *, safety_key: bytes, approval_key: bytes, now: float | None = None
+) -> Image.Image:
+    assert_deliverable(item, safety_key=safety_key, approval_key=approval_key, now=now)
+
+    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
+    draw = ImageDraw.Draw(canvas)
+    fonts = _fonts()
+    payload = item.proposal.payload
+    inner = WIDTH - 2 * MARGIN
+
+    if payload.kind is ContentKind.EXERCISE_JSON:
+        content = json.loads(payload.body)
+        y = _draw_block(draw, str(content.get("titolo", "")), fonts.title, MARGIN, inner, 52)
+        y = _draw_block(draw, str(content.get("istruzioni", "")), fonts.body, y + 8, inner, 40)
+        for entry in content.get("esercizi", []):
+            if y > HEIGHT - 90:
+                break
+            question = str(entry.get("domanda", ""))
+            choices = "   ".join(f"[ ] {c}" for c in entry.get("scelte", []))
+            y = _draw_block(draw, question, fonts.body, y + 14, inner, 38)
+            y = _draw_block(draw, choices, fonts.small, y, inner, 32)
+    else:
+        # A single sentence, centred: the routine prompt and the reply after a sheet.
+        lines = _wrap(draw, payload.body.strip(), fonts.title, inner)
+        block = len(lines) * 56
+        y = max(MARGIN, (HEIGHT - block) // 2)
+        for line in lines:
+            width = draw.textlength(line, font=fonts.title)  # type: ignore[arg-type]
+            draw.text(((WIDTH - width) / 2, y), line, font=fonts.title, fill=0)
+            y += 56
+
+    # Pure threshold, no dithering: text on e-paper stays crisper without it.
+    return canvas.point(lambda v: 255 if v > 127 else 0).convert("1")
+
+
+def _draw_block(
+    draw: ImageDraw.ImageDraw, text: str, font: object, y: int, width: int, step: int
+) -> int:
+    for line in _wrap(draw, text, font, width):
+        if y > HEIGHT - step:
+            break
+        draw.text((MARGIN, y), line, font=font, fill=0)  # type: ignore[arg-type]
+        y += step
+    return y

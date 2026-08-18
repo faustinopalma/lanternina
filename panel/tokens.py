@@ -93,8 +93,7 @@ class TokenVerifier:
         if not subject:
             raise NotAuthenticated("token rejected")
 
-        # TODO(poc): confirm which claim the user flow actually emits; if neither is
-        # present the account is still created, just without an address to show the
-        # administrator.
+        # The measured External ID token uses preferred_username; email remains first so
+        # another configured user flow can provide the more specific claim.
         contact = str(payload.get("email") or payload.get("preferred_username") or "").strip()
         return Claims(subject=subject, contact=contact)

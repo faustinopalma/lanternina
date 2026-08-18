@@ -83,6 +83,21 @@ const CATALOGS = {
       "themes.badLabel": "Questo tema non va bene.",
       "themes.addFailed": "Non riuscito.",
 
+      "rhythm.title": "Ritmo",
+      "rhythm.note":
+        "Quando il display può cambiare quadro, e ogni quanto. La casa legge la scelta al giro successivo: salvare qui non avvia niente e non sveglia nessun apparecchio.",
+      "rhythm.quietFrom": "Pausa dalle",
+      "rhythm.quietUntil": "fino alle",
+      "rhythm.cadence": "Quadro nuovo",
+      "rhythm.everyHour": "ogni ora",
+      "rhythm.everyHours": "ogni {hours} ore",
+      "rhythm.save": "Salva",
+      "rhythm.saved": "Salvato. La casa lo applica al prossimo giro.",
+      "rhythm.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
+      "rhythm.loading": "Sto leggendo il ritmo.",
+      "rhythm.unreadable": "Non riesco a leggere il ritmo adesso.",
+      "rhythm.quietOff": "Nessuna pausa: il quadro può cambiare a qualsiasi ora.",
+
       "devices.title": "Dispositivi",
       "devices.note":
         "Lo stato dei display. Qui compaiono i guasti: sullo schermo che guarda lei non compare mai niente del genere.",
@@ -207,6 +222,21 @@ const CATALOGS = {
       "themes.empty": "No themes. While the list is empty the display uses the starting ones.",
       "themes.badLabel": "This theme will not do.",
       "themes.addFailed": "It did not work.",
+
+      "rhythm.title": "Rhythm",
+      "rhythm.note":
+        "When the display may change its picture, and how often. The house reads the choice on its next run: saving here starts nothing and wakes no device.",
+      "rhythm.quietFrom": "Pause from",
+      "rhythm.quietUntil": "until",
+      "rhythm.cadence": "A new picture",
+      "rhythm.everyHour": "every hour",
+      "rhythm.everyHours": "every {hours} hours",
+      "rhythm.save": "Save",
+      "rhythm.saved": "Saved. The house applies it on its next run.",
+      "rhythm.saveFailed": "I could not save it. Try again later.",
+      "rhythm.loading": "Reading the rhythm.",
+      "rhythm.unreadable": "I cannot read the rhythm right now.",
+      "rhythm.quietOff": "No pause: the picture may change at any hour.",
 
       "devices.title": "Devices",
       "devices.note":

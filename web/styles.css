@@ -220,6 +220,26 @@ button[disabled] { opacity: 0.5; cursor: default; }
 }
 .theme-form button { flex: 0 0 auto; }
 
+/* Labels read as a sentence on a wide screen and stack on a phone. */
+.rhythm-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+.rhythm-form label { color: var(--muted); }
+.rhythm-form select {
+  font: inherit;
+  color: inherit;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.rhythm-form button { flex: 0 0 auto; margin-left: auto; }
+
 .theme {
   display: flex;
   align-items: center;
