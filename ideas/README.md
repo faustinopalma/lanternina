@@ -23,6 +23,65 @@ among themselves; no file has been re-ranked as a whole since.
 | [03-paper.md](03-paper.md) | What gets printed |
 | [04-system.md](04-system.md) | Infrastructure, costs, things to close |
 | [05-routines.md](05-routines.md) | Routines, and activities that are easy to start |
+| [06-capture.md](06-capture.md) | The capture station, and what it is made of |
+
+## Where to start
+
+The order inside each file answers "which of these is worth most for the work". This table
+answers a different question, and is ranked by a different rule: **what does the rest stand
+on, and what is currently dangerous**. A thing that unblocks four others comes before a
+thing that is merely useful, even when the useful one is cheaper.
+
+The two are allowed to disagree. When they do, this table wins for choosing what to do next,
+and the file wins for judging whether the thing is worth doing at all.
+
+### First: the two that are dangerous today
+
+| # | What | Where | Why here |
+| --- | --- | --- | --- |
+| 1 | Close the drift between the templates and what is running | 04 §3 | A full deploy today is a guaranteed regression: the device key disappears and the panel answers 404. Every later change is deployed across this. |
+| 2 | Rebuild the hub from a blank card, once | 04 §5 | The seal keys exist in one place. The backup has never been restored, so it is a hope rather than a backup. |
+
+### Then: the foundations
+
+| # | What | Where | Why here |
+| --- | --- | --- | --- |
+| 3 | Household settings, replacing the invented profile | 01 §5 | Routines, content language, difficulty and tone all need somewhere to live. Four later entries are blocked on this one. |
+| 4 | Field names that are not Italian | 04 §7 | Cheapest now and dearer every week: the language is baked into the data, and every new piece of content code inherits it. |
+| 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
+| 6 | The layout agent: exercise → sheet | 03 §1 | The missing half of the paper loop. Two entries that give her the initiative cannot exist without it. |
+| 7 | The capture station | 06 | Reading a sheet back. `vision/` is empty; the contracts are written and nothing produces a frame. |
+
+### Then: what stands on them
+
+| # | What | Where | Needs |
+| --- | --- | --- | --- |
+| 8 | How much approved content is left | 01 §6 | nothing — a count on routes that exist |
+| 9 | Withdrawing an approval | 01 §3 | nothing — `withdraw` already exists in the ledger |
+| 10 | Reminders at times the parent chose | 05 §1 | 3 |
+| 11 | A role per display | 02 §4 | nothing — one field |
+| 12 | One step at a time | 05 §2 | 11, and the second display in the house |
+| 13 | The sheet that asks instead of assigning | 03 §3 | 6, 7 |
+| 14 | "Another like this" and "something different" | 03 §5 | 6, 7 |
+| 15 | A routine that shows how much is left | 05 §3 | 10 |
+| 16 | Routine cards on paper | 05 §4, 03 §2 | 10 |
+| 17 | Refusing with a reason | 01 §4 | 3 |
+| 18 | Learning a new routine | 05 §5 | 10 |
+| 19 | Offering approved content again, later | 05 §6 | 6 |
+| 20 | Printing in batches | 03 §4 | 6 |
+
+### Last: hygiene, and things we do not know yet
+
+| # | What | Where | Why last |
+| --- | --- | --- | --- |
+| 21 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
+| 22 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
+| 23 | Retiring the diagnostics block | 01 §8 | Must happen before anyone outside this project uses the panel. |
+| 24 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
+| 25 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
+| 26 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
+| 27 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
+| 28 | app.lanternina.com returning 404 | 04 §6 | Measure again first; it may have closed itself. |
 
 ## What is already true
 
