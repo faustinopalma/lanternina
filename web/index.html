@@ -111,12 +111,18 @@
         <div class="panel hidden" id="panel-rhythm">
           <p class="muted" data-i18n="rhythm.note"></p>
           <form id="rhythm-form" class="rhythm-form">
-            <label for="quiet-from" data-i18n="rhythm.quietFrom"></label>
-            <select id="quiet-from"></select>
-            <label for="quiet-until" data-i18n="rhythm.quietUntil"></label>
-            <select id="quiet-until"></select>
-            <label for="cadence" data-i18n="rhythm.cadence"></label>
-            <select id="cadence"></select>
+            <span class="pair">
+              <label for="quiet-from" data-i18n="rhythm.quietFrom"></label>
+              <select id="quiet-from"></select>
+            </span>
+            <span class="pair">
+              <label for="quiet-until" data-i18n="rhythm.quietUntil"></label>
+              <select id="quiet-until"></select>
+            </span>
+            <span class="pair">
+              <label for="cadence" data-i18n="rhythm.cadence"></label>
+              <select id="cadence"></select>
+            </span>
             <button type="submit" class="primary" data-i18n="rhythm.save"></button>
           </form>
           <p id="rhythm-status" class="muted" aria-live="polite"></p>

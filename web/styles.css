@@ -220,14 +220,16 @@ button[disabled] { opacity: 0.5; cursor: default; }
 }
 .theme-form button { flex: 0 0 auto; }
 
-/* Labels read as a sentence on a wide screen and stack on a phone. */
+/* Labels read as a sentence on a wide screen and stack on a phone. A label and its
+   choice wrap together, otherwise the sentence breaks in the middle. */
 .rhythm-form {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 10px 14px;
   margin: 14px 0 10px;
 }
+.rhythm-form .pair { display: flex; align-items: center; gap: 8px; }
 .rhythm-form label { color: var(--muted); }
 .rhythm-form select {
   font: inherit;
