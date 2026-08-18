@@ -1,0 +1,17 @@
+{
+  "checkins": [
+    {
+      "note": "avvio",
+      "at": "2026-08-08T23:34:15.1374358+02:00"
+    },
+    {
+      "note": "fine primo blocco: cartella idee scritta, 401 aperto",
+      "at": "2026-08-08T23:43:57.7007591+02:00"
+    }
+  ],
+  "started": "2026-08-08T23:34:15.1374358+02:00",
+  "stopped": "2026-08-09T06:43:04.5768402+02:00",
+  "wallClockMinutes": 428.8,
+  "workedMinutes": 14,
+  "nota": "wallClock e' il tempo fra avvio e stop. worked e' il tempo in cui ho davvero eseguito: due blocchi, ~10 min e ~4 min. Fra i due non ho lavorato, non esistevo: nessun turno era in corso."
+}
