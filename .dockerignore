@@ -29,6 +29,9 @@ scripts/
 tests/
 tools/
 firmware/
+# The browser tier is built by its own workflow and served by Static Web Apps. The
+# Dockerfile copies none of it, and its node_modules alone is 166 MB of context to upload.
+web/
 vision/
 agents/
 printing/
