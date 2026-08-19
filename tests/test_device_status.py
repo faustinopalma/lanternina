@@ -68,7 +68,10 @@ def test_the_parent_sees_what_the_hub_reported() -> None:
 
     devices = client.get("/api/devices", headers=headers()).json()["devices"]
     assert len(devices) == 1
-    assert devices[0]["name"] == "CF7D04"
+    # `label` is what the display calls itself; `name` is the parent's, and empty until
+    # they write one.
+    assert devices[0]["label"] == "CF7D04"
+    assert devices[0]["name"] == ""
     assert devices[0]["level"] == "mains"
     assert devices[0]["silent"] is False
 

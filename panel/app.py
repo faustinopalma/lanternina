@@ -36,7 +36,19 @@ from shared.ids import AccountId
 
 from .admin import ADMISSIONS, CurrentAdmin, waiting_view
 from .config import Settings
-from .devices import DeviceStatus, DeviceStatusStore, InMemoryDeviceStatusStore
+from .devices import (
+    KIND_DISPLAY,
+    MAX_NAME_LENGTH,
+    DeviceStatus,
+    DeviceStatusStore,
+    InMemoryDeviceStatusStore,
+    InMemoryInventoryStore,
+    InventoryStore,
+    Thing,
+    clean_job,
+    clean_name,
+    merged,
+)
 from .gate import resolve_account
 from .pictures import (
     DEFAULT_PAGE_SIZE,
@@ -153,17 +165,37 @@ class NewPreferences(BaseModel):
 
 
 class ReportedDevice(BaseModel):
-    """What the hub says about one display. The hub decides the level: it holds the
-    thresholds and knows whether the display is declared mains powered."""
+    """What the hub says about one thing in the house. The hub decides a display's level:
+    it holds the thresholds and knows whether the display is declared mains powered.
+
+    A printer or a scanner arrives here too, found over mDNS, carrying nothing but its
+    identity — which is why everything except the id has a default.
+    """
 
     id: str
+    kind: str = KIND_DISPLAY
     name: str = ""
+    address: str = ""
     lastSeen: float = 0.0
     level: str = "ok"
     voltage: float | None = None
     rssi: float | None = None
     firmware: str = ""
     model: str = ""
+
+
+class NewAssignment(BaseModel):
+    """What the parent decided about one thing. Both parts are optional: naming a printer
+    and giving it the job are two moments, and neither should undo the other.
+
+    Unknown fields are refused rather than dropped, so a body carrying something we do not
+    store cannot look as though it was saved.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    job: str | None = None
+    name: str | None = None
 
 
 def require_device(request: Request) -> str:
@@ -187,6 +219,7 @@ def create_app(
     pictures: PictureArchive | None = None,
     themes: ThemeStore | None = None,
     devices: DeviceStatusStore | None = None,
+    inventory: InventoryStore | None = None,
     usage: UsageStore | None = None,
     rhythm: RhythmStore | None = None,
     preferences: PreferencesStore | None = None,
@@ -202,6 +235,9 @@ def create_app(
     )
     app.state.themes = themes if themes is not None else _theme_store(app.state.settings)
     app.state.devices = devices if devices is not None else _device_store(app.state.settings)
+    app.state.inventory = (
+        inventory if inventory is not None else _inventory_store(app.state.settings)
+    )
     app.state.usage = usage if usage is not None else _usage_store(app.state.settings)
     app.state.rhythm = rhythm if rhythm is not None else _rhythm_store(app.state.settings)
     app.state.preferences = (
@@ -509,25 +545,49 @@ def create_app(
     def report_devices(
         household_id: str, reported: list[ReportedDevice], _: DeviceKey, request: Request
     ) -> Any:
-        """The hub tells the panel how its displays are doing. State, not history."""
+        """The hub says what it found, and is told what each thing is for.
+
+        State, not history. The report never carries a job or a name: those are the
+        parent's, and a discovery pass that overwrote them would undo a choice made in the
+        panel every five minutes.
+        """
         store: DeviceStatusStore = request.app.state.devices
-        recorded = [
-            store.record(
-                DeviceStatus(
+        inventory: InventoryStore = request.app.state.inventory
+        recorded: list[str] = []
+        for item in reported:
+            seen = item.lastSeen or time.time()
+            if item.kind == KIND_DISPLAY:
+                store.record(
+                    DeviceStatus(
+                        id=item.id,
+                        household_id=household_id,
+                        name=item.name or item.id,
+                        last_seen=seen,
+                        level=item.level,
+                        voltage=item.voltage,
+                        rssi=item.rssi,
+                        firmware=item.firmware,
+                        model=item.model,
+                    )
+                )
+            inventory.see(
+                Thing(
                     id=item.id,
                     household_id=household_id,
-                    name=item.name or item.id,
-                    last_seen=item.lastSeen or time.time(),
-                    level=item.level,
-                    voltage=item.voltage,
-                    rssi=item.rssi,
-                    firmware=item.firmware,
+                    kind=item.kind,
+                    label=item.name,
                     model=item.model,
+                    address=item.address,
+                    last_seen=seen,
                 )
             )
-            for item in reported
-        ]
-        return {"recorded": [row.id for row in recorded]}
+            recorded.append(item.id)
+        # The whole inventory comes back, not only what was just reported: the hub caches
+        # it, and a printer that was switched off this minute still has a job.
+        return {
+            "recorded": recorded,
+            "things": [row.to_public() for row in inventory.list(household_id)],
+        }
 
     @app.get("/api/device/{household_id}/whoami")
     def whoami(household_id: str, _: DeviceKey) -> Any:
@@ -541,9 +601,41 @@ def create_app(
 
     @app.get("/api/devices")
     def list_devices(account: CurrentAccount, request: Request) -> Any:
+        """Everything in the house, in one list, with whatever the hub last said about it."""
         store: DeviceStatusStore = request.app.state.devices
-        rows = store.list(str(account.household_id))
-        return {"devices": [row.to_public() for row in rows]}
+        inventory: InventoryStore = request.app.state.inventory
+        household = str(account.household_id)
+        return {
+            "devices": merged(inventory.list(household), store.list(household)),
+            # Stated while the parent types rather than enforced afterwards by truncation.
+            "nameLimit": MAX_NAME_LENGTH,
+        }
+
+    @app.post("/api/devices/{thing_id}")
+    def assign_device(
+        thing_id: str, new: NewAssignment, account: CurrentAccount, request: Request
+    ) -> Any:
+        """Give a thing its job and its name. Nothing happens: choosing a printer prints
+        nothing, and the hub finds out on its next run."""
+        inventory: InventoryStore = request.app.state.inventory
+        household = str(account.household_id)
+        known = {row.id: row for row in inventory.list(household)}.get(thing_id)
+        if known is None:
+            raise HTTPException(status_code=404, detail="unknown_device")
+        try:
+            job = None if new.job is None else clean_job(known.kind, new.job)
+            name = None if new.name is None else clean_name(new.name)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return inventory.assign(household, thing_id, job=job, name=name).to_public()
+
+    @app.post("/api/devices/{thing_id}/remove")
+    def forget_device(thing_id: str, account: CurrentAccount, request: Request) -> Any:
+        """Take a thing off the list. Nothing leaves on its own for going quiet, so this
+        is the only way out, and it is a decision somebody took."""
+        inventory: InventoryStore = request.app.state.inventory
+        inventory.forget(str(account.household_id), thing_id)
+        return {"removed": thing_id}
 
     @app.post("/api/device/{household_id}/paint")
     async def paint_picture(
@@ -667,6 +759,14 @@ def _device_store(settings: Settings) -> DeviceStatusStore:
     from .cosmos_store import CosmosDeviceStatusStore
 
     return CosmosDeviceStatusStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _inventory_store(settings: Settings) -> InventoryStore:
+    if not settings.cosmos_configured:
+        return InMemoryInventoryStore()
+    from .cosmos_store import CosmosInventoryStore
+
+    return CosmosInventoryStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _usage_store(settings: Settings) -> UsageStore:

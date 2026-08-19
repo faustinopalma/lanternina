@@ -74,13 +74,34 @@ export interface Preferences extends NewPreferences {
   wordsPerLineChoices: number[];
 }
 
+/** One thing in the house. `label` is what it calls itself — the id a display puts on its
+ *  own screen, or the mDNS service name — and `name` is what the parent called it. The
+ *  battery fields are present only for a display that has reported. */
 export interface Device {
   id: string;
+  kind: string;
+  label: string;
   name: string;
-  level: string;
+  job: string;
+  jobChoices: string[];
+  model: string;
+  address: string;
+  level?: string;
   lastSeen: number;
   silentSeconds: number;
   silent: boolean;
+}
+
+export interface Inventory {
+  devices: Device[];
+  nameLimit: number;
+}
+
+/** What the parent decided about one thing. Either half may be sent on its own: naming a
+ *  printer and telling it to print are two moments. */
+export interface NewAssignment {
+  job?: string;
+  name?: string;
 }
 
 export interface Usage {
@@ -130,6 +151,8 @@ export interface Api {
   saveRhythm(rhythm: NewRhythm): Promise<Rhythm>;
   preferences(): Promise<Preferences>;
   savePreferences(preferences: NewPreferences): Promise<Preferences>;
-  devices(): Promise<Device[]>;
+  devices(): Promise<Inventory>;
+  assignDevice(id: string, assignment: NewAssignment): Promise<Device>;
+  removeDevice(id: string): Promise<void>;
   usage(): Promise<UsageAnswer>;
 }

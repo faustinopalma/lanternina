@@ -8,6 +8,7 @@ import type {
   Api,
   Decision,
   Device,
+  NewAssignment,
   NewPreferences,
   NewRhythm,
   PicturePage,
@@ -24,6 +25,8 @@ export interface Recorded {
   preferences: NewPreferences[];
   themesAdded: string[];
   themesRemoved: string[];
+  assignments: { id: string; assignment: NewAssignment }[];
+  devicesRemoved: string[];
 }
 
 export interface FakeApi extends Api {
@@ -78,20 +81,45 @@ const SAMPLE_PICTURES: PicturePage = {
 
 const SAMPLE_DEVICES: Device[] = [
   {
-    id: "dev-1",
-    name: "cucina",
+    id: "94:A9:90:CF:7D:04",
+    kind: "display",
+    label: "CF7D04",
+    name: "il quadro in corridoio",
+    job: "picture",
+    jobChoices: ["picture", "sheet"],
+    model: "xiao_epaper_display",
+    address: "",
     level: "ok",
     lastSeen: NOW - 120,
     silentSeconds: 120,
     silent: false,
   },
   {
-    id: "dev-2",
-    name: "corridoio",
+    id: "E8:3D:C1:FB:9F:18",
+    kind: "display",
+    label: "FB9F18",
+    name: "",
+    job: "",
+    jobChoices: ["picture", "sheet"],
+    model: "xiao_epaper_display",
+    address: "",
     level: "low",
     lastSeen: NOW - 40000,
     silentSeconds: 40000,
     silent: true,
+  },
+  {
+    id: "stampante.local",
+    kind: "printer",
+    label: "stampante.local",
+    name: "la stampante di sotto",
+    job: "print",
+    jobChoices: ["print"],
+    model: "un modello qualunque",
+    address: "192.168.0.5",
+    lastSeen: NOW - 300,
+    silentSeconds: 300,
+    silent: false,
   },
 ];
 
@@ -111,11 +139,14 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     preferences: [],
     themesAdded: [],
     themesRemoved: [],
+    assignments: [],
+    devicesRemoved: [],
   };
   let themes: Theme[] = [
     { id: "theme-1", label: "gatti che dormono" },
     { id: "theme-2", label: "vele in porto" },
   ];
+  let devices: Device[] = SAMPLE_DEVICES;
   let rhythm: Rhythm = {
     quietFrom: "21:30",
     quietUntil: "07:00",
@@ -170,7 +201,19 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       preferences = { ...preferences, ...next };
       return preferences;
     },
-    devices: async () => SAMPLE_DEVICES,
+    devices: async () => ({ devices, nameLimit: 40 }),
+    assignDevice: async (id, assignment) => {
+      recorded.assignments.push({ id, assignment });
+      const updated = devices.map((device) =>
+        device.id === id ? { ...device, ...assignment } : device,
+      );
+      devices = updated;
+      return updated.find((device) => device.id === id)!;
+    },
+    removeDevice: async (id) => {
+      recorded.devicesRemoved.push(id);
+      devices = devices.filter((device) => device.id !== id);
+    },
     usage: async (): Promise<UsageAnswer> => ({
       usage: {
         calls: 214,

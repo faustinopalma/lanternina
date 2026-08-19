@@ -111,6 +111,53 @@ describe("the devices", () => {
     expect(screen.getByText(/da ricaricare presto/)).toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(/\d+\s?%/);
   });
+
+  it("shows what each thing calls itself, so a row can be matched to a shelf", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Dispositivi");
+    // The display with no name yet is found by the id it puts on its own screen.
+    expect(await screen.findByText("FB9F18")).toBeInTheDocument();
+    expect(screen.getByText("CF7D04")).toBeInTheDocument();
+  });
+
+  it("hands out a job and writes a name, and neither reaches into the house", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Dispositivi");
+    const jobs = await screen.findAllByLabelText("A cosa serve questo dispositivo");
+    await user.selectOptions(jobs[1]!, "sheet");
+    await waitFor(() =>
+      expect(api.recorded.assignments).toEqual([
+        { id: "E8:3D:C1:FB:9F:18", assignment: { job: "sheet" } },
+      ]),
+    );
+
+    const names = screen.getAllByLabelText("Nome di questo dispositivo");
+    await user.type(names[1]!, "lo schermo accanto alla stampante");
+    await user.tab();
+    await waitFor(() =>
+      expect(api.recorded.assignments[1]).toEqual({
+        id: "E8:3D:C1:FB:9F:18",
+        assignment: { name: "lo schermo accanto alla stampante" },
+      }),
+    );
+  });
+
+  it("offers a printer only the job a printer can do", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Dispositivi");
+    const jobs = await screen.findAllByLabelText("A cosa serve questo dispositivo");
+    const choices = within(jobs[2]!)
+      .getAllByRole("option")
+      .map((option) => option.textContent);
+    expect(choices).toEqual(["nessun compito", "stampa i fogli"]);
+  });
 });
 
 describe("the themes", () => {

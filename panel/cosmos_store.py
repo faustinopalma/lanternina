@@ -14,7 +14,9 @@ of the read, not of a WHERE clause somebody eventually forgets.
 
 from __future__ import annotations
 
+import re
 import time
+from dataclasses import replace
 from typing import Any
 
 from azure.cosmos import CosmosClient
@@ -23,7 +25,7 @@ from azure.identity import DefaultAzureCredential
 from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 
-from .devices import DeviceStatus
+from .devices import JOB_NONE, DeviceStatus, Thing, order_of
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
@@ -40,6 +42,7 @@ ACCOUNTS_CONTAINER = "families"
 PROPOSALS_CONTAINER = "proposals"
 THEMES_CONTAINER = "sources"
 DEVICES_CONTAINER = "sources"
+INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
@@ -406,6 +409,120 @@ def _to_status(document: dict[str, Any]) -> DeviceStatus:
         rssi=document.get("rssi"),
         firmware=str(document.get("firmware") or ""),
         model=str(document.get("model") or ""),
+    )
+
+
+class CosmosInventoryStore:
+    """Conforms to :class:`~panel.devices.InventoryStore`.
+
+    One document per thing in the house, kept until somebody removes it by hand. Nothing
+    drops out because it went quiet: a printer that is switched off answers no mDNS query,
+    and that is exactly the moment the parent goes looking for it.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(INVENTORY_CONTAINER)
+        )
+
+    def see(self, thing: Thing) -> Thing:
+        known = {row.id: row for row in self.list(thing.household_id)}.get(thing.id)
+        fresh = (
+            thing
+            if known is None
+            else replace(
+                known,
+                kind=thing.kind or known.kind,
+                label=thing.label or known.label,
+                model=thing.model or known.model,
+                address=thing.address or known.address,
+                last_seen=max(thing.last_seen, known.last_seen),
+            )
+        )
+        if known is None:
+            fresh = replace(fresh, first_seen=fresh.first_seen or fresh.last_seen)
+        self._container.upsert_item(_from_thing(fresh))
+        return fresh
+
+    def assign(
+        self,
+        household_id: str,
+        thing_id: str,
+        *,
+        job: str | None = None,
+        name: str | None = None,
+    ) -> Thing:
+        rows = {row.id: row for row in self.list(household_id)}
+        current = rows[thing_id]
+        if job is not None and job != JOB_NONE:
+            # A job belongs to one thing: handing it over takes it from whoever held it.
+            for row in rows.values():
+                if row.id != thing_id and row.job == job:
+                    self._container.upsert_item(_from_thing(replace(row, job=JOB_NONE)))
+        updated = replace(
+            current,
+            job=current.job if job is None else job,
+            name=current.name if name is None else name,
+        )
+        self._container.upsert_item(_from_thing(updated))
+        return updated
+
+    def list(self, household_id: str) -> list[Thing]:
+        rows = self._container.query_items(
+            query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'thing'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        return sorted((_to_thing(row) for row in rows), key=order_of)
+
+    def forget(self, household_id: str, thing_id: str) -> None:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.delete_item(
+                item=_thing_document_id(thing_id), partition_key=household_id
+            )
+        except exceptions.CosmosResourceNotFoundError:
+            # Removing something already gone is what the parent asked for.
+            pass
+
+
+def _thing_document_id(thing_id: str) -> str:
+    """A MAC has colons and an mDNS name has dots; neither is a safe Cosmos item id."""
+    return "thing-" + re.sub(r"[^A-Za-z0-9._-]", "-", thing_id)
+
+
+def _from_thing(thing: Thing) -> dict[str, Any]:
+    return {
+        "id": _thing_document_id(thing.id),
+        "familyId": thing.household_id,
+        "type": "thing",
+        "key": thing.id,
+        "kind": thing.kind,
+        "name": thing.name,
+        "label": thing.label,
+        "job": thing.job,
+        "model": thing.model,
+        "address": thing.address,
+        "lastSeen": thing.last_seen,
+        "firstSeen": thing.first_seen,
+    }
+
+
+def _to_thing(document: dict[str, Any]) -> Thing:
+    return Thing(
+        id=str(document.get("key") or document["id"]),
+        household_id=str(document["familyId"]),
+        kind=str(document.get("kind") or ""),
+        name=str(document.get("name") or ""),
+        label=str(document.get("label") or ""),
+        job=str(document.get("job") or ""),
+        model=str(document.get("model") or ""),
+        address=str(document.get("address") or ""),
+        last_seen=float(document.get("lastSeen") or 0.0),
+        first_seen=float(document.get("firstSeen") or 0.0),
     )
 
 

@@ -11,6 +11,8 @@ import {
   type Api,
   type Decision,
   type Device,
+  type Inventory,
+  type NewAssignment,
   type NewPreferences,
   type NewRhythm,
   type PicturePage,
@@ -143,9 +145,15 @@ export function httpApi(token: string): Api {
     savePreferences: (preferences: NewPreferences) =>
       json<Preferences>("/api/preferences", write(preferences), PREFERENCES_FIELDS),
 
-    async devices(): Promise<Device[]> {
-      const answer = await json<{ devices: Device[] }>("/api/devices", {}, ["devices"]);
-      return answer.devices;
+    devices: () => json<Inventory>("/api/devices", {}, ["devices", "nameLimit"]),
+
+    // The whole effect of a choice: a row changes. Nothing is printed, nothing is
+    // scanned, and the house finds out when it next reports.
+    assignDevice: (id: string, assignment: NewAssignment) =>
+      json<Device>(`/api/devices/${encodeURIComponent(id)}`, write(assignment), ["id", "job"]),
+
+    async removeDevice(id: string): Promise<void> {
+      await json(`/api/devices/${encodeURIComponent(id)}/remove`, { method: "POST" });
     },
 
     usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "cap"]),
