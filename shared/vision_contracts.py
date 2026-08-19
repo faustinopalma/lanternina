@@ -14,6 +14,7 @@ timer, and no motion trigger anywhere in this package — see docs/NON-GOALS.md.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any
@@ -154,6 +155,28 @@ class CellReading:
     needs_review: bool = False
     note: str = ""
 
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "cell_id": str(self.cell_id),
+            "kind": str(self.kind),
+            "value": self.value,
+            "confidence": str(self.confidence),
+            "needs_review": self.needs_review,
+            "note": self.note,
+        }
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> CellReading:
+        raw = values.get("value")
+        return CellReading(
+            cell_id=CellId(str(values["cell_id"])),
+            kind=CellKind(str(values["kind"])),
+            value=None if raw is None else str(raw),
+            confidence=ReadConfidence(str(values["confidence"])),
+            needs_review=bool(values.get("needs_review", False)),
+            note=str(values.get("note", "")),
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class PageReading:
@@ -170,3 +193,25 @@ class PageReading:
     @property
     def needs_review(self) -> bool:
         return any(c.needs_review for c in self.cells)
+
+    def to_dict(self) -> dict[str, Any]:
+        """The whole reading, for the wire between the house and the panel."""
+        return {
+            "sheet_id": str(self.sheet_id),
+            "exercise_id": str(self.exercise_id),
+            "cells": [cell.to_dict() for cell in self.cells],
+            "read_at": self.read_at,
+            "degraded": self.degraded,
+            "metadata": dict(self.metadata),
+        }
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> PageReading:
+        return PageReading(
+            sheet_id=SheetId(str(values["sheet_id"])),
+            exercise_id=ExerciseId(str(values["exercise_id"])),
+            cells=tuple(CellReading.from_dict(c) for c in values.get("cells", [])),
+            read_at=float(values.get("read_at", 0.0)),
+            degraded=bool(values.get("degraded", False)),
+            metadata=dict(values.get("metadata", {})),
+        )

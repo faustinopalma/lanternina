@@ -41,10 +41,22 @@ INNER_CORNER_INDEX = {
     MARKER_ID_BOTTOM_LEFT: 1,
 }
 
-# Below this fraction of dark pixels a cell is reported empty rather than guessed at. The
-# band between the two is where the page is handed to the parent instead.
-INK_PRESENT = 0.04
-INK_UNCERTAIN = 0.02
+# The fallback reader's two constants. The reader is a vision model — see
+# `agents/sheet_reader.py` — and this arithmetic is what the house says when the cloud is
+# unreachable, with `degraded` set so nobody mistakes one for the other.
+#
+# Set from measurement on 19 August 2026, after the first values reported four ticked
+# boxes as empty, with certainty, on a sheet somebody had actually filled in. Three sheets
+# read by hand in pen: marks land between 0.0121 and 0.0196, and an empty cell reads
+# exactly 0.0000 — there is no noise floor to clear, because the 10% inset per side keeps
+# the printed border out of the sample.
+#
+# The limit is what these numbers cannot fix, and it is why they are no longer the reader.
+# A light pencil mark also reads 0.0000, and lowering an area threshold does nothing for
+# it: the grey threshold is Otsu over the whole page and is therefore set by print black,
+# so pale graphite falls on the paper side before any area is counted.
+INK_PRESENT = 0.010
+INK_UNCERTAIN = 0.003
 
 
 class MarkersNotFound(ValueError):

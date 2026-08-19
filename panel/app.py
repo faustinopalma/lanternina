@@ -215,6 +215,22 @@ def require_device(request: Request) -> str:
 DeviceKey = Annotated[str, Depends(require_device)]
 
 
+class PageToRead(BaseModel):
+    """One rectified page and the sheet that says where its boxes are.
+
+    The image is the crop inside the four corner markers and nothing else. The sheet is
+    what ``SheetSpec.to_dict()`` produces, which carries no expected answer: there is no
+    field on the wire for what a mark should have been.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    imageBase64: str
+    width: int = 0
+    height: int = 0
+    sheet: dict[str, Any] = Field(default_factory=dict)
+
+
 def create_app(
     store: AccountStore | None = None,
     settings: Settings | None = None,
@@ -708,6 +724,46 @@ def create_app(
             "theme": chosen,
             "imageBase64": base64.b64encode(bitmap).decode(),
         }
+
+    @app.post("/api/device/{household_id}/read-sheet")
+    async def read_sheet_page(
+        household_id: str, page: PageToRead, _: DeviceKey, request: Request
+    ) -> Any:
+        """Read one filled-in sheet and hand back what is in each box.
+
+        The house calls this when a page comes off the glass. What comes back describes
+        ink — this box has a mark, this one does not, this one I could not tell — and the
+        house turns it into a sentence. Nothing here says anything about who filled it in,
+        and there is no field in which it could.
+
+        A refusal leaves the house to fall back on its own arithmetic and say so, which is
+        the whole of what "reduced capability, not a stopped system" means on this path.
+        """
+        from shared.sheet import SheetSpec
+        from shared.vision_contracts import RectifiedPage
+
+        from .reading import read_sheet
+
+        try:
+            spec = SheetSpec.from_dict(page.sheet)
+        except (KeyError, ValueError) as exc:
+            raise HTTPException(status_code=400, detail=f"not a sheet: {exc}") from exc
+
+        png = base64.b64decode(page.imageBase64)
+        rectified = RectifiedPage(
+            sheet_id=spec.sheet_id,
+            exercise_id=spec.exercise_id,
+            png=png,
+            width=page.width,
+            height=page.height,
+            captured_at=time.time(),
+            spec_version=spec.spec_version,
+        )
+        try:
+            reading = await read_sheet(rectified, spec, now=time.time())
+        except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+            raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
+        return reading.to_dict()
 
     @app.get("/api/usage")
     def read_usage(account: CurrentAccount, request: Request, period: str = "") -> Any:

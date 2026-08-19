@@ -18,6 +18,10 @@ COPY panel/ ./panel/
 # Painting on request needs the one door to the models and the panel renderer.
 COPY orchestrator/ ./orchestrator/
 COPY devices/ ./devices/
+# Reading a sheet on request needs the agent that does it. Left out until 19 August 2026,
+# which cost nothing until the panel gained a route that calls one: the import is lazy, so
+# the app started, the route registered, and the failure waited for the first real page.
+COPY agents/ ./agents/
 
 RUN pip install --no-cache-dir ".[panel]"
 

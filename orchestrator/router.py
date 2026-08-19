@@ -328,7 +328,7 @@ class StubRouter:
             raise NoCapacityError("stub router is configured as offline")
         text = self.replies.pop(0) if self.replies else "STUB RESPONSE — not a real reading"
         return ModelResponse(
-            text=text,
+            text=text[: request.max_output_chars],
             request_id=request.request_id,
             routing=RoutingDecision(
                 tier=ModelTier.CLOUD_FOUNDRY,
@@ -336,6 +336,9 @@ class StubRouter:
                 reason="stub",
             ),
             latency_s=0.0,
+            # Cut the same way the real one does. A stub that answers at any length lets a
+            # caller's handling of a cut-off answer go untested for as long as it exists.
+            truncated=len(text) > request.max_output_chars,
         )
 
     def health(self) -> RouterHealth:

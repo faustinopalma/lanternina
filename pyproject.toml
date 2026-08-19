@@ -45,6 +45,12 @@ panel = [
     # The async Content Safety client needs an async transport, and does not declare it.
     "aiohttp>=3.9",
     "Pillow>=10.0",
+    # The router's chat path, which is what reads a sheet. It is heavy: it brings in
+    # provider SDKs this container never calls, and it lands in an image a parent's panel
+    # waits on when it scales from zero. The way out is a REST chat call beside
+    # `generate_image`, which needs only httpx and azure-identity — the image path already
+    # works that way, which is why images did not need this and reading did.
+    "agent-framework>=1.13",
 ]
 # Serial link to the ESP32 devices.
 devices = ["pyserial>=3.5"]

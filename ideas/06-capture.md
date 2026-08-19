@@ -18,7 +18,11 @@ drawing too big for the glass.
 
 ---
 
-## 0. A mark by hand reads as an empty box — parked, 19 August 2026
+## 0. ~~A mark by hand reads as an empty box~~ — **closed, 19 August 2026**
+
+Both of the two things this entry was waiting for happened within an hour of each other,
+and on the same sheet. The text below is left as it was written, because the measurement in
+it is still the evidence; what happened is at the end.
 
 **What it is.** The two numbers that decide whether a cell counts as marked. Today
 `INK_PRESENT` is 0.04 and `INK_UNCERTAIN` is 0.02, both chosen before anything had been
@@ -77,6 +81,33 @@ evidence we have not gathered, for a reader we do not plan to keep.
 
 **Done when.** Either the visual model does the reading and these constants stop mattering,
 or a real sheet comes back wrong and this is unparked with that sheet as the evidence.
+
+### What happened, 19 August 2026
+
+The first hand-written experience in the catalogue (`07 §1`) printed a sheet, somebody
+ticked four boxes, and the display said no boxes had been ticked. Measured on that page:
+**0.0172, 0.0136, 0.0129, 0.0164**, against empty cells at exactly **0.0000**. Three sheets
+now agree — marks between 0.0121 and 0.0196, paper at zero — and this one was not marked to
+find an edge. It was somebody answering four questions.
+
+The constants moved to **0.010 / 0.003**, the numbers this entry had already worked out,
+and the same physical sheet then read `sole, dentro, acqua, veloce` with nothing in doubt.
+
+Then the other exit condition was taken as well, because tuning was the wrong answer: the
+reader is now a vision model. `agents/sheet_reader.py` is the first implementation of the
+`VisionAgent` protocol, reached through a new panel route because the hub holds no Azure
+credential. On the same sheet it returned the same four choices and marked nothing
+doubtful, in **13.0 s** against the scanner's 37 s.
+
+So the arithmetic is no longer the reader. It is what the house says when the cloud cannot
+be reached, and it says so by setting `degraded`. The two constants still matter for that
+case and no longer decide what anybody is told on an ordinary day.
+
+**What is still true and still unfixed.** A light pencil mark reads 0.0000 in the fallback,
+and no area threshold reaches it: the page-wide Otsu threshold is fitted to printed black.
+The model has not been tested on pencil, on a handled page, or on handwriting — it has been
+tested on one sheet, in pen, where it agreed with arithmetic that was also right. That is
+evidence the path works, not evidence it reads better.
 
 ---
 
