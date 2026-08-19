@@ -123,39 +123,31 @@ def test_config_from_env_names_what_is_missing() -> None:
         FoundryConfig.from_env({"LANTERNINA_FOUNDRY_ENDPOINT": "https://example.invalid/"})
 
 
-async def test_the_sdk_message_actually_builds() -> None:
-    """Catches SDK drift without credentials.
+async def test_the_chat_body_actually_builds() -> None:
+    """Catches shape drift without credentials.
 
-    ``Role`` was an enum in agent-framework 1.10 and is a ``NewType`` over ``str`` in 1.13,
-    so ``Role.USER`` now raises AttributeError. That would have surfaced on the first real
-    call — the one moment you are least likely to suspect the message construction.
+    This is where the chat path has drifted before: under the SDK, ``Role`` went from an
+    enum to a ``NewType`` over ``str`` between 1.10 and 1.13, and ``Role.USER`` began
+    raising AttributeError on the first real call — the one moment you are least likely to
+    suspect the message construction. The REST body has the same property, so it is pinned
+    the same way. The shape below was verified against the account on 19 August 2026.
     """
-    pytest.importorskip("agent_framework")
-    from orchestrator.router import _FoundryBackend
+    from orchestrator.router import _chat_messages
 
-    class FakeAgent:
-        def __init__(self) -> None:
-            self.message: object = None
+    messages = _chat_messages("read the page", (b"\x89PNG-not-real",), "be literal")
 
-        async def run(self, message: object) -> object:
-            self.message = message
-            return type("Response", (), {"text": "ok"})()
+    assert messages[0] == {"role": "system", "content": "be literal"}
+    assert messages[1]["role"] == "user"
+    parts = messages[1]["content"]
+    assert parts[0] == {"type": "text", "text": "read the page"}
+    assert parts[1]["image_url"]["url"].startswith("data:image/png;base64,")
 
-    class FakeClient:
-        def __init__(self) -> None:
-            self.agent = FakeAgent()
 
-        def as_agent(self, *, instructions: str) -> FakeAgent:
-            del instructions
-            return self.agent
+async def test_a_call_without_instructions_sends_no_system_message() -> None:
+    """Planning gets no persona, and an empty system message is not the same as none."""
+    from orchestrator.router import _chat_messages
 
-    backend = _FoundryBackend(CONFIG, credential=None)
-    fake = FakeClient()
-    backend._client = fake  # the SDK client is the only thing we are standing in for
+    messages = _chat_messages("plan something", (), "")
 
-    text = await backend.complete("read the page", (b"\x89PNG-not-real",), "be literal")
-
-    assert text == "ok"
-    assert fake.agent.message is not None
-    assert fake.agent.message.role == "user"
-    assert len(fake.agent.message.contents) == 2
+    assert [message["role"] for message in messages] == ["user"]
+    assert messages[0]["content"] == [{"type": "text", "text": "plan something"}]

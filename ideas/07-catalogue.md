@@ -179,6 +179,28 @@ answer, and the cold start is measured before and after rather than assumed.
 **What it costs.** An hour, and the risk is that `complete()` is also the text-generation
 path the hub uses, so it has to be verified on both.
 
+**Done, 19 August 2026.** `complete()` now posts to
+`{account}/openai/deployments/{deployment}/chat/completions`, api-version `2024-10-21`,
+which was chosen by probing the account rather than from documentation: the GA version
+carries a system message and an inline PNG, which is everything the sheet reader sends.
+
+The image went from 413,849,099 to 73,076,141 bytes, back to what it measured before the
+dependency arrived. **The cold start did not follow.** Measured on the deployed app, scaled
+to zero each time by stopping the hub timers and waiting for the replica count to reach
+nought: 28.1 s before, then 24.7 s and 31.3 s after. Two samples after bracket the one
+before, so the difference is inside the spread and this change bought no measurable wait
+back. The paragraph above, written before the work, assumed it would — the assumption is
+left standing so the correction has something to point at.
+
+Why it did not: the layers are cached on the node the app scales up on, so scaling from
+zero does not re-pull the image, and the dependency was imported lazily and so never
+delayed startup. The size would be paid on a genuinely cold node, which this measurement
+never produced. Warm requests were 0.15–0.17 s throughout and are unaffected.
+
+What the change is still worth: 341 MB less to pull on a first deployment or a new node,
+a shorter build, and one fewer SDK whose next release can break a call at runtime — which
+this one already did once, between 1.10 and 1.13.
+
 ---
 
 

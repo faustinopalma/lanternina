@@ -83,10 +83,14 @@ class FoundryConfig:
     endpoint: str
     deployment: str
     # Images are served by the account endpoint, not the project one, so it is a separate
-    # field rather than something derived from `endpoint` by string surgery.
+    # field rather than something derived from `endpoint` by string surgery. Chat goes the
+    # same way now, so this is what both calls need.
     account_endpoint: str = ""
     image_deployment: str = ""
     image_api_version: str = "2025-04-01-preview"
+    # Measured against this account on 19 August 2026: the GA version answers a chat call
+    # with a system message and an inline PNG, which is everything the sheet reader sends.
+    chat_api_version: str = "2024-10-21"
 
     @staticmethod
     def from_env(env: dict[str, str]) -> FoundryConfig:
@@ -105,48 +109,77 @@ class FoundryConfig:
             image_api_version=env.get(
                 "LANTERNINA_FOUNDRY_IMAGE_API_VERSION", "2025-04-01-preview"
             ),
+            chat_api_version=env.get("LANTERNINA_FOUNDRY_CHAT_API_VERSION", "2024-10-21"),
         )
 
 
+def _chat_messages(prompt: str, images: tuple[bytes, ...], instructions: str) -> list[dict]:
+    """The body of one chat turn: a system message, then the prompt and the pages.
+
+    Separated from the call so the shape can be pinned without credentials. The shape is
+    where this path has drifted before, and drift here surfaces on the first real request
+    rather than at import.
+    """
+    import base64
+
+    parts: list[dict[str, Any]] = [{"type": "text", "text": prompt}]
+    parts.extend(
+        {
+            "type": "image_url",
+            "image_url": {"url": "data:image/png;base64," + base64.b64encode(png).decode()},
+        }
+        for png in images
+    )
+    messages: list[dict[str, Any]] = []
+    if instructions:
+        messages.append({"role": "system", "content": instructions})
+    messages.append({"role": "user", "content": parts})
+    return messages
+
+
 class _FoundryBackend:
-    """Everything that touches the SDK, in one place.
+    """Everything that reaches the cloud, in one place.
 
     Narrow on purpose: the router is testable without the cloud packages because this is
-    the only thing that has to be swapped out.
+    the only thing that has to be swapped out. Both calls speak REST with httpx and a
+    token — the SDK that used to serve the chat path brought provider packages this
+    container never calls into an image the parent waits on when it scales from zero.
     """
 
     def __init__(self, config: FoundryConfig, credential: Any | None) -> None:
         self._config = config
         self._credential = credential
-        self._client: Any | None = None
         # Read back by the caller after a call. Safe because a router is built per
         # request; it would not be if one were shared between them.
         self.last_usage: ModelUsage | None = None
 
-    def _client_or_build(self) -> Any:
-        if self._client is None:
-            from agent_framework.foundry import FoundryChatClient
-            from azure.identity import DefaultAzureCredential
-
-            self._client = FoundryChatClient(
-                project_endpoint=self._config.endpoint,
-                model=self._config.deployment,
-                credential=self._credential or DefaultAzureCredential(),
-            )
-        return self._client
-
     async def complete(
         self, prompt: str, images: tuple[bytes, ...], instructions: str
     ) -> str:
-        from agent_framework import Content, Message
+        """One chat turn. The same shape as `generate_image`, against the same account."""
+        import asyncio
 
-        # Role is a NewType over str here, not an enum: agent-framework 1.13 accepts the
-        # literal "user". Role.USER existed in 1.10 and would raise AttributeError now.
-        contents = [Content.from_text(text=prompt)]
-        contents.extend(Content.from_data(data=png, media_type="image/png") for png in images)
-        agent = self._client_or_build().as_agent(instructions=instructions)
-        response = await agent.run(Message(role="user", contents=contents))
-        return str(response.text)
+        import httpx
+
+        if not self._config.account_endpoint:
+            raise ValueError("a chat call needs LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT")
+        token = await asyncio.to_thread(self._token)
+        url = (
+            f"{self._config.account_endpoint.rstrip('/')}/openai/deployments/"
+            f"{self._config.deployment}/chat/completions"
+            f"?api-version={self._config.chat_api_version}"
+        )
+        async with httpx.AsyncClient(timeout=300) as client:
+            response = await client.post(
+                url,
+                headers={"Authorization": f"Bearer {token}"},
+                json={"messages": _chat_messages(prompt, images, instructions)},
+            )
+            response.raise_for_status()
+            message = response.json()["choices"][0]["message"]
+            # A refusal comes back with a null content, and str(None) would put the word
+            # "None" on a sheet.
+            return str(message.get("content") or "")
 
     def _token(self) -> str:
         from azure.identity import DefaultAzureCredential
