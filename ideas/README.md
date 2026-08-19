@@ -24,6 +24,7 @@ among themselves; no file has been re-ranked as a whole since.
 | [04-system.md](04-system.md) | Infrastructure, costs, things to close |
 | [05-routines.md](05-routines.md) | Routines, and activities that are easy to start |
 | [06-capture.md](06-capture.md) | The capture station, and what it is made of |
+| [07-catalogue.md](07-catalogue.md) | Experiences designed once, for every house |
 
 ## Where to start
 
@@ -73,19 +74,20 @@ and the file wins for judging whether the thing is worth doing at all.
 | 22 | Learning a new routine | 05 §5 | 10 |
 | 23 | Offering approved content again, later | 05 §6 | 6 |
 | 24 | Printing in batches | 03 §4 | 6 |
+| 25 | The vocabulary of capabilities, and the shape of a blueprint | 07 §1 | 15 — and everything else in 07 stands on it |
 
 ### Last: hygiene, and things we do not know yet
 
 | # | What | Where | Why last |
 | --- | --- | --- | --- |
-| 25 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
-| 26 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
-| 27 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
-| 28 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
-| 29 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
-| 30 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
-| 31 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
-| 32 | ~~app.lanternina.com returning 404~~ — **closed, 19 August 2026** | 04 §6 | It closed itself. 40 requests all answered 200, and the ingress that used to be deterministically 404 answered 200 six times out of six. Nothing was changed to achieve it. |
+| 26 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
+| 27 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
+| 28 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
+| 29 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
+| 30 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
+| 31 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
+| 32 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
+| 33 | ~~app.lanternina.com returning 404~~ — **closed, 19 August 2026** | 04 §6 | It closed itself. 40 requests all answered 200, and the ingress that used to be deterministically 404 answered 200 six times out of six. Nothing was changed to achieve it. |
 
 ## What is already true
 
