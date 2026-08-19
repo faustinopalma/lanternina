@@ -17,6 +17,7 @@ from __future__ import annotations
 import base64
 import json
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from io import BytesIO
 from typing import Final
@@ -187,6 +188,28 @@ def _render(
 
     # Pure threshold, no dithering: text on e-paper stays crisper without it.
     return canvas.point(lambda v: 255 if v > 127 else 0).convert("1")
+
+
+def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
+    """The house speaking about itself: a sheet waiting, a scanner ready.
+
+    No seal is verified here, and that is not a hole in the delivery boundary. The seals
+    attest that model output was screened and approved; these words are literals in the
+    repository, so there is nobody to attest and nothing to screen. What must never happen
+    is this becoming a way to draw text that came from anywhere else, so it takes strings
+    from the caller and the caller is the hub, not an agent.
+    """
+    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
+    draw = ImageDraw.Draw(canvas)
+    fonts = _fonts()
+    inner = WIDTH - 2 * MARGIN
+
+    y = _draw_block(draw, heading, fonts.title, MARGIN + 24, inner, 52)
+    y += 18
+    for line in lines:
+        y = _draw_block(draw, line, fonts.body, y, inner, 42)
+        y += 10
+    return _encode(canvas.point(lambda v: 255 if v > 127 else 0).convert("1"), "BMP")
 
 
 def _draw_block(

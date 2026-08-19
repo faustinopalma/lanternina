@@ -7,22 +7,35 @@ So the geometry is no longer a risk: the ideas below are about the content.
 
 ---
 
-## 1. Multiple-choice sheets, and only those, for the offline path
+## 1. Closed: multiple-choice sheets for the offline path
 
-**What it is.** A family of sheets made only of boxes to tick.
+**What it was.** A family of sheets made only of boxes to tick. The sheet contract declares
+five cell kinds, but only two can be read without the network: `CHECKBOX` and `CHOICE_BOX`.
+If the link drops, choice sheets keep closing the loop and the others do not.
 
-**Why.** The sheet contract declares five cell kinds, but **only two can be read without
-the network**: `CHECKBOX` and `CHOICE_BOX`. A handwriting sheet needs the cloud to be read
-back. If the link drops, choice sheets keep closing the loop and the others do not. This is
-not a pedagogical preference: it is the only format that works when everything else is off.
+**How it was closed, 19 August 2026.** `printing/layout.py` turns an exercise body into a
+`SheetSpec`: one `CHOICE_BOX` per choice, grouped per question so a mark can be attributed
+to the question it answers, positioned in the marker frame. It refuses rather than
+squeezing — more than four questions, or a question with fewer than two choices, raises
+`SheetTooFull` instead of reaching for a smaller font.
 
-**How.** The content agent already produces multiple-choice exercises and the prompt asks
-for choices without symbols. What is missing is the layout agent, which turns an exercise
-into a `SheetSpec` with the cells in the right places.
+Two things had to be added underneath. A sheet needs printed words, and a cell is a place
+an answer can be, which a question is not: `SheetSpec` gained `headings`, text drawn on the
+page that the reader never looks at. And the sheet had to reach paper: `drawing_to_pdf`
+writes the PDF by hand in millimetres, because the printer does not accept PDF and CUPS
+rasterises it at 360 dpi — about 35 pixels to an ArUco module — while every converter in
+the path is another chance for "fit to page".
 
-**What it costs.** Layout is the part we have never written, and the most tedious:
-normalised positions, no overlap with the QR code or the markers, and a test that checks
-every declared cell really is where the reader will look for it.
+**What it cost.** The first layout ran the title straight through both upper markers. The
+renderer refused it, which is why the refusal exists; the second put the choice word on top
+of the question, which no test could catch and only looking at the sheet did.
+
+**How it was checked.** A three-question sheet was laid out, drawn, printed at 100% on the
+ET-2870, and the boxes are where the spec says. The tests hold the part the renderer cannot
+see: no two boxes overlap, since a mark inside an overlap answers two questions at once.
+
+**What is still open.** Reading it back. `tools/check_scan.py` has done it once from a
+scanned file; nothing yet does it on its own.
 
 ---
 

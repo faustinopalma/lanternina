@@ -49,7 +49,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so a name has no field to sit in. |
 | 4 | ~~Field names that are not Italian~~ — **done, 18 August 2026** | 04 §7 | The keys are English, and the content language is free to become what it was meant to be, a setting. Bodies approved before the change keep the Italian keys: the safety seal covers them byte for byte, so the readers accept both spellings and nothing stored was touched. |
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
-| 6 | The layout agent: exercise → sheet | 03 §1 | The missing half of the paper loop. Two entries that hand over the initiative cannot exist without it. |
+| 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. What is still missing from the paper loop is the reading back. |
 | 7 | The capture station | 06 | Reading a sheet back. `vision/` is empty; the contracts are written and nothing produces a frame. |
 
 ### Then: what stands on them
