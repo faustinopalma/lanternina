@@ -51,9 +51,9 @@ and the file wins for judging whether the thing is worth doing at all.
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
 | 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |
 | 7 | ~~Reading the sheet back~~ — **done, 19 August 2026** | 06 | The loop closes on real paper: a press on KEY3 scans the glass, finds the markers, decodes the code, and the display says what came back. `vision/read_sheet.py` holds the reading. |
-| 8 | **A mark by hand reads as an empty box** | 06 §0 | Measured, not suspected: an ordinary tick reads 0.0121 and a cross 0.0196, both under the 0.02 that separates empty from doubtful. So a real answer is reported as no answer — the one failure a person cannot see, because an unread answer looks like an unanswered question. |
-| 9 | Answer the press immediately | 02 §4 | The reason somebody holds the button down, and holding is what wipes the Wi-Fi credentials. It goes before the firmware change, not after. |
-| 10 | Take the destructive presses out of the firmware | 02 §5 | Five seconds of holding wipes the Wi-Fi, fifteen the credentials. Needs a rebuild and a reflash of both units, so it waits until the loop is running — which it now is. |
+| 8 | ~~A mark by hand reads as an empty box~~ — **parked, 19 August 2026** | 06 §0 | The measurement stands: an ordinary tick reads 0.0121 and a cross 0.0196, both under the 0.02 that separates empty from doubtful. The thresholds do not move, because the reading is going to a visual model that has no threshold to tune. Unparked by a real sheet read wrongly, not by another test page. |
+| 9 | ~~Answer the press immediately~~ — **done, 19 August 2026** | 02 §4 | Press to answer went from 65 s to 26 s, of which 24 s is the scanner. The display changes in the response the press caused, so there is no longer a reason to hold the button down. |
+| 10 | **Take the destructive presses out of the firmware** — patched and built, not yet flashed | 02 §5 | Five seconds of holding wipes the Wi-Fi, fifteen the credentials. The patch is written and the image is built and staged on the hub; what is left is plugging in one display at a time. |
 | 11 | The capture station | 06 §1 | For what a flatbed cannot take: a model, a drawing too big for the glass. Not on the paper loop's critical path any more. |
 
 ### Then: what stands on them
@@ -113,6 +113,9 @@ Because an idea is judged against what exists, not against nothing:
   stays on the hub, and the panel has no field for it.
 - Every model call is counted per household, with the tokens, the cache reads and the
   provider's request id, and a monthly cap refuses calmly once it is reached.
+- A press on the display is answered in the request it caused: the screen says the sheet is
+  being read, and the reading comes back about twenty-six seconds later instead of at the
+  next ordinary poll.
 
 ## What is not true, and is worth remembering
 

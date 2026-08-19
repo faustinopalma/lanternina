@@ -5,10 +5,10 @@ buttons, and reminders on an e-paper display. A parent steers it, and the design
 try to remove that role.
 
 It runs on a Linux mini-PC in the house. Today it serves two e-paper displays and draws
-sheets for a printer; reading a finished sheet back has been done end to end from the
-command line and is not yet a package. Every language and vision model call goes to Azure AI
-Foundry. No model runs on the device, and offline means serving what the parent has already
-approved.
+sheets for a printer; a press on the display's button scans the sheet on the glass and the
+reading comes back on the screen about twenty-six seconds later. Every language and vision
+model call goes to Azure AI Foundry. No model runs on the device, and offline means serving
+what the parent has already approved.
 
 ## Who it is for
 
@@ -161,11 +161,14 @@ Parts of this are running in a house; parts do not exist. The full table is at t
 Running: the cloud tier, the parent panel and its API, the content agent, the model router
 with real credentials, the safety gate, the hub services that serve the displays and pull an
 hourly picture, the picture archive, and usage accounting with a per-household cap. The
-sheet renderer is written and was checked on paper — a 50 mm ruler measures 50 mm.
+sheet renderer is written and was checked on paper — a 50 mm ruler measures 50 mm. The paper
+loop runs from the button: a press puts "sto leggendo" on the display in the same request,
+the scanner takes about twenty-four seconds, and the reading is on the screen two seconds
+after that.
 
-Not written: the planner, the vision, scheduling and print agents, and `vision/` as a
-package — that logic lives in `tools/` and has read one scanned sheet end to end.
-`firmware/` may stay empty: the displays run stock firmware and the hub serves them.
+Not written: the planner, the vision, scheduling and print agents. `firmware/` holds no
+sources: the displays run the vendor's firmware with two patches of ours, one for mDNS and
+one that takes the two credential-wiping presses off the button.
 
 Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
 pretends to work.

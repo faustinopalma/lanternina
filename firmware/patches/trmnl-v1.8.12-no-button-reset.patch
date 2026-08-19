@@ -1,0 +1,29 @@
+diff --git a/src/bl.cpp b/src/bl.cpp
+index 3cfc401..9ceed8b 100644
+--- a/src/bl.cpp
++++ b/src/bl.cpp
+@@ -914,8 +914,11 @@ void bl_init(void)
+     switch (button)
+     {
+     case LongPress:
+-      Log_info("WiFi reset");
+-      WifiCaptivePortal.resetSettings();
++      // Lanternina: upstream wipes the Wi-Fi credentials here. In this house the button
++      // is what a child presses to have a sheet read, so holding it is the ordinary
++      // mistake rather than an administrative act. It took the display off the network,
++      // and whoever pressed had no way to know that, or to put it back.
++      Log_info("long press ignored");
+       break;
+     case DoubleClick:
+       double_click = true;
+@@ -924,7 +927,9 @@ void bl_init(void)
+     case NoAction:
+       break;
+     case SoftReset:
+-      resetDeviceCredentials();
++      // Lanternina: upstream wipes the API key and friendly ID here. Same reason.
++      Log_info("extra-long press ignored");
++      break;
+     }
+     Log_info("button handling end");
+   }

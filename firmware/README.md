@@ -19,9 +19,20 @@ Nothing is written yet. This directory holds the boundary, not an implementation
 
 ## TRMNL displays
 
-The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the patch in
-`patches/trmnl-v1.8.12-mdns-byos.patch`. The patch makes the BYOS URL
-`http://lanternina.local:8080` independent of the hub's DHCP address.
+The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the two patches in `patches/`.
+`trmnl-v1.8.12-mdns-byos.patch` makes the BYOS URL `http://lanternina.local:8080`
+independent of the hub's DHCP address. `trmnl-v1.8.12-no-button-reset.patch` takes the two
+destructive presses off the button: upstream wipes the Wi-Fi credentials after five seconds
+of holding and the device credentials after fifteen, and holding is what somebody does when
+a press seems not to have registered.
+
+Both apply with `patch --binary -p1`. The `--binary` is not optional: the vendor's `bl.cpp`
+has CRLF line endings, and plain `patch` strips the carriage returns out of the patch and
+then refuses every hunk.
+
+Recovery does not depend on the button: the hub keeps 16 MiB of original flash per unit in
+`/var/lib/lanternina/trmnl-backups/` and reprovisions over USB, which is the same cable the
+reset would have forced anyway.
 
 USB is provisioning only. The hub stores one Wi-Fi configuration in
 `/etc/lanternina/trmnl-provisioning.json`; udev provisions a connected ESP32-S3 with the

@@ -38,6 +38,12 @@ umask 077
     printf 'TRMNL_USB_REFRESH_RATE=10\n'
     printf 'TRMNL_LOW_BATTERY_FILE=/opt/lanternina/trmnl-low-battery.bmp\n'
     printf 'TRMNL_CRITICAL_BATTERY_FILE=/opt/lanternina/trmnl-critical-battery.bmp\n'
+    # Shown in the response a button press causes. Rendered once, from the same function
+    # the scan uses, so the two agree byte for byte:
+    #   cd /opt/lanternina && python3 -c "import sys, pathlib, devices.epaper as e; \
+    #     pathlib.Path(sys.argv[1]).write_bytes(e.render_waiting_bmp())" \
+    #     /opt/lanternina/trmnl-waiting.bmp
+    printf 'TRMNL_WAITING_FILE=/opt/lanternina/trmnl-waiting.bmp\n'
     printf 'TRMNL_PORT=8080\n'
 } > "$env_file"
 

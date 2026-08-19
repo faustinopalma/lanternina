@@ -11,12 +11,14 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
+from devices import trmnl_byos
 from devices.trmnl_byos import (
     DEVICE_LOG_KEEP,
     LEVEL_CRITICAL,
     LEVEL_LOW,
     LEVEL_OK,
     LOW_BATTERY_REFRESH,
+    PRESS_REFRESH,
     USB_REFRESH,
     Config,
     battery_level,
@@ -291,6 +293,81 @@ def test_generated_screen_has_the_firmware_geometry(tmp_path: Path) -> None:
     screen = tmp_path / "screen.bmp"
     make_screen(screen)
     assert len(validate_screen(screen)) == 48_062
+
+
+def _server_that_answers_a_press(
+    tmp_path: Path,
+) -> tuple[str, ThreadingHTTPServer, str, Path, Path]:
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    waiting = tmp_path / "waiting.bmp"
+    make_screen(waiting)
+    waiting.write_bytes(waiting.read_bytes()[:-1] + b"\x00")  # same geometry, other bytes
+
+    registry = tmp_path / "devices.json"
+    device = register_device(registry, MAC)
+    config = Config(
+        "http://127.0.0.1",
+        shared,
+        registry,
+        button_file=tmp_path / "button.json",
+        waiting_file=waiting,
+    )
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    own = screen_for(shared, device.friendly_id)
+    return f"http://127.0.0.1:{httpd.server_port}", httpd, device.token, waiting, own
+
+
+def poll(base_url: str, token: str, woke_by: str) -> dict[str, str]:
+    headers = {"ID": MAC, "Access-Token": token, "Update-Source": woke_by}
+    return json.loads(get(f"{base_url}/api/display", headers)[1])
+
+
+def test_a_press_is_answered_in_the_response_it_caused(tmp_path: Path) -> None:
+    """Somebody who presses and sees nothing presses again and holds it down, and holding
+    is the gesture that used to wipe the Wi-Fi. So the press has to change the screen in
+    the request it caused, not at the next poll."""
+    base_url, httpd, token, waiting, _own = _server_that_answers_a_press(tmp_path)
+    try:
+        assert poll(base_url, token, "timer")["refresh_rate"] != str(PRESS_REFRESH)
+        assert get(f"{base_url}/screen/{token}.bmp")[1] != waiting.read_bytes()
+
+        assert poll(base_url, token, "EXT0")["refresh_rate"] == str(PRESS_REFRESH)
+        assert get(f"{base_url}/screen/{token}.bmp")[1] == waiting.read_bytes()
+    finally:
+        httpd.shutdown()
+
+
+def test_the_answer_does_not_wait_for_the_ordinary_poll(tmp_path: Path) -> None:
+    """The scan writes what it read; the next poll is the short one, and it carries the
+    result. After that the display goes back to its usual spacing on its own."""
+    base_url, httpd, token, _waiting, own = _server_that_answers_a_press(tmp_path)
+    try:
+        poll(base_url, token, "EXT0")
+
+        make_screen(own)
+        own.write_bytes(own.read_bytes()[:-2] + b"\x00\x00")  # what the scan read back
+
+        assert poll(base_url, token, "timer")["refresh_rate"] != str(PRESS_REFRESH)
+        assert get(f"{base_url}/screen/{token}.bmp")[1] == own.read_bytes()
+    finally:
+        httpd.shutdown()
+
+
+def test_a_scan_that_never_answers_does_not_hold_the_display(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Nothing is ever written back, so the waiting screen would otherwise be forever."""
+    monkeypatch.setattr(trmnl_byos, "PRESS_PATIENCE_SECONDS", 0)
+    base_url, httpd, token, waiting, _own = _server_that_answers_a_press(tmp_path)
+    try:
+        poll(base_url, token, "EXT0")
+
+        assert poll(base_url, token, "timer")["refresh_rate"] != str(PRESS_REFRESH)
+        assert get(f"{base_url}/screen/{token}.bmp")[1] != waiting.read_bytes()
+    finally:
+        httpd.shutdown()
 
 
 def test_each_registered_device_gets_a_distinct_token(tmp_path: Path) -> None:

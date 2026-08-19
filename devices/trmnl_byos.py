@@ -44,6 +44,17 @@ CRITICAL_BATTERY_REFRESH = 21600
 # registry, by us, and the header is only believed when it says true.
 USB_REFRESH = 30
 
+# What a press is answered with. The floor is not zero and it is worth stating: measured on
+# 19 August 2026 on both units, a display told to come back in 60 s came back after 65 s and
+# 71 s, so the firmware's own wake and reconnect costs 5 s to 11 s on top of whatever is
+# asked for. So a press buys a screen immediately and the result about ten seconds later,
+# not an instant answer.
+PRESS_REFRESH = 5
+# A press stops being outstanding when the display has been given something other than the
+# waiting screen. This is the ceiling for when that never happens — a scan that died without
+# writing anything — so nothing can leave a display polling fast for ever.
+PRESS_PATIENCE_SECONDS = 120
+
 LEVEL_OK = "ok"
 LEVEL_LOW = "low"
 LEVEL_CRITICAL = "critical"
@@ -93,12 +104,19 @@ class Config:
     # it belongs to the hub, which can take twenty seconds over a scan without a display
     # waiting on the other end of the socket.
     button_file: Path | None = None
+    # Held out on the request the press itself caused, so the display changes under the
+    # finger instead of at the next poll. Byte-identical to what the scan writes a moment
+    # later, which is what stops the two paths from redrawing over each other.
+    waiting_file: Path | None = None
+    # What the display is told while it is waiting on its own press.
+    press_refresh_rate: int = PRESS_REFRESH
 
     @classmethod
     def from_env(cls) -> Config:
         status = os.environ.get("TRMNL_STATUS_FILE", "").strip()
         low = os.environ.get("TRMNL_LOW_BATTERY_FILE", "").strip()
         critical = os.environ.get("TRMNL_CRITICAL_BATTERY_FILE", "").strip()
+        waiting = os.environ.get("TRMNL_WAITING_FILE", "").strip()
         return cls(
             base_url=os.environ["TRMNL_BASE_URL"].rstrip("/"),
             screen_file=Path(os.environ["TRMNL_SCREEN_FILE"]),
@@ -119,6 +137,10 @@ class Config:
                 Path(os.environ["TRMNL_BUTTON_FILE"])
                 if os.environ.get("TRMNL_BUTTON_FILE", "").strip()
                 else None
+            ),
+            waiting_file=Path(waiting) if waiting else None,
+            press_refresh_rate=int(
+                os.environ.get("TRMNL_PRESS_REFRESH_RATE", str(PRESS_REFRESH))
             ),
         )
 
@@ -408,6 +430,37 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         except (OSError, ValueError):
             return None
 
+    # MAC -> when the button was last pressed with nothing given back yet. Kept in memory
+    # because a press matters only until it is answered: a restart has no press left to
+    # finish, and there is nothing here worth writing down about anybody.
+    outstanding: dict[str, float] = {}
+
+    def holding(device: Device, now: float) -> bool:
+        """Whether this display is still waiting on a press it made.
+
+        It stops waiting once something other than the waiting screen has been written for
+        it — that is the answer arriving — and in any case when patience runs out.
+        """
+        pressed_at = outstanding.get(device.mac)
+        if pressed_at is None or now - pressed_at > PRESS_PATIENCE_SECONDS:
+            return False
+        try:
+            written = screen_for(config.screen_file, device.friendly_id).stat().st_mtime
+        except OSError:
+            written = 0.0
+        if written <= pressed_at:
+            return True
+        # The scan writes the same waiting screen a moment after the press. Comparing the
+        # bytes rather than the timestamp is what keeps that from reading as the answer.
+        return current_screen(device) == _valid_or_none(config.waiting_file)
+
+    def screen_now(device: Device, now: float | None = None) -> bytes:
+        """What this display should be showing at this instant, press included."""
+        held = _valid_or_none(config.waiting_file)
+        if held is not None and holding(device, time.time() if now is None else now):
+            return held
+        return current_screen(device)
+
     class Handler(BaseHTTPRequestHandler):
         server_version = "LanterninaTRMNL/0.1"
 
@@ -422,7 +475,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             elif self._device_for_screen_path(path) is not None:
                 device = self._device_for_screen_path(path)
                 assert device is not None
-                self._bytes(HTTPStatus.OK, "image/bmp", current_screen(device))
+                self._bytes(HTTPStatus.OK, "image/bmp", screen_now(device))
             else:
                 self._json(HTTPStatus.NOT_FOUND, {"status": 404})
 
@@ -476,11 +529,14 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                     # Never let bookkeeping stop a device from getting its picture.
                     self.log_message("could not record status: %s", exc)
 
-            if config.button_file is not None and pressed_button(self.headers):
-                try:
-                    record_press(config.button_file, device)
-                except OSError as exc:
-                    self.log_message("could not record the press: %s", exc)
+            now = time.time()
+            if pressed_button(self.headers):
+                outstanding[device.mac] = now
+                if config.button_file is not None:
+                    try:
+                        record_press(config.button_file, device)
+                    except OSError as exc:
+                        self.log_message("could not record the press: %s", exc)
 
             level = battery_level(_number(self.headers.get("Battery-Voltage", "")))
             on_usb = device.mains or usb_connected(self.headers)
@@ -496,9 +552,16 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                     LEVEL_LOW: LOW_BATTERY_REFRESH,
                 }.get(level, config.refresh_rate)
             )
+            if holding(device, now):
+                # Answered in this same response: the waiting screen goes out now, and a
+                # short spacing brings the result back in seconds rather than at the next
+                # ordinary poll. The display returns to its usual rate on the cycle after.
+                refresh = config.press_refresh_rate
+            else:
+                outstanding.pop(device.mac, None)
             # `filename` is the firmware's cache key, so it follows the bytes: any new
             # picture changes it, and an unchanged one does not.
-            fingerprint = hashlib.sha256(current_screen(device)).hexdigest()[:12]
+            fingerprint = hashlib.sha256(screen_now(device, now)).hexdigest()[:12]
             self._json(
                 HTTPStatus.OK,
                 {

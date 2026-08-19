@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from devices.epaper import render_notice_bmp
+from devices.epaper import render_notice_bmp, render_waiting_bmp
 from devices.print_sheet import recall
 from devices.trmnl_byos import screen_for
 from shared.vision_contracts import PageReading
@@ -122,7 +122,9 @@ def main() -> int:
     def say(heading: str, lines: list[str]) -> None:
         target.write_bytes(render_notice_bmp(heading, lines))
 
-    say("Sto leggendo", ["Lascia il foglio dov'è.", "Ci metto qualche secondo."])
+    # The display server already put this same screen up in the response the press caused;
+    # writing the identical bytes is what makes this a no-op rather than a second redraw.
+    target.write_bytes(render_waiting_bmp())
     try:
         page = scan_page(find_scanner(scanner))
     except (subprocess.SubprocessError, OSError, ValueError) as exc:

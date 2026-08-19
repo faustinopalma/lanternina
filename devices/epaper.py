@@ -234,6 +234,17 @@ def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
     return _encode(canvas.point(lambda v: 255 if v > 127 else 0).convert("1"), "BMP")
 
 
+# Two paths draw this: the display server answers a press with it, and the scan writes it a
+# moment later. One definition, so the bytes are the same and the display has no reason to
+# redraw between the two.
+WAITING_HEADING: Final = "Sto leggendo"
+WAITING_LINES: Final = ("Lascia il foglio dov'è.", "Ci metto qualche secondo.")
+
+
+def render_waiting_bmp() -> bytes:
+    return render_notice_bmp(WAITING_HEADING, WAITING_LINES)
+
+
 def _draw_block(
     draw: ImageDraw.ImageDraw, text: str, font: object, y: int, width: int, step: int
 ) -> int:

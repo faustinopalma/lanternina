@@ -18,11 +18,23 @@ drawing too big for the glass.
 
 ---
 
-## 0. A mark by hand reads as an empty box
+## 0. A mark by hand reads as an empty box — parked, 19 August 2026
 
 **What it is.** The two numbers that decide whether a cell counts as marked. Today
 `INK_PRESENT` is 0.04 and `INK_UNCERTAIN` is 0.02, both chosen before anything had been
 scanned.
+
+**Why it is parked.** Counting ink in a rectangle is not how this system is meant to read a
+page. The reading will be done by a visual model looking at the rectified crop, and that
+model does not have a threshold to tune — it is handed a picture and says what is on it. So
+moving these two constants is work on a path we do not intend to keep, and the measurement
+below has already done the part that is worth keeping: it says what the present reader does
+and where it is wrong, which is what anybody comparing the two approaches will want.
+
+The numbers stay where they are until something real goes wrong with them — a sheet that
+comes back read incorrectly in front of somebody, rather than a page marked on purpose to
+find the edge. Until then this is a known limit of a component on its way out, written down
+next to the evidence.
 
 **What was measured, 19 August 2026.** A calibration sheet was printed, marked by hand and
 read back — `tools/make_calibration_sheet.py` and `tools/measure_calibration.py`, so it can
@@ -48,22 +60,23 @@ reported as an empty box. Not "somebody should look at this": empty. That is the
 wrong answer the whole design is arranged to avoid, and it is the one failure a person
 cannot detect, because an unread answer looks exactly like an unanswered question.
 
-**How.** Two different fixes, and only the first is a number. The floor is zero, so
-`INK_PRESENT` around 0.010 and `INK_UNCERTAIN` around 0.003 would put every hand-made mark
-on the right side with a wide margin. The light mark at 0.0000 is not an area problem at
-all: the page-wide Otsu threshold came out at 179, fitted to paper against printed black,
-and pale graphite falls on the paper side before anything is counted. That needs a
+**How, if it is ever unparked.** Two different fixes, and only the first is a number. The
+floor is zero, so `INK_PRESENT` around 0.010 and `INK_UNCERTAIN` around 0.003 would put every
+hand-made mark on the right side with a wide margin. The light mark at 0.0000 is not an area
+problem at all: the page-wide Otsu threshold came out at 179, fitted to paper against printed
+black, and pale graphite falls on the paper side before anything is counted. That needs a
 threshold that knows it is looking for pencil, not a smaller number.
 
 **What it costs.** One sheet is one sample. Before moving a threshold it is worth a second
 page — a light mark from a different pencil, and a sheet that has been handled — because
 the floor being exactly zero on clean paper says nothing about paper that has been carried
-around a house.
+around a house. That is a second reason to park rather than tune: the change would need
+evidence we have not gathered, for a reader we do not plan to keep.
 
 **Where it starts.** `vision/read_sheet.py`, the two constants and `page_ink_threshold`.
 
-**Done when.** An ordinary tick and a cross read as marks, a light one reads as either a
-mark or something for the parent to look at, and an untouched box still reads as empty.
+**Done when.** Either the visual model does the reading and these constants stop mattering,
+or a real sheet comes back wrong and this is unparked with that sheet as the evidence.
 
 ---
 

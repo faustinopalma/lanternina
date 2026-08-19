@@ -71,75 +71,105 @@ the second kit when it arrives, not on the one in use.
 
 ---
 
-## 4. Answer the press while the finger is still on the button
+## 4. Answer the press while the finger is still on the button — done, 19 August 2026
 
-**What it is.** A press starts a scan, and nothing on the display changes for about a
-minute. The answer arrives at the display's *next* poll.
+**What it was.** A press started a scan, and nothing on the display changed for about a
+minute. The answer arrived at the display's *next* poll.
 
-**Why it is first.** Measured on 19 August 2026: press at 14:33:06, scan finished 14:33:32,
-display fetched at 14:34:11 and drew a few seconds later. Twenty-six seconds of that is the
-scanner and cannot go; the rest is waiting for a poll and can. Somebody who presses and sees
+**Why it was first.** Measured on 19 August 2026: press at 14:33:06, scan finished 14:33:32,
+display fetched at 14:34:11 and drew a few seconds later. Twenty-six seconds of that was the
+scanner and could not go; the rest was waiting for a poll. Somebody who presses and sees
 nothing does the obvious thing — presses again and holds it down — and holding is what wipes
-the Wi-Fi credentials (see §5). So this is not comfort. It is what removes the reason for
-the dangerous gesture, and it goes before the firmware change rather than after.
+the Wi-Fi credentials (see §5). So this was not comfort. It removed the reason for the
+dangerous gesture, and it went before the firmware change rather than after.
 
-**How.** The server already knows: `devices/trmnl_byos.py` reads `Update-Source` and sees
-`EXT0` on the very request the press caused. Two things follow from that. It can serve a
-"sto leggendo" screen in that same response instead of the one on disk, so the display
-changes on the press itself. And it can answer that one request with a short
-`refresh_rate` — a few seconds rather than thirty — so the result arrives shortly after the
-scan instead of at the next ordinary poll. The device goes back to its usual spacing on the
-following cycle by itself, because the rate is decided per request.
+**How it was done.** `devices/trmnl_byos.py` already read `Update-Source`, which is `EXT0` on
+the very request the press caused. Two things follow from that, and both are in the same
+response. The server serves a waiting screen held in memory instead of the file on disk, so
+the display changes on the press itself; and it answers that request with a short
+`refresh_rate`, so the result arrives shortly after the scan rather than at the next ordinary
+poll. The device goes back to its usual spacing by itself, because the rate is decided per
+request. The press stops being outstanding as soon as the display has been given something
+other than the waiting screen, and in any case after two minutes, so a scan that dies without
+writing anything cannot leave a display polling fast for ever.
 
-**What it costs.** A screen that exists only in the moment it is served, so the file on disk
-and what the display shows disagree for one cycle. Worth watching: the scan writes the same
-"sto leggendo" screen a moment later, and the two paths must not fight over the file.
+The two paths were going to fight over the same file: the scan writes its own "Sto leggendo"
+about a second after the press. They now render from one definition — `render_waiting_bmp()`
+in `devices/epaper.py` — so the bytes are identical and the display has no reason to redraw
+between the two. The server compares the bytes rather than the timestamp for exactly this.
 
-**Where it starts.** `devices/trmnl_byos.py`, the `_display` handler where the press is
-already recorded.
+**What was measured, 19 August 2026, on the hub with the real scanner.** Press at 15:04:16,
+answered in that same response with the waiting screen and `refresh_rate=5`; scan finished
+15:04:40; the result was served at 15:04:42. Twenty-six seconds from press to answer, of
+which twenty-four are the scanner. Before the change the same chain took 65 s and 71 s on the
+two units, and the difference was all poll waiting.
 
-**Done when.** Pressing KEY3 changes the display within one refresh of the e-paper, and the
-result appears without waiting for the ordinary poll.
+**The floor, stated with the numbers.** The immediate part is the waiting screen, not the
+result. Asking for a shorter cycle does not buy an instant one: with `refresh_rate=60` the
+two displays came back after 65 s and 71 s, so the firmware's own wake and reconnect costs
+5 s to 11 s on top of whatever is requested. A press asks for 5 s, which means the result
+lands about ten seconds after the scan finishes.
+
+**What it cost.** A screen that exists only while it is being served, so the file on disk and
+what the display shows disagree for one cycle. And one more file to keep on the hub —
+`/opt/lanternina/trmnl-waiting.bmp`, rendered from `render_waiting_bmp()` and pointed at by
+`TRMNL_WAITING_FILE`. Without it the press still shortens the poll; it just has nothing to
+put up straight away.
+
+**The limit.** The press in the measurement above was made over HTTP with the header the
+firmware sends, not with a finger. The physical part of the chain — KEY3 wakes the board and
+`Update-Source` comes back as `EXT0` — was measured on 19 August and is not what changed.
+Somebody should still press the button once and watch the screen.
 
 ---
 
-## 5. Take the button's two destructive presses away
+## 5. Take the button's two destructive presses away — patched and built, 19 August 2026, not yet flashed
 
 **What it is.** In the stock firmware, holding KEY3 wipes the Wi-Fi credentials, and holding
-it longer wipes the device credentials. Both have to go from our build.
+it longer wipes the device credentials. Both had to go from our build.
 
 ```c
 case LongPress:   WifiCaptivePortal.resetSettings();
 case SoftReset:   resetDeviceCredentials();
 ```
 
-**Why now, and not as a matter of tidiness.** A short press is what starts a scan, and the
-answer to it arrives at the display's *next* poll — up to seventy seconds later. So the
-person who pressed sees nothing happen. The natural response, and a child's response in
+**Why now, and not as a matter of tidiness.** A short press is what starts a scan, and until
+§4 the answer to it arrived at the display's *next* poll — up to seventy seconds later. So
+the person who pressed saw nothing happen. The natural response, and a child's response in
 particular, is to press again and hold it down, because perhaps it did not register. That
-gesture is `LongPress`. The two defects are not independent: our own latency makes the
+gesture is `LongPress`. The two defects were not independent: our own latency made the
 destructive press the likely one.
 
 What it costs when it happens is not a rendering glitch. The display leaves the network and
 cannot come back without a USB cable and somebody who knows how to use it. Whoever pressed
 the button caused it and has no way to know that, or to undo it.
 
-**How.** Two things, in this order, because the first removes the reason for the second to
-happen. Answer the press immediately: `devices/trmnl_byos.py` already sees `Update-Source`,
-so it can serve a "sto leggendo" screen in the same response rather than at the next poll,
-and the firmware's own refresh rate can be shortened for one cycle after a press. Then take
-the two cases out in `firmware/patches/`, where we already carry a patch of our own for
-mDNS — replace both with `break`, and rebuild. Recovery does not disappear with them: the
-hub holds every unit's 16 MiB original flash and can reprovision over USB, which is the
-same cable the reset would have forced anyway.
+**What was done.** `firmware/patches/trmnl-v1.8.12-no-button-reset.patch` replaces both cases
+with a log line and a `break`. It applies to the same tree as the mDNS patch with
+`patch --binary -p1` — plain `patch` strips the carriage returns and then refuses every hunk,
+because the vendor's `bl.cpp` is CRLF. Built on the hub for `TRMNL_7inch5_OG_DIY_Kit`: RAM
+17.2%, flash 72.0%, 1 415 105 bytes of 1 966 080. The check on the image itself is that the
+string `WiFi reset` is no longer in `firmware.bin` and `long press ignored` and `extra-long
+press ignored` are. The merged image is staged on the hub as
+`/opt/lanternina/firmware/trmnl-7inch5-og-diy-kit-no-button-reset.bin`.
 
-**What it costs.** A firmware rebuild and a reflash of both units — an operation with real
-risk on two devices that currently work, which is why it waits until the paper loop is
-running rather than going first. And it is a fork of the vendor's behaviour: somebody
-expecting a TRMNL to reset the way TRMNLs do will not find it. That is the intended trade.
+The two remaining calls in the file are not reachable from the button: one is guarded by
+`BOARD_SEEED_XIAO_ESP32C3`, which this board is not, and the other is the reset the server
+can order with `reset_firmware`, which our server never sets and which is the way back rather
+than a hazard.
 
-**Where it starts.** `_reference/trmnl-firmware-v1.8.12/src/bl.cpp` around line 916, and
-`firmware/patches/`.
+**What is left, and it is physical.** The staged image is deliberately *not* the one the
+provisioner uses. udev flashes a display the moment it is plugged in, so swapping the file
+first would turn the next cable into a decision nobody took. The order is: swap
+`/opt/lanternina/firmware/trmnl-7inch5-og-diy-kit.bin`, plug in one display, check it comes
+back on the network and still scans, hold the button ten seconds and check it is still there,
+and only then the second unit. Recovery does not depend on any of that going well: the hub
+holds 16 MiB of original flash for both units in `/var/lib/lanternina/trmnl-backups/`, and
+`trmnl_provision.py` reprovisions over USB.
+
+**What it costs.** A reflash of two devices that currently work, which is why it waited until
+the paper loop was running. And it is a fork of the vendor's behaviour: somebody expecting a
+TRMNL to reset the way TRMNLs do will not find it. That is the intended trade.
 
 **Done when.** Holding KEY3 for ten seconds leaves the display on the network, and a short
 press still starts a scan.
