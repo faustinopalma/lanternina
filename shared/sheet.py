@@ -24,6 +24,7 @@ is a pure multiplication.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any, Final
@@ -100,6 +101,12 @@ class Rect:
     def to_dict(self) -> dict[str, float]:
         return {"x": self.x, "y": self.y, "w": self.w, "h": self.h}
 
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> Rect:
+        return Rect(
+            float(values["x"]), float(values["y"]), float(values["w"]), float(values["h"])
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class CellSpec:
@@ -124,6 +131,18 @@ class CellSpec:
             "group": self.group,
         }
 
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> CellSpec:
+        """`expected` is deliberately absent from the stored form and stays absent here:
+        what is read back is ink, and nothing compares it to an answer."""
+        return CellSpec(
+            id=CellId(str(values["id"])),
+            kind=CellKind(str(values["kind"])),
+            rect=Rect.from_dict(values["rect"]),
+            label=str(values.get("label", "")),
+            group=str(values.get("group", "")),
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class Heading:
@@ -141,6 +160,14 @@ class Heading:
 
     def to_dict(self) -> dict[str, Any]:
         return {"rect": self.rect.to_dict(), "text": self.text, "size_mm": self.size_mm}
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> Heading:
+        return Heading(
+            rect=Rect.from_dict(values["rect"]),
+            text=str(values.get("text", "")),
+            size_mm=float(values.get("size_mm", 4.0)),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -173,6 +200,28 @@ class SheetSpec:
             "cells": [c.to_dict() for c in self.cells],
             "headings": [h.to_dict() for h in self.headings],
         }
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> SheetSpec:
+        """Rebuild a spec stored when the sheet was printed.
+
+        A sheet can come back days later, so the reader cannot rely on anything still
+        being in memory. A version it does not understand is refused here rather than
+        read with the wrong idea of where the cells are.
+        """
+        version = int(values.get("spec_version", 0))
+        if version != SHEET_SPEC_VERSION:
+            raise ValueError(f"sheet spec version {version} is not version {SHEET_SPEC_VERSION}")
+        return SheetSpec(
+            sheet_id=SheetId(str(values["sheet_id"])),
+            exercise_id=ExerciseId(str(values["exercise_id"])),
+            title=str(values.get("title", "")),
+            cells=tuple(CellSpec.from_dict(c) for c in values.get("cells", [])),
+            qr_rect=Rect.from_dict(values["qr_rect"]),
+            spec_version=version,
+            created_at=float(values.get("created_at", 0.0)),
+            headings=tuple(Heading.from_dict(h) for h in values.get("headings", [])),
+        )
 
 
 @dataclass(frozen=True, slots=True)
