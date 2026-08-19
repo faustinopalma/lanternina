@@ -290,7 +290,7 @@ def test_raw_frames_cannot_be_serialised() -> None:
             attempt()
 
 
-# ── Nothing measures her ─────────────────────────────────────────────────────────────
+# ── Nothing is stated as a verdict about a person ───────────────────────────────────────────
 
 ENGAGEMENT_AND_ASSESSMENT = {
     "streak",
@@ -325,9 +325,12 @@ ENGAGEMENT_AND_ASSESSMENT = {
 def test_no_engagement_or_assessment_vocabulary_anywhere() -> None:
     """These names must not exist. The absence is the feature.
 
-    Engagement optimisation is the easy failure mode for a system like this, and an
-    assessment score would be a judgement about a person who has deliberately not been
-    given one. Neither gets to appear by accident, in any package.
+    Two different things are held here. Engagement optimisation is the easy failure mode
+    for a system like this, and is forbidden outright. The assessment half is narrower than
+    it was: since 19 August 2026 the system may adapt to what it observes, so a stored
+    record of what happened is fine. What is not fine is the vocabulary of a verdict —
+    score, grade, ability, mastery — because a field with one of these names is a claim
+    about a person rather than a note about a sheet, and the name is what makes it one.
     """
     offences: list[str] = []
     for package in PACKAGES:

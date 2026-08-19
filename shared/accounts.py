@@ -40,8 +40,8 @@ class Account:
 
     Holds the parent's own contact address, because an administrator deciding whether a
     sign-up is legitimate needs something to look at. It holds **nothing about the
-    learner** — not her name, not her age, not her profile. The household is an opaque id
-    here; only the device in her home knows who is behind it.
+    learner** — not a name, not an age, not a profile. The household is an opaque id
+    here; only the device in the home knows who is behind it.
     """
 
     id: AccountId

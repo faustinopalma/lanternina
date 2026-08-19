@@ -2,10 +2,10 @@
 
 A note on the frame, because it decides the shape of everything below.
 
-The request these ideas answer was "keep her engaged". Engagement as a goal is the thing
-`docs/NON-GOALS.md` refuses: no streaks, no daily goals, no reward timed to pull her back,
-no notification because time has passed, no metric of attention anywhere. Those are not
-missing features; they are the line that makes this project what it is.
+The request these ideas answer was "keep the adolescent engaged". Engagement as a goal is
+the thing `docs/NON-GOALS.md` refuses: no streaks, no daily goals, no reward timed to pull
+somebody back, no notification because time has passed. Those are not missing features; they
+are the line that makes this project what it is.
 
 What can be done instead is narrower and, we think, more useful. Three things:
 
@@ -14,12 +14,13 @@ What can be done instead is narrower and, we think, more useful. Three things:
   wardrobe.
 - **Keep stopping free.** Every flow can be abandoned at any point, with nothing said about
   it afterwards.
-- **Vary within what was chosen.** Topics and formats rotate inside settings the parent and
-  she agreed on. Never in response to how she performed, how long she took, or what she
-  left blank.
+- **Vary, and vary on evidence.** Topics and formats start inside the settings the parent
+  and the adolescent agreed on, and the system may move them on what came back: what was
+  left blank, what took a long time, what was picked again.
 
-Nothing below observes her. Where something is counted, it is a count of steps in a routine
-the parent wrote, not a measure of her.
+What the system concludes stays a description of what happened. Where something is counted,
+it is a count of steps in a routine the parent wrote, and it never turns into a measure of a
+person.
 
 ---
 
@@ -30,7 +31,7 @@ same way the picture rhythm now works.
 
 **Why.** The routine is the part of the day that repeats, and repeating it is the part an
 adult currently does out loud. A reminder at 07:30 is not a notification: it is the
-schedule the household already has, written where she can see it without asking.
+schedule the household already has, written where it can be seen without asking.
 
 **How.** The proposal kind exists — `routine_prompt` — and so does the shape to copy: a
 setting written from the panel, read by the hub on its next run, with the hub deciding.
@@ -41,7 +42,7 @@ display shows when no step is due.
 without a faster timer, and a faster timer costs battery. Decide the granularity before
 promising it in the panel. The other cost is a product one: a step that appears and stays
 there after it is done is worse than nothing, so it needs a way to move on that does not
-require her to confirm anything.
+require anybody to confirm anything.
 
 **Where it starts.** `panel/rhythm.py` as the pattern, a store beside it for the steps,
 `devices/pull_picture.py` for the side that decides, `web/` for the parent's screen.
@@ -56,7 +57,7 @@ is on the display, and outside those hours the display holds what it held before
 **What it is.** The second display holds the step happening now. Not the list.
 
 **Why.** A list of six things is a request to plan; one step is a request to do. This is the
-cheapest thing in this file that changes what she is asked to hold in her head.
+cheapest thing in this file that changes how much has to be held in mind at once.
 
 **How.** The hub decides what each display is served, so the choice needs somewhere to
 live: a `role` field on the device record. It does not exist yet — `panel/devices.py` holds
@@ -86,16 +87,15 @@ the routine.
 **How.** The renderer already draws a title and a body; this is one more line, and the
 number comes from the routine's own length.
 
-**What it costs.** It must stay a count of steps and never become a count of her — no
-percentage complete across days, no "you finished 3 of 5 yesterday", nothing that
-accumulates. The moment it accumulates it is a progress trend, which is assessment with a
-nicer name. The test that protects this is that nothing about it is stored after the day
-ends.
+**What it costs.** It must stay a position in today's routine and never be shown as a
+tally about a person — no "you finished 3 of 5 yesterday" on the display, no percentage
+across days in front of anybody. Keeping the figure is allowed and may well be useful to
+the system; showing it as a verdict is what stays out.
 
 **Where it starts.** `devices/epaper.py`.
 
-**Done when.** A four-step routine shows its position on each step, and nothing about it
-survives the day.
+**Done when.** A four-step routine shows its position on each step, and nothing about it is
+shown back to the reader afterwards.
 
 ---
 
@@ -113,8 +113,8 @@ calling any model; the set can be kept locally. The printing path exists.
 
 **What it costs.** The licence is CC BY-NC-SA: attribution required, non-commercial only,
 and that belongs in the README when the first pictogram is used, not later. Before any of
-it, one question for the parent that no amount of code answers: which pictogram system she
-already knows. A different one from school would be a second language to learn rather than
+it, one question for the parent that no amount of code answers: which pictogram system is
+already known. A different one from school would be a second language to learn rather than
 a continuation.
 
 **Where it starts.** `printing/render.py`, and a local copy of the pictogram set.
@@ -127,19 +127,23 @@ of cards, offline.
 ## 5. Learning a new routine
 
 **What it is.** One new routine at a time, with the steps written in full at first and
-shortened later — when the parent decides, not when the system concludes.
+shortened later.
 
-**Why.** A routine that is being learned needs more words than one that is known, and the
-transition is a judgement about a person. That judgement belongs to somebody who knows her.
-The system's job is to make the change one setting away, and to make it reversible.
+**Why.** A routine that is being learned needs more words than one that is known. Deciding
+when that stops being true is exactly the sort of choice the system is now allowed to make
+on its own — the words got shorter because the full form stopped being used, not because
+somebody was graded.
 
-**How.** Two forms of the same routine — full and short — and a switch in the panel per
-routine. No automatic promotion, no threshold, no counter that trips.
+**How.** Two forms of the same routine — full and short — with the system free to move
+between them, the panel showing which form is in use and why in one sentence, and the parent
+able to pin it either way. Reversible in one click is the requirement; asking permission
+first is not.
 
-**What it costs.** The temptation is exactly here: a rule like "after ten times, shorten"
-looks harmless and is the adaptive model we ruled out, built one condition at a time. It
-has to be refused in the code and said plainly in the panel, so the next person to read it
-knows the omission was deliberate.
+**What it costs.** The switch must not be presented as an achievement, on the display or in
+the panel: not "you have learned this", which is a verdict about a person, but "showing the
+short form since 12 September", which is a record of what the system did. The other cost is
+that an automatic change is a change nobody asked for, so it has to be visible in the panel
+rather than discovered on the wall.
 
 **Where it starts.** Wherever routines end up living (see item 1), plus one control in the
 panel.
@@ -158,12 +162,13 @@ uses the reserve of approved content the system already holds, which is the thin
 working when the cloud does not.
 
 **How.** Spacing is applied to the **content** — this item was last offered nine days ago —
-and never to her. No estimate of what she remembers, no difficulty adjusted by result. The
-approval ledger already records what was approved and when.
+and may take account of what came back when it was. The approval ledger already records what
+was approved and when.
 
-**What it costs.** The distinction above is the whole design, and it is easy to lose: a
-"review because she got it wrong" is a model of her ability, and this is not that. Also
-needs a rule for content the parent has withdrawn, which must never come round again.
+**What it costs.** The reason a thing comes round again is the system's business and stays
+there. It is not rendered as "this is coming back because you got it wrong", which is a
+verdict handed to the person it is about. Also needs a rule for content the parent has
+withdrawn, which must never come round again.
 
 **Where it starts.** `shared/approval.py` for what is valid, `tools/home_server.py` for what
 gets offered.

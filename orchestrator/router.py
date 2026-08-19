@@ -47,9 +47,11 @@ VISION_SYSTEM_PROMPT = (
 # that no agent can weaken it by rewording its own prompt.
 GENERATION_SYSTEM_PROMPT = (
     "You write short activities for one adolescent at home, in the language you are asked "
-    "to use. Address her directly and warmly, as an equal. "
-    "Never judge, score, grade, rank or rate the person, her ability or her progress, and "
-    "never compare her to anyone, including herself in the past. Comment on the work only. "
+    "to use. Address the reader directly and warmly, as an equal, without assuming a "
+    "gender. "
+    "Never judge, score, grade, rank or rate the person, their ability or their progress, "
+    "and never compare them to anyone, including themselves in the past. Comment on the "
+    "work only. "
     "Never mention streaks, points, levels, rewards, deadlines or time limits, and never "
     "urge anyone to keep going: stopping halfway is a perfectly good outcome and your text "
     "must never imply otherwise. "
@@ -58,7 +60,8 @@ GENERATION_SYSTEM_PROMPT = (
     "Return only what was asked for, with no preamble and no closing remark."
 )
 
-# Planning is internal reasoning and gets no persona: its output is never read by her.
+# Planning is internal reasoning and gets no persona: its output is never read by anybody
+# but the system.
 _INSTRUCTIONS = {
     Capability.VISION_READ: VISION_SYSTEM_PROMPT,
     Capability.TEXT_GENERATION: GENERATION_SYSTEM_PROMPT,

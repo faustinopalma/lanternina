@@ -56,7 +56,7 @@ export interface NewRhythm {
   cadenceMinutes: number;
 }
 
-/** Exactly the fields `prompt_hints()` lets out of the house. There is no field for her
+/** Exactly the fields `prompt_hints()` lets out of the house. There is no field for a
  *  name, here or on the route, which is what keeps it out of a model prompt. */
 export interface NewPreferences {
   interests: string[];

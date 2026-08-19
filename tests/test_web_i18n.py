@@ -124,9 +124,9 @@ def test_the_panel_keeps_no_italian_sentences() -> None:
 def test_the_content_language_is_not_the_language_of_the_page() -> None:
     """The one wiring that must not exist.
 
-    The household's content language is what she reads on paper and on the display. The
+    The household's content language is what arrives on paper and on the display. The
     page's language is a display preference of whoever is holding the phone. If the second
-    ever writes the first, a parent switching their phone changes what she reads, and
+    ever writes the first, a parent switching their phone changes what arrives at home, and
     content approved in one language becomes content shown in another.
     """
     module = (CATALOGS / "index.tsx").read_text(encoding="utf-8")

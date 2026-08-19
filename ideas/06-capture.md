@@ -94,7 +94,7 @@ both are far above what ArUco needs. Take it if determinism is worth more than s
 
 | # | Item | Qty | Why this one |
 | --- | --- | --- | --- |
-| 6 | Arcade button, 60 mm, momentary, with LED ring, 5 V | 1 | Unmistakable, satisfying, and impossible to press by accident. The ring is the answer to "how does she know it worked" without a screen. |
+| 6 | Arcade button, 60 mm, momentary, with LED ring, 5 V | 1 | Unmistakable, satisfying, and impossible to press by accident. The ring is the answer to "how do you know it worked" without a screen. |
 | 7 | 2-pin JST leads, Dupont jumpers, heat-shrink | 1 set | GPIO with an internal pull-up. |
 | 8 | Momentary button, 12 mm, panel mount | 1 | A shutdown button for the parent. Pulling power from a running Pi is how filesystems die. |
 

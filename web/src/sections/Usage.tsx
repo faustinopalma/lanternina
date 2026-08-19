@@ -4,7 +4,7 @@ import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
-/** What the models consumed. Numbers about machines, never about her, and never a target
+/** What the models consumed. Numbers about machines, never about a person, and never a target
  *  to reach. */
 export function Usage() {
   const { t } = useWords();

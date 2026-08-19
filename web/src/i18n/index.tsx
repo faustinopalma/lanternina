@@ -4,10 +4,12 @@
  * Adding a language means adding one JSON file and one entry in CATALOGS. The selector
  * builds itself from these keys, and nothing else in the panel changes.
  *
- * Deliberately absent: anything she sees. The display and the paper follow the household's
+ * Deliberately absent: anything that reaches the adolescent. The display and the paper
+ * follow the household's
  * content language, which the parent sets once in the settings. It must never follow a
  * browser preference — a parent switching their phone to English would otherwise silently
- * change what she reads, and content approved in one language is not approved in another.
+ * change what arrives on paper, and content approved in one language is not approved in
+ * another.
  *
  * Relative times are not in the catalogs either. Intl.RelativeTimeFormat already knows how
  * to say them in any language, plurals included, so a new language gets them for free.
@@ -40,7 +42,7 @@ export const LANGUAGE_NAMES: Record<string, string> = { it: "Italiano", en: "Eng
 const DEFAULT_LANGUAGE = "it";
 const STORAGE_KEY = "lanternina.language";
 
-/* A display preference, not anything about her. Private-mode browsers throw on access, and
+/* A display preference, not anything about a person. Private-mode browsers throw on access, and
  * forgetting the choice is a better outcome than a panel that does not load. */
 function stored(): string | null {
   try {

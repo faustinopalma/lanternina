@@ -2,7 +2,7 @@
  *
  * This is the guarantee that is easiest to lose by accident: one convenient line wiring the
  * page's language selector to the settings, and a parent switching their phone to English
- * silently changes what she reads on paper. The test fails on that line.
+ * silently changes what arrives on paper. The test fails on that line.
  */
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

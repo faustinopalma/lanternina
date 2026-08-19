@@ -17,24 +17,27 @@ and how much text on a page is comfortable differs — across the whole range of
 ability, and at both ends of it. None of that requires a diagnosis, and Lanternina does not
 ask for one: it has no notion of a condition, a need or a level, and nowhere to record one.
 
-## What it remembers, and what it refuses to infer
+## What it remembers, and what it refuses to conclude
 
 Lanternina keeps a memory and works from it, so nobody restates the same things every week.
-The memory holds what the household chose — subjects to offer, subjects to avoid, the form
-of the material, how much variety, words per line, the content language — and what has
-already been produced, shown and approved. Generation runs against that memory, and varies
-topics and formats within it without being asked each time.
+The memory starts as what the household chose — subjects to offer, subjects to avoid, the
+form of the material, how much variety, words per line, the content language — and grows
+with what happened: what a sheet came back with, what was left blank, what took a long time,
+what was picked again. The system may move within those settings and beyond them on that
+evidence. A system that cannot do that is a fixed system, and a fixed system is the failure
+this project is most likely to reach.
 
-The limit sits next to the claim. That memory is made of what was chosen and what was
-already offered. It is not made of how anybody did. Nothing here scores an answer, estimates
-an ability, tracks a trend, ranks anything or infers boredom or attention — not in the
-types, the storage, the prompts, the logs or the screen. What the camera reports is ink on
-paper: cell 3 is empty. What that means is for the household to say, not for the system to
-conclude.
+The limit sits next to the claim, and it is about what may be concluded rather than what may
+be observed. What is kept is a record of what happened — this cell was empty, this took four
+minutes. It is not turned into a claim about who somebody is: no score, no grade, no rank,
+no ability estimate, no progress trend, in the types, the storage, the prompts, the logs or
+the screen, and shown to nobody. The difference is not cosmetic. A record can be checked
+against the paper it came from; a verdict cannot be checked against anything.
 
-That is a tradeoff, and it costs something. A system that scored answers could tune itself
-faster and would need the parent less. This one asks the parent instead, because a wrong
-conclusion about a person is paid for by the person.
+The tradeoff, stated plainly: adapting without concluding is slower than adapting with it,
+and it keeps the parent in the loop where a scoring system would not need them. Every piece
+of content still arrives as a proposal the parent can refuse, so an adaptation that went the
+wrong way is visible before it is delivered rather than after.
 
 ## The parent steers
 
@@ -57,8 +60,9 @@ screen for it.
   nudge triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
   to add here and would do harm, which is why it is a written rule rather than a matter of
   judgement.
-- Nothing it produces is a judgement about a person. No scores, no grades, no ability
-  estimates, no progress trends, no inference adjacent to a diagnosis.
+- Nothing it produces is a verdict about a person. No scores, no grades, no ability
+  estimates, no progress trends, no inference adjacent to a diagnosis — and no camera,
+  radar or wearable pointed at anybody. What it learns from is the work, not the person.
 
 [docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why. It is worth
 reading before contributing.

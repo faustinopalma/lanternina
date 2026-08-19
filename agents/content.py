@@ -1,4 +1,4 @@
-"""The content agent: proposes activities and the words she will read.
+"""The content agent: proposes activities and the words an adolescent will read.
 
 What this agent can do is bounded by its inputs, not by its manners. It receives an
 :class:`~shared.agents.AgentContext` holding a model router, redacted prompt hints and a
@@ -8,8 +8,9 @@ clock — no ledger, no sealer, no network client. Every method returns a
 It never sees unscreened text: ``router.generate_for_user`` screens and seals before
 returning, so the payload this agent wraps has already passed the gate.
 
-The prompts here describe *content settings the parent chose*. Nothing in them asks the
-model to judge her, adapt to her past work, or measure anything.
+The prompts describe what to make, not who it is for. The system may work out what to ask
+for from what came back before — that decision is the planner's — but what reaches the
+model is a description of the material, never a claim about a person.
 """
 
 from __future__ import annotations
@@ -27,8 +28,8 @@ from shared.safety import ContentKind, ScreenedPayload
 from shared.sheet import SheetSpec
 from shared.vision_contracts import PageReading
 
-# Content settings, glossed for the model. These describe the shape of the material the
-# parent asked for — never an estimate of what she can do.
+# Content settings, glossed for the model. These describe the shape of the material asked
+# for — never an estimate of what somebody can do.
 _DIFFICULTY_GLOSS = {
     Difficulty.GENTLE: "passi molto brevi, una sola idea per volta, frasi semplici",
     Difficulty.STEADY: "due o tre passaggi collegati, frasi brevi",
@@ -98,7 +99,7 @@ class HouseholdContentAgent:
             f"Lingua: {hints.get('language', 'it')}. "
             f"Una sola frase, al massimo {hints.get('max_words_per_line', 6) * 2} parole, "
             "senza punto esclamativo e senza fretta.\n"
-            "La frase e quella che lei legge sul display: non ripetere l'etichetta del "
+            "La frase e quella che si legge sul display: non ripetere l'etichetta del "
             "passo e non iniziare con parole come 'Promemoria' o 'Ricorda'.\n"
             f"{self._boundaries(hints)}\n"
             "Rispondi con la sola frase, senza virgolette."
@@ -140,10 +141,10 @@ class HouseholdContentAgent:
             f"Un foglio intitolato '{spec.title}' e tornato indietro.\n"
             f"Sul foglio c'e scritto questo: {observed or 'niente'}.\n"
             f"{self._boundaries(ctx.learner_hints)}\n"
-            "Scrivi due frasi rivolte a lei sul lavoro fatto: nomina qualcosa di concreto "
-            "che c'e sul foglio. Non dire se e giusto o sbagliato, non dare voti, non "
-            "confrontare con altre volte. Se il foglio e quasi vuoto va bene lo stesso: "
-            "non chiedere di finirlo."
+            "Scrivi due frasi sul lavoro fatto, rivolte a chi lo ha fatto: nomina qualcosa "
+            "di concreto che c'e sul foglio. Non dire se e giusto o sbagliato, non dare "
+            "voti, non confrontare con altre volte. Se il foglio e quasi vuoto va bene lo "
+            "stesso: non chiedere di finirlo."
         )
         payload = await ctx.router.generate_for_user(
             ModelRequest(

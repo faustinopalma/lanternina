@@ -52,8 +52,8 @@ from shared.safety import (
 from shared.seal import Seal, Sealer, SealPurpose
 from tools.generate_batch import ROUTINE_STEPS, TOPICS
 
-# Who she is stays in the house: both come from the gitignored .env, neither has a field
-# in the panel, and prompt_hints() is what keeps them out of every prompt.
+# Who the learner is stays in the house: both come from the gitignored .env, neither has a
+# field in the panel, and prompt_hints() is what keeps them out of every prompt.
 LOCAL_LEARNER_ID = LearnerId(os.environ.get("LANTERNINA_LEARNER_ID", "lr_local"))
 LOCAL_LEARNER_NAME = os.environ.get("LANTERNINA_LEARNER_NAME", "")
 
@@ -62,7 +62,8 @@ LOCAL_LEARNER_NAME = os.environ.get("LANTERNINA_LEARNER_NAME", "")
 # the cloud is down, which is the one thing that must not stop.
 #
 # Approving a theme rather than each picture is what makes an hourly change possible at
-# all. It is also a real weakening, and worth naming: she sees an image no adult has seen.
+# all. It is also a real weakening, and worth naming: a picture goes up that no adult has
+# seen.
 # What is left in its place is narrower — the theme bounds the subject, the safety gate
 # screens every picture, and the parent can withdraw a theme at any time.
 APPROVED_THEMES = (
@@ -120,7 +121,7 @@ def _keys() -> tuple[bytes, bytes]:
 def learner_profile(panel: str, household: str, key: str) -> LearnerProfile:
     """The household's settings, as the parent last left them in the panel.
 
-    Her name and id are added here and only here. Everything else comes down from the
+    The name and id are added here and only here. Everything else comes down from the
     panel, which holds exactly the fields `prompt_hints()` allows out and no other.
 
     A silent panel gives the plain defaults rather than stopping the batch: cloud
@@ -269,7 +270,7 @@ async def picture(args: argparse.Namespace) -> int:
         theme = random.choice(approved)
         prompt = PICTURE_PROMPT.format(theme=theme)
     if args.battery:
-        # The parent approves themes for her pictures; this one is the panel talking
+        # The parent approves themes for the pictures; this one is the panel talking
         # about itself, so it does not come from that list.
         theme = f"avviso batteria: {args.battery}"
         prompt = BATTERY_PROMPTS[args.battery]

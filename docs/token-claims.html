@@ -322,7 +322,7 @@ flowchart LR
   <div class="callout good">
     <strong>The surprise: <code>sub</code> is not a user id.</strong> Microsoft's documentation states that the subject is "a pairwise identifier that's unique to a particular application ID. If a single user signs into two different applications using two different client IDs, those applications receive two different values for the subject claim."
     <br><br>
-    So the same parent, signing into a hypothetical second application in the same directory, would arrive there under a different <code>sub</code>. The two applications cannot correlate her by comparing that field. For a project whose rules say personal data stays local and nothing about her leaves the device unnecessarily, that is a property worth keeping rather than working around.
+    So the same parent, signing into a hypothetical second application in the same directory, would arrive there under a different <code>sub</code>. The two applications cannot correlate that person by comparing that field. For a project whose rules say personal data stays local and that nothing about the household leaves the device unnecessarily, that is a property worth keeping rather than working around.
     <br><br>
     <strong>The consequence to remember:</strong> <code>sub</code> is the right key <em>for us</em>, and it is the wrong key to hand to anyone else, because outside our application it means nothing. If we ever need an identifier that is stable across applications in the tenant, that is <code>oid</code>, and it is a different privacy trade — it is exactly what lets applications correlate a person.
   </div>
@@ -364,7 +364,7 @@ flowchart LR
   </table>
 
   <div class="callout warn">
-    <strong>The shape of the mistake.</strong> All three fail the same way: they work perfectly in testing, because in testing the name and the email never change. They fail the first time a parent changes her email address — and they fail <em>open</em> or <em>closed</em> unpredictably, depending on which record changed first. An identifier used for a decision has to be immutable, and only <code>sub</code> and <code>oid</code> are.
+    <strong>The shape of the mistake.</strong> All three fail the same way: they work perfectly in testing, because in testing the name and the email never change. They fail the first time a parent changes their email address — and they fail <em>open</em> or <em>closed</em> unpredictably, depending on which record changed first. An identifier used for a decision has to be immutable, and only <code>sub</code> and <code>oid</code> are.
   </div>
 </section>
 

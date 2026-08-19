@@ -1,8 +1,8 @@
-"""The household's settings: what her content is made of.
+"""The household's settings: what the content is made of.
 
 The tests worth having here are the two that hold a line rather than a behaviour. The
-first is that nothing which identifies her has a way into the panel — not a field, not a
-route, not an extra key in a body that would otherwise be dropped in silence. The second
+first is that nothing which identifies a person has a way into the panel — not a field, not
+a route, not an extra key in a body that would otherwise be dropped in silence. The second
 is that the content language is the household's, so it cannot start following whichever
 language the parent's browser happens to ask for.
 
@@ -120,26 +120,26 @@ def test_a_setting_that_cannot_be_honoured_is_refused(body: dict[str, object]) -
     )
 
 
-def test_her_name_has_no_way_in() -> None:
-    """An unknown field is refused rather than dropped: a body carrying her name would
+def test_a_name_has_no_way_in() -> None:
+    """An unknown field is refused rather than dropped: a body carrying a name would
     otherwise be accepted and quietly ignored, which reads exactly like working."""
     client = client_for()
     refused = client.post(
         "/api/preferences",
-        json={**CHOSEN, "displayName": "Her Name"},
+        json={**CHOSEN, "displayName": "A Name"},
         headers=headers(),
     )
     assert refused.status_code == 422
 
     stored = client.get("/api/preferences", headers=headers())
-    assert "Her Name" not in stored.text
+    assert "A Name" not in stored.text
     assert stored.json()["difficulty"] == "gentle"  # nothing at all was written
 
 
 def test_the_panel_holds_exactly_the_fields_a_prompt_may_carry() -> None:
     """`prompt_hints()` is the redacted subset. The settings must be that subset and no
     more: a field here that is not a hint is a field with no way to reach a model, and a
-    field here that identifies her is the separation gone."""
+    field here that identifies a person is the separation gone."""
     bookkeeping = {"household_id", "updated_at", "updated_by"}
     renamed = {"variety": "content_variety"}
     held = {renamed.get(row.name, row.name) for row in fields(Preferences)} - bookkeeping
@@ -147,7 +147,7 @@ def test_the_panel_holds_exactly_the_fields_a_prompt_may_carry() -> None:
     assert held == allowed
 
 
-def test_the_settings_travel_as_hints_without_her_identity() -> None:
+def test_the_settings_travel_as_hints_without_an_identity() -> None:
     stored = clean_preferences(
         "h1",
         interests=CHOSEN["interests"],
@@ -180,8 +180,8 @@ def test_the_settings_travel_as_hints_without_her_identity() -> None:
 
 
 def test_the_content_language_is_the_household_not_the_browser() -> None:
-    """A parent switching their phone must not change what she reads: content approved in
-    one language is not approved in another."""
+    """A parent switching their phone must not change what is read at home: content
+    approved in one language is not approved in another."""
     client = client_for()
     household = household_of(client)
     client.post(

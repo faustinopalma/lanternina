@@ -30,7 +30,7 @@ class Difficulty(StrEnum):
 
 
 class ContentVariety(StrEnum):
-    """How often content changes form. Chosen explicitly, never inferred from behaviour."""
+    """How often content changes form. The parent's starting point, not a ceiling."""
 
     FAMILIAR = "familiar"
     BALANCED = "balanced"
@@ -41,8 +41,9 @@ class ContentVariety(StrEnum):
 class LearnerProfile:
     """Local-only profile. Never serialised into a model prompt.
 
-    Contains the minimum needed to pick appropriate content. It holds no diagnosis, no
-    clinical data, and no assessment history — by design.
+    Contains the minimum needed to pick appropriate content. It holds no diagnosis and no
+    clinical data, and nothing here is a verdict: what the system learns from what comes
+    back does not live in this type.
     """
 
     id: LearnerId

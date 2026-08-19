@@ -5,7 +5,7 @@
  * a blob URL, which is also why the CSP has to allow `blob:` for images.
  *
  * What is shown is the rendered two-level image, not the model's original: judging a
- * picture from a smooth PNG would be judging something she never saw.
+ * picture from a smooth PNG would be judging something that was never on the display.
  */
 import { useEffect, useRef, useState } from "react";
 

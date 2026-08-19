@@ -1,4 +1,4 @@
-/* A display preference, not anything about her. Private-mode browsers throw on access, and
+/* A display preference, not anything about a person. Private-mode browsers throw on access, and
  * forgetting the choice is a better outcome than a panel that does not load. */
 
 export function readStored(key: string): string | null {

@@ -55,9 +55,9 @@ function Form({ settings }: { settings: Settings }) {
   };
 
   /* The content language is saved here and read by the house. It is not the language of
-   * this page: a parent switching their phone must not change what she reads on paper.
+   * this page: a parent switching their phone must not change what arrives on paper.
    * The body carries exactly the fields the settings are made of — there is no field for
-   * her name, and the panel refuses a body that invents one. */
+   * a name, and the panel refuses a body that invents one. */
   async function save(event: FormEvent) {
     event.preventDefault();
     try {

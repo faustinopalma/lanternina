@@ -120,13 +120,13 @@
       <p class="muted">Not a bottleneck to be automated away. No feature is built whose value is <em>"the parent no longer has to think about this"</em>. Agents may only <strong>propose</strong>; there is no field anywhere in which an agent can record that its own output is acceptable.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0">Nothing is a judgement about her</h3>
-      <p class="muted">No score, no grade, no progress trend, no ability estimate — not in types, storage, prompts, logs or UI. Vision output describes ink on paper (<em>"cell 3 is empty"</em>), never what that means about her.</p>
+      <h3 style="margin-top:0">Nothing is a verdict about a person</h3>
+      <p class="muted">No score, no grade, no progress trend, no ability estimate — not in types, storage, prompts, logs or UI, and not shown to anybody. What may be kept is what happened: this cell was empty, this took four minutes. Vision output describes ink on paper (<em>"cell 3 is empty"</em>), never what that means about the person.</p>
     </div>
   </div>
 
   <div class="callout danger">
-    <strong>Never built, including as an intermediate step:</strong> streaks, daily goals, variable reward schedules, leaderboards, notifications triggered by <em>inactivity</em>, engagement metrics of any kind — and, on the vision side, facial recognition, face or person detection, emotion or attention inference, gaze estimation, biometrics. <span class="muted">Enforced by <code>tests/test_boundaries.py</code>, which fails the build if <code>vision/</code> so much as references them.</span>
+    <strong>Never built, including as an intermediate step:</strong> streaks, daily goals, variable reward schedules, leaderboards, notifications triggered by <em>inactivity</em>, engagement metrics of any kind — and, on the vision side, facial recognition, face or person detection, emotion or attention inference from images, gaze estimation, biometrics. <span class="muted">Enforced by <code>tests/test_boundaries.py</code>, which fails the build if <code>vision/</code> so much as references them.</span>
   </div>
 
   <div class="callout">
@@ -134,14 +134,14 @@
   </div>
 
   <div class="callout good">
-    <strong>Variety is chosen, not inferred.</strong> Lanternina can rotate topics and formats frequently for an adolescent who wants novelty, or keep a familiar structure. It never derives that choice from speed, errors, stopping, presumed boredom or attention.
+    <strong>It learns from what comes back.</strong> Topics, formats and difficulty start from what the household chose, and Lanternina may move within and beyond that on what it observes — what a sheet came back with, what was left blank, what was picked again. A system that cannot do that is a fixed system. What bounds it is the line above: it keeps a record of what happened, not a claim about who somebody is, and what it decides to offer still arrives as a proposal the parent can refuse.
   </div>
 </section>
 
 <!-- ============ SHAPE ============ -->
 <section id="shape">
   <h2><span class="num">02</span> The shape</h2>
-  <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches her is made of paper.</p>
+  <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches the adolescent is made of paper.</p>
   <p>Two names are used from here on, because <em>the device</em> and <em>the cloud</em> stopped being precise once both grew parts. <strong>Lanternina Hub</strong> is the machine in the house: sealing keys, ledger, camera, and the link to the display. <strong>Lanternina Cloud</strong> is the Azure tier: the parent dashboard, the stored themes and approvals, and the single door to the models.</p>
 
   <div class="mermaid">
@@ -279,7 +279,7 @@ flowchart TB
     PDF["PDF at true A4<br/><i>595.3 × 841.9 pt</i>"]:::code
     CUPS["CUPS · IPP Everywhere<br/><i>driverless, no vendor driver</i>"]:::paper
     PAPER["Printed sheet<br/>4 ArUco markers + QR"]:::paper
-    HAND["She writes on it"]:::paper
+    HAND["Someone writes on it"]:::paper
     ESCL["Scanner · eSCL<br/><i>300 dpi ≈ 11.8 px/mm</i>"]:::paper
     RECT["Detect markers → rectify"]:::code
     INK["Ink fraction per declared cell"]:::code
@@ -368,7 +368,7 @@ flowchart TB
     <div class="card">
       <h3 style="margin-top:0"><span class="badge b-no">never leaves the device</span></h3>
       <ul class="muted">
-        <li>her name, her profile, her interests as an identified person</li>
+        <li>a name, a profile, interests attached to an identified person</li>
         <li>the sealing keys</li>
         <li>the approval ledger</li>
         <li>scans and session records</li>
@@ -378,7 +378,7 @@ flowchart TB
   </div>
 
   <div class="callout warn">
-    <strong>Treated as data, never as instructions:</strong> text recognised from her handwriting, free text the parent types, anything decoded from a QR code. A worksheet is a piece of paper that a model reads — anyone who can put text on a page can attempt prompt injection, so recognised text is never concatenated into an instruction position.
+    <strong>Treated as data, never as instructions:</strong> text recognised from handwriting, free text the parent types, anything decoded from a QR code. A worksheet is a piece of paper that a model reads — anyone who can put text on a page can attempt prompt injection, so recognised text is never concatenated into an instruction position.
   </div>
 
   <div class="callout">
@@ -442,7 +442,7 @@ flowchart TB
   </table>
 
   <div class="callout danger">
-    <strong>Open risk, unresolved.</strong> If the mini-PC dies, an e-paper display keeps its last image forever: she looks at a sheet frozen on yesterday and everything appears normal. The hardware watchdog covers kernel hangs, not <em>"the device is off"</em>. Three options exist; the parent has not yet chosen one.
+    <strong>Open risk, unresolved.</strong> If the mini-PC dies, an e-paper display keeps its last image forever: the sheet on the wall stays frozen on yesterday and everything appears normal. The hardware watchdog covers kernel hangs, not <em>"the device is off"</em>. Three options exist; the parent has not yet chosen one.
   </div>
 </section>
 

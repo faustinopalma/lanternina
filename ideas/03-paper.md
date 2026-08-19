@@ -41,26 +41,26 @@ locally, so it works offline too.
 **What it costs.** The licence is CC BY-NC-SA: attribution required, non-commercial use
 only. For a personal project that is fine, and it belongs in the README now rather than
 being discovered later. It is also worth checking with the parent **which** pictogram system
-she already knows: if she uses a different one at school, ours would be a second language to
+is already known: if a different one is used at school, ours would be a second language to
 learn rather than a continuation.
 
 ---
 
 ## 3. The sheet that asks, instead of assigning
 
-**What it is.** A sheet with three or four boxes: "what would you like to do?". She ticks,
-the camera reads, and the chosen thing arrives.
+**What it is.** A sheet with three or four boxes: "what would you like to do?". A box is
+ticked, the camera reads it, and the chosen thing arrives.
 
-**Why.** Everything else in the system proposes and she accepts or walks away. This is the
-one point where the initiative passes to her, using the mechanism that already works — a
-ticked box, the only thing readable offline. Nothing new is needed: what is needed is
-reversing the direction of a sheet we already know how to print and read.
+**Why.** Everything else in the system proposes, and the adolescent accepts or walks away.
+This is the one point where the initiative passes to them, using the mechanism that already
+works — a ticked box, the only thing readable offline. Nothing new is needed: what is needed
+is reversing the direction of a sheet we already know how to print and read.
 
 **How.** The same `SheetSpec` as the multiple-choice sheets, with a different meaning for
 the cells: not answers but requests.
 
-**What it costs.** It has to be decided what happens if she ticks nothing, or ticks
-everything. The right answer is: nothing special, and no insisting.
+**What it costs.** It has to be decided what happens if nothing is ticked, or everything
+is. The right answer is: nothing special, and no insisting.
 
 ---
 
@@ -85,25 +85,24 @@ rather than remembered.
 
 ## 5. "Another like this" and "something different"
 
-**What it is.** Two boxes at the foot of a sheet she can tick when she has finished it.
+**What it is.** Two boxes at the foot of a sheet, to tick once it is finished.
 
-**Why.** Everything the system offers is chosen by somebody else. These two boxes let her
-say what comes next without anybody having to interpret anything: it is a request she
-makes, once, in words, not a preference inferred from how fast she worked or from what she
-left blank. That distinction is the whole point — the inferred version is the thing this
-project refuses to build.
+**Why.** Everything the system offers is chosen by somebody else. These two boxes are the
+cheapest way for the person doing the work to say what comes next. The system may also work
+this out on its own from what came back — that is allowed now — but a stated request does
+not have to be right about anybody: it is not a guess that can be wrong, it is an answer.
 
 **How.** Two more cells in the same `SheetSpec` as the multiple-choice sheets. The reader
 already knows how to tell a ticked box from an empty one, offline. What the tick does is
 pick the next sheet from content the parent has already approved; it changes no setting.
 
 **What it costs.** It has to be decided what happens when both boxes are ticked, or
-neither: nothing special, and no asking again. And it must not accumulate — a tick applies
-to the next sheet and is then forgotten, otherwise it becomes a profile of her built one
-box at a time.
+neither: nothing special, and no asking again. And what is kept has to stay a record of a
+request made on a day, not a standing property of the person — "asked for another like this"
+rather than "prefers this".
 
 **Where it starts.** `shared/sheet.py` for the cells, the layout agent that does not exist
 yet (see item 1), `vision/` for the reading side.
 
 **Done when.** A printed sheet with a ticked box is read back, and the next sheet offered
-is of the kind she asked for, chosen from already-approved content.
+is of the kind that was asked for, chosen from already-approved content.

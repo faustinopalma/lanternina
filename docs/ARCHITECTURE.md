@@ -59,14 +59,14 @@ Concentrating it buys three things that are hard to get otherwise:
   the content-safety chokepoint would be one forgotten call away from being bypassed.
 - **Degradation is uniform.** The fallback ladder lives in one place instead of being
   re-implemented, differently and worse, at each call site.
-- **Redaction is uniform.** The rule "her name never enters a prompt" is enforceable when
+- **Redaction is uniform.** The rule "a name never enters a prompt" is enforceable when
   there is one function that builds prompts.
 
 The router exposes two methods with deliberately different return types:
 
 | Method | Returns | For |
 | --- | --- | --- |
-| `generate_for_user()` | `ScreenedPayload` | anything she will see — screened and sealed on the way out |
+| `generate_for_user()` | `ScreenedPayload` | anything the adolescent will see — screened and sealed on the way out |
 | `analyze()` | `ModelResponse` | internal reasoning only; its text cannot enter a `Proposal` |
 
 That difference is not stylistic. `Proposal.payload` is typed `ScreenedPayload`, so raw
@@ -150,8 +150,8 @@ approval.
 
 ## 6. Why the camera is a scanner
 
-The camera sits on a fixed 90° arm with a narrow field of view, framed so her face is not
-in it. That is a hardware guarantee, and hardware guarantees do not survive someone
+The camera sits on a fixed 90° arm with a narrow field of view, framed so no face is in
+it. That is a hardware guarantee, and hardware guarantees do not survive someone
 remounting the arm — so the software backs it up:
 
 - `RawFrame` is not a dataclass, has no encoder, and raises `RetentionViolation` on
@@ -191,7 +191,7 @@ confident wrong answer.
 
 Treated as **data, never as instructions**:
 
-- text recognised from her handwriting,
+- text recognised from handwriting,
 - free text the parent types,
 - anything decoded from a QR code.
 

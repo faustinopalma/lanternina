@@ -25,14 +25,14 @@ Written in English because this repository is destined to be public and the rest
 Before any device is interesting, it has to survive these. They come from
 `.github/copilot-instructions.md` and they are not preferences.
 
-**It must not watch her.** Not with a camera, not with radar, not with a microphone,
+**It must not watch a person.** Not with a camera, not with radar, not with a microphone,
 not with a wearable. The camera in this system is a scanner pointed at paper, triggered
-by a physical button. Anything that senses *a person* rather than *an object she chose to
-present* is out — including the entire category of devices marketed as "privacy-friendly
+by a physical button. Anything that senses *a person* rather than *an object somebody chose
+to present* is out — including the entire category of devices marketed as "privacy-friendly
 presence detection".
 
-**It must not judge her.** No device whose output is a score, a level, a streak, a
-percentage, a trend, or a comparison. No device whose appeal depends on her wanting to
+**It must not judge a person.** No device whose output is a score, a level, a streak, a
+percentage, a trend, or a comparison. No device whose appeal depends on somebody wanting to
 keep it happy.
 
 **It must not pull.** Nothing that notifies on inactivity. Nothing that gets brighter,
@@ -41,7 +41,7 @@ every device must be ignorable without consequence.
 
 **It must fail toward the parent.** When a device is uncertain, flat, offline or broken,
 the correct behaviour is to surface that to the parent — never to guess, and never to
-show her an error.
+show an error to the adolescent.
 
 **It must not be able to render unscreened content.** Devices that receive a finished
 bitmap are structurally safer than devices that hold fonts and compose text, because the
@@ -104,7 +104,7 @@ needed to self-host. There is an ImageMagick guide for producing conformant imag
 **Cautions:** by default it talks to their cloud, which is unacceptable here — BYOS is
 mandatory, not optional. OTA updates should be disabled before flashing or configuring
 anything custom, or a stock update could overwrite the configuration. Display-only: no
-buttons for her, which is correct — buttons stay physical and separate.
+buttons on it, which is correct — buttons stay physical and separate.
 
 ### 2.2 ELECROW CrowPanel 5.79" — ✅ verified
 
@@ -161,8 +161,8 @@ well with ESPHome.
 
 Designed to mount **flush in a wall switch box**. Interesting as a *parent* panel — a
 thing you tap while passing to approve something, which makes supervision physical instead
-of a task to remember. Not a surface for her: a backlit rectangle on a wall invites poking,
-which is the engagement drift the project exists to avoid.
+of a task to remember. Not a surface for the adolescent: a backlit rectangle on a wall
+invites poking, which is the engagement drift the project exists to avoid.
 
 ⚠️ The "86 box" is the Chinese 86 × 86 mm standard. **Italian wall boxes are 503
 (rectangular) or 502 (round).** Verify before assuming it mounts.
@@ -180,7 +180,7 @@ which is the engagement drift the project exists to avoid.
 
 Laser was recommended and then **rejected on the user's objection, correctly**. Laser
 printers emit ultrafine particles and ozone during toner fusing; in a home, running often,
-in the room where she is, that trade is not worth a marginal gain in marker sharpness.
+in an occupied room, that trade is not worth a marginal gain in marker sharpness.
 
 Rechecking the numbers: an ArUco 4×4 at 15 mm has **2.5 mm modules** — ~30 pixels each at
 300 dpi. A 0.2 mm bleed is 8% of a module. Inkjet is fine, and the code comment in
@@ -208,7 +208,7 @@ produces catalogues and organising by experience produces ideas.
 
 **Thermal receipt printer** — 💡 idea, and the simplest one in this document.
 ESC/POS 58 or 80 mm, ~€25–40, no ink, no toner, no fumes, no cartridges ever. A prompt or
-a tiny exercise prints *instantly* with a sound, and she tears it off. Paper as an event
+a tiny exercise prints *instantly* with a sound, and it gets torn off. Paper as an event
 rather than a document. It sidesteps the whole inkjet/laser question for short content,
 and a torn-off strip is a physical object that can be carried to where the task is,
 stuck on a fridge, or thrown away — all without any of it being recorded. Thermal paper
@@ -239,7 +239,7 @@ feel. Realistically only useful for numbers — a countdown, a time, a quantity.
 
 **Smart bulb / ambient light** (Hue, WLED strip) — 💡 idea. Colour as a calm ambient
 signal: the hallway is warm amber in the morning routine window, neutral otherwise.
-⚠️ Dangerous near the rules: light that *changes because she has not done something* is a
+⚠️ Dangerous near the rules: light that *changes because something has not been done* is a
 nag with better manners. Only acceptable as a *time* signal, never as a *behaviour* signal.
 
 **Projection** — 💡 idea. A tiny projector throwing a pictogram onto a wall or the floor
@@ -250,7 +250,7 @@ Practical problems: ambient light, focus, fan noise, and a lamp that runs hot.
 turns out to be too small for pictogram *and* text, this is the escape. Expensive and
 slow, and GxEPD2 supports the IT8951 HAT family.
 
-### 3.2 Things she can touch
+### 3.2 Things that can be touched
 
 **Arcade buttons** — 🔎 candidate, ~€3 each. 60 mm, real click, unambiguous. Already
 required by the architecture as the camera trigger. Buy several: one will break, and a
@@ -303,8 +303,9 @@ seriously: sometimes the right hardware is not hardware.
 prompt aloud removes the reading requirement entirely, which may matter more than any
 display in this document. Fits the cloud-only inference rule — the synthesis happens in
 Azure, the Pi plays a file.
-⚠️ The voice must be a *setting the parent chose*, never adaptive, and must never be the
-only channel, because a spoken prompt cannot be ignored the way a display can.
+⚠️ The voice itself must be a *setting the parent chose* — the system may change what it
+says, not who appears to be saying it — and speech must never be the only channel, because
+a spoken prompt cannot be ignored the way a display can.
 
 **A solenoid striking a real bell or chime** — 💡 idea. One physical sound, once, that
 does not repeat and cannot escalate. Nicer than any speaker for "something is ready".
@@ -332,8 +333,8 @@ whatever is waiting. Simple to build, and it turns the parent's role into a gest
 than a chore.
 
 **A shared token** — 💡 idea. An object the parent physically places to mean "this one,
-today". Steering becomes something you do with your hands, in the room, in front of her,
-rather than something configured in an interface she never sees.
+today". Steering becomes something you do with your hands, in the room, in front of the
+person it is for, rather than something configured in an interface they never see.
 
 ### 3.7 Infrastructure
 
@@ -424,7 +425,7 @@ looking at it. Prices below from AbleNet, the sector's reference manufacturer.
 **Actuation force is a published specification.** 156 g, 150 g, 11.3 g. No arcade button
 lists this, because for a general audience it does not matter. Here it is *the*
 accessibility parameter, and a button that is too stiff is a button that silently excludes
-someone. I do not know what force is right for her — the parent does.
+someone. I do not know what force is right here — the parent does.
 
 **Tactile *and auditory* feedback is named as a feature**, not a side effect. The click is
 a confirmation channel, and it is the reason a physical button beats a glass rectangle for
@@ -440,8 +441,9 @@ without tools.
 
 > **If the system exposes a 3.5 mm switch jack instead of a soldered button, it accepts any
 > switch built to that connector** — feather-touch, proximity, foam, submersible,
-> head-operated, wireless. The physical interface stops being a thing we chose for her and
-> becomes a thing she can be met at, whatever her motor ability is today or in five years.
+> head-operated, wireless. The physical interface stops being a thing we chose for somebody
+> and becomes a thing they can be met at, whatever their motor ability is today or in five
+> years.
 
 That is a one-euro socket and a pull-up resistor. It costs nothing, it is trivially
 testable, and it widens the set of people the device works for. It also lets the parent buy
@@ -474,12 +476,12 @@ Italian is supported.
 
 **Why this matters.**
 
-The system does not have to invent a visual language. It can use the one she may already
-have been taught. ARASAAC pictograms are what Italian speech therapists, special-education
-teachers and AAC apps use. If she has ever used a communication book, a visual schedule at
-school, or a PECS-style board, these are very likely the exact images she already reads. A
-prompt drawn in ARASAAC is not a new thing to learn — it is a continuation of something she
-already knows, made by people who are not us.
+The system does not have to invent a visual language. It can use one that may already have
+been taught. ARASAAC pictograms are what Italian speech therapists, special-education
+teachers and AAC apps use. If somebody has ever used a communication book, a visual schedule
+at school, or a PECS-style board, these are very likely the exact images they already read.
+A prompt drawn in ARASAAC is not a new thing to learn — it is a continuation of something
+already known, made by people who are not us.
 
 That changes the display question. We are not designing icons. We are rendering a public,
 standard symbol set that predates this project and will outlive it.
@@ -513,10 +515,10 @@ than rediscover it.
 | Category | Why it is out |
 | --- | --- |
 | ⛔ Any camera pointed at a person | The camera here is a scanner triggered by a button. Presence, person or face detection is forbidden even as an intermediate step. |
-| ⛔ mmWave / radar / PIR presence sensors | Marketed as privacy-friendly because they don't record images. They still infer where a person is and what they are doing. That is an inference about her. |
-| ⛔ Wearables — watches, bands, trackers, rings | Biometrics, explicitly forbidden. Also the one device category she cannot walk away from. |
+| ⛔ mmWave / radar / PIR presence sensors | Marketed as privacy-friendly because they don't record images. They still infer where a person is and what they are doing. That is a sensor pointed at a person. |
+| ⛔ Wearables — watches, bands, trackers, rings | Biometrics, explicitly forbidden. Also the one device category nobody can walk away from. |
 | ⛔ Always-on microphones | Voice-stress and affect inference are forbidden, and an always-listening device in a child's home is not defensible regardless of what it does with the audio. |
-| ⛔ Eye tracking, gaze, attention estimation | Explicitly forbidden. Also: the entire concept treats her attention as a metric to optimise. |
+| ⛔ Eye tracking, gaze, attention estimation | Explicitly forbidden. The system may learn from work that comes back; it may not point an instrument at a person to read them. |
 | ⛔ Emotion / affect recognition cameras | Explicitly forbidden. The inference it claims to make is also not well supported by evidence. |
 | ⛔ Sleep trackers, smart scales, health devices | Health surveillance of a minor by a system that has no clinical role. |
 | ⛔ Any display of a streak, a score, a level, a percentage, a trend | Rule 1. The device would be fine; what we would put on it would not. |
@@ -524,11 +526,11 @@ than rediscover it.
 | ⛔ Voice assistants (Alexa, Google) as a component | Cloud services outside our control, always listening, and their business model is engagement. |
 
 **A note on the tempting ones.** Presence sensing and reed switches keep looking useful
-because they would let the system be *responsive* — the display could change when she
+because they would let the system be *responsive* — the display could change when somebody
 enters the room. That is exactly why they are dangerous. Responsiveness to a person is
 observation of a person, and the pleasant version of it is still the thing the rules
-forbid. If the system needs to know something changed, the answer is a button she pressed
-on purpose.
+forbid. If the system needs to know something changed, the answer is a button somebody
+pressed on purpose.
 
 ---
 
@@ -546,13 +548,13 @@ on purpose.
    answered from a desk.
 5. **Is the interactive LCD needed at all?** Possibly answered by building the paper loop
    first and seeing what is missing.
-6. **Does she read?** Not recorded anywhere in this repo and must not be. But it decides
-   whether text, pictograms or speech is the primary channel — and it is the parent's
-   answer to give, verbally, once.
-7. **Has she already been taught a pictogram system?** ARASAAC, PECS, Widgit, something
+6. **Does the reader read?** Not recorded anywhere in this repo and must not be. But it
+   decides whether text, pictograms or speech is the primary channel — and it is the
+   parent's answer to give, verbally, once.
+7. **Has a pictogram system already been taught?** ARASAAC, PECS, Widgit, something
    from school or therapy? If yes, the system should use that one and no other. It costs
    one conversation to answer and it decides what everything else renders.
-8. **What kind of press works for her?** A stiff arcade button, a light-touch switch, a
+8. **What kind of press works?** A stiff arcade button, a light-touch switch, a
    proximity switch, something mounted rather than held? Do not guess — but design so the
    answer can change, which is what the 3.5 mm jack buys.
 
@@ -591,7 +593,7 @@ cheapest decision here with the widest effect, and it has nothing to do with wha
 
 **Cache the ARASAAC set locally before writing any rendering code.** It is free, it is
 finite, it makes the offline reserve real, and it means the system speaks a visual language
-she may already have been taught rather than one we invented.
+that may already have been taught rather than one we invented.
 
 **Do not buy** the 86 Box, the LED matrix, the large e-paper, or the second display until
 the first loop runs end to end.
@@ -605,10 +607,10 @@ system is not the screen.
 
 The screen was where we spent the day because it is the part that looks like a product.
 But a display shows a prompt, and a prompt is the least of it. What the research turned up
-— the assistive switch that meets her wherever her hands are, the pictogram set she may
-already read, the token she can put down instead of a menu she has to navigate, the strip
-of paper she can tear off and carry to the room where the thing happens — those are the
-parts that belong to a person rather than to a wall.
+— the assistive switch that meets somebody wherever their hands are, the pictogram set they
+may already read, the token they can put down instead of a menu they have to navigate, the
+strip of paper they can tear off and carry to the room where the thing happens — those are
+the parts that belong to a person rather than to a wall.
 
 And almost all of them are cheap. The €146 device is the least interesting purchase on
 this list.

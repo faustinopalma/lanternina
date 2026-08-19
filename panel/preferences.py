@@ -6,7 +6,7 @@ reason the rhythm does: the parent writes them, the hub reads them on its next r
 decides for itself, and saving them starts nothing.
 
 What is stored is exactly the redacted subset `LearnerProfile.prompt_hints()` lets out of
-the device. There is no field here for her name or her id, and no route that could carry
+the device. There is no field here for a name or an id, and no route that could carry
 one: the hub holds them and never sends them up. Keeping the field list identical is what
 keeps the separation between household and person from dissolving into a text field.
 """
@@ -28,7 +28,7 @@ VARIETY_CHOICES = tuple(str(value) for value in ContentVariety)
 # approved in another.
 LANGUAGE_CHOICES = ("it", "en")
 
-# A line on the e-paper display is about eight words wide at the size she reads at, so
+# A line on the e-paper display is about eight words wide at the size it is read at, so
 # anything above that would be a setting the hardware cannot honour.
 WORDS_PER_LINE_CHOICES = (3, 4, 5, 6, 7, 8)
 

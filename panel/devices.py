@@ -4,7 +4,7 @@ The charge is deliberately coarse. The board has no fuel gauge, so a percentage 
 arithmetic performed on a guess: the panel says "full", "half", "recharge it" or "on
 mains", which is what a person can act on anyway.
 
-Nothing here is about her. A battery reading is a fact about a device.
+Nothing here is about a person. A battery reading is a fact about a device.
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ class DeviceStatus:
             "model": self.model,
             "lastSeen": self.last_seen,
             "silentSeconds": silent,
-            # The panel is where a fault is allowed to appear. Her display never says it.
+            # The panel is where a fault is allowed to appear. The display never says it.
             "silent": silent > SILENT_AFTER_SECONDS,
         }
 

@@ -5,7 +5,7 @@ and it exists so that two questions have answers: *how much has this house used 
 month*, and *does that number agree with what Azure charges*. The second is why every
 event carries the provider's own request id.
 
-Nothing here is about her. A token count is a fact about a machine.
+Nothing here is about a person. A token count is a fact about a machine.
 
 The event is append-only and carries its own id, so replaying it cannot count twice. That
 costs one field now and would be expensive to add later, once there are figures somebody

@@ -40,7 +40,7 @@ without saying so.
 
 **How.** Three options, in increasing order of intrusiveness: (a) nothing on the display,
 and the signal lives only in the parent's panel; (b) a stroke in the corner whose position
-varies, meaningless to her and meaningful to the parent; (c) a second observer — the
+varies, meaningless to a reader and meaningful to the parent; (c) a second observer — the
 Quieter 4C is already in the house and powered — that raises a flag when the hub goes
 quiet.
 
@@ -96,9 +96,9 @@ the rest is not.
 **What it is.** A rule already written, worth making impossible to break: no codes, no stack
 traces, no "connection failed", no red icons ever appear on the display.
 
-**Why.** That screen is the one she looks at. An error message tells her something is wrong
-and that it might be her fault, and gives her nothing to do with that information. Faults
-are the parent's business.
+**Why.** That screen is the one in the room. An error message says something is wrong and
+that it might be the reader's fault, and gives them nothing to do with that information.
+Faults are the parent's business.
 
 **How.** Today it holds by construction: the device shows only an image the server produced.
 The defence worth adding is a test that fails if a rendering path is handed text that looks

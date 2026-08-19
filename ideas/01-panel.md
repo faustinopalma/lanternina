@@ -61,21 +61,20 @@ in the house, and the panel has to say so rather than pretend.
 
 ## 4. Refusing with a reason, and having it mean something
 
-**What it is.** On refusal, three buttons instead of a free-text field: *she does not like
-it*, *too hard*, *subject to avoid*. The third adds an entry to the list of things to
+**What it is.** On refusal, three buttons instead of a free-text field: *not to their
+taste*, *too hard*, *subject to avoid*. The third adds an entry to the list of things to
 avoid.
 
 **Why.** Today a refusal throws a proposal away and teaches nothing: next time the system
-offers the same thing. But mind what it must **not** become: it is not a signal about her,
-it is a preference stated by the parent. The difference is that it stays written down,
-visible and editable, instead of being inferred.
+offers the same thing. A refusal is the cheapest evidence in the system — the parent has
+already looked at the content and decided — and it is thrown away.
 
 **How.** The decision's `note` field already exists. The three buttons write a fixed value;
 only the third touches the settings, and it says so explicitly before doing it.
 
-**What it costs.** The temptation to let the list grow on its own. If a refusal changed the
-settings without the parent seeing it, we would have built the automatic adaptation we
-ruled out, under a kinder name.
+**What it costs.** Where the reason goes. Feeding it back into generation is fine and is
+the point. Writing it into the settings without the parent seeing it is not: the settings
+are the parent's, and a list that grows on its own stops being something they can read.
 
 ---
 
@@ -88,19 +87,19 @@ names. Every piece of content generated until now was tuned to a person who does
 
 **How.** The same shape as the themes, and it is now built: a document per household in
 Cosmos, `GET`/`POST /api/preferences` for the parent, `GET /api/device/{household}/preferences`
-for the home server, which asks for them alongside the themes and adds her name locally.
+for the home server, which asks for them alongside the themes and adds the name locally.
 
-**What it cost.** Her name must **not** enter the cloud, and the way that is held is
+**What it cost.** The name must **not** enter the cloud, and the way that is held is
 mechanical rather than remembered: what the panel stores is exactly the field list
 `prompt_hints()` allows out, a test compares the two, and a body carrying an unknown field
-is refused rather than accepted and ignored. The hub reads her name and her id from its own
+is refused rather than accepted and ignored. The hub reads the name and the id from its own
 environment; neither has anywhere to be written down up here.
 
 One of these settings is load-bearing rather than cosmetic. The **content language** — what
-she reads on paper and on the display — belongs to the household and does not follow the
+is read on paper and on the display — belongs to the household and does not follow the
 parent's browser. A parent switching their phone to another language would otherwise
-silently change what she reads, and content approved in one language is not approved in
-another.
+silently change what arrives on paper, and content approved in one language is not approved
+in another.
 
 ---
 

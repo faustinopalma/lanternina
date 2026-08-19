@@ -10,8 +10,8 @@ involved, and **done when**, a check somebody else can run. Older entries do not
 yet, and gain them when they are next touched.
 
 The order inside each file runs from most useful to least, by one criterion only: how much
-the thing helps the person who will use it — her or the parent — divided by how much work
-it asks for. It is not a ranking by elegance. Entries added later are appended and ranked
+the thing helps the person who will use it — the adolescent or the parent — divided by how
+much work it asks for. It is not a ranking by elegance. Entries added later are appended and ranked
 among themselves; no file has been re-ranked as a whole since.
 
 ## The files
@@ -46,10 +46,10 @@ and the file wins for judging whether the thing is worth doing at all.
 
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
-| 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so her name has no field to sit in. |
+| 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so a name has no field to sit in. |
 | 4 | ~~Field names that are not Italian~~ — **done, 18 August 2026** | 04 §7 | The keys are English, and the content language is free to become what it was meant to be, a setting. Bodies approved before the change keep the Italian keys: the safety seal covers them byte for byte, so the readers accept both spellings and nothing stored was touched. |
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
-| 6 | The layout agent: exercise → sheet | 03 §1 | The missing half of the paper loop. Two entries that give her the initiative cannot exist without it. |
+| 6 | The layout agent: exercise → sheet | 03 §1 | The missing half of the paper loop. Two entries that hand over the initiative cannot exist without it. |
 | 7 | The capture station | 06 | Reading a sheet back. `vision/` is empty; the contracts are written and nothing produces a frame. |
 
 ### Then: what stands on them
@@ -105,8 +105,8 @@ Because an idea is judged against what exists, not against nothing:
   minutes. The hub reads them on its next run and decides for itself; saving them starts
   nothing.
 - Interests, things to avoid, difficulty, variety, words per line and the content language
-  are the parent's too, and travel the same way. Her name is not among them: it stays on
-  the hub, and the panel has no field for it.
+  are the parent's too, and travel the same way. The adolescent's name is not among them: it
+  stays on the hub, and the panel has no field for it.
 - Every model call is counted per household, with the tokens, the cache reads and the
   provider's request id, and a monthly cap refuses calmly once it is reached.
 
@@ -114,9 +114,9 @@ Because an idea is judged against what exists, not against nothing:
 
 - The battery percentage is **derived from volts**: the kit has no fuel gauge. It is an
   estimate from a standard LiPo curve, not measured on this cell.
-- Picture approval is **per theme**, not per image: she sees pictures no adult has seen
-  before.
-- Her name and her id live only on the hub, in the environment it reads at start. The
+- Picture approval is **per theme**, not per image: the pictures on the display have not
+  been seen by an adult first.
+- The name and the id live only on the hub, in the environment it reads at start. The
   invented profile is left in `tools/generate_batch.py`, which generates without a panel.
 - The approval ledger in the cloud does not mint the delivery seal: that stays on the
   device. Losing the database costs the memory of the decisions, not the safety.

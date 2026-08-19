@@ -2,8 +2,8 @@
 
 A theme is the unit of approval for pictures. It exists because approving one image an
 hour is not something a person will keep doing, and the alternative — no approval at all —
-was worse. What it buys is an hourly picture; what it costs is that she sees images no
-adult has seen, bounded only by the subject and the safety gate.
+was worse. What it buys is an hourly picture; what it costs is that a picture is seen that
+no adult has seen, bounded only by the subject and the safety gate.
 
 Removing a theme is therefore as important as adding one, and is a first-class operation
 rather than an edit buried in a settings page.

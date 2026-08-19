@@ -300,7 +300,7 @@ class CosmosPreferencesStore:
     """Conforms to :class:`~panel.preferences.PreferencesStore`.
 
     One document per household, overwritten. The document carries the settings and nothing
-    else: there is no field for her name here, and the hub never sends one.
+    else: there is no field for a name here, and the hub never sends one.
     """
 
     def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:

@@ -19,7 +19,7 @@ RequestId = NewType("RequestId", str)
 RoutineId = NewType("RoutineId", str)
 
 # A household is what the cloud knows about. It is deliberately NOT a LearnerId: the
-# mapping from a household to a real person exists only on the device in her home.
+# mapping from a household to a real person exists only on the device in the home.
 HouseholdId = NewType("HouseholdId", str)
 AccountId = NewType("AccountId", str)
 

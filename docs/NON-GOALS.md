@@ -43,33 +43,36 @@ is not found, the pipeline stops rather than analysing whatever else is in the p
 
 The only trigger is a physical button press.
 
-## Nothing here assesses her
+## Nothing here is a verdict about a person
+
+The system may learn from what it sees. That is not in question here, and was settled on
+19 August 2026: a system that cannot change what it offers on the basis of what came back
+is a fixed system, and a fixed system is the more likely failure. What follows bounds what
+it may conclude, not whether it may adapt.
 
 - **No assessment or diagnostic function.** This system does not screen, evaluate, or
-  characterise cognitive ability. She has no diagnosis and this project will not
-  manufacture a proxy for one.
+  characterise cognitive ability, and will not manufacture a proxy for a diagnosis.
 - **No scores, grades, ranks, percentages, ability estimates, mastery levels, or progress
-  trends.** Not stored, not computed, not displayed, not sent to a model.
-- **No automated decisions about the person.** The system can propose; the parent decides.
-  Difficulty and pacing do not change silently in response to how she performed. Silent
-  adaptation is assessment under another name: it builds a model of her ability and acts on
-  it, without anyone having agreed to that.
-- **No inferred boredom or attention profile.** Content variety is an explicit setting.
-  The system may rotate topics and formats within that setting, but it does not interpret
-  stopping, speed, errors or repeated choices as evidence about attention or motivation.
-- **No comparison** to peers, to norms, to age expectations, or to her own past.
+  trends.** Not stored, not computed, not displayed, not sent to a model. What may be kept
+  is what happened — this cell was empty, this took four minutes, this topic came back
+  untouched twice. The difference is not cosmetic: one is a record, the other is a claim
+  about a person, and only the first can be checked against the paper it came from.
+- **No judgement reaching anybody.** Adaptation happens inside; it does not surface as a
+  statement about how somebody is doing, on a display, on paper, or in the parent's panel.
+  The parent sees what the system proposes to offer, and can refuse it.
+- **No comparison** to peers, to norms, to age expectations, or to a person's own past.
 
 Vision output describes ink on paper: "cell 3 is empty", "cell 4 has a mark". What that
-means, if anything, is for her parent to decide.
+means, if anything, is for the parent to decide.
 
 ## Nothing here optimises for engagement
 
 - **No streaks, chains, or "don't break it" mechanics.**
 - **No daily goals or completion quotas.**
 - **No variable or intermittent reward schedules**, no loot-box pacing, no surprise
-  rewards timed to pull her back.
+  rewards timed to pull somebody back.
 - **No unlockables gated on continued use**, no XP, no levels, no badges tied to frequency.
-- **No leaderboards or competition**, with anyone, including herself.
+- **No leaderboards or competition**, with anyone, including oneself.
 - **No notifications triggered by inactivity.** The system never says "you haven't been
   here in a while".
 - **No engagement metrics** — time spent, sessions completed, retention, daily actives —
@@ -82,25 +85,25 @@ consequence and no follow-up.
 
 - **No unattended operation as a goal.** Features whose value is "the parent no longer has
   to think about this" are rejected, not prioritised.
-- **No agent self-approval.** Nothing an agent generates reaches her without the parent
+- **No agent self-approval.** Nothing an agent generates is delivered without the parent
   greenlighting it.
-- **No hidden adaptation.** Interests, difficulty, tone, reading support and content
-  variety are explicit settings. Changes outside those settings are proposed in words the
-  parent and adolescent can read and refuse.
+- **No adaptation the parent cannot see.** The system may change what it offers on its own,
+  but what it offers arrives as a proposal in words the parent can read and refuse. The
+  settings remain the starting point and remain the parent's to change.
 - **No dashboard-triggered work.** A parent write persists state and returns. It does not
   call a model, enqueue generation, notify or wake the home server, or schedule work for
   later. Only the home server can initiate processing, when it chooses to make a request.
 
 ## Data does not leave the house
 
-- **No learner data in the cloud.** Her profile, her routines, her history and her scanned
+- **No learner data in the cloud.** The profile, the routines, the history and the scanned
   pages stay on the mini-PC. Only content-generation prompts and rectified page crops are
   sent to Azure.
-- **No personal identifiers in model prompts.** Not her name, not an id, not her history.
-- **No telemetry, analytics, or crash reporting** that carries anything about her.
+- **No personal identifiers in model prompts.** Not a name, not an id, not a history.
+- **No telemetry, analytics, or crash reporting** that carries anything about a person.
 - **No learner data in this repository** — not in fixtures, tests, screenshots,
   documentation, or example configuration. Demo material is synthetic.
-- **No account for her.** She does not sign in to anything.
+- **No account for the adolescent.** They do not sign in to anything.
 
 ## Open, deliberately
 
@@ -111,8 +114,8 @@ These are not settled, and are listed so nobody assumes the permissive answer:
   "the system does not listen when not explicitly asked to" has to become a guarantee with
   a test behind it, not a promise. TODO(hackathon): decide and record the outcome here.
 - **Escalation to the guardian.** Alerting on system faults and blocked content is in
-  scope. Inferring something concerning about *her* from her work is not, and will not be
-  added without an explicit, separately-documented decision.
+  scope. Inferring something concerning about *the person* from their work is not, and will
+  not be added without an explicit, separately-documented decision.
 
 ---
 

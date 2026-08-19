@@ -2,7 +2,7 @@
 
 Blobs rather than the database: a picture is 48 KB of bitmap, which is the wrong shape for
 a document store and the right shape for object storage. What is kept is the **rendered**
-1-bit image, not the model's original — the record is of what she actually saw.
+1-bit image, not the model's original — the record is of what was actually on the display.
 
 The storage account refuses public access and shared keys, both forced by tenant policy,
 so this reaches it over a private endpoint with the container's managed identity. That is

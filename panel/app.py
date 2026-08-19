@@ -134,9 +134,9 @@ class NewRhythm(BaseModel):
 
 
 class NewPreferences(BaseModel):
-    """What her content is made of. These are the fields the hub may put in a prompt.
+    """What the content is made of. These are the fields the hub may put in a prompt.
 
-    Unknown fields are refused rather than dropped: a body carrying her name would
+    Unknown fields are refused rather than dropped: a body carrying a name would
     otherwise be accepted and quietly ignored, which reads as working.
     """
 
@@ -381,7 +381,7 @@ def create_app(
 
     @app.post("/api/themes")
     def add_theme(new: NewTheme, account: CurrentAccount, request: Request) -> Any:
-        """Approve a subject her pictures may be about. It starts nothing on its own."""
+        """Approve a subject the pictures may be about. It starts nothing on its own."""
         themes: ThemeStore = request.app.state.themes
         try:
             label = clean_label(new.label)
@@ -440,7 +440,7 @@ def create_app(
 
     @app.post("/api/preferences")
     def write_preferences(new: NewPreferences, account: CurrentAccount, request: Request) -> Any:
-        """Record what her content is made of. It persists and returns: the hub reads it
+        """Record what the content is made of. It persists and returns: the hub reads it
         on its next run, and nothing here starts a generation."""
         store: PreferencesStore = request.app.state.preferences
         try:
@@ -461,7 +461,7 @@ def create_app(
     @app.get("/api/device/{household_id}/preferences")
     def device_preferences(household_id: str, _: DeviceKey, request: Request) -> Any:
         """The settings the hub generates from, as the parent last left them. The hub adds
-        her name locally; nothing that identifies her has a field on this route."""
+        the name locally; nothing that identifies a person has a field on this route."""
         store: PreferencesStore = request.app.state.preferences
         return store.get(household_id).to_public()
 
@@ -577,7 +577,7 @@ def create_app(
     def read_usage(account: CurrentAccount, request: Request, period: str = "") -> Any:
         """What this household's pictures consumed this month, as the backend reported it.
 
-        Numbers about machines, never about her, and never a target to hit.
+        Numbers about machines, never about a person, and never a target to hit.
         """
         counter: UsageStore = request.app.state.usage
         settings: Settings = request.app.state.settings
