@@ -1,8 +1,9 @@
 """Settings the panel reads from the environment.
 
-Two of these decide whether the panel is safe, so both default to the closed position:
-without ``LANTERNINA_DEV_AUTH`` nobody can be identified, and without
-``LANTERNINA_BOOTSTRAP_CONTACT`` nobody is activated automatically.
+Three of these decide whether the panel is safe, so all three default to the closed
+position: without ``LANTERNINA_DEV_AUTH`` nobody can be identified, without
+``LANTERNINA_BOOTSTRAP_CONTACT`` nobody is activated automatically, and without
+``LANTERNINA_ADMIN_OIDC_AUTHORITY`` nobody can admit anyone.
 """
 
 from __future__ import annotations
@@ -27,6 +28,16 @@ class Settings:
     # Browser origins allowed to call this API. Empty means none, which is why a front end
     # served from anywhere else has to be named here on purpose.
     allowed_origins: str = ""
+    # The administrator's identity provider, deliberately not the parents'. Empty closes
+    # the administration routes: no environment variable, no administration.
+    admin_oidc_authority: str = ""
+    # Comma-separated, because Entra emits the bare application id for some configurations
+    # and its api:// form for others, and both name the same application.
+    admin_oidc_audience: str = ""
+    # The app role an administrator's token must carry. The role is assigned in the
+    # directory, so nothing the panel writes can grant it — which is the point of holding
+    # this privilege outside the database the administrator edits.
+    admin_role: str = "Lanternina.Admin"
     # Where proposals live. Empty keeps the in-memory store, which forgets on restart.
     cosmos_endpoint: str = ""
     cosmos_database: str = "lanternina"
@@ -56,6 +67,16 @@ class Settings:
         return bool(self.oidc_authority and self.oidc_audience)
 
     @property
+    def admin_configured(self) -> bool:
+        return bool(self.admin_oidc_authority and self.admin_oidc_audience and self.admin_role)
+
+    @property
+    def admin_audiences(self) -> tuple[str, ...]:
+        return tuple(
+            value.strip() for value in self.admin_oidc_audience.split(",") if value.strip()
+        )
+
+    @property
     def origins(self) -> tuple[str, ...]:
         return tuple(value.strip() for value in self.allowed_origins.split(",") if value.strip())
 
@@ -69,6 +90,11 @@ class Settings:
             oidc_authority=os.environ.get("LANTERNINA_OIDC_AUTHORITY", "").strip(),
             oidc_audience=os.environ.get("LANTERNINA_OIDC_AUDIENCE", "").strip(),
             allowed_origins=os.environ.get("LANTERNINA_ALLOWED_ORIGINS", "").strip(),
+            admin_oidc_authority=os.environ.get(
+                "LANTERNINA_ADMIN_OIDC_AUTHORITY", ""
+            ).strip(),
+            admin_oidc_audience=os.environ.get("LANTERNINA_ADMIN_OIDC_AUDIENCE", "").strip(),
+            admin_role=os.environ.get("LANTERNINA_ADMIN_ROLE", "Lanternina.Admin").strip(),
             cosmos_endpoint=os.environ.get("LANTERNINA_COSMOS_ENDPOINT", "").strip(),
             cosmos_database=os.environ.get("LANTERNINA_COSMOS_DATABASE", "lanternina").strip(),
             device_key=os.environ.get("LANTERNINA_DEVICE_KEY", "").strip(),

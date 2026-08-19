@@ -1,9 +1,16 @@
 {
+  "routes": [
+    {
+      "route": "/admin",
+      "rewrite": "/admin.html"
+    }
+  ],
   "navigationFallback": {
-    "rewrite": "/index.html"
+    "rewrite": "/index.html",
+    "exclude": ["/admin*", "/assets/*"]
   },
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self' https://*.ciamlogin.com https://ca-lanternina-dev-api.graystone-035aecb2.swedencentral.azurecontainerapps.io; frame-ancestors 'none'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self' https://*.ciamlogin.com https://login.microsoftonline.com https://ca-lanternina-dev-api.graystone-035aecb2.swedencentral.azurecontainerapps.io; frame-ancestors 'none'",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer"
   }

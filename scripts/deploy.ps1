@@ -154,6 +154,9 @@ if ($liveApi) {
         panelOidcAudience    = 'LANTERNINA_OIDC_AUDIENCE'
         panelAllowedOrigins  = 'LANTERNINA_ALLOWED_ORIGINS'
         panelBootstrapContact = 'LANTERNINA_BOOTSTRAP_CONTACT'
+        panelAdminOidcAuthority = 'LANTERNINA_ADMIN_OIDC_AUTHORITY'
+        panelAdminOidcAudience  = 'LANTERNINA_ADMIN_OIDC_AUDIENCE'
+        panelAdminRole          = 'LANTERNINA_ADMIN_ROLE'
     }
     foreach ($name in $carried.Keys) {
         $value = $liveEnv[$carried[$name]]

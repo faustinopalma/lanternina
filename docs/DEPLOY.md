@@ -252,6 +252,159 @@ These four steps are also precisely why moving to a new tenant is a **rebuild, n
 migration** — see §6. They are scriptable through Microsoft Graph, which is the obvious
 next improvement; until that exists, this list is the whole of it.
 
+### The administrator, who is not in this directory
+
+A parent who signs up lands in `pending` and stays there until someone admits them. That
+someone signs in against the **workforce tenant** — the directory that administers the
+subscription — and not against the External ID directory above.
+
+The reason is the shape of the two directories. External ID exists so that anyone may
+register themselves; an administrator defined there would be an administrator whose
+identity came from a public form. Holding the privilege in the workforce tenant also puts
+it outside the database it edits, so no fault in the code that admits parents can grant
+it, and it brings the conditional access and multi-factor policies the external directory
+does not have. What it costs: a second application to register, and an administrator who
+cannot try the parent experience with the account they already hold.
+
+Like the four steps above, this is done by hand, once, in the **Entra admin centre** of the
+workforce tenant. It is identity configuration, not infrastructure: ARM does not create it,
+a redeployment does not restore it, and a script that wrapped it would be a second place
+for it to drift.
+
+##### 1. Register the application
+
+**Applications → App registrations → New registration**
+
+| Field | Value |
+| --- | --- |
+| Name | `Lanternina Administration` |
+| Supported account types | Accounts in **this organizational directory only** |
+| Redirect URI | **Single-page application (SPA)** · `https://app.lanternina.com/admin` |
+
+Add `http://localhost:5173/admin` as a second SPA redirect if you want to run the page
+locally. Write down the **Application (client) ID** and the **Directory (tenant) ID**.
+
+##### 2. Expose the scope
+
+**Expose an API → Application ID URI → Add**. The portal proposes
+`api://<application (client) id>` — the id of *this* application, already filled in. Accept
+it and **Save**; there is nothing to type and no other application's id belongs here.
+
+> The application points at itself because it plays two roles: the page in the browser is
+> the client, the panel API is the resource. OAuth has no notion of "the same app", so the
+> resource role has to be named before the client role can ask for a token addressed to
+> it. The parent's application has exactly the same shape.
+
+Then **+ Add a scope**:
+
+| Field | Value |
+| --- | --- |
+| Scope name | `access_as_admin` |
+| Who can consent? | **Admins only** |
+| Admin consent display name | Administer Lanternina |
+| Admin consent description | Allows the administration page to call the panel API on behalf of the signed-in administrator. |
+| State | **Enabled** |
+
+> **The scope names the API, not the function.** What an administrator may do is decided
+> by app roles, which is what the API checks; the scope only makes Entra address the token
+> to us. A scope per function — `admit_accounts`, then another one next year — would read
+> like a permission boundary and would not be one, because `scp` is not verified anywhere.
+> The parent's application is the same shape: one `access_as_parent`, and the account
+> record decides the rest.
+
+##### 3. Set the token version to 2
+
+**Manifest** → in *Microsoft Graph App Manifest*, inside the `api` object, change
+`"requestedAccessTokenVersion": null` to `2` → **Save**. In the older *AAD Graph* manifest
+the same field is at the top level and is called `accessTokenAcceptedVersion`.
+
+> This one is easy to skip and fails in a way that reads like a credentials problem. Left
+> at the default the tenant issues a version 1 token, whose `iss` is
+> `https://sts.windows.net/<tenant>/` — and the API takes its issuer from the v2 discovery
+> document, so every sign-in ends in a refusal that says nothing about why.
+>
+> It is also what makes the `aud` claim the bare client id rather than the `api://` form,
+> which is why `panelAdminOidcAudience` below carries both.
+
+##### 4. Create the role
+
+**App roles → + Create app role**
+
+| Field | Value |
+| --- | --- |
+| Display name | `Lanternina administrator` |
+| Allowed member types | **Users/Groups** |
+| Value | `Lanternina.Admin` |
+| Description | Administers Lanternina. Today that is admitting or refusing parent sign-ups, and it grants no access to any household's data. |
+| Do you want to enable this app role? | ticked |
+
+`Value` is the string the API compares literally. A typo here is a role nobody holds.
+
+One role for now. A second capability that not every administrator should hold is a second
+app role, not a second scope: the role is the thing the API already checks.
+
+##### 5. Ask for the scope, and consent to it
+
+**Manage → API permissions → + Add a permission → My APIs → Lanternina Administration →
+Delegated permissions → `access_as_admin` → Add permissions**. Then **Grant admin consent
+for &lt;tenant&gt;** and confirm: the row must end up green, *Granted for &lt;tenant&gt;*.
+
+Both lists are needed and they are different halves of the same agreement: `API
+permissions` is the client role saying what it will ask for, and the consent is the
+administrator agreeing in advance on behalf of the directory. Remove the `User.Read`
+permission the portal adds by default — the page never calls Microsoft Graph.
+
+##### 6. Assign the role, and require assignment
+
+**Applications → Enterprise applications → Lanternina Administration → Users and groups →
++ Add user/group** → *Users: None Selected* → pick yourself → **Select** → under *Select a
+role* choose **Lanternina administrator** → **Assign**.
+
+> **Check the role that was actually assigned.** The portal will happily record an
+> assignment to *Default Access*, which is an assignment carrying no role — it is what you
+> get by adding the user before the role exists, or by leaving the selector alone. The
+> resulting token is valid in every respect and has no `roles` claim, so the API refuses it
+> and the refusal reads like a credentials problem. Seen once here, on the first attempt.
+> To confirm from outside the portal:
+>
+> ```powershell
+> az rest --method GET --uri "https://graph.microsoft.com/v1.0/servicePrincipals/<sp id>/appRoleAssignedTo"
+> ```
+>
+> An `appRoleId` of all zeros is *Default Access*. Remove the assignment and add it again.
+
+Then **Properties → Assignment required? → Yes → Save**, so a colleague who is not an
+administrator is stopped at sign-in rather than after it.
+
+> **The application existing grants nothing.** A token without `Lanternina.Admin` in its
+> `roles` claim is refused with the same body as any other refusal.
+
+##### Then feed five values back
+
+Three to the API, on the next deployment:
+
+| Value | Where it goes |
+| --- | --- |
+| `https://login.microsoftonline.com/<tenant id>/v2.0` | `panelAdminOidcAuthority` |
+| `<client id>,api://<client id>` | `panelAdminOidcAudience` |
+| `Lanternina.Admin` | `panelAdminRole` |
+
+Two are read at build time by the administration page. Locally they go in `web/.env.local`,
+which is gitignored because it names the tenant:
+
+```
+VITE_ADMIN_CLIENT_ID=<client id>
+VITE_ADMIN_TENANT_ID=<tenant id>
+```
+
+For the published site they are **repository variables** of the same names, under
+*Settings → Secrets and variables → Actions → Variables*. Variables and not secrets: both
+values end up in a bundle anybody can read, so hiding them would only make them harder to
+correct. They are kept out of the repository so a fork does not carry this tenant.
+
+Without them the page at `/admin` loads and says it is not configured, which is the
+intended closed position.
+
 ---
 
 ## 5. The data tier is private by default

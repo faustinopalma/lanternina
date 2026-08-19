@@ -421,7 +421,7 @@ flowchart TB
       <tr><td>Browser → API</td><td>A bearer token, over TLS.</td><td>Nothing. Every field of the token is checked on arrival, on every request.</td></tr>
       <tr><td>API → Entra</td><td>An unauthenticated fetch of public signing keys.</td><td>TLS and the certificate chain. The keys are public by design.</td></tr>
       <tr><td>API → Cosmos</td><td>A read and sometimes a write, over a private endpoint, authenticated with a managed identity.</td><td>Nothing leaves the virtual network. There is no connection string to leak.</td></tr>
-      <tr><td>Administrator → Cosmos</td><td class="muted">Nothing. There is no path.</td><td>Control-plane ownership grants no data access in Cosmos, and the account is unreachable from outside the network besides.</td></tr>
+      <tr><td>Administrator → Cosmos</td><td class="muted">Nothing directly. The only route is the panel's own administration surface.</td><td>Control-plane ownership grants no data access in Cosmos, and the account is unreachable from outside the network besides. What that surface returns is an address, a status and a timestamp — no household, no proposals, no pictures.</td></tr>
     </tbody>
   </table>
 
@@ -444,7 +444,7 @@ flowchart TB
     <summary>Why the administrator has no route to the data, and why that was chosen</summary>
     <div class="body">
       <p>Measured on the deployed account: <code>publicNetworkAccess</code> disabled, <code>disableLocalAuth</code> true, and exactly one data-plane role assignment — held by the runtime identity, not by the administrator. Two independent locks, either of which alone would be enough.</p>
-      <p><strong>Buys:</strong> a stolen administrator credential reaches no family's data. <strong>Costs:</strong> approving the second parent needs a job running inside the network, which is not built yet. The cost is visible and the alternative — opening the firewall to a laptop — would not have been.</p>
+      <p><strong>Buys:</strong> a stolen administrator credential reaches no family's data. <strong>Costs:</strong> admitting the second parent needs a route that runs inside the network. That route now exists — <code>/api/admin/accounts</code>, in the container app — and it hands the administrator an address and a status, never a household. The firewall stayed shut.</p>
     </div>
   </details>
 </section>

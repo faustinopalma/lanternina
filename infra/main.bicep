@@ -82,6 +82,15 @@ param panelOidcAudience string = ''
 @description('Comma-separated browser origins allowed to call the panel API. Empty allows none.')
 param panelAllowedOrigins string = ''
 
+@description('Identity provider for administrators. The workforce tenant, deliberately not the parents\' directory. Empty closes the administration routes.')
+param panelAdminOidcAuthority string = ''
+
+@description('Audience the administration routes accept. Comma-separated: Entra emits the bare application id for some configurations and its api:// form for others.')
+param panelAdminOidcAudience string = ''
+
+@description('App role an administrator\'s token must carry. Assigned in the directory, so nothing this application writes can grant it.')
+param panelAdminRole string = 'Lanternina.Admin'
+
 @description('Shared key the home server presents. Empty closes the device routes, which is the safe direction: the house keeps the picture it has.')
 @secure()
 param deviceKey string = ''
@@ -228,6 +237,9 @@ module app 'modules/app.bicep' = {
     panelOidcAuthority: panelOidcAuthority
     panelOidcAudience: panelOidcAudience
     panelAllowedOrigins: panelAllowedOrigins
+    panelAdminOidcAuthority: panelAdminOidcAuthority
+    panelAdminOidcAudience: panelAdminOidcAudience
+    panelAdminRole: panelAdminRole
     workerImage: workerImage
   }
 }

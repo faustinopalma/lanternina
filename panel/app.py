@@ -23,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from shared.accounts import Account, AccountStore
+from shared.accounts import Account, AccountStatus, AccountStore
 from shared.approval import ApprovalState
 from shared.errors import (
     AccessDenied,
@@ -32,7 +32,9 @@ from shared.errors import (
     NoCapacityError,
     SafetyBlocked,
 )
+from shared.ids import AccountId
 
+from .admin import ADMISSIONS, CurrentAdmin, waiting_view
 from .config import Settings
 from .devices import DeviceStatus, DeviceStatusStore, InMemoryDeviceStatusStore
 from .gate import resolve_account
@@ -206,6 +208,7 @@ def create_app(
         preferences if preferences is not None else _preferences_store(app.state.settings)
     )
     app.state.verifier = None
+    app.state.admin_verifier = None
 
     # Named origins only. The token travels in a header, not a cookie, so credentials stay
     # off and a wildcard would buy nothing except a wider blast radius.
@@ -240,6 +243,43 @@ def create_app(
             "householdId": account.household_id,
             "status": account.status,
         }
+
+    @app.get("/api/admin/me")
+    def admin_me(admin: CurrentAdmin) -> dict[str, Any]:
+        """Who the administration surface believes is calling.
+
+        It exists so the page can tell "you hold no administrator role" apart from
+        "nobody is waiting": both would otherwise be an empty list.
+        """
+        return {"subject": admin.subject, "contact": admin.contact}
+
+    @app.get("/api/admin/accounts")
+    def waiting_accounts(_: CurrentAdmin, request: Request) -> Any:
+        """The sign-ups awaiting a decision, oldest first. Deliberately not a search over
+        every account: a route that answers questions about one address is a way to find
+        out who is registered."""
+        store: AccountStore = request.app.state.store
+        return {"accounts": [waiting_view(row) for row in store.pending()]}
+
+    @app.post("/api/admin/accounts/{account_id}/decision")
+    def admit_account(
+        account_id: str, decision: Decision, admin: CurrentAdmin, request: Request
+    ) -> Any:
+        """Admit or refuse one sign-up. This is the whole effect: a status changes, and
+        who changed it is recorded. Nothing is generated and nobody is notified."""
+        if decision.state not in {status.value for status in ADMISSIONS}:
+            raise HTTPException(status_code=400, detail="unsupported_state")
+        store: AccountStore = request.app.state.store
+        try:
+            row = store.decide(
+                AccountId(account_id),
+                AccountStatus(decision.state),
+                decided_by=admin.subject,
+                note=decision.note,
+            )
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail="unknown_account") from exc
+        return waiting_view(row)
 
     @app.get("/api/proposals")
     def list_proposals(account: CurrentAccount, request: Request, state: str = "pending") -> Any:

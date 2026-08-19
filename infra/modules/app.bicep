@@ -59,6 +59,15 @@ param panelOidcAudience string = ''
 @description('Comma-separated browser origins allowed to call the panel API. Empty allows none.')
 param panelAllowedOrigins string = ''
 
+@description('Identity provider for administrators, separate from the parents\'. Empty closes the administration routes.')
+param panelAdminOidcAuthority string = ''
+
+@description('Audience the administration routes accept, comma-separated.')
+param panelAdminOidcAudience string = ''
+
+@description('App role an administrator\'s token must carry.')
+param panelAdminRole string = 'Lanternina.Admin'
+
 @description('AIServices account endpoint. One host serves both image generation and Content Safety.')
 param aiAccountEndpoint string = ''
 
@@ -187,6 +196,18 @@ var apiEnv = concat(commonEnv, [
   {
     name: 'LANTERNINA_ALLOWED_ORIGINS'
     value: panelAllowedOrigins
+  }
+  {
+    name: 'LANTERNINA_ADMIN_OIDC_AUTHORITY'
+    value: panelAdminOidcAuthority
+  }
+  {
+    name: 'LANTERNINA_ADMIN_OIDC_AUDIENCE'
+    value: panelAdminOidcAudience
+  }
+  {
+    name: 'LANTERNINA_ADMIN_ROLE'
+    value: panelAdminRole
   }
 ])
 

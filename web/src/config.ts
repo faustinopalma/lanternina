@@ -22,3 +22,25 @@ export const config = {
   apiBase:
     "https://ca-lanternina-dev-api.graystone-035aecb2.swedencentral.azurecontainerapps.io",
 } as const;
+
+/* The administration page signs in against the workforce tenant, which is a different
+ * directory from the one parents use. Two applications, two audiences: a parent's token
+ * is refused by the API's audience check before any question of roles is asked.
+ *
+ * Read from the build environment rather than written here, because these values do not
+ * exist until the app registration is made — and a plausible-looking placeholder would
+ * fail at sign-in with a message about the tenant instead of about the configuration.
+ */
+const adminClientId = import.meta.env.VITE_ADMIN_CLIENT_ID ?? "";
+const adminTenantId = import.meta.env.VITE_ADMIN_TENANT_ID ?? "";
+
+export const adminConfig = {
+  clientId: adminClientId,
+  authority: adminTenantId ? `https://login.microsoftonline.com/${adminTenantId}` : "",
+  // One scope, named after the API rather than after a function. What an administrator may
+  // do is carried by app roles, which is what the API checks; a scope per function would
+  // look like it separated permissions without separating anything.
+  scopes: adminClientId ? [`api://${adminClientId}/access_as_admin`] : [],
+  apiBase: config.apiBase,
+  configured: Boolean(adminClientId && adminTenantId),
+} as const;

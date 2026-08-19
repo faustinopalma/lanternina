@@ -10,6 +10,9 @@ The parts that matter are the ones easy to get subtly wrong:
   closed but for a confusing reason.
 * **Audience is checked.** Without it, a token minted for any other application in the
   same directory would be accepted here.
+* **An app role can be required.** The administrator surface needs a privilege that our
+  own database cannot grant, and ``roles`` is assigned in the directory. Optional, so the
+  parent path is unchanged.
 """
 
 from __future__ import annotations
@@ -38,6 +41,9 @@ class SigningKeys(Protocol):
 class Claims:
     subject: str
     contact: str
+    # App roles the directory put in the token. Empty for a parent's token, which asks for
+    # a scope and is granted no role at all.
+    roles: tuple[str, ...] = ()
 
 
 class _JwksKeys:
@@ -52,7 +58,12 @@ class TokenVerifier:
     """Validates tokens from one issuer, for one audience."""
 
     def __init__(
-        self, *, issuer: str, audience: str | Sequence[str], keys: SigningKeys
+        self,
+        *,
+        issuer: str,
+        audience: str | Sequence[str],
+        keys: SigningKeys,
+        required_role: str = "",
     ) -> None:
         self._issuer = issuer
         # A token matching any one of these is accepted. Entra emits the application id
@@ -60,9 +71,15 @@ class TokenVerifier:
         # application, so accepting both admits nothing a single value would exclude.
         self._audiences = [audience] if isinstance(audience, str) else list(audience)
         self._keys = keys
+        self._required_role = required_role
 
     @classmethod
-    def from_authority(cls, authority: str, audience: str | Sequence[str]) -> TokenVerifier:
+    def from_authority(
+        cls,
+        authority: str,
+        audience: str | Sequence[str],
+        required_role: str = "",
+    ) -> TokenVerifier:
         """Read issuer and jwks_uri from the authority's discovery document."""
         url = authority.rstrip("/") + DISCOVERY_PATH
         try:
@@ -72,7 +89,12 @@ class TokenVerifier:
         except (httpx.HTTPError, KeyError, ValueError) as exc:
             raise AuthNotConfigured(f"could not read OIDC metadata from {url}: {exc}") from exc
 
-        return cls(issuer=issuer, audience=audience, keys=_JwksKeys(jwks_uri))
+        return cls(
+            issuer=issuer,
+            audience=audience,
+            keys=_JwksKeys(jwks_uri),
+            required_role=required_role,
+        )
 
     def verify(self, token: str) -> Claims:
         try:
@@ -93,7 +115,14 @@ class TokenVerifier:
         if not subject:
             raise NotAuthenticated("token rejected")
 
+        raw_roles = payload.get("roles")
+        roles = tuple(str(role) for role in raw_roles) if isinstance(raw_roles, list) else ()
+        # Read before the check so a token with no roles claim at all is refused by the
+        # same line as one carrying the wrong role, with the same message.
+        if self._required_role and self._required_role not in roles:
+            raise NotAuthenticated("token rejected")
+
         # The measured External ID token uses preferred_username; email remains first so
         # another configured user flow can provide the more specific claim.
         contact = str(payload.get("email") or payload.get("preferred_username") or "").strip()
-        return Claims(subject=subject, contact=contact)
+        return Claims(subject=subject, contact=contact, roles=roles)

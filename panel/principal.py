@@ -38,7 +38,7 @@ def principal_from_headers(
 ) -> Principal:
     """Identify the caller, or refuse."""
     if verifier is not None:
-        claims = verifier.verify(_bearer_token(headers))
+        claims = verifier.verify(bearer_token(headers))
         return Principal(subject=claims.subject, contact=claims.contact)
 
     if not settings.dev_auth:
@@ -51,7 +51,8 @@ def principal_from_headers(
     return Principal(subject=subject, contact=headers.get(DEV_CONTACT_HEADER, "").strip())
 
 
-def _bearer_token(headers: Mapping[str, str]) -> str:
+def bearer_token(headers: Mapping[str, str]) -> str:
+    """The token out of the Authorization header, or a refusal."""
     authorization = headers.get("authorization", "")
     if not authorization.lower().startswith(BEARER_PREFIX):
         raise NotAuthenticated("no bearer token")

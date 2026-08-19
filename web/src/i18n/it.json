@@ -137,5 +137,21 @@
   "error.refused": "Il pannello ha rifiutato la richiesta.",
   "error.signin": "L'accesso non è andato a buon fine. Ricarica la pagina e riprova.",
 
+  "admin.lede": "Amministrazione.",
+  "admin.signin.title": "Accesso",
+  "admin.signin.body": "Questa pagina usa l'identità aziendale, non quella con cui entra un genitore. Sono due account distinti anche quando dietro c'è la stessa persona.",
+  "admin.signin.button": "Entra",
+  "admin.notAdmin.title": "Senza ruolo",
+  "admin.notAdmin.body": "L'accesso è riuscito. Questo account non ha il ruolo di amministratore: si assegna nella directory, non da qui.",
+  "admin.notConfigured.title": "Non configurato",
+  "admin.notConfigured.body": "Il pannello non ha ancora un'identità di amministratore. Finché manca, questa pagina non può fare niente.",
+  "admin.waiting.title": "Registrazioni in attesa",
+  "admin.waiting.note": "Ammettere abilita il pannello a quell'indirizzo. Non genera contenuti e non avvisa nessuno: chi è stato ammesso lo scopre ricaricando la sua pagina.",
+  "admin.waiting.loading": "Sto caricando le registrazioni.",
+  "admin.waiting.unreadable": "Non riesco a leggere le registrazioni adesso.",
+  "admin.waiting.empty": "Nessuna registrazione in attesa.",
+  "admin.admit": "Ammetti",
+  "admin.refuse": "Rifiuta",
+
   "language.label": "Lingua"
 }

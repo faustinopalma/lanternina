@@ -1,2 +1,4 @@
 node_modules/
 dist/
+# Names the workforce tenant and the administration application. Local, never committed.
+.env.local

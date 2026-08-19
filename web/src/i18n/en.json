@@ -137,5 +137,21 @@
   "error.refused": "The panel refused the request.",
   "error.signin": "Signing in did not complete. Reload the page and try again.",
 
+  "admin.lede": "Administration.",
+  "admin.signin.title": "Sign in",
+  "admin.signin.body": "This page uses the workforce identity, not the one a parent signs in with. They are separate accounts even when the same person holds both.",
+  "admin.signin.button": "Sign in",
+  "admin.notAdmin.title": "No role",
+  "admin.notAdmin.body": "Signing in worked. This account holds no administrator role: it is assigned in the directory, not from here.",
+  "admin.notConfigured.title": "Not configured",
+  "admin.notConfigured.body": "The panel has no administrator identity yet. Until it does, this page can do nothing.",
+  "admin.waiting.title": "Sign-ups waiting",
+  "admin.waiting.note": "Admitting enables the panel for that address. It generates nothing and notifies nobody: whoever is admitted finds out by reloading their page.",
+  "admin.waiting.loading": "Loading the sign-ups.",
+  "admin.waiting.unreadable": "I cannot read the sign-ups right now.",
+  "admin.waiting.empty": "Nothing waiting.",
+  "admin.admit": "Admit",
+  "admin.refuse": "Refuse",
+
   "language.label": "Language"
 }
