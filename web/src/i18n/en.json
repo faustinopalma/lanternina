@@ -49,7 +49,7 @@
 
   "reminders.title": "Reminders",
   "reminders.note": "What should be remembered, written the way you would say it. One thing per line, with the day and the hour if it has one: “brush teeth after dinner”, “Wednesday take the bin out”.",
-  "reminders.laterNote": "Writing one down does nothing on its own. The house reads what is new when it next asks, and what it made of a sentence appears here afterwards.",
+  "reminders.laterNote": "Writing one down starts nothing: the panel cannot ask what a sentence means at the moment you write it. The house is the side that asks, and until it does what you write here waits.",
   "reminders.placeholder": "for example: brush teeth after dinner",
   "reminders.aria": "New reminder",
   "reminders.textAria": "Reminder",

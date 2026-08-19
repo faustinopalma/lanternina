@@ -49,7 +49,7 @@
 
   "reminders.title": "Promemoria",
   "reminders.note": "Quello che va ricordato, scritto come lo diresti. Una cosa per riga, con il giorno e l'ora se ce l'ha: «lavarsi i denti dopo cena», «mercoledì porta fuori il bidone».",
-  "reminders.laterNote": "Scriverlo qui non fa partire niente. La casa legge quello che è nuovo alla richiesta successiva, e cosa ne ha capito compare qui dopo.",
+  "reminders.laterNote": "Scriverlo qui non fa partire niente: il pannello non può chiedere cosa vuol dire una frase nel momento in cui la scrivi. È la casa a chiedere, e finché non lo fa quello che scrivi resta qui ad aspettare.",
   "reminders.placeholder": "per esempio: lavarsi i denti dopo cena",
   "reminders.aria": "Nuovo promemoria",
   "reminders.textAria": "Promemoria",
