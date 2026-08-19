@@ -1,7 +1,14 @@
 """Ask the panel for a new picture and put it on the display.
 
-Runs on the hub, on a timer. The house decides when: the panel paints only because it was
-asked, and has no way to reach this machine on its own.
+Runs on the hub, on a timer that fires once a minute. The house decides when: the panel
+paints only because it was asked, and has no way to reach this machine on its own.
+
+The minute is for the decision, not for the network. The rhythm is read from the panel at
+the moment a picture is asked for, and kept in a local file; every run in between decides
+from that copy and touches nothing. The panel's API scales to zero, so a GET a minute
+would hold a replica awake all day for an answer that changes once a week. What that costs
+is freshness: a rhythm the parent changes is noticed at the next picture, so at most one
+spacing late.
 
 Two refusals are normal and are treated as such, leaving the current picture alone: the
 content gate declining an image, and the cloud being unreachable. A display that keeps
@@ -33,7 +40,6 @@ DEFAULT_CADENCE_MINUTES = 60
 # The timer fires once a minute. The tolerance is what keeps a spacing of thirteen minutes
 # from becoming fourteen: without it the run that lands a second early skips its turn.
 CADENCE_GRACE_SECONDS = 30
-
 
 def minutes_of(value: str) -> int:
     """"HH:MM" as minutes past midnight. Raises ValueError on anything else."""
@@ -91,6 +97,29 @@ def due(screen_file: Path, cadence_minutes: int, now: float) -> bool:
     return now - last_change >= cadence_minutes * 60 - CADENCE_GRACE_SECONDS
 
 
+def load_rhythm(path: Path) -> tuple[int, int, int] | None:
+    """The last rhythm the panel gave us, or None if there is no usable copy.
+
+    None is not an error, it is the state of a hub that has never painted. It matters
+    because the caller must then ask rather than assume: a default spacing held for one
+    default period is how a fresh hub ignores the parent for an hour.
+    """
+    try:
+        saved = json.loads(path.read_text(encoding="utf-8"))
+        return (int(saved["quietFrom"]), int(saved["quietUntil"]), int(saved["cadence"]))
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def save_rhythm(path: Path, start: int, end: int, cadence: int) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps({"quietFrom": start, "quietUntil": end, "cadence": cadence}),
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
 def install(screen_file: Path, image: bytes) -> None:
     """Write the picture where the display server will find it, atomically."""
     temporary = screen_file.with_suffix(screen_file.suffix + ".tmp")
@@ -111,7 +140,15 @@ def main() -> int:
     start = minutes_of(os.environ.get("LANTERNINA_QUIET_FROM", QUIET_FROM))
     end = minutes_of(os.environ.get("LANTERNINA_QUIET_UNTIL", QUIET_UNTIL))
     cadence = int(os.environ.get("LANTERNINA_CADENCE_MINUTES", DEFAULT_CADENCE_MINUTES))
-    start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
+    rhythm_file = Path(
+        os.environ.get("LANTERNINA_RHYTHM_FILE", "") or screen_file.with_name("rhythm.json")
+    )
+    saved = load_rhythm(rhythm_file)
+    if saved is None:
+        start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
+        save_rhythm(rhythm_file, start, end, cadence)
+    else:
+        start, end, cadence = saved
 
     if in_quiet_window(time.localtime(), start, end):
         print(f"pause ({start // 60:02d}:{start % 60:02d}–{end // 60:02d}:{end % 60:02d}): "
@@ -120,6 +157,17 @@ def main() -> int:
 
     if not due(screen_file, cadence, time.time()):
         print(f"less than {cadence} minutes since the last picture: leaving it alone")
+        return 0
+
+    # Asking for a picture is the one moment the panel is worth waking, so it is also when
+    # we find out whether the parent has changed the rhythm since.
+    start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
+    save_rhythm(rhythm_file, start, end, cadence)
+    if in_quiet_window(time.localtime(), start, end):
+        print("the pause was moved and now covers this hour: leaving the picture alone")
+        return 0
+    if not due(screen_file, cadence, time.time()):
+        print(f"the spacing was widened to {cadence} minutes: leaving the picture alone")
         return 0
 
     request = urllib.request.Request(

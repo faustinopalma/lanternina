@@ -3,8 +3,9 @@ Description=A new picture as often as the parent asked, while the house is awake
 
 [Timer]
 # Once a minute, because the spacing is the parent's to choose to the minute: an hourly
-# timer cannot honour thirteen. When the picture is not due the run is one small GET to
-# the panel, which is what the finer choice costs.
+# timer cannot honour thirteen. A run with nothing to ask touches no network at all — it
+# decides from the rhythm the last picture brought back — so the fine timer costs nothing
+# and the panel's API is left to scale to zero.
 OnCalendar=*:*:00
 AccuracySec=10s
 Persistent=true
