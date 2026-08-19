@@ -19,7 +19,7 @@
   "pending.note": "Non c'è niente da fare da qui. Questa pagina non cambierà da sola: ricaricala quando l'approvazione è avvenuta.",
 
   "proposals.title": "Da approvare",
-  "proposals.note": "Niente di tutto questo è già arrivato a lei. Quello che approvi resta pronto e viene mostrato più avanti, quando serve.",
+  "proposals.note": "Approvare non mostra niente subito: quello che approvi resta da parte. La casa lo prende al giro successivo, e lo stampa o lo mette sul display.",
   "proposals.loading": "Sto caricando le proposte.",
   "proposals.unreadable": "Non riesco a leggere le proposte adesso.",
   "proposals.empty": "Nessuna proposta in attesa.",
@@ -63,7 +63,7 @@
 
   "preferences.title": "Impostazioni",
   "preferences.note": "Di cosa sono fatti i contenuti. La casa legge queste scelte al giro successivo: salvare qui non avvia nessuna generazione.",
-  "preferences.interests": "Temi che le piacciono",
+  "preferences.interests": "Temi da proporre",
   "preferences.avoid": "Da evitare",
   "preferences.oneEach": "uno per riga",
   "preferences.difficulty": "Forma",
@@ -78,7 +78,7 @@
   "preferences.language": "Lingua dei contenuti",
   "preferences.italian": "italiano",
   "preferences.english": "inglese",
-  "preferences.languageNote": "È la lingua di quello che legge lei, sulla carta e sul display. Non segue la lingua di questa pagina: un contenuto approvato in una lingua non è approvato in un'altra.",
+  "preferences.languageNote": "È la lingua dei contenuti, sulla carta e sul display. Non segue la lingua di questa pagina: un contenuto approvato in una lingua non è approvato in un'altra.",
   "preferences.save": "Salva",
   "preferences.saved": "Salvato. La casa lo applica al prossimo giro.",
   "preferences.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
@@ -86,7 +86,7 @@
   "preferences.unreadable": "Non riesco a leggere le impostazioni adesso.",
 
   "devices.title": "Dispositivi",
-  "devices.note": "Lo stato dei display. Qui compaiono i guasti: sullo schermo che guarda lei non compare mai niente del genere.",
+  "devices.note": "Lo stato dei display. Qui compaiono i guasti: sui display in casa non compare mai niente del genere.",
   "devices.loading": "Sto caricando i dispositivi.",
   "devices.unreadable": "Non riesco a leggere i dispositivi adesso.",
   "devices.empty": "Nessun dispositivo si è ancora fatto sentire.",
@@ -105,7 +105,7 @@
   "menu.close": "Chiudi le sezioni del pannello",
 
   "pictures.title": "Quadri",
-  "pictures.note": "Tutti i quadri già comparsi sul display, dal più recente. Sono mostrati come li vede lei: due soli livelli, senza grigi.",
+  "pictures.note": "Tutti i quadri già comparsi sul display, dal più recente. Sono mostrati come li mostra il display: due soli livelli, senza grigi.",
   "pictures.loading": "Sto caricando i quadri.",
   "pictures.unreadable": "Non riesco a leggere i quadri adesso.",
   "pictures.empty": "Nessun quadro ancora. Il primo arriva quando il display ne chiede uno.",
@@ -119,7 +119,7 @@
   "pictures.kind.critical": "avviso batteria",
 
   "usage.title": "Consumo",
-  "usage.note": "Quanto hanno consumato i modelli questo mese. Sono numeri sulle macchine, non su di lei, e non sono un obiettivo da raggiungere.",
+  "usage.note": "Quanto hanno consumato i modelli questo mese. Sono numeri sulle macchine, non su una persona, e non sono un obiettivo da raggiungere.",
   "usage.loading": "Sto leggendo il consumo.",
   "usage.unreadable": "Non riesco a leggere il consumo adesso.",
   "usage.calls": "chiamate",

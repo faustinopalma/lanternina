@@ -19,7 +19,7 @@
   "pending.note": "There is nothing to do from here. This page will not change on its own: reload it once the approval has happened.",
 
   "proposals.title": "To approve",
-  "proposals.note": "None of this has reached her. What you approve is kept ready and shown later, when it is needed.",
+  "proposals.note": "Approving shows nothing straight away: what you approve is set aside. The house takes it on its next run, and prints it or puts it on the display.",
   "proposals.loading": "Loading the proposals.",
   "proposals.unreadable": "I cannot read the proposals right now.",
   "proposals.empty": "Nothing waiting.",
@@ -63,7 +63,7 @@
 
   "preferences.title": "Settings",
   "preferences.note": "What the content is made of. The house reads these choices on its next run: saving here starts no generation.",
-  "preferences.interests": "Subjects she likes",
+  "preferences.interests": "Subjects to offer",
   "preferences.avoid": "To avoid",
   "preferences.oneEach": "one per line",
   "preferences.difficulty": "Form",
@@ -78,7 +78,7 @@
   "preferences.language": "Content language",
   "preferences.italian": "Italian",
   "preferences.english": "English",
-  "preferences.languageNote": "The language of what she reads, on paper and on the display. It does not follow the language of this page: content approved in one language is not approved in another.",
+  "preferences.languageNote": "The language of the content, on paper and on the display. It does not follow the language of this page: content approved in one language is not approved in another.",
   "preferences.save": "Save",
   "preferences.saved": "Saved. The house applies it on its next run.",
   "preferences.saveFailed": "I could not save it. Try again later.",
@@ -86,7 +86,7 @@
   "preferences.unreadable": "I cannot read the settings right now.",
 
   "devices.title": "Devices",
-  "devices.note": "How the displays are doing. Faults appear here: nothing of the kind ever appears on the screen she looks at.",
+  "devices.note": "How the displays are doing. Faults appear here: nothing of the kind ever appears on the displays in the house.",
   "devices.loading": "Loading the devices.",
   "devices.unreadable": "I cannot read the devices right now.",
   "devices.empty": "No device has been heard from yet.",
@@ -105,7 +105,7 @@
   "menu.close": "Close the panel sections",
 
   "pictures.title": "Pictures",
-  "pictures.note": "Every picture that has appeared on the display, newest first. They are shown as she sees them: two levels only, no greys.",
+  "pictures.note": "Every picture that has appeared on the display, newest first. They are shown as the display shows them: two levels only, no greys.",
   "pictures.loading": "Loading the pictures.",
   "pictures.unreadable": "I cannot read the pictures right now.",
   "pictures.empty": "No pictures yet. The first arrives when the display asks for one.",
@@ -119,7 +119,7 @@
   "pictures.kind.critical": "battery notice",
 
   "usage.title": "Usage",
-  "usage.note": "What the models consumed this month. These are numbers about machines, not about her, and not a target to reach.",
+  "usage.note": "What the models consumed this month. These are numbers about machines, not about a person, and not a target to reach.",
   "usage.loading": "Reading the usage.",
   "usage.unreadable": "I cannot read the usage right now.",
   "usage.calls": "calls",

@@ -1,41 +1,64 @@
 # Lanternina
 
-A home system that generates activities — interactive games, printed exercises and
-routine prompts — for adolescents across cognitive profiles. A parent steers it, and the
-design does not try to remove that role.
+A home system that offers activities to an adolescent — sheets to print, short games on two
+buttons, and reminders on an e-paper display. A parent steers it, and the design does not
+try to remove that role.
 
-It runs on a Linux mini-PC in the house, drives e-paper displays, an LCD, physical buttons
-and a printer over ESP32 microcontrollers, and reads completed worksheets back through a
-desk camera. Every language and vision model call goes to Azure AI Foundry; no model runs
-on the device. Offline means serving content the parent has already approved.
+It runs on a Linux mini-PC in the house. Today it serves two e-paper displays and draws
+sheets for a printer; reading a finished sheet back has been done end to end from the
+command line and is not yet a package. Every language and vision model call goes to Azure AI
+Foundry. No model runs on the device, and offline means serving what the parent has already
+approved.
 
-## The point
+## Who it is for
 
-Adolescents differ in what holds their interest, how much novelty they want and what
-presentation helps them start. These differences do not require a diagnosis. Lanternina
-uses explicit settings for interests, difficulty, reading support and content variety.
-It can change topics and formats within those settings without constructing an estimate
-of ability, boredom or attention.
+Any adolescent. What holds someone's interest differs, how much novelty they want differs,
+and how much text on a page is comfortable differs — across the whole range of cognitive
+ability, and at both ends of it. None of that requires a diagnosis, and Lanternina does not
+ask for one: it has no notion of a condition, a need or a level, and nowhere to record one.
 
-Lanternina does not try to reduce that load by removing the parent. It works when the
-parent uses it actively — reviewing, correcting, deciding what it should offer this week.
-Anything an agent produces is a proposal until a parent approves it.
+## What it remembers, and what it refuses to infer
 
-The dashboard is not a remote control for the house. Adding material or changing a
-setting only stores the new state. It does not generate content, enqueue work, notify the
-device or make anything happen immediately. The server in the home decides when to ask
-for work. Its request may remain open while the cloud scales from zero and computes the
-answer; no person is waiting in an interactive flow.
+Lanternina keeps a memory and works from it, so nobody restates the same things every week.
+The memory holds what the household chose — subjects to offer, subjects to avoid, the form
+of the material, how much variety, words per line, the content language — and what has
+already been produced, shown and approved. Generation runs against that memory, and varies
+topics and formats within it without being asked each time.
 
-Two consequences run through the codebase:
+The limit sits next to the claim. That memory is made of what was chosen and what was
+already offered. It is not made of how anybody did. Nothing here scores an answer, estimates
+an ability, tracks a trend, ranks anything or infers boredom or attention — not in the
+types, the storage, the prompts, the logs or the screen. What the camera reports is ink on
+paper: cell 3 is empty. What that means is for the household to say, not for the system to
+conclude.
+
+That is a tradeoff, and it costs something. A system that scored answers could tune itself
+faster and would need the parent less. This one asks the parent instead, because a wrong
+conclusion about a person is paid for by the person.
+
+## The parent steers
+
+Anything an agent produces is a proposal until a parent approves it. The parent writes the
+settings, reviews what was generated, refuses what does not fit, and decides what the system
+should offer this week. No feature is built whose value is that the parent no longer has to
+think about something.
+
+## The dashboard is inert
+
+Adding material or changing a setting only stores the new state. It does not generate
+content, enqueue work, notify a device or make anything happen immediately. The server in
+the home decides when to ask for work, and it is free to look later or to decline. Its
+request may stay open while the cloud scales from zero; nobody is waiting in front of a
+screen for it.
+
+## Two consequences that run through the code
 
 - It does not optimise for engagement. No streaks, no daily goals, no variable rewards, no
-  nudges triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
-  to add here and would harm her, which is why it is a written rule rather than a matter of
+  nudge triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
+  to add here and would do harm, which is why it is a written rule rather than a matter of
   judgement.
-- Nothing it produces is a judgement about the adolescent. No scores, no grades, no ability estimates,
-  no progress trends, no diagnosis-adjacent inference. Vision output describes ink on
-  paper; what that means is for the adolescent and parent to decide.
+- Nothing it produces is a judgement about a person. No scores, no grades, no ability
+  estimates, no progress trends, no inference adjacent to a diagnosis.
 
 [docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why. It is worth
 reading before contributing.
@@ -53,6 +76,7 @@ marked as measured or estimated.
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Reproducing the cloud tier in your own subscription. |
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware reasoning, with what is verified and what is a guess. |
+| [ideas/](ideas/) | What is not built, ranked, each entry with its cost and a check somebody else can run. |
 
 ## How the guarantees are enforced
 
@@ -68,11 +92,12 @@ change rather than an omission.
 | Agents never reach each other | Import-level check | `test_boundaries.py` |
 | Full camera frames are never persisted | `RawFrame` refuses to pickle, copy or serialise | `test_boundaries.py` |
 | The camera never analyses people | Identifier-level check across `vision/` | `test_boundaries.py` |
-| No engagement or assessment vocabulary exists | Identifier-level check across every package | `test_boundaries.py` |
+| No engagement or assessment vocabulary exists | Identifier-level check across every package, and a text check across the panel | `test_boundaries.py` |
+| The content language is a setting, not a property of the data | Field names are English; two readers may name the old Italian keys, nothing else | `test_boundaries.py` |
 
 Each of those tests was mutation-checked: a deliberate violation was injected and the test
-failed. If you change the design so one no longer holds, please change the product rather
-than the test.
+was watched to fail. If you change the design so one no longer holds, please change the
+product rather than the test.
 
 ## Layout
 
@@ -82,12 +107,16 @@ orchestrator/   planner + the three things nothing else may hold:
                   router.py    — the only door to a model backend
                   safety.py    — the only holder of the content-safety key
                   approval.py  — the only holder of the parent-approval key
-agents/         one module per agent (content, vision, scheduling, print)
-                no agent imports another; the planner composes them
+agents/         one module per agent; no agent imports another
 vision/         single-shot capture, ArUco detection, rectification, QR, cell reading
-panel/          parent-facing web control surface — the only place approval happens
-firmware/       ESP32 code for the e-paper displays, LCD and buttons
-docs/           architecture, non-goals, threat model
+printing/       the sheet renderer: markers, QR and cell outlines at exact millimetres
+panel/          the parent-facing API — the only place approval happens
+web/            the panel in the browser, a React single-page application
+devices/        what runs in the house: display server, picture pull, status push
+tools/          the home server, and the command-line paths that are not a package yet
+infra/          the cloud tier as Bicep; deploy/ is the mini-PC side
+docs/           architecture, non-goals, threat model, hardware
+ideas/          what is not built, ranked, with costs
 tests/          the boundary and delivery guarantees above
 ```
 
@@ -122,9 +151,17 @@ pip install -e ".[devices]"   # serial link to the ESP32s
 
 ## Status
 
-Early scaffolding. The contracts, the seals, the delivery boundary and the tests are
-written and green. The router, agents, vision pipeline, panel and firmware are not written
-yet — see the table at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Parts of this are running in a house; parts do not exist. The full table is at the end of
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and it is kept honest rather than encouraging.
+
+Running: the cloud tier, the parent panel and its API, the content agent, the model router
+with real credentials, the safety gate, the hub services that serve the displays and pull an
+hourly picture, the picture archive, and usage accounting with a per-household cap. The
+sheet renderer is written and was checked on paper — a 50 mm ruler measures 50 mm.
+
+Not written: the planner, the vision, scheduling and print agents, and `vision/` as a
+package — that logic lives in `tools/` and has read one scanned sheet end to end.
+`firmware/` may stay empty: the displays run stock firmware and the hub serves them.
 
 Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
 pretends to work.
@@ -135,8 +172,8 @@ No personal data is in this repository and none should ever be added — not in 
 tests, screenshots or example configuration. Demo material is synthetic.
 
 At runtime, only two things leave the device: content-generation prompts and rectified page
-crops. No full camera frames, no identifiers, no profile, no history. See
-[docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+crops. No full camera frames, no identifiers, no profile, no history, and no name in a
+prompt. See [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
 
 ## Licence
 

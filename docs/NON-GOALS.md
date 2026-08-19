@@ -4,10 +4,11 @@ This file lists things Lanternina will not do. They are not missing features, no
 roadmap, and not subject to "it would be easy to add". Several of them would be easy to
 add — that is precisely why they are written down.
 
-Lanternina is built for adolescents across cognitive profiles, including adolescents with
-cognitive disabilities and adolescents who prefer frequent novelty. A parent curates what
-the system offers. Every item below prevents the system from turning differences in
-preference, communication or performance into labels about the person.
+Lanternina is built for adolescents, without asking which ones. Interest, appetite for
+novelty and comfort with text on a page vary across the whole range of cognitive ability,
+and at both ends of it; none of that needs a diagnosis and none of it is recorded here. A
+parent curates what the system offers. Every item below prevents the system from turning
+differences in preference, communication or performance into labels about the person.
 
 If you fork this project, these are the lines that make it Lanternina rather than a
 different project with the same name.
@@ -26,7 +27,7 @@ different project with the same name.
 - **No biometrics** of any kind.
 
 The camera is on a fixed arm at 90° over a sheet of paper, with a field of view narrow
-enough that her face is not in frame. The software backs this up: if the ArUco quadrilateral
+enough that nobody's face is in frame. The software backs this up: if the ArUco quadrilateral
 is not found, the pipeline stops rather than analysing whatever else is in the picture.
 
 ## Capture is single-shot and local
