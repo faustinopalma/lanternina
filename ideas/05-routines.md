@@ -90,6 +90,14 @@ beside it for the parent's text and the reminders derived from it; `panel/app.py
 route the hub calls; `devices/pull_picture.py` for the side that decides when; `agents/`
 for the reading of the sentences; `web/` for the parent's page.
 
+**What is built, on 19 August 2026.** The parent's half, and only that. `panel/reminders.py`
+holds the sentences with a mark saying nobody has read them; `GET/POST /api/reminders`,
+`POST /api/reminders/{id}` and `/remove` are live on revision `--0000035`, and the page is
+in the panel. Nothing reads them: there is no route the hub can call, no agent, and no
+third role on a display, so a sentence written today waits and the page says so rather than
+promising otherwise. The next piece is the route the hub asks on its own timer, with the
+reading happening inside the answer to that request.
+
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the
 reminder role and clears on a press; the third has produced a question in the panel and no
