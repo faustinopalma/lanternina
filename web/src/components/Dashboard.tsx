@@ -12,6 +12,7 @@ import { Devices } from "@/sections/Devices";
 import { Pictures } from "@/sections/Pictures";
 import { Preferences } from "@/sections/Preferences";
 import { Proposals } from "@/sections/Proposals";
+import { Reminders } from "@/sections/Reminders";
 import { Rhythm } from "@/sections/Rhythm";
 import { Themes } from "@/sections/Themes";
 import { Usage } from "@/sections/Usage";
@@ -34,6 +35,12 @@ export function Dashboard({ api }: { api: Api }) {
     { name: "proposals", title: t("proposals.title"), note: t("proposals.note"), Body: Proposals },
     { name: "pictures", title: t("pictures.title"), note: t("pictures.note"), Body: Pictures },
     { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
+    {
+      name: "reminders",
+      title: t("reminders.title"),
+      note: t("reminders.note"),
+      Body: Reminders,
+    },
     { name: "rhythm", title: t("rhythm.title"), note: t("rhythm.note"), Body: Rhythm },
     {
       name: "preferences",

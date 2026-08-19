@@ -1,0 +1,151 @@
+import { useState, type FormEvent } from "react";
+
+import { useApi } from "@/api/client";
+import { ApiError, type Reminder } from "@/api/types";
+import { Button } from "@/components/ui/button";
+import { Quiet } from "@/components/ui/card";
+import { Input } from "@/components/ui/field";
+import { useWords, type MessageKey } from "@/i18n";
+import { useLoad } from "@/lib/useLoad";
+
+function Row({
+  reminder,
+  textLimit,
+  onRemoved,
+  onFailed,
+}: {
+  reminder: Reminder;
+  textLimit: number;
+  onRemoved: () => void;
+  onFailed: (problem: MessageKey) => void;
+}) {
+  const { t } = useWords();
+  const api = useApi();
+  const [text, setText] = useState(reminder.text);
+  const [saved, setSaved] = useState(reminder.text);
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <div className="flex flex-col gap-1.5 border-b border-edge py-3.5 last:border-b-0">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <Input
+          className="min-w-0 flex-auto"
+          maxLength={textLimit}
+          autoComplete="off"
+          aria-label={t("reminders.textAria")}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          onBlur={async () => {
+            /* The parent's words stay the only copy: correcting a sentence the house
+             * could not place is an edit here, not a field somewhere else. */
+            const wanted = text.trim();
+            if (wanted === saved || !wanted) return;
+            try {
+              const changed = await api.rewriteReminder(reminder.id, wanted);
+              setSaved(changed.text);
+              setText(changed.text);
+            } catch (error) {
+              onFailed(
+                error instanceof ApiError && error.rejected
+                  ? "reminders.badText"
+                  : "reminders.saveFailed",
+              );
+            }
+          }}
+        />
+        <Button
+          size="small"
+          className="flex-none"
+          disabled={busy}
+          title={t("reminders.removeTitle", { text: saved })}
+          onClick={async () => {
+            setBusy(true);
+            try {
+              await api.removeReminder(reminder.id);
+              onRemoved();
+            } catch {
+              setBusy(false);
+              onFailed("reminders.removeFailed");
+            }
+          }}
+        >
+          {t("reminders.remove")}
+        </Button>
+      </div>
+      {reminder.read ? <></> : <Quiet>{t("reminders.notRead")}</Quiet>}
+    </div>
+  );
+}
+
+export function Reminders() {
+  const { t } = useWords();
+  const api = useApi();
+  const [state] = useLoad(() => api.reminders());
+  const [added, setAdded] = useState<Reminder[]>([]);
+  const [removed, setRemoved] = useState<string[]>([]);
+  const [text, setText] = useState("");
+  const [problem, setProblem] = useState<MessageKey | null>(null);
+
+  async function add(event: FormEvent) {
+    event.preventDefault();
+    const wanted = text.trim();
+    if (!wanted) return;
+    setProblem(null);
+    try {
+      const reminder = await api.addReminder(wanted);
+      setAdded((seen) => [...seen, reminder]);
+      setText("");
+    } catch (error) {
+      setProblem(
+        error instanceof ApiError && error.rejected ? "reminders.badText" : "reminders.addFailed",
+      );
+    }
+  }
+
+  if (state.status === "loading") return <Quiet>{t("reminders.loading")}</Quiet>;
+  if (state.status === "failed") return <Quiet>{t("reminders.unreadable")}</Quiet>;
+
+  const { textLimit } = state.data;
+  const showing = [...state.data.reminders, ...added].filter(
+    (reminder) => !removed.includes(reminder.id),
+  );
+
+  return (
+    <>
+      <Quiet>{t("reminders.laterNote")}</Quiet>
+      <form
+        onSubmit={add}
+        className="my-3.5 flex max-w-[42rem] gap-2.5 rounded-control border border-edge bg-paper p-4"
+      >
+        <Input
+          className="min-w-0 flex-auto"
+          maxLength={textLimit}
+          autoComplete="off"
+          aria-label={t("reminders.aria")}
+          placeholder={t("reminders.placeholder")}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+        />
+        <Button type="submit" variant="primary" className="flex-none">
+          {t("reminders.add")}
+        </Button>
+      </form>
+      {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}
+      <div aria-live="polite">
+        {showing.length === 0 ? (
+          <Quiet>{t("reminders.empty")}</Quiet>
+        ) : (
+          showing.map((reminder) => (
+            <Row
+              key={reminder.id}
+              reminder={reminder}
+              textLimit={textLimit}
+              onRemoved={() => setRemoved((seen) => [...seen, reminder.id])}
+              onFailed={setProblem}
+            />
+          ))
+        )}
+      </div>
+    </>
+  );
+}

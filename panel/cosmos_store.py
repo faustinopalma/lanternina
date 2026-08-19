@@ -35,6 +35,7 @@ from .preferences import (
     Preferences,
 )
 from .proposals import ProposalRecord
+from .reminders import Sentence
 from .rhythm import Rhythm
 from .themes import Theme
 from .usage import UsageEvent, UsageSummary, summarise
@@ -46,6 +47,7 @@ DEVICES_CONTAINER = "sources"
 INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
+REMINDERS_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
 
@@ -235,6 +237,70 @@ def _to_theme(document: dict[str, Any]) -> Theme:
         created_at=float(document.get("createdAt") or 0.0),
         created_by=str(document.get("createdBy") or ""),
         active=bool(document.get("active", True)),
+    )
+
+
+class CosmosSentenceStore:
+    """Conforms to :class:`~panel.reminders.SentenceStore`."""
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(REMINDERS_CONTAINER)
+        )
+
+    def add(self, sentence: Sentence) -> Sentence:
+        self._container.create_item(_from_sentence(sentence))
+        return sentence
+
+    def list(self, household_id: str) -> list[Sentence]:
+        rows = self._container.query_items(
+            query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'reminder'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        return sorted((_to_sentence(row) for row in rows), key=lambda s: s.created_at)
+
+    def rewrite(self, household_id: str, sentence_id: str, text: str) -> Sentence:
+        document = self._container.read_item(item=sentence_id, partition_key=household_id)
+        # A changed sentence is one nobody has read: whatever the house made of the old
+        # wording was made of words that are no longer there.
+        document["text"] = text
+        document["readAt"] = 0.0
+        self._container.upsert_item(document)
+        return _to_sentence(document)
+
+    def remove(self, household_id: str, sentence_id: str) -> None:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.delete_item(item=sentence_id, partition_key=household_id)
+        except exceptions.CosmosResourceNotFoundError:
+            # Removing something already gone is what the parent asked for.
+            pass
+
+
+def _from_sentence(sentence: Sentence) -> dict[str, Any]:
+    return {
+        "id": sentence.id,
+        "familyId": sentence.household_id,
+        "type": "reminder",
+        "text": sentence.text,
+        "createdAt": sentence.created_at,
+        "createdBy": sentence.created_by,
+        "readAt": sentence.read_at,
+    }
+
+
+def _to_sentence(document: dict[str, Any]) -> Sentence:
+    return Sentence(
+        id=str(document["id"]),
+        household_id=str(document["familyId"]),
+        text=str(document.get("text") or ""),
+        created_at=float(document.get("createdAt") or 0.0),
+        created_by=str(document.get("createdBy") or ""),
+        read_at=float(document.get("readAt") or 0.0),
     )
 
 

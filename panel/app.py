@@ -64,6 +64,13 @@ from .preferences import (
 )
 from .principal import principal_from_headers
 from .proposals import DECIDABLE, InMemoryProposalStore, ProposalRecord, ProposalStore
+from .reminders import (
+    MAX_SENTENCE_LENGTH,
+    InMemorySentenceStore,
+    SentenceStore,
+    clean_sentence,
+    make_sentence,
+)
 from .rhythm import InMemoryRhythmStore, RhythmStore, clean_rhythm
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore, clean_label, make_theme
@@ -137,6 +144,15 @@ class ShownPicture(BaseModel):
 
 class NewTheme(BaseModel):
     label: str
+
+
+class NewSentence(BaseModel):
+    """One thing the parent wants remembered, in their own words. Saving it starts
+    nothing: the house reads it when it next asks, and not before."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    text: str
 
 
 class NewRhythm(BaseModel):
@@ -242,6 +258,7 @@ def create_app(
     usage: UsageStore | None = None,
     rhythm: RhythmStore | None = None,
     preferences: PreferencesStore | None = None,
+    reminders: SentenceStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -261,6 +278,9 @@ def create_app(
     app.state.rhythm = rhythm if rhythm is not None else _rhythm_store(app.state.settings)
     app.state.preferences = (
         preferences if preferences is not None else _preferences_store(app.state.settings)
+    )
+    app.state.reminders = (
+        reminders if reminders is not None else _reminders_store(app.state.settings)
     )
     app.state.verifier = None
     app.state.admin_verifier = None
@@ -499,6 +519,54 @@ def create_app(
         """What the home server may paint about, as the parent last left it."""
         themes: ThemeStore = request.app.state.themes
         return {"themes": [row.to_public() for row in themes.list(household_id)]}
+
+    @app.get("/api/reminders")
+    def list_reminders(account: CurrentAccount, request: Request) -> Any:
+        """The sentences the parent wrote, and whether the house has read each one."""
+        store: SentenceStore = request.app.state.reminders
+        return {
+            "reminders": [row.to_public() for row in store.list(str(account.household_id))],
+            # Stated while the parent types rather than enforced afterwards by truncation.
+            "textLimit": MAX_SENTENCE_LENGTH,
+        }
+
+    @app.post("/api/reminders")
+    def add_reminder(new: NewSentence, account: CurrentAccount, request: Request) -> Any:
+        """Write down something to be remembered. It is stored and marked unread, and
+        that is the entire effect: no model is asked what it means, nothing is queued,
+        and the house does not find out until it next asks."""
+        store: SentenceStore = request.app.state.reminders
+        try:
+            sentence = make_sentence(
+                str(account.household_id), new.text, str(account.id)
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return store.add(sentence).to_public()
+
+    @app.post("/api/reminders/{reminder_id}")
+    def rewrite_reminder(
+        reminder_id: str, new: NewSentence, account: CurrentAccount, request: Request
+    ) -> Any:
+        """Change a sentence. The parent's words stay the only copy, so answering a
+        question the house asked is an edit here rather than a field somewhere else."""
+        store: SentenceStore = request.app.state.reminders
+        household = str(account.household_id)
+        try:
+            text = clean_sentence(new.text)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        if reminder_id not in {row.id for row in store.list(household)}:
+            raise HTTPException(status_code=404, detail="unknown_reminder")
+        return store.rewrite(household, reminder_id, text).to_public()
+
+    @app.post("/api/reminders/{reminder_id}/remove")
+    def remove_reminder(reminder_id: str, account: CurrentAccount, request: Request) -> Any:
+        """Stop remembering this. Nothing is kept: there is no artefact pointing back at
+        a sentence, and how long it stood is not something worth recording."""
+        store: SentenceStore = request.app.state.reminders
+        store.remove(str(account.household_id), reminder_id)
+        return {"removed": reminder_id}
 
     @app.get("/api/rhythm")
     def read_rhythm(account: CurrentAccount, request: Request) -> Any:
@@ -851,6 +919,14 @@ def _preferences_store(settings: Settings) -> PreferencesStore:
     from .cosmos_store import CosmosPreferencesStore
 
     return CosmosPreferencesStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _reminders_store(settings: Settings) -> SentenceStore:
+    if not settings.cosmos_configured:
+        return InMemorySentenceStore()
+    from .cosmos_store import CosmosSentenceStore
+
+    return CosmosSentenceStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

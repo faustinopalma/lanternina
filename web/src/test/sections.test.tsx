@@ -205,3 +205,53 @@ describe("the themes", () => {
     expect(screen.queryByText("gatti che dormono")).not.toBeInTheDocument();
   });
 });
+
+describe("the reminders", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("writes a sentence down and says nobody in the house has read it", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Promemoria");
+    await user.type(await screen.findByLabelText("Nuovo promemoria"), "annaffiare le piante");
+    await user.click(screen.getByRole("button", { name: "Aggiungi" }));
+
+    await waitFor(() => expect(api.recorded.remindersAdded).toEqual(["annaffiare le piante"]));
+    // The page says plainly that writing it changed nothing else.
+    expect(screen.getAllByText(/non l'ha ancora letto/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/non fa partire niente/)).toBeInTheDocument();
+  });
+
+  it("corrects a sentence in place, leaving one copy and not two", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Promemoria");
+    const boxes = await screen.findAllByLabelText("Promemoria");
+    await user.clear(boxes[0]!);
+    await user.type(boxes[0]!, "lavarsi i denti alle 21:00");
+    await user.tab();
+
+    await waitFor(() =>
+      expect(api.recorded.remindersRewritten).toEqual([
+        { id: "rm_1", text: "lavarsi i denti alle 21:00" },
+      ]),
+    );
+    expect(screen.getAllByLabelText("Promemoria")).toHaveLength(2);
+  });
+
+  it("takes one away, and keeps no count of anything", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Promemoria");
+    await user.click((await screen.findAllByRole("button", { name: "Togli" }))[0]!);
+
+    await waitFor(() => expect(api.recorded.remindersRemoved).toEqual(["rm_1"]));
+    expect(screen.queryByDisplayValue("lavarsi i denti dopo cena")).not.toBeInTheDocument();
+  });
+});

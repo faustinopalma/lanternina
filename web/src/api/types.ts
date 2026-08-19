@@ -42,6 +42,22 @@ export interface Theme {
   label: string;
 }
 
+/** One sentence the parent wrote, kept as they wrote it. `read` says whether the house
+ *  has looked at it yet, which is false until the house asks: the panel cannot interpret
+ *  anything at the moment it is typed. */
+export interface Reminder {
+  id: string;
+  text: string;
+  createdAt: number;
+  read: boolean;
+  readAt: number;
+}
+
+export interface Reminders {
+  reminders: Reminder[];
+  textLimit: number;
+}
+
 export interface Rhythm {
   quietFrom: string;
   quietUntil: string;
@@ -148,6 +164,10 @@ export interface Api {
   themes(): Promise<Theme[]>;
   addTheme(label: string): Promise<Theme>;
   removeTheme(id: string): Promise<void>;
+  reminders(): Promise<Reminders>;
+  addReminder(text: string): Promise<Reminder>;
+  rewriteReminder(id: string, text: string): Promise<Reminder>;
+  removeReminder(id: string): Promise<void>;
   rhythm(): Promise<Rhythm>;
   saveRhythm(rhythm: NewRhythm): Promise<Rhythm>;
   preferences(): Promise<Preferences>;

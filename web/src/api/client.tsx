@@ -18,6 +18,8 @@ import {
   type PicturePage,
   type Preferences,
   type Proposal,
+  type Reminder,
+  type Reminders,
   type Rhythm,
   type Theme,
   type UsageAnswer,
@@ -136,6 +138,20 @@ export function httpApi(token: string): Api {
 
     async removeTheme(id: string): Promise<void> {
       await json(`/api/themes/${id}/remove`, { method: "POST" });
+    },
+
+    reminders: () => json<Reminders>("/api/reminders", {}, ["reminders", "textLimit"]),
+
+    // The whole effect of writing one down: a row is stored and marked unread. No model
+    // is asked what it means, and the house finds out when it next asks.
+    addReminder: (text: string) =>
+      json<Reminder>("/api/reminders", write({ text }), ["id", "text", "read"]),
+
+    rewriteReminder: (id: string, text: string) =>
+      json<Reminder>(`/api/reminders/${id}`, write({ text }), ["id", "text", "read"]),
+
+    async removeReminder(id: string): Promise<void> {
+      await json(`/api/reminders/${id}/remove`, { method: "POST" });
     },
 
     rhythm: () => json<Rhythm>("/api/rhythm", {}, RHYTHM_FIELDS),

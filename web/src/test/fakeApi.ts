@@ -14,6 +14,7 @@ import type {
   PicturePage,
   Preferences,
   Proposal,
+  Reminder,
   Rhythm,
   Theme,
   UsageAnswer,
@@ -25,6 +26,9 @@ export interface Recorded {
   preferences: NewPreferences[];
   themesAdded: string[];
   themesRemoved: string[];
+  remindersAdded: string[];
+  remindersRewritten: { id: string; text: string }[];
+  remindersRemoved: string[];
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
 }
@@ -142,6 +146,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     preferences: [],
     themesAdded: [],
     themesRemoved: [],
+    remindersAdded: [],
+    remindersRewritten: [],
+    remindersRemoved: [],
     assignments: [],
     devicesRemoved: [],
   };
@@ -150,6 +157,11 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     { id: "theme-2", label: "vele in porto" },
   ];
   let devices: Device[] = SAMPLE_DEVICES;
+  // Nothing has read either of them: the house has not been asked yet.
+  let reminders: Reminder[] = [
+    { id: "rm_1", text: "lavarsi i denti dopo cena", createdAt: NOW - 7200, read: false, readAt: 0 },
+    { id: "rm_2", text: "mercoledì porta fuori il bidone", createdAt: NOW - 3600, read: false, readAt: 0 },
+  ];
   let rhythm: Rhythm = {
     quietFrom: "21:30",
     quietUntil: "07:00",
@@ -191,6 +203,30 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     removeTheme: async (id) => {
       recorded.themesRemoved.push(id);
       themes = themes.filter((theme) => theme.id !== id);
+    },
+    reminders: async () => ({ reminders, textLimit: 200 }),
+    addReminder: async (text) => {
+      recorded.remindersAdded.push(text);
+      const reminder: Reminder = {
+        id: `rm_${reminders.length + 1}`,
+        text,
+        createdAt: NOW,
+        read: false,
+        readAt: 0,
+      };
+      reminders = [...reminders, reminder];
+      return reminder;
+    },
+    rewriteReminder: async (id, text) => {
+      recorded.remindersRewritten.push({ id, text });
+      reminders = reminders.map((reminder) =>
+        reminder.id === id ? { ...reminder, text, read: false, readAt: 0 } : reminder,
+      );
+      return reminders.find((reminder) => reminder.id === id)!;
+    },
+    removeReminder: async (id) => {
+      recorded.remindersRemoved.push(id);
+      reminders = reminders.filter((reminder) => reminder.id !== id);
     },
     rhythm: async () => rhythm,
     saveRhythm: async (next) => {
