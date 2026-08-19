@@ -1,38 +1,48 @@
 # The build context is uploaded to ACR, so anything not excluded here leaves the machine.
 # Keep this at least as strict as .gitignore.
+#
+# No trailing slashes, and that is not a style choice. Docker reads `web` and `web/` the
+# same way; `az acr build` does not. Its IgnoreRule strips a trailing slash only for `!`
+# exceptions, so `web/` compiles to `^web/$` while a directory entry in the tar is named
+# `web`, and the rule can never match. Measured on 19 August 2026: the context was
+# 116.8 MiB and carried .azure/ (including the Azure token cache) and web/node_modules;
+# `secrets.local.yaml`, the single line written without a slash, was the only rule that
+# took effect.
 
-.git/
-.github/
-.azure/
-.venv/
-build/
-dist/
-*.egg-info/
-__pycache__/
+.git
+.github
+.azure
+.venv
+build
+dist
+*.egg-info
+__pycache__
 *.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+.pytest_cache
+.mypy_cache
+.ruff_cache
 
 # Never leaves this machine.
-pictures/
+pictures
 secrets.local.yaml
-hack_plan/
-microsoftinfo/
-_reference/
-notes/
+quota-requests.local.yaml
+hack_plan
+microsoftinfo
+_reference
+notes
 
 # Not needed to run the panel.
-docs/
-infra/
-scripts/
-tests/
-tools/
-firmware/
+docs
+ideas
+infra
+scripts
+tests
+tools
+firmware
 # The browser tier is built by its own workflow and served by Static Web Apps. The
 # Dockerfile copies none of it, and its node_modules alone is 166 MB of context to upload.
-web/
-vision/
-printing/
+web
+vision
+printing
 *.md
 !README.md
