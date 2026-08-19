@@ -23,6 +23,10 @@ COPY devices/ ./devices/
 # the app started, the route registered, and the failure waited for the first real page.
 COPY agents/ ./agents/
 
+# The source is copied before this, so every changed line reinstalls every dependency.
+# That costs nothing to fix and nothing to leave: `az acr build` gives each run a fresh
+# agent and reuses no layer cache, measured at zero cache hits on a byte-identical rebuild
+# of the same tag, so the 17.1 s this takes is paid whatever the order. See ideas/04 §10.
 RUN pip install --no-cache-dir ".[panel]"
 
 RUN useradd --create-home --uid 10001 lanternina

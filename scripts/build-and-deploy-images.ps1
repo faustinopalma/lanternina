@@ -46,8 +46,7 @@ $stopwatch = [Diagnostics.Stopwatch]::StartNew()
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $env:AZURE_CONFIG_DIR = Join-Path $repoRoot '.azure'
 
-# az acr build streams the server-side log, which contains non-ASCII. Without this the
-# local CLI process dies on a UnicodeEncodeError while the build itself succeeds.
+# The build below asks for no log stream, but other az calls still print non-ASCII.
 $env:PYTHONUTF8 = '1'
 [Console]::OutputEncoding = [Text.Encoding]::UTF8
 
@@ -69,14 +68,19 @@ $dirty = (git -C $repoRoot status --porcelain)
 $tag = if ($dirty) { "$gitSha-dirty-$(Get-Date -Format 'yyyyMMddHHmmss')" } else { $gitSha }
 $image = "lanternina/panel:$tag"
 
+# --no-logs because streaming the server-side log kills the local CLI on a
+# UnicodeEncodeError, or hangs looking stuck, while the build itself carries on.
 Write-Step "Building $image in ACR"
-az acr build --registry $registry.name --image $image --file Dockerfile $repoRoot
+az acr build --no-logs --registry $registry.name --image $image --file Dockerfile $repoRoot
 
-# The CLI can die while streaming logs even though the server-side build succeeded, so
-# the image is confirmed to exist rather than trusted to the exit code.
+# The exit code of that call says nothing useful, so the outcome is read from the
+# registry: the tag is there only if the build reached its push step.
 Write-Step 'Confirming the image was pushed'
 $tags = az acr repository show-tags --name $registry.name --repository 'lanternina/panel' -o json | ConvertFrom-Json
-if ($tags -notcontains $tag) { throw "Tag $tag is not in the registry. The build did not push." }
+if ($tags -notcontains $tag) {
+    $lastRun = az acr task list-runs --registry $registry.name --top 1 -o json | ConvertFrom-Json
+    throw "Tag $tag is not in the registry. The build did not push. Last run $($lastRun.runId): $($lastRun.status). Log: az acr task logs --registry $($registry.name) --run-id $($lastRun.runId)"
+}
 Write-Step "Confirmed: $($registry.loginServer)/$image"
 
 Write-Step 'Deploying infrastructure against the new image'

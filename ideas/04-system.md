@@ -206,6 +206,14 @@ two things worth doing first were done on 18 August and took about ten minutes b
 them: the household id now has a second copy, and the newest archive now contains
 `panel.env`. What is left is the part that needs hardware and an afternoon.
 
+**What the hardware has to be, and why it is not the one in the house.** A Raspberry Pi 4
+or 5 with its own SD card, bought for this. The hub in the house is not a candidate: it is
+the only one that works, and a restore drill that goes wrong on it takes the house down.
+Before buying, three things have to be ready, or the card arrives and waits — the order the
+pieces go back in, written down; a copy of the newest archive somewhere off the hub's NVMe,
+which is the gap still open above; and the answer to whether the CM5's rootfs restores onto
+a Pi 4 or 5 at all, since the boot partition being `dd`-ed is that machine's.
+
 **Where it starts.** `deploy/lanternina-backup` and `deploy/install-trmnl-byos.sh`.
 
 **Done when.** A second card, restored from the newest archive, serves `/api/display` to
@@ -332,3 +340,52 @@ the old numbers mean something new.
 
 **Done when.** A text generation appears in `/api/usage` with its own kind, and the cap
 counts it.
+
+---
+
+## 10. Closed: what a panel build costs, phase by phase
+
+**What it was.** After the `.dockerignore` fix took the context from 116.8 MiB to 321 KiB,
+the remaining time had never been split up, and the Dockerfile carried an obvious suspect:
+it copies the source and only then runs `pip install`, so every changed line of Python
+reinstalls every dependency.
+
+**Measured on 19 August 2026**, five runs against `acrlanterninadevssveb`, phase boundaries
+read from the run log rather than from the client. Times in seconds.
+
+| Dockerfile | build step | push | server total | client wall |
+| --- | --- | --- | --- | --- |
+| base image and `CMD` only | 6.0 | 5.2 | 14 | 41.4 |
+| ours, `pip install` removed | 17.1 | 10.4 | 32.5 | 70.6 |
+| ours, one `COPY` instead of six | 16.7 | 5.2 | — | 38.5 |
+| ours, unchanged | 34.2 | 11.3 | 49.8 | 69.8 |
+| ours, unchanged, second run | 33.5 | 10.8 | 49.8 | 69.8 |
+
+So `pip install` is **17.1 s** — the largest single phase, obtained by removing it and
+subtracting, not by reading the log.
+
+**The suspect is real and worthless.** Reordering the Dockerfile to install dependencies
+before copying the source only pays if a cached layer survives to the next build, and none
+does. The control: the same tag was built twice from a byte-identical context, and the
+second run reported **zero** `Using cache` lines. `az acr build` hands each run a fresh
+agent whose Docker daemon has never seen the previous image, so the 17.1 s would be paid
+whatever the order of the instructions. The comment in the Dockerfile now says this, so the
+next person does not re-derive it.
+
+Two smaller findings, both from the same runs. Collapsing the six `COPY` instructions into
+one moved the build step by 0.4 s, which is inside the noise — layer count is not the cost.
+The client waits about twenty seconds longer than the server works, and that gap is not
+constant: 41.4 s of client wall for a 14 s run, 70.6 s for a 32.5 s one. It is time spent
+waiting for an agent, and it varies by more than the whole of `pip`.
+
+**What is left, and its price.** The only way to remove the 17.1 s is a second image
+holding the dependencies, rebuilt when `pyproject.toml` changes and pulled by this one.
+That buys about a quarter of a two-minute cycle and costs a second artifact that can go
+stale silently — change a pin, forget the rebuild, and the container runs against
+dependencies nobody chose. Not done, and recorded here so the trade is visible rather than
+rediscovered.
+
+**Also closed.** `scripts/build-and-deploy-images.ps1` now passes `--no-logs` and reads the
+outcome from `az acr repository show-tags`, naming the failing run when the tag is absent.
+Streaming the log either kills the local CLI on a `UnicodeEncodeError` or sits there looking
+stuck, in both cases while the build carries on and succeeds.
