@@ -157,10 +157,28 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     { id: "theme-2", label: "vele in porto" },
   ];
   let devices: Device[] = SAMPLE_DEVICES;
-  // Nothing has read either of them: the house has not been asked yet.
+  // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
-    { id: "rm_1", text: "lavarsi i denti dopo cena", createdAt: NOW - 7200, read: false, readAt: 0 },
-    { id: "rm_2", text: "mercoledì porta fuori il bidone", createdAt: NOW - 3600, read: false, readAt: 0 },
+    {
+      id: "rm_1",
+      text: "lavarsi i denti dopo cena",
+      createdAt: NOW - 7200,
+      read: true,
+      readAt: NOW - 3000,
+      at: "21:00",
+      days: [],
+      question: "",
+    },
+    {
+      id: "rm_2",
+      text: "mercoled\u00ec porta fuori il bidone",
+      createdAt: NOW - 3600,
+      read: false,
+      readAt: 0,
+      at: "",
+      days: [],
+      question: "",
+    },
   ];
   let rhythm: Rhythm = {
     quietFrom: "21:30",
@@ -213,6 +231,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
         createdAt: NOW,
         read: false,
         readAt: 0,
+        at: "",
+        days: [],
+        question: "",
       };
       reminders = [...reminders, reminder];
       return reminder;

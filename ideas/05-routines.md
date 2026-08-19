@@ -90,13 +90,31 @@ beside it for the parent's text and the reminders derived from it; `panel/app.py
 route the hub calls; `devices/pull_picture.py` for the side that decides when; `agents/`
 for the reading of the sentences; `web/` for the parent's page.
 
-**What is built, on 19 August 2026.** The parent's half, and only that. `panel/reminders.py`
-holds the sentences with a mark saying nobody has read them; `GET/POST /api/reminders`,
-`POST /api/reminders/{id}` and `/remove` are live on revision `--0000035`, and the page is
-in the panel. Nothing reads them: there is no route the hub can call, no agent, and no
-third role on a display, so a sentence written today waits and the page says so rather than
-promising otherwise. The next piece is the route the hub asks on its own timer, with the
-reading happening inside the answer to that request.
+**What is built, on 19 August 2026.** Both halves of the panel's side. `panel/reminders.py`
+holds the sentences with a mark saying whether the house has read them and what it made of
+each one; `GET/POST /api/reminders`, `POST /api/reminders/{id}` and `/remove` are the
+parent's half. `POST /api/device/{household}/reminders` is the house's: the hub calls it on
+its own timer, and every sentence nobody has read yet is placed in the day **inside the
+answer to that call** — `agents/reminder_reader.py` through `panel/reading.py`, which is the
+same door the sheet reader uses. What comes back is the reminders that have an hour, with
+the days they apply to; the house owns the clock and decides when a moment has come.
+
+Three things that follow from the rule rather than from taste. A sentence is read once: the
+second call has nothing to send, so the hub asking every five minutes does not pay for the
+same sentence twelve times an hour. A sentence the model cannot place gets a question
+instead, shown against that line in the panel, and answering it is an edit to the parent's
+own words — which clears the reading, because what the house made of the old wording was
+made of words that are no longer there. And a cloud that will not answer leaves the
+reminders already placed in the hub's hands and says `degraded`: reduced capability, not a
+stopped house.
+
+What a model says about time is checked rather than believed. An hour that is not an hour
+is dropped, a day that is not a day is dropped, and a question is one line long — the
+sentences are a parent's free text and reach the model as material, so an instruction
+written inside one must not be able to write into the household's schedule.
+
+Still missing: the third role on a display, the press that means "seen", and the wording
+being generated rather than the parent's own sentence shown as written.
 
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the

@@ -268,6 +268,27 @@ class CosmosSentenceStore:
         # wording was made of words that are no longer there.
         document["text"] = text
         document["readAt"] = 0.0
+        document["at"] = ""
+        document["days"] = []
+        document["question"] = ""
+        self._container.upsert_item(document)
+        return _to_sentence(document)
+
+    def record_reading(
+        self,
+        household_id: str,
+        sentence_id: str,
+        *,
+        read_at: float,
+        at: str,
+        days: tuple[str, ...],
+        question: str,
+    ) -> Sentence:
+        document = self._container.read_item(item=sentence_id, partition_key=household_id)
+        document["readAt"] = read_at
+        document["at"] = at
+        document["days"] = list(days)
+        document["question"] = question
         self._container.upsert_item(document)
         return _to_sentence(document)
 
@@ -290,6 +311,9 @@ def _from_sentence(sentence: Sentence) -> dict[str, Any]:
         "createdAt": sentence.created_at,
         "createdBy": sentence.created_by,
         "readAt": sentence.read_at,
+        "at": sentence.at,
+        "days": list(sentence.days),
+        "question": sentence.question,
     }
 
 
@@ -301,6 +325,9 @@ def _to_sentence(document: dict[str, Any]) -> Sentence:
         created_at=float(document.get("createdAt") or 0.0),
         created_by=str(document.get("createdBy") or ""),
         read_at=float(document.get("readAt") or 0.0),
+        at=str(document.get("at") or ""),
+        days=tuple(str(day) for day in document.get("days") or ()),
+        question=str(document.get("question") or ""),
     )
 
 

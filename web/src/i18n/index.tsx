@@ -91,7 +91,13 @@ export interface Words {
   ago: (seconds: number) => string;
   /** A date the parent can read, in whatever language is current. */
   dateTime: (seconds: number) => string;
+  /** "lun" or "Mon" from "mon". Intl knows the names, so no catalog carries seven more. */
+  weekday: (day: string) => string;
 }
+
+// Monday first, as the panel and the hub spell them. 1 January 2024 was a Monday, which
+// is how an index here becomes a date Intl can name.
+const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 const WordsContext = createContext<Words | null>(null);
 
@@ -132,6 +138,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
               timeStyle: "short",
             }).format(new Date(seconds * 1000))
           : "",
+      weekday: (day) => {
+        const index = DAY_ORDER.indexOf(day);
+        if (index < 0) return day;
+        return new Intl.DateTimeFormat(language, {
+          weekday: "short",
+          timeZone: "UTC",
+        }).format(new Date(Date.UTC(2024, 0, 1 + index)));
+      },
     }),
     [language, setLanguage],
   );

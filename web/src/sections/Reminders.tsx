@@ -24,7 +24,6 @@ function Row({
   const [text, setText] = useState(reminder.text);
   const [saved, setSaved] = useState(reminder.text);
   const [busy, setBusy] = useState(false);
-
   return (
     <div className="flex flex-col gap-1.5 border-b border-edge py-3.5 last:border-b-0">
       <div className="flex flex-wrap items-center gap-2.5">
@@ -72,8 +71,29 @@ function Row({
           {t("reminders.remove")}
         </Button>
       </div>
-      {reminder.read ? <></> : <Quiet>{t("reminders.notRead")}</Quiet>}
+      <Placed reminder={reminder} />
     </div>
+  );
+}
+
+/* What the house made of the sentence, in one line. Deliberately not a form: the parent's
+ * words are the only copy, so a wrong hour is corrected by changing the sentence above. */
+function Placed({ reminder }: { reminder: Reminder }) {
+  const { t, weekday } = useWords();
+  if (!reminder.read) return <Quiet>{t("reminders.notRead")}</Quiet>;
+  if (reminder.at) {
+    const when =
+      reminder.days.length === 0
+        ? t("reminders.everyDay")
+        : reminder.days.map(weekday).join(", ");
+    return <Quiet>{t("reminders.due", { at: reminder.at, days: when })}</Quiet>;
+  }
+  /* A sentence the house could not place. The question is the model's, in the language the
+   * parent wrote in; when there is none, the panel says the plain thing in its own words. */
+  return (
+    <Quiet>
+      {reminder.question ? t("reminders.asks", { question: reminder.question }) : t("reminders.noHour")}
+    </Quiet>
   );
 }
 

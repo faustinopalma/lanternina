@@ -51,6 +51,12 @@ export interface Reminder {
   createdAt: number;
   read: boolean;
   readAt: number;
+  /* What the house made of the sentence: "HH:MM", or empty when it could not place it. */
+  at: string;
+  /* Empty means every day. */
+  days: string[];
+  /* What the house needs to know before this can be a reminder. Empty when it does not. */
+  question: string;
 }
 
 export interface Reminders {

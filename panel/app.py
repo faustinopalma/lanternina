@@ -68,6 +68,7 @@ from .reminders import (
     MAX_SENTENCE_LENGTH,
     InMemorySentenceStore,
     SentenceStore,
+    clean_reading,
     clean_sentence,
     make_sentence,
 )
@@ -567,6 +568,60 @@ def create_app(
         store: SentenceStore = request.app.state.reminders
         store.remove(str(account.household_id), reminder_id)
         return {"removed": reminder_id}
+
+    @app.post("/api/device/{household_id}/reminders")
+    async def device_reminders(household_id: str, _: DeviceKey, request: Request) -> Any:
+        """What the house should remind about, with the reading done inside this answer.
+
+        This is the whole shape of the feature. A write from the panel is inert, so the
+        parent's sentences sit unread until the house asks — and the asking is this call,
+        on the timer the hub already has. What comes back is the reminders that have an
+        hour; the house owns the clock and decides when a moment has come.
+
+        A sentence the model cannot place gets a question instead, which the parent sees
+        the next time they open the panel and answers by editing their own words.
+
+        Nothing here records whether a reminder was ever shown or pressed. There is no
+        field for it, which is the only way that stays true.
+        """
+        store: SentenceStore = request.app.state.reminders
+        rows = store.list(household_id)
+        unread = [(row.id, row.text) for row in rows if row.read_at <= 0.0]
+
+        degraded = False
+        if unread:
+            from .reading import read_sentences
+
+            now = time.time()
+            try:
+                placements = await read_sentences(unread, now=now)
+            except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+                # Reduced capability, not a stopped house: the sentences stay unread and
+                # the reminders already placed are still handed over.
+                logging.getLogger(__name__).warning("reminders not read: %s", exc)
+                degraded = True
+            else:
+                for sentence_id, _text in unread:
+                    said = placements.get(sentence_id, (None, None, None))
+                    at, days, question = clean_reading(*said)
+                    store.record_reading(
+                        household_id,
+                        sentence_id,
+                        read_at=now,
+                        at=at,
+                        days=days,
+                        question=question,
+                    )
+                rows = store.list(household_id)
+
+        return {
+            "reminders": [
+                {"id": row.id, "text": row.text, "at": row.at, "days": list(row.days)}
+                for row in rows
+                if row.at
+            ],
+            "degraded": degraded,
+        }
 
     @app.get("/api/rhythm")
     def read_rhythm(account: CurrentAccount, request: Request) -> Any:
