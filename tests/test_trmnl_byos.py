@@ -187,6 +187,31 @@ def test_a_display_with_a_job_of_its_own_stops_following_the_picture(tmp_path: P
         thread.join()
 
 
+def test_a_short_press_is_recorded_and_a_timer_wake_is_not(tmp_path: Path) -> None:
+    """The press is the only thing in this system that starts a scan, so it has to be
+    legible without a wire we do not have. The firmware already says why it woke."""
+    screen = tmp_path / "screen.bmp"
+    make_screen(screen)
+    registry = tmp_path / "devices.json"
+    device = register_device(registry, MAC)
+    button = tmp_path / "button.json"
+    config = Config("http://127.0.0.1", screen, registry, button_file=button)
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        headers = {"ID": MAC, "Access-Token": device.token}
+        get(f"{base_url}/api/display", {**headers, "Update-Source": "timer"})
+        assert not button.exists(), "a scheduled poll is not somebody asking for anything"
+
+        get(f"{base_url}/api/display", {**headers, "Update-Source": "EXT0"})
+        assert json.loads(button.read_text(encoding="utf-8"))["mac"] == MAC
+    finally:
+        httpd.shutdown()
+        thread.join()
+
+
 def test_the_cache_key_follows_the_bytes(tmp_path: Path) -> None:
     """If the name did not move with the picture, a new one could go unfetched."""
     base_url, httpd, token, _low = _server_with_low_screen(tmp_path)

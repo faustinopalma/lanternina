@@ -61,6 +61,17 @@ def normalize_mac(value: str) -> str:
     return value.strip().upper().replace("-", ":")
 
 
+# Every request says why the device woke, in `Update-Source`. The firmware fills it from
+# the ESP wake cause: `timer` for the scheduled poll, `powercycle` for a reset, and the
+# external-signal names for the button on GPIO 5 — KEY3 on the silkscreen. So a press is
+# already legible here and needs no wire we do not have.
+BUTTON_WAKE_SOURCES = frozenset({"EXT0", "EXT1", "gpio", "GPIO"})
+
+
+def pressed_button(headers: Mapping[str, str]) -> bool:
+    return headers.get("Update-Source", "").strip() in BUTTON_WAKE_SOURCES
+
+
 @dataclass(frozen=True, slots=True)
 class Config:
     base_url: str
@@ -78,6 +89,10 @@ class Config:
     # Shown instead of the usual screen as the cell empties. Two tones, two moments.
     low_battery_file: Path | None = None
     critical_battery_file: Path | None = None
+    # Where a press is written down. This server records it and answers; what to do about
+    # it belongs to the hub, which can take twenty seconds over a scan without a display
+    # waiting on the other end of the socket.
+    button_file: Path | None = None
 
     @classmethod
     def from_env(cls) -> Config:
@@ -100,6 +115,11 @@ class Config:
             ),
             low_battery_file=Path(low) if low else None,
             critical_battery_file=Path(critical) if critical else None,
+            button_file=(
+                Path(os.environ["TRMNL_BUTTON_FILE"])
+                if os.environ.get("TRMNL_BUTTON_FILE", "").strip()
+                else None
+            ),
         )
 
     def screen_url(self, token: str, origin: str = "") -> str:
@@ -221,6 +241,7 @@ def record_status(path: Path, device: Device, headers: Mapping[str, str]) -> dic
         "firmware": headers.get("FW-Version", ""),
         "model": headers.get("Model", ""),
         "refreshRate": _number(headers.get("Refresh-Rate", "")),
+        "wokeBy": headers.get("Update-Source", ""),
     }
 
     document: dict[str, Any] = {"version": 1, "devices": {}}
@@ -236,6 +257,20 @@ def record_status(path: Path, device: Device, headers: Mapping[str, str]) -> dic
     temporary.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
     temporary.replace(path)
     return entry
+
+
+def record_press(path: Path, device: Device) -> None:
+    """Write down that somebody pressed the button on this display, and when.
+
+    Overwritten rather than appended: a second press while the first is still being acted
+    on is the same request made again, not a queue to work through.
+    """
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps({"mac": device.mac, "friendlyId": device.friendly_id, "at": time.time()}),
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def battery_level(voltage: float | None) -> str:
@@ -440,6 +475,12 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                 except OSError as exc:
                     # Never let bookkeeping stop a device from getting its picture.
                     self.log_message("could not record status: %s", exc)
+
+            if config.button_file is not None and pressed_button(self.headers):
+                try:
+                    record_press(config.button_file, device)
+                except OSError as exc:
+                    self.log_message("could not record the press: %s", exc)
 
             level = battery_level(_number(self.headers.get("Battery-Voltage", "")))
             on_usb = device.mains or usb_connected(self.headers)
