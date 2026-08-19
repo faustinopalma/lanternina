@@ -123,9 +123,10 @@ class Thing:
 
     The identity is never an address. Between 4 and 19 August 2026 the printer moved from
     192.168.0.138 to 192.168.0.5 and the hub from .157 to .158; a list keyed on addresses
-    would have grown a duplicate for each. So the key is the mDNS service name for a
-    printer or a scanner and the MAC for a display, and the address is carried alongside
-    as something the hub happens to know today.
+    would have grown a duplicate for each. So the key is the MAC for a display, and the
+    kind together with the mDNS hostname for a printer or a scanner — one box answers both
+    `_ipp._tcp` and `_uscan._tcp`, and the two are assigned separately. The address is
+    carried alongside as something the hub happens to know today.
     """
 
     id: str

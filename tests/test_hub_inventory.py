@@ -46,10 +46,23 @@ def test_a_resolved_service_becomes_a_row_keyed_on_its_name() -> None:
     found = parse_browse(PRINTER_LINE, "printer")
 
     assert len(found) == 1
-    assert found[0].id == "EPSOND59029.local"
+    assert found[0].id == "printer:EPSOND59029.local"
     assert found[0].kind == "printer"
     assert found[0].model == "EPSON ET-2870 Series"
     assert found[0].address == "192.168.0.138"
+
+
+def test_one_box_offering_two_services_is_two_things() -> None:
+    """The Epson answers `_ipp._tcp` and `_uscan._tcp` from one hostname. Keyed on the
+    hostname alone the scanner overwrote the printer in the panel, so the house had one
+    row where it needed two and the print job could not be handed out at all. Seen on
+    19 August 2026: four things reported, three came back."""
+    scanner_line = PRINTER_LINE.replace("_ipp._tcp", "_uscan._tcp")
+    ids = {
+        thing.id
+        for thing in parse_browse(PRINTER_LINE, "printer") + parse_browse(scanner_line, "scanner")
+    }
+    assert ids == {"printer:EPSOND59029.local", "scanner:EPSOND59029.local"}
 
 
 def test_the_same_thing_on_two_interfaces_is_one_thing() -> None:

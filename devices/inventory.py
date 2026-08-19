@@ -58,7 +58,16 @@ SHORTEST_NAME_PART = 3
 
 @dataclass(frozen=True, slots=True)
 class Found:
-    """One thing seen on the network. The key is the service name, never the address."""
+    """One thing seen on the network. Identified by what it is and what it is called.
+
+    The kind is part of the identity, not decoration. The Epson in this house answers both
+    `_ipp._tcp` and `_uscan._tcp` from the hostname EPSOND59029.local, so a row keyed on
+    the hostname alone made the second sighting overwrite the first: one box, one row, and
+    no way for the parent to hand out the print job and the scan job separately. The
+    address is never part of it — the printer moved from 192.168.0.138 to 192.168.0.5
+    between 4 and 19 August 2026, and a list keyed on addresses would have grown a
+    duplicate for each move.
+    """
 
     id: str
     kind: str
@@ -141,7 +150,7 @@ def parse_browse(output: str, kind: str) -> list[Found]:
         found.setdefault(
             hostname,
             Found(
-                id=hostname,
+                id=f"{kind}:{hostname}",
                 kind=kind,
                 label=label or hostname,
                 address=address,
