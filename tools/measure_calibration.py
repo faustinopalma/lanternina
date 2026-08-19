@@ -18,7 +18,7 @@ import argparse
 from pathlib import Path
 
 from devices.print_sheet import recall
-from devices.scan_sheet import scan_page
+from devices.scan_sheet import find_scanner, scan_page
 from shared.ids import SheetId
 from vision.read_sheet import (
     INK_PRESENT,
@@ -38,12 +38,12 @@ def verdict(fraction: float) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--scanner", default="airscan:e0:EPSON ET-2870 Series")
+    parser.add_argument("--scanner", default="ET-2870")
     parser.add_argument("--sheets", type=Path, default=Path("/var/lib/lanternina/state/sheets"))
     parser.add_argument("--sheet-id", default="sh_taratura")
     args = parser.parse_args()
 
-    page = scan_page(args.scanner)
+    page = scan_page(find_scanner(args.scanner))
     flat = rectify(page, detect_markers(page))
     spec = recall(args.sheets, SheetId(args.sheet_id))
     threshold = page_ink_threshold(flat)

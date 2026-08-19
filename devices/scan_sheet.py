@@ -34,6 +34,32 @@ from vision.read_sheet import MarkersNotFound, detect_markers, read_cells, read_
 # detector wants four. Higher costs seconds per scan and buys nothing measurable.
 SCAN_RESOLUTION = "300"
 SCAN_TIMEOUT_SECONDS = 120
+LIST_TIMEOUT_SECONDS = 40
+
+
+def find_scanner(model: str) -> str:
+    """The scanner's device name, looked up now rather than remembered.
+
+    Configured by the model printed on the front of the machine, because both names SANE
+    offers carry something that moves: `airscan:e0:...` has an index the backend assigns
+    while discovering, and `escl:https://192.168.0.5` has an address DHCP reassigns.
+
+    Listing first is doing more work than resolving a name, and that is the point. An open
+    that arrives before mDNS discovery has finished fails with "Invalid argument", which is
+    what happened in front of somebody who had just pressed the button — and the same
+    device string resolved fine a minute later. The list call is what waits for the machine
+    to be found.
+    """
+    finished = subprocess.run(
+        ["scanimage", "--formatted-device-list", "%d%n"],
+        capture_output=True,
+        timeout=LIST_TIMEOUT_SECONDS,
+    )
+    devices = [line.strip() for line in finished.stdout.decode("utf-8", "replace").splitlines()]
+    found = [device for device in devices if model.lower() in device.lower()]
+    if not found:
+        raise ValueError(f"no scanner matching {model!r}; SANE offers {devices}")
+    return found[0]
 
 
 def scan_page(device: str) -> NDArray[np.uint8]:
@@ -82,7 +108,7 @@ def main() -> int:
     screen_file = Path(sys.argv[3] if len(sys.argv) > 3 else "")
     scanner = sys.argv[4] if len(sys.argv) > 4 else ""
     if not (str(button_file) and str(sheets_dir) and str(screen_file) and scanner):
-        print("usage: scan_sheet <button-file> <sheets-dir> <screen-file> <scanner-device>")
+        print("usage: scan_sheet <button-file> <sheets-dir> <screen-file> <scanner-model>")
         return 1
 
     try:
@@ -98,7 +124,7 @@ def main() -> int:
 
     say("Sto leggendo", ["Lascia il foglio dov'è.", "Ci metto qualche secondo."])
     try:
-        page = scan_page(scanner)
+        page = scan_page(find_scanner(scanner))
     except (subprocess.SubprocessError, OSError, ValueError) as exc:
         print(f"the scanner did not answer: {exc}")
         say("Non ci sono riuscito", ["Lo scanner non ha risposto.", "Riprova più tardi."])
