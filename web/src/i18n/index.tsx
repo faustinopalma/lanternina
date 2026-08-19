@@ -65,6 +65,11 @@ function detect(): string {
 
 export type Vars = Record<string, string | number>;
 
+/** Whether a word exists, for keys built from a value the hub chose rather than written. */
+export function hasWord(key: string): key is MessageKey {
+  return key in it;
+}
+
 function translate(language: string, key: MessageKey, vars?: Vars): string {
   const table = CATALOGS[language] ?? CATALOGS[DEFAULT_LANGUAGE]!;
   let text = table[key] ?? CATALOGS[DEFAULT_LANGUAGE]![key];

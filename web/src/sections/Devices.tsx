@@ -5,17 +5,16 @@ import type { Device, NewAssignment } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input } from "@/components/ui/field";
-import { useWords, type MessageKey } from "@/i18n";
+import { hasWord, useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
-const KNOWN_LEVELS = ["mains", "ok", "low", "critical"];
-const KNOWN_KINDS = ["display", "printer", "scanner"];
-const KNOWN_JOBS = ["picture", "sheet", "print", "scan"];
-
 /* A key the panel does not have yet would otherwise be drawn as the key itself. Falling
- * back to a word we do have keeps a hub that reports something new from looking broken. */
-function known(list: string[], value: string, prefix: string, fallback: MessageKey): MessageKey {
-  return list.includes(value) ? (`${prefix}.${value}` as MessageKey) : fallback;
+ * back to a word we do have keeps a hub that reports something new from looking broken.
+ * The catalog is asked directly: a hand-written list of the values we know would be a
+ * fourth place to write down a job, and would go stale on the day one is added. */
+function known(value: string, prefix: string, fallback: MessageKey): MessageKey {
+  const key = `${prefix}.${value}`;
+  return hasWord(key) ? key : fallback;
 }
 
 function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
@@ -36,11 +35,11 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
     }
   }
 
-  const kind = t(known(KNOWN_KINDS, device.kind, "kind", "kind.display"));
+  const kind = t(known(device.kind, "kind", "kind.display"));
   /* Deliberately vague: the board has no fuel gauge, so a percentage would be arithmetic
    * performed on a guess. A printer has no charge to report at all. */
   const level =
-    device.level === undefined ? null : t(known(KNOWN_LEVELS, device.level, "level", "level.ok"));
+    device.level === undefined ? null : t(known(device.level, "level", "level.ok"));
   const since = device.silent
     ? t("devices.silent")
     : device.silentSeconds < 120
@@ -90,7 +89,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
                     void save({ jobs: chosen });
                   }}
                 />
-                {t(known(KNOWN_JOBS, choice, "job", "devices.noJob"))}
+                {t(known(choice, "job", "devices.noJob"))}
               </label>
             ))
           )}

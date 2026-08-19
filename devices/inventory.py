@@ -18,7 +18,8 @@ and "Sofia's printer" is exactly what somebody would naturally write. A person's
 goes into a prompt. The check has to be here because this is the only side that knows the
 name — it comes from the environment, and the cloud has nowhere to store it.
 
-Stdlib only, because the hub has no virtualenv for this and should not need one.
+Stdlib only apart from `shared.capabilities`, which is where the kinds and the jobs are
+spelled. The hub has no virtualenv for this and should not need one.
 """
 
 from __future__ import annotations
@@ -31,14 +32,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-KIND_DISPLAY = "display"
-KIND_PRINTER = "printer"
-KIND_SCANNER = "scanner"
-
-JOB_PICTURE = "picture"
-JOB_SHEET = "sheet"
-JOB_PRINT = "print"
-JOB_SCAN = "scan"
+from shared.capabilities import KIND_PRINTER, KIND_SCANNER
 
 # What each kind answers to. Both were read off the machine in the house on 4 August 2026:
 # the Epson ET-2870 advertises `_ipp._tcp` for printing and `_uscan._tcp` for scanning.

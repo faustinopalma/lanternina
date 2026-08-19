@@ -22,33 +22,16 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field, replace
 from typing import Any, Protocol, runtime_checkable
 
+from shared.capabilities import (
+    JOB_NONE,
+    JOBS_BY_KIND,
+    KIND_DISPLAY,
+    KINDS,
+)
+
 # How long a display may stay silent before the panel says so. Two missed hours is well
 # past any polling interval we set, so it means something is actually wrong.
 SILENT_AFTER_SECONDS = 7200
-
-# How a thing arrives is the only way the three kinds differ. A display announces itself,
-# because its firmware is already asking the hub for something to show; a printer and a
-# scanner have to be looked for over mDNS.
-KIND_DISPLAY = "display"
-KIND_PRINTER = "printer"
-KIND_SCANNER = "scanner"
-KINDS = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER)
-
-# The jobs the parent can hand out. A thing holds as many as the parent gives it, and a
-# job may be held by several things at once: a house with two displays and three things to
-# show cannot work any other way, and when more than one thing can do something the house
-# picks between them, which is where the variation comes from.
-JOB_NONE = ""
-JOB_PICTURE = "picture"
-JOB_SHEET = "sheet"
-JOB_PRINT = "print"
-JOB_SCAN = "scan"
-
-JOBS_BY_KIND: dict[str, tuple[str, ...]] = {
-    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET),
-    KIND_PRINTER: (JOB_PRINT,),
-    KIND_SCANNER: (JOB_SCAN,),
-}
 
 # The name is read on a display and put into a sentence a model builds, so it stays short.
 # Measured against the notice renderer's body font, which has 728 px to work with: forty

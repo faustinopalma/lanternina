@@ -6,6 +6,10 @@ of the experience. It does not name the Epson in the hall; it names "somewhere t
 on paper", because an experience designed for every house cannot know which machine is in
 this one.
 
+The words for the kinds and the jobs live here too, and only here. The panel and the hub
+import them; the browser cannot, so `tests/test_web_i18n.py` fails if a job has no word a
+parent can read.
+
 The names are deliberately concrete. ``SHOW_800X480_1BIT`` says the size and the depth
 rather than saying "a display", and that costs a new name the day a second panel size
 arrives. It buys the thing that matters more: a house whose display cannot show that image
@@ -35,17 +39,32 @@ class HouseCapability(StrEnum):
     PHOTOGRAPH_TABLE = "photograph_table"
 
 
-# The kinds and jobs as ``panel/devices.py`` spells them. Repeated rather than imported:
-# `shared` is what every other package imports, and it imports none of them back.
-# ``tests/test_capabilities.py`` fails if the two spellings ever drift apart.
+# The kinds and the jobs, written once. `shared` is what every other package imports and
+# it imports none of them back, so this is the only direction the vocabulary can live in:
+# `panel/devices.py` and `devices/inventory.py` read it from here. Until 19 August 2026 all
+# three spelled it out separately and a test compared the spellings, which caught drift and
+# did nothing about the cost of adding a job.
 KIND_DISPLAY: Final = "display"
 KIND_PRINTER: Final = "printer"
 KIND_SCANNER: Final = "scanner"
+KINDS: Final = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER)
 
+# No job at all, which is not the same as never having been named — see `panel/devices.py`.
+JOB_NONE: Final = ""
 JOB_PICTURE: Final = "picture"
 JOB_SHEET: Final = "sheet"
 JOB_PRINT: Final = "print"
 JOB_SCAN: Final = "scan"
+
+# The jobs the parent can hand out, by kind. A thing holds as many as the parent gives it,
+# and a job may be held by several things at once: a house with two displays and three
+# things to show cannot work any other way, and when more than one thing can do something
+# the house picks between them, which is where the variation comes from.
+JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
+    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET),
+    KIND_PRINTER: (JOB_PRINT,),
+    KIND_SCANNER: (JOB_SCAN,),
+}
 
 # A display given only the picture job is absent from this table on purpose. It can draw
 # the same 800x480 image, but it is the frame on the wall: handing it to an experience

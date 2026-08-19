@@ -35,7 +35,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from devices.epaper import render_notice_bmp
-from devices.inventory import JOB_SHEET, holders, load_jobs
+from devices.inventory import holders, load_jobs
 from devices.print_sheet import lay_out_and_print, recall
 from devices.read_page import read_page
 from devices.scan_sheet import describe, find_scanner, scan_page
@@ -49,7 +49,7 @@ from shared.blueprint import (
     Step,
     Verb,
 )
-from shared.capabilities import HouseCapability
+from shared.capabilities import JOB_SHEET, HouseCapability
 from shared.ids import SheetId, new_exercise_id, new_sheet_id
 from shared.sheet import SheetSpec
 from shared.vision_contracts import PageReading

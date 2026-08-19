@@ -25,6 +25,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from shared.accounts import Account, AccountStatus, AccountStore
 from shared.approval import ApprovalState
+from shared.capabilities import KIND_DISPLAY
 from shared.errors import (
     AccessDenied,
     AuthNotConfigured,
@@ -37,7 +38,6 @@ from shared.ids import AccountId
 from .admin import ADMISSIONS, CurrentAdmin, waiting_view
 from .config import Settings
 from .devices import (
-    KIND_DISPLAY,
     MAX_NAME_LENGTH,
     DeviceStatus,
     DeviceStatusStore,

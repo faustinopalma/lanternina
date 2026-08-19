@@ -1,7 +1,9 @@
 """The capability vocabulary, and the agreement it has with the parent's inventory.
 
-The two lists are written twice on purpose — `shared` is imported by `panel` and imports
-nothing back — so the thing worth testing is that they still say the same words.
+The kinds and the jobs are written once, in `shared.capabilities`, and the panel and the
+hub import them. What is left to test is that every job a parent can hand out means
+something here — a job the panel offers and this module has never heard of would be a
+silent hole.
 """
 
 from __future__ import annotations
@@ -11,39 +13,36 @@ from dataclasses import replace
 import pytest
 
 from panel import devices
-from shared.capabilities import HouseCapability, capabilities_of, provided_by
-
-
-def test_the_two_sides_spell_the_kinds_and_jobs_the_same() -> None:
-    from shared import capabilities
-
-    assert capabilities.KIND_DISPLAY == devices.KIND_DISPLAY
-    assert capabilities.KIND_PRINTER == devices.KIND_PRINTER
-    assert capabilities.KIND_SCANNER == devices.KIND_SCANNER
-    assert capabilities.JOB_PICTURE == devices.JOB_PICTURE
-    assert capabilities.JOB_SHEET == devices.JOB_SHEET
-    assert capabilities.JOB_PRINT == devices.JOB_PRINT
-    assert capabilities.JOB_SCAN == devices.JOB_SCAN
+from shared.capabilities import (
+    JOB_NONE,
+    JOB_PICTURE,
+    JOBS_BY_KIND,
+    KIND_DISPLAY,
+    KIND_PRINTER,
+    HouseCapability,
+    capabilities_of,
+    provided_by,
+)
 
 
 def test_every_job_the_parent_can_hand_out_is_accounted_for() -> None:
     """A job the panel offers and this module has never heard of would be a silent hole:
     the parent would assign it and the catalogue would go on saying the house cannot."""
-    for kind, jobs in devices.JOBS_BY_KIND.items():
+    for kind, jobs in JOBS_BY_KIND.items():
         for job in jobs:
             assert provided_by(kind, job) is not None or (kind, job) == (
-                devices.KIND_DISPLAY,
-                devices.JOB_PICTURE,
+                KIND_DISPLAY,
+                JOB_PICTURE,
             ), f"{kind}/{job} maps to no capability and is not the deliberate exception"
 
 
 def test_an_unassigned_thing_contributes_nothing() -> None:
-    assert provided_by(devices.KIND_PRINTER, devices.JOB_NONE) is None
+    assert provided_by(KIND_PRINTER, JOB_NONE) is None
 
 
 def test_the_picture_display_is_not_offered_to_an_experience() -> None:
     """It can draw the image. Handing it over would take the pictures off the wall."""
-    assert provided_by(devices.KIND_DISPLAY, devices.JOB_PICTURE) is None
+    assert provided_by(KIND_DISPLAY, JOB_PICTURE) is None
 
 
 @pytest.mark.parametrize(
