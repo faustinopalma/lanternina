@@ -302,12 +302,22 @@ hostname is not a service name, and one machine has as many services as it adver
 **Three things are left, and none of them is code.**
 
 - `LANTERNINA_LEARNER_NAME` is set in neither `panel.env` nor `trmnl-byos.env`, so
-  `learner_name()` returns `""` and the refusal of a name that carries a person's name
-  never fires. The guard is written, tested and inert. It holds a person's name, so it is
-  for somebody in the house to write into a local env file, not for anything here.
+  `learner_name()` returns `""` and the refusal never fires on this hub. The mechanism
+  itself is not in doubt: on 19 August 2026 one push was run with
+  `LANTERNINA_LEARNER_NAME=Quadro` and `LANTERNINA_JOBS_FILE` pointed at a scratch file, and
+  it printed `refused the name on E8:3D:C1:FB:9F:18: it carries a person's name` — the
+  display called "un bel quadro che cambia" came back with an empty name and
+  `nameRefused` true, CF7D04 untouched, and the real cache unchanged either side. What is
+  missing is the name, and it holds a person's name, so it is for somebody in the house to
+  write into a local env file, not for anything here. `panel.env` is where it belongs: it
+  is read by `lanternina-status.service`, which is the only consumer, and at
+  `root:lanternina` 640 it already holds the device key.
 - A stale row `EPSOND59029.local`, of kind `scanner`, is still on the panel's list from
   before the identity changed. Removing it is the parent's decision, and the panel is the
-  only place it can be taken.
+  only place it can be taken. On screen it is one of three rows all labelled "EPSON
+  ET-2870 Series"; what tells it apart is when it was last heard, because the hub no
+  longer reports that id. At 20:44 on 19 August 2026 the two live rows had been heard 3 s
+  ago and the stale one 4705 s ago.
 - The two jobs the parent chose are the opposite way round from what the notes assumed:
   **CF7D04 holds `sheet`** ("dispositivo che da le istruzioni") and **FB9F18 holds
   `picture`** ("un bel quadro che cambia"). The panel is the authority — it is where the
@@ -319,10 +329,27 @@ appeared: at 19:15, with no `jobs.json`, the picture went to the shared `screen.
 what is on disk, byte for byte, because a screen that does not change proves nothing —
 FB9F18 is served `screen-FB9F18.bmp` and CF7D04 the shared file, both matching exactly.
 
-**One inconsistency worth closing.** `devices/pull_picture.py` asks the cache which display
-holds `picture`; `devices/run_blueprint.py` takes `--screen` as an argument and asks
-nothing. So the sheet lands wherever the caller says, and a caller working from the wrong
-assumption puts a notice on the picture display. Until it resolves the `sheet` holder the
-way the picture path resolves its own, the correct argument in this house is
-`--screen /var/lib/lanternina/state/screen-CF7D04.bmp`.
+**One inconsistency, closed on 19 August 2026.** `devices/pull_picture.py` asked the cache
+which display holds `picture`; `devices/run_blueprint.py` took `--screen` as an argument
+and asked nothing. So the sheet landed wherever the caller said, and a caller working from
+the wrong assumption put a notice on the picture display. `run_blueprint` now resolves the
+`sheet` holder the same way, from `TRMNL_SCREEN_FILE` and the cached assignment;
+`--screen` remains as an override for a house with no cache yet. Measured on the hub: with
+both env files sourced, `screen_in(os.environ)` returns
+`/var/lib/lanternina/state/screen-CF7D04.bmp`, and the whole second half then ran with no
+`--screen` at all in 39.2 s, updating CF7D04 at 20:37:52 and leaving FB9F18 at 20:26:17.
+
+**The command needs both env files.** `TRMNL_SCREEN_FILE` and `LANTERNINA_JOBS_FILE` live
+in `trmnl-byos.env`, not `panel.env`. A run that sources only `panel.env` and omits
+`--screen` now says there is no display in this house, which is correct and unhelpful.
+
+**A run under `sudo` created a screen the button path could not write.** The first
+`screen-CF7D04.bmp` came out `root:root` 644. The display server reads it — it is
+world-readable — so nothing looked wrong, but `lanternina-scan.service` runs as
+`fausto:lanternina`, and pressing the button on that display would have failed to change
+it. Measured with `systemd-run` carrying the unit's own directives: before, `test -w`
+answered REFUSED for `screen-CF7D04.bmp` and WRITABLE for its two siblings; after
+`chown root:lanternina` and `chmod 664`, WRITABLE for all three, with the file's contents
+unchanged (sha256 `3862123e…` either side). `_replace` now gives a file it creates the
+directory's owner and mode 664, and still keeps what it finds on a file that exists.
 

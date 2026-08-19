@@ -15,9 +15,11 @@ Nothing waits, polls or reminds. If the sheet never comes back, ``resume`` is ne
 and that is the whole of what happens — no follow-up, no record that something was left
 unfinished, nothing to see later.
 
-What the house can do is passed in rather than discovered: a printer queue, a scanner
-model, a file the display reads. TODO(poc): the parent's inventory in the panel is the real
-answer, and this is a stand-in for it — see ideas/01-panel.md §9.
+The printer queue and the scanner model are passed in. The display is not: which screen a
+notice lands on is the parent's choice, made in the panel, and it is read back from the
+cached assignment the same way the picture path reads its own. ``--screen`` still overrides
+it, for a house that has no cache yet. TODO(poc): the printer and the scanner are still the
+caller's word — see ideas/01-panel.md §9.
 """
 
 from __future__ import annotations
@@ -27,13 +29,16 @@ import json
 import os
 import stat
 import sys
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
 from devices.epaper import render_notice_bmp
+from devices.inventory import JOB_SHEET, holder, load_jobs
 from devices.print_sheet import lay_out_and_print, recall
 from devices.read_page import read_page
 from devices.scan_sheet import describe, find_scanner, scan_page
+from devices.trmnl_byos import screen_for
 from shared.blueprint import (
     Blueprint,
     BlueprintError,
@@ -91,6 +96,31 @@ def load_blueprint(path: Path) -> Blueprint:
     return Blueprint.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 
+def sheet_file(shared: Path, jobs_file: Path) -> Path:
+    """Where a notice about the sheet goes: the file of whichever display holds that job.
+
+    The same resolution the picture path makes for itself. Until 19 August 2026 this half
+    of the house took the screen from whoever called it, so a caller working from a stale
+    note put the sheet's notice on the picture display, and nothing here could tell.
+
+    With no answer from the panel the shared file is still the target, which is what the
+    house did before anybody could say which display was which.
+    """
+    chosen = holder(load_jobs(jobs_file), JOB_SHEET)
+    friendly = str((chosen or {}).get("label") or "")
+    return screen_for(shared, friendly) if friendly else shared
+
+
+def screen_in(env: Mapping[str, str]) -> Path | None:
+    """The file the sheet's display reads, or None if this house has no display at all."""
+    shared = env.get("TRMNL_SCREEN_FILE", "")
+    if not shared:
+        return None
+    path = Path(shared)
+    jobs = env.get("LANTERNINA_JOBS_FILE", "") or str(path.with_name("jobs.json"))
+    return sheet_file(path, Path(jobs))
+
+
 def _show(house: House, heading: str, lines: list[str]) -> None:
     if house.screen is None:
         raise CannotRun("there is no display in this house")
@@ -104,14 +134,19 @@ def _replace(path: Path, data: bytes) -> None:
     hands the file to whoever ran the command: on 17 August 2026 that turned
     ``trmnl-devices.json`` from ``root:lanternina`` into ``root:root``, the display server
     lost its read, and the symptom was a display that looked dead.
+
+    A file that does not exist yet has no owner to keep, so it takes the directory's and is
+    made group-writable. On 19 August 2026 a run under ``sudo`` created
+    ``screen-CF7D04.bmp`` as ``root:root``: the display server could still read it, but the
+    button path — ``fausto:lanternina`` — could no longer write that display at all.
     """
     temporary = path.with_name(path.name + ".tmp")
     temporary.write_bytes(data)
-    if path.exists():
-        was = path.stat()
-        if _chown is not None:
-            _chown(temporary, was.st_uid, was.st_gid)
-        temporary.chmod(stat.S_IMODE(was.st_mode))
+    existing = path.stat() if path.exists() else None
+    was = existing or path.parent.stat()
+    if _chown is not None:
+        _chown(temporary, was.st_uid, was.st_gid)
+    temporary.chmod(stat.S_IMODE(was.st_mode) if existing else 0o664)
     temporary.replace(path)
 
 
@@ -239,7 +274,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sheets-dir", type=Path, required=True)
     parser.add_argument("--printer", default="")
     parser.add_argument("--scanner", default="")
-    parser.add_argument("--screen", type=Path)
+    parser.add_argument(
+        "--screen",
+        type=Path,
+        help="override the display; by default the one the parent gave the sheet job to",
+    )
     parser.add_argument(
         "--no-paper", action="store_true", help="lay the sheet out without sending it"
     )
@@ -248,7 +287,7 @@ def main(argv: list[str] | None = None) -> int:
     house = House(
         printer=args.printer,
         scanner=args.scanner,
-        screen=args.screen,
+        screen=args.screen or screen_in(os.environ),
         sheets_dir=args.sheets_dir,
         panel=os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/"),
         household=os.environ.get("LANTERNINA_HOUSEHOLD", ""),

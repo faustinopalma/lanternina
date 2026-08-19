@@ -151,3 +151,25 @@ async def test_a_call_without_instructions_sends_no_system_message() -> None:
 
     assert [message["role"] for message in messages] == ["user"]
     assert messages[0]["content"] == [{"type": "text", "text": "plan something"}]
+
+
+def test_a_refused_call_says_why_and_not_only_that_it_was_refused() -> None:
+    """The reason for a 400 is in the body, and httpx's own message throws it away.
+
+    Written against the message httpx builds, so it fails on the version that only called
+    ``raise_for_status``: that one carried "400 Bad Request" and nothing about the image.
+    """
+    import httpx
+
+    from orchestrator.router import _checked
+
+    refusal = '{"error":{"code":"BadRequest","message":"Could not process image"}}'
+    response = httpx.Response(
+        400, text=refusal, request=httpx.Request("POST", "https://example.invalid/x")
+    )
+
+    with pytest.raises(httpx.HTTPStatusError) as raised:
+        _checked(response)
+
+    assert "Could not process image" in str(raised.value)
+    assert raised.value.response.status_code == 400

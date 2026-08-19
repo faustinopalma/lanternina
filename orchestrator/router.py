@@ -137,6 +137,28 @@ def _chat_messages(prompt: str, images: tuple[bytes, ...], instructions: str) ->
     return messages
 
 
+def _checked(response: Any) -> Any:
+    """Raise on a bad status, with what the service said and not only the status line.
+
+    httpx builds its message from the status alone, so a 400 arrives as "Client error
+    '400 Bad Request'" and the sentence naming what was wrong stays in a body nobody
+    reads. Collapsed to one line and cut at 500 characters, because a gateway can answer
+    with a whole HTML page.
+    """
+    import httpx
+
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        detail = " ".join(response.text.split())[:500]
+        if not detail:
+            raise
+        raise httpx.HTTPStatusError(
+            f"{exc}\n{detail}", request=exc.request, response=exc.response
+        ) from exc
+    return response
+
+
 class _FoundryBackend:
     """Everything that reaches the cloud, in one place.
 
@@ -175,7 +197,7 @@ class _FoundryBackend:
                 headers={"Authorization": f"Bearer {token}"},
                 json={"messages": _chat_messages(prompt, images, instructions)},
             )
-            response.raise_for_status()
+            _checked(response)
             message = response.json()["choices"][0]["message"]
             # A refusal comes back with a null content, and str(None) would put the word
             # "None" on a sheet.
@@ -211,7 +233,7 @@ class _FoundryBackend:
                 headers={"Authorization": f"Bearer {token}"},
                 json={"prompt": prompt, "n": 1, "size": size},
             )
-            response.raise_for_status()
+            _checked(response)
             body = response.json()
             usage = body.get("usage") or {}
             self.last_usage = ModelUsage(

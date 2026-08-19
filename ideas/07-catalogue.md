@@ -151,10 +151,17 @@ Three defects found on the way there, none of them in the blueprint format:
   `orchestrator/safety.py` first, and there is no code path for that yet.
 - **The house declares its own capabilities on the command line.** The parent's inventory
   in the panel is the real answer — `01 §9` — and the runner has a `TODO(poc)` saying so.
-- **Experience B has not been read back.** `three-words` printed with no display attached,
-  which is the half that proves `uses_if_present`; putting the sheet on the glass needs a
-  person and nobody was there. The `resume` half is the same code path experience A ran
-  four times, so this is untested rather than doubtful.
+  The display half of it is closed: `run_blueprint` now resolves the `sheet` holder from
+  the cached assignment. The printer and the scanner are still the caller's word.
+- **Experience B was read back on 19 August 2026, and it read blank.** `sh_7bc7e245`, the
+  `three-words` sheet, went on the glass with all three lines left empty. The whole second
+  half took **42.6 s wall** (`time` around the runner on the hub), and the notice on
+  CF7D04 said "Ho letto il foglio: Tre parole. / Non ho trovato segni. Va bene lo stesso."
+  Two things this measures beyond "it runs". The reading was **not** degraded — the line
+  that would have said a box was unclear is absent, so the model answered and the local
+  arithmetic fallback was not used. And the blank page is the outcome that matters most
+  here: leaving a sheet empty produces a calm sentence and nothing else, no second attempt
+  and no record that something was unfinished.
 
 ---
 
