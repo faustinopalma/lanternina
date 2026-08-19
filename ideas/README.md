@@ -85,7 +85,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | 29 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
 | 30 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
 | 31 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
-| 32 | app.lanternina.com returning 404 | 04 §6 | Measure again first; it may have closed itself. |
+| 32 | ~~app.lanternina.com returning 404~~ — **closed, 19 August 2026** | 04 §6 | It closed itself. 40 requests all answered 200, and the ingress that used to be deterministically 404 answered 200 six times out of six. Nothing was changed to achieve it. |
 
 ## What is already true
 

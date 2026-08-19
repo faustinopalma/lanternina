@@ -214,20 +214,24 @@ is not already either in `secrets.local.yaml` or in the repository.
 
 ---
 
-## 6. app.lanternina.com
+## 6. Closed: app.lanternina.com returning 404
 
-**What it is.** The custom domain that answers 404 every so often.
+**What it was.** The custom domain answered 404 every so often. The headers said the 404
+did not come from our site: the good responses carried HSTS and our CSP, the 404 carried
+only `Date` and `Transfer-Encoding`. Pinning each ingress IP with `curl --resolve` found
+`9.163.40.246` answering 404 deterministically while `132.220.38.112` was mixed — a name
+binding missing on some nodes and present on others, inside Azure, after the domain had
+been moved from a Static Web App that was then deleted.
 
-**Why it is nearly closed.** The headers say that 404 does not come from our site: the good
-responses carry HSTS and our CSP, the 404 carries only `Date` and `Transfer-Encoding`. The
-measured rate fell on its own: 38% one day, then 13%, then 5% half an hour later.
+**How it closed.** On its own, and the rate fell the whole way: 38% one day, then 13%, then
+5% half an hour later, then nothing. Measured again on 19 August 2026, 40 requests
+alternating `/` and `/admin`: 40 answers of 200, none missing HSTS. Then the discriminating
+test, six requests against each of the two ingress IPs collected from four public
+resolvers, `9.163.40.246` included: 200 every time.
 
-**What to do.** Measure again with 60 requests. If it is at zero, touch nothing. If it has
-settled above zero, delete and recreate the domain binding — the CNAME is already correct,
-so no new validation is needed and the operation takes a few minutes.
-
-**What it costs.** A few minutes of the name being unavailable. The generated host is not
-involved.
+**What is left.** Nothing to do. The binding was never deleted and recreated, so whatever
+propagated is not something we did; if the symptom returns, the technique above is what
+tells a stale binding apart from a DNS problem, in one command.
 
 ---
 
