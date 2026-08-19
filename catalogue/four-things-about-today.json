@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "blueprint_id": "four-things-about-today",
+  "version": 1,
+  "title": "Four things about today",
+  "summary": "A sheet with four questions about the day, each answered by ticking one box of four. Nothing on it has a right answer: it asks what the weather was, where the time went, what was drunk and how the day went. The house prints it, says on the display that it is coming, and reads it back, reporting which boxes carry a mark. Leaving it blank, or never picking it up, ends it with nothing recorded.",
+  "author": "written by hand, 19 August 2026",
+  "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+  "uses_if_present": [],
+  "steps": [
+    {
+      "verb": "show_words",
+      "heading": "Un foglio per te",
+      "lines": [
+        "Sta uscendo dalla stampante.",
+        "Puoi farlo, o lasciarlo lì."
+      ],
+      "optional": false
+    },
+    {
+      "verb": "print_sheet",
+      "optional": false,
+      "sheet": {
+        "title": "Quattro cose di oggi",
+        "instructions": "Segna quello che vuoi. Puoi lasciare in bianco.",
+        "questions": [
+          {
+            "text": "Che tempo ha fatto?",
+            "choices": ["sole", "nuvole", "pioggia", "vento"]
+          },
+          {
+            "text": "Dove sei stato di più?",
+            "choices": ["dentro", "fuori", "in giro", "a tavola"]
+          },
+          {
+            "text": "Cosa hai bevuto?",
+            "choices": ["acqua", "latte", "succo", "tè"]
+          },
+          {
+            "text": "Com'è andata la giornata?",
+            "choices": ["piano", "veloce", "così così", "bene"]
+          }
+        ]
+      }
+    },
+    {
+      "verb": "read_sheet",
+      "optional": false
+    },
+    {
+      "verb": "show_reading",
+      "heading": "Fatto",
+      "optional": false
+    }
+  ]
+}

@@ -10,7 +10,7 @@ entry is deliberately not the agent.
 
 ---
 
-## 1. The vocabulary of capabilities, and the shape of a blueprint
+## 1. ~~The vocabulary of capabilities, and the shape of a blueprint~~ — **done, 19 August 2026**
 
 **What it is.** Two contracts. The first names what a house can do — print A4, show 800x480
 in one bit, scan a page, photograph the table — so that a blueprint can require some of them
@@ -39,7 +39,148 @@ we would find out after building four approval gates around it.
 
 **What it costs.** An afternoon, and it removes the risk of throwing away the large work.
 
+### What was built
+
+`shared/capabilities.py` holds four capability names. `shared/blueprint.py` holds five
+verbs — `show_words`, `print_sheet`, `read_sheet`, `show_reading`, `ask_model` — one frozen
+dataclass per verb, and a `Blueprint` that is a flat sequence of them. There is no
+expression, no branch and no loop, so the set of things a blueprint can express is the set
+of fields of five types. `devices/run_blueprint.py` runs one; the two experiences are
+`catalogue/four-things-about-today.json` and `catalogue/three-words.json`, JSON rather than
+Python because the claim is that a blueprint is data.
+
+Four decisions worth their sentence each:
+
+- **`requires` and `uses_if_present` are declared by the author and checked against the
+  steps.** A blueprint that understates what it touches is refused while it is being read,
+  which is where an administrator is.
+- **A run has two halves, and the seam is the paper.** `start` goes as far as the first
+  `read_sheet` and stops; `resume` identifies the run from the QR on the page itself, so
+  two sheets in a house cannot be confused. Nothing waits, polls or reminds: if the sheet
+  never comes back, `resume` is never called and that is the whole of what happens.
+- **`ask_model` has no prompt field.** It names which of a closed list it wants. A prompt
+  field would be a program written in prose and the closed vocabulary would be closed only
+  on paper. Neither experience uses the verb and the runner refuses it: generating content
+  centrally is §2.
+- **A display with the picture job provides nothing.** It can draw the same image, but
+  lending it to an experience takes the picture off the wall — the failure found on
+  19 August, when one button press converted the picture display into the sheet one.
+
+### What was measured, on the hardware
+
+`four-things-about-today`, 19 August 2026, Epson ET-2870 and the FB9F18 display:
+
+| | |
+| --- | --- |
+| `start`: display written, sheet laid out and queued | **1.1 s** |
+| `resume`: scan, rectify, decode, read | **38 s**, of which ~37 s is the scanner |
+| sheet | 4 questions x 4 choices, the most the layout holds |
+
+Three things went wrong, and all three were worth the trip:
+
+1. **The house is one thing, and `resume` was told it had no printer.** `steps_for` checks
+   the whole blueprint against the house, so a second half invoked without `--printer`
+   refused a blueprint that prints. The error said exactly that. The house is now described
+   in full for both halves — and the cost is that the refusal arrives *after* the scan,
+   because which blueprint it is comes off the paper.
+2. **The QR did not decode on the first attempt and did decode on the next**, same sheet,
+   same scanner, unmoved. Intermittent, not structural. Not chased further; recorded so the
+   next person does not mistake it for a layout fault.
+3. **The reading was wrong**, and that was not the format's fault — see below.
+
+### The reading, and why the reader changed
+
+The first `resume` put four ticked boxes on the display as no boxes at all. Measured on
+that sheet: marks at **0.0172, 0.0136, 0.0129, 0.0164** of the cell dark, empty cells at
+**exactly 0.0000**. The thresholds were 0.04 and 0.02, so every mark was reported empty —
+and reported with `ReadConfidence.CERTAIN`, which is the one thing the reading contract
+forbids.
+
+That unparked `06 §0`, which said it would be unparked by a real sheet read wrongly rather
+than by another test page. The thresholds moved to **0.010 / 0.003**, and the same physical
+sheet then read `sole, dentro, acqua, veloce` — correct, with no cell in doubt.
+
+But the conclusion was not that the numbers needed tuning. A threshold nobody in a house
+can adjust is the wrong instrument, and the quantity it measures — what fraction of a
+rectangle is dark — is only loosely related to whether somebody put a mark in a box. So the
+reader is now a vision model: `agents/sheet_reader.py`, the first implementation of the
+`VisionAgent` protocol that had been declared since the beginning and never written. The
+arithmetic stays as the answer the house gives when the cloud is unreachable, and says so
+by setting `degraded`.
+
+The hub holds no Azure credential, so the house asks the panel: `POST
+/api/device/{household}/read-sheet`, device key, carrying the rectified crop and the
+sheet's own description of where its boxes are. On the same physical sheet:
+
+| | |
+| --- | --- |
+| arithmetic, after the thresholds moved | `sole, dentro, acqua, veloce` |
+| model | `sole, dentro, acqua, veloce`, nothing in doubt |
+| model latency | **13.0 s**, against the scanner's 37 s |
+| whole second half through the runner | **45 s** |
+
+They agree, which is worth stating plainly: this measures that the path works, not that
+the model reads better. The case it is for — pencil, handwriting, a page that has been
+carried around a house — has not been measured at all.
+
+Three defects found on the way there, none of them in the blueprint format:
+
+- **The Dockerfile never copied `agents/`, and `.dockerignore` excluded it.** The panel
+  started and the route registered, because the import is lazy; the failure waited for the
+  first real page. An import that only runs when a route is called is a build error that
+  arrives as a runtime one.
+- **The panel image had no chat client.** Only the image path is REST; the chat path needs
+  `agent-framework`, which is now in the `panel` extra. That is a heavy dependency in an
+  image a parent's browser waits on — see the entry below.
+- **A 503 that carried only its status.** `ask_panel` now includes the response body,
+  which is what turned "the panel refused" into "no module named agent_framework".
+
+### The limits, next to the claims
+
+- **A sheet that will not fit still validates.** How many boxes fit is arithmetic about
+  millimetres and belongs to `printing/layout.py`, which refuses what it cannot draw. So a
+  blueprint can be well-formed and unprintable, and the refusal arrives one layer down.
+  `tests/test_blueprint.py` lays both hand-written sheets out for this reason; an
+  administrator approving a third one has no such check yet.
+- **A blueprint carries one language.** `title` and `summary` are English because an
+  administrator reads them; the sheet and the display words are Italian because this
+  household's content language is. There is no language field, so a house wanting another
+  language needs another blueprint. That is wrong and is not urgent.
+- **Nothing is screened.** The words in these two came from a person and are literals in
+  the repository. The moment the format carries text a model wrote, it has to pass
+  `orchestrator/safety.py` first, and there is no code path for that yet.
+- **The house declares its own capabilities on the command line.** The parent's inventory
+  in the panel is the real answer — `01 §9` — and the runner has a `TODO(poc)` saying so.
+- **Experience B has not been read back.** `three-words` printed with no display attached,
+  which is the half that proves `uses_if_present`; putting the sheet on the glass needs a
+  person and nobody was there. The `resume` half is the same code path experience A ran
+  four times, so this is untested rather than doubtful.
+
 ---
+
+## 1a. Take `agent-framework` back out of the panel image
+
+**What it is.** The panel now depends on `agent-framework` because the router's chat path
+does, and the sheet reader is a chat call. It installs `agent-framework-core[all]`, which
+brings provider SDKs this container will never call.
+
+**Why it is worth undoing.** The API scales to zero, so the parent waits for a cold start,
+and every megabyte of image is part of that wait. The image path already avoids this: it
+speaks the REST endpoint directly with `httpx` and a token, in `_FoundryBackend`. A chat
+call is the same shape.
+
+**Where it starts.** `orchestrator/router.py`, `_FoundryBackend.complete`, beside
+`generate_image`. Note that `agent-framework-core` is a separate distribution from
+`agent-framework`, so a lighter pin is the cheap half-measure if the REST path stalls.
+
+**Done when.** The panel image installs neither, the sheet reads the same page to the same
+answer, and the cold start is measured before and after rather than assumed.
+
+**What it costs.** An hour, and the risk is that `complete()` is also the text-generation
+path the hub uses, so it has to be verified on both.
+
+---
+
 
 ## 2. The central agent, and the two administrator gates
 

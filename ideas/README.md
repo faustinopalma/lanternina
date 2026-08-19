@@ -52,7 +52,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
 | 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |
 | 7 | ~~Reading the sheet back~~ — **done, 19 August 2026** | 06 | The loop closes on real paper: a press on KEY3 scans the glass, finds the markers, decodes the code, and the display says what came back. `vision/read_sheet.py` holds the reading. |
-| 8 | ~~A mark by hand reads as an empty box~~ — **parked, 19 August 2026** | 06 §0 | The measurement stands: an ordinary tick reads 0.0121 and a cross 0.0196, both under the 0.02 that separates empty from doubtful. The thresholds do not move, because the reading is going to a visual model that has no threshold to tune. Unparked by a real sheet read wrongly, not by another test page. |
+| 8 | ~~A mark by hand reads as an empty box~~ — **closed, 19 August 2026** | 06 §0 | Both exit conditions were taken on one sheet. Four ticked boxes were reported empty, with certainty, in front of somebody; the thresholds moved to 0.010/0.003 and the same page then read correctly. Then the reader changed altogether: a vision model reads the page and the arithmetic is what the house says when the cloud is unreachable. |
 | 9 | ~~Answer the press immediately~~ — **done, 19 August 2026** | 02 §4 | Measured with a finger on both units: the waiting screen lands in the response the press caused, and the reading follows in 35 s and 36 s, of which 26 s and 27 s are the scanner. Before the change the same chain took 65 s and 71 s. There is no longer a reason to hold the button down. |
 | 10 | ~~Take the destructive presses out of the firmware~~ — **done, 19 August 2026** | 02 §5 | Both units flashed. Ten seconds of holding — twice the five at which the stock firmware wipes the Wi-Fi — leaves the display on the network, and the press starts a scan instead. |
 | 11 | The capture station | 06 §1 | For what a flatbed cannot take: a model, a drawing too big for the glass. Not on the paper loop's critical path any more. |
@@ -74,7 +74,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | 22 | Learning a new routine | 05 §5 | 10 |
 | 23 | Offering approved content again, later | 05 §6 | 6 |
 | 24 | Printing in batches | 03 §4 | 6 |
-| 25 | The vocabulary of capabilities, and the shape of a blueprint | 07 §1 | 15 — and everything else in 07 stands on it |
+| 25 | ~~The vocabulary of capabilities, and the shape of a blueprint~~ — **done, 19 August 2026** | 07 §1 | Two hand-written experiences ran on the Epson and the FB9F18 display. A blueprint is a flat sequence over five verbs, one frozen dataclass each, so there is no expression to evaluate and an administrator who reads one has read all of it. It also found the reading defect that closed 8. |
 
 ### Last: hygiene, and things we do not know yet
 

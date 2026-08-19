@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "blueprint_id": "three-words",
+  "version": 1,
+  "title": "Three words",
+  "summary": "Three questions, each offering four words, and the sheet asks which one is preferred rather than which one is correct. It exists to be the pair of the other experience: it needs only paper, so a house with a printer and a scanner and no display runs the whole of it, and the two steps that speak on a screen are simply skipped there.",
+  "author": "written by hand, 19 August 2026",
+  "requires": ["print_a4", "scan_a4"],
+  "uses_if_present": ["show_800x480_1bit"],
+  "steps": [
+    {
+      "verb": "show_words",
+      "heading": "Tre parole",
+      "lines": [
+        "C'è un foglio in stampa.",
+        "Scegli quelle che ti piacciono."
+      ],
+      "optional": true
+    },
+    {
+      "verb": "print_sheet",
+      "optional": false,
+      "sheet": {
+        "title": "Tre parole",
+        "instructions": "Scegli quella che preferisci. Non ce n'è una giusta.",
+        "questions": [
+          {
+            "text": "Quale parola ti piace di più?",
+            "choices": ["mare", "bosco", "neve", "vento"]
+          },
+          {
+            "text": "Quale suona meglio?",
+            "choices": ["campana", "farfalla", "tamburo", "lanterna"]
+          },
+          {
+            "text": "Quale porteresti con te?",
+            "choices": ["un libro", "una torcia", "una corda", "un fischietto"]
+          }
+        ]
+      }
+    },
+    {
+      "verb": "read_sheet",
+      "optional": false
+    },
+    {
+      "verb": "show_reading",
+      "heading": "Fatto",
+      "optional": true
+    }
+  ]
+}

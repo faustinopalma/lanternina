@@ -28,6 +28,8 @@ from __future__ import annotations
 __all__ = [
     "agents",
     "approval",
+    "blueprint",
+    "capabilities",
     "delivery",
     "domain",
     "errors",

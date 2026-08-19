@@ -17,6 +17,7 @@ ProposalId = NewType("ProposalId", str)
 SessionId = NewType("SessionId", str)
 RequestId = NewType("RequestId", str)
 RoutineId = NewType("RoutineId", str)
+BlueprintId = NewType("BlueprintId", str)
 
 # A household is what the cloud knows about. It is deliberately NOT a LearnerId: the
 # mapping from a household to a real person exists only on the device in the home.
@@ -57,3 +58,7 @@ def new_household_id() -> HouseholdId:
 
 def new_account_id() -> AccountId:
     return AccountId(new_id("ac"))
+
+
+def new_blueprint_id() -> BlueprintId:
+    return BlueprintId(new_id("bp"))
