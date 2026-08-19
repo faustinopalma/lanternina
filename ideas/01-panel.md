@@ -276,3 +276,53 @@ unit running under `ProtectSystem=strict`. If it cannot, discovery returns nothi
 nothing — an empty answer is indistinguishable from a quiet network, which is exactly the
 failure this feature is built to tolerate and therefore the one it cannot report.
 
+### Installed on 19 August 2026 — and what it found
+
+**The sandbox does not block discovery.** Measured with `systemd-run` carrying the unit's
+own directives — `ProtectSystem=strict`, `ProtectHome`, `NoNewPrivileges`, `PrivateTmp`,
+`User=fausto`, `Group=lanternina` — rather than from a shell, where it would have proved
+nothing: `_ipp._tcp` answered in 3.4 s and `_uscan._tcp` in 1.0 s, both inside the 12 s
+timeout. So the one failure that could have been silent is not there.
+
+Two defects were, and both were found by running it rather than by reading it.
+
+**A name arrived with `\032` where its spaces were.** The printer announces itself as
+`EPSON\032ET-2870\032Series`, and the decoder knew `\;` and `\\` only. That string is what
+the parent would have read in the panel. The fixture that let it through used
+`EPSOND59029`, a name with no spaces in it.
+
+**One box offering two services became one row.** Four things were reported and three came
+back. The Epson answers both `_ipp._tcp` and `_uscan._tcp` from the same hostname, and the
+row was keyed on the hostname alone, so the scanner overwrote the printer and took its kind
+with it — leaving a house in which the `print` job could not be handed to anything. The
+identity now carries the kind: `printer:EPSOND59029.local` and `scanner:EPSOND59029.local`.
+The paragraph above, which says the mDNS service name is the key, was the mistake: a
+hostname is not a service name, and one machine has as many services as it advertises.
+
+**Three things are left, and none of them is code.**
+
+- `LANTERNINA_LEARNER_NAME` is set in neither `panel.env` nor `trmnl-byos.env`, so
+  `learner_name()` returns `""` and the refusal of a name that carries a person's name
+  never fires. The guard is written, tested and inert. It holds a person's name, so it is
+  for somebody in the house to write into a local env file, not for anything here.
+- A stale row `EPSOND59029.local`, of kind `scanner`, is still on the panel's list from
+  before the identity changed. Removing it is the parent's decision, and the panel is the
+  only place it can be taken.
+- The two jobs the parent chose are the opposite way round from what the notes assumed:
+  **CF7D04 holds `sheet`** ("dispositivo che da le istruzioni") and **FB9F18 holds
+  `picture`** ("un bel quadro che cambia"). The panel is the authority — it is where the
+  choice was made — and anything that hardcodes a screen file has to be read against it.
+
+**The picture now follows the job.** In the log either side of the moment the cache
+appeared: at 19:15, with no `jobs.json`, the picture went to the shared `screen.bmp`; at
+19:18, with it, to `screen-FB9F18.bmp`. What each display is served was then compared with
+what is on disk, byte for byte, because a screen that does not change proves nothing —
+FB9F18 is served `screen-FB9F18.bmp` and CF7D04 the shared file, both matching exactly.
+
+**One inconsistency worth closing.** `devices/pull_picture.py` asks the cache which display
+holds `picture`; `devices/run_blueprint.py` takes `--screen` as an argument and asks
+nothing. So the sheet lands wherever the caller says, and a caller working from the wrong
+assumption puts a notice on the picture display. Until it resolves the `sheet` holder the
+way the picture path resolves its own, the correct argument in this house is
+`--screen /var/lib/lanternina/state/screen-CF7D04.bmp`.
+
