@@ -20,11 +20,22 @@ param(
     [string]$BootstrapContact = '',
 
     # Both empty leaves the panel closed to everyone, which is the safe direction: the
-    # audience is read from a real token rather than derived, so it arrives late.
+    # audience is read from a real token rather than derived, so it arrives late. Empty
+    # here means "keep what the app is already running", not "blank it".
     [string]$OidcAuthority = '',
     [string]$OidcAudience = '',
 
     [string]$AllowedOrigins = '',
+
+    # The administrator's identity provider, which is the workforce tenant rather than the
+    # parents' directory. Same rule: empty means keep what is there.
+    [string]$AdminOidcAuthority = '',
+    [string]$AdminOidcAudience = '',
+    [string]$AdminRole = '',
+
+    # The device key is a secret on the container app, and the template removes any secret
+    # it is not told about. Without this the home server loses its only credential.
+    [switch]$WithoutDeviceKey,
 
     [string]$Location = 'swedencentral'
 )
@@ -75,24 +86,66 @@ $workerImage = az containerapp show `
     --resource-group rg-lanternina-dev-app `
     --query 'properties.template.containers[0].image' `
     -o tsv
-az deployment sub create `
-    --name $deploymentName `
-    --location $Location `
-    --template-file (Join-Path $repoRoot 'infra/main.bicep') `
-    --parameters (Join-Path $repoRoot 'infra/main.bicepparam') `
-    --parameters `
-        owner=$Owner `
-        budgetContactEmail=$BudgetContactEmail `
-        deployExternalId=false `
-        apiImage="$($registry.loginServer)/$image" `
-        workerImage=$workerImage `
-        apiTargetPort=8000 `
-        panelDevAuth=$($DevAuth.IsPresent.ToString().ToLower()) `
-        panelBootstrapContact=$BootstrapContact `
-        panelOidcAuthority=$OidcAuthority `
-        panelOidcAudience=$OidcAudience `
-        panelAllowedOrigins=$AllowedOrigins `
-    --output none
+
+# Bicep resets anything the template does not carry, so a value not passed here is a value
+# erased. Every sign-in setting is therefore read back from the running app unless it was
+# given on the command line.
+$liveEnv = @{}
+$liveApi = az containerapp show --name ca-lanternina-dev-api --resource-group rg-lanternina-dev-app -o json 2>$null | ConvertFrom-Json
+if ($liveApi) {
+    foreach ($item in $liveApi.properties.template.containers[0].env) { $liveEnv[$item.name] = $item.value }
+}
+if (-not $OidcAuthority) { $OidcAuthority = $liveEnv['LANTERNINA_OIDC_AUTHORITY'] }
+if (-not $OidcAudience) { $OidcAudience = $liveEnv['LANTERNINA_OIDC_AUDIENCE'] }
+if (-not $AllowedOrigins) { $AllowedOrigins = $liveEnv['LANTERNINA_ALLOWED_ORIGINS'] }
+if (-not $BootstrapContact) { $BootstrapContact = $liveEnv['LANTERNINA_BOOTSTRAP_CONTACT'] }
+if (-not $AdminOidcAuthority) { $AdminOidcAuthority = $liveEnv['LANTERNINA_ADMIN_OIDC_AUTHORITY'] }
+if (-not $AdminOidcAudience) { $AdminOidcAudience = $liveEnv['LANTERNINA_ADMIN_OIDC_AUDIENCE'] }
+if (-not $AdminRole) { $AdminRole = $liveEnv['LANTERNINA_ADMIN_ROLE'] }
+if (-not $AdminRole) { $AdminRole = 'Lanternina.Admin' }
+
+# Not carried forward like the rest: a secret is not readable from the running app, so it
+# comes from the same file scripts/deploy.ps1 reads. Passing nothing deletes it.
+$secretsFile = Join-Path $repoRoot 'secrets.local.yaml'
+$deviceKey = ''
+if (Test-Path $secretsFile) {
+    $found = Select-String -Path $secretsFile -Pattern '^\s*device_key\s*:\s*(.+)$' | Select-Object -First 1
+    if ($found) { $deviceKey = $found.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'") }
+}
+if (-not $deviceKey -and -not $WithoutDeviceKey) {
+    throw "No device_key in $secretsFile. Deploying without it removes the home server's only credential. Add it, or pass -WithoutDeviceKey to accept that."
+}
+
+$parameters = @(
+    "owner=$Owner"
+    'deployExternalId=false'
+    "apiImage=$($registry.loginServer)/$image"
+    "workerImage=$workerImage"
+    'apiTargetPort=8000'
+    "panelDevAuth=$($DevAuth.IsPresent.ToString().ToLower())"
+    "panelBootstrapContact=$BootstrapContact"
+    "panelOidcAuthority=$OidcAuthority"
+    "panelOidcAudience=$OidcAudience"
+    "panelAllowedOrigins=$AllowedOrigins"
+    "panelAdminOidcAuthority=$AdminOidcAuthority"
+    "panelAdminOidcAudience=$AdminOidcAudience"
+    "panelAdminRole=$AdminRole"
+)
+if ($BudgetContactEmail) { $parameters += "budgetContactEmail=$BudgetContactEmail" }
+# Omitted rather than passed empty: empty is exactly the deletion this guards against.
+if ($deviceKey) { $parameters += "deviceKey=$deviceKey" }
+
+$argumentList = @(
+    'deployment', 'sub', 'create',
+    '--name', $deploymentName,
+    '--location', $Location,
+    '--template-file', (Join-Path $repoRoot 'infra/main.bicep'),
+    '--parameters', (Join-Path $repoRoot 'infra/main.bicepparam'),
+    '--parameters'
+) + $parameters + @('--output', 'none')
+
+& az @argumentList
+if ($LASTEXITCODE -ne 0) { throw "Deployment failed with exit code $LASTEXITCODE" }
 
 Write-Step 'Verifying'
 $fqdn = az containerapp show --name ca-lanternina-dev-api --resource-group rg-lanternina-dev-app --query 'properties.configuration.ingress.fqdn' -o tsv
