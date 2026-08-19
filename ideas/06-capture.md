@@ -4,14 +4,66 @@ The camera in this system is a scanner pointed at paper. It is not an observer: 
 a tray, it fires on a button press, and what it can see is limited by a printed hood rather
 than by a promise in the code.
 
-`vision/` is empty today. `shared/vision_contracts.py` already holds the shape of the
-answer — `RawFrame` refuses to be pickled, copied or serialised and wipes its buffer on
-exit; only `RectifiedPage` gets out. What is missing is everything that produces a frame.
+`vision/read_sheet.py` now holds the reading — markers, rectification, the code on the page,
+one reading per declared cell — and the flatbed closes the loop end to end: a press on the
+display starts a scan and the answer comes back on the display about a minute later.
+`shared/vision_contracts.py` holds the shape of the answer, and `RawFrame` refuses to be
+pickled, copied or serialised. What is still missing is everything that produces a *frame*
+rather than a scan.
 
 The flatbed scanner already in the house stays: with its lid closed it physically cannot
 see anything but the sheet, which is a stronger guarantee than any camera can give. The
 station below is for the things a flatbed cannot take — a model, a plasticine animal, a
 drawing too big for the glass.
+
+---
+
+## 0. A mark by hand reads as an empty box
+
+**What it is.** The two numbers that decide whether a cell counts as marked. Today
+`INK_PRESENT` is 0.04 and `INK_UNCERTAIN` is 0.02, both chosen before anything had been
+scanned.
+
+**What was measured, 19 August 2026.** A calibration sheet was printed, marked by hand and
+read back — `tools/make_calibration_sheet.py` and `tools/measure_calibration.py`, so it can
+be repeated in two minutes.
+
+| | measured |
+| --- | --- |
+| eight untouched boxes, centre and edges | **0.0000**, every one |
+| a mark made deliberately outside a box | 0.0000 |
+| printed areas, 1% to 32% of the box | ratio to true area constant at **≈1.6** |
+| a light pencil mark | **0.0000** |
+| an ordinary mark | **0.0121** |
+| a cross | **0.0196** |
+| a circle | 0.0242 |
+| a filled box | 0.2647 |
+
+The instrument is understood: 1.6 is `1/0.64`, the 10% inset per axis that `ink_fraction`
+applies, and it holds across five doublings. The inset also does its job — a mark just
+outside the lines reads as nothing, so neither the printed outline nor a stray is counted.
+
+**Why it matters.** An ordinary mark and a cross both fall *below* 0.02, so today they are
+reported as an empty box. Not "somebody should look at this": empty. That is the confident
+wrong answer the whole design is arranged to avoid, and it is the one failure a person
+cannot detect, because an unread answer looks exactly like an unanswered question.
+
+**How.** Two different fixes, and only the first is a number. The floor is zero, so
+`INK_PRESENT` around 0.010 and `INK_UNCERTAIN` around 0.003 would put every hand-made mark
+on the right side with a wide margin. The light mark at 0.0000 is not an area problem at
+all: the page-wide Otsu threshold came out at 179, fitted to paper against printed black,
+and pale graphite falls on the paper side before anything is counted. That needs a
+threshold that knows it is looking for pencil, not a smaller number.
+
+**What it costs.** One sheet is one sample. Before moving a threshold it is worth a second
+page — a light mark from a different pencil, and a sheet that has been handled — because
+the floor being exactly zero on clean paper says nothing about paper that has been carried
+around a house.
+
+**Where it starts.** `vision/read_sheet.py`, the two constants and `page_ink_threshold`.
+
+**Done when.** An ordinary tick and a cross read as marks, a light one reads as either a
+mark or something for the parent to look at, and an untouched box still reads as empty.
 
 ---
 

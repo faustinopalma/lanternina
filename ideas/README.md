@@ -49,39 +49,43 @@ and the file wins for judging whether the thing is worth doing at all.
 | 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so a name has no field to sit in. |
 | 4 | ~~Field names that are not Italian~~ — **done, 18 August 2026** | 04 §7 | The keys are English, and the content language is free to become what it was meant to be, a setting. Bodies approved before the change keep the Italian keys: the safety seal covers them byte for byte, so the readers accept both spellings and nothing stored was touched. |
 | 5 | The request channel, panel → hub | 01 §7 | "Put this picture back" is its first user, but the pattern — the parent records, the house collects and decides — is what every later request needs. |
-| 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. What is still missing from the paper loop is the reading back. |
-| 7 | The capture station | 06 | Reading a sheet back. `vision/` is empty; the contracts are written and nothing produces a frame. |
+| 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |
+| 7 | ~~Reading the sheet back~~ — **done, 19 August 2026** | 06 | The loop closes on real paper: a press on KEY3 scans the glass, finds the markers, decodes the code, and the display says what came back. `vision/read_sheet.py` holds the reading. |
+| 8 | **A mark by hand reads as an empty box** | 06 §0 | Measured, not suspected: an ordinary tick reads 0.0121 and a cross 0.0196, both under the 0.02 that separates empty from doubtful. So a real answer is reported as no answer — the one failure a person cannot see, because an unread answer looks like an unanswered question. |
+| 9 | Answer the press immediately | 02 §4 | The reason somebody holds the button down, and holding is what wipes the Wi-Fi credentials. It goes before the firmware change, not after. |
+| 10 | Take the destructive presses out of the firmware | 02 §5 | Five seconds of holding wipes the Wi-Fi, fifteen the credentials. Needs a rebuild and a reflash of both units, so it waits until the loop is running — which it now is. |
+| 11 | The capture station | 06 §1 | For what a flatbed cannot take: a model, a drawing too big for the glass. Not on the paper loop's critical path any more. |
 
 ### Then: what stands on them
 
 | # | What | Where | Needs |
 | --- | --- | --- | --- |
-| 8 | How much approved content is left | 01 §6 | nothing — a count on routes that exist |
-| 9 | Withdrawing an approval | 01 §3 | nothing — `withdraw` already exists in the ledger |
-| 10 | Reminders at times the parent chose | 05 §1 | 3 |
-| 11 | A role per display | 02 §4 | nothing — one field |
-| 12 | One step at a time | 05 §2 | 11, and the second display in the house |
-| 13 | The sheet that asks instead of assigning | 03 §3 | 6, 7 |
-| 14 | "Another like this" and "something different" | 03 §5 | 6, 7 |
-| 15 | A routine that shows how much is left | 05 §3 | 10 |
-| 16 | Routine cards on paper | 05 §4, 03 §2 | 10 |
-| 17 | Refusing with a reason | 01 §4 | 3 |
-| 18 | Learning a new routine | 05 §5 | 10 |
-| 19 | Offering approved content again, later | 05 §6 | 6 |
-| 20 | Printing in batches | 03 §4 | 6 |
+| 12 | How much approved content is left | 01 §6 | nothing — a count on routes that exist |
+| 13 | Withdrawing an approval | 01 §3 | nothing — `withdraw` already exists in the ledger |
+| 14 | Reminders at times the parent chose | 05 §1 | 3 |
+| 15 | A role per display | 02 §6 | nothing — one field |
+| 16 | One step at a time | 05 §2 | 11, and the second display in the house |
+| 17 | The sheet that asks instead of assigning | 03 §3 | 6, 7 |
+| 18 | "Another like this" and "something different" | 03 §5 | 6, 7 |
+| 19 | A routine that shows how much is left | 05 §3 | 10 |
+| 20 | Routine cards on paper | 05 §4, 03 §2 | 10 |
+| 21 | Refusing with a reason | 01 §4 | 3 |
+| 22 | Learning a new routine | 05 §5 | 10 |
+| 23 | Offering approved content again, later | 05 §6 | 6 |
+| 24 | Printing in batches | 03 §4 | 6 |
 
 ### Last: hygiene, and things we do not know yet
 
 | # | What | Where | Why last |
 | --- | --- | --- | --- |
-| 21 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
-| 22 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
-| 23 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
-| 24 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
-| 25 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
-| 26 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
-| 27 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
-| 28 | app.lanternina.com returning 404 | 04 §6 | Measure again first; it may have closed itself. |
+| 25 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
+| 26 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
+| 27 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
+| 28 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
+| 29 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
+| 30 | The freshness mark | 02 §2 | Waiting on a decision that is the parent's, not a technical one. |
+| 31 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
+| 32 | app.lanternina.com returning 404 | 04 §6 | Measure again first; it may have closed itself. |
 
 ## What is already true
 

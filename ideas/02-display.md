@@ -71,7 +71,39 @@ the second kit when it arrives, not on the one in use.
 
 ---
 
-## 4. Take the button's two destructive presses away
+## 4. Answer the press while the finger is still on the button
+
+**What it is.** A press starts a scan, and nothing on the display changes for about a
+minute. The answer arrives at the display's *next* poll.
+
+**Why it is first.** Measured on 19 August 2026: press at 14:33:06, scan finished 14:33:32,
+display fetched at 14:34:11 and drew a few seconds later. Twenty-six seconds of that is the
+scanner and cannot go; the rest is waiting for a poll and can. Somebody who presses and sees
+nothing does the obvious thing — presses again and holds it down — and holding is what wipes
+the Wi-Fi credentials (see §5). So this is not comfort. It is what removes the reason for
+the dangerous gesture, and it goes before the firmware change rather than after.
+
+**How.** The server already knows: `devices/trmnl_byos.py` reads `Update-Source` and sees
+`EXT0` on the very request the press caused. Two things follow from that. It can serve a
+"sto leggendo" screen in that same response instead of the one on disk, so the display
+changes on the press itself. And it can answer that one request with a short
+`refresh_rate` — a few seconds rather than thirty — so the result arrives shortly after the
+scan instead of at the next ordinary poll. The device goes back to its usual spacing on the
+following cycle by itself, because the rate is decided per request.
+
+**What it costs.** A screen that exists only in the moment it is served, so the file on disk
+and what the display shows disagree for one cycle. Worth watching: the scan writes the same
+"sto leggendo" screen a moment later, and the two paths must not fight over the file.
+
+**Where it starts.** `devices/trmnl_byos.py`, the `_display` handler where the press is
+already recorded.
+
+**Done when.** Pressing KEY3 changes the display within one refresh of the e-paper, and the
+result appears without waiting for the ordinary poll.
+
+---
+
+## 5. Take the button's two destructive presses away
 
 **What it is.** In the stock firmware, holding KEY3 wipes the Wi-Fi credentials, and holding
 it longer wipes the device credentials. Both have to go from our build.
@@ -114,7 +146,7 @@ press still starts a scan.
 
 ---
 
-## 5. The two displays do two jobs
+## 6. The two displays do two jobs
 
 **What it is.** One holds the day — the steps of the routine, the next big thing. The other
 holds the thing happening now, or the picture.
@@ -135,7 +167,7 @@ field is worth it only because it costs one line; building the rest is not.
 
 ---
 
-## 6. The display does not know what an error is
+## 7. The display does not know what an error is
 
 **What it is.** A rule already written, worth making impossible to break: no codes, no stack
 traces, no "connection failed", no red icons ever appear on the display.
