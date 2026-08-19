@@ -70,6 +70,21 @@ def test_a_semicolon_in_a_name_does_not_split_the_record() -> None:
     assert found[0].label == "EPSON;D59029"
 
 
+def test_a_space_in_a_name_arrives_as_a_space() -> None:
+    """avahi writes a space in a service name as `\\032`, and this is the name the parent
+    reads in the panel. Measured under the status unit's sandbox on 19 August 2026: the
+    printer in the house announces `EPSON\\032ET-2870\\032Series`, not `EPSOND59029`."""
+    line = PRINTER_LINE.replace("EPSOND59029;_ipp", "EPSON\\032ET-2870\\032Series;_ipp")
+    found = parse_browse(line, "printer")
+    assert found[0].label == "EPSON ET-2870 Series"
+
+
+def test_an_escaped_backslash_does_not_open_an_escape() -> None:
+    """`\\\\032` is a backslash followed by three digits, not a space."""
+    line = PRINTER_LINE.replace("EPSOND59029;_ipp", "EPSON\\\\032;_ipp")
+    assert parse_browse(line, "printer")[0].label == "EPSON\\032"
+
+
 def test_finding_nothing_says_nothing_about_the_house() -> None:
     """The whole point: an empty answer is a fact about this query, not about the house.
     Nothing downstream may remove a row, so there is no path from here to a shorter list."""

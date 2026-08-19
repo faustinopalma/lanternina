@@ -78,7 +78,26 @@ class Found:
 
 
 def _unescape(field: str) -> str:
-    return field.replace("\\;", ";").replace("\\\\", "\\")
+    """Decode avahi's escapes: `\\;`, `\\\\`, and `\\NNN` for a byte written in decimal.
+
+    One left-to-right pass rather than sequential replacements, because the two characters
+    of an escaped backslash would otherwise be read as the opening of the next escape.
+    """
+    out: list[str] = []
+    index = 0
+    while index < len(field):
+        if field[index] != "\\" or index + 1 >= len(field):
+            out.append(field[index])
+            index += 1
+            continue
+        digits = field[index + 1 : index + 4]
+        if len(digits) == 3 and digits.isdigit() and int(digits) <= 0xFF:
+            out.append(chr(int(digits)))
+            index += 4
+        else:
+            out.append(field[index + 1])
+            index += 2
+    return "".join(out)
 
 
 def _split(line: str) -> list[str]:
