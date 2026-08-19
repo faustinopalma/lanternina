@@ -71,7 +71,50 @@ the second kit when it arrives, not on the one in use.
 
 ---
 
-## 4. The two displays do two jobs
+## 4. Take the button's two destructive presses away
+
+**What it is.** In the stock firmware, holding KEY3 wipes the Wi-Fi credentials, and holding
+it longer wipes the device credentials. Both have to go from our build.
+
+```c
+case LongPress:   WifiCaptivePortal.resetSettings();
+case SoftReset:   resetDeviceCredentials();
+```
+
+**Why now, and not as a matter of tidiness.** A short press is what starts a scan, and the
+answer to it arrives at the display's *next* poll — up to seventy seconds later. So the
+person who pressed sees nothing happen. The natural response, and a child's response in
+particular, is to press again and hold it down, because perhaps it did not register. That
+gesture is `LongPress`. The two defects are not independent: our own latency makes the
+destructive press the likely one.
+
+What it costs when it happens is not a rendering glitch. The display leaves the network and
+cannot come back without a USB cable and somebody who knows how to use it. Whoever pressed
+the button caused it and has no way to know that, or to undo it.
+
+**How.** Two things, in this order, because the first removes the reason for the second to
+happen. Answer the press immediately: `devices/trmnl_byos.py` already sees `Update-Source`,
+so it can serve a "sto leggendo" screen in the same response rather than at the next poll,
+and the firmware's own refresh rate can be shortened for one cycle after a press. Then take
+the two cases out in `firmware/patches/`, where we already carry a patch of our own for
+mDNS — replace both with `break`, and rebuild. Recovery does not disappear with them: the
+hub holds every unit's 16 MiB original flash and can reprovision over USB, which is the
+same cable the reset would have forced anyway.
+
+**What it costs.** A firmware rebuild and a reflash of both units — an operation with real
+risk on two devices that currently work, which is why it waits until the paper loop is
+running rather than going first. And it is a fork of the vendor's behaviour: somebody
+expecting a TRMNL to reset the way TRMNLs do will not find it. That is the intended trade.
+
+**Where it starts.** `_reference/trmnl-firmware-v1.8.12/src/bl.cpp` around line 916, and
+`firmware/patches/`.
+
+**Done when.** Holding KEY3 for ten seconds leaves the display on the network, and a short
+press still starts a scan.
+
+---
+
+## 5. The two displays do two jobs
 
 **What it is.** One holds the day — the steps of the routine, the next big thing. The other
 holds the thing happening now, or the picture.
@@ -85,13 +128,14 @@ somewhere to record what a display is for. A `role` field on the device record w
 `panel/devices.py` holds id, name, charge, signal and firmware today, and nothing about the
 display's job. The rest of the chain does not change.
 
-**What it costs.** The second display is not connected yet, so today this is design against
-nothing. Writing the `role` field now is worth it only because it costs one line; building
-the rest is not.
+**What it costs.** The second display is now connected and doing a job of its own — it
+stands by the printer and says what the sheet is for — but it does so because a file with
+its name on it exists, not because anything records what it is for. Writing the `role`
+field is worth it only because it costs one line; building the rest is not.
 
 ---
 
-## 5. The display does not know what an error is
+## 6. The display does not know what an error is
 
 **What it is.** A rule already written, worth making impossible to break: no codes, no stack
 traces, no "connection failed", no red icons ever appear on the display.

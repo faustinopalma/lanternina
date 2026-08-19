@@ -109,7 +109,29 @@ def render_epaper_bmp(
 def _encode(canvas: Image.Image, image_format: str) -> bytes:
     buffer = BytesIO()
     canvas.save(buffer, format=image_format)
-    return buffer.getvalue()
+    data = buffer.getvalue()
+    return _with_conforming_palette(data) if image_format == "BMP" else data
+
+
+def _with_conforming_palette(data: bytes) -> bytes:
+    """Zero the reserved byte of every palette entry, which BMP requires and Pillow does not.
+
+    Found on the display, not in a test: Pillow 11 on the hub writes the fourth byte of the
+    white entry as 0xFF, and the firmware silently refused the file and drew its own screen
+    instead. The picture from the cloud, written by a different Pillow, had 0x00 there and
+    always worked. One byte, and the two files were otherwise identical.
+    """
+    if len(data) < 54 or data[:2] != b"BM":
+        return data
+    pixels = int.from_bytes(data[10:14], "little")
+    header = int.from_bytes(data[14:18], "little")
+    palette = 14 + header
+    if palette >= pixels or (pixels - palette) % 4:
+        return data
+    patched = bytearray(data)
+    for entry in range(palette + 3, pixels, 4):
+        patched[entry] = 0
+    return bytes(patched)
 
 
 def render_picture_bmp(
