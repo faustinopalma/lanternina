@@ -9,6 +9,7 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 import pytest
+from PIL import Image
 
 from devices.trmnl_byos import (
     DEVICE_LOG_KEEP,
@@ -25,6 +26,7 @@ from devices.trmnl_byos import (
     mark_provisioned,
     record_device_log,
     register_device,
+    screen_for,
     set_mains,
     validate_screen,
 )
@@ -147,6 +149,42 @@ def test_usb_power_keeps_the_panel_responsive_and_silences_the_battery(
         assert bitmap != low.read_bytes()
     finally:
         httpd.shutdown()
+
+
+SECOND_MAC = "E8:3D:C1:FB:9F:18"
+
+
+def test_a_display_with_a_job_of_its_own_stops_following_the_picture(tmp_path: Path) -> None:
+    """Two displays, one server, and only one of them is showing the hourly picture.
+
+    The second is the one standing by the printer: what it shows is about the sheet, so it
+    must not be overwritten by the next picture the house paints.
+    """
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    first = register_device(registry, MAC)
+    second = register_device(registry, SECOND_MAC)
+
+    own = screen_for(shared, second.friendly_id)
+    Image.new("1", (800, 480), 1).save(own, format="BMP")
+
+    httpd = ThreadingHTTPServer(
+        ("127.0.0.1", 0), make_handler(Config("http://127.0.0.1", shared, registry))
+    )
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        assert get(f"{base_url}/screen/{first.token}.bmp")[1] == shared.read_bytes()
+        assert get(f"{base_url}/screen/{second.token}.bmp")[1] == own.read_bytes()
+
+        # Nothing to show of its own is the normal state, and it means the picture.
+        own.unlink()
+        assert get(f"{base_url}/screen/{second.token}.bmp")[1] == shared.read_bytes()
+    finally:
+        httpd.shutdown()
+        thread.join()
 
 
 def test_the_cache_key_follows_the_bytes(tmp_path: Path) -> None:

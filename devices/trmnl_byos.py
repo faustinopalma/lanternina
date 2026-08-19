@@ -329,6 +329,15 @@ def validate_screen(path: Path) -> bytes:
     return data
 
 
+def screen_for(shared: Path, friendly_id: str) -> Path:
+    """Where a display's own picture lives, beside the one they all share.
+
+    A display with a job of its own — the sheet on the printer, what to do next — writes
+    here and stops following the picture. Absent is the normal state, not a fault.
+    """
+    return shared.with_name(f"{shared.stem}-{friendly_id}{shared.suffix}")
+
+
 def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     # Validated once here so a broken file fails at startup, not in front of a device.
     last_good = validate_screen(config.screen_file)
@@ -346,6 +355,9 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         )
         if farewell is not None:
             return farewell
+        own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
+        if own is not None:
+            return own
         try:
             last_good = validate_screen(config.screen_file)
         except (OSError, ValueError):

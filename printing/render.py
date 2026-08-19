@@ -145,6 +145,8 @@ class Drawing:
     filled: tuple[MmRect, ...]
     outlined: tuple[MmRect, ...]
     labels: tuple[tuple[float, float, str], ...]
+    # (x, y, size in mm, text): the words on the sheet, which carry no geometry.
+    headings: tuple[tuple[float, float, float, str], ...] = ()
 
 
 def _bitmap_to_rects(bitmap: NDArray[np.uint8], origin: MmRect, quiet_modules: int) -> list[MmRect]:
@@ -212,7 +214,13 @@ def build_drawing(spec: SheetSpec, page: PageGeometry | None = None) -> Drawing:
     labels.append(
         (ruler_x, page.height_mm - page.margin_mm - 1.0, f"{RULER_LENGTH_MM:.0f} mm")
     )
-    return Drawing(page, tuple(filled), tuple(outlined), tuple(labels))
+
+    headings: list[tuple[float, float, float, str]] = []
+    for heading in spec.headings:
+        area = page.to_page(heading.rect)
+        _refuse_if_obstructed(page, area, "a printed line")
+        headings.append((area.x, area.bottom, heading.size_mm, heading.text))
+    return Drawing(page, tuple(filled), tuple(outlined), tuple(labels), tuple(headings))
 
 
 def _refuse_if_obstructed(page: PageGeometry, area: MmRect, what: str) -> None:
@@ -265,6 +273,11 @@ def drawing_to_svg(drawing: Drawing) -> str:
             f'<text x="{x:.4f}" y="{y:.4f}" font-family="DejaVu Sans, sans-serif" '
             f'font-size="3" fill="#000000">{_escape(text)}</text>'
         )
+    for x, y, size, text in drawing.headings:
+        parts.append(
+            f'<text x="{x:.4f}" y="{y:.4f}" font-family="DejaVu Sans, sans-serif" '
+            f'font-size="{size:.2f}" fill="#000000">{_escape(text)}</text>'
+        )
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -297,6 +310,68 @@ def drawing_to_array(drawing: Drawing, dpi: int = 300) -> NDArray[np.uint8]:
             thickness=max(1, round(0.3 * scale)),
         )
     return canvas
+
+
+def drawing_to_pdf(drawing: Drawing) -> bytes:
+    """Write the sheet as a PDF whose page is the paper, one unit per point.
+
+    Written by hand rather than through a converter, because every converter in the path
+    is another chance for "fit to page" to shrink the geometry the reader measures. Here
+    a millimetre becomes 72/25.4 points and nothing else touches it. CUPS still rasterises
+    for the printer, at 360 dpi, which leaves an ArUco module about 35 pixels across.
+
+    Text is Helvetica in WinAnsi, so it carries Italian accents and nothing wider. A
+    character outside that set is dropped rather than shifting the bytes after it.
+    """
+    page = drawing.page
+    scale = 72.0 / _MM_PER_INCH
+    height = page.height_mm * scale
+
+    body = ["0 0 0 rg", "0 0 0 RG", "0.85 w"]
+    for rect in drawing.filled:
+        body.append(
+            f"{rect.x * scale:.3f} {height - rect.bottom * scale:.3f} "
+            f"{rect.w * scale:.3f} {rect.h * scale:.3f} re f"
+        )
+    for rect in drawing.outlined:
+        body.append(
+            f"{rect.x * scale:.3f} {height - rect.bottom * scale:.3f} "
+            f"{rect.w * scale:.3f} {rect.h * scale:.3f} re S"
+        )
+    for x, y, text in drawing.labels:
+        body.append(_pdf_text(x * scale, height - y * scale, 3.0 * scale, text))
+    for x, y, size, text in drawing.headings:
+        body.append(_pdf_text(x * scale, height - y * scale, size * scale, text))
+
+    content = "\n".join(body).encode("ascii", "replace")
+    objects = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {page.width_mm * scale:.3f} "
+        f"{height:.3f}] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>".encode(),
+        b"<< /Length " + str(len(content)).encode() + b" >>\nstream\n" + content + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    ]
+
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for number, obj in enumerate(objects, start=1):
+        offsets.append(len(out))
+        out += f"{number} 0 obj\n".encode() + obj + b"\nendobj\n"
+    start = len(out)
+    out += f"xref\n0 {len(objects) + 1}\n0000000000 65535 f \n".encode()
+    for offset in offsets:
+        out += f"{offset:010d} 00000 n \n".encode()
+    out += (
+        f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{start}\n%%EOF\n"
+    ).encode()
+    return bytes(out)
+
+
+def _pdf_text(x: float, y: float, size: float, text: str) -> str:
+    body = text.encode("cp1252", "ignore").decode("cp1252")
+    escaped = body.replace("\\", r"\\").replace("(", r"\(").replace(")", r"\)")
+    return f"BT /F1 {size:.2f} Tf {x:.3f} {y:.3f} Td ({escaped}) Tj ET"
 
 
 def _escape(text: str) -> str:

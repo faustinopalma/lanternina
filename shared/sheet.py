@@ -126,6 +126,24 @@ class CellSpec:
 
 
 @dataclass(frozen=True, slots=True)
+class Heading:
+    """A line printed on the sheet that the reader never looks at.
+
+    The title and the questions are here rather than among the cells because a cell is a
+    place an answer can be, and these are not: nothing is ever attributed to them. Keeping
+    them apart is what stops the vision pipeline from having to know which boxes were only
+    words.
+    """
+
+    rect: Rect
+    text: str
+    size_mm: float = 4.0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"rect": self.rect.to_dict(), "text": self.text, "size_mm": self.size_mm}
+
+
+@dataclass(frozen=True, slots=True)
 class SheetSpec:
     """Everything needed to print a sheet and, later, to read it back."""
 
@@ -136,6 +154,7 @@ class SheetSpec:
     qr_rect: Rect
     spec_version: int = SHEET_SPEC_VERSION
     created_at: float = 0.0
+    headings: tuple[Heading, ...] = ()
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def cell(self, cell_id: CellId) -> CellSpec:
@@ -152,6 +171,7 @@ class SheetSpec:
             "spec_version": self.spec_version,
             "qr_rect": self.qr_rect.to_dict(),
             "cells": [c.to_dict() for c in self.cells],
+            "headings": [h.to_dict() for h in self.headings],
         }
 
 
