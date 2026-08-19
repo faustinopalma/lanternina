@@ -128,22 +128,47 @@ describe("the devices", () => {
     renderPanel(api);
 
     await open(user, "Dispositivi");
-    const jobs = await screen.findAllByLabelText("A cosa serve questo dispositivo");
-    await user.selectOptions(jobs[1]!, "sheet");
+    const groups = await screen.findAllByRole("group", {
+      name: "A cosa serve questo dispositivo",
+    });
+    await user.click(
+      within(groups[1]!).getByRole("checkbox", { name: "mostra le azioni da compiere" }),
+    );
     await waitFor(() =>
       expect(api.recorded.assignments).toEqual([
-        { id: "E8:3D:C1:FB:9F:18", assignment: { job: "sheet" } },
+        { id: "E8:3D:C1:FB:9F:18", assignment: { jobs: ["sheet"] } },
       ]),
     );
 
     const names = screen.getAllByLabelText("Nome di questo dispositivo");
-    await user.type(names[1]!, "lo schermo accanto alla stampante");
+    await user.type(names[1]!, "lo schermo in cucina");
     await user.tab();
     await waitFor(() =>
       expect(api.recorded.assignments[1]).toEqual({
         id: "E8:3D:C1:FB:9F:18",
-        assignment: { name: "lo schermo accanto alla stampante" },
+        assignment: { name: "lo schermo in cucina" },
       }),
+    );
+  });
+
+  it("lets one display hold two jobs, and does not take either from anybody", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Dispositivi");
+    const groups = await screen.findAllByRole("group", {
+      name: "A cosa serve questo dispositivo",
+    });
+    // The first display already shows the pictures; adding the second job keeps both.
+    await user.click(
+      within(groups[0]!).getByRole("checkbox", { name: "mostra le azioni da compiere" }),
+    );
+
+    await waitFor(() =>
+      expect(api.recorded.assignments).toEqual([
+        { id: "94:A9:90:CF:7D:04", assignment: { jobs: ["picture", "sheet"] } },
+      ]),
     );
   });
 
@@ -152,11 +177,13 @@ describe("the devices", () => {
     renderPanel(fakeApi());
 
     await open(user, "Dispositivi");
-    const jobs = await screen.findAllByLabelText("A cosa serve questo dispositivo");
-    const choices = within(jobs[2]!)
-      .getAllByRole("option")
-      .map((option) => option.textContent);
-    expect(choices).toEqual(["nessun compito", "stampa i fogli"]);
+    const groups = await screen.findAllByRole("group", {
+      name: "A cosa serve questo dispositivo",
+    });
+    const choices = within(groups[2]!)
+      .getAllByRole("checkbox")
+      .map((box) => box.closest("label")?.textContent);
+    expect(choices).toEqual(["stampa i fogli"]);
   });
 });
 

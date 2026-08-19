@@ -22,8 +22,8 @@ from pathlib import Path
 
 from devices.inventory import (
     Found,
-    holder,
-    job_of,
+    holders,
+    jobs_of,
     load_jobs,
     names_a_person,
     parse_browse,
@@ -151,13 +151,36 @@ def test_with_nobody_named_nothing_is_refused() -> None:
 
 def test_the_cache_survives_a_round_trip(tmp_path: Path) -> None:
     path = tmp_path / "jobs.json"
-    things = [{"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": "picture", "name": "il quadro"}]
+    things = [
+        {"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "jobs": ["picture"], "name": "il quadro"}
+    ]
 
     save_jobs(path, things)
 
     assert load_jobs(path) == things
-    assert holder(load_jobs(path), "picture") == things[0]
-    assert holder(load_jobs(path), "sheet") is None
+    assert holders(load_jobs(path), "picture") == things
+    assert holders(load_jobs(path), "sheet") == []
+
+
+def test_a_job_may_be_held_by_more_than_one_thing() -> None:
+    """A house with two displays and three things to show cannot work any other way. The
+    order is by id so that a caller picking between them starts from something stable."""
+    things = [
+        {"id": "b", "label": "B", "jobs": ["picture", "sheet"]},
+        {"id": "a", "label": "A", "jobs": ["picture"]},
+    ]
+
+    assert [thing["id"] for thing in holders(things, "picture")] == ["a", "b"]
+    assert [thing["id"] for thing in holders(things, "sheet")] == ["b"]
+
+
+def test_a_cache_written_before_the_change_still_reads() -> None:
+    """The hub is updated before the panel, so for a few minutes the cached answer carries
+    a single `job`. Reading only `jobs` would have put an id card on every display."""
+    things = [{"id": "a", "label": "A", "job": "picture"}]
+
+    assert [thing["id"] for thing in holders(things, "picture")] == ["a"]
+    assert jobs_of(things, "a") == ("picture",)
 
 
 def test_an_unusable_cache_reads_as_never_answered(tmp_path: Path) -> None:
@@ -176,12 +199,12 @@ def test_an_unusable_cache_reads_as_never_answered(tmp_path: Path) -> None:
 
 
 def test_three_answers_to_what_a_display_is_for() -> None:
-    things = [{"id": "known", "job": "picture"}, {"id": "idle", "job": ""}]
+    things = [{"id": "known", "jobs": ["picture"]}, {"id": "idle", "jobs": []}]
 
-    assert job_of(things, "known") == "picture"
-    assert job_of(things, "idle") == ""
-    assert job_of(things, "stranger") is None
-    assert job_of(None, "known") is None
+    assert jobs_of(things, "known") == ("picture",)
+    assert jobs_of(things, "idle") == ()
+    assert jobs_of(things, "stranger") is None
+    assert jobs_of(None, "known") is None
 
 
 def test_what_is_reported_upward_carries_no_address_as_its_identity() -> None:

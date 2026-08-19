@@ -277,21 +277,38 @@ def load_jobs(path: Path) -> list[dict[str, Any]] | None:
     return things if isinstance(things, list) else None
 
 
-def holder(things: list[dict[str, Any]] | None, job: str) -> dict[str, Any] | None:
-    """The thing that holds this job, or None. The panel keeps a job to one thing."""
-    for thing in things or ():
-        if isinstance(thing, dict) and thing.get("job") == job:
-            return thing
-    return None
+def holders(things: list[dict[str, Any]] | None, job: str) -> list[dict[str, Any]]:
+    """Everything that holds this job. A job may be held by several things at once.
+
+    Sorted by id so that a caller picking between them starts from a stable order and a
+    random choice is the only thing that varies.
+    """
+    found = [thing for thing in things or () if isinstance(thing, dict) and job in _jobs(thing)]
+    return sorted(found, key=lambda thing: str(thing.get("id") or ""))
 
 
-def job_of(things: list[dict[str, Any]] | None, thing_id: str) -> str | None:
-    """What this thing is for: a job, "" for none, or None if it is not on the list.
+def jobs_of(things: list[dict[str, Any]] | None, thing_id: str) -> tuple[str, ...] | None:
+    """What this thing is for: its jobs, an empty tuple for none, or None if it is not on
+    the list.
 
     The three answers are different. Not on the list means the panel has never mentioned
     it, and the caller must carry on as it did before rather than treat it as unassigned.
     """
     for thing in things or ():
         if isinstance(thing, dict) and thing.get("id") == thing_id:
-            return str(thing.get("job") or "")
+            return _jobs(thing)
     return None
+
+
+def _jobs(thing: dict[str, Any]) -> tuple[str, ...]:
+    """The jobs on one cached row, whichever way the panel spelled them.
+
+    A cache written before 19 August 2026 carries a single `job`. Reading both means the
+    hub can be updated before the panel without a house in between where nothing holds
+    anything — which would put an id card on every display.
+    """
+    stored = thing.get("jobs")
+    if isinstance(stored, list):
+        return tuple(str(job) for job in stored if str(job))
+    single = str(thing.get("job") or "")
+    return (single,) if single else ()

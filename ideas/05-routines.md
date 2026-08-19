@@ -24,31 +24,82 @@ person.
 
 ---
 
-## 1. Reminders at times the parent chose
+## 1. Reminders the parent writes in their own words
 
-**What it is.** The steps of the day appear on the display at hours the parent sets, the
-same way the picture rhythm now works.
+**What it is.** A page in the panel where the parent writes what should be remembered, in
+ordinary sentences and not in fields — "lavarsi i denti dopo cena", "mercoledì porta fuori
+il bidone". The house turns those sentences into reminders with a time attached, and shows
+each one on a display when its moment comes. The adolescent presses the button and it goes
+away.
 
 **Why.** The routine is the part of the day that repeats, and repeating it is the part an
 adult currently does out loud. A reminder at 07:30 is not a notification: it is the
-schedule the household already has, written where it can be seen without asking.
+schedule the household already has, written where it can be seen without asking. Free text
+rather than a form because a parent knows the routine and does not know our vocabulary for
+it, and a form is a quiz about the vocabulary.
 
-**How.** The proposal kind exists — `routine_prompt` — and so does the shape to copy: a
-setting written from the panel, read by the hub on its next run, with the hub deciding.
-What is missing is a place to put the times and their steps, and a rule for what the
-display shows when no step is due.
+**The constraint that shapes it, and it is not negotiable.** A write from the panel is
+inert: it may persist state and nothing else — no model call, no work queued, no waking the
+house. That rule is what makes "the panel is unreachable" mean reduced capability rather
+than a stopped house, and it is why the panel cannot reach into the home at all. So the AI
+cannot read what the parent typed at the moment they type it.
 
-**What it costs.** The timer fires once an hour, so a reminder cannot be finer than that
-without a faster timer, and a faster timer costs battery. Decide the granularity before
-promising it in the panel. The other cost is a product one: a step that appears and stays
-there after it is done is worse than nothing, so it needs a way to move on that does not
-require anybody to confirm anything.
+What survives the rule is the whole of the idea, one step later. The parent's sentences are
+stored exactly as written, marked as not yet read. The hub asks — on the timer it already
+has, the way it asks for a picture — whether there is anything new, and the interpreting
+happens inside the answer to *that* request. The parent sees the result the next time they
+open the panel. A reminder written at 14:00 becomes active at the next request, so at most
+one interval late, which is the same trade already accepted for the rhythm.
 
-**Where it starts.** `panel/rhythm.py` as the pattern, a store beside it for the steps,
-`devices/pull_picture.py` for the side that decides, `web/` for the parent's screen.
+**The clarification.** A sentence the model cannot place in time — "lavare i denti", with no
+hour — does not become a reminder and does not fail silently either. It comes back as a
+question against that line, and the panel shows it the next time the parent looks. The
+parent answers by editing their own sentence, not by filling in a field: the text they
+wrote stays the only copy, so there is never a version in the database that disagrees with
+what is on their screen.
 
-**Done when.** With the hub's clock moved forward across a set time, the step for that hour
-is on the display, and outside those hours the display holds what it held before.
+**What must not be built here, and this is the part that would be easy to get wrong.**
+Nothing records whether a reminder was dismissed, or when, or how often one was not. That
+would be an adherence score about a person under another name, and it is refused for the
+same reason grades are. A reminder that nobody presses is shown until its window closes and
+is then simply not shown; nothing is kept, nothing is repeated louder, and nothing is sent
+because a button was not pressed — a notification triggered by inactivity is the one shape
+this project will not build.
+
+**The wording is the model's, the reminder is the parent's.** The text on the display is
+generated, so that the same reminder does not arrive in the same words for the two
+hundredth time. That means it is content reaching the adolescent and passes the safety
+chokepoint like everything else. It cannot be approved sentence by sentence — nobody will
+approve four sentences a day — so it takes the shape already used for pictures: the parent
+approves the *theme*, and not each image. Here the parent approves the reminder, and the
+wording varies inside it.
+
+**One press, two meanings.** The button on a display currently means "read the sheet on the
+glass", and a press while a reminder is showing must mean "seen" instead. So the press has
+to be read against what the display was showing, and dismissing a reminder must not start a
+37 s scan. This is the sharpest edge in the whole idea and it belongs to
+`devices/scan_sheet.py`, which today treats every press the same way.
+
+**The third role.** A display would carry "shows reminders when they are due" alongside the
+two it can hold now. The role is deliberately absent from the panel until there is something
+behind it: a job a parent can hand out that does nothing is worse than a job that is not
+offered.
+
+**Where it starts.** `panel/rhythm.py` as the pattern for a setting the hub reads; a store
+beside it for the parent's text and the reminders derived from it; `panel/app.py` for the
+route the hub calls; `devices/pull_picture.py` for the side that decides when; `agents/`
+for the reading of the sentences; `web/` for the parent's page.
+
+**Done when.** A parent writes three sentences, one of them without a time. With the hub's
+clock moved across the hours named, each of the other two appears on a display holding the
+reminder role and clears on a press; the third has produced a question in the panel and no
+reminder. Nothing anywhere counts presses.
+
+**What it costs.** A week, and most of it is not the parsing. The timer fires once a minute
+but a reminder is only as fine as the interval at which the hub asks, so decide the
+granularity before promising it in the panel. The second cost is the one above: the press
+stops having a single meaning, and that is a change to the part of the system a person
+touches with their hand.
 
 ---
 

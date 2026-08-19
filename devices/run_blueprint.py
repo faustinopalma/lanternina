@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import stat
 import sys
 from collections.abc import Mapping
@@ -34,7 +35,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from devices.epaper import render_notice_bmp
-from devices.inventory import JOB_SHEET, holder, load_jobs
+from devices.inventory import JOB_SHEET, holders, load_jobs
 from devices.print_sheet import lay_out_and_print, recall
 from devices.read_page import read_page
 from devices.scan_sheet import describe, find_scanner, scan_page
@@ -97,18 +98,25 @@ def load_blueprint(path: Path) -> Blueprint:
 
 
 def sheet_file(shared: Path, jobs_file: Path) -> Path:
-    """Where a notice about the sheet goes: the file of whichever display holds that job.
+    """Where a notice about the sheet goes: the file of one of the displays that hold it.
 
     The same resolution the picture path makes for itself. Until 19 August 2026 this half
     of the house took the screen from whoever called it, so a caller working from a stale
     note put the sheet's notice on the picture display, and nothing here could tell.
 
+    Several displays may hold the job, and one of them is picked at random each time. That
+    is what was asked for and it has a cost worth saying plainly: on a house with two, a
+    notice appears on one of them, and somebody standing at the other does not see it.
+
     With no answer from the panel the shared file is still the target, which is what the
     house did before anybody could say which display was which.
     """
-    chosen = holder(load_jobs(jobs_file), JOB_SHEET)
-    friendly = str((chosen or {}).get("label") or "")
-    return screen_for(shared, friendly) if friendly else shared
+    labels = sorted(
+        str(thing.get("label") or "")
+        for thing in holders(load_jobs(jobs_file), JOB_SHEET)
+        if thing.get("label")
+    )
+    return screen_for(shared, random.choice(labels)) if labels else shared
 
 
 def screen_in(env: Mapping[str, str]) -> Path | None:

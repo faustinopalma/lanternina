@@ -34,8 +34,10 @@ KIND_PRINTER = "printer"
 KIND_SCANNER = "scanner"
 KINDS = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER)
 
-# The jobs the parent can hand out. Empty is the honest starting state: a display with no
-# job shows its own id, so the row here and the object on the shelf can be matched.
+# The jobs the parent can hand out. A thing holds as many as the parent gives it, and a
+# job may be held by several things at once: a house with two displays and three things to
+# show cannot work any other way, and when more than one thing can do something the house
+# picks between them, which is where the variation comes from.
 JOB_NONE = ""
 JOB_PICTURE = "picture"
 JOB_SHEET = "sheet"
@@ -137,7 +139,10 @@ class Thing:
     # the mDNS service name. Not the parent's to choose, and the only thing to match a row
     # against an object on a shelf before anybody has named it.
     label: str = ""
-    job: str = JOB_NONE
+    # Every job the parent gave this thing. Empty is the honest starting state: a display
+    # with no job shows its own id, so the row here and the object on the shelf can be
+    # matched.
+    jobs: tuple[str, ...] = ()
     model: str = ""
     address: str = ""
     # The hub would not use this name: it carries the name of a person. Set by the house,
@@ -158,7 +163,7 @@ class Thing:
             "kind": self.kind,
             "name": self.name,
             "label": self.label,
-            "job": self.job,
+            "jobs": list(self.jobs),
             "jobChoices": list(JOBS_BY_KIND.get(self.kind, ())),
             "model": self.model,
             "address": self.address,
@@ -179,7 +184,7 @@ class InventoryStore(Protocol):
         household_id: str,
         thing_id: str,
         *,
-        job: str | None = None,
+        jobs: Sequence[str] | None = None,
         name: str | None = None,
     ) -> Thing: ...
 
@@ -221,20 +226,14 @@ class InMemoryInventoryStore:
         household_id: str,
         thing_id: str,
         *,
-        job: str | None = None,
+        jobs: Sequence[str] | None = None,
         name: str | None = None,
     ) -> Thing:
         with self._lock:
             current = self._rows[(household_id, thing_id)]
-            if job is not None and job != JOB_NONE:
-                # A job belongs to one thing. Handing it over takes it from whoever held
-                # it, which is what a parent means by "this is the picture display now".
-                for key, row in list(self._rows.items()):
-                    if key[0] == household_id and key[1] != thing_id and row.job == job:
-                        self._rows[key] = replace(row, job=JOB_NONE)
             updated = replace(
                 current,
-                job=current.job if job is None else job,
+                jobs=current.jobs if jobs is None else tuple(jobs),
                 name=current.name if name is None else name,
                 # A new name is a new attempt: the house has not judged it yet.
                 name_refused=current.name_refused if name is None else False,
@@ -272,14 +271,18 @@ def clean_name(raw: str) -> str:
     return name
 
 
-def clean_job(kind: str, raw: str) -> str:
-    """The job as the parent chose it. Raises ValueError if that kind cannot do it."""
-    job = raw.strip()
-    if job == JOB_NONE:
-        return JOB_NONE
-    if job not in JOBS_BY_KIND.get(kind, ()):
-        raise ValueError(f"a {kind} cannot be given the job {job!r}")
-    return job
+def clean_jobs(kind: str, raw: Sequence[str]) -> tuple[str, ...]:
+    """The jobs as the parent chose them. Raises ValueError if that kind cannot do one.
+
+    Returned in the order the kind offers them rather than the order they arrived in, so
+    that the same set always reads the same way and duplicates cannot survive.
+    """
+    chosen = {job.strip() for job in raw} - {JOB_NONE}
+    allowed = JOBS_BY_KIND.get(kind, ())
+    unknown = sorted(chosen - set(allowed))
+    if unknown:
+        raise ValueError(f"a {kind} cannot be given the job {unknown[0]!r}")
+    return tuple(job for job in allowed if job in chosen)
 
 
 def merged(

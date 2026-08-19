@@ -129,7 +129,7 @@ def install(screen_file: Path, image: bytes) -> None:
 
 
 def picture_file(shared: Path, jobs_file: Path) -> Path:
-    """Where the picture goes: the file of whichever display holds that job.
+    """Where the picture goes: the file of one of the displays that hold that job.
 
     Writing to the shared file was what made the defect of 19 August 2026 permanent. One
     press created `screen-<id>.bmp` for a display, that file took the display over for
@@ -137,15 +137,38 @@ def picture_file(shared: Path, jobs_file: Path) -> Path:
     Addressing the display that holds the job writes to the same file the press did, so a
     press costs one picture instead of the display.
 
+    Several displays may hold the job. The one chosen is the one whose picture is oldest,
+    ties broken at random, because that is the only rule under which every one of them
+    actually changes: picking at random would leave a display that keeps losing the toss
+    showing the same picture for a day. It costs one generation per display per spacing
+    rather than one per spacing, which is what a parent asking for two picture frames is
+    asking for.
+
     With no answer from the panel the shared file is still the target, which is what the
     house did before anybody could say which display was which.
     """
-    from devices.inventory import holder, load_jobs
+    import random
+
+    from devices.inventory import holders, load_jobs
     from devices.trmnl_byos import screen_for
 
-    chosen = holder(load_jobs(jobs_file), "picture")
-    friendly = str((chosen or {}).get("label") or "")
-    return screen_for(shared, friendly) if friendly else shared
+    chosen = [
+        screen_for(shared, str(thing.get("label") or ""))
+        for thing in holders(load_jobs(jobs_file), "picture")
+        if thing.get("label")
+    ]
+    if not chosen:
+        return shared
+    random.shuffle(chosen)
+    return min(chosen, key=_painted_at)
+
+
+def _painted_at(screen_file: Path) -> float:
+    """When this display last changed. Never painted sorts first."""
+    try:
+        return screen_file.stat().st_mtime
+    except OSError:
+        return 0.0
 
 
 def main() -> int:

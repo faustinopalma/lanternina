@@ -4,7 +4,7 @@ import { useApi } from "@/api/client";
 import type { Device, NewAssignment } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
-import { Input, Select } from "@/components/ui/field";
+import { Input } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
@@ -22,7 +22,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
   const { t, ago } = useWords();
   const api = useApi();
   const [name, setName] = useState(device.name);
-  const [job, setJob] = useState(device.job);
+  const [jobs, setJobs] = useState(device.jobs);
   const [problem, setProblem] = useState<MessageKey | null>(null);
 
   /* Saving persists a choice and returns. Nothing is printed and nothing is scanned: the
@@ -69,25 +69,34 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
             if (name !== device.name) void save({ name });
           }}
         />
-        <Select
-          className="flex-none"
-          aria-label={t("devices.jobAria")}
-          value={job}
-          onChange={(event) => {
-            setJob(event.target.value);
-            void save({ job: event.target.value });
-          }}
-        >
-          <option value="">{t("devices.noJob")}</option>
-          {device.jobChoices.map((choice) => (
-            <option key={choice} value={choice}>
-              {t(known(KNOWN_JOBS, choice, "job", "devices.noJob"))}
-            </option>
-          ))}
-        </Select>
+        <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          <legend className="sr-only">{t("devices.jobAria")}</legend>
+          {device.jobChoices.length === 0 ? (
+            <Quiet>{t("devices.noJob")}</Quiet>
+          ) : (
+            device.jobChoices.map((choice) => (
+              <label key={choice} className="flex items-center gap-2 text-[0.98rem]">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-focus"
+                  checked={jobs.includes(choice)}
+                  onChange={(event) => {
+                    // A job is not taken from anybody: several things may hold the same
+                    // one, and the house picks between them when the moment comes.
+                    const chosen = event.target.checked
+                      ? [...jobs, choice]
+                      : jobs.filter((held) => held !== choice);
+                    setJobs(chosen);
+                    void save({ jobs: chosen });
+                  }}
+                />
+                {t(known(KNOWN_JOBS, choice, "job", "devices.noJob"))}
+              </label>
+            ))
+          )}
+        </fieldset>
       </div>
-      {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}
-      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
+      {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
       {device.silent ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
     </div>
   );
@@ -108,6 +117,8 @@ export function Devices() {
   return (
     <div aria-live="polite">
       <Quiet>{t("devices.nameNote", { limit: nameLimit })}</Quiet>
+      <Quiet>{t("devices.jobNote")}</Quiet>
+      <Quiet>{t("devices.removeNote")}</Quiet>
       {devices.map((device) => (
         <div
           key={device.id}

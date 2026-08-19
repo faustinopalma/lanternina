@@ -444,9 +444,9 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             return None
         try:
             from devices.epaper import render_id_bmp
-            from devices.inventory import job_of, load_jobs
+            from devices.inventory import jobs_of, load_jobs
 
-            if job_of(load_jobs(config.jobs_file), device.mac) != "":
+            if jobs_of(load_jobs(config.jobs_file), device.mac) != ():
                 return None
             drawn = id_screens.get(device.friendly_id)
             if drawn is None:

@@ -99,8 +99,10 @@
   "devices.nameAria": "Name of this device",
   "devices.jobAria": "What this device is for",
   "devices.noJob": "no job yet",
+  "devices.jobNote": "A device can have several jobs, and the same job can sit on several devices: when there is more than one, the house picks between them each time.",
   "devices.remove": "Remove",
   "devices.removeTitle": "Remove “{name}”",
+  "devices.removeNote": "Removing is not permanent: the house looks again on its own every five minutes, and a printer or scanner still switched on comes back to the list. What is lost is the jobs you had given it, which you assign again.",
   "devices.saveFailed": "I could not save that. Try again later.",
   "devices.nameRefused": "The house did not take this name: it carries the name of a person, and that never goes into what is written for the display. Write a name for the object instead.",
 
@@ -109,7 +111,7 @@
   "kind.scanner": "scanner",
 
   "job.picture": "shows the pictures",
-  "job.sheet": "stands by the printer",
+  "job.sheet": "shows what to do next",
   "job.print": "prints the sheets",
   "job.scan": "reads the sheets",
 

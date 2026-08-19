@@ -47,12 +47,12 @@ JOB_SHEET: Final = "sheet"
 JOB_PRINT: Final = "print"
 JOB_SCAN: Final = "scan"
 
-# A display given the picture job is absent from this table on purpose. It can draw the
-# same 800x480 image, but it is the frame on the wall: handing it to an experience would
-# take the pictures away for as long as the experience runs, which is the failure found on
-# 19 August 2026 when one button press converted the picture display into the sheet one.
-# The cost is that a house with a single display must choose a job before it can be
-# offered anything, and choosing is the parent's to do.
+# A display given only the picture job is absent from this table on purpose. It can draw
+# the same 800x480 image, but it is the frame on the wall: handing it to an experience
+# would take the pictures away for as long as the experience runs, which is the failure
+# found on 19 August 2026 when one button press converted the picture display into the
+# sheet one. A parent who wants one display to do both says so by giving it both jobs,
+# which is a sentence the panel can now write.
 _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
     (KIND_PRINTER, JOB_PRINT): HouseCapability.PRINT_A4,
     (KIND_SCANNER, JOB_SCAN): HouseCapability.SCAN_A4,
@@ -61,13 +61,13 @@ _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
 
 
 class Assigned(Protocol):
-    """A row of the household inventory: something with a kind and a job."""
+    """A row of the household inventory: something with a kind and the jobs it was given."""
 
     @property
     def kind(self) -> str: ...
 
     @property
-    def job(self) -> str: ...
+    def jobs(self) -> tuple[str, ...]: ...
 
 
 def provided_by(kind: str, job: str) -> HouseCapability | None:
@@ -82,5 +82,5 @@ def capabilities_of(things: Iterable[Assigned]) -> frozenset[HouseCapability]:
     morning is a question about now; this answers what the house is equipped to do, and
     conflating the two would make a catalogue flicker with the network.
     """
-    found = (provided_by(thing.kind, thing.job) for thing in things)
+    found = (provided_by(thing.kind, job) for thing in things for job in thing.jobs)
     return frozenset(capability for capability in found if capability is not None)

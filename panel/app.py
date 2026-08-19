@@ -45,7 +45,7 @@ from .devices import (
     InMemoryInventoryStore,
     InventoryStore,
     Thing,
-    clean_job,
+    clean_jobs,
     clean_name,
     merged,
 )
@@ -197,7 +197,7 @@ class NewAssignment(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    job: str | None = None
+    jobs: list[str] | None = None
     name: str | None = None
 
 
@@ -643,11 +643,11 @@ def create_app(
         if known is None:
             raise HTTPException(status_code=404, detail="unknown_device")
         try:
-            job = None if new.job is None else clean_job(known.kind, new.job)
+            jobs = None if new.jobs is None else clean_jobs(known.kind, new.jobs)
             name = None if new.name is None else clean_name(new.name)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-        return inventory.assign(household, thing_id, job=job, name=name).to_public()
+        return inventory.assign(household, thing_id, jobs=jobs, name=name).to_public()
 
     @app.post("/api/devices/{thing_id}/remove")
     def forget_device(thing_id: str, account: CurrentAccount, request: Request) -> Any:

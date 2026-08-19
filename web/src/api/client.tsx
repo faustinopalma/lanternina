@@ -150,7 +150,7 @@ export function httpApi(token: string): Api {
     // The whole effect of a choice: a row changes. Nothing is printed, nothing is
     // scanned, and the house finds out when it next reports.
     assignDevice: (id: string, assignment: NewAssignment) =>
-      json<Device>(`/api/devices/${encodeURIComponent(id)}`, write(assignment), ["id", "job"]),
+      json<Device>(`/api/devices/${encodeURIComponent(id)}`, write(assignment), ["id", "jobs"]),
 
     async removeDevice(id: string): Promise<void> {
       await json(`/api/devices/${encodeURIComponent(id)}/remove`, { method: "POST" });

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import re
 import time
+from collections.abc import Sequence
 from dataclasses import replace
 from typing import Any
 
@@ -25,7 +26,7 @@ from azure.identity import DefaultAzureCredential
 from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 
-from .devices import JOB_NONE, DeviceStatus, Thing, order_of
+from .devices import DeviceStatus, Thing, order_of
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
@@ -452,19 +453,14 @@ class CosmosInventoryStore:
         household_id: str,
         thing_id: str,
         *,
-        job: str | None = None,
+        jobs: Sequence[str] | None = None,
         name: str | None = None,
     ) -> Thing:
         rows = {row.id: row for row in self.list(household_id)}
         current = rows[thing_id]
-        if job is not None and job != JOB_NONE:
-            # A job belongs to one thing: handing it over takes it from whoever held it.
-            for row in rows.values():
-                if row.id != thing_id and row.job == job:
-                    self._container.upsert_item(_from_thing(replace(row, job=JOB_NONE)))
         updated = replace(
             current,
-            job=current.job if job is None else job,
+            jobs=current.jobs if jobs is None else tuple(jobs),
             name=current.name if name is None else name,
             name_refused=current.name_refused if name is None else False,
         )
@@ -496,6 +492,14 @@ def _thing_document_id(thing_id: str) -> str:
     return "thing-" + re.sub(r"[^A-Za-z0-9._-]", "-", thing_id)
 
 
+def _jobs_in(document: dict[str, Any]) -> tuple[str, ...]:
+    stored = document.get("jobs")
+    if isinstance(stored, list):
+        return tuple(str(job) for job in stored if str(job))
+    single = str(document.get("job") or "")
+    return (single,) if single else ()
+
+
 def _from_thing(thing: Thing) -> dict[str, Any]:
     return {
         "id": _thing_document_id(thing.id),
@@ -505,7 +509,7 @@ def _from_thing(thing: Thing) -> dict[str, Any]:
         "kind": thing.kind,
         "name": thing.name,
         "label": thing.label,
-        "job": thing.job,
+        "jobs": list(thing.jobs),
         "model": thing.model,
         "address": thing.address,
         "nameRefused": thing.name_refused,
@@ -521,7 +525,9 @@ def _to_thing(document: dict[str, Any]) -> Thing:
         kind=str(document.get("kind") or ""),
         name=str(document.get("name") or ""),
         label=str(document.get("label") or ""),
-        job=str(document.get("job") or ""),
+        # `job` is what documents written before 19 August 2026 carry, and the parent's
+        # choice is the one thing here nothing else can reconstruct.
+        jobs=_jobs_in(document),
         model=str(document.get("model") or ""),
         address=str(document.get("address") or ""),
         name_refused=bool(document.get("nameRefused", False)),

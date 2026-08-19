@@ -99,8 +99,10 @@
   "devices.nameAria": "Nome di questo dispositivo",
   "devices.jobAria": "A cosa serve questo dispositivo",
   "devices.noJob": "nessun compito",
+  "devices.jobNote": "Un dispositivo può avere più compiti, e lo stesso compito può stare su più dispositivi: quando ce n'è più di uno, la casa sceglie di volta in volta.",
   "devices.remove": "Togli",
   "devices.removeTitle": "Togli “{name}”",
+  "devices.removeNote": "Togliere non è definitivo: la casa guarda da sola ogni cinque minuti, e una stampante o uno scanner ancora accesi tornano nell'elenco. Quello che si perde sono i compiti che avevi dato, da riassegnare.",
   "devices.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
   "devices.nameRefused": "La casa non ha preso questo nome: contiene il nome di una persona, e quello non entra mai in ciò che viene scritto per il display. Scrivi il nome dell'oggetto.",
 
@@ -109,7 +111,7 @@
   "kind.scanner": "scanner",
 
   "job.picture": "mostra i quadri",
-  "job.sheet": "sta accanto alla stampante",
+  "job.sheet": "mostra le azioni da compiere",
   "job.print": "stampa i fogli",
   "job.scan": "legge i fogli",
 

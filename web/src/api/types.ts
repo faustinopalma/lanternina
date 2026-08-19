@@ -82,7 +82,7 @@ export interface Device {
   kind: string;
   label: string;
   name: string;
-  job: string;
+  jobs: string[];
   jobChoices: string[];
   model: string;
   address: string;
@@ -101,7 +101,7 @@ export interface Inventory {
 /** What the parent decided about one thing. Either half may be sent on its own: naming a
  *  printer and telling it to print are two moments. */
 export interface NewAssignment {
-  job?: string;
+  jobs?: string[];
   name?: string;
 }
 

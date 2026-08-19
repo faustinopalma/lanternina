@@ -341,7 +341,36 @@ both env files sourced, `screen_in(os.environ)` returns
 
 **The command needs both env files.** `TRMNL_SCREEN_FILE` and `LANTERNINA_JOBS_FILE` live
 in `trmnl-byos.env`, not `panel.env`. A run that sources only `panel.env` and omits
-`--screen` now says there is no display in this house, which is correct and unhelpful.
+`--screen` says there is no display in this house, which is correct and unhelpful.
+
+**A thing holds several jobs, and a job several things — 19 August 2026.** Until then a job
+belonged to one thing, and handing it over took it from whoever held it. That cannot
+survive three things to show on two displays, which is what this house has: the picture,
+what to do next, and the reminders of `05 §1`. So a thing now carries a set of jobs, no job
+is taken from anybody, and when more than one thing can do something the house picks
+between them — the oldest picture first for the pictures, because that is the only rule
+under which every frame actually changes, and at random for a notice, which is what makes
+where the next thing appears worth looking for. The cost of the second is worth stating: on
+a house with two, a notice lands on one of them, and somebody standing at the other does
+not see it.
+
+The name the parent reads changed with it. "sta accanto alla stampante" described where a
+display stood, and the display does not have to stand anywhere near the printer: the sheet
+can be put on the glass and the button pressed somewhere else entirely. It is now "mostra
+le azioni da compiere", which is what the display does rather than where it is.
+
+The hub reads a cache written either way — a single `job` or a list of `jobs` — so it can be
+updated before the panel. The other order would put an id card on every display in the
+house for as long as the two disagreed.
+
+**Removing something is not permanent, and the panel now says so.** The hub reports what it
+finds on every status push, and the panel creates a row it does not have, so a printer or a
+scanner still switched on returns to the list on its own. What does not return is the jobs
+it had been given: `forget` drops the row, and the parent's choice is the one thing in it
+nothing else can reconstruct. That is why the answer is a sentence in the panel and not a
+"look now" button — a button would have to ask the hub to do something, which is exactly
+what a panel write may not do, and it would gain nothing, because the hub already looks
+every five minutes.
 
 **A run under `sudo` created a screen the button path could not write.** The first
 `screen-CF7D04.bmp` came out `root:root` 644. The display server reads it — it is

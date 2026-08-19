@@ -116,12 +116,12 @@ def test_what_the_parent_wrote_survives_the_next_report() -> None:
     client = client_for()
     household = household_of(client)
     report(client, household, display(PICTURE_MAC, "CF7D04"))
-    assign(client, PICTURE_MAC, job="picture", name="il quadro in corridoio")
+    assign(client, PICTURE_MAC, jobs=["picture"], name="il quadro in corridoio")
 
     report(client, household, display(PICTURE_MAC, "CF7D04"))
 
     row = by_id(client, PICTURE_MAC)
-    assert row["job"] == "picture"
+    assert row["jobs"] == ["picture"]
     assert row["name"] == "il quadro in corridoio"
 
 
@@ -131,27 +131,41 @@ def test_a_thing_that_changed_address_is_still_one_row() -> None:
     client = client_for()
     household = household_of(client)
     report(client, household, printer(address="192.168.0.138"))
-    assign(client, PRINTER, job="print", name="la stampante di sotto")
+    assign(client, PRINTER, jobs=["print"], name="la stampante di sotto")
 
     report(client, household, printer(address="192.168.0.5"))
 
     rows = listed(client)
     assert len(rows) == 1
     assert rows[0]["address"] == "192.168.0.5"
-    assert rows[0]["job"] == "print"
+    assert rows[0]["jobs"] == ["print"]
 
 
-def test_a_job_belongs_to_one_thing() -> None:
-    """Two displays claiming the pictures would leave the hub to decide by luck."""
+def test_a_job_may_be_held_by_more_than_one_thing() -> None:
+    """Until 19 August 2026 handing a job over took it from whoever held it. A house with
+    two displays and three things to show cannot work that way, and when more than one
+    thing can do something the house picks between them."""
     client = client_for()
     household = household_of(client)
     report(client, household, display(PICTURE_MAC, "CF7D04"), display(SHEET_MAC, "FB9F18"))
 
-    assign(client, PICTURE_MAC, job="picture")
-    assign(client, SHEET_MAC, job="picture")
+    assign(client, PICTURE_MAC, jobs=["picture"])
+    assign(client, SHEET_MAC, jobs=["picture"])
 
-    assert by_id(client, PICTURE_MAC)["job"] == ""
-    assert by_id(client, SHEET_MAC)["job"] == "picture"
+    assert by_id(client, PICTURE_MAC)["jobs"] == ["picture"]
+    assert by_id(client, SHEET_MAC)["jobs"] == ["picture"]
+
+
+def test_one_thing_may_hold_more_than_one_job() -> None:
+    """Returned in the order the kind offers them, so the same set always reads the same
+    way and a repeated choice cannot become two."""
+    client = client_for()
+    household = household_of(client)
+    report(client, household, display(PICTURE_MAC, "CF7D04"))
+
+    assign(client, PICTURE_MAC, jobs=["sheet", "picture", "sheet"])
+
+    assert by_id(client, PICTURE_MAC)["jobs"] == ["picture", "sheet"]
 
 
 def test_a_kind_can_only_be_given_a_job_it_can_do() -> None:
@@ -159,8 +173,8 @@ def test_a_kind_can_only_be_given_a_job_it_can_do() -> None:
     household = household_of(client)
     report(client, household, printer())
 
-    assert assign(client, PRINTER, job="picture").status_code == 400
-    assert by_id(client, PRINTER)["job"] == ""
+    assert assign(client, PRINTER, jobs=["picture"]).status_code == 400
+    assert by_id(client, PRINTER)["jobs"] == []
 
 
 def test_a_name_and_a_job_are_two_moments() -> None:
@@ -171,11 +185,11 @@ def test_a_name_and_a_job_are_two_moments() -> None:
     report(client, household, printer())
 
     assign(client, PRINTER, name="la stampante di sotto")
-    assign(client, PRINTER, job="print")
+    assign(client, PRINTER, jobs=["print"])
 
     row = by_id(client, PRINTER)
     assert row["name"] == "la stampante di sotto"
-    assert row["job"] == "print"
+    assert row["jobs"] == ["print"]
 
 
 def test_a_name_too_long_for_the_display_is_refused() -> None:
@@ -223,19 +237,38 @@ def test_removing_is_something_the_parent_does() -> None:
     assert listed(client) == []
 
 
+def test_something_removed_by_mistake_comes_back_on_the_next_report() -> None:
+    """What a parent needs to know before pressing Togli. The hub reports what it finds
+    every five minutes and the panel creates a row it does not have, so the thing returns
+    on its own — but without the jobs, which are the one part of the row nothing else can
+    reconstruct."""
+    client = client_for()
+    household = household_of(client)
+    report(client, household, printer())
+    assign(client, PRINTER, jobs=["print"], name="la stampante di sotto")
+    client.post(f"/api/devices/{PRINTER}/remove", headers=headers())
+
+    report(client, household, printer())
+
+    row = by_id(client, PRINTER)
+    assert row["id"] == PRINTER
+    assert row["jobs"] == []
+    assert row["name"] == ""
+
+
 def test_the_hub_is_told_the_whole_list_when_it_reports() -> None:
     """The answer to the push is how the jobs reach the house: no second timer, and a
     printer that was switched off this minute still has one."""
     client = client_for()
     household = household_of(client)
     report(client, household, printer(), display(PICTURE_MAC, "CF7D04"))
-    assign(client, PICTURE_MAC, job="picture", name="il quadro")
+    assign(client, PICTURE_MAC, jobs=["picture"], name="il quadro")
 
     answer = report(client, household, display(PICTURE_MAC, "CF7D04"))
 
     things = {row["id"]: row for row in answer["things"]}
     assert set(things) == {PRINTER, PICTURE_MAC}
-    assert things[PICTURE_MAC]["job"] == "picture"
+    assert things[PICTURE_MAC]["jobs"] == ["picture"]
     assert things[PICTURE_MAC]["name"] == "il quadro"
 
 
