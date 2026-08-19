@@ -52,8 +52,8 @@ and the file wins for judging whether the thing is worth doing at all.
 | 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |
 | 7 | ~~Reading the sheet back~~ — **done, 19 August 2026** | 06 | The loop closes on real paper: a press on KEY3 scans the glass, finds the markers, decodes the code, and the display says what came back. `vision/read_sheet.py` holds the reading. |
 | 8 | ~~A mark by hand reads as an empty box~~ — **parked, 19 August 2026** | 06 §0 | The measurement stands: an ordinary tick reads 0.0121 and a cross 0.0196, both under the 0.02 that separates empty from doubtful. The thresholds do not move, because the reading is going to a visual model that has no threshold to tune. Unparked by a real sheet read wrongly, not by another test page. |
-| 9 | ~~Answer the press immediately~~ — **done, 19 August 2026** | 02 §4 | Press to answer went from 65 s to 26 s, of which 24 s is the scanner. The display changes in the response the press caused, so there is no longer a reason to hold the button down. |
-| 10 | **Take the destructive presses out of the firmware** — patched and built, not yet flashed | 02 §5 | Five seconds of holding wipes the Wi-Fi, fifteen the credentials. The patch is written and the image is built and staged on the hub; what is left is plugging in one display at a time. |
+| 9 | ~~Answer the press immediately~~ — **done, 19 August 2026** | 02 §4 | Measured with a finger on both units: the waiting screen lands in the response the press caused, and the reading follows in 35 s and 36 s, of which 26 s and 27 s are the scanner. Before the change the same chain took 65 s and 71 s. There is no longer a reason to hold the button down. |
+| 10 | ~~Take the destructive presses out of the firmware~~ — **done, 19 August 2026** | 02 §5 | Both units flashed. Ten seconds of holding — twice the five at which the stock firmware wipes the Wi-Fi — leaves the display on the network, and the press starts a scan instead. |
 | 11 | The capture station | 06 §1 | For what a flatbed cannot take: a model, a drawing too big for the glass. Not on the paper loop's critical path any more. |
 
 ### Then: what stands on them
@@ -63,7 +63,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | 12 | How much approved content is left | 01 §6 | nothing — a count on routes that exist |
 | 13 | Withdrawing an approval | 01 §3 | nothing — `withdraw` already exists in the ledger |
 | 14 | Reminders at times the parent chose | 05 §1 | 3 |
-| 15 | A role per display | 02 §6 | nothing — one field |
+| 15 | **Everything in the house, with a job and a name** | 01 §9, 02 §6 | nothing — and it is now blocking: one press on 19 August turned the picture display into the sheet display for good |
 | 16 | One step at a time | 05 §2 | 11, and the second display in the house |
 | 17 | The sheet that asks instead of assigning | 03 §3 | 6, 7 |
 | 18 | "Another like this" and "something different" | 03 §5 | 6, 7 |

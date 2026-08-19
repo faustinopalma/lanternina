@@ -166,3 +166,82 @@ status code is our problem and not something a parent can act on.
 **What it cost.** The fastest way to see why a token was refused. `/api/me` still answers
 the three cases apart — 200, 403, 503 — so the cause is one `curl` away for whoever is
 debugging; it is simply no longer on the parent's screen.
+
+---
+
+## 9. Everything in the house, with a job and a name
+
+**What it is.** One list of the things the house can use — the two displays, the printers
+and the scanners on the network — and next to each one a job the parent chooses and a name
+the parent writes. The name is the one the adolescent reads.
+
+**Why.** Three constants are doing this job today and none of them is the parent's. Which
+scanner reads is an environment variable on the hub. Which queue prints is another. Which
+display shows pictures is decided by which file happens to exist, and on 19 August one
+press converted the picture display into the sheet display for good (02 §6). Every one of
+those is a choice about the room, made in a place the parent cannot reach.
+
+**Why one list and not two.** A display, a printer and a scanner differ in how they arrive
+— a display announces itself, because its firmware is already asking the hub for something
+to show, while a printer and a scanner have to be looked for over mDNS — and in nothing
+else that matters here. They are all things with an identity, a job and a name. Building
+the displays now and retrofitting the printers later means building it twice and leaving
+two shapes behind.
+
+**How.** The hub is the only thing that can see the network. A display puts itself on the
+list by talking: the firmware reaches `/api/setup` and the registry gains a row, which is
+how both units in the house got there. Printers and scanners do not talk to us, so the hub
+looks for them — `_ipp._tcp` and `_uscan._tcp` — and it does that on the status push it
+already makes every five minutes rather than on a timer of its own. The panel stores one
+row per thing. The parent picks the job and writes the name; the hub reads them on its next
+run and acts. Nothing here reaches into the house — a printer chosen in the panel prints
+nothing until something in the house asks it to.
+
+**Remembering what is switched off.** Nothing is removed from the list because it went
+quiet. That matters differently for the two kinds. A printer that is off answers no mDNS
+query, and that is exactly the moment the parent goes looking for it to ask why nothing came
+out. A display that is asleep is not talking either. The cost is that the list accumulates,
+so a thing that has genuinely left the house has to be removed by hand — which is the right
+way round, because forgetting is then something somebody decided rather than something that
+happened while nobody was looking.
+
+**What identifies a thing.** Not its address. Between 4 and 19 August the printer moved
+from `192.168.0.138` to `192.168.0.5` and the hub from `.157` to `.158`; a list keyed on
+addresses would have grown a duplicate for each. The mDNS service name — `EPSOND59029.local`
+— is the key for a printer or a scanner, and the MAC for a display.
+
+**The name is read by somebody, and that has three consequences.** It reaches the model:
+the point of a descriptive name is that a sentence can be built around it — "the sheet is
+waiting on the printer downstairs" — rather than the string being repeated verbatim. So it
+crosses as material, and like every other setting the parent writes it is data in a prompt
+and never an instruction in one. It lands on a screen the adolescent reads, so it is a name
+and never a status: no "offline", no "error", nothing that says something is wrong. And the
+renderer has a fixed width, so the length has a limit that the panel states while the parent
+is typing rather than enforcing afterwards by truncation.
+
+The third consequence is the one that needs a mechanical guard rather than a warning. A
+person's name never goes into a model prompt, and a free-text field is the easiest place in
+the whole system to break that by accident: "Sofia's printer" is exactly what somebody
+would naturally type. The check belongs on the hub, because the hub is the only side that
+knows the name — it reads it from its own environment and the cloud has nowhere to store it
+(§5). A device name that contains it is refused there, before it can leave, and the parent
+is told why.
+
+**What it costs.** A new store, a new pair of routes and a section in the panel, and a
+discovery step on the hub that has to be tolerant: mDNS answers late and sometimes empty —
+the first scan after a quiet spell has returned `SANE offers []` and then found the device a
+minute later. An empty answer must mean "found nothing this time", never "the list is now
+empty". And the choice has to be cached on the hub like the rhythm, so a panel that cannot
+be reached leaves the house working to the last known assignment.
+
+**Where it starts.** `panel/devices.py` for the row and the store, `panel/app.py` for the
+parent routes and for the answer to the status push, `web/src/sections/Devices.tsx` for the
+list, `devices/push_status.py` for the report and the cache, `devices/trmnl_byos.py` and
+`devices/pull_picture.py` for the display side, `devices/scan_sheet.py` and the print path
+for the other two.
+
+**Done when.** A parent who has never used a terminal can say which display holds the
+pictures, which one stands by the printer, which printer prints and which scanner reads,
+and can call each of them something an adolescent would recognise. A display with no job
+yet shows its own id, so the row in the panel and the thing on the shelf can be matched
+without a cable.

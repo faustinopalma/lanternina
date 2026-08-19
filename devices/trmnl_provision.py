@@ -8,6 +8,7 @@ import json
 import re
 import subprocess
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -18,6 +19,7 @@ NVS_SIZE = "0x5000"
 FLASH_SIZE = "0x1000000"
 FLASH_SIZE_BYTES = int(FLASH_SIZE, 16)
 MAC_PATTERN = re.compile(r"^[0-9A-F]{2}(?::[0-9A-F]{2}){5}$")
+PORT_POLL_SECONDS = 0.1
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,6 +39,15 @@ class ProvisioningConfig:
         if not config.ssid or not config.password:
             raise ValueError("Wi-Fi SSID and password must be configured")
         return config
+
+
+def wait_for_port(port: Path, seconds: float) -> None:
+    """A running display is on the USB bus only while awake — a few seconds every minute."""
+    deadline = time.monotonic() + seconds
+    while not port.exists():
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"serial port never appeared: {port}")
+        time.sleep(PORT_POLL_SECONDS)
 
 
 def device_mac(port: Path) -> str:
@@ -84,10 +95,14 @@ def provision(
     esptool: Path | None,
     nvs_generator: Path,
     backup_dir: Path,
+    force: bool = False,
+    wait_seconds: float = 0.0,
 ) -> str:
+    wait_for_port(port, wait_seconds)
     mac = device_mac(port)
     existing = load_devices(registry_file).get(mac) if registry_file.exists() else None
-    if existing is not None and existing.provisioned:
+    # Plugging a cable must never reflash on its own; only an explicit --force may.
+    if existing is not None and existing.provisioned and not force:
         return f"already provisioned: {mac}"
 
     config = ProvisioningConfig.load(config_file)
@@ -206,6 +221,8 @@ def main() -> None:
         type=Path,
         default=Path("/var/lib/lanternina/trmnl-backups"),
     )
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--wait-seconds", type=float, default=0.0)
     args = parser.parse_args()
     print(provision(
         port=args.port,
@@ -216,6 +233,8 @@ def main() -> None:
         esptool=args.esptool,
         nvs_generator=args.nvs_generator,
         backup_dir=args.backup_dir,
+        force=args.force,
+        wait_seconds=args.wait_seconds,
     ))
 
 

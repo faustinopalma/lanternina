@@ -6,7 +6,7 @@ try to remove that role.
 
 It runs on a Linux mini-PC in the house. Today it serves two e-paper displays and draws
 sheets for a printer; a press on the display's button scans the sheet on the glass and the
-reading comes back on the screen about twenty-six seconds later. Every language and vision
+reading comes back on the screen about half a minute later. Every language and vision
 model call goes to Azure AI Foundry. No model runs on the device, and offline means serving
 what the parent has already approved.
 
@@ -162,13 +162,16 @@ Running: the cloud tier, the parent panel and its API, the content agent, the mo
 with real credentials, the safety gate, the hub services that serve the displays and pull an
 hourly picture, the picture archive, and usage accounting with a per-household cap. The
 sheet renderer is written and was checked on paper — a 50 mm ruler measures 50 mm. The paper
-loop runs from the button: a press puts "sto leggendo" on the display in the same request,
-the scanner takes about twenty-four seconds, and the reading is on the screen two seconds
-after that.
+loop runs from the button and was measured with a finger on 19 August: a press puts "sto
+leggendo" on the display in the same request, the scanner takes about twenty-six seconds,
+and the reading lands on the next wake, so thirty-five seconds from the press.
 
 Not written: the planner, the vision, scheduling and print agents. `firmware/` holds no
 sources: the displays run the vendor's firmware with two patches of ours, one for mDNS and
-one that takes the two credential-wiping presses off the button.
+one that takes the two credential-wiping presses off the button. Both units carry it as of
+19 August 2026. What the house cannot yet be told is which display, printer or scanner is
+for what: those are three constants in the hub's environment rather than choices in the
+panel.
 
 Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
 pretends to work.
