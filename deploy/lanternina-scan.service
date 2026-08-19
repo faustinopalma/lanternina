@@ -1,0 +1,18 @@
+[Unit]
+Description=Read the sheet on the scanner, because somebody asked for it
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=-/etc/lanternina/scanner.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.scan_sheet ${TRMNL_BUTTON_FILE} ${LANTERNINA_SHEETS_DIR} ${TRMNL_SCREEN_FILE} ${LANTERNINA_SCANNER}
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+ReadWritePaths=/var/lib/lanternina/state

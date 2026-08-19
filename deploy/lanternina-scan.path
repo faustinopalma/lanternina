@@ -1,0 +1,12 @@
+[Unit]
+Description=Watch for somebody asking for a sheet to be read
+
+[Path]
+# The display server writes this file when the button is pressed; it does not act on it,
+# because a scan takes tens of seconds and a display is waiting on the other end of the
+# socket. Modified rather than created: a second press overwrites the first.
+PathModified=/var/lib/lanternina/state/button.json
+Unit=lanternina-scan.service
+
+[Install]
+WantedBy=paths.target

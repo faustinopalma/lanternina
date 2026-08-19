@@ -50,9 +50,12 @@ def scan_page(device: str) -> NDArray[np.uint8]:
             SCAN_RESOLUTION,
         ],
         capture_output=True,
-        check=True,
         timeout=SCAN_TIMEOUT_SECONDS,
     )
+    if finished.returncode != 0:
+        # What the backend said is the whole diagnosis — "Device busy" and "Invalid
+        # argument" need different answers and an exit code tells them apart badly.
+        raise ValueError(finished.stderr.decode("utf-8", "replace").strip() or "scan failed")
     buffer = np.frombuffer(finished.stdout, dtype=np.uint8)
     image = cv2.imdecode(buffer, cv2.IMREAD_GRAYSCALE)
     if image is None:
