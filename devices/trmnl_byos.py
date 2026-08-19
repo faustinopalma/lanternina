@@ -110,6 +110,9 @@ class Config:
     waiting_file: Path | None = None
     # What the display is told while it is waiting on its own press.
     press_refresh_rate: int = PRESS_REFRESH
+    # What the parent said each display is for, as the panel last gave it to us. Absent
+    # means the panel has never been reached, and every display keeps behaving as before.
+    jobs_file: Path | None = None
 
     @classmethod
     def from_env(cls) -> Config:
@@ -117,6 +120,7 @@ class Config:
         low = os.environ.get("TRMNL_LOW_BATTERY_FILE", "").strip()
         critical = os.environ.get("TRMNL_CRITICAL_BATTERY_FILE", "").strip()
         waiting = os.environ.get("TRMNL_WAITING_FILE", "").strip()
+        jobs = os.environ.get("LANTERNINA_JOBS_FILE", "").strip()
         return cls(
             base_url=os.environ["TRMNL_BASE_URL"].rstrip("/"),
             screen_file=Path(os.environ["TRMNL_SCREEN_FILE"]),
@@ -142,6 +146,7 @@ class Config:
             press_refresh_rate=int(
                 os.environ.get("TRMNL_PRESS_REFRESH_RATE", str(PRESS_REFRESH))
             ),
+            jobs_file=Path(jobs) if jobs else None,
         )
 
     def screen_url(self, token: str, origin: str = "") -> str:
@@ -399,6 +404,9 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     # Validated once here so a broken file fails at startup, not in front of a device.
     last_good = validate_screen(config.screen_file)
 
+    # One id card per display, drawn on first use. The text never changes.
+    id_screens: dict[str, bytes] = {}
+
     def current_screen(device: Device) -> bytes:
         """Re-read on every request, so new content needs no restart."""
         nonlocal last_good
@@ -412,6 +420,9 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         )
         if farewell is not None:
             return farewell
+        unassigned = _unassigned_screen(device)
+        if unassigned is not None:
+            return unassigned
         own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
         if own is not None:
             return own
@@ -421,6 +432,29 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             # A half-written file must never blank the display.
             pass
         return last_good
+
+    def _unassigned_screen(device: Device) -> bytes | None:
+        """Its own id, when the panel has said this display is for nothing yet.
+
+        Three answers, not two. A display the panel has never mentioned carries on exactly
+        as it did before: a hub that cannot reach the panel must not turn every screen in
+        the house into an id card.
+        """
+        if config.jobs_file is None:
+            return None
+        try:
+            from devices.epaper import render_id_bmp
+            from devices.inventory import job_of, load_jobs
+
+            if job_of(load_jobs(config.jobs_file), device.mac) != "":
+                return None
+            drawn = id_screens.get(device.friendly_id)
+            if drawn is None:
+                drawn = render_id_bmp(device.friendly_id)
+                id_screens[device.friendly_id] = drawn
+            return drawn
+        except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
+            return None
 
     def _valid_or_none(path: Path | None) -> bytes | None:
         if path is None:

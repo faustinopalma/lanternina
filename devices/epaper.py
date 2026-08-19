@@ -245,6 +245,16 @@ def render_waiting_bmp() -> bytes:
     return render_notice_bmp(WAITING_HEADING, WAITING_LINES)
 
 
+# What a display shows before anybody has said what it is for. Its own id, large, so the
+# row in the panel and the object on the shelf can be matched without a cable or a log.
+# It is a name and not a state: nothing here says anything is wrong.
+UNASSIGNED_LINES: Final = ("Questo schermo non ha ancora un compito.",)
+
+
+def render_id_bmp(friendly_id: str) -> bytes:
+    return render_notice_bmp(friendly_id, UNASSIGNED_LINES)
+
+
 def _draw_block(
     draw: ImageDraw.ImageDraw, text: str, font: object, y: int, width: int, step: int
 ) -> int:

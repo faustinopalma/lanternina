@@ -128,6 +128,26 @@ def install(screen_file: Path, image: bytes) -> None:
     temporary.replace(screen_file)
 
 
+def picture_file(shared: Path, jobs_file: Path) -> Path:
+    """Where the picture goes: the file of whichever display holds that job.
+
+    Writing to the shared file was what made the defect of 19 August 2026 permanent. One
+    press created `screen-<id>.bmp` for a display, that file took the display over for
+    good, and the pictures — which only ever reached the shared file — never came back.
+    Addressing the display that holds the job writes to the same file the press did, so a
+    press costs one picture instead of the display.
+
+    With no answer from the panel the shared file is still the target, which is what the
+    house did before anybody could say which display was which.
+    """
+    from devices.inventory import holder, load_jobs
+    from devices.trmnl_byos import screen_for
+
+    chosen = holder(load_jobs(jobs_file), "picture")
+    friendly = str((chosen or {}).get("label") or "")
+    return screen_for(shared, friendly) if friendly else shared
+
+
 def main() -> int:
     panel = os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/")
     household = os.environ.get("LANTERNINA_HOUSEHOLD", "")
@@ -143,6 +163,13 @@ def main() -> int:
     rhythm_file = Path(
         os.environ.get("LANTERNINA_RHYTHM_FILE", "") or screen_file.with_name("rhythm.json")
     )
+    jobs_file = Path(
+        os.environ.get("LANTERNINA_JOBS_FILE", "") or screen_file.with_name("jobs.json")
+    )
+    # Which display this is going to is decided here, once: the spacing is measured on the
+    # file the picture will land in, so a display that has just been given the job is not
+    # made to wait out the last one's hour.
+    target = picture_file(screen_file, jobs_file)
     saved = load_rhythm(rhythm_file)
     if saved is None:
         start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
@@ -155,7 +182,7 @@ def main() -> int:
               "leaving the picture alone")
         return 0
 
-    if not due(screen_file, cadence, time.time()):
+    if not due(target, cadence, time.time()):
         print(f"less than {cadence} minutes since the last picture: leaving it alone")
         return 0
 
@@ -166,7 +193,7 @@ def main() -> int:
     if in_quiet_window(time.localtime(), start, end):
         print("the pause was moved and now covers this hour: leaving the picture alone")
         return 0
-    if not due(screen_file, cadence, time.time()):
+    if not due(target, cadence, time.time()):
         print(f"the spacing was widened to {cadence} minutes: leaving the picture alone")
         return 0
 
@@ -191,11 +218,11 @@ def main() -> int:
 
     image = base64.b64decode(answer["imageBase64"])
     try:
-        install(screen_file, image)
+        install(target, image)
     except ValueError as exc:
         print(f"refused a picture the display cannot render: {exc}")
         return 1
-    print(f"new picture on the display: {answer.get('theme', '')} ({len(image)} bytes)")
+    print(f"new picture on {target.name}: {answer.get('theme', '')} ({len(image)} bytes)")
     return 0
 
 

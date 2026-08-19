@@ -245,3 +245,34 @@ pictures, which one stands by the printer, which printer prints and which scanne
 and can call each of them something an adolescent would recognise. A display with no job
 yet shows its own id, so the row in the panel and the thing on the shelf can be matched
 without a cable.
+
+### Built on 19 August 2026 — the panel, and the hub waiting to be installed
+
+The panel is live: image `lanternina/panel:9edc724` on revision
+`ca-lanternina-dev-api--0000028`, and the front end published by the `panel` workflow.
+Both displays already have a row — `94:A9:90:CF:7D:04` and `E8:3D:C1:FB:9F:18` — with no
+job and no name, because the hub's existing status push creates them without knowing about
+any of this: a report with no `kind` reads as a display.
+
+What was measured rather than chosen. The name limit is 40 characters: the notice renderer
+has 728 px, forty characters of ordinary Italian come to 692 px and stay on one line, forty
+capital Ws come to 1280 px and do not. So the limit is a comfortable case and not a
+guarantee, and the panel states it while the parent types instead of truncating afterwards.
+
+Two decisions worth keeping. A job belongs to one thing, so handing it over takes it from
+whoever held it — without that the hub would have to choose between two displays claiming
+the pictures, and it would choose by luck. And there are three answers to "what is this
+display for", not two: a job, no job, and never mentioned. The third is what keeps a hub
+that cannot reach the panel from turning every screen in the house into an id card.
+
+**Still to do, and in this order.** The hub code is written and tested but **not
+installed**, deliberately: the moment it runs, a display with no job shows its id instead
+of what it is showing now, so the parent assigns the two jobs first. Then
+`deploy/lanternina-status.service` needs its new `ReadWritePaths`, the display server needs
+`LANTERNINA_JOBS_FILE=/var/lib/lanternina/state/jobs.json` in
+`/etc/lanternina/trmnl-byos.env`, and one thing has to be checked on the machine rather
+than reasoned about: whether `avahi-browse` can reach the avahi daemon over D-Bus from a
+unit running under `ProtectSystem=strict`. If it cannot, discovery returns nothing and says
+nothing — an empty answer is indistinguishable from a quiet network, which is exactly the
+failure this feature is built to tolerate and therefore the one it cannot report.
+

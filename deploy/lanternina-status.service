@@ -17,3 +17,6 @@ PrivateTmp=true
 ProtectHome=true
 ProtectSystem=strict
 ReadOnlyPaths=/opt/lanternina
+# The answer to this push carries what each thing is for, and it is cached here so an
+# unreachable panel leaves the house working to the last known assignment.
+ReadWritePaths=/var/lib/lanternina/state

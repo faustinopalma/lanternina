@@ -86,6 +86,7 @@ export interface Device {
   jobChoices: string[];
   model: string;
   address: string;
+  nameRefused: boolean;
   level?: string;
   lastSeen: number;
   silentSeconds: number;

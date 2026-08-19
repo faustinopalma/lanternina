@@ -438,6 +438,7 @@ class CosmosInventoryStore:
                 label=thing.label or known.label,
                 model=thing.model or known.model,
                 address=thing.address or known.address,
+                name_refused=thing.name_refused,
                 last_seen=max(thing.last_seen, known.last_seen),
             )
         )
@@ -465,6 +466,7 @@ class CosmosInventoryStore:
             current,
             job=current.job if job is None else job,
             name=current.name if name is None else name,
+            name_refused=current.name_refused if name is None else False,
         )
         self._container.upsert_item(_from_thing(updated))
         return updated
@@ -506,6 +508,7 @@ def _from_thing(thing: Thing) -> dict[str, Any]:
         "job": thing.job,
         "model": thing.model,
         "address": thing.address,
+        "nameRefused": thing.name_refused,
         "lastSeen": thing.last_seen,
         "firstSeen": thing.first_seen,
     }
@@ -521,6 +524,7 @@ def _to_thing(document: dict[str, Any]) -> Thing:
         job=str(document.get("job") or ""),
         model=str(document.get("model") or ""),
         address=str(document.get("address") or ""),
+        name_refused=bool(document.get("nameRefused", False)),
         last_seen=float(document.get("lastSeen") or 0.0),
         first_seen=float(document.get("firstSeen") or 0.0),
     )

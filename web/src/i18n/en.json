@@ -102,6 +102,7 @@
   "devices.remove": "Remove",
   "devices.removeTitle": "Remove “{name}”",
   "devices.saveFailed": "I could not save that. Try again later.",
+  "devices.nameRefused": "The house did not take this name: it carries the name of a person, and that never goes into what is written for the display. Write a name for the object instead.",
 
   "kind.display": "display",
   "kind.printer": "printer",

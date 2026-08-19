@@ -115,3 +115,43 @@ def test_a_hub_that_knows_no_rhythm_asks_before_deciding(
     monkeypatch.setattr(pull_picture.urllib.request, "urlopen", answer)
     assert pull_picture.main() == 0
     assert asked and asked[0].endswith("/rhythm")
+
+
+def test_the_picture_goes_to_the_display_that_holds_the_job(tmp_path: Path) -> None:
+    """The defect of 19 August 2026, closed at its cause.
+
+    One press created `screen-FB9F18.bmp`, that file took the display over for good, and
+    the pictures — written only to the shared file — never reached it again. Addressing the
+    display that holds the job writes to the same file the press did, so a press costs one
+    picture instead of the display.
+    """
+    from devices.inventory import save_jobs
+    from devices.pull_picture import picture_file
+
+    shared = tmp_path / "screen.bmp"
+    jobs = tmp_path / "jobs.json"
+    save_jobs(
+        jobs,
+        [
+            {"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": "picture"},
+            {"id": "E8:3D:C1:FB:9F:18", "label": "FB9F18", "job": "sheet"},
+        ],
+    )
+
+    assert picture_file(shared, jobs) == shared.with_name("screen-CF7D04.bmp")
+
+
+def test_with_nobody_holding_the_job_the_picture_goes_where_it_always_did(
+    tmp_path: Path,
+) -> None:
+    """An unreachable panel leaves the house working to what it knew, and a house that has
+    never reached the panel keeps behaving as it did before there was one."""
+    from devices.inventory import save_jobs
+    from devices.pull_picture import picture_file
+
+    shared = tmp_path / "screen.bmp"
+    assert picture_file(shared, tmp_path / "absent.json") == shared
+
+    jobs = tmp_path / "jobs.json"
+    save_jobs(jobs, [{"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": ""}])
+    assert picture_file(shared, jobs) == shared

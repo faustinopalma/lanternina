@@ -139,6 +139,11 @@ class Thing:
     job: str = JOB_NONE
     model: str = ""
     address: str = ""
+    # The hub would not use this name: it carries the name of a person. Set by the house,
+    # which is the only side that knows who lives there, and cleared when a new name is
+    # written. Without it a refused name would look like a setting that saved and did
+    # nothing.
+    name_refused: bool = False
     last_seen: float = 0.0
     first_seen: float = 0.0
 
@@ -156,6 +161,7 @@ class Thing:
             "jobChoices": list(JOBS_BY_KIND.get(self.kind, ())),
             "model": self.model,
             "address": self.address,
+            "nameRefused": self.name_refused,
             "lastSeen": self.last_seen,
             "silentSeconds": silent,
             # The panel is where a fault is allowed to appear. Nothing in the house says it.
@@ -200,6 +206,7 @@ class InMemoryInventoryStore:
                     label=thing.label or known.label,
                     model=thing.model or known.model,
                     address=thing.address or known.address,
+                    name_refused=thing.name_refused,
                     last_seen=max(thing.last_seen, known.last_seen),
                 )
             )
@@ -228,6 +235,8 @@ class InMemoryInventoryStore:
                 current,
                 job=current.job if job is None else job,
                 name=current.name if name is None else name,
+                # A new name is a new attempt: the house has not judged it yet.
+                name_refused=current.name_refused if name is None else False,
             )
             self._rows[(household_id, thing_id)] = updated
             return updated

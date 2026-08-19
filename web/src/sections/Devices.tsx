@@ -87,6 +87,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
         </Select>
       </div>
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}
+      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
       {device.silent ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
     </div>
   );

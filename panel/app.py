@@ -182,6 +182,9 @@ class ReportedDevice(BaseModel):
     rssi: float | None = None
     firmware: str = ""
     model: str = ""
+    # The house would not use the name the parent wrote: it carries a person's name. Only
+    # the house can say so, and only it knows why.
+    nameRefused: bool = False
 
 
 class NewAssignment(BaseModel):
@@ -578,6 +581,7 @@ def create_app(
                     label=item.name,
                     model=item.model,
                     address=item.address,
+                    name_refused=item.nameRefused,
                     last_seen=seen,
                 )
             )

@@ -189,6 +189,40 @@ def test_a_display_with_a_job_of_its_own_stops_following_the_picture(tmp_path: P
         thread.join()
 
 
+def test_a_display_with_no_job_shows_its_own_id(tmp_path: Path) -> None:
+    """So the row in the panel and the object on the shelf can be matched without a cable.
+
+    And the other half, which matters more: a display the panel has never mentioned keeps
+    doing exactly what it did. A hub that cannot reach the panel must not turn every screen
+    in the house into an id card.
+    """
+    from devices.epaper import render_id_bmp
+    from devices.inventory import save_jobs
+
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    named = register_device(registry, MAC)
+    stranger = register_device(registry, SECOND_MAC)
+    jobs = tmp_path / "jobs.json"
+    save_jobs(jobs, [{"id": MAC, "label": named.friendly_id, "job": ""}])
+
+    config = Config("http://127.0.0.1", shared, registry, jobs_file=jobs)
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        assert get(f"{base_url}/screen/{named.token}.bmp")[1] == render_id_bmp(named.friendly_id)
+        assert get(f"{base_url}/screen/{stranger.token}.bmp")[1] == shared.read_bytes()
+
+        save_jobs(jobs, [{"id": MAC, "label": named.friendly_id, "job": "picture"}])
+        assert get(f"{base_url}/screen/{named.token}.bmp")[1] == shared.read_bytes()
+    finally:
+        httpd.shutdown()
+        thread.join()
+
+
 def test_a_short_press_is_recorded_and_a_timer_wake_is_not(tmp_path: Path) -> None:
     """The press is the only thing in this system that starts a scan, so it has to be
     legible without a wire we do not have. The firmware already says why it woke."""

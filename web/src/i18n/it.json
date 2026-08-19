@@ -102,6 +102,7 @@
   "devices.remove": "Togli",
   "devices.removeTitle": "Togli “{name}”",
   "devices.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
+  "devices.nameRefused": "La casa non ha preso questo nome: contiene il nome di una persona, e quello non entra mai in ciò che viene scritto per il display. Scrivi il nome dell'oggetto.",
 
   "kind.display": "display",
   "kind.printer": "stampante",
