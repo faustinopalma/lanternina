@@ -449,6 +449,62 @@ them. Six tests, all of which fail against the routes as they were.
 been read, and a household at its cap gets 429 from `/read-sheet` and `degraded: true` from
 `/reminders` while still receiving the reminders it already had.
 
+---
+
+## 12. Closed: the cap became the thing that decides, so it moved to 2000
+
+**What it was.** `DEFAULT_MONTHLY_CALL_CAP` was 1000, and the sentence above it explained
+the number entirely in pictures: "an hourly picture is at most 744 a month". That was true
+when a picture was the only thing that cost anything. §11 added two more kinds, and the
+month stopped fitting.
+
+**The month, added up per path rather than guessed.** Every figure below comes from a
+constant in the code or from a rate somebody chooses, and the arithmetic is repeated in
+`tests/test_usage.py::test_the_cap_leaves_room_for_a_month_of_ordinary_use` so that it
+fails if any of them moves.
+
+| Path | Rate | Calls in a 31-day month |
+| --- | --- | --- |
+| Pictures, `/paint` | one per picture, at the default 60-minute spacing with the night pause switched off | 744 |
+| Readings, `/read-sheet` | one per page put on the glass, ten a day | 310 |
+| Reminders, `/reminders` | one reading and one wording per sentence, once in its life, one new sentence a day | 62 |
+| | | **1116** |
+
+Nothing in that month is unusual, and it is over 1000. A parent who moves the spacing to
+half an hour reaches 1260 on the pictures alone. So the cap had stopped being the thing
+that stops a fault and had become the thing that decides how much a house may do.
+
+**What it is now.** 2000 — twice the ordinary month. What that buys is that a house
+behaving as designed never meets the cap. What it costs is that a runaway loop runs about
+a day longer before it is stopped: the finest spacing a parent may set is one minute, which
+is 900 pictures a day inside the default waking hours, so 1000 ends it on the second day
+and 2000 on the third.
+
+`LANTERNINA_MONTHLY_CALL_CAP` is set nowhere in `infra/`, so the default is what every
+household gets and changing it changes everything.
+
+**What could not be measured, and why.** The intention was to read `/api/usage` for the
+real household and let its figures decide rather than this arithmetic. Neither road is open
+from a laptop, and both were tried on 20 August:
+
+- Cosmos directly: `cos-lanternina-dev-ssveb` has `publicNetworkAccess: Disabled` and an
+  empty `ipRules`, so it is private-endpoint only. No firewall rule would help; the
+  container app reaches it and nothing outside the VNet does.
+- `/api/usage` through the panel: it answers 403 without a parent token. The parent
+  identity provider is the CIAM tenant `lantessveb.ciamlogin.com`, which the Azure CLI
+  cannot mint a token for, and `LANTERNINA_DEV_AUTH` is `0` on the running app. The admin
+  tenant is the same one the CLI is signed in to, but the admin routes only admit accounts.
+
+So the figures above are computed, not measured, and they are marked as such. The
+measurement is one browser sign-in away and needs nothing built: open the panel, read the
+usage block, compare `byKind` against the table. Until somebody does that, the row worth
+doubting most is the ten pages a day — it is a habit, not a constant.
+
+**Done when.** A month of real `byKind` figures from `/api/usage` is compared against the
+table above, and the cap is moved again if the real month disagrees by more than the
+headroom.
+
+
 **Distributed, 20 August 2026.** Image `lanternina/panel:9052cf9` on revision `--0000040`,
 shown to be the one answering rather than assumed: the served `/openapi.json` describes
 `/read-sheet` as refusing "as many calls as it is allowed", a phrase only this build has.

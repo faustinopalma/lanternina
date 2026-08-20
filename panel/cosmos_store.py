@@ -36,6 +36,7 @@ from .preferences import (
 )
 from .proposals import ProposalRecord
 from .reminders import Sentence
+from .requests import HouseRequest
 from .rhythm import Rhythm
 from .themes import Theme
 from .usage import UsageEvent, UsageSummary, summarise
@@ -48,6 +49,7 @@ INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
+REQUESTS_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
 
@@ -712,6 +714,92 @@ def _to_usage(document: dict[str, Any]) -> UsageEvent:
         reasoning_tokens=int(document.get("reasoningTokens") or 0),
         size=str(document.get("size") or ""),
         quality=str(document.get("quality") or ""),
+    )
+
+
+class CosmosRequestStore:
+    """Conforms to :class:`~panel.requests.RequestStore`.
+
+    One document per household, overwritten: this is what the parent is asking for now,
+    not a record of everything they have ever asked. The id inside it is what the hub
+    clears by, so the row can be replaced without the hub losing the newer one.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(REQUESTS_CONTAINER)
+        )
+
+    def _document_id(self, household_id: str) -> str:
+        return f"request-{household_id}"
+
+    def put(self, asked: HouseRequest) -> HouseRequest:
+        self._container.upsert_item(
+            {
+                "id": self._document_id(asked.household_id),
+                "familyId": asked.household_id,
+                "type": "request",
+                "requestId": asked.id,
+                "kind": asked.kind,
+                "subject": asked.subject,
+                "askedAt": asked.asked_at,
+                "askedBy": asked.asked_by,
+            }
+        )
+        return asked
+
+    def get(self, household_id: str) -> HouseRequest | None:
+        rows = list(
+            self._container.query_items(
+                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'request'",
+                parameters=[{"name": "@family", "value": household_id}],
+                partition_key=household_id,
+            )
+        )
+        if not rows:
+            return None
+        standing = _to_request(rows[0])
+        if standing.stale(time.time()):
+            self.clear(household_id, standing.id)
+            return None
+        return standing
+
+    def clear(self, household_id: str, request_id: str) -> bool:
+        from azure.cosmos import exceptions
+
+        standing = self._raw(household_id)
+        if standing is None or str(standing.get("requestId") or "") != request_id:
+            return False
+        try:
+            self._container.delete_item(
+                self._document_id(household_id), partition_key=household_id
+            )
+        except exceptions.CosmosResourceNotFoundError:
+            # Two hubs, or one hub retrying: already gone is the outcome that was wanted.
+            return False
+        return True
+
+    def _raw(self, household_id: str) -> dict[str, Any] | None:
+        rows = list(
+            self._container.query_items(
+                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'request'",
+                parameters=[{"name": "@family", "value": household_id}],
+                partition_key=household_id,
+            )
+        )
+        return rows[0] if rows else None
+
+
+def _to_request(document: dict[str, Any]) -> HouseRequest:
+    return HouseRequest(
+        id=str(document.get("requestId") or ""),
+        household_id=str(document["familyId"]),
+        kind=str(document.get("kind") or ""),
+        subject=str(document.get("subject") or ""),
+        asked_at=float(document.get("askedAt") or 0.0),
+        asked_by=str(document.get("askedBy") or ""),
     )
 
 

@@ -152,6 +152,15 @@ export interface UsageAnswer {
   cap: number;
 }
 
+/** Something the parent asked the house to do, still waiting to be collected. The panel
+ *  records it and cannot deliver it: the house finds it when it next looks. */
+export interface HouseRequest {
+  id: string;
+  kind: string;
+  subject: string;
+  askedAt: number;
+}
+
 /** What `/api/me` said, without the number it said it with: an HTTP code is our problem
  *  and has no business being read by a parent. */
 export type Admission =
@@ -193,4 +202,6 @@ export interface Api {
   assignDevice(id: string, assignment: NewAssignment): Promise<Device>;
   removeDevice(id: string): Promise<void>;
   usage(): Promise<UsageAnswer>;
+  askAgain(pictureId: string): Promise<HouseRequest>;
+  standingRequest(): Promise<HouseRequest | null>;
 }

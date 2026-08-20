@@ -161,6 +161,9 @@
   "pictures.unavailable": "immagine non disponibile",
   "pictures.kind.low": "avviso batteria",
   "pictures.kind.critical": "avviso batteria",
+  "pictures.again": "Rimetti su questo",
+  "pictures.again.asked": "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
+  "pictures.again.failed": "Non sono riuscito a registrare la richiesta.",
 
   "usage.title": "Consumo",
   "usage.note": "Quanto hanno consumato i modelli questo mese. Sono numeri sulle macchine, non su una persona, e non sono un obiettivo da raggiungere.",

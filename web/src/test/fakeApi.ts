@@ -18,6 +18,7 @@ import type {
   Rhythm,
   Theme,
   UsageAnswer,
+  HouseRequest,
 } from "@/api/types";
 
 export interface Recorded {
@@ -31,6 +32,7 @@ export interface Recorded {
   remindersRemoved: string[];
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
+  askedAgain: string[];
 }
 
 export interface FakeApi extends Api {
@@ -151,12 +153,14 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     remindersRemoved: [],
     assignments: [],
     devicesRemoved: [],
+    askedAgain: [],
   };
   let themes: Theme[] = [
     { id: "theme-1", label: "gatti che dormono" },
     { id: "theme-2", label: "vele in porto" },
   ];
   let devices: Device[] = SAMPLE_DEVICES;
+  let standing: HouseRequest | null = null;
   // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
     {
@@ -319,6 +323,17 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       },
       cap: 900,
     }),
+    askAgain: async (pictureId) => {
+      recorded.askedAgain.push(pictureId);
+      standing = {
+        id: `ask-${recorded.askedAgain.length}`,
+        kind: "showAgain",
+        subject: pictureId,
+        askedAt: NOW,
+      };
+      return standing;
+    },
+    standingRequest: async () => standing,
   };
 
   return { ...base, ...overrides, recorded };

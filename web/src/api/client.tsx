@@ -11,6 +11,7 @@ import {
   type Api,
   type Decision,
   type Device,
+  type HouseRequest,
   type Inventory,
   type NewAssignment,
   type NewPreferences,
@@ -173,6 +174,21 @@ export function httpApi(token: string): Api {
     },
 
     usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "cap"]),
+
+    // The whole effect of asking: one row is written. Nothing is sent to the house, which
+    // has no way of being reached, and nothing is generated.
+    askAgain: (pictureId: string) =>
+      json<HouseRequest>(`/api/pictures/${pictureId}/again`, { method: "POST" }, [
+        "id",
+        "kind",
+      ]),
+
+    async standingRequest(): Promise<HouseRequest | null> {
+      const answer = await json<{ request: HouseRequest | null }>("/api/request", {}, [
+        "request",
+      ]);
+      return answer.request;
+    },
   };
 }
 

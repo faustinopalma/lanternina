@@ -20,12 +20,13 @@ import { useLoad } from "@/lib/useLoad";
 
 const PAGE_SIZE_KEY = "lanternina.picturesPerPage";
 
-function Tile({ picture }: { picture: Picture }) {
+function Tile({ picture, standing }: { picture: Picture; standing: string | null }) {
   const { t, dateTime } = useWords();
   const api = useApi();
   const frame = useRef<HTMLElement>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  const [asked, setAsked] = useState<boolean | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -93,6 +94,31 @@ function Tile({ picture }: { picture: Picture }) {
         <strong className="font-semibold">{title}</strong>
         <span className="text-quiet">{dateTime(picture.createdAt)}</span>
         {failed ? <span className="text-quiet">{t("pictures.unavailable")}</span> : null}
+        {/* The button writes a row and stops. What it says afterwards is what actually
+            happens: the house puts the picture up when it next changes it, which the
+            panel cannot hurry. */}
+        <span className="mt-1.5 flex flex-col gap-1">
+          <Button
+            size="small"
+            disabled={asked === true || standing === picture.id}
+            onClick={async () => {
+              try {
+                await api.askAgain(picture.id);
+                setAsked(true);
+              } catch {
+                setAsked(false);
+              }
+            }}
+          >
+            {t("pictures.again")}
+          </Button>
+          {asked === true || standing === picture.id ? (
+            <span className="text-quiet">{t("pictures.again.asked")}</span>
+          ) : null}
+          {asked === false ? (
+            <span className="text-quiet">{t("pictures.again.failed")}</span>
+          ) : null}
+        </span>
       </figcaption>
     </figure>
   );
@@ -104,6 +130,11 @@ export function Pictures() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(() => Number(readStored(PAGE_SIZE_KEY)) || 20);
   const [state] = useLoad(() => api.pictures(page, perPage), [page, perPage]);
+  // Which picture the house has not yet come to collect, so a parent who reloads sees the
+  // request they already made instead of a button that looks unpressed.
+  const [request] = useLoad(() => api.standingRequest(), []);
+  const standing =
+    request.status === "ready" && request.data !== null ? request.data.subject : null;
 
   if (state.status === "loading") return <Quiet>{t("pictures.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("pictures.unreadable")}</Quiet>;
@@ -168,7 +199,7 @@ export function Pictures() {
           aria-live="polite"
         >
           {answer.pictures.map((picture) => (
-            <Tile key={picture.id} picture={picture} />
+            <Tile key={picture.id} picture={picture} standing={standing} />
           ))}
         </div>
       )}

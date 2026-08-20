@@ -118,34 +118,53 @@ are few left" is a fact; a notification that insists is something else.
 
 ---
 
-## 7. Putting a picture back
+## 7. Putting a picture back — built, 20 August 2026
 
 **What it is.** In the gallery, next to a picture already shown: put this one back on the
 display.
 
 **Why.** The archive keeps every picture byte for byte, and the hub can already install one
-again — `tools/home_server.py restore` does it. Today that is reachable only by somebody
-with a terminal, which means it is not reachable by the parent.
+again — `tools/home_server.py restore` does it. Until now that was reachable only by
+somebody with a terminal, which means it was not reachable by the parent.
 
-**How.** The panel records a request; it does not deliver a picture. Something like
-`POST /api/pictures/{id}/again`, which persists one pending request per household, and
-`GET /api/device/{household}/request`, which the hub reads on its next hourly run and
-clears once it has acted. The rhythm setting is the shape to copy: the panel writes, the
-hub reads and decides.
+**How.** The panel records a request; it does not deliver a picture. `POST
+/api/pictures/{id}/again` persists one pending request per household, `GET
+/api/device/{household}/request` is what the hub reads, and `POST
+/api/device/{household}/request/{id}/done` is how it says it has acted. The rhythm setting
+is the shape that was copied: the panel writes, the hub reads and decides.
 
-**What it costs.** A new contract, and it sits close to the rule that dashboard writes are
-inert. It stays inside the rule only while the panel persists a request and nothing else:
-no wake-up, no notification, and the hub free to look when it chooses and to decline. Two
-decisions have to be written down rather than discovered: what happens when two requests
-arrive before the hub looks — the last one wins is the simplest answer — and how long a
-request nobody collected stays alive.
+**What it cost.** A new contract, sitting close to the rule that dashboard writes are
+inert. It stays inside the rule because the panel persists a row and nothing else: no
+wake-up, no notification, and the hub free to look when it chooses and to decline. Three
+decisions were written down rather than left to be discovered, and they sit in the
+docstring of `panel/requests.py` next to the code they govern:
 
-**Where it starts.** `panel/pictures.py` and `panel/app.py` for the two routes,
-`web/src/sections/Pictures.tsx` for the gallery tile, `devices/pull_picture.py` for the side
-that acts.
+* Two presses before the hub looks: the last one wins. A queue would put a picture the
+  parent has changed their mind about on the display first, and would need a rule for how
+  long it may grow.
+* A request nobody collected expires after a day, which is `MAX_CADENCE_MINUTES` — the
+  widest spacing a parent may set, so the longest a request can legitimately be waiting.
+* The hub clears by id, so a press that lands while the hub is fetching the previous
+  picture survives.
 
-**Done when.** With the hub's timer stopped, the request is still there. On the next run the
-chosen picture is on the display, and the request is gone.
+The wait is the real cost. The hub asks for a request at the moment a picture is due and
+not before, so a press is honoured up to one spacing later — an hour on the default. The
+panel has no way to shorten that and is not given one; asking every minute would hold an
+API replica awake all day to hear "nothing" almost every time. When a request is standing,
+serving it takes the place of the painting, so it costs no model call.
+
+**Where it starts.** `panel/requests.py` for the contract, `panel/routes/requests.py` for
+the four routes, `panel/cosmos_store.py` for the stored version,
+`web/src/sections/Pictures.tsx` for the gallery tile, `devices/pull_picture.py` for the
+side that acts.
+
+**Done when — the code half is done, the physical half is not.** 13 tests in
+`tests/test_requests.py`, of which 5 fail with the routes unregistered and the id-aware
+clear removed, and 2 in the web suite that fail against the gallery as it was. No picture
+has been put back on a display in the house. That check needs somebody at the panel: with
+the hub's picture timer stopped, press *put this back* in the gallery and confirm the row
+is still there on `GET /api/device/{household}/request`; start the timer and see the
+picture land at the next spacing with the request gone.
 
 ---
 

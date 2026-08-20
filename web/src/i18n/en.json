@@ -161,6 +161,9 @@
   "pictures.unavailable": "image unavailable",
   "pictures.kind.low": "battery notice",
   "pictures.kind.critical": "battery notice",
+  "pictures.again": "Put this back",
+  "pictures.again.asked": "Asked for. The house puts it up the next time it changes the picture.",
+  "pictures.again.failed": "I could not write down the request.",
 
   "usage.title": "Usage",
   "usage.note": "What the models consumed this month. These are numbers about machines, not about a person, and not a target to reach.",

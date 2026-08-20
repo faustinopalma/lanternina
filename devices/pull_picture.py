@@ -14,6 +14,10 @@ Two refusals are normal and are treated as such, leaving the current picture alo
 content gate declining an image, and the cloud being unreachable. A display that keeps
 yesterday's picture is a much better outcome than a blank one.
 
+The parent can also ask for a picture they have already seen to go back up. That request
+is collected here, at the moment a picture is due, and takes the place of the painting.
+The panel records it and has no way to deliver it, so the wait is up to one spacing.
+
 Stdlib only, so the hub needs no virtualenv for this.
 """
 
@@ -27,6 +31,7 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Any
 
 from devices.trmnl_byos import validate_screen
 
@@ -40,6 +45,11 @@ DEFAULT_CADENCE_MINUTES = 60
 # The timer fires once a minute. The tolerance is what keeps a spacing of thirteen minutes
 # from becoming fourteen: without it the run that lands a second early skips its turn.
 CADENCE_GRACE_SECONDS = 30
+
+# The one thing the parent can ask for through the panel. Spelled the same as
+# `panel/requests.py` says it; the hub ignores anything it does not recognise, so a kind
+# added up there does not have to arrive here on the same day.
+REQUEST_SHOW_AGAIN = "showAgain"
 
 def minutes_of(value: str) -> int:
     """"HH:MM" as minutes past midnight. Raises ValueError on anything else."""
@@ -171,6 +181,89 @@ def _painted_at(screen_file: Path) -> float:
         return 0.0
 
 
+def standing_request(panel: str, household: str, key: str) -> dict[str, Any] | None:
+    """What the parent has asked the house to do, or None.
+
+    Asked for at the moment a picture is due and not before. The panel cannot reach this
+    machine, so a press waits until the house next looks, which is up to one spacing —
+    with the default that is an hour. Asking every minute instead would hold an API
+    replica awake all day to hear "nothing" almost every time.
+
+    Never raises. A panel that does not answer means the house paints as it always does.
+    """
+    request = urllib.request.Request(
+        f"{panel}/api/device/{household}/request", headers={"X-Device-Key": key}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            asked = json.loads(response.read()).get("request")
+    except (urllib.error.URLError, OSError, ValueError, AttributeError) as exc:
+        print(f"cannot read what was asked for ({exc}); painting as usual")
+        return None
+    return asked if isinstance(asked, dict) else None
+
+
+def archived_picture(panel: str, household: str, key: str, picture_id: str) -> bytes | None:
+    """One picture out of the archive, ready for the display, or None if it is not there.
+
+    None is a normal answer: an archive that has aged a picture out is a reason to drop
+    the request, not a fault.
+    """
+    request = urllib.request.Request(
+        f"{panel}/api/device/{household}/pictures/{picture_id}",
+        headers={"X-Device-Key": key},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            return base64.b64decode(json.loads(response.read())["imageBase64"])
+    except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError) as exc:
+        print(f"cannot fetch the picture that was asked for ({exc})")
+        return None
+
+
+def request_done(panel: str, household: str, key: str, request_id: str) -> None:
+    """Say the house has dealt with it, so it is not done twice. Never raises: a request
+    that stays behind costs one repeat, and raising here would cost the picture."""
+    request = urllib.request.Request(
+        f"{panel}/api/device/{household}/request/{request_id}/done",
+        data=b"",
+        headers={"X-Device-Key": key, "Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        urllib.request.urlopen(request, timeout=30).close()
+    except (urllib.error.URLError, OSError) as exc:
+        print(f"could not clear the request ({exc}); it may be acted on again")
+
+
+def serve_request(
+    panel: str, household: str, key: str, target: Path, asked: dict[str, Any]
+) -> bool:
+    """Put back the picture the parent chose. True if the display now holds it.
+
+    This takes the place of a painting rather than being added to it: the house was about
+    to spend a model call on a new picture, and the parent has said which one they want
+    instead. A request the house cannot honour is cleared anyway — leaving it would make
+    every later run try the same missing picture and never paint.
+    """
+    if str(asked.get("kind") or "") != REQUEST_SHOW_AGAIN:
+        return False
+    request_id = str(asked.get("id") or "")
+    image = archived_picture(panel, household, key, str(asked.get("subject") or ""))
+    if image is None:
+        request_done(panel, household, key, request_id)
+        return False
+    try:
+        install(target, image)
+    except ValueError as exc:
+        print(f"refused a picture the display cannot render: {exc}")
+        request_done(panel, household, key, request_id)
+        return False
+    request_done(panel, household, key, request_id)
+    print(f"put back on {target.name}: {len(image)} bytes")
+    return True
+
+
 def main() -> int:
     panel = os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/")
     household = os.environ.get("LANTERNINA_HOUSEHOLD", "")
@@ -218,6 +311,12 @@ def main() -> int:
         return 0
     if not due(target, cadence, time.time()):
         print(f"the spacing was widened to {cadence} minutes: leaving the picture alone")
+        return 0
+
+    # The parent may have asked for a picture they already have back. That is the answer to
+    # this turn, and it costs no generation.
+    asked = standing_request(panel, household, key)
+    if asked is not None and serve_request(panel, household, key, target, asked):
         return 0
 
     request = urllib.request.Request(

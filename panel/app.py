@@ -37,6 +37,7 @@ from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
 from .proposals import InMemoryProposalStore, ProposalStore
 from .reminders import InMemorySentenceStore, SentenceStore
+from .requests import InMemoryRequestStore, RequestStore
 from .rhythm import InMemoryRhythmStore, RhythmStore
 from .routes import admin, painting
 from .routes import devices as device_routes
@@ -44,6 +45,7 @@ from .routes import pictures as picture_routes
 from .routes import preferences as preference_routes
 from .routes import proposals as proposal_routes
 from .routes import reminders as reminder_routes
+from .routes import requests as request_routes
 from .routes import rhythm as rhythm_routes
 from .routes import themes as theme_routes
 from .routes import usage as usage_routes
@@ -66,6 +68,7 @@ SECTIONS = (
     device_routes,
     painting,
     usage_routes,
+    request_routes,
 )
 
 
@@ -81,6 +84,7 @@ def create_app(
     rhythm: RhythmStore | None = None,
     preferences: PreferencesStore | None = None,
     reminders: SentenceStore | None = None,
+    requests: RequestStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -103,6 +107,9 @@ def create_app(
     )
     app.state.reminders = (
         reminders if reminders is not None else _reminders_store(app.state.settings)
+    )
+    app.state.requests = (
+        requests if requests is not None else _request_store(app.state.settings)
     )
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
@@ -228,6 +235,14 @@ def _reminders_store(settings: Settings) -> SentenceStore:
     from .cosmos_store import CosmosSentenceStore
 
     return CosmosSentenceStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _request_store(settings: Settings) -> RequestStore:
+    if not settings.cosmos_configured:
+        return InMemoryRequestStore()
+    from .cosmos_store import CosmosRequestStore
+
+    return CosmosRequestStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

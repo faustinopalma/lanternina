@@ -64,6 +64,43 @@ describe("the gallery", () => {
     await waitFor(() => expect(asked).toHaveBeenLastCalledWith(1, 50));
     expect(window.localStorage.getItem("lanternina.picturesPerPage")).toBe("50");
   });
+
+  it("asks for a picture back by writing it down, and says the house decides when", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    const buttons = await screen.findAllByRole("button", { name: "Rimetti su questo" });
+    await user.click(buttons[0]!);
+
+    await screen.findByText(
+      "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
+    );
+    expect(api.recorded.askedAgain).toEqual(["pic-1"]);
+    // Pressing again would only replace the row, so the button stops offering it.
+    expect(buttons[0]).toBeDisabled();
+  });
+
+  it("shows the request the house has not collected after a reload", async () => {
+    const api = fakeApi({
+      standingRequest: async () => ({
+        id: "ask-1",
+        kind: "showAgain",
+        subject: "pic-3",
+        askedAt: 1_755_500_000,
+      }),
+    });
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+
+    const asked = await screen.findAllByText(
+      "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
+    );
+    expect(asked).toHaveLength(1);
+  });
 });
 
 describe("the rhythm", () => {
