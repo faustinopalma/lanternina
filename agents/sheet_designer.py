@@ -65,7 +65,12 @@ bottom-right. Sizes w and h are fractions too.
       A framed space to draw in.
 
 There is no mark that fills an area, and there is no colour. Everything is a black line on
-white paper."""
+white paper.
+
+Only tick_box, write_line and draw_area can be read back. A stroke or a circle is ink and
+nothing more: if you draw a small circle for somebody to mark, whatever they put in it is
+lost, because nothing ever looks there. Anything the person is meant to write in, mark or
+draw in has to be one of those three."""
 
 
 def _rules(quad_w_mm: float, quad_h_mm: float) -> str:

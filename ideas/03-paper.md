@@ -234,6 +234,48 @@ Three things the raster had not shown, and only paper did:
   that a grid of ruled lines is a form, asks the drawing to carry part of the work rather
   than decorate a corner, and points at tick boxes.
 
+### What the anti-form instructions changed, and what they cost
+
+Same three topics, same deployment, immediately after:
+
+| | before | after |
+| --- | --- | --- |
+| tick boxes | **0 across nine sheets** | 3, 3, 2 |
+| circles | 3, 1, 1 | **21**, 1, **13** |
+| drawing areas | 0, 1, 0 | 1, 1, 1 |
+| writing lines | 13, 6, 8 | 8, 3, **1** |
+| measured coverage | 2.290%, 2.611%, 1.933% | 2.695%, **2.963%**, 2.495% |
+| seconds | 52, 61, 38 | 74, 58, 77 |
+
+The pages became what was wanted: a boat with three sails of circles to count, three boxes
+to choose which multiplication describes them, and a cat to add six whiskers to — a drawing
+that *is* the exercise rather than decoration beside it.
+
+**It costs ink, and it corrects a claim made above.** "Lighter than the form it replaces"
+held for pages that were forms. The cloud sheet measures 2.963% against the old sheet's
+2.78%. Drawing more means more strokes. The stroke budget is nowhere near binding — 306 mm²
+of 800 — so nothing refuses these; the sentence about them being lighter simply stops being
+true and is left standing here so the correction has something to point at.
+
+### A sheet can be beautiful and unreadable
+
+The third page is the important failure. "Una giornata in ordine" carries fifty marks and
+**four answerable places**. Each fact has a small empty circle beside it to mark, and a
+`circle` is ink: only `tick_box`, `write_line` and `draw_area` become regions the reader is
+asked about. Whatever somebody writes in those circles is lost, and nothing about the page
+says so — it looks answerable.
+
+The model was reaching for something the vocabulary does not offer: a round thing to mark.
+It was given squares, so it drew its own circles. The prompt now says which marks can be
+read and which are only ink. Whether a `tick_spot` — a readable region drawn as a circle —
+is worth adding is the open question, and the argument for it is that a model asked twice
+for the same missing thing is describing a gap rather than making a mistake.
+
+Two placement defects came off the same page and are fixed: a wide tick box's label ran off
+the right edge, and a drawing area's caption collided with the heading a model had put above
+it. Labels now fall below their box when they would leave the paper, and a drawing area's
+caption sits just inside its own frame, which is the one place nothing else can be.
+
 **Where it starts.** `shared/pagedesign.py` for the vocabulary, `printing/compose.py` for
 millimetres and the budget, `agents/sheet_designer.py` for the prompt,
 `panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it,

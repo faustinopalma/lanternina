@@ -13,8 +13,10 @@ import pytest
 from numpy.typing import NDArray
 
 from printing.render import (
+    LABEL_SIZE_MM,
     PageGeometry,
     SheetLayoutError,
+    _text_width_mm,
     build_drawing,
     drawing_to_array,
     drawing_to_pdf,
@@ -175,6 +177,41 @@ def test_the_pdf_carries_multiplication_signs_and_accents(page: PageGeometry) ->
     assert "6 × 2 =".encode("cp1252") in pdf
     assert "Quale attività, perché, così".encode("cp1252") in pdf
     assert b"?" not in pdf.split(b"stream", 1)[1].split(b"endstream", 1)[0]
+
+
+def test_a_label_that_would_run_off_the_paper_goes_under_its_box(
+    page: PageGeometry,
+) -> None:
+    """Read off the third sheet a model designed: a wide tick box with a long label beside
+    it printed with the label half outside the page."""
+    wide = CellSpec(
+        id=CellId("c1"),
+        kind=CellKind.CHOICE_BOX,
+        rect=Rect(0.45, 0.4, 0.5, 0.04),
+        label="Leggo qualche pagina.",
+    )
+    narrow = CellSpec(
+        id=CellId("c2"),
+        kind=CellKind.CHOICE_BOX,
+        rect=Rect(0.05, 0.6, 0.04, 0.03),
+        label="sole",
+    )
+    spec = SheetSpec(
+        sheet_id=SheetId("sh_labels"),
+        exercise_id=ExerciseId("ex_labels"),
+        title="",
+        cells=(wide, narrow),
+        qr_rect=Rect(0.78, 0.025, 0.18, 0.118),
+    )
+
+    drawing = build_drawing(spec, page)
+    placed = {text: (x, y) for x, y, text in drawing.labels}
+
+    right_edge = page.width_mm - page.margin_mm
+    for text, (x, _) in placed.items():
+        assert x + _text_width_mm(text, LABEL_SIZE_MM) <= right_edge, text
+    # The narrow one still reads beside its box, which is the order a choice is read in.
+    assert placed["sole"][0] > page.to_page(narrow.rect).right
 
 
 def test_a_writing_line_starts_after_its_label(page: PageGeometry) -> None:

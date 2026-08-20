@@ -285,13 +285,20 @@ def build_drawing(
                 # to leave exactly this room.
                 labels.append((area.x, area.bottom, cell.label))
             elif cell.kind is CellKind.DRAWING_AREA:
-                # A caption above the frame. Beside it runs off the paper: a drawing area
-                # is most of the width, which is how "Il tuo cielo di nuvole" ended up
-                # half outside the page on the second sheet a model designed.
-                labels.append((area.x, area.y - 1.5, cell.label))
+                # Just inside the frame. Above it collided with the heading a model had
+                # already put there, and a drawing area is empty by definition, so inside
+                # is the one place nothing else can be.
+                labels.append((area.x + 1.5, area.y + LABEL_SIZE_MM + 1.0, cell.label))
             else:
-                # Beside the box, for the same reason and in the order a choice is read.
-                labels.append((area.right + 1.5, area.bottom - area.h * 0.25, cell.label))
+                # Beside the box, in the order a choice is read — unless it would run off
+                # the paper, which is what a wide box does with a long label beside it.
+                width = _text_width_mm(cell.label, LABEL_SIZE_MM)
+                if area.right + 1.5 + width <= page.width_mm - page.margin_mm:
+                    labels.append(
+                        (area.right + 1.5, area.bottom - area.h * 0.25, cell.label)
+                    )
+                else:
+                    labels.append((area.x, area.bottom + LABEL_SIZE_MM + 1.0, cell.label))
 
     filled.extend(_ruler_rects(page))
     ruler_x = (page.width_mm - RULER_LENGTH_MM) / 2
