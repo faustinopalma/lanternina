@@ -152,6 +152,24 @@ written. Today the display shows the hour and the sentence exactly as it was typ
 is the parent speaking to their own child and needs no screening; the day the words are a
 model's, they pass the safety chokepoint before they reach the renderer.
 
+**Distributed and measured, 20 August 2026.** Image `lanternina/panel:b3d28a8` on revision
+`--0000037`, and the served `/openapi.json` carries a string only the new build has, which
+is how the revision was shown to be the one answering rather than assumed. The page went
+out on the workflow after that, and the chunk it serves carries both new words. On the hub,
+seven files were behind — the comparison is `build/hub_stale.ps1`, which hashes what git
+stores rather than the working copy, because this machine checks out CRLF and the hub holds
+LF — and all seven now match byte for byte, with `lanternina-reminders.timer` enabled.
+
+Three sentences a parent had written were read by the panel with `degraded: false`:
+"lavarsi i denti dopo pranzo (circa alle 13:30)" placed at 13:30, "dopo cena, circa alle
+20:00" at 20:00, and "di mattina prima di uscire alle 7:00 …" at 07:00, all days. The hub's
+render path was proved in `/tmp` against a synthetic house: 48.062 bytes, 800x480, one bit,
+and the reserved palette byte at 0 — the byte the firmware silently refuses a file over.
+
+What is not done is not code: no display holds the reminder job yet, so the timer runs each
+minute and says "no display shows reminders: nothing to do". And the cache shows FB9F18,
+the one called "un bel quadro che cambia", still holding `sheet` and not `picture`.
+
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the
 reminder role and clears on a press; the third has produced a question in the panel and no
