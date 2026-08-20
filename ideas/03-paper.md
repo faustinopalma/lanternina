@@ -201,25 +201,52 @@ rendered page rather than by a test:
   so in its docstring, but the blueprint runner's `print_sheet` verb carries questions and
   choices rather than a design, so deleting it would take the working paper loop with it.
   The order is below.
-- **Nothing has been printed.** Every figure here is off a raster. What a sheet looks like
-  on the Epson, and whether 2.4% of coverage is as light in practice as it is in
-  arithmetic, is unmeasured.
-- **No model has yet used a `tick_box`.** All six sheets across two runs chose writing
+- **No model has yet used a `tick_box`.** All the sheets across four runs chose writing
   lines. Tick boxes are the only cells readable without the cloud, so a page of handwriting
   reads as nothing at all when the cloud is unreachable — the degraded path silently gets
-  worse as the pages get better. Worth deciding rather than discovering.
+  worse as the pages get better. The prompt now says so; whether it changes anything is
+  measured below.
 - **Text is not in the ink figure.** `drawing_to_array` draws words only when a caller asks
   for a preview, so a page of long sentences costs more than it reports.
 
+### On paper, 20 August 2026
+
+`sh_48a85f58`, "Sei e sette in rotta", printed on the Epson ET-2870 through
+`devices/print_sheet.py:compose_and_print` — the hub's own path, not a laptop. The ruler
+measured **exactly 50 mm** against a real ruler, so the geometry the reader depends on
+survived CUPS at 360 dpi. The page was then scanned back at 300 dpi to look at it.
+
+Three things the raster had not shown, and only paper did:
+
+- **Every accent and every times sign printed as `?`.** `6 × 2 =` came out `6 ? 2 =` and
+  `attività` as `attivit?`. Not the font: `drawing_to_pdf` encoded the content stream as
+  ASCII with `"replace"`, undoing the cp1252 filtering `_pdf_text` had already done, while
+  the font is declared `/WinAnsiEncoding` — which is cp1252. One word changed. It had been
+  wrong for as long as the PDF writer has existed and no test had ever looked.
+- **A writing line's label printed as a caption under an empty rule.** `6 × 2 = ______` is
+  one line and it printed as two unrelated things. The label now sits on the rule's own
+  baseline and the rule starts after it, using Helvetica's real advance widths so the gap
+  is known rather than guessed. This is the third placement this label has had in one day:
+  above the cell collided with the question, under it read as a caption.
+- **The page was still a form.** Two columns of identical ruled lines with a label in
+  front of each. The model designed it freely — nothing computed that layout — so this is
+  a fault in what it was asked for, not in what it can do. The prompt now says plainly
+  that a grid of ruled lines is a form, asks the drawing to carry part of the work rather
+  than decorate a corner, and points at tick boxes.
+
 **Where it starts.** `shared/pagedesign.py` for the vocabulary, `printing/compose.py` for
 millimetres and the budget, `agents/sheet_designer.py` for the prompt,
-`panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it.
+`panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it,
+`tools/print_design.py` to send one to the printer from the hub.
 
 **Done when — the order for retiring the old path.** Each step leaves the loop working:
 
 1. The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions
    and choices, and the two catalogue experiences are rewritten in it.
-2. `devices/print_sheet.py` composes a design instead of calling `sheet_for`.
+2. ~~`devices/print_sheet.py` composes a design instead of calling `sheet_for`~~ — done,
+   20 August 2026: `compose_and_print` sits beside `lay_out_and_print` and what it
+   remembers is a `SheetSpec` either way.
 3. `printing/layout.py` and `tests/test_layout.py` move to `attic/`, out of packaging and
    out of the test run, with a note saying what replaced them.
-4. A designed sheet is printed on the Epson, filled in by hand, and read back.
+4. A designed sheet is printed, filled in by hand, and read back. **Half done**: printed
+   and scanned, but nothing has been written on one and put on the glass.
