@@ -81,7 +81,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | # | What | Where | Why last |
 | --- | --- | --- | --- |
 | 26 | A browser check for the panel | 04 §8 | Protects work already done rather than enabling new work — but move it up the day the panel breaks again. |
-| 27 | The text path's consumption | 04 §9 | The cap measures half the system. Nobody is near the cap yet. |
+| 27 | ~~The text path's consumption~~ — **closed, 20 August 2026** | 04 §9 | The cap measured half the system and said so under a name that fitted the other half. `/api/usage` now reports the two kinds apart as well as together, and the cap is `monthly_call_cap`. The probe that checked it found the chat path had never reported its tokens at all. |
 | 28 | ~~Retiring the diagnostics block~~ — **done, 18 August 2026** | 01 §8 | Removed with the rewrite of the panel as a React application. The claims, the raw `/api/me` body, the HTTP status in a refusal and MSAL's error code are all gone from what a parent sees. |
 | 29 | Calibrating the battery | 02 §3 | One night of passive work turns an estimate into a measurement. |
 | 30 | What an hourly picture costs | 04 §4 | Needed before raising the cadence, not before anything else. |
@@ -114,7 +114,8 @@ Because an idea is judged against what exists, not against nothing:
   are the parent's too, and travel the same way. The adolescent's name is not among them: it
   stays on the hub, and the panel has no field for it.
 - Every model call is counted per household, with the tokens, the cache reads and the
-  provider's request id, and a monthly cap refuses calmly once it is reached.
+  provider's request id, apart by kind as well as together, and a monthly cap refuses calmly
+  once it is reached.
 - A press on the display is answered in the request it caused: the screen says the sheet is
   being read, and the reading comes back about twenty-six seconds later instead of at the
   next ordinary poll.
@@ -132,7 +133,9 @@ Because an idea is judged against what exists, not against nothing:
 - The approval seal is minted and checked inside one process run, so `approval_key` can be
   replaced with a fresh random value at no cost. The safety seal is the one that outlives a
   process: `safety_key` is what already-screened content depends on.
-- Only the image path reports what it consumed. The text path is not instrumented.
+- Reading a page is the one model call still counted nowhere. The picture path and the
+  wording path both report what they consumed; the sheet reader does not, so the cap cannot
+  see it and the parent is not told it happened.
 
 ## The timer
 
