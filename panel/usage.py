@@ -43,10 +43,21 @@ SERVED = "served"
 REFUSED = "refused"
 FAILED = "failed"
 
-# An hourly picture is at most 744 a month. Everything else is one call per thing somebody
-# did: a sentence read, a sentence worded, a page put on the glass. The default leaves room
-# for a parent asking for a few by hand, and still stops a loop that has lost its mind.
-DEFAULT_MONTHLY_CALL_CAP = 1000
+# What a working month costs, added up per path rather than guessed. Pictures: the parent
+# sets the spacing, default 60 minutes, and if they switch the night pause off that is 24
+# a day, 744 in a 31-day month. Readings: one call per page put on the glass, so a house
+# that scans ten a day pays 310. Reminders: a sentence is read once and worded once in its
+# life, so one new sentence a day is 62. Total 1116 in a month nobody would call unusual.
+#
+# The figure that stood here was 1000, chosen when a picture was the only thing counted.
+# It is now below an ordinary month, which makes the cap the thing that decides how much a
+# house may do rather than the thing that stops a fault.
+#
+# Twice the ordinary month. What that buys is that a house behaving as designed never
+# meets the cap; what it costs is that a loop which has lost its mind runs about a day
+# longer before it is stopped. The finest spacing a parent can set is one minute, which is
+# 900 pictures a day inside the default waking hours, so 2000 ends it on the third day.
+DEFAULT_MONTHLY_CALL_CAP = 2000
 
 
 def month_of(at: float) -> str:
