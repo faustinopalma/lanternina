@@ -168,6 +168,7 @@
   "usage.unreadable": "I cannot read the usage right now.",
   "usage.kind.image": "Pictures",
   "usage.kind.text": "Written words",
+  "usage.kind.read": "Pages and sentences read",
   "usage.total": "Both together",
   "usage.calls": "calls",
   "usage.billed": "of which paid for",

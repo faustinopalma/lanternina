@@ -10,8 +10,8 @@ import { useLoad } from "@/lib/useLoad";
 /** What the models consumed. Numbers about machines, never about a person, and never a target
  *  to reach.
  *
- *  Split by kind, because a picture and a wording consume different things: a single figure
- *  covering both would keep the name it had when it only counted pictures. */
+ *  Split by kind, because a picture, a wording and a reading consume different things: a
+ *  single figure covering them would keep the name it had when it only counted pictures. */
 export function Usage() {
   const { t } = useWords();
   const api = useApi();
@@ -24,6 +24,7 @@ export function Usage() {
   const kinds = [
     { kind: "image", title: t("usage.kind.image") },
     { kind: "text", title: t("usage.kind.text") },
+    { kind: "read", title: t("usage.kind.read") },
   ];
 
   const detail = (totals: UsageTotals) => [

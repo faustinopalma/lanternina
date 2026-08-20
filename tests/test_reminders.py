@@ -185,7 +185,8 @@ def answering(said: dict[str, tuple[Any, Any, Any]]) -> Any:
 
     async def read(sentences: Any, *, now: float) -> Any:
         nothing = (None, None, None)
-        return {sentence_id: said.get(sentence_id, nothing) for sentence_id, _ in sentences}
+        placed = {sentence_id: said.get(sentence_id, nothing) for sentence_id, _ in sentences}
+        return placed, None
 
     return read
 
@@ -240,7 +241,7 @@ def test_a_sentence_is_read_once_and_not_again(monkeypatch: pytest.MonkeyPatch) 
 
     async def refuse_to_be_asked(sentences: Any, *, now: float) -> Any:
         asked.append(sentences)
-        return {}
+        return {}, None
 
     monkeypatch.setattr("panel.reading.read_sentences", refuse_to_be_asked)
     second = ask(client, household)

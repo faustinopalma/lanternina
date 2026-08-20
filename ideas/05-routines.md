@@ -190,11 +190,10 @@ One thing to know before reading the figures. A wording call is written into `pa
 as a `text` event, and `over_cap` counts every billed call of the month rather than only the
 pictures, so a wording now takes one unit off the household's monthly cap of 1000. It is one
 call per sentence in that sentence's life, so a household writing a dozen sentences a month
-spends a dozen units; the wording path itself never checks the cap and so cannot be stopped
-by it. Since 20 August the panel reports the two kinds apart as well as together, so the
-figure a parent reads no longer has to stand for a kind it does not describe — ideas/04 §9.
-The reading calls are still not recorded at all, which is the larger gap in these figures
-and is unchanged.
+spends a dozen units. Since 20 August the panel reports the kinds apart as well as together,
+so the figure a parent reads no longer has to stand for a kind it does not describe —
+ideas/04 §9. The reading of the sentences is counted too, as a third kind, and both the
+reading and the wording now check the cap before they spend — ideas/04 §11.
 
 **Distributed and measured, 20 August 2026.** Image `lanternina/panel:b3d28a8` on revision
 `--0000037`, and the served `/openapi.json` carries a string only the new build has, which
@@ -259,8 +258,52 @@ rephrased it faithfully instead of obeying it — the prompt's line about the se
 material held against the one case that matters. And the four wordings of a sentence come
 back close to each other: "Metti / Sistema / Riponi / Inserisci il libro di storia nella
 cartella" differ by a verb. That is not wrong and it is not what the four are for, which is
-that a reminder shown daily does not repeat itself within the week. Left as it is, and
-written down so the next person sees it was seen.
+that a reminder shown daily does not repeat itself within the week.
+
+**What the four being alike cost, and what changed it, 20 August 2026.** Three prompts were
+asked the same two synthetic sentences, three times each, by
+`tools/probe_wording_variety.py`. The prompts: the one described above; that one plus a
+paragraph saying *why* four are wanted ("the same reminder is shown day after day, so the
+four must not be one sentence with a word swapped; two that differ only by a synonym count
+as one"); and that one plus a paragraph saying *how* to build them (no two beginning with
+the same word, no two of the same grammatical shape, at least one stating what is about to
+happen).
+
+The figure is **shared words**: for each of the six pairs among the four wordings, the
+fraction of the words in either that are in both, averaged. It is computed from the strings,
+not measured with an instrument. One means identical word sets. It never approaches zero,
+because the subject of the reminder is in every wording, so it is only worth reading against
+another figure from the same sentence.
+
+| prompt | shared words, 6 sets | input tokens | output tokens | wall time |
+| --- | --- | --- | --- | --- |
+| as it was | 0.59 mean, 0.49–0.65 | 378–381 | 118–289 | 8.0–10.8 s |
+| plus why | **0.52** mean, 0.46–0.58 | 412–415 | 133–545 | 8.8–13.9 s |
+| plus how | 0.59 mean, 0.49–0.64 | 425–428 | 398–1071 | 12.7–20.8 s |
+
+Saying why was lower in all three runs and is now in the prompt, as `_VARIETY` in
+`agents/reminder_wording.py`, kept as a named piece so the probe can ask with and without
+it. What it buys is visible in the wordings and only partly in the figure: instead of four
+imperatives with the verb changed, the four are built differently — "Metti il libro di
+storia nella cartella", "Il libro di storia va in cartella", "Nella cartella deve esserci il
+libro di storia", "La cartella deve contenere il libro di storia". What it costs is 34 more
+input tokens per call and a wider spread of reasoning tokens, paid once per sentence.
+
+Saying how was rejected on the measurement rather than on taste: no better on the figure,
+nearly twice the wall time, and up to 1071 output tokens against 289. It also produced two
+wordings that ask rather than say — "Puoi mettere il libro di storia in cartella?" — and
+several that state something the system cannot know is true, such as "il basilico sta per
+essere annaffiato".
+
+One measure was tried and separated nothing. **Distinct openings**, how many of the four
+start with different first words, was four out of four in all eighteen sets under all three
+prompts. The four never did start alike; what they shared was everything after the first
+word. It is kept in the probe because the answer to "do they all open the same way" is worth
+having written down once.
+
+Six sets per prompt, two sentences, one deployment, all Italian. The ranges overlap: 0.58 for
+the adopted prompt is above 0.49 for the old one. What holds across the three runs is the
+ordering, not a separation.
 
 **What the probe found and what was fixed.** The first run printed "the backend reported no
 usage" four times. `_FoundryBackend.complete` never set `last_usage`: only the image path
@@ -274,7 +317,10 @@ they are append-only and a number invented now would be worse than a number know
 missing.
 
 **The physical check, parked with its recipe.** None of what follows can be done from a
-keyboard, and all of it is ten minutes in front of the device.
+keyboard, and all of it is ten minutes in front of the device. Nothing written on 20 August
+after `--0000039` has been distributed, so the panel a person would open still counts no
+reading and still words with the old prompt; the recipe below is unaffected by either, but
+what it shows will be the old wordings until an image goes out.
 
 1. In the panel, give **FB9F18** the `remind` role and leave **CF7D04** with `picture`. That
    pairing is what makes the two independent: the picture keeps its own display, and the

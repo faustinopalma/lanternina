@@ -289,7 +289,7 @@ class FoundryRouter:
 
     @property
     def last_usage(self) -> ModelUsage | None:
-        """What the last call cost. Only the image path reports it so far."""
+        """What the last call cost, image path and chat path alike. None until one is made."""
         return getattr(self._backend, "last_usage", None)
 
     def _note_success(self) -> None:

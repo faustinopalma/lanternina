@@ -345,10 +345,11 @@ shown to be the one answering rather than assumed: the served `/openapi.json` de
 push after, because the workflow ships the page on any push touching `web/`. The page then
 served `/assets/src-CqLf1yAL.js`, carrying both new labels, Italian and English.
 
-**What it does not do.** Only the picture path refuses when the cap is reached; the wording
-path counts against the cap without checking it. That is deliberate for now — a wording
-starts once per sentence a parent wrote, so it cannot loop on its own — and it is the first
-thing to change if anything else ever starts generating text.
+**What it does not do.** Only the picture path refused when the cap was reached; the wording
+path counted against the cap without checking it. That was deliberate for the day it was
+written — a wording starts once per sentence a parent wrote, so it cannot loop on its own —
+and it was written down as the first thing to change if anything else ever started calling
+a model. That happened the next day: §11 below.
 
 ---
 
@@ -398,3 +399,56 @@ rediscovered.
 outcome from `az acr repository show-tags`, naming the failing run when the tag is absent.
 Streaming the log either kills the local CLI on a `UnicodeEncodeError` or sits there looking
 stuck, in both cases while the build carries on and succeeds.
+
+---
+
+## 11. Closed: reading is counted, and every path that pays now reads the cap
+
+**What it was.** Two of the four ways this system spends money left no trace. Reading a
+page — `devices/read_page.py` posting to `/api/device/{h}/read-sheet` — and reading the
+parent's sentences — inside `/api/device/{h}/reminders` — both called the model and wrote
+nothing into `panel/usage.py`. So the cap could not see them and the parent could not
+either: a household scanning ten sheets a day paid for three hundred calls a month that
+appeared nowhere. It is the same hole the wording had until 20 August, and half of it was
+already fixed, because `_FoundryBackend.complete` had started reporting its tokens.
+
+**A third kind, not the second one.** `KIND_READ`, alongside `KIND_IMAGE` and `KIND_TEXT`.
+A reading is a measurement — which boxes carry a mark, what hour a sentence names — and
+nothing it produces is shown to anybody; the wordings under `KIND_TEXT` are read off a
+display by the person the system is for. Summing the two would give back a figure whose
+name says less than it holds, which is exactly what §9 had just taken apart. The panel now
+shows three blocks and then the total.
+
+**Where it starts.** `panel/reading.py` now hands back what the call consumed, the way
+`panel/wording.py` already did: `read_sheet` and `read_sentences` return the result and the
+`ModelUsage` beside it. The two routes record the event, and neither lets a bookkeeping
+failure eat a reading that was already paid for.
+
+**The cap, on all four paths.** A path that counts against a cap without checking it can
+only be stopped by whichever path does check, which is not a thing to rely on. So:
+
+- `/read-sheet` answers 429. The house reads the page with its own arithmetic and marks the
+  reading degraded, which is what it already does when the panel cannot be reached at all —
+  `devices/read_page.py` turns any HTTP error into `PanelUnreachable`.
+- `/reminders` does not answer 429, and this is the one place the two paths differ. The
+  answer carries the reminders already placed, and a refusal would take those with it for
+  the sake of the sentences it cannot read. So the sentences stay unread, `degraded` comes
+  back true, and the house is told its answer is short in the words it already understands.
+- the wording checks the cap itself, and not only where the reading does. The reading of a
+  batch is one call and the wording is one per sentence in it, so a parent who writes forty
+  sentences at once passes the cap in the middle of the batch.
+- the reading event is written **before** the wordings are asked for, so that a batch large
+  enough to pass the cap is stopped by the call it has itself just made.
+
+**What it costs.** The cap bites sooner again: a household that scans is now spending from
+the same thousand as one that paints. Whether a thousand is still the right number is a
+question these figures will answer and could not before — that is the point of counting
+them. Six tests, all of which fail against the routes as they were.
+
+**Done when.** `/api/usage` reports `byKind.read` with a non-zero `calls` after a page has
+been read, and a household at its cap gets 429 from `/read-sheet` and `degraded: true` from
+`/reminders` while still receiving the reminders it already had.
+
+**Not distributed.** Written and tested on 20 August 2026; no image was built and no
+revision was updated, so what is running is still `lanternina/panel:6853d29` on `--0000039`
+and counts neither reading.

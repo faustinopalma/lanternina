@@ -5,9 +5,9 @@ and it exists so that two questions have answers: *how much has this house used 
 month*, and *does that number agree with what Azure charges*. The second is why every
 event carries the provider's own request id.
 
-The figures are reported per kind as well as together. A picture and a wording cost
-different amounts of different things, so one total covering both is a number whose name
-does not say what it holds.
+The figures are reported per kind as well as together. A picture, a wording and a reading
+cost different amounts of different things, so one total covering all three is a number
+whose name does not say what it holds.
 
 Nothing here is about a person. A token count is a fact about a machine.
 
@@ -28,9 +28,14 @@ from shared.routing import ModelUsage
 
 KIND_IMAGE = "image"
 KIND_TEXT = "text"
+# Kept apart from KIND_TEXT rather than folded into it. A reading is a measurement — what
+# is on a page, what hour a sentence names — and nothing it produces is shown to anybody;
+# the wordings under KIND_TEXT are read off a display. Summing the two would give back a
+# figure whose name says less than it holds, which is the thing just taken apart.
+KIND_READ = "read"
 # Reported even when a household has made none of that kind, so a figure of zero is
 # distinguishable from a kind the panel forgot to mention.
-KINDS = (KIND_IMAGE, KIND_TEXT)
+KINDS = (KIND_IMAGE, KIND_TEXT, KIND_READ)
 
 # Told apart because they cost differently: a picture the gate refused was still generated
 # and still paid for, while one that never reached the model was not.
@@ -38,9 +43,9 @@ SERVED = "served"
 REFUSED = "refused"
 FAILED = "failed"
 
-# An hourly picture is at most 744 a month, and the text path adds one call per sentence
-# the cloud words. The default leaves room for a parent asking for a few by hand, and
-# still stops a loop that has lost its mind.
+# An hourly picture is at most 744 a month. Everything else is one call per thing somebody
+# did: a sentence read, a sentence worded, a page put on the glass. The default leaves room
+# for a parent asking for a few by hand, and still stops a loop that has lost its mind.
 DEFAULT_MONTHLY_CALL_CAP = 1000
 
 

@@ -283,12 +283,12 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       usage: {
         period: "2026-08",
         total: {
-          calls: 214,
-          billedCalls: 209,
-          inputTokens: 118_402,
-          outputTokens: 44_910,
+          calls: 220,
+          billedCalls: 215,
+          inputTokens: 123_202,
+          outputTokens: 46_230,
           cachedInputTokens: 61_200,
-          reasoningTokens: 0,
+          reasoningTokens: 640,
         },
         byKind: {
           image: {
@@ -306,6 +306,14 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
             outputTokens: 90,
             cachedInputTokens: 0,
             reasoningTokens: 0,
+          },
+          read: {
+            calls: 6,
+            billedCalls: 6,
+            inputTokens: 4_800,
+            outputTokens: 1_320,
+            cachedInputTokens: 0,
+            reasoningTokens: 640,
           },
         },
       },

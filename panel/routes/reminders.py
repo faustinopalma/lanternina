@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Mapping
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
@@ -17,6 +18,7 @@ from pydantic import BaseModel, ConfigDict
 
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 
+from ..config import Settings
 from ..gate import CurrentAccount, DeviceKey
 from ..reminders import (
     MAX_SENTENCE_LENGTH,
@@ -25,6 +27,16 @@ from ..reminders import (
     clean_sentence,
     clean_wordings,
     make_sentence,
+)
+from ..usage import (
+    FAILED,
+    KIND_READ,
+    KIND_TEXT,
+    REFUSED,
+    SERVED,
+    UsageStore,
+    event_from,
+    over_cap,
 )
 
 router = APIRouter()
@@ -107,23 +119,38 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
     Nothing here records whether a reminder was ever shown or pressed. There is no
     field for it, which is the only way that stays true.
     """
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
     store: SentenceStore = request.app.state.reminders
     rows = store.list(household_id)
     unread = [(row.id, row.text) for row in rows if row.read_at <= 0.0]
 
     degraded = False
-    if unread:
+    if unread and over_cap(counter, household_id, settings.monthly_call_cap):
+        # Reaching the cap says the same thing to the house as a cloud that will not
+        # answer: the sentences stay unread, and the reminders already placed still go
+        # out. A 429 for the whole call would take those with it.
+        logging.getLogger(__name__).info("reminders not read: the monthly cap is reached")
+        degraded = True
+    elif unread:
         from ..reading import read_sentences
 
         now = time.time()
+        placements: Mapping[str, tuple[Any, Any, Any]] = {}
+        spent: Any = None
+        outcome = FAILED
         try:
-            placements = await read_sentences(unread, now=now)
+            placements, spent = await read_sentences(unread, now=now)
+            outcome = SERVED
         except (NoCapacityError, CloudUnavailable, ValueError) as exc:
             # Reduced capability, not a stopped house: the sentences stay unread and
             # the reminders already placed are still handed over.
             logging.getLogger(__name__).warning("reminders not read: %s", exc)
             degraded = True
-        else:
+        # Written down before the wordings are asked for, so that a batch large enough to
+        # pass the cap is stopped by the call it has already made.
+        _count(counter, household_id, KIND_READ, outcome, spent)
+        if outcome == SERVED:
             for sentence_id, text in unread:
                 said = placements.get(sentence_id, (None, None, None))
                 at, days, question = clean_reading(*said)
@@ -165,14 +192,20 @@ async def _word(
     two hundred and eighty times a day. A sentence that got no wordings keeps the parent's
     own, and the way to ask again is the way the parent already has — editing it, which
     makes it unread.
-    """
-    from shared.ids import new_id
 
-    from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from
+    The cap is checked here and not only where the reading is, because the reading of a
+    batch is one call and the wording is one per sentence in it: a household writing forty
+    sentences at once passes the cap in the middle of the batch, and the sentences after
+    that point would otherwise be paid for anyway.
+    """
     from ..wording import word_sentence
 
+    settings: Settings = request.app.state.settings
     store: SentenceStore = request.app.state.reminders
     counter: UsageStore = request.app.state.usage
+    if over_cap(counter, household_id, settings.monthly_call_cap):
+        logging.getLogger(__name__).info("reminder not worded: the monthly cap is reached")
+        return
     spent: Any = None
     outcome = FAILED
     try:
@@ -186,11 +219,19 @@ async def _word(
     else:
         outcome = SERVED
         store.record_wording(household_id, sentence_id, words=clean_wordings(words))
+    _count(counter, household_id, KIND_TEXT, outcome, spent)
+
+
+def _count(
+    counter: UsageStore, household_id: str, kind: str, outcome: str, spent: Any
+) -> None:
+    """Write down what a call consumed. Never raises: the call was already made and paid
+    for, so failing here would spend the money and deliver nothing."""
+    from shared.ids import new_id
+
     try:
         counter.record(
-            event_from(
-                household_id, KIND_TEXT, outcome, spent, event_id=str(new_id("use"))
-            )
+            event_from(household_id, kind, outcome, spent, event_id=str(new_id("use")))
         )
     except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a reminder
         logging.getLogger(__name__).warning("usage not recorded: %s", exc)

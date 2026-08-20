@@ -3,6 +3,9 @@
 Both are called by the house and by nothing else: a picture when it wants one, a reading
 when a page comes off the glass. Neither is scheduled here — the cadence belongs to the
 house, which is the only place that knows what is happening in the room.
+
+Both are counted, and both refuse once the household's monthly cap is reached. A path that
+counts against a cap without checking it can only be stopped by whichever path does check.
 """
 
 from __future__ import annotations
@@ -21,7 +24,16 @@ from ..config import Settings
 from ..gate import DeviceKey
 from ..pictures import PictureArchive, PictureRecord
 from ..themes import ThemeStore
-from ..usage import FAILED, KIND_IMAGE, REFUSED, SERVED, UsageStore, event_from, over_cap
+from ..usage import (
+    FAILED,
+    KIND_IMAGE,
+    KIND_READ,
+    REFUSED,
+    SERVED,
+    UsageStore,
+    event_from,
+    over_cap,
+)
 
 router = APIRouter()
 
@@ -125,10 +137,18 @@ async def read_sheet_page(
     A refusal leaves the house to fall back on its own arithmetic and say so, which is
     the whole of what "reduced capability, not a stopped system" means on this path.
     """
+    from shared.ids import new_id
     from shared.sheet import SheetSpec
     from shared.vision_contracts import RectifiedPage
 
     from ..reading import read_sheet
+
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if over_cap(counter, household_id, settings.monthly_call_cap):
+        # The house reads the page with its own arithmetic and marks the reading degraded,
+        # which is the same thing it does when the panel cannot be reached at all.
+        raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     try:
         spec = SheetSpec.from_dict(page.sheet)
@@ -145,8 +165,22 @@ async def read_sheet_page(
         captured_at=time.time(),
         spec_version=spec.spec_version,
     )
+    spent: Any = None
+    outcome = FAILED
     try:
-        reading = await read_sheet(rectified, spec, now=time.time())
+        reading, spent = await read_sheet(rectified, spec, now=time.time())
+        outcome = SERVED
     except (NoCapacityError, CloudUnavailable, ValueError) as exc:
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
+    finally:
+        try:
+            counter.record(
+                event_from(
+                    household_id, KIND_READ, outcome, spent, event_id=str(new_id("use"))
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a reading
+            # The call was already made and paid for; failing here would spend the money
+            # and deliver nothing. Loud in the log, silent to the house.
+            logging.getLogger(__name__).warning("usage not recorded: %s", exc)
     return reading.to_dict()
