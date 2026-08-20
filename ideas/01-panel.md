@@ -69,7 +69,9 @@ rather than letting the parent assume otherwise.
 
 **Done when.** Four tests in `tests/test_proposals.py` and three in the web suite. Checked
 by breaking it: with `WITHDRAWN` out of `DECIDABLE` four fail, and with the approved-only
-check removed the one that guards it fails on its own. Not seen by a parent yet.
+check removed the one that guards it fails on its own. Distributed on revision `--0000041`
+and page chunk `/assets/src-D6SP-mAK.js`; the labels *Non più* and *Ritirata* are in the
+served bundle. Not pressed by a parent yet.
 
 ---
 
@@ -137,8 +139,9 @@ have been wrong Italian, and adding plural rules for one line was not worth it.
 
 **Where it starts.** `web/src/sections/Proposals.tsx`, the `Approved` component.
 
-**Done when.** Three tests in the web suite, which fail against the section as it was. Not
-seen by a parent yet.
+**Done when.** Three tests in the web suite, which fail against the section as it was.
+Distributed on page chunk `/assets/src-D6SP-mAK.js`, which carries `approvate:
+{activities}`. Not seen by a parent yet.
 
 ---
 
@@ -184,11 +187,18 @@ side that acts.
 
 **Done when — the code half is done, the physical half is not.** 13 tests in
 `tests/test_requests.py`, of which 5 fail with the routes unregistered and the id-aware
-clear removed, and 2 in the web suite that fail against the gallery as it was. No picture
-has been put back on a display in the house. That check needs somebody at the panel: with
-the hub's picture timer stopped, press *put this back* in the gallery and confirm the row
-is still there on `GET /api/device/{household}/request`; start the timer and see the
-picture land at the next spacing with the request gone.
+clear removed, and 2 in the web suite that fail against the gallery as it was.
+
+Distributed on 20 August 2026: image `lanternina/panel:fa62ffe` on revision `--0000041`,
+shown to be the one answering by the four request routes appearing in the served
+`/openapi.json`; the page on `/assets/src-D6SP-mAK.js`, carrying the label *Rimetti su
+questo*; `devices/pull_picture.py` installed on the hub, md5 `d54e7e2f…` matching the
+repository copy, and `lanternina-picture.service` last exited 0.
+
+No picture has been put back on a display: nobody has pressed the button. That check needs
+somebody at the panel — with the hub's picture timer stopped, press *rimetti su questo* in
+the gallery and confirm the row is still there on `GET /api/device/{household}/request`;
+start the timer and see the picture land at the next spacing with the request gone.
 
 ---
 
