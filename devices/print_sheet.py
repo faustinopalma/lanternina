@@ -64,3 +64,42 @@ def lay_out_and_print(
             check=True,
         )
     return spec
+
+
+def compose_and_print(
+    design: Mapping[str, Any],
+    *,
+    sheets_dir: Path,
+    sheet_id: SheetId,
+    exercise_id: ExerciseId,
+    printer: str,
+    now: float = 0.0,
+    send: bool = True,
+) -> SheetSpec:
+    """The same, for a sheet a model designed rather than a template it filled.
+
+    Identical in every way that matters to the reader: what is remembered is a
+    ``SheetSpec``, so a page that comes back on Thursday is found and read exactly as
+    before. What differs is only where the rectangles came from.
+
+    Imported here rather than at the top because the hub prints far more often than it
+    designs, and ``printing.compose`` pulls in OpenCV to measure the ink.
+    """
+    from printing.compose import compose
+    from shared.pagedesign import PageDesign
+
+    sheet = compose(
+        PageDesign.from_dict(design),
+        sheet_id=sheet_id,
+        exercise_id=exercise_id,
+        created_at=now,
+    )
+    pdf = drawing_to_pdf(sheet.drawing)
+    remember(sheets_dir, sheet.spec)
+    if send:
+        subprocess.run(
+            ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
+            input=pdf,
+            check=True,
+        )
+    return sheet.spec
