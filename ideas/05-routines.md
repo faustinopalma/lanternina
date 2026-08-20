@@ -215,8 +215,8 @@ the hub rather than asked: `/var/lib/lanternina/state/jobs.json` gives CF7D04 th
 `sheet`. Neither holds `remind`. So `journalctl -u lanternina-reminders` says "no display
 shows reminders: nothing to do" once a minute, and the second half of the picture role has
 no second display to be independent of. Both displays are awake: the same file records them
-seen 19 s and 65 s earlier. Nothing here can be measured until somebody assigns the two
-roles in the panel, which is a thing only a person in the house can do.
+seen 19 s and 65 s earlier. Nothing here can be measured until the two roles are assigned in
+the panel, and the recipe for doing that is the numbered list further down this section.
 
 **The wording, distributed and measured, 20 August 2026.** Image `lanternina/panel:793d44b`
 on revision `--0000038`, and the served `/openapi.json` carries "ways of saying it", a

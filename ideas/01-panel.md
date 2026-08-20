@@ -71,7 +71,8 @@ rather than letting the parent assume otherwise.
 by breaking it: with `WITHDRAWN` out of `DECIDABLE` four fail, and with the approved-only
 check removed the one that guards it fails on its own. Distributed on revision `--0000041`
 and page chunk `/assets/src-D6SP-mAK.js`; the labels *Non più* and *Ritirata* are in the
-served bundle. Not pressed by a parent yet.
+served bundle. What is left is to approve something, take it back, and check the house is
+no longer offered it on `GET /api/device/{household}/proposals`.
 
 ---
 
@@ -141,7 +142,9 @@ have been wrong Italian, and adding plural rules for one line was not worth it.
 
 **Done when.** Three tests in the web suite, which fail against the section as it was.
 Distributed on page chunk `/assets/src-D6SP-mAK.js`, which carries `approvate:
-{activities}`. Not seen by a parent yet.
+{activities}`. What is left is to read the line with an empty reserve — zero approved
+activities is the state we called unacceptable, and the words have to stay a fact and not
+turn into a reproach.
 
 ---
 
@@ -185,7 +188,7 @@ the four routes, `panel/cosmos_store.py` for the stored version,
 `web/src/sections/Pictures.tsx` for the gallery tile, `devices/pull_picture.py` for the
 side that acts.
 
-**Done when — the code half is done, the physical half is not.** 13 tests in
+**Done when — the code is checked, the button is not.** 13 tests in
 `tests/test_requests.py`, of which 5 fail with the routes unregistered and the id-aware
 clear removed, and 2 in the web suite that fail against the gallery as it was.
 
@@ -195,10 +198,10 @@ shown to be the one answering by the four request routes appearing in the served
 questo*; `devices/pull_picture.py` installed on the hub, md5 `d54e7e2f…` matching the
 repository copy, and `lanternina-picture.service` last exited 0.
 
-No picture has been put back on a display: nobody has pressed the button. That check needs
-somebody at the panel — with the hub's picture timer stopped, press *rimetti su questo* in
-the gallery and confirm the row is still there on `GET /api/device/{household}/request`;
-start the timer and see the picture land at the next spacing with the request gone.
+What is left is one pass in front of the panel, in this order: stop
+`lanternina-picture.timer` on the hub, press *rimetti su questo* on a picture in the
+gallery, confirm the row is still there on `GET /api/device/{household}/request`, start the
+timer, and see the picture land at the next spacing with the request gone.
 
 ---
 

@@ -89,6 +89,19 @@ and the file wins for judging whether the thing is worth doing at all.
 | 32 | Reading aloud | 05 §7 | Genuinely useful, and the only entry that touches a decision left open on purpose. |
 | 33 | ~~app.lanternina.com returning 404~~ — **closed, 19 August 2026** | 04 §6 | It closed itself. 40 requests all answered 200, and the ingress that used to be deterministically 404 answered 200 six times out of six. Nothing was changed to achieve it. |
 
+## Waiting for one pass in front of the panel
+
+Not blocked, not hard, and not code. Each of these is built, distributed and checked by
+tests, and none has been used by a person once. Doing them is the cheapest way to find out
+whether any of it is wrong, and it is the first thing worth doing on a day when the house is
+awake.
+
+| What | Where | The check, in order |
+| --- | --- | --- |
+| Give the displays their roles | 05 §1 | The numbered list at the end of the section. Until FB9F18 holds `remind`, nothing about reminders can be measured at all, and the reminders built on 19 and 20 August have no glass to appear on. Do this one first: it unblocks the other two being worth watching. |
+| Put a picture back | 01 §7 | Stop `lanternina-picture.timer`, press *rimetti su questo* in the gallery, confirm the row on `GET /api/device/{household}/request`, start the timer, see the picture land at the next spacing with the request gone. |
+| Take an approval back, and read the reserve | 01 §3, §6 | Approve something, press *non più*, confirm `GET /api/device/{household}/proposals` no longer offers it. Then withdraw everything and read the reserve line at zero: it has to stay a fact and not become a reproach. |
+
 ## What is already true
 
 Because an idea is judged against what exists, not against nothing:
@@ -115,7 +128,13 @@ Because an idea is judged against what exists, not against nothing:
   stays on the hub, and the panel has no field for it.
 - Every model call is counted per household, with the tokens, the cache reads and the
   provider's request id, apart by kind as well as together, and a monthly cap refuses calmly
-  once it is reached.
+  once it is reached. Three kinds pay: a picture, a wording, and a reading — a page put on
+  the glass and the parent's sentences being placed in the day.
+- The parent can ask for a picture already seen to go back on the display. The panel writes
+  one row and cannot deliver it; the hub finds it when it next paints and serves it instead
+  of generating.
+- An approval can be taken back. The house stops being offered the item on its next
+  request, and the panel says plainly that a sheet already printed is beyond that.
 - A press on the display is answered in the request it caused: the screen says the sheet is
   being read, and the reading comes back about twenty-six seconds later instead of at the
   next ordinary poll.
@@ -133,9 +152,13 @@ Because an idea is judged against what exists, not against nothing:
 - The approval seal is minted and checked inside one process run, so `approval_key` can be
   replaced with a fresh random value at no cost. The safety seal is the one that outlives a
   process: `safety_key` is what already-screened content depends on.
-- Reading a page is the one model call still counted nowhere. The picture path and the
-  wording path both report what they consumed; the sheet reader does not, so the cap cannot
-  see it and the parent is not told it happened.
+- The cap's figures are **computed, not measured**. `/api/usage` for the real household has
+  never been read: Cosmos is private-endpoint only and the route needs a parent token from
+  the CIAM tenant, which no command-line credential can mint. 04 §12 has the arithmetic and
+  says which row to doubt first.
+- Three things are **distributed but never exercised by a person**: putting a picture back,
+  taking an approval back, and the line saying how much is in reserve. Each one's check is
+  written out under "waiting for one pass in front of the panel" above.
 
 ## The timer
 

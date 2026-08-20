@@ -80,7 +80,7 @@ marked as measured or estimated.
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Reproducing the cloud tier in your own subscription. |
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware reasoning, with what is verified and what is a guess. |
-| [ideas/](ideas/) | What is not built, ranked, each entry with its cost and a check somebody else can run. |
+| [ideas/](ideas/) | What is not built, ranked, each entry with its cost and a check somebody else can run. **What to do next is decided here**, in the "where to start" table of [ideas/README.md](ideas/README.md). |
 
 ## How the guarantees are enforced
 
