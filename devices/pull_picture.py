@@ -160,10 +160,10 @@ def picture_file(shared: Path, jobs_file: Path) -> Path:
     import random
 
     from devices.inventory import holders, load_jobs
-    from devices.trmnl_byos import screen_for
+    from devices.trmnl_byos import picture_for
 
     chosen = [
-        screen_for(shared, str(thing.get("label") or ""))
+        picture_for(shared, str(thing.get("label") or ""))
         for thing in holders(load_jobs(jobs_file), "picture")
         if thing.get("label")
     ]

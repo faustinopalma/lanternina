@@ -44,6 +44,9 @@ umask 077
     #     pathlib.Path(sys.argv[1]).write_bytes(e.render_waiting_bmp())" \
     #     /opt/lanternina/trmnl-waiting.bmp
     printf 'TRMNL_WAITING_FILE=/opt/lanternina/trmnl-waiting.bmp\n'
+    # Without this the server cannot tell what a display is for, so it serves every layer
+    # anybody ever wrote to it — including a picture from a job that has since moved.
+    printf 'LANTERNINA_JOBS_FILE=/var/lib/lanternina/state/jobs.json\n'
     printf 'TRMNL_PORT=8080\n'
 } > "$env_file"
 

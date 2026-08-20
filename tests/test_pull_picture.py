@@ -122,8 +122,10 @@ def test_the_picture_goes_to_the_display_that_holds_the_job(tmp_path: Path) -> N
 
     One press created `screen-FB9F18.bmp`, that file took the display over for good, and
     the pictures — written only to the shared file — never reached it again. Addressing the
-    display that holds the job writes to the same file the press did, so a press costs one
-    picture instead of the display.
+    display that holds the job is what fixed it.
+
+    It goes to a layer of the picture's own, which is the second half of the same lesson:
+    written into the display's shared file, a picture outlived the job that made it.
     """
     from devices.inventory import save_jobs
     from devices.pull_picture import picture_file
@@ -138,7 +140,7 @@ def test_the_picture_goes_to_the_display_that_holds_the_job(tmp_path: Path) -> N
         ],
     )
 
-    assert picture_file(shared, jobs) == shared.with_name("screen-CF7D04.bmp")
+    assert picture_file(shared, jobs) == shared.with_name("screen-CF7D04-picture.bmp")
 
 
 def test_with_nobody_holding_the_job_the_picture_goes_where_it_always_did(

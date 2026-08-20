@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
+from shared.capabilities import JOB_PICTURE, JOB_REMIND, JOB_SHEET
+
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 480
 
@@ -414,6 +416,21 @@ def reminder_for(shared: Path, friendly_id: str) -> Path:
     return shared.with_name(f"{shared.stem}-{friendly_id}-reminder{shared.suffix}")
 
 
+def picture_for(shared: Path, friendly_id: str) -> Path:
+    """Where the picture on this display lives.
+
+    Its own layer, for the reason the reminder has one: a picture ends too. It ends when
+    the parent moves the picture job to another display — and until 20 August 2026 it did
+    not, because the picture was written into the display's shared file and nothing after
+    that ever touched it. FB9F18 spent a day and a half showing a picture from the evening
+    it stopped being the picture display.
+
+    Keeping it apart is what lets the answer be "stop serving this" rather than "work out
+    who wrote that file and delete it".
+    """
+    return shared.with_name(f"{shared.stem}-{friendly_id}-picture{shared.suffix}")
+
+
 def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     # Validated once here so a broken file fails at startup, not in front of a device.
     last_good = validate_screen(config.screen_file)
@@ -422,7 +439,13 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     id_screens: dict[str, bytes] = {}
 
     def current_screen(device: Device) -> bytes:
-        """Re-read on every request, so new content needs no restart."""
+        """Re-read on every request, so new content needs no restart.
+
+        Each layer is served only while the display still holds the job that writes it.
+        That is what makes taking a job away actually take its screen away: without it a
+        display keeps the last thing that job left on it for as long as it is on the wall,
+        which is what FB9F18 did for a day and a half.
+        """
         nonlocal last_good
         level = recorded_level(config.status_file, device.mac, device.mains)
         farewell = _valid_or_none(
@@ -437,18 +460,57 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         unassigned = _unassigned_screen(device)
         if unassigned is not None:
             return unassigned
-        due = _valid_or_none(reminder_for(config.screen_file, device.friendly_id))
-        if due is not None:
-            return due
-        own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
-        if own is not None:
-            return own
+
+        jobs = _jobs_held(device)
+        if _holds(jobs, JOB_REMIND):
+            due = _valid_or_none(reminder_for(config.screen_file, device.friendly_id))
+            if due is not None:
+                return due
+        if _holds(jobs, JOB_SHEET):
+            own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
+            if own is not None:
+                return own
+        if _holds(jobs, JOB_PICTURE):
+            painted = _valid_or_none(picture_for(config.screen_file, device.friendly_id))
+            if painted is not None:
+                return painted
+            try:
+                last_good = validate_screen(config.screen_file)
+            except (OSError, ValueError):
+                # A half-written file must never blank the display.
+                pass
+            return last_good
+        # Jobs, but none of them has anything to show. Its own name is the honest answer,
+        # and it is a great deal better than a picture from the day before yesterday.
+        return _id_screen(device) or last_good
+
+    def _jobs_held(device: Device) -> tuple[str, ...] | None:
+        """What the panel last said this display is for, or None if it has never said."""
+        if config.jobs_file is None:
+            return None
         try:
-            last_good = validate_screen(config.screen_file)
-        except (OSError, ValueError):
-            # A half-written file must never blank the display.
-            pass
-        return last_good
+            from devices.inventory import jobs_of, load_jobs
+
+            return jobs_of(load_jobs(config.jobs_file), device.mac)
+        except Exception:  # noqa: BLE001 - an unreadable file must not blank a display
+            return None
+
+    def _holds(jobs: tuple[str, ...] | None, job: str) -> bool:
+        """None means the panel has never mentioned this display, and a hub that cannot
+        reach the panel must carry on rather than turn every screen in the house off."""
+        return jobs is None or job in jobs
+
+    def _id_screen(device: Device) -> bytes | None:
+        drawn = id_screens.get(device.friendly_id)
+        if drawn is None:
+            try:
+                from devices.epaper import render_id_bmp
+
+                drawn = render_id_bmp(device.friendly_id)
+            except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
+                return None
+            id_screens[device.friendly_id] = drawn
+        return drawn
 
     def _unassigned_screen(device: Device) -> bytes | None:
         """Its own id, when the panel has said this display is for nothing yet.
@@ -460,16 +522,11 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         if config.jobs_file is None:
             return None
         try:
-            from devices.epaper import render_id_bmp
             from devices.inventory import jobs_of, load_jobs
 
             if jobs_of(load_jobs(config.jobs_file), device.mac) != ():
                 return None
-            drawn = id_screens.get(device.friendly_id)
-            if drawn is None:
-                drawn = render_id_bmp(device.friendly_id)
-                id_screens[device.friendly_id] = drawn
-            return drawn
+            return _id_screen(device)
         except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
             return None
 

@@ -224,6 +224,51 @@ def test_a_display_with_no_job_shows_its_own_id(tmp_path: Path) -> None:
         thread.join()
 
 
+def test_a_display_that_loses_the_picture_job_stops_showing_a_picture(
+    tmp_path: Path,
+) -> None:
+    """Found on the wall on 20 August 2026, not by a test.
+
+    FB9F18 was given `sheet` and `remind` and the picture job was taken away. It went on
+    showing a picture from the evening of the 19th, because the picture had been written
+    into the display's own file and nothing afterwards ever touched it. A layer of its
+    own is what makes taking the job away take the picture with it.
+    """
+    from devices.epaper import render_id_bmp
+    from devices.inventory import save_jobs
+    from devices.trmnl_byos import picture_for
+
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    display = register_device(registry, MAC)
+    jobs = tmp_path / "jobs.json"
+    save_jobs(jobs, [{"id": MAC, "label": display.friendly_id, "job": "picture"}])
+
+    painted = picture_for(shared, display.friendly_id)
+    Image.new("1", (800, 480), 1).save(painted, format="BMP")
+
+    config = Config("http://127.0.0.1", shared, registry, jobs_file=jobs)
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        assert get(f"{base_url}/screen/{display.token}.bmp")[1] == painted.read_bytes()
+
+        # The parent moves the picture elsewhere. The file is still on disk, untouched.
+        save_jobs(jobs, [{"id": MAC, "label": display.friendly_id, "job": "sheet"}])
+        answer = get(f"{base_url}/screen/{display.token}.bmp")[1]
+
+        assert answer != painted.read_bytes()
+        assert answer != shared.read_bytes()
+        # Its own name: honest about having nothing to show, which a day-old picture is not.
+        assert answer == render_id_bmp(display.friendly_id)
+    finally:
+        httpd.shutdown()
+        thread.join()
+
+
 def test_a_short_press_is_recorded_and_a_timer_wake_is_not(tmp_path: Path) -> None:
     """The press is the only thing in this system that starts a scan, so it has to be
     legible without a wire we do not have. The firmware already says why it woke."""
