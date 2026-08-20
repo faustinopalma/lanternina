@@ -119,3 +119,107 @@ yet (see item 1), `vision/` for the reading side.
 
 **Done when.** A printed sheet with a ticked box is read back, and the next sheet offered
 is of the kind that was asked for, chosen from already-approved content.
+
+---
+
+## 6. A sheet a model designs, instead of a template it fills — half built, 20 August 2026
+
+**What it is.** The sheet the house prints is the kind of short piece of practice an
+adolescent is given now and then. Until now its shape was decided by arithmetic: four
+questions, four boxes each, always in the same places. Now a model designs the page — where
+things go, what is drawn on it, where there is room to write.
+
+**Why.** Two reasons, and the second is the one that matters. A page laid out by arithmetic
+is a form, and nothing about it is ever a pleasure to receive. And the format it was laid
+out in could only express one kind of exercise, so every idea that was not four
+multiple-choice questions had nowhere to go.
+
+**How it stays frugal, which is the whole engineering problem.** A model that can draw will
+spend ink, and ink on a home inkjet is slow, wet and expensive. So the vocabulary it draws
+in — `shared/pagedesign.py` — **has no mark that fills an area**. Not a discouraged fill: no
+fill. A drawing is strokes, so a heavy page is unreachable rather than merely asked against,
+and the only remaining way to spend ink is a great many strokes, which is measured and
+refused above a budget.
+
+Six marks, and an administrator can read a design to the end: `stroke`, `circle`, `words`,
+`tick_box`, `write_line`, `draw_area`. Coordinates are normalised over the marker
+quadrilateral exactly as `shared/sheet.py` is, so a design carries no paper size, and
+`PageDesign.to_sheet_spec()` produces the same `SheetSpec` the vision pipeline already
+reads. That seam is what made this cheap: the page got more interesting and the reading
+contract did not move.
+
+**The numbers, measured on 20 August 2026.** Everything below is measured, not estimated.
+The baseline is the sheet this replaces, rasterised at 150 dpi on A4:
+
+| | ink | of the page |
+| --- | --- | --- |
+| the scaffold every sheet pays — four markers, QR, ruler | 940 mm² | 1.51% |
+| the sheet this replaces: scaffold + 16 tick boxes | 1734 mm² | 2.78% |
+
+Three sheets the deployed model designed, `gpt-5.6-sol-2026-07-09`, third run — the one
+with every fix below in it:
+
+| topic | marks | stroke ink | measured | seconds | out tokens |
+| --- | --- | --- | --- | --- | --- |
+| le tabelline del 6 e del 7 | 36 | 80 mm² | 2.290% | 52.3 | 3701 (2109 reasoning) |
+| i nomi delle nuvole | 24 | 76 mm² | 2.611% | 60.5 | 4567 (3317 reasoning) |
+| mettere in ordine i fatti di una giornata | 29 | 55 mm² | 1.933% | 38.4 | 2877 (1536 reasoning) |
+
+All three are **lighter than the form they replace**, with a drawing on them. Input was
+about 930 tokens each. The budget is 800 mm² of stroke ink and the heaviest sheet across
+three runs spent 204, so the budget is not currently what shapes these pages — it is there
+for the run that decides to hatch a sky.
+
+Nine sheets were asked for in total, across three runs. One was refused, for a reason that
+turned out to be ours rather than the model's — see below.
+
+**Two ink figures, and they do not agree.** `stroke_ink_mm2` is length times width — the
+area a pen would wet, and the figure the budget is applied to. `ink_coverage` rasterises
+and counts dark pixels. Measured on a single line across the frame, the raster reads
+**0.85 to 1.70 times** the arithmetic, because a stroke width is rounded to whole pixels:
+0.3 mm at 150 dpi is 1.77 pixels drawn as 2. Neither is wrong and they are not
+interchangeable, so the budget uses the first and the second is only reported.
+
+**What it cost, and what it caught.** Four defects, three of them found by looking at a
+rendered page rather than by a test:
+
+- Labels were drawn above their cell, which is where the question is. On a page a model
+  laid out there is nothing keeping the two apart, and `La mia:` landed on top of `Inventa
+  una moltiplicazione`. Labels now go beside a tick box, under a writing line, above a
+  drawing area.
+- A drawing area's label ran off the right-hand edge of the paper, because a drawing area
+  is most of the page's width and the label was placed beside it.
+- `MAX_LABEL` was 24 characters and refused a whole sheet for `Scrivi qui il nome della
+  nuvola`, which is 31. Now 48, and chosen rather than measured — what a label may safely
+  be is a width in millimetres and nothing checks that yet.
+- `tests/test_boundaries.py` refused the word `points` for a polyline's vertices, because
+  it is gamification vocabulary. It was right to; the field is `vertices`.
+
+**The limits, next to the claims.**
+
+- **The old path is still the one that runs.** `printing/layout.py` is superseded and says
+  so in its docstring, but the blueprint runner's `print_sheet` verb carries questions and
+  choices rather than a design, so deleting it would take the working paper loop with it.
+  The order is below.
+- **Nothing has been printed.** Every figure here is off a raster. What a sheet looks like
+  on the Epson, and whether 2.4% of coverage is as light in practice as it is in
+  arithmetic, is unmeasured.
+- **No model has yet used a `tick_box`.** All six sheets across two runs chose writing
+  lines. Tick boxes are the only cells readable without the cloud, so a page of handwriting
+  reads as nothing at all when the cloud is unreachable — the degraded path silently gets
+  worse as the pages get better. Worth deciding rather than discovering.
+- **Text is not in the ink figure.** `drawing_to_array` draws words only when a caller asks
+  for a preview, so a page of long sentences costs more than it reports.
+
+**Where it starts.** `shared/pagedesign.py` for the vocabulary, `printing/compose.py` for
+millimetres and the budget, `agents/sheet_designer.py` for the prompt,
+`panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it.
+
+**Done when — the order for retiring the old path.** Each step leaves the loop working:
+
+1. The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions
+   and choices, and the two catalogue experiences are rewritten in it.
+2. `devices/print_sheet.py` composes a design instead of calling `sheet_for`.
+3. `printing/layout.py` and `tests/test_layout.py` move to `attic/`, out of packaging and
+   out of the test run, with a note saying what replaced them.
+4. A designed sheet is printed on the Epson, filled in by hand, and read back.

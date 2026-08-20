@@ -16,6 +16,7 @@ paper-independent: its coordinates are normalised over the marker quadrilateral.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Final
 
@@ -31,6 +32,7 @@ from shared.sheet import (
     MARKER_ID_TOP_RIGHT,
     MARKER_SIZE_MM,
     QUIET_ZONE_MM,
+    CellKind,
     QrPayload,
     Rect,
     SheetSpec,
@@ -138,6 +140,19 @@ class PageGeometry:
 
 
 @dataclass(frozen=True, slots=True)
+class StrokePath:
+    """A run of straight segments in page millimetres.
+
+    One primitive rather than lines, curves and circles, because the three backends have
+    to agree about where ink lands and the cheapest way to guarantee that is to give them
+    one thing to draw. A circle arrives here already expanded into short chords.
+    """
+
+    vertices: tuple[tuple[float, float], ...]
+    width_mm: float = 0.3
+
+
+@dataclass(frozen=True, slots=True)
 class Drawing:
     """A resolution-independent description of one printable sheet."""
 
@@ -147,6 +162,8 @@ class Drawing:
     labels: tuple[tuple[float, float, str], ...]
     # (x, y, size in mm, text): the words on the sheet, which carry no geometry.
     headings: tuple[tuple[float, float, float, str], ...] = ()
+    # Line art, and the rules a writing line is drawn as.
+    strokes: tuple[StrokePath, ...] = ()
 
 
 def _bitmap_to_rects(bitmap: NDArray[np.uint8], origin: MmRect, quiet_modules: int) -> list[MmRect]:
@@ -185,8 +202,17 @@ def qr_bitmap(payload: str) -> NDArray[np.uint8]:
     return np.asarray(cv2.QRCodeEncoder.create().encode(payload), dtype=np.uint8)
 
 
-def build_drawing(spec: SheetSpec, page: PageGeometry | None = None) -> Drawing:
-    """Lay ``spec`` out on paper, refusing layouts the reader could not decode."""
+def build_drawing(
+    spec: SheetSpec,
+    page: PageGeometry | None = None,
+    strokes: Sequence[StrokePath] = (),
+) -> Drawing:
+    """Lay ``spec`` out on paper, refusing layouts the reader could not decode.
+
+    ``strokes`` is line art already converted to millimetres. It is passed in rather than
+    read off the spec because ``SheetSpec`` is the reader's contract and the reader never
+    looks at a drawing.
+    """
     page = page or PageGeometry()
 
     filled: list[MmRect] = []
@@ -202,17 +228,38 @@ def build_drawing(spec: SheetSpec, page: PageGeometry | None = None) -> Drawing:
 
     outlined: list[MmRect] = []
     labels: list[tuple[float, float, str]] = []
+    rules: list[StrokePath] = []
     for cell in spec.cells:
         area = page.to_page(cell.rect)
         _refuse_if_obstructed(page, area, f"cell {cell.id!r}")
-        outlined.append(area)
+        if cell.kind is CellKind.WORD_LINE:
+            # A line to write on is its baseline. A box around it costs three more sides of
+            # ink and looks like a form rather than somewhere to write.
+            rules.append(
+                StrokePath(((area.x, area.bottom), (area.right, area.bottom)), 0.3)
+            )
+        else:
+            outlined.append(area)
         if cell.label:
-            labels.append((area.x, area.y - 1.5, cell.label))
+            if cell.kind is CellKind.WORD_LINE:
+                # Under the rule. Above is where the question is, and on a page a model
+                # laid out there is nothing keeping the two apart — measured on the first
+                # sheet a model designed, where "La mia:" landed on the question.
+                labels.append((area.x, area.bottom + 3.0, cell.label))
+            elif cell.kind is CellKind.DRAWING_AREA:
+                # A caption above the frame. Beside it runs off the paper: a drawing area
+                # is most of the width, which is how "Il tuo cielo di nuvole" ended up
+                # half outside the page on the second sheet a model designed.
+                labels.append((area.x, area.y - 1.5, cell.label))
+            else:
+                # Beside the box, for the same reason and in the order a choice is read.
+                labels.append((area.right + 1.5, area.bottom - area.h * 0.25, cell.label))
 
     filled.extend(_ruler_rects(page))
     ruler_x = (page.width_mm - RULER_LENGTH_MM) / 2
+    # Above the ticks rather than across the bar, which is where it used to land.
     labels.append(
-        (ruler_x, page.height_mm - page.margin_mm - 1.0, f"{RULER_LENGTH_MM:.0f} mm")
+        (ruler_x, page.height_mm - page.margin_mm - 5.5, f"{RULER_LENGTH_MM:.0f} mm")
     )
 
     headings: list[tuple[float, float, float, str]] = []
@@ -220,7 +267,19 @@ def build_drawing(spec: SheetSpec, page: PageGeometry | None = None) -> Drawing:
         area = page.to_page(heading.rect)
         _refuse_if_obstructed(page, area, "a printed line")
         headings.append((area.x, area.bottom, heading.size_mm, heading.text))
-    return Drawing(page, tuple(filled), tuple(outlined), tuple(labels), tuple(headings))
+
+    drawn = [*rules, *strokes]
+    for stroke in strokes:
+        for x, y in stroke.vertices:
+            _refuse_if_obstructed(page, MmRect(x, y, 0.01, 0.01), "a stroke")
+    return Drawing(
+        page,
+        tuple(filled),
+        tuple(outlined),
+        tuple(labels),
+        tuple(headings),
+        tuple(drawn),
+    )
 
 
 def _refuse_if_obstructed(page: PageGeometry, area: MmRect, what: str) -> None:
@@ -278,16 +337,29 @@ def drawing_to_svg(drawing: Drawing) -> str:
             f'<text x="{x:.4f}" y="{y:.4f}" font-family="DejaVu Sans, sans-serif" '
             f'font-size="{size:.2f}" fill="#000000">{_escape(text)}</text>'
         )
+    for stroke in drawing.strokes:
+        vertices = " ".join(f"{x:.4f},{y:.4f}" for x, y in stroke.vertices)
+        parts.append(
+            f'<polyline vertices="{vertices}" fill="none" stroke="#000000" '
+            f'stroke-width="{stroke.width_mm:.3f}" stroke-linecap="round" '
+            'stroke-linejoin="round"/>'
+        )
     parts.append("</svg>")
     return "\n".join(parts)
 
 
-def drawing_to_array(drawing: Drawing, dpi: int = 300) -> NDArray[np.uint8]:
+def drawing_to_array(
+    drawing: Drawing, dpi: int = 300, text: bool = False
+) -> NDArray[np.uint8]:
     """Rasterise for tests and previews. Never the print path — printing uses the SVG.
 
-    Labels are omitted: they carry no geometry, and text near a cell only adds noise to
-    detection tests. Every rectangle comes from the same ``Drawing`` the SVG uses, so the
-    two backends cannot disagree about where anything is.
+    Text is off by default: it carries no geometry, and words near a cell only add noise
+    to detection tests. A preview wants it, and asks. The raster font is OpenCV's Hershey
+    and the print font is Helvetica, so a preview shows where the words are and roughly
+    how much room they take, not what they will look like.
+
+    Every rectangle comes from the same ``Drawing`` the SVG uses, so the two backends
+    cannot disagree about where anything is.
     """
     page = drawing.page
     scale = dpi / _MM_PER_INCH
@@ -309,15 +381,51 @@ def drawing_to_array(drawing: Drawing, dpi: int = 300) -> NDArray[np.uint8]:
             color=0,
             thickness=max(1, round(0.3 * scale)),
         )
+    for stroke in drawing.strokes:
+        vertices = np.array(
+            [[round(x * scale), round(y * scale)] for x, y in stroke.vertices], dtype=np.int32
+        )
+        cv2.polylines(
+            canvas,
+            [vertices],
+            isClosed=False,
+            color=0,
+            thickness=max(1, round(stroke.width_mm * scale)),
+            lineType=cv2.LINE_AA,
+        )
+    if text:
+        for x, y, label in drawing.labels:
+            _put_text(canvas, x, y, 3.0, label, scale)
+        for x, y, size, heading in drawing.headings:
+            _put_text(canvas, x, y, size, heading, scale)
     return canvas
 
 
+def _put_text(
+    canvas: NDArray[np.uint8], x: float, y: float, size_mm: float, text: str, scale: float
+) -> None:
+    """Hershey at roughly the millimetre height asked for. 21.0 is the divisor that makes
+    OpenCV's nominal cap height match a millimetre size, measured with getTextSize."""
+    if not text:
+        return
+    cv2.putText(
+        canvas,
+        text,
+        (round(x * scale), round(y * scale)),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        size_mm * scale / 21.0,
+        color=0,
+        thickness=max(1, round(size_mm * scale / 12.0)),
+        lineType=cv2.LINE_AA,
+    )
+
+
 def drawing_to_pdf(drawing: Drawing) -> bytes:
-    """Write the sheet as a PDF whose page is the paper, one unit per point.
+    """Write the sheet as a PDF whose page is the paper, one unit per vertex.
 
     Written by hand rather than through a converter, because every converter in the path
     is another chance for "fit to page" to shrink the geometry the reader measures. Here
-    a millimetre becomes 72/25.4 points and nothing else touches it. CUPS still rasterises
+    a millimetre becomes 72/25.4 vertices and nothing else touches it. CUPS still rasterises
     for the printer, at 360 dpi, which leaves an ArUco module about 35 pixels across.
 
     Text is Helvetica in WinAnsi, so it carries Italian accents and nothing wider. A
@@ -342,6 +450,14 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
         body.append(_pdf_text(x * scale, height - y * scale, 3.0 * scale, text))
     for x, y, size, text in drawing.headings:
         body.append(_pdf_text(x * scale, height - y * scale, size * scale, text))
+    for stroke in drawing.strokes:
+        # Round caps and joins: a chorded circle drawn with butt caps shows its corners.
+        body.append(f"{stroke.width_mm * scale:.3f} w 1 J 1 j")
+        first_x, first_y = stroke.vertices[0]
+        body.append(f"{first_x * scale:.3f} {height - first_y * scale:.3f} m")
+        for x, y in stroke.vertices[1:]:
+            body.append(f"{x * scale:.3f} {height - y * scale:.3f} l")
+        body.append("S")
 
     content = "\n".join(body).encode("ascii", "replace")
     objects = [

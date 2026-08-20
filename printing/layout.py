@@ -1,5 +1,12 @@
 """Turn an approved exercise into a sheet that can be printed and read back.
 
+Superseded on 20 August 2026 by :mod:`shared.pagedesign` and :mod:`printing.compose`,
+where a model designs the page instead of filling this template. Kept, and still the path
+the blueprint runner uses, because the `print_sheet` verb carries questions and choices
+rather than a design: retiring this means changing that verb, and until then deleting this
+would take the working paper loop with it. `ideas/03 §6` holds the order that has to be
+followed.
+
 This is the missing half of the paper loop: the content agent writes the words, the
 renderer draws millimetres, and nothing until now decided where a box goes. The decision is
 arithmetic, not judgement, so there is no model here and nothing to approve — the words

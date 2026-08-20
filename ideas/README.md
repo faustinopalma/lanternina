@@ -63,6 +63,7 @@ and the file wins for judging whether the thing is worth doing at all.
 | --- | --- | --- | --- |
 | 12 | ~~How much approved content is left~~ — **done, 20 August 2026** | 01 §6 | One line at the foot of the approvals page, counted from routes that already existed. Written as a label and a number, with a test that the page carries no imperative. |
 | 13 | ~~Withdrawing an approval~~ — **done, 20 August 2026** | 01 §3 | `withdrawn` is admitted as a second decision on something approved, and refused on anything else. The panel says in the same breath that a sheet already printed is beyond reach. |
+| 13a | **Retire the sheet template for sheets a model designs** | 03 §6 | nothing — the new path is built, measured and tested. What is left is four steps in a stated order, because `printing/layout.py` is still what the blueprint runner prints through. |
 | 14 | Reminders at times the parent chose | 05 §1 | 3 |
 | 15 | **Everything in the house, with a job and a name** | 01 §9, 02 §6 | nothing — and it is now blocking: one press on 19 August turned the picture display into the sheet display for good |
 | 16 | One step at a time | 05 §2 | 11, and the second display in the house |
