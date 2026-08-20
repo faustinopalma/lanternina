@@ -209,6 +209,22 @@ no second display to be independent of. Both displays are awake: the same file r
 seen 19 s and 65 s earlier. Nothing here can be measured until somebody assigns the two
 roles in the panel, which is a thing only a person in the house can do.
 
+**The wording, distributed and measured, 20 August 2026.** Image `lanternina/panel:793d44b`
+on revision `--0000038`, and the served `/openapi.json` carries "ways of saying it", a
+string only this build has, which is how the revision answering was shown rather than
+assumed. The image went first and the push after, because the workflow ships the page on
+any push touching `web/` and the page reads a field the old API did not return. The page
+then served `/assets/src-CjYPIg65.js`, which carries both new sentences, Italian and
+English. On the hub two files were behind, `devices/epaper.py` and
+`devices/show_reminders.py`; both were installed and `scripts/hub-stale.ps1` now reports
+nothing.
+
+The choice of wording was run on the hub itself rather than inferred from the tests: three
+wordings A, B and C on the same reminder gave C, C, B, B on four consecutive days, and a
+reminder with none came back as the parent's own sentence. Uneven across four days is what a
+hash does and not a fault; over a fortnight the three wordings each appear, which is what
+`tests/test_show_reminders.py` asserts.
+
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the
 reminder role and clears on a press; the third has produced a question in the panel and no
