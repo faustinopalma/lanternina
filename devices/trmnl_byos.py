@@ -437,6 +437,8 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
 
     # One id card per display, drawn on first use. The text never changes.
     id_screens: dict[str, bytes] = {}
+    # Keyed by the words on it, so renaming a display in the panel changes what it says.
+    name_screens: dict[str, bytes] = {}
 
     def current_screen(device: Device) -> bytes:
         """Re-read on every request, so new content needs no restart.
@@ -480,9 +482,10 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                 # A half-written file must never blank the display.
                 pass
             return last_good
-        # Jobs, but none of them has anything to show. Its own name is the honest answer,
-        # and it is a great deal better than a picture from the day before yesterday.
-        return _id_screen(device) or last_good
+        # Jobs, but none of them has anything to show at this minute. Its own name, and no
+        # sentence: the card for an unassigned display says it has no job, which would be
+        # untrue here, and a wall is a bad place for the house to state something false.
+        return _name_screen(device) or last_good
 
     def _jobs_held(device: Device) -> tuple[str, ...] | None:
         """What the panel last said this display is for, or None if it has never said."""
@@ -511,6 +514,34 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                 return None
             id_screens[device.friendly_id] = drawn
         return drawn
+
+    def _name_screen(device: Device) -> bytes | None:
+        """The name the parent gave it, or its label. Cached by the words themselves, so a
+        display renamed in the panel says the new name without a restart."""
+        title = _display_name(device) or device.friendly_id
+        drawn = name_screens.get(title)
+        if drawn is None:
+            try:
+                from devices.epaper import render_name_bmp
+
+                drawn = render_name_bmp(title)
+            except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
+                return None
+            name_screens[title] = drawn
+        return drawn
+
+    def _display_name(device: Device) -> str:
+        if config.jobs_file is None:
+            return ""
+        try:
+            from devices.inventory import load_jobs
+
+            for thing in load_jobs(config.jobs_file) or ():
+                if isinstance(thing, dict) and thing.get("id") == device.mac:
+                    return str(thing.get("name") or "")
+        except Exception:  # noqa: BLE001 - an unreadable file falls back to the label
+            return ""
+        return ""
 
     def _unassigned_screen(device: Device) -> bytes | None:
         """Its own id, when the panel has said this display is for nothing yet.

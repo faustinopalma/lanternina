@@ -258,6 +258,17 @@ def render_id_bmp(friendly_id: str) -> bytes:
     return render_notice_bmp(friendly_id, UNASSIGNED_LINES)
 
 
+def render_name_bmp(title: str) -> bytes:
+    """What a display shows when it has work but nothing to show at this minute.
+
+    Its name and no sentence at all. The sentence is what went wrong on 20 August 2026:
+    a display holding two jobs was shown the card above, which says it has none, and the
+    house was stating something untrue on a wall. A heading with nothing under it claims
+    nothing, and still answers the only question somebody standing in front of it has.
+    """
+    return render_notice_bmp(title, ())
+
+
 def _draw_block(
     draw: ImageDraw.ImageDraw, text: str, font: object, y: int, width: int, step: int
 ) -> int:

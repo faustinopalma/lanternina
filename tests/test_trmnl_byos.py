@@ -234,7 +234,7 @@ def test_a_display_that_loses_the_picture_job_stops_showing_a_picture(
     into the display's own file and nothing afterwards ever touched it. A layer of its
     own is what makes taking the job away take the picture with it.
     """
-    from devices.epaper import render_id_bmp
+    from devices.epaper import render_name_bmp
     from devices.inventory import save_jobs
     from devices.trmnl_byos import picture_for
 
@@ -262,8 +262,58 @@ def test_a_display_that_loses_the_picture_job_stops_showing_a_picture(
 
         assert answer != painted.read_bytes()
         assert answer != shared.read_bytes()
-        # Its own name: honest about having nothing to show, which a day-old picture is not.
-        assert answer == render_id_bmp(display.friendly_id)
+        # Its own name and no sentence: it still holds a job, so the card that says it has
+        # none would be the house stating something untrue on a wall.
+        assert answer == render_name_bmp(display.friendly_id)
+    finally:
+        httpd.shutdown()
+        thread.join()
+
+
+def test_a_display_with_work_but_nothing_to_show_says_the_name_it_was_given(
+    tmp_path: Path,
+) -> None:
+    """Two screens for two situations, because one of them was saying the wrong thing.
+
+    A display nobody has assigned says so. A display holding `sheet` and `remind` with
+    neither a sheet nor a reminder in front of it is not unassigned, and on 20 August 2026
+    it was shown the card that says it is. It says its name instead — the one the parent
+    typed, which is also the only way to tell two identical shells apart.
+    """
+    from devices.epaper import render_id_bmp, render_name_bmp
+    from devices.inventory import save_jobs
+
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    display = register_device(registry, MAC)
+    jobs = tmp_path / "jobs.json"
+    save_jobs(
+        jobs, [{"id": MAC, "label": display.friendly_id, "name": "nuvola", "job": "remind"}]
+    )
+
+    config = Config("http://127.0.0.1", shared, registry, jobs_file=jobs)
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        answer = get(f"{base_url}/screen/{display.token}.bmp")[1]
+        assert answer == render_name_bmp("nuvola")
+        assert answer != render_id_bmp(display.friendly_id)
+
+        # Renamed in the panel: what it says follows, with no restart.
+        save_jobs(
+            jobs,
+            [{"id": MAC, "label": display.friendly_id, "name": "orsetto", "job": "remind"}],
+        )
+        assert get(f"{base_url}/screen/{display.token}.bmp")[1] == render_name_bmp("orsetto")
+
+        # Assigned nothing at all is a different thing, and that card is true.
+        save_jobs(jobs, [{"id": MAC, "label": display.friendly_id, "name": "nuvola", "job": ""}])
+        assert get(f"{base_url}/screen/{display.token}.bmp")[1] == render_id_bmp(
+            display.friendly_id
+        )
     finally:
         httpd.shutdown()
         thread.join()
