@@ -15,7 +15,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict
 
-from shared.errors import CloudUnavailable, NoCapacityError
+from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 
 from ..gate import CurrentAccount, DeviceKey
 from ..reminders import (
@@ -23,6 +23,7 @@ from ..reminders import (
     SentenceStore,
     clean_reading,
     clean_sentence,
+    clean_wordings,
     make_sentence,
 )
 
@@ -98,7 +99,10 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
     hour; the house owns the clock and decides when a moment has come.
 
     A sentence the model cannot place gets a question instead, which the parent sees
-    the next time they open the panel and answers by editing their own words.
+    the next time they open the panel and answers by editing their own words. One that
+    is placed is also given a few ways of saying it, in the same breath and once in its
+    life — that is content, so it goes out through the gate, and if the gate or the
+    cloud refuses it the reminder simply carries the parent's own sentence.
 
     Nothing here records whether a reminder was ever shown or pressed. There is no
     field for it, which is the only way that stays true.
@@ -120,7 +124,7 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
             logging.getLogger(__name__).warning("reminders not read: %s", exc)
             degraded = True
         else:
-            for sentence_id, _text in unread:
+            for sentence_id, text in unread:
                 said = placements.get(sentence_id, (None, None, None))
                 at, days, question = clean_reading(*said)
                 store.record_reading(
@@ -131,13 +135,62 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
                     days=days,
                     question=question,
                 )
+                if at:
+                    await _word(request, household_id, sentence_id, text, at, now=now)
             rows = store.list(household_id)
 
     return {
         "reminders": [
-            {"id": row.id, "text": row.text, "at": row.at, "days": list(row.days)}
+            {
+                "id": row.id,
+                "text": row.text,
+                "at": row.at,
+                "days": list(row.days),
+                "words": list(row.words),
+            }
             for row in rows
             if row.at
         ],
         "degraded": degraded,
     }
+
+
+async def _word(
+    request: Request, household_id: str, sentence_id: str, text: str, at: str, *, now: float
+) -> None:
+    """Give one placed sentence a few ways of saying it. Never raises.
+
+    Called once per sentence, in the call that read it, and not again: the hub asks every
+    five minutes, so retrying a sentence the cloud will not word would pay for it about
+    two hundred and eighty times a day. A sentence that got no wordings keeps the parent's
+    own, and the way to ask again is the way the parent already has — editing it, which
+    makes it unread.
+    """
+    from shared.ids import new_id
+
+    from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from
+    from ..wording import word_sentence
+
+    store: SentenceStore = request.app.state.reminders
+    counter: UsageStore = request.app.state.usage
+    spent: Any = None
+    outcome = FAILED
+    try:
+        words, spent = await word_sentence(text, at, now=now)
+    except SafetyBlocked as exc:
+        # A refused wording is a normal outcome: the parent's own sentence is shown.
+        outcome = REFUSED
+        logging.getLogger(__name__).info("wording refused: %s", exc)
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        logging.getLogger(__name__).warning("reminder not worded: %s", exc)
+    else:
+        outcome = SERVED
+        store.record_wording(household_id, sentence_id, words=clean_wordings(words))
+    try:
+        counter.record(
+            event_from(
+                household_id, KIND_TEXT, outcome, spent, event_id=str(new_id("use"))
+            )
+        )
+    except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a reminder
+        logging.getLogger(__name__).warning("usage not recorded: %s", exc)

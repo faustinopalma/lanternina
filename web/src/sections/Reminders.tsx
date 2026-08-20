@@ -72,7 +72,22 @@ function Row({
         </Button>
       </div>
       <Placed reminder={reminder} />
+      <Wordings reminder={reminder} />
     </div>
+  );
+}
+
+/* The ways the house will say it. Shown because what the parent approves is the reminder
+ * and not each sentence, so the least this owes them is that the sentences are readable
+ * here rather than only on the display. There is nothing to press: approving them one by
+ * one is the thing nobody will do four times a day. */
+function Wordings({ reminder }: { reminder: Reminder }) {
+  const { t } = useWords();
+  if (!reminder.at || reminder.words.length === 0) return null;
+  return (
+    <Quiet>
+      {t("reminders.words")} {reminder.words.map((one) => `«${one}»`).join(" ")}
+    </Quiet>
   );
 }
 

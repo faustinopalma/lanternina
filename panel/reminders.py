@@ -33,6 +33,16 @@ MAX_SENTENCE_LENGTH = 200
 # else that arrives from outside. One line, because it asks for one missing thing.
 MAX_QUESTION_LENGTH = 120
 
+# A wording comes from a model and is read on a display. Measured on the hub on 20 August
+# 2026 with the font it renders with: 40 to 43 characters of Italian fit one line, so this
+# is at most three. `agents/reminder_wording.py` asks for the same number; asking is not
+# enforcing, which is why it is also written here.
+MAX_WORDING_LENGTH = 96
+
+# How many ways of saying it are kept. More than the agent is asked for would be room for
+# a model to fill; this is the cap, and the agent's number is what is requested inside it.
+MAX_WORDINGS = 6
+
 # Monday first, and these exact three letters, because the hub and the panel both read
 # them. A day the model spells any other way is not a day.
 DAYS: Final = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
@@ -57,6 +67,10 @@ class Sentence:
     days: tuple[str, ...] = ()
     # What the house needs to know before this can be a reminder. Empty when it does not.
     question: str = ""
+    # Ways of saying the same thing, generated and screened, for the display to pick from.
+    # Empty means the sentence is shown as the parent wrote it, which is what happens when
+    # the cloud would not serve the wording or the gate refused it.
+    words: tuple[str, ...] = ()
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -68,6 +82,9 @@ class Sentence:
             "at": self.at,
             "days": list(self.days),
             "question": self.question,
+            # Shown to the parent because approval here is of the reminder and not of each
+            # sentence: being able to read what the house will say is the least this owes.
+            "words": list(self.words),
         }
 
 
@@ -90,6 +107,10 @@ class SentenceStore(Protocol):
         at: str,
         days: tuple[str, ...],
         question: str,
+    ) -> Sentence: ...
+
+    def record_wording(
+        self, household_id: str, sentence_id: str, *, words: tuple[str, ...]
     ) -> Sentence: ...
 
 
@@ -118,7 +139,7 @@ class InMemorySentenceStore:
             # A changed sentence is one nobody has read, and what the house made of the
             # old wording was made of words that are no longer there.
             updated = replace(
-                current, text=text, read_at=0.0, at="", days=(), question=""
+                current, text=text, read_at=0.0, at="", days=(), question="", words=()
             )
             self._rows[(household_id, sentence_id)] = updated
             return updated
@@ -142,6 +163,15 @@ class InMemorySentenceStore:
             updated = replace(
                 current, read_at=read_at, at=at, days=days, question=question
             )
+            self._rows[(household_id, sentence_id)] = updated
+            return updated
+
+    def record_wording(
+        self, household_id: str, sentence_id: str, *, words: tuple[str, ...]
+    ) -> Sentence:
+        with self._lock:
+            current = self._rows[(household_id, sentence_id)]
+            updated = replace(current, words=words)
             self._rows[(household_id, sentence_id)] = updated
             return updated
 
@@ -201,6 +231,33 @@ def clean_reading(at: Any, days: Any, question: Any) -> tuple[str, tuple[str, ..
     # A question about a sentence the house did place would be a question nobody can act
     # on: the parent would be asked to fix something that is not broken.
     return when, on, "" if when else asked
+
+
+def clean_wordings(words: Any) -> tuple[str, ...]:
+    """Keep the ways of saying it that a display can show. Nothing here raises.
+
+    These have already passed the safety gate, which is about what the words mean. This is
+    about what they are: one line, no control characters, short enough to be read across a
+    room, and not so many that a model can decide how much of a screen it gets. A wording
+    that does not survive is dropped rather than trimmed — half a sentence says something
+    the parent did not write, and the parent's own sentence is the fallback anyway.
+
+    A bare string is not one wording, unlike a bare day in :func:`clean_reading`. A model
+    that answers in the wrong shape here should cost the variety, not put an unintended
+    fragment of its own answer on a screen in somebody's house.
+    """
+    if isinstance(words, str) or not isinstance(words, Sequence):
+        return ()
+    kept: list[str] = []
+    for word in words:
+        if not isinstance(word, str) or _CONTROL.search(word):
+            # A line break means the model wrote two things when it was asked for one.
+            # Joining them would put a sentence on the display that nobody composed.
+            continue
+        one = " ".join(word.split())
+        if one and len(one) <= MAX_WORDING_LENGTH:
+            kept.append(one)
+    return tuple(kept[:MAX_WORDINGS])
 
 
 def _as_sequence(value: Any) -> Sequence[Any]:

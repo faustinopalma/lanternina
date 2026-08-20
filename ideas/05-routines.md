@@ -147,10 +147,44 @@ the window closes. A reminder taken down by a press and one still standing leave
 bytes in that file — `tests/test_show_reminders.py` asserts exactly that, byte for byte,
 so there is nowhere an adherence score could accumulate even by accident.
 
-Still missing: the wording being generated rather than the parent's own sentence shown as
-written. Today the display shows the hour and the sentence exactly as it was typed, which
-is the parent speaking to their own child and needs no screening; the day the words are a
-model's, they pass the safety chokepoint before they reach the renderer.
+**The wording, built on 20 August 2026.** The display no longer shows the parent's sentence
+as typed. `agents/reminder_wording.py` asks for four ways of saying the same thing and gets
+them back through `router.generate_for_user`, which screens and seals before it returns, so
+these are content and went through the gate like a picture. `panel/wording.py` is the wiring
+— the same shape as `panel/painting.py`, and here for the same reason: this container holds
+the managed identity for Foundry and Content Safety, so nothing in the home needs a
+credential of its own.
+
+Where it runs is decided by the rule and not by taste. A write from the panel is inert, so
+the wording happens inside the answer to the request the house makes for its reminders, in
+the same call that reads the sentence, and once in that sentence's life. The alternative is
+worth the arithmetic: the hub asks every five minutes, which is 288 calls a day, to show a
+reminder once. Wording per request would have paid 288 times for one showing. Wording per
+sentence pays once, and the panel does not know which minute a showing happens anyway, so
+per-request generation was never per-showing.
+
+The hub picks one of the four from a SHA-256 of the occurrence key it already builds —
+`id@date@hour`. That is deliberate rather than convenient: a counter would be a record of
+how many times somebody has been reminded of something, and `reminders-shown.json` must not
+be able to hold one. Choosing from the occurrence adds no state at all, so the byte-for-byte
+guarantee above is untouched, and `tests/test_show_reminders.py` now asserts it a second
+time with a reminder that has wordings. The built-in `hash()` would not do: it is salted per
+process and this runs in a new process every minute, so the words would change under
+somebody who is reading them.
+
+Two bounds, both measured. A wording is at most 96 characters, because 40 to 43 characters
+of Italian fit one line of `devices/epaper.py` body text — measured on the hub on 20 August
+2026 with DejaVu, the font it actually renders with, 32 px over 728 px of usable width — so
+96 is at most three lines. At most six wordings are kept, which is the cap on what a model
+can decide to fill a screen with; four is what is asked for inside it.
+
+What this costs. The parent approves the reminder and not each sentence, which is the same
+weakening already made for pictures, where a theme is approved and the images vary inside
+it. What is added here and absent there: the wordings are stored, so the parent reads them
+on their own page before the adolescent sees them on a display. A gate that refuses or a
+cloud that will not answer leaves the reminder carrying the parent's own sentence, which is
+exactly what the display did before any of this, and the way to ask again is the way the
+parent already has — editing the sentence, which makes it unread.
 
 **Distributed and measured, 20 August 2026.** Image `lanternina/panel:b3d28a8` on revision
 `--0000037`, and the served `/openapi.json` carries a string only the new build has, which
@@ -166,9 +200,14 @@ Three sentences a parent had written were read by the panel with `degraded: fals
 render path was proved in `/tmp` against a synthetic house: 48.062 bytes, 800x480, one bit,
 and the reserved palette byte at 0 — the byte the firmware silently refuses a file over.
 
-What is not done is not code: no display holds the reminder job yet, so the timer runs each
-minute and says "no display shows reminders: nothing to do". And the cache shows FB9F18,
-the one called "un bel quadro che cambia", still holding `sheet` and not `picture`.
+What is not done is not code, and it is still not done at 09:20 on 20 August 2026. Read off
+the hub rather than asked: `/var/lib/lanternina/state/jobs.json` gives CF7D04 the jobs
+`picture` and `sheet`, and FB9F18 — the one called "un bel quadro che cambia" — only
+`sheet`. Neither holds `remind`. So `journalctl -u lanternina-reminders` says "no display
+shows reminders: nothing to do" once a minute, and the second half of the picture role has
+no second display to be independent of. Both displays are awake: the same file records them
+seen 19 s and 65 s earlier. Nothing here can be measured until somebody assigns the two
+roles in the panel, which is a thing only a person in the house can do.
 
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the

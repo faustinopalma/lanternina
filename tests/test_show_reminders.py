@@ -38,6 +38,7 @@ def reminder(at: str, text: str, days: list[str] | None = None, **rest: Any) -> 
         "text": text,
         "at": at,
         "days": days or [],
+        "words": rest.get("words", []),
     }
 
 
@@ -211,3 +212,72 @@ def test_the_hub_never_hears_of_a_sentence_it_could_not_place(
     run_at(monkeypatch, "2026-08-20 13:35", [TEETH])
     kept, _at = show_reminders.load_cache(house.with_name("reminders.json"))
     assert all(row["at"] for row in kept)
+
+
+# ── The words on the screen ──────────────────────────────────────────────────────────
+
+WORDED = reminder(
+    "13:30",
+    "lavarsi i denti dopo pranzo",
+    words=["È ora dei denti.", "Un minuto per i denti.", "I denti, quando ti va."],
+)
+
+
+def test_the_screen_carries_a_generated_wording_and_not_the_parents_sentence() -> None:
+    occurrence = show_reminders.occurrence_of(WORDED, clock("2026-08-20 13:35"))
+    assert show_reminders.words_of(WORDED, occurrence) in WORDED["words"]
+
+
+def test_a_reminder_with_no_wordings_is_shown_as_the_parent_wrote_it() -> None:
+    """Which is what this did before any wording existed, so a cloud that would not word
+    it and a gate that refused it both cost the variety and nothing else."""
+    occurrence = show_reminders.occurrence_of(TEETH, clock("2026-08-20 13:35"))
+    assert show_reminders.words_of(TEETH, occurrence) == "lavarsi i denti dopo pranzo"
+    assert show_reminders.words_of({"text": "x", "words": []}, occurrence) == "x"
+
+
+def test_one_showing_keeps_one_wording_from_one_minute_to_the_next() -> None:
+    """The timer fires every minute in a fresh process. Picking from the occurrence rather
+    than at random is what stops the words changing under somebody who is reading them."""
+    at_thirty = show_reminders.occurrence_of(WORDED, clock("2026-08-20 13:30"))
+    at_forty = show_reminders.occurrence_of(WORDED, clock("2026-08-20 13:40"))
+    assert at_thirty == at_forty
+    assert show_reminders.words_of(WORDED, at_thirty) == show_reminders.words_of(
+        WORDED, at_forty
+    )
+
+
+def test_the_wording_is_the_same_in_any_process() -> None:
+    """The built-in hash is salted per process, so a digest is not a preference here."""
+    occurrence = show_reminders.occurrence_of(WORDED, clock("2026-08-20 13:35"))
+    assert show_reminders.words_of(WORDED, occurrence) == "I denti, quando ti va."
+
+
+def test_the_days_do_not_all_get_the_same_words() -> None:
+    """Three wordings and a fortnight: the point of generating them is that a reminder is
+    not the same screen for the two hundredth time."""
+    chosen = {
+        show_reminders.words_of(
+            WORDED, show_reminders.occurrence_of(WORDED, clock(f"2026-08-{day:02d} 13:35"))
+        )
+        for day in range(1, 15)
+    }
+    assert len(chosen) == 3
+
+
+def test_the_wordings_change_nothing_about_what_the_hub_writes_down(
+    house: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The guarantee is structural and it has to survive the words getting richer: after
+    a press and after no press, the bytes are still the same."""
+    state = house.with_name("reminders-shown.json")
+    run_at(monkeypatch, "2026-08-20 13:35", [WORDED])
+    untouched = state.read_bytes()
+
+    reminder_for(house, FRIENDLY).unlink()  # somebody pressed the button
+    run_at(monkeypatch, "2026-08-20 13:40", [WORDED])
+    assert state.read_bytes() == untouched
+
+    kept = json.loads(state.read_text(encoding="utf-8"))
+    assert set(kept) == {"displays"}
+    assert set(kept["displays"]) == {FRIENDLY}

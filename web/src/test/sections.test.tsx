@@ -254,4 +254,16 @@ describe("the reminders", () => {
     await waitFor(() => expect(api.recorded.remindersRemoved).toEqual(["rm_1"]));
     expect(screen.queryByDisplayValue("lavarsi i denti dopo cena")).not.toBeInTheDocument();
   });
+
+  it("shows the parent the sentences the display will use", async () => {
+    // Approval here is of the reminder and not of each sentence, so the sentences have to
+    // be readable somewhere the parent goes, and not only on a screen in another room.
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Promemoria");
+    expect(await screen.findByText(/È ora dei denti/)).toBeInTheDocument();
+    expect(screen.getByText(/Un minuto per i denti/)).toBeInTheDocument();
+  });
 });

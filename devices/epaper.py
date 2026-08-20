@@ -217,12 +217,12 @@ def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
 
     No seal is verified here, and that is not a hole in the delivery boundary. The seals
     attest that model output was screened and approved. What comes through here is either
-    a literal in this repository or a sentence the parent typed and is showing to their
-    own child, so in both cases there is nobody to attest and nothing to screen. What must
-    never happen is this becoming a way to draw text that came from anywhere else, so it
-    takes strings from the caller and the caller is the hub, not an agent. The day the
-    wording of a reminder is generated rather than quoted, it passes the safety chokepoint
-    before it reaches this function.
+    a literal in this repository, or a sentence the parent typed and is showing to their
+    own child, or a way of saying that sentence which the panel generated and screened
+    before handing it over — so in the first two cases there is nobody to attest and
+    nothing to screen, and in the third the screening already happened at the gate. What
+    must never happen is this becoming a way to draw text that came from anywhere else,
+    so it takes strings from the caller and the caller is the hub, not an agent.
     """
     canvas = Image.new("L", (WIDTH, HEIGHT), 255)
     draw = ImageDraw.Draw(canvas)

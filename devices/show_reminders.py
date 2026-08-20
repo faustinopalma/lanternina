@@ -15,12 +15,15 @@ holds nothing that could be read as a count of anybody's behaviour. A reminder n
 presses is shown until its window closes and is then simply taken down. Nothing is sent
 anywhere because a button was not pressed.
 
-The words on the screen are the parent's own sentence, shown as written. Generating the
-wording is a separate piece and is not built yet — see `ideas/05-routines.md` §1.
+The words on the screen are one of the ways of saying it that the panel generated and
+screened, picked from the occurrence itself so that nothing new has to be written down.
+When there are none — the cloud would not serve them, or the gate refused — the parent's
+own sentence is shown as written, which is what this did before there were any.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
@@ -152,11 +155,29 @@ def save_shown(path: Path, displays: dict[str, str]) -> None:
     temporary.replace(path)
 
 
-def draw(reminder: dict[str, Any]) -> bytes:
-    """The hour, and the sentence the parent wrote, on one screen."""
+def words_of(reminder: dict[str, Any], occurrence: str) -> str:
+    """Which way of saying it this showing gets. The parent's own sentence when there is none.
+
+    Picked from the occurrence rather than from a counter, because a counter is a record
+    of how many times somebody has been reminded of something and this file must not be
+    able to hold one. The same showing therefore always chooses the same words, and
+    tomorrow's chooses differently.
+
+    SHA-256 and not the built-in hash: that one is salted per process, and this runs in a
+    new process every minute, so the wording would change under somebody's eyes.
+    """
+    choices = [str(one) for one in reminder.get("words") or () if str(one).strip()]
+    if not choices:
+        return str(reminder.get("text", ""))
+    digest = hashlib.sha256(occurrence.encode("utf-8")).digest()
+    return choices[int.from_bytes(digest, "big") % len(choices)]
+
+
+def draw(reminder: dict[str, Any], occurrence: str) -> bytes:
+    """The hour, and one way of saying the thing, on one screen."""
     from devices.epaper import render_notice_bmp
 
-    return render_notice_bmp(str(reminder.get("at", "")), [str(reminder.get("text", ""))])
+    return render_notice_bmp(str(reminder.get("at", "")), [words_of(reminder, occurrence)])
 
 
 def install(path: Path, image: bytes) -> None:
@@ -230,8 +251,8 @@ def main() -> int:
             target.unlink(missing_ok=True)
             print(f"{friendly_id}: the moment has passed")
         else:
-            install(target, draw(due))
-            print(f"{friendly_id}: {due.get('at', '')} {due.get('text', '')}")
+            install(target, draw(due, occurrence))
+            print(f"{friendly_id}: {due.get('at', '')} {words_of(due, occurrence)}")
         shown[friendly_id] = occurrence
     save_shown(shown_file, shown)
     return 0

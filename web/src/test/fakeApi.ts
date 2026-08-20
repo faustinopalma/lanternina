@@ -168,6 +168,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       at: "21:00",
       days: [],
       question: "",
+      words: ["È ora dei denti.", "Un minuto per i denti."],
     },
     {
       id: "rm_2",
@@ -178,6 +179,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       at: "",
       days: [],
       question: "",
+      words: [],
     },
   ];
   let rhythm: Rhythm = {
@@ -234,6 +236,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
         at: "",
         days: [],
         question: "",
+        words: [],
       };
       reminders = [...reminders, reminder];
       return reminder;
@@ -241,7 +244,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     rewriteReminder: async (id, text) => {
       recorded.remindersRewritten.push({ id, text });
       reminders = reminders.map((reminder) =>
-        reminder.id === id ? { ...reminder, text, read: false, readAt: 0 } : reminder,
+        reminder.id === id
+          ? { ...reminder, text, read: false, readAt: 0, words: [] }
+          : reminder,
       );
       return reminders.find((reminder) => reminder.id === id)!;
     },

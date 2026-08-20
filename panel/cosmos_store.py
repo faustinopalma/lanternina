@@ -271,6 +271,7 @@ class CosmosSentenceStore:
         document["at"] = ""
         document["days"] = []
         document["question"] = ""
+        document["words"] = []
         self._container.upsert_item(document)
         return _to_sentence(document)
 
@@ -289,6 +290,14 @@ class CosmosSentenceStore:
         document["at"] = at
         document["days"] = list(days)
         document["question"] = question
+        self._container.upsert_item(document)
+        return _to_sentence(document)
+
+    def record_wording(
+        self, household_id: str, sentence_id: str, *, words: tuple[str, ...]
+    ) -> Sentence:
+        document = self._container.read_item(item=sentence_id, partition_key=household_id)
+        document["words"] = list(words)
         self._container.upsert_item(document)
         return _to_sentence(document)
 
@@ -314,6 +323,7 @@ def _from_sentence(sentence: Sentence) -> dict[str, Any]:
         "at": sentence.at,
         "days": list(sentence.days),
         "question": sentence.question,
+        "words": list(sentence.words),
     }
 
 
@@ -328,6 +338,7 @@ def _to_sentence(document: dict[str, Any]) -> Sentence:
         at=str(document.get("at") or ""),
         days=tuple(str(day) for day in document.get("days") or ()),
         question=str(document.get("question") or ""),
+        words=tuple(str(word) for word in document.get("words") or ()),
     )
 
 

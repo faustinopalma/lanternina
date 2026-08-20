@@ -57,6 +57,9 @@ export interface Reminder {
   days: string[];
   /* What the house needs to know before this can be a reminder. Empty when it does not. */
   question: string;
+  /* Ways of saying the same thing, for the display to pick from. Empty means the sentence
+   * is shown as it was written, which is what happens when the house could not word it. */
+  words: string[];
 }
 
 export interface Reminders {
