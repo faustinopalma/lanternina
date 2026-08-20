@@ -317,10 +317,9 @@ they are append-only and a number invented now would be worse than a number know
 missing.
 
 **The physical check, parked with its recipe.** None of what follows can be done from a
-keyboard, and all of it is ten minutes in front of the device. Nothing written on 20 August
-after `--0000039` has been distributed, so the panel a person would open still counts no
-reading and still words with the old prompt; the recipe below is unaffected by either, but
-what it shows will be the old wordings until an image goes out.
+keyboard, and all of it is ten minutes in front of the device. It is unaffected by the
+wording prompt having changed on 20 August: a sentence is worded when it is first read, so
+the wordings a display shows are whichever prompt was running at that moment.
 
 1. In the panel, give **FB9F18** the `remind` role and leave **CF7D04** with `picture`. That
    pairing is what makes the two independent: the picture keeps its own display, and the

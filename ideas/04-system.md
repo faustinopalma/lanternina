@@ -449,6 +449,10 @@ them. Six tests, all of which fail against the routes as they were.
 been read, and a household at its cap gets 429 from `/read-sheet` and `degraded: true` from
 `/reminders` while still receiving the reminders it already had.
 
-**Not distributed.** Written and tested on 20 August 2026; no image was built and no
-revision was updated, so what is running is still `lanternina/panel:6853d29` on `--0000039`
-and counts neither reading.
+**Distributed, 20 August 2026.** Image `lanternina/panel:9052cf9` on revision `--0000040`,
+shown to be the one answering rather than assumed: the served `/openapi.json` describes
+`/read-sheet` as refusing "as many calls as it is allowed", a phrase only this build has.
+The first read after the update still came from `--0000039`, and the second, twenty seconds
+later, from the new one. The image went first and the push after, because the workflow ships
+the page on any push touching `web/`. The page then served `/assets/src-BPUFPyvk.js`,
+carrying both new labels, Italian and English.
