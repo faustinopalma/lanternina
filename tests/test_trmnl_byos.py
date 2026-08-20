@@ -28,6 +28,7 @@ from devices.trmnl_byos import (
     mark_provisioned,
     record_device_log,
     register_device,
+    reminder_for,
     screen_for,
     set_mains,
     validate_screen,
@@ -402,6 +403,80 @@ def test_a_scan_that_never_answers_does_not_hold_the_display(
         assert get(f"{base_url}/screen/{token}.bmp")[1] != waiting.read_bytes()
     finally:
         httpd.shutdown()
+
+
+def test_a_press_while_a_reminder_is_up_means_seen(tmp_path: Path) -> None:
+    """The same button, a different sentence.
+
+    While a reminder is on the screen a press means "seen", so it must take the reminder
+    down and do nothing else. In particular it must not start a scan: the scanner takes
+    about 37 s, and somebody dismissing a note has not asked for a sheet to be read.
+    """
+    base_url, httpd, token, waiting, _own = _server_that_answers_a_press(tmp_path)
+    shared = tmp_path / "screen.bmp"
+    button = tmp_path / "button.json"
+    reminder = reminder_for(shared, MAC.replace(":", "")[-6:])
+    make_screen(reminder)
+    reminder.write_bytes(reminder.read_bytes()[:-3] + b"\x00\x00\x00")
+    try:
+        assert get(f"{base_url}/screen/{token}.bmp")[1] == reminder.read_bytes()
+
+        answer = poll(base_url, token, "EXT0")
+        assert not reminder.exists(), "the reminder was seen and should be gone"
+        assert not button.exists(), "dismissing a reminder must not ask for a scan"
+        assert answer["refresh_rate"] != str(PRESS_REFRESH), "nothing is being waited for"
+        assert get(f"{base_url}/screen/{token}.bmp")[1] == shared.read_bytes()
+        assert get(f"{base_url}/screen/{token}.bmp")[1] != waiting.read_bytes()
+    finally:
+        httpd.shutdown()
+
+
+def test_a_press_with_no_reminder_up_still_asks_for_the_sheet(tmp_path: Path) -> None:
+    """The control the test above needs: without it, a press that never starts anything
+    would pass both tests and the sheet would silently stop being read."""
+    base_url, httpd, token, waiting, _own = _server_that_answers_a_press(tmp_path)
+    button = tmp_path / "button.json"
+    try:
+        answer = poll(base_url, token, "EXT0")
+        assert json.loads(button.read_text(encoding="utf-8"))["mac"] == MAC
+        assert answer["refresh_rate"] == str(PRESS_REFRESH)
+        assert get(f"{base_url}/screen/{token}.bmp")[1] == waiting.read_bytes()
+    finally:
+        httpd.shutdown()
+
+
+def test_a_reminder_covers_what_the_display_was_showing_and_gives_it_back(
+    tmp_path: Path,
+) -> None:
+    """Nobody keeps a copy of the picture underneath: the reminder is a separate file, so
+    taking it away is the whole of putting the display back where it was."""
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    device = register_device(registry, MAC)
+    own = screen_for(shared, device.friendly_id)
+    make_screen(own)
+    own.write_bytes(own.read_bytes()[:-2] + b"\x00\x00")
+
+    httpd = ThreadingHTTPServer(
+        ("127.0.0.1", 0), make_handler(Config("http://127.0.0.1", shared, registry))
+    )
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    base_url = f"http://127.0.0.1:{httpd.server_port}"
+    try:
+        assert get(f"{base_url}/screen/{device.token}.bmp")[1] == own.read_bytes()
+
+        reminder = reminder_for(shared, device.friendly_id)
+        make_screen(reminder)
+        reminder.write_bytes(reminder.read_bytes()[:-4] + b"\x00\x00\x00\x00")
+        assert get(f"{base_url}/screen/{device.token}.bmp")[1] == reminder.read_bytes()
+
+        reminder.unlink()
+        assert get(f"{base_url}/screen/{device.token}.bmp")[1] == own.read_bytes()
+    finally:
+        httpd.shutdown()
+        thread.join()
 
 
 def test_each_registered_device_gets_a_distinct_token(tmp_path: Path) -> None:

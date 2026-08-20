@@ -400,6 +400,20 @@ def screen_for(shared: Path, friendly_id: str) -> Path:
     return shared.with_name(f"{shared.stem}-{friendly_id}{shared.suffix}")
 
 
+def reminder_for(shared: Path, friendly_id: str) -> Path:
+    """Where a reminder waiting to be seen sits, above whatever this display was showing.
+
+    A separate file rather than a rewrite of the display's own one, because a reminder
+    ends: when it is dismissed or its hour has passed the file goes away, and the picture
+    or the sheet underneath comes back without anybody having had to keep a copy of it.
+
+    Its presence is also the whole of what makes a press mean "seen" rather than "read
+    the sheet", and it says nothing about anybody: a file that exists means there is
+    something to show now, and a file that does not exist means there is not.
+    """
+    return shared.with_name(f"{shared.stem}-{friendly_id}-reminder{shared.suffix}")
+
+
 def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     # Validated once here so a broken file fails at startup, not in front of a device.
     last_good = validate_screen(config.screen_file)
@@ -423,6 +437,9 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         unassigned = _unassigned_screen(device)
         if unassigned is not None:
             return unassigned
+        due = _valid_or_none(reminder_for(config.screen_file, device.friendly_id))
+        if due is not None:
+            return due
         own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
         if own is not None:
             return own
@@ -463,6 +480,18 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             return validate_screen(path)
         except (OSError, ValueError):
             return None
+
+    def showing_reminder(device: Device) -> bool:
+        return _valid_or_none(reminder_for(config.screen_file, device.friendly_id)) is not None
+
+    def dismiss_reminder(device: Device) -> None:
+        """Take the reminder off this display. Nothing else, and nothing written down.
+
+        Not when it was seen, not that it was seen, not how long it stood there. A record
+        of presses is an adherence score about a person under another name, and the way
+        that stays true is that there is nowhere for it to be written.
+        """
+        reminder_for(config.screen_file, device.friendly_id).unlink(missing_ok=True)
 
     # MAC -> when the button was last pressed with nothing given back yet. Kept in memory
     # because a press matters only until it is answered: a restart has no press left to
@@ -565,12 +594,22 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
 
             now = time.time()
             if pressed_button(self.headers):
-                outstanding[device.mac] = now
-                if config.button_file is not None:
+                if showing_reminder(device):
+                    # The same button, a different sentence. A press while a reminder is
+                    # up means "seen": the reminder goes and what was underneath comes
+                    # back in this same response. No scan is started — the scanner takes
+                    # about 37 s and nobody asked it for anything.
                     try:
-                        record_press(config.button_file, device)
+                        dismiss_reminder(device)
                     except OSError as exc:
-                        self.log_message("could not record the press: %s", exc)
+                        self.log_message("could not take the reminder down: %s", exc)
+                else:
+                    outstanding[device.mac] = now
+                    if config.button_file is not None:
+                        try:
+                            record_press(config.button_file, device)
+                        except OSError as exc:
+                            self.log_message("could not record the press: %s", exc)
 
             level = battery_level(_number(self.headers.get("Battery-Voltage", "")))
             on_usb = device.mains or usb_connected(self.headers)

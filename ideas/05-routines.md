@@ -113,8 +113,44 @@ is dropped, a day that is not a day is dropped, and a question is one line long 
 sentences are a parent's free text and reach the model as material, so an instruction
 written inside one must not be able to write into the household's schedule.
 
-Still missing: the third role on a display, the press that means "seen", and the wording
-being generated rather than the parent's own sentence shown as written.
+**What is built, on 20 August 2026.** The third role and the press that means "seen", which
+had to arrive together: a job a parent can hand out and that does nothing is worse than a
+job that is not offered. `remind` is a third job a display can hold, written once in
+`shared/capabilities.py` and read from there by the panel, the hub and the parent's page.
+`devices/show_reminders.py` runs on the hub once a minute, asks the panel when its local
+copy of the reminders is more than five minutes old, decides whether this minute falls
+inside a reminder's half hour, and writes the screen into a file of its own beside the
+display's picture. `devices/trmnl_byos.py` shows that file above whatever the display was
+holding, so taking it away is the whole of putting the display back — nobody keeps a copy
+of the picture underneath.
+
+Two measured numbers behind those choices. The window is 30 minutes, which is a decision
+and not a measurement: long enough that somebody walking past a few minutes later still
+sees it, short enough that it does not become the wallpaper. The five minutes is the
+spacing the status push already makes, so this adds no new order of magnitude to how often
+the cloud is woken; what it costs is that a sentence written just now becomes a reminder up
+to five minutes later.
+
+**Where the second meaning of the press ended up, and why not where this file said.** It is
+in `devices/trmnl_byos.py`, not in `devices/scan_sheet.py`. The display server is the only
+side that knows what a display is showing at the instant the button is pressed, and it
+answers in the request the press caused. Deciding in `scan_sheet.py` would have meant the
+press was written down, the scan unit started, and the waiting screen already up before
+anything could say the press meant something else — a scan refused after the display had
+told somebody it was reading. So the server records a press only when the press means "read
+the sheet", and `scan_sheet.py` is unchanged: it still acts on every press it is given,
+because it is now only given the ones that mean that.
+
+Nothing counts. The hub keeps one line per display saying which showing it last drew there,
+which is what a thing that draws needs in order not to draw twice, and it is cleared when
+the window closes. A reminder taken down by a press and one still standing leave the same
+bytes in that file — `tests/test_show_reminders.py` asserts exactly that, byte for byte,
+so there is nowhere an adherence score could accumulate even by accident.
+
+Still missing: the wording being generated rather than the parent's own sentence shown as
+written. Today the display shows the hour and the sentence exactly as it was typed, which
+is the parent speaking to their own child and needs no screening; the day the words are a
+model's, they pass the safety chokepoint before they reach the renderer.
 
 **Done when.** A parent writes three sentences, one of them without a time. With the hub's
 clock moved across the hours named, each of the other two appears on a display holding the

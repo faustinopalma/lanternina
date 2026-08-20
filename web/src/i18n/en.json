@@ -134,6 +134,7 @@
 
   "job.picture": "shows the pictures",
   "job.sheet": "shows what to do next",
+  "job.remind": "shows reminders when they are due",
   "job.print": "prints the sheets",
   "job.scan": "reads the sheets",
 

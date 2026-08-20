@@ -1,0 +1,13 @@
+[Unit]
+Description=Look once a minute for a reminder whose moment has come
+
+[Timer]
+# Once a minute, because that is the finest an hour written as "13:30" can be honoured to.
+# A run costs nothing when there is nothing to do: the reminders are read from a local
+# copy, and the panel is only asked when that copy is more than five minutes old.
+OnCalendar=*:*:00
+AccuracySec=10s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

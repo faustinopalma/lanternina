@@ -1,0 +1,22 @@
+[Unit]
+Description=Put a reminder on the display when its hour comes
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.show_reminders
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+# The reminders the panel placed are cached here, so an unreachable panel leaves the
+# house showing what it already knew about instead of showing nothing.
+ReadWritePaths=/var/lib/lanternina/state

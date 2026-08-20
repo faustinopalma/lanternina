@@ -16,6 +16,7 @@ from panel import devices
 from shared.capabilities import (
     JOB_NONE,
     JOB_PICTURE,
+    JOB_REMIND,
     JOBS_BY_KIND,
     KIND_DISPLAY,
     KIND_PRINTER,
@@ -24,16 +25,20 @@ from shared.capabilities import (
     provided_by,
 )
 
+# A display kept for the pictures, or for the reminders, can draw the image all the same.
+# Lending it to an experience would take away what it is standing there for, so neither
+# job contributes a capability, and both absences are decisions rather than oversights.
+DEDICATED = {(KIND_DISPLAY, JOB_PICTURE), (KIND_DISPLAY, JOB_REMIND)}
+
 
 def test_every_job_the_parent_can_hand_out_is_accounted_for() -> None:
     """A job the panel offers and this module has never heard of would be a silent hole:
     the parent would assign it and the catalogue would go on saying the house cannot."""
     for kind, jobs in JOBS_BY_KIND.items():
         for job in jobs:
-            assert provided_by(kind, job) is not None or (kind, job) == (
-                KIND_DISPLAY,
-                JOB_PICTURE,
-            ), f"{kind}/{job} maps to no capability and is not the deliberate exception"
+            assert (
+                provided_by(kind, job) is not None or (kind, job) in DEDICATED
+            ), f"{kind}/{job} maps to no capability and is not a deliberate exception"
 
 
 def test_an_unassigned_thing_contributes_nothing() -> None:
@@ -43,6 +48,12 @@ def test_an_unassigned_thing_contributes_nothing() -> None:
 def test_the_picture_display_is_not_offered_to_an_experience() -> None:
     """It can draw the image. Handing it over would take the pictures off the wall."""
     assert provided_by(KIND_DISPLAY, JOB_PICTURE) is None
+
+
+def test_the_reminder_display_is_not_offered_to_an_experience() -> None:
+    """A reminder comes at an hour the household chose, and an experience runs for as
+    long as it runs: one of the two would have to give way, every time."""
+    assert provided_by(KIND_DISPLAY, JOB_REMIND) is None
 
 
 @pytest.mark.parametrize(

@@ -53,6 +53,7 @@ KINDS: Final = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER)
 JOB_NONE: Final = ""
 JOB_PICTURE: Final = "picture"
 JOB_SHEET: Final = "sheet"
+JOB_REMIND: Final = "remind"
 JOB_PRINT: Final = "print"
 JOB_SCAN: Final = "scan"
 
@@ -61,7 +62,7 @@ JOB_SCAN: Final = "scan"
 # things to show cannot work any other way, and when more than one thing can do something
 # the house picks between them, which is where the variation comes from.
 JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
-    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET),
+    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET, JOB_REMIND),
     KIND_PRINTER: (JOB_PRINT,),
     KIND_SCANNER: (JOB_SCAN,),
 }
@@ -71,7 +72,9 @@ JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
 # would take the pictures away for as long as the experience runs, which is the failure
 # found on 19 August 2026 when one button press converted the picture display into the
 # sheet one. A parent who wants one display to do both says so by giving it both jobs,
-# which is a sentence the panel can now write.
+# which is a sentence the panel can now write. The reminder job is absent for the same
+# reason and one more: a reminder appears at an hour the household chose, so a display
+# lent to an experience would either lose the reminder or interrupt the experience.
 _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
     (KIND_PRINTER, JOB_PRINT): HouseCapability.PRINT_A4,
     (KIND_SCANNER, JOB_SCAN): HouseCapability.SCAN_A4,
