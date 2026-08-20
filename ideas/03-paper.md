@@ -1,5 +1,12 @@
 # What gets printed
 
+**Read [08-experience.md](08-experience.md) first, from 21 August 2026.** The paper loop is
+being replaced rather than extended, and most of this file is about the loop that is going
+away: the corner markers, the QR, the 50 mm ruler and the cell geometry all exist to answer
+*is there a mark inside this rectangle*, and that question is going away with them. What
+survives out of §6 is the part that has nothing to do with geometry — a vocabulary with no
+way to fill an area, and an ink budget measured in square millimetres.
+
 The printer is an Epson ET-2870 reached over IPP Everywhere, with no driver. The
 print → scan → detect chain has already been proven end to end: the ruler on the sheet
 measures exactly 50 mm, and the markers land between 176 and 178 px against 177.2 expected.

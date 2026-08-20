@@ -25,6 +25,7 @@ among themselves; no file has been re-ranked as a whole since.
 | [05-routines.md](05-routines.md) | Routines, and activities that are easy to start |
 | [06-capture.md](06-capture.md) | The capture station, and what it is made of |
 | [07-catalogue.md](07-catalogue.md) | Experiences designed once, for every house |
+| [08-experience.md](08-experience.md) | An experience devised and run in the house, over an afternoon |
 
 ## Where to start
 
@@ -36,8 +37,19 @@ thing that is merely useful, even when the useful one is cheaper.
 The two are allowed to disagree. When they do, this table wins for choosing what to do next,
 and the file wins for judging whether the thing is worth doing at all.
 
-### First: the two that are dangerous today
+### Before the table: where this is going, decided 21 August 2026
 
+The paper loop is being replaced rather than extended. Not "here is a task, do it, I will
+look at it" but an experience devised fresh each time, run across an afternoon, landing
+partly on a display and partly on paper, followed through what comes back, and finished.
+[08-experience.md](08-experience.md) holds the design, what dies with it — the corner
+markers, the QR, the 50 mm ruler and the cell geometry — and the three decisions that have
+to be made before any of it is written.
+
+Most of the table below still stands, because it is about the house those experiences run
+in. The paper entries are the ones to read against 08 rather than on their own.
+
+### First: the two that are dangerous today
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
 | 1 | ~~Close the drift between the templates and what is running~~ — **done, 18 August 2026** | 04 §3 | It was worse than recorded: the script passed no image, no port and no sign-in settings, so a plain run would have left the panel answering 404 and then 503. `deploy.ps1` now re-applies what is running and refuses without the device key. |
