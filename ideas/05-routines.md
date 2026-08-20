@@ -186,6 +186,14 @@ cloud that will not answer leaves the reminder carrying the parent's own sentenc
 exactly what the display did before any of this, and the way to ask again is the way the
 parent already has — editing the sentence, which makes it unread.
 
+One thing to know before reading the figures. A wording call is written into `panel/usage.py`
+as a `text` event, and `over_cap` counts every billed call of the month rather than only the
+pictures, so a wording now takes one unit off the household's monthly cap of 1000. It is one
+call per sentence in that sentence's life, so a household writing a dozen sentences a month
+spends a dozen units; the wording path itself never checks the cap and so cannot be stopped
+by it. The reading calls are still not recorded at all, which is the larger gap in these
+figures and is unchanged.
+
 **Distributed and measured, 20 August 2026.** Image `lanternina/panel:b3d28a8` on revision
 `--0000037`, and the served `/openapi.json` carries a string only the new build has, which
 is how the revision was shown to be the one answering rather than assumed. The page went
