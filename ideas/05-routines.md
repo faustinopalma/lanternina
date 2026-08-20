@@ -156,7 +156,7 @@ model's, they pass the safety chokepoint before they reach the renderer.
 `--0000037`, and the served `/openapi.json` carries a string only the new build has, which
 is how the revision was shown to be the one answering rather than assumed. The page went
 out on the workflow after that, and the chunk it serves carries both new words. On the hub,
-seven files were behind — the comparison is `build/hub_stale.ps1`, which hashes what git
+seven files were behind — the comparison is `scripts/hub-stale.ps1`, which hashes what git
 stores rather than the working copy, because this machine checks out CRLF and the hub holds
 LF — and all seven now match byte for byte, with `lanternina-reminders.timer` enabled.
 
