@@ -118,6 +118,9 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
 
     Nothing here records whether a reminder was ever shown or pressed. There is no
     field for it, which is the only way that stays true.
+
+    At the monthly cap the sentences are left unread and the answer comes back degraded,
+    rather than refused: a refusal would take the reminders already placed with it.
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage

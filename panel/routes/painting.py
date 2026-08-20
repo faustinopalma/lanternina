@@ -135,7 +135,9 @@ async def read_sheet_page(
     and there is no field in which it could.
 
     A refusal leaves the house to fall back on its own arithmetic and say so, which is
-    the whole of what "reduced capability, not a stopped system" means on this path.
+    the whole of what "reduced capability, not a stopped system" means on this path. The
+    monthly cap is refused the same way, with 429: the reading is counted as its own kind
+    and stops when the household has paid for as many calls as it is allowed.
     """
     from shared.ids import new_id
     from shared.sheet import SheetSpec
