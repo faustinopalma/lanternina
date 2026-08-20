@@ -24,8 +24,13 @@
   "proposals.unreadable": "Non riesco a leggere le proposte adesso.",
   "proposals.empty": "Nessuna proposta in attesa.",
   "proposals.decideFailed": "Non sono riuscito a registrare la decisione. Riprova più tardi.",
+  "proposals.reserve": "Da parte — attività approvate: {activities}; temi: {themes}.",
+  "proposals.approved": "Già approvate",
+  "proposals.withdrawn": "Ritirata. Non verrà più consegnata. Un foglio già stampato resta in casa: da qui non si può richiamare.",
+  "proposals.withdrawFailed": "Non sono riuscito a registrare il ritiro. Riprova più tardi.",
   "action.approve": "Approva",
   "action.refuse": "Rifiuta",
+  "action.withdraw": "Non più",
 
   "kind.exercise": "Foglio da stampare",
   "kind.routine_prompt": "Promemoria sul display",

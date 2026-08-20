@@ -20,7 +20,12 @@ from typing import Any, Protocol, runtime_checkable
 from shared.approval import ApprovalState
 
 # The states a parent can put a proposal into from the panel.
-DECIDABLE = (ApprovalState.APPROVED, ApprovalState.REJECTED)
+DECIDABLE = (ApprovalState.APPROVED, ApprovalState.REJECTED, ApprovalState.WITHDRAWN)
+
+# Withdrawing is a second decision, not a first one, and this is what makes it one: only
+# something already approved can be taken back. Nothing goes back to PENDING — a decision
+# is recorded, not undone — and a refusal is not withdrawn, it is already a no.
+WITHDRAWABLE_FROM = (ApprovalState.APPROVED.value,)
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,6 +82,8 @@ class ProposalStore(Protocol):
 
     def list(self, household_id: str, state: str | None = None) -> list[ProposalRecord]: ...
 
+    def get(self, household_id: str, proposal_id: str) -> ProposalRecord | None: ...
+
     def decide(
         self, household_id: str, proposal_id: str, state: str, *, decided_by: str, note: str = ""
     ) -> ProposalRecord: ...
@@ -103,6 +110,10 @@ class InMemoryProposalStore:
                 if household == household_id and (state is None or row.state == state)
             ]
         return sorted(rows, key=lambda row: row.created_at)
+
+    def get(self, household_id: str, proposal_id: str) -> ProposalRecord | None:
+        with self._lock:
+            return self._rows.get((household_id, proposal_id))
 
     def decide(
         self, household_id: str, proposal_id: str, state: str, *, decided_by: str, note: str = ""

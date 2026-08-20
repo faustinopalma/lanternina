@@ -108,6 +108,15 @@ export function httpApi(token: string): Api {
       return answer.proposals;
     },
 
+    async approved(): Promise<Proposal[]> {
+      const answer = await json<{ proposals: Proposal[] }>(
+        "/api/proposals?state=approved",
+        {},
+        ["proposals"],
+      );
+      return answer.proposals;
+    },
+
     async decide(id: string, state: Decision): Promise<void> {
       // The whole effect of an approval: a row changes state. Nothing is enqueued, nobody
       // is notified, and the house finds out when it next asks.

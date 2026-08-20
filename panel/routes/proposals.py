@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from shared.approval import ApprovalState
 
 from ..gate import CurrentAccount, DeviceKey
-from ..proposals import DECIDABLE, ProposalRecord, ProposalStore
+from ..proposals import DECIDABLE, WITHDRAWABLE_FROM, ProposalRecord, ProposalStore
 from . import Decision
 
 router = APIRouter()
@@ -45,10 +45,22 @@ def list_proposals(account: CurrentAccount, request: Request, state: str = "pend
 def decide_proposal(
     proposal_id: str, decision: Decision, account: CurrentAccount, request: Request
 ) -> Any:
-    """Record what the parent decided. This is the whole effect: it starts nothing."""
+    """Record what the parent decided. This is the whole effect: it starts nothing.
+
+    `withdrawn` is a second decision on something already approved, and is refused on
+    anything else: a refusal is already a no, and nothing returns to pending. It applies to
+    the future only — the house stops being offered the item on its next request, and paper
+    already printed and in the house is beyond anybody's reach here.
+    """
     if decision.state not in {s.value for s in DECIDABLE}:
         raise HTTPException(status_code=400, detail="unsupported_state")
     store: ProposalStore = request.app.state.proposals
+    if decision.state == ApprovalState.WITHDRAWN.value:
+        current = store.get(str(account.household_id), proposal_id)
+        if current is None:
+            raise HTTPException(status_code=404, detail="unknown_proposal")
+        if current.state not in WITHDRAWABLE_FROM:
+            raise HTTPException(status_code=409, detail="not_approved")
     try:
         row = store.decide(
             str(account.household_id),

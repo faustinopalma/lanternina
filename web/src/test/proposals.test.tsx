@@ -124,3 +124,48 @@ describe("to approve", () => {
     expect(document.body.textContent).not.toMatch(/HTTP|\b[45]\d\d\b/);
   });
 });
+
+describe("what is already approved", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("says how much is in reserve, as a fact rather than a task", async () => {
+    renderPanel(fakeApi());
+
+    expect(
+      await screen.findByText("Da parte — attività approvate: 2; temi: 2."),
+    ).toBeInTheDocument();
+    // No exclamation, no instruction, nothing that reads as a chore assigned to anyone.
+    expect(document.body.textContent).not.toMatch(/!|Devi |Ricorda di /);
+  });
+
+  it("withdraws one, shortens the count, and says what withdrawal cannot reach", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await screen.findByText("Da parte — attività approvate: 2; temi: 2.");
+    await user.click(screen.getAllByRole("button", { name: "Non più" })[0]!);
+
+    await screen.findByText("Da parte — attività approvate: 1; temi: 2.");
+    expect(api.recorded.decisions).toEqual([{ id: "prop-9", state: "withdrawn" }]);
+    expect(
+      screen.getByText(
+        "Ritirata. Non verrà più consegnata. Un foglio già stampato resta in casa: da qui non si può richiamare.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("says so when the withdrawal does not get through, and keeps the item", async () => {
+    const api = fakeApi({ decide: () => Promise.reject(new Error("no")) });
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await screen.findByText("Da parte — attività approvate: 2; temi: 2.");
+    await user.click(screen.getAllByRole("button", { name: "Non più" })[0]!);
+
+    expect(
+      await screen.findByText("Non sono riuscito a registrare il ritiro. Riprova più tardi."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Da parte — attività approvate: 2; temi: 2.")).toBeInTheDocument();
+  });
+});

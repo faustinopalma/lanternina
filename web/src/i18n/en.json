@@ -24,8 +24,13 @@
   "proposals.unreadable": "I cannot read the proposals right now.",
   "proposals.empty": "Nothing waiting.",
   "proposals.decideFailed": "I could not record the decision. Try again later.",
+  "proposals.reserve": "In reserve — approved activities: {activities}; themes: {themes}.",
+  "proposals.approved": "Already approved",
+  "proposals.withdrawn": "Withdrawn. It will not be delivered again. A sheet already printed stays in the house: it cannot be called back from here.",
+  "proposals.withdrawFailed": "I could not record the withdrawal. Try again later.",
   "action.approve": "Approve",
   "action.refuse": "Refuse",
+  "action.withdraw": "Not any more",
 
   "kind.exercise": "Sheet to print",
   "kind.routine_prompt": "Reminder on the display",

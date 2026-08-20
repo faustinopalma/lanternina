@@ -41,21 +41,35 @@ been heard from in six hours", which covers the case only when the parent looks.
 
 ---
 
-## 3. Withdrawing an approval
+## 3. Withdrawing an approval — built, 20 August 2026
 
 **What it is.** A "not any more" on something already approved.
 
-**Why.** Today approval is one-way. If the parent changes their mind, or if a piece of
-content turns out to be wrong once they see it on the printed sheet, there is no way back.
-The `ApprovalLedger` contract already has `withdraw`: only the road to it is missing.
+**Why.** Approval was one-way. If the parent changed their mind, or if a piece of content
+turned out to be wrong once they saw it on the printed sheet, there was no way back. The
+`ApprovalLedger` contract already had `withdraw`: only the road to it was missing.
 
-**How.** `POST /api/proposals/{id}/decision` already takes a state; it is enough to admit
-`withdrawn` among the decidable ones and show it in the list of approved items. The home
-server sees it on the next request and stops delivering it.
+**How.** `POST /api/proposals/{id}/decision` now admits `withdrawn`, and the panel shows
+what is already approved with a *not any more* next to each item. The home server sees it
+on its next request — `/api/device/{h}/proposals` asks for `approved` and a withdrawn row
+is no longer in that list.
 
-**What it costs.** A product question with no obvious answer: what happens to a sheet that
-is already printed? Withdrawal applies to the future. We can do nothing about paper already
-in the house, and the panel has to say so rather than pretend.
+**What it cost.** One rule that had to be decided rather than inherited: withdrawal is a
+*second* decision and applies only to something approved. A refusal is already a no, and
+nothing goes back to pending, so `withdrawn` on anything else answers 409. That keeps the
+state a record of what was decided rather than a field somebody can cycle.
+
+The product question has an answer and it is not a good one: a sheet already printed is
+beyond reach. Withdrawal applies to the future. The panel says so in the same breath as
+confirming it — "un foglio già stampato resta in casa: da qui non si può richiamare" —
+rather than letting the parent assume otherwise.
+
+**Where it starts.** `panel/proposals.py` for `DECIDABLE` and `WITHDRAWABLE_FROM`,
+`panel/routes/proposals.py` for the rule, `web/src/sections/Proposals.tsx` for the list.
+
+**Done when.** Four tests in `tests/test_proposals.py` and three in the web suite. Checked
+by breaking it: with `WITHDRAWN` out of `DECIDABLE` four fail, and with the approved-only
+check removed the one that guards it fails on its own. Not seen by a parent yet.
 
 ---
 
@@ -103,18 +117,28 @@ in another.
 
 ---
 
-## 6. How much approved content is left
+## 6. How much approved content is left — built, 20 August 2026
 
-**What it is.** One line: "there are 12 approved activities and 4 themes".
+**What it is.** One line at the foot of the approvals page: "Da parte — attività
+approvate: 12; temi: 4."
 
 **Why.** When the cloud does not answer, the system serves only content that was already
 approved. If the reserve is empty the system goes dark — the thing we declared
-unacceptable. Today nobody knows how full it is.
+unacceptable. Nobody could see how full it was.
 
-**How.** A count in routes that already exist. No new work.
+**How.** A count on routes that already existed: `/api/proposals?state=approved` and
+`/api/themes`. Nothing new is stored for it, and withdrawing an item shortens it.
 
-**What it costs.** A risk of tone: it must not become a chore assigned to the parent. "There
-are few left" is a fact; a notification that insists is something else.
+**What it cost.** A risk of tone, and it shaped the words. It is written as a label and a
+number rather than a sentence urging anything, there is no threshold at which it changes
+colour, and a test asserts the page carries no exclamation mark and no imperative. The
+label form also avoids a plural the catalogs cannot inflect — "1 attività approvate" would
+have been wrong Italian, and adding plural rules for one line was not worth it.
+
+**Where it starts.** `web/src/sections/Proposals.tsx`, the `Approved` component.
+
+**Done when.** Three tests in the web suite, which fail against the section as it was. Not
+seen by a parent yet.
 
 ---
 

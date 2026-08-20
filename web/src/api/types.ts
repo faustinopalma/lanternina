@@ -18,8 +18,9 @@ export interface Proposal {
   body: string;
 }
 
-/** The decisions a parent may take. Withdrawal is not one of them yet. */
-export type Decision = "approved" | "rejected";
+/** The decisions a parent may take. `withdrawn` is a second decision on something already
+ *  approved, and the panel refuses it on anything else. */
+export type Decision = "approved" | "rejected" | "withdrawn";
 
 export interface Picture {
   id: string;
@@ -184,6 +185,7 @@ export class ApiError extends Error {
 export interface Api {
   admission(): Promise<Admission>;
   proposals(): Promise<Proposal[]>;
+  approved(): Promise<Proposal[]>;
   decide(id: string, state: Decision): Promise<void>;
   pictures(page: number, perPage: number): Promise<PicturePage>;
   pictureContent(id: string): Promise<Blob>;

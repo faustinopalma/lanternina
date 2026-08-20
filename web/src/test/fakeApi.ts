@@ -71,8 +71,32 @@ export const SAMPLE_PROPOSALS: Proposal[] = [
   },
 ];
 
-const SAMPLE_PICTURES: PicturePage = {
-  pictures: Array.from({ length: 6 }, (_, index) => ({
+/** What the parent has already approved and the house has not yet been offered. Two, so a
+ *  count of them is not the same number as anything else on the page. */
+export const SAMPLE_APPROVED: Proposal[] = [
+  {
+    id: "prop-9",
+    kind: "exercise",
+    agent: "content",
+    rationale: "Approvato ieri.",
+    createdAt: NOW - 90_000,
+    state: "approved",
+    contentKind: "application/json",
+    body: JSON.stringify({ title: "I pianeti", instructions: "", exercises: [] }),
+  },
+  {
+    id: "prop-10",
+    kind: "routine_prompt",
+    agent: "content",
+    rationale: "Approvato ieri.",
+    createdAt: NOW - 91_000,
+    state: "approved",
+    contentKind: "text/plain",
+    body: "Annaffia le piante.",
+  },
+];
+
+const SAMPLE_PICTURES: PicturePage = {  pictures: Array.from({ length: 6 }, (_, index) => ({
     id: `pic-${index + 1}`,
     theme: index === 0 ? "" : "gatti che dormono",
     createdAt: NOW - index * 3600,
@@ -161,6 +185,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   ];
   let devices: Device[] = SAMPLE_DEVICES;
   let standing: HouseRequest | null = null;
+  let approved: Proposal[] = SAMPLE_APPROVED;
   // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
     {
@@ -212,8 +237,10 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       me: { accountId: "acct-demo", householdId: "house-demo", status: "active" },
     }),
     proposals: async () => SAMPLE_PROPOSALS,
+    approved: async () => approved,
     decide: async (id, state) => {
       recorded.decisions.push({ id, state });
+      if (state === "withdrawn") approved = approved.filter((row) => row.id !== id);
     },
     pictures: async (page, perPage) => ({ ...SAMPLE_PICTURES, page, perPage }),
     pictureContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),

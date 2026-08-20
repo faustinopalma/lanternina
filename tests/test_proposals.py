@@ -115,6 +115,80 @@ def test_a_parent_cannot_invent_a_state() -> None:
     assert response.status_code == 400
 
 
+def test_withdrawing_stops_the_home_server_being_offered_it() -> None:
+    """The whole of what withdrawal can do. Paper already in the house is beyond it."""
+    client = client_for()
+    household = household_of(client)
+    submit(client, household, PROPOSAL)
+    client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "approved"}, headers=headers()
+    )
+
+    withdrawn = client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "withdrawn"}, headers=headers()
+    )
+
+    assert withdrawn.status_code == 200
+    assert withdrawn.json()["state"] == "withdrawn"
+    pulled = client.get(
+        f"/api/device/{household}/proposals", headers={"X-Device-Key": DEVICE_KEY}
+    ).json()["proposals"]
+    assert pulled == []
+
+
+def test_only_something_approved_can_be_withdrawn() -> None:
+    """A refusal is already a no, and nothing returns to pending: withdrawal is a second
+    decision, not a way to reopen the first."""
+    client = client_for()
+    submit(client, household_of(client), PROPOSAL)
+
+    pending = client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "withdrawn"}, headers=headers()
+    )
+    assert pending.status_code == 409
+
+    client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "rejected"}, headers=headers()
+    )
+    refused = client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "withdrawn"}, headers=headers()
+    )
+    assert refused.status_code == 409
+
+
+def test_withdrawing_something_that_does_not_exist_is_a_404() -> None:
+    client = client_for()
+    household_of(client)
+    response = client.post(
+        "/api/proposals/pr_nothing/decision", json={"state": "withdrawn"}, headers=headers()
+    )
+    assert response.status_code == 404
+
+
+def test_what_is_left_in_reserve_is_a_count_on_a_route_that_exists() -> None:
+    """§6 asks for one line: how many approved activities are left. Nothing new is stored
+    for it — the approved list is already there, and withdrawing shortens it."""
+    client = client_for()
+    household = household_of(client)
+    submit(client, household, PROPOSAL)
+    submit(client, household, {**PROPOSAL, "id": "pr_test02"})
+    for proposal_id in ("pr_test01", "pr_test02"):
+        client.post(
+            f"/api/proposals/{proposal_id}/decision",
+            json={"state": "approved"},
+            headers=headers(),
+        )
+
+    approved = client.get("/api/proposals?state=approved", headers=headers())
+    assert len(approved.json()["proposals"]) == 2
+
+    client.post(
+        "/api/proposals/pr_test01/decision", json={"state": "withdrawn"}, headers=headers()
+    )
+    left = client.get("/api/proposals?state=approved", headers=headers())
+    assert [row["id"] for row in left.json()["proposals"]] == ["pr_test02"]
+
+
 def test_another_household_sees_nothing() -> None:
     client = client_for()
     submit(client, "hh_someone_else", PROPOSAL)

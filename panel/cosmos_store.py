@@ -148,7 +148,7 @@ class CosmosProposalStore:
 
     def submit(self, record: ProposalRecord) -> ProposalRecord:
         # Idempotent on id: a home server that retries must not create a second copy.
-        existing = self._read(record.household_id, record.id)
+        existing = self.get(record.household_id, record.id)
         if existing is not None:
             return existing
         self._container.create_item(_from_record(record))
@@ -177,7 +177,7 @@ class CosmosProposalStore:
         self._container.upsert_item(document)
         return _to_record(document)
 
-    def _read(self, household_id: str, proposal_id: str) -> ProposalRecord | None:
+    def get(self, household_id: str, proposal_id: str) -> ProposalRecord | None:
         from azure.cosmos import exceptions
 
         try:

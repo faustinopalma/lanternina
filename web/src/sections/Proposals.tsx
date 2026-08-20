@@ -89,6 +89,73 @@ function Card({ proposal, onDecided }: { proposal: Proposal; onDecided: () => vo
   );
 }
 
+function Approved() {
+  const { t } = useWords();
+  const api = useApi();
+  const [approved] = useLoad(() => api.approved(), []);
+  const [themes] = useLoad(() => api.themes(), []);
+  const [withdrawn, setWithdrawn] = useState<string[]>([]);
+  const [failed, setFailed] = useState(false);
+
+  if (approved.status !== "ready" || themes.status !== "ready") return null;
+
+  const left = approved.data.filter((proposal) => !withdrawn.includes(proposal.id));
+
+  return (
+    <section className="mt-7 border-t border-edge pt-5">
+      <h2 className="mb-2 text-[1.05rem] font-semibold">{t("proposals.approved")}</h2>
+      {/* A fact, not a task. The reserve is what the house serves from when the cloud
+          does not answer, so an empty one is worth being able to see — but nothing here
+          asks the parent to fill it. */}
+      <p className="text-quiet" aria-live="polite">
+        {t("proposals.reserve", {
+          activities: left.length,
+          themes: themes.data.length,
+        })}
+      </p>
+      <ul className="mt-3 flex max-w-[42rem] list-none flex-col gap-2 p-0">
+        {left.map((proposal) => (
+          <li
+            key={proposal.id}
+            className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-control border border-edge bg-paper px-3.5 py-2.5"
+          >
+            <span className="grow">{summary(proposal)}</span>
+            <Button
+              size="small"
+              onClick={async () => {
+                setFailed(false);
+                try {
+                  await api.decide(proposal.id, "withdrawn");
+                  setWithdrawn((gone) => [...gone, proposal.id]);
+                } catch {
+                  setFailed(true);
+                }
+              }}
+            >
+              {t("action.withdraw")}
+            </Button>
+          </li>
+        ))}
+      </ul>
+      {withdrawn.length > 0 ? (
+        <p className="mt-2.5 text-quiet">{t("proposals.withdrawn")}</p>
+      ) : null}
+      {failed ? <Quiet className="mt-2.5">{t("proposals.withdrawFailed")}</Quiet> : null}
+    </section>
+  );
+}
+
+/** One line naming an approved item, so a parent can tell which one they are taking back
+ *  without having the whole sheet unrolled in front of them again. */
+function summary(proposal: Proposal): string {
+  if (!proposal.contentKind.endsWith("json")) return proposal.body;
+  try {
+    return sheetTitle(JSON.parse(proposal.body));
+  } catch {
+    return proposal.body;
+  }
+}
+
 export function Proposals() {
   const { t } = useWords();
   const api = useApi();
@@ -99,17 +166,21 @@ export function Proposals() {
   if (state.status === "failed") return <Quiet>{t("proposals.unreadable")}</Quiet>;
 
   const waiting = state.data.filter((proposal) => !decided.includes(proposal.id));
-  if (waiting.length === 0) return <Quiet>{t("proposals.empty")}</Quiet>;
 
   return (
     <div aria-live="polite">
-      {waiting.map((proposal) => (
-        <Card
-          key={proposal.id}
-          proposal={proposal}
-          onDecided={() => setDecided((seen) => [...seen, proposal.id])}
-        />
-      ))}
+      {waiting.length === 0 ? (
+        <Quiet>{t("proposals.empty")}</Quiet>
+      ) : (
+        waiting.map((proposal) => (
+          <Card
+            key={proposal.id}
+            proposal={proposal}
+            onDecided={() => setDecided((seen) => [...seen, proposal.id])}
+          />
+        ))
+      )}
+      <Approved />
     </div>
   );
 }
