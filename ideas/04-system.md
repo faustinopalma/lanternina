@@ -339,6 +339,12 @@ set nowhere in `infra/`, so the rename lost no configuration.
 bites sooner than it did, which is what a cap counting everything it pays for is supposed to
 do.
 
+**Distributed, 20 August 2026.** Image `lanternina/panel:6853d29` on revision `--0000039`,
+shown to be the one answering rather than assumed: the served `/openapi.json` describes
+`/api/usage` as "split by kind", a phrase only this build has. The image went first and the
+push after, because the workflow ships the page on any push touching `web/`. The page then
+served `/assets/src-CqLf1yAL.js`, carrying both new labels, Italian and English.
+
 **What it does not do.** Only the picture path refuses when the cap is reached; the wording
 path counts against the cap without checking it. That is deliberate for now — a wording
 starts once per sentence a parent wrote, so it cannot loop on its own — and it is the first
