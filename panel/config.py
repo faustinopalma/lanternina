@@ -11,7 +11,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-from .usage import DEFAULT_MONTHLY_PICTURE_CAP
+from .usage import DEFAULT_MONTHLY_CALL_CAP
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,9 +46,9 @@ class Settings:
     # Where shown pictures are archived. Empty keeps them in memory only.
     blob_endpoint: str = ""
     pictures_container: str = "pictures"
-    # How many paid calls one household may make in a month. Zero removes the cap, which
-    # has to be typed on purpose.
-    monthly_picture_cap: int = DEFAULT_MONTHLY_PICTURE_CAP
+    # How many paid calls one household may make in a month, of any kind. Zero removes the
+    # cap, which has to be typed on purpose.
+    monthly_call_cap: int = DEFAULT_MONTHLY_CALL_CAP
 
     @property
     def blob_configured(self) -> bool:
@@ -102,9 +102,9 @@ class Settings:
             pictures_container=os.environ.get(
                 "LANTERNINA_PICTURES_CONTAINER", "pictures"
             ).strip(),
-            monthly_picture_cap=int(
+            monthly_call_cap=int(
                 os.environ.get(
-                    "LANTERNINA_MONTHLY_PICTURE_CAP", str(DEFAULT_MONTHLY_PICTURE_CAP)
+                    "LANTERNINA_MONTHLY_CALL_CAP", str(DEFAULT_MONTHLY_CALL_CAP)
                 )
             ),
         )

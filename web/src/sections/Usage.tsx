@@ -1,11 +1,17 @@
+import type { ReactNode } from "react";
+
 import { useApi } from "@/api/client";
+import type { UsageTotals } from "@/api/types";
 import { Facts } from "@/components/Facts";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
 /** What the models consumed. Numbers about machines, never about a person, and never a target
- *  to reach. */
+ *  to reach.
+ *
+ *  Split by kind, because a picture and a wording consume different things: a single figure
+ *  covering both would keep the name it had when it only counted pictures. */
 export function Usage() {
   const { t } = useWords();
   const api = useApi();
@@ -15,19 +21,45 @@ export function Usage() {
   if (state.status === "failed") return <Quiet>{t("usage.unreadable")}</Quiet>;
 
   const { usage, cap } = state.data;
+  const kinds = [
+    { kind: "image", title: t("usage.kind.image") },
+    { kind: "text", title: t("usage.kind.text") },
+  ];
+
+  const detail = (totals: UsageTotals) => [
+    { label: t("usage.calls"), value: totals.calls },
+    { label: t("usage.billed"), value: totals.billedCalls },
+    { label: t("usage.inputTokens"), value: totals.inputTokens },
+    { label: t("usage.cached"), value: totals.cachedInputTokens },
+    { label: t("usage.outputTokens"), value: totals.outputTokens },
+    { label: t("usage.reasoning"), value: totals.reasoningTokens },
+  ];
 
   return (
-    <Facts
-      className="max-w-[34rem]"
-      rows={[
-        { label: t("usage.calls"), value: usage.calls },
-        { label: t("usage.billed"), value: usage.billedCalls },
-        { label: t("usage.inputTokens"), value: usage.inputTokens },
-        { label: t("usage.cached"), value: usage.cachedInputTokens },
-        { label: t("usage.outputTokens"), value: usage.outputTokens },
-        { label: t("usage.reasoning"), value: usage.reasoningTokens },
-        { label: t("usage.cap"), value: cap > 0 ? cap : t("usage.noCap") },
-      ]}
-    />
+    <div className="max-w-[34rem]">
+      {kinds.map(({ kind, title }) => {
+        const totals = usage.byKind[kind];
+        return totals ? (
+          <section key={kind} className="mt-5 first:mt-0">
+            <Heading>{title}</Heading>
+            <Facts rows={detail(totals)} />
+          </section>
+        ) : null;
+      })}
+      <section className="mt-5">
+        <Heading>{t("usage.total")}</Heading>
+        <Facts
+          rows={[
+            { label: t("usage.calls"), value: usage.total.calls },
+            { label: t("usage.billed"), value: usage.total.billedCalls },
+            { label: t("usage.cap"), value: cap > 0 ? cap : t("usage.noCap") },
+          ]}
+        />
+      </section>
+    </div>
   );
+}
+
+function Heading({ children }: { children: ReactNode }) {
+  return <h3 className="text-[1rem] font-semibold tracking-tight">{children}</h3>;
 }

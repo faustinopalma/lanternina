@@ -198,7 +198,23 @@ class _FoundryBackend:
                 json={"messages": _chat_messages(prompt, images, instructions)},
             )
             _checked(response)
-            message = response.json()["choices"][0]["message"]
+            body = response.json()
+            usage = body.get("usage") or {}
+            # The chat API names these differently from the image API, so the two paths
+            # cannot share one reader: prompt/completion here, input/output there.
+            self.last_usage = ModelUsage(
+                deployment=str(body.get("model") or self._config.deployment),
+                request_id=response.headers.get("apim-request-id", ""),
+                input_tokens=int(usage.get("prompt_tokens") or 0),
+                output_tokens=int(usage.get("completion_tokens") or 0),
+                cached_input_tokens=int(
+                    (usage.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
+                ),
+                reasoning_tokens=int(
+                    (usage.get("completion_tokens_details") or {}).get("reasoning_tokens") or 0
+                ),
+            )
+            message = body["choices"][0]["message"]
             # A refusal comes back with a null content, and str(None) would put the word
             # "None" on a sheet.
             return str(message.get("content") or "")

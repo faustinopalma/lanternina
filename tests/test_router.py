@@ -8,6 +8,9 @@ and pretending otherwise would be the kind of test that passes on broken code.
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+from typing import Any
+
 import pytest
 
 from orchestrator.router import VISION_SYSTEM_PROMPT, FoundryConfig, FoundryRouter, StubRouter
@@ -151,6 +154,67 @@ async def test_a_call_without_instructions_sends_no_system_message() -> None:
 
     assert [message["role"] for message in messages] == ["user"]
     assert messages[0]["content"] == [{"type": "text", "text": "plan something"}]
+
+
+async def test_a_chat_call_reports_what_it_consumed(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The chat API names its counts differently from the image API.
+
+    Reading the image names off a chat answer gives a tidy row of zeroes and no error,
+    which is how the text path spent its first day reporting nothing. The body below is
+    the shape `gpt-5.6-sol-2026-07-09` returned on 20 August 2026, trimmed.
+    """
+    import httpx
+
+    from orchestrator.router import FoundryConfig, _FoundryBackend
+
+    answered = {
+        "model": "gpt-5.6-sol-2026-07-09",
+        "choices": [{"message": {"content": "ok"}}],
+        "usage": {
+            "prompt_tokens": 378,
+            "completion_tokens": 131,
+            "prompt_tokens_details": {"cached_tokens": 12},
+            "completion_tokens_details": {"reasoning_tokens": 76},
+        },
+    }
+
+    class _Client:
+        def __init__(self, **_: object) -> None: ...
+
+        async def __aenter__(self) -> _Client:
+            return self
+
+        async def __aexit__(self, *_: object) -> bool:
+            return False
+
+        async def post(self, url: str, **_: object) -> httpx.Response:
+            return httpx.Response(
+                200,
+                json=answered,
+                headers={"apim-request-id": "7995317f"},
+                request=httpx.Request("POST", url),
+            )
+
+    class _Credential:
+        def get_token(self, _: str) -> Any:
+            return SimpleNamespace(token="a-token")
+
+    monkeypatch.setattr(httpx, "AsyncClient", _Client)
+    backend = _FoundryBackend(
+        FoundryConfig(
+            endpoint="https://project.invalid",
+            deployment="gpt-5.6-sol-2026-07-09",
+            account_endpoint="https://account.invalid",
+        ),
+        _Credential(),
+    )
+
+    assert await backend.complete("say ok", (), "") == "ok"
+    spent = backend.last_usage
+    assert spent is not None
+    assert (spent.input_tokens, spent.output_tokens) == (378, 131)
+    assert (spent.cached_input_tokens, spent.reasoning_tokens) == (12, 76)
+    assert spent.request_id == "7995317f"
 
 
 def test_a_refused_call_says_why_and_not_only_that_it_was_refused() -> None:

@@ -130,13 +130,21 @@ export interface NewAssignment {
   name?: string;
 }
 
-export interface Usage {
+export interface UsageTotals {
   calls: number;
   billedCalls: number;
   inputTokens: number;
   outputTokens: number;
   cachedInputTokens: number;
   reasoningTokens: number;
+}
+
+/** Told apart by kind as well as together: a picture and a wording cost different amounts
+ *  of different things, and one figure covering both says less than it looks like. */
+export interface Usage {
+  period: string;
+  total: UsageTotals;
+  byKind: Record<string, UsageTotals>;
 }
 
 export interface UsageAnswer {

@@ -1,9 +1,11 @@
-"""Counting what the pictures cost.
+"""Counting what the model calls cost.
 
 The properties worth pinning are the ones that would be silently wrong otherwise: a call
 the safety gate refused was still paid for and must still be counted, an event replayed
-must not count twice, and the figures the backend reports about caching and reasoning must
-survive into the record rather than being flattened into "one picture".
+must not count twice, the figures the backend reports about caching and reasoning must
+survive into the record rather than being flattened into "one picture", and a picture and
+a wording must be readable apart rather than summed into a figure whose name fits only one
+of them.
 """
 
 from __future__ import annotations
@@ -22,6 +24,7 @@ from panel.themes import InMemoryThemeStore
 from panel.usage import (
     FAILED,
     KIND_IMAGE,
+    KIND_TEXT,
     REFUSED,
     SERVED,
     InMemoryUsageStore,
@@ -67,8 +70,8 @@ def test_the_same_event_recorded_twice_counts_once() -> None:
     store.record(an_event("use-1"))
 
     summary = store.summary("house-1", month_of(time.time()))
-    assert summary.calls == 1
-    assert summary.output_tokens == 196
+    assert summary.total.calls == 1
+    assert summary.total.output_tokens == 196
 
 
 def test_a_failed_call_is_visible_but_not_billed() -> None:
@@ -77,15 +80,37 @@ def test_a_failed_call_is_visible_but_not_billed() -> None:
     store.record(an_event("use-2", outcome=FAILED, output_tokens=0))
 
     summary = store.summary("house-1", month_of(time.time()))
-    assert summary.calls == 2
-    assert summary.billed_calls == 1
+    assert summary.total.calls == 2
+    assert summary.total.billed_calls == 1
 
 
 def test_a_refused_call_is_billed_because_the_model_ran() -> None:
     store = InMemoryUsageStore()
     store.record(an_event("use-1", outcome=REFUSED))
 
-    assert store.summary("house-1", month_of(time.time())).billed_calls == 1
+    assert store.summary("house-1", month_of(time.time())).total.billed_calls == 1
+
+
+def test_a_picture_and_a_wording_are_counted_apart_as_well_as_together() -> None:
+    store = InMemoryUsageStore()
+    store.record(an_event("use-1"))
+    store.record(an_event("use-2", kind=KIND_TEXT, output_tokens=31))
+
+    summary = store.summary("house-1", month_of(time.time()))
+    assert summary.total.calls == 2
+    assert summary.by_kind[KIND_IMAGE].calls == 1
+    assert summary.by_kind[KIND_IMAGE].output_tokens == 196
+    assert summary.by_kind[KIND_TEXT].calls == 1
+    assert summary.by_kind[KIND_TEXT].output_tokens == 31
+
+
+def test_a_kind_nobody_used_is_reported_as_zero_not_left_out() -> None:
+    # A missing key would read as "no such thing" on a page that has to say which kind
+    # each figure belongs to.
+    summary = InMemoryUsageStore().summary("house-1", month_of(time.time()))
+
+    assert summary.by_kind[KIND_IMAGE].calls == 0
+    assert summary.by_kind[KIND_TEXT].calls == 0
 
 
 def test_what_the_backend_reported_survives_into_the_event() -> None:
@@ -115,13 +140,21 @@ def test_a_cap_of_zero_never_stops_anything() -> None:
     assert over_cap(store, "house-1", 6) is False
 
 
+def test_the_cap_counts_a_wording_as_well_as_a_picture() -> None:
+    store = InMemoryUsageStore()
+    store.record(an_event("use-1"))
+    store.record(an_event("use-2", kind=KIND_TEXT))
+
+    assert over_cap(store, "house-1", 2) is True
+
+
 def test_the_count_is_per_household() -> None:
     store = InMemoryUsageStore()
     store.record(an_event("use-1"))
     store.record(an_event("use-2", household_id="house-2"))
 
-    assert store.summary("house-1", month_of(time.time())).calls == 1
-    assert store.summary("house-2", month_of(time.time())).calls == 1
+    assert store.summary("house-1", month_of(time.time())).total.calls == 1
+    assert store.summary("house-2", month_of(time.time())).total.calls == 1
 
 
 def client_for(store: InMemoryUsageStore, cap: int = 1000) -> TestClient:
@@ -129,7 +162,7 @@ def client_for(store: InMemoryUsageStore, cap: int = 1000) -> TestClient:
         dev_auth=True,
         bootstrap_contact=PARENT,
         device_key=DEVICE_KEY,
-        monthly_picture_cap=cap,
+        monthly_call_cap=cap,
     )
     return TestClient(
         create_app(
@@ -184,8 +217,8 @@ def test_a_refused_picture_is_still_counted(monkeypatch: pytest.MonkeyPatch) -> 
     assert answer.status_code == 409
 
     summary = store.summary(household, month_of(time.time()))
-    assert summary.billed_calls == 1
-    assert summary.output_tokens == 196
+    assert summary.total.billed_calls == 1
+    assert summary.total.output_tokens == 196
 
 
 def test_the_parent_can_read_the_month(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -193,10 +226,14 @@ def test_the_parent_can_read_the_month(monkeypatch: pytest.MonkeyPatch) -> None:
     client = client_for(store, cap=42)
     household = household_of(client)
     store.record(an_event("use-1", household_id=household))
+    store.record(an_event("use-2", household_id=household, kind=KIND_TEXT, output_tokens=31))
 
     body = client.get("/api/usage", headers=headers()).json()
     assert body["cap"] == 42
-    assert body["usage"]["calls"] == 1
-    assert body["usage"]["outputTokens"] == 196
+    assert body["usage"]["total"]["calls"] == 2
+    assert body["usage"]["total"]["outputTokens"] == 227
+    # Every figure the parent reads arrives under the kind it belongs to.
+    assert body["usage"]["byKind"][KIND_IMAGE]["outputTokens"] == 196
+    assert body["usage"]["byKind"][KIND_TEXT]["outputTokens"] == 31
     # Nothing here may look like a target to reach.
     assert "goal" not in body and "streak" not in body

@@ -319,27 +319,30 @@ current one passes.
 
 ---
 
-## 9. The text path does not say what it consumed
+## 9. Closed: the text path says what it consumed, and says which kind it is
 
-**What it is.** Counting tokens for generated text as they are already counted for images.
+**What it was.** The counter had two names, `KIND_IMAGE` and `KIND_TEXT`, and only ever
+recorded the first. On 20 August 2026 the reminder wording started recording the second, and
+`/api/usage` went on returning one undivided block: the same six figures a parent had been
+reading as "pictures" now held pictures and wordings summed together, under a cap called
+`monthly_picture_cap` that had never counted only pictures.
 
-**Why.** The monthly cap and the usage panel describe the picture path only. Half the system
-is therefore invisible in a number the parent is shown as if it were the whole. A cap that
-measures half of what it caps is a number with a wrong name.
+**What was done.** `UsageSummary` now carries a `UsageTotals` for the month and one per kind,
+and `/api/usage` answers `{"usage": {"period", "total", "byKind": {"image", "text"}}, "cap"}`.
+A kind nobody used is reported as zeros rather than left out, so a missing key never has to
+be read as "no such thing". The panel shows two blocks — pictures, written words — each with
+its six figures, then a third saying calls, of which paid for, and the cap. The cap moved
+name with its meaning: `monthly_call_cap`, `LANTERNINA_MONTHLY_CALL_CAP`. The variable was
+set nowhere in `infra/`, so the rename lost no configuration.
 
-**How.** The counter exists and so does the name: `panel/usage.py` declares `KIND_TEXT`
-beside `KIND_IMAGE`, and nothing has ever recorded one. An event carries tokens, cached
-reads and the provider's request id; the text path has to record one too, so the two kinds
-can be read apart as well as together.
+**What it cost.** Three tests, and a page that is three short lists instead of one. The cap
+bites sooner than it did, which is what a cap counting everything it pays for is supposed to
+do.
 
-**What it costs.** Small, and it makes the cap bite sooner — which is the point. The usage
-panel needs a line saying which kind each figure belongs to, or the change silently makes
-the old numbers mean something new.
-
-**Where it starts.** `agents/content.py` and `orchestrator/router.py`, then `panel/usage.py`.
-
-**Done when.** A text generation appears in `/api/usage` with its own kind, and the cap
-counts it.
+**What it does not do.** Only the picture path refuses when the cap is reached; the wording
+path counts against the cap without checking it. That is deliberate for now — a wording
+starts once per sentence a parent wrote, so it cannot loop on its own — and it is the first
+thing to change if anything else ever starts generating text.
 
 ---
 

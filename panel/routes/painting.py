@@ -59,7 +59,7 @@ async def paint_picture(
 
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_picture_cap):
+    if over_cap(counter, household_id, settings.monthly_call_cap):
         # Reaching the cap is a decision, not a fault: the display keeps its picture.
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 

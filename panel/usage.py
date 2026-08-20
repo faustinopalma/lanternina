@@ -1,9 +1,13 @@
-"""What a household's pictures cost, and the cap that stops a runaway loop.
+"""What a household's model calls cost, and the cap that stops a runaway loop.
 
 This is a count, not a bill. It records what the model backend said each call consumed,
 and it exists so that two questions have answers: *how much has this house used this
 month*, and *does that number agree with what Azure charges*. The second is why every
 event carries the provider's own request id.
+
+The figures are reported per kind as well as together. A picture and a wording cost
+different amounts of different things, so one total covering both is a number whose name
+does not say what it holds.
 
 Nothing here is about a person. A token count is a fact about a machine.
 
@@ -24,6 +28,9 @@ from shared.routing import ModelUsage
 
 KIND_IMAGE = "image"
 KIND_TEXT = "text"
+# Reported even when a household has made none of that kind, so a figure of zero is
+# distinguishable from a kind the panel forgot to mention.
+KINDS = (KIND_IMAGE, KIND_TEXT)
 
 # Told apart because they cost differently: a picture the gate refused was still generated
 # and still paid for, while one that never reached the model was not.
@@ -31,9 +38,10 @@ SERVED = "served"
 REFUSED = "refused"
 FAILED = "failed"
 
-# An hourly picture is at most 744 a month. The default leaves room for a parent asking
-# for a few by hand, and still stops a loop that has lost its mind.
-DEFAULT_MONTHLY_PICTURE_CAP = 1000
+# An hourly picture is at most 744 a month, and the text path adds one call per sentence
+# the cloud words. The default leaves room for a parent asking for a few by hand, and
+# still stops a loop that has lost its mind.
+DEFAULT_MONTHLY_CALL_CAP = 1000
 
 
 def month_of(at: float) -> str:
@@ -65,9 +73,7 @@ class UsageEvent:
 
 
 @dataclass(frozen=True, slots=True)
-class UsageSummary:
-    household_id: str
-    period: str
+class UsageTotals:
     calls: int = 0
     # Calls that reached the model, whatever the gate then decided. This is what the cap
     # counts, because it is what was paid for.
@@ -79,7 +85,6 @@ class UsageSummary:
 
     def to_public(self) -> dict[str, Any]:
         return {
-            "period": self.period,
             "calls": self.calls,
             "billedCalls": self.billed_calls,
             "inputTokens": self.input_tokens,
@@ -89,17 +94,41 @@ class UsageSummary:
         }
 
 
-def summarise(household_id: str, period: str, events: list[UsageEvent]) -> UsageSummary:
-    billed = [event for event in events if event.outcome != FAILED]
-    return UsageSummary(
-        household_id=household_id,
-        period=period,
+@dataclass(frozen=True, slots=True)
+class UsageSummary:
+    household_id: str
+    period: str
+    total: UsageTotals = UsageTotals()
+    by_kind: dict[str, UsageTotals] = field(default_factory=dict)
+
+    def to_public(self) -> dict[str, Any]:
+        return {
+            "period": self.period,
+            "total": self.total.to_public(),
+            "byKind": {kind: totals.to_public() for kind, totals in self.by_kind.items()},
+        }
+
+
+def _totals(events: list[UsageEvent]) -> UsageTotals:
+    return UsageTotals(
         calls=len(events),
-        billed_calls=len(billed),
+        billed_calls=len([event for event in events if event.outcome != FAILED]),
         input_tokens=sum(event.input_tokens for event in events),
         output_tokens=sum(event.output_tokens for event in events),
         cached_input_tokens=sum(event.cached_input_tokens for event in events),
         reasoning_tokens=sum(event.reasoning_tokens for event in events),
+    )
+
+
+def summarise(household_id: str, period: str, events: list[UsageEvent]) -> UsageSummary:
+    kinds = dict.fromkeys((*KINDS, *(event.kind for event in events)))
+    return UsageSummary(
+        household_id=household_id,
+        period=period,
+        total=_totals(events),
+        by_kind={
+            kind: _totals([event for event in events if event.kind == kind]) for kind in kinds
+        },
     )
 
 
@@ -134,7 +163,7 @@ def over_cap(store: UsageStore, household_id: str, cap: int, now: float | None =
     """Whether this household has already paid for as many calls as it is allowed."""
     if cap <= 0:
         return False
-    return store.summary(household_id, month_of(now or time.time())).billed_calls >= cap
+    return store.summary(household_id, month_of(now or time.time())).total.billed_calls >= cap
 
 
 def event_from(
