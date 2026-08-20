@@ -49,7 +49,41 @@ QR_QUIET_MODULES: Final = 4
 # "fit to page" did not silently shrink the geometry the reader depends on.
 RULER_LENGTH_MM: Final = 50.0
 
+# The size a cell's label is drawn at, in both backends, so the width computed below is the
+# width that gets printed.
+LABEL_SIZE_MM: Final = 3.0
+
+# Helvetica advance widths, in thousandths of an em, for the characters a label is made of:
+# digits, the arithmetic signs, and the letters of a short Italian word. Anything else uses
+# the default. Taken from the Adobe Helvetica metrics, so a label's width on paper is known
+# rather than guessed — which is what lets a writing line start exactly after its label.
+_HELVETICA_WIDTHS: Final[dict[str, int]] = {
+    " ": 278, ".": 278, ",": 278, ":": 278, ";": 278, "!": 278, "'": 191,
+    "(": 333, ")": 333, "-": 333, "/": 278, "?": 556,
+    "=": 584, "+": 584, "\u00d7": 584, "<": 584, ">": 584,
+    "i": 222, "l": 222, "j": 222, "f": 278, "t": 278, "r": 333,
+    "m": 833, "w": 722, "M": 833, "W": 944,
+}
+_HELVETICA_DIGIT: Final = 556
+_HELVETICA_DEFAULT: Final = 556
+_HELVETICA_UPPER: Final = 722
+
 _MM_PER_INCH: Final = 25.4
+
+
+def _text_width_mm(text: str, size_mm: float) -> float:
+    """How wide this text prints in Helvetica at this size."""
+    thousandths = 0
+    for character in text:
+        if character in _HELVETICA_WIDTHS:
+            thousandths += _HELVETICA_WIDTHS[character]
+        elif character.isdigit():
+            thousandths += _HELVETICA_DIGIT
+        elif character.isupper():
+            thousandths += _HELVETICA_UPPER
+        else:
+            thousandths += _HELVETICA_DEFAULT
+    return thousandths / 1000.0 * size_mm
 
 
 class SheetLayoutError(ValueError):
@@ -235,17 +269,21 @@ def build_drawing(
         if cell.kind is CellKind.WORD_LINE:
             # A line to write on is its baseline. A box around it costs three more sides of
             # ink and looks like a form rather than somewhere to write.
-            rules.append(
-                StrokePath(((area.x, area.bottom), (area.right, area.bottom)), 0.3)
-            )
+            #
+            # Its label sits at the start of the line and the rule begins after it, which
+            # is how `6 × 2 = ______` is read. Drawn under the rule instead, it printed as
+            # a caption under an empty line and nothing joined the two.
+            start = area.x
+            if cell.label:
+                start += _text_width_mm(cell.label, LABEL_SIZE_MM) + 1.5
+            rules.append(StrokePath(((start, area.bottom), (area.right, area.bottom)), 0.3))
         else:
             outlined.append(area)
         if cell.label:
             if cell.kind is CellKind.WORD_LINE:
-                # Under the rule. Above is where the question is, and on a page a model
-                # laid out there is nothing keeping the two apart — measured on the first
-                # sheet a model designed, where "La mia:" landed on the question.
-                labels.append((area.x, area.bottom + 3.0, cell.label))
+                # On the line's own baseline, at its start: the rule was shortened above
+                # to leave exactly this room.
+                labels.append((area.x, area.bottom, cell.label))
             elif cell.kind is CellKind.DRAWING_AREA:
                 # A caption above the frame. Beside it runs off the paper: a drawing area
                 # is most of the width, which is how "Il tuo cielo di nuvole" ended up
@@ -330,7 +368,7 @@ def drawing_to_svg(drawing: Drawing) -> str:
     for x, y, text in drawing.labels:
         parts.append(
             f'<text x="{x:.4f}" y="{y:.4f}" font-family="DejaVu Sans, sans-serif" '
-            f'font-size="3" fill="#000000">{_escape(text)}</text>'
+            f'font-size="{LABEL_SIZE_MM:g}" fill="#000000">{_escape(text)}</text>'
         )
     for x, y, size, text in drawing.headings:
         parts.append(
@@ -395,7 +433,7 @@ def drawing_to_array(
         )
     if text:
         for x, y, label in drawing.labels:
-            _put_text(canvas, x, y, 3.0, label, scale)
+            _put_text(canvas, x, y, LABEL_SIZE_MM, label, scale)
         for x, y, size, heading in drawing.headings:
             _put_text(canvas, x, y, size, heading, scale)
     return canvas
@@ -447,7 +485,7 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
             f"{rect.w * scale:.3f} {rect.h * scale:.3f} re S"
         )
     for x, y, text in drawing.labels:
-        body.append(_pdf_text(x * scale, height - y * scale, 3.0 * scale, text))
+        body.append(_pdf_text(x * scale, height - y * scale, LABEL_SIZE_MM * scale, text))
     for x, y, size, text in drawing.headings:
         body.append(_pdf_text(x * scale, height - y * scale, size * scale, text))
     for stroke in drawing.strokes:
@@ -459,7 +497,11 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
             body.append(f"{x * scale:.3f} {height - y * scale:.3f} l")
         body.append("S")
 
-    content = "\n".join(body).encode("ascii", "replace")
+    # WinAnsi, not ASCII. The font below is declared /WinAnsiEncoding, which is cp1252, so
+    # bytes 0x80–0xFF are exactly what it expects. Encoding the stream as ASCII "replace"
+    # is what printed `6 ? 2 =` for `6 × 2 =` and `attivit?` for `attività`: the filtering
+    # in `_pdf_text` was already correct and this line undid it.
+    content = "\n".join(body).encode("cp1252", "replace")
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",

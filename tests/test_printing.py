@@ -17,10 +17,19 @@ from printing.render import (
     SheetLayoutError,
     build_drawing,
     drawing_to_array,
+    drawing_to_pdf,
     drawing_to_svg,
 )
 from shared.ids import CellId, ExerciseId, SheetId
-from shared.sheet import ARUCO_DICT_NAME, CellKind, CellSpec, QrPayload, Rect, SheetSpec
+from shared.sheet import (
+    ARUCO_DICT_NAME,
+    CellKind,
+    CellSpec,
+    Heading,
+    QrPayload,
+    Rect,
+    SheetSpec,
+)
 from tools.check_scan import (
     INK_PRESENT,
     INK_UNCERTAIN,
@@ -135,6 +144,65 @@ def test_svg_is_sized_in_millimetres(page: PageGeometry, spec: SheetSpec) -> Non
     assert f'width="{page.width_mm}mm"' in svg
     assert f'height="{page.height_mm}mm"' in svg
     assert "50 mm" in svg
+
+
+def test_the_pdf_carries_multiplication_signs_and_accents(page: PageGeometry) -> None:
+    """Read off a sheet that came out of the printer on 20 August 2026: `6 × 2 =` printed
+    as `6 ? 2 =` and `attività` as `attivit?`.
+
+    The font is declared /WinAnsiEncoding, which is cp1252, so those bytes are exactly
+    what it expects. The content stream was being encoded as ASCII with "replace", which
+    undid filtering `_pdf_text` had already done correctly.
+    """
+    spec = SheetSpec(
+        sheet_id=SheetId("sh_accents"),
+        exercise_id=ExerciseId("ex_accents"),
+        title="6 × 2 =",
+        cells=(
+            CellSpec(
+                id=CellId("c1"),
+                kind=CellKind.WORD_LINE,
+                rect=Rect(0.1, 0.4, 0.6, 0.04),
+                label="6 × 2 =",
+            ),
+        ),
+        qr_rect=Rect(0.78, 0.025, 0.18, 0.118),
+        headings=(Heading(Rect(0.05, 0.2, 0.8, 0.04), "Quale attività, perché, così", 5.0),),
+    )
+
+    pdf = drawing_to_pdf(build_drawing(spec, page))
+
+    assert "6 × 2 =".encode("cp1252") in pdf
+    assert "Quale attività, perché, così".encode("cp1252") in pdf
+    assert b"?" not in pdf.split(b"stream", 1)[1].split(b"endstream", 1)[0]
+
+
+def test_a_writing_line_starts_after_its_label(page: PageGeometry) -> None:
+    """`6 × 2 = ______` is one line. Drawn under the rule instead, the label printed as a
+    caption under an empty line and nothing joined the two."""
+    labelled = CellSpec(
+        id=CellId("c1"),
+        kind=CellKind.WORD_LINE,
+        rect=Rect(0.1, 0.4, 0.6, 0.04),
+        label="6 × 2 =",
+    )
+    bare = CellSpec(
+        id=CellId("c2"), kind=CellKind.WORD_LINE, rect=Rect(0.1, 0.6, 0.6, 0.04)
+    )
+    spec = SheetSpec(
+        sheet_id=SheetId("sh_rules"),
+        exercise_id=ExerciseId("ex_rules"),
+        title="",
+        cells=(labelled, bare),
+        qr_rect=Rect(0.78, 0.025, 0.18, 0.118),
+    )
+
+    drawing = build_drawing(spec, page)
+    with_label, without = sorted(drawing.strokes, key=lambda s: s.vertices[0][1])
+
+    assert with_label.vertices[0][0] > without.vertices[0][0]
+    # The label is on the rule's own baseline, so the two read as one line.
+    assert any(y == with_label.vertices[0][1] for _, y, _ in drawing.labels)
 
 
 def scanned(page: PageGeometry, spec: SheetSpec, seed: int = 0) -> NDArray[np.uint8]:

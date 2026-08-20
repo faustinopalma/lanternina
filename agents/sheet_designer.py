@@ -87,7 +87,18 @@ Answerable places must not overlap each other. At most {MAX_READABLE} of them, a
 {MAX_MARKS} marks in total.
 
 The page must ask, not only assign. Give it at least one write_line where the person can
-say what they would like to do next, in their own words."""
+say what they would like to do next, in their own words.
+
+Do not make a form. A column of identical ruled lines with a label in front of each is a
+form, and a page of two such columns is a worse one. Concretely:
+  - Do not use the same mark more than four times in a row in the same arrangement.
+  - Let the drawing carry part of the work instead of decorating a corner: things to
+    count, to join with a line, to label, to circle, to continue.
+  - Vary what is asked. A page can hold one thing to count, one thing to write, one thing
+    to draw and one thing to choose, and that reads as an afternoon rather than a test.
+  - Use tick_box where the answer is a choice. It is quicker to do than a written line and
+    it is the only thing this house can still read when the network is down.
+  - Put the parts where the subject suggests, not in a grid. Whitespace is allowed."""
 
 
 class SheetDesigner:
