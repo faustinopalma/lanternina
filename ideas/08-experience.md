@@ -299,6 +299,14 @@ run stopped waiting at `come-e-tornato` with a note on disk pointing that sheet 
 afternoon. Whether paper physically came out of the Epson is the one thing here that
 nobody checked from this keyboard.
 
+`carry-on` was then started against whatever was on the glass, which turned out to be a
+sheet left there from an earlier day. It scanned, rectified, read the QR, recalled the
+spec, and refused: *sheet sh_48a85f58 does not belong to an afternoon this house started*.
+That is the whole scanner half of the runner exercised on the real machine, and it took
+**29 s** wall clock from `systemctl start` to the refusal — measured from the journal
+timestamps, 09:22:52 to 09:23:21, at 300 dpi over A4. What is left untested on hardware is
+the part after the refusal: the panel reading the page, the two words, and the branch.
+
 ### What it cost, and what it caught
 
 - **A unit, not a shell.** An interactive `fausto` is not in the group `lanternina`, and
