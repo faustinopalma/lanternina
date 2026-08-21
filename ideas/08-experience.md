@@ -102,10 +102,18 @@ already done harm, which is what the working rules say about themselves.
 | 21 Aug 2026 | *One content-safety chokepoint before anything reaches the adolescent* (working rules §3) | Nothing yet — no experience runs, so nothing has reached anybody unscreened | Written down here because it stops being free the moment something runs one. `Continuation` is model-written text bound for a display, and it has to pass `orchestrator/safety.py` before the first afternoon, not after it. **Built the same day**: `screen_continuation`, called by `panel/continuing.py`, tested in `tests/test_continuation_safety.py` and held in place by `tests/test_boundaries.py` |
 | 21 Aug 2026 | *One content-safety chokepoint* (working rules §3), read strictly | The gate had one caller — the model router — and a continuation is not routed through a proposal, so the router had nothing to screen | There are now two callers of one gate: `orchestrator/router.py` and `orchestrator/safety.screen_continuation`. Still one door, two ways up to it, and the second is named in the module docstring so a third does not arrive quietly. The boundary test refuses `panel/routes/experience.py` importing an agent, which is what a way round would look like |
 | 21 Aug 2026 | *Cloud unavailable means reduced capability, not a stopped system* (working rules §3) | The rest of an afternoon has no reduced version. Half a continuation is moments that lead somewhere nobody wrote | `POST /api/device/{household}/experience` refuses — 429 at the cap, 503 with no cloud, 502 for an answer that is not a continuation, 422 when the gate says no — and the house treats every one of them the same way: it stops. That is not a degradation, it is the ordinary ending of an afternoon nobody continues, which costs nothing because nothing was waiting on it |
+| 21 Aug 2026 | *One content-safety chokepoint* (working rules §3), a third time | Devising a whole afternoon produces model text that reaches a parent, and the two existing callers screen a proposal and a continuation. Neither covers a document that is stored where an adult reads it | Three callers of one gate now: `orchestrator/router.py`, `screen_continuation` and `screen_experience`. `words_for_a_person` is the single function both experience callers gather words with, so a field added to one and forgotten in the other fails a test rather than reaching somebody. Held by `tests/test_boundaries.py`, which refuses `panel/devising.py` that does not name `screen_experience` |
 
 Not smoothed, and named so that it stays that way: **a write from the panel is inert.**
 Nothing in this work touched it. An experience is devised because a hub asked; a
 continuation arrives inside the answer to a request the hub made. Nothing is pushed.
+
+The devising work of §6 tested that rule rather than bent it, and the shape it forced is
+worth writing down: **a parent cannot ask for an afternoon.** The obvious feature — a
+button that says "make me one" — is the exact thing the rule forbids, so what exists
+instead is a house that asks on its own rhythm and a parent who decides about what came
+back. That is slower and it is less satisfying to demonstrate. It is also the only version
+in which nothing outside a house can put words into it.
 
 One line is worth keeping in view while smoothing, because it is the difference between
 this project and the thing it refuses to be: **an ending may be satisfying; nothing is
@@ -360,5 +368,108 @@ model made to echo two ids can only get them wrong.
 begun, a page can be read, and a branch that names a moment can be taken — but an outcome
 that says `ask` will get "the panel refused to go on: 404" until the container is rebuilt
 and deployed.
+
+### The rest of the afternoon, and the container that was in the way
+
+Written the same day, after the above. The image was rebuilt from the commit the hub was
+already running — `lanternina/panel:793c52b`, 51.7 s of server-side build measured from
+the run's own start and finish times, 72.8 s of client wall clock — and
+`az containerapp update` produced revision `--0000042`. The route appeared in the public
+`/openapi.json` within about 50 s of the update, which is the cheapest proof that traffic
+moved without holding a credential.
+
+Then it was called from the hub rather than from a laptop, with an invented reading in
+place of a page: **HTTP 200 in 14.6 s**, and five moments came back — a display saying the
+name that had been written on the page, a third sheet asking where that cloud's tail went,
+a collect, and two closes. The model had picked up the invented name and built the rest
+around it, which is the behaviour the format exists to allow and the first time it was seen
+against the real service.
+
+Meanwhile the afternoon on the house went on. The first page came back with a mark, the
+run took the `marks` branch, printed `Lanternina-9` and stopped at `l-ultimo-foglio`: the
+whole scanner half, the model reading a page, the two words and the branch, all on the real
+machine. What is still untested on hardware is the step after that — the branch that says
+`ask` reaching the route that now exists.
+
+---
+
+## 6. Devising one, 21 August 2026
+
+`agents/experience_continuer.py` wrote the rest of an afternoon and nothing wrote the
+beginning of one, so a parent had no overview to approve because nothing produced an
+`Experience` to be approved. That is what this closes.
+
+### What was built
+
+- **`agents/experience_deviser.py`** writes a whole afternoon from what a house has, the
+  household's language, and what the parent already wrote in the panel as interests and as
+  things to avoid. It is the twin of the continuer, deliberately: same format described in
+  the prompt, same manner, same refusal to salvage half an answer.
+- **`orchestrator/safety.screen_experience`**, beside `screen_continuation`, over one
+  shared `words_for_a_person`.
+- **`panel/experiences.py`** and `CosmosExperienceStore`: afternoons a house has been
+  offered, and the parent's decision on each.
+- **`panel/devising.py`**, the twin of `panel/continuing.py`: the model call and the gate,
+  in the container that holds the identity.
+- **Four routes**, in `panel/routes/experience.py` beside the continuing one.
+  `POST /api/device/{h}/experiences` devises one and leaves it pending;
+  `GET /api/device/{h}/experiences` hands back the approved ones;
+  `GET /api/experiences` and `POST /api/experiences/{id}/decision` are the parent's, and
+  the second records a decision and does nothing else.
+
+### Four decisions worth their sentence
+
+- **Three fields are filled in rather than asked for**: the id, the format version, and
+  which capabilities the afternoon needs. The last is the one worth stating — the moments
+  already say what a house must be able to do and `NEEDS` maps each act to its capability,
+  so a model made to restate that can only get it wrong for free. The field stays on the
+  document because an afternoon written by hand still declares it and is checked against
+  it.
+- **A devised afternoon is not a `ProposalRecord`**, and the reason is one field. A
+  proposal carries a safety seal minted on the device with a key the cloud does not have,
+  and the home server verifies it after pulling. An experience is devised in the cloud, so
+  the only seal this container could mint is one nobody can check — and a record with an
+  unverifiable seal in it is worse than a record with no seal field. It is its own small
+  store, and the house trusts the gate that ran in the panel over TLS with a device key,
+  which is the same trust that reading a page and continuing an afternoon already run on.
+- **What is remembered about earlier afternoons is their titles**, handed to the model so
+  the next one differs. Not who did them, not how far anybody got, not what came back —
+  and a test names the exact set of arguments so a fifth one cannot arrive quietly.
+- **The parent sees the overview and may read every branch.** Approval is given to the
+  overview, which `§2` settled; the whole document goes to the panel as well, because an
+  overview that is the only thing shown is a claim about a document nobody can check.
+
+### What it cost, and what it caught
+
+- **`app.routes` no longer lists what is registered.** This FastAPI keeps included routers
+  lazily, so a check that read `app.routes` reported three paths on an application with
+  thirty-nine and looked exactly like routes failing to register. The honest reading is
+  `app.openapi()["paths"]`, which is also what the deployed panel is checked with.
+- **A test that named forbidden words was checking the wrong text.** Asserting that
+  "score" is absent from the prompt failed on the prompt's own instruction not to produce
+  one, and asserting "age" is absent failed on the word "page". What replaced it is a test
+  of the input: the agent is handed a context carrying a learner id and hints, and neither
+  reaches the prompt. That is a guarantee something could break; the word list was not.
+- **Three guarantees were broken deliberately and each failed its test**: the gate being
+  called before an afternoon is stored, the capabilities being derived from the moments
+  rather than declared, and an afternoon being withheld from the house until it is
+  approved. All three restored from copies taken first, and the test count checked to have
+  risen by exactly the twenty-five that were added — 495 to 520.
+
+### What is not built, and is next
+
+1. **The parent has no page.** The two routes exist and are tested; there is nothing in
+   `web/` that lists an offered afternoon or records a decision on it. Until there is, a
+   parent approves an afternoon with an HTTP request, which is not approval by anybody who
+   has not been told about this file.
+2. **The hub cannot begin an approved one.** `devices/run_experience.begin` takes a file.
+   Nothing yet pulls `GET /api/device/{h}/experiences` and starts what came back, and
+   nothing asks for one to be devised in the first place — the rhythm on which a house asks
+   is not written.
+3. **Nothing is learnt from an afternoon that happened.** The working rules say the system
+   may move on what it observes, and this devises from settings and titles only. What an
+   afternoon left behind is deleted when it closes, on purpose (`§5`), so the thing to
+   decide first is what may survive an ending — and that decision is the one where a record
+   of what happened turns into a verdict about a person if it is taken carelessly.
 
 

@@ -1,9 +1,14 @@
-"""The door a continuation passes, and what it would let through if it were not there.
+"""The door an afternoon passes, and what it would let through if it were not there.
 
 The gate itself is Azure's and is not exercised here. What is checked is the part this
 repository owns: that everything an adolescent will read is handed to the screener, that
-a refusal stops the whole continuation rather than part of it, and that a continuation
-with nothing to read does not pass by having nothing to object to.
+a refusal stops the whole thing rather than part of it, and that something with nothing to
+read does not pass by having nothing to object to.
+
+Both ways up to the door are here — a whole experience before a parent is offered it, and
+a continuation before a house plays it — because they share the function that gathers the
+words, and a field added to one and forgotten in the other is exactly the defect these
+tests exist to catch.
 """
 
 from __future__ import annotations
@@ -13,7 +18,7 @@ from typing import Any
 
 import pytest
 
-from orchestrator.safety import screen_continuation, words_for_a_person
+from orchestrator.safety import screen_continuation, screen_experience, words_for_a_person
 from shared.errors import SafetyBlocked
 from shared.safety import (
     ContentKind,
@@ -172,3 +177,60 @@ def test_a_continuation_with_nothing_to_read_does_not_pass_by_saying_nothing() -
     with pytest.raises(SafetyBlocked, match="no words"):
         asyncio.run(screen_continuation(screener, silent))
     assert screener.seen == [], "it was refused before anybody was asked about it"
+
+
+# ── The same door, for a whole afternoon ─────────────────────────────────────────────
+
+
+AN_EXPERIENCE: dict[str, Any] = {
+    "format_version": 1,
+    "experience_id": "un-pomeriggio-di-ombre",
+    "title": "Un pomeriggio di ombre",
+    "overview": "Il display dice di cercare un'ombra, poi esce un foglio da riempire.",
+    "minutes": 120,
+    "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+    "moments": [
+        *CONTINUATION["moments"][:2],
+        {
+            "act": "collect",
+            "id": "com-e-andata",
+            "outcomes": [
+                {"when": "marks", "then": "finita"},
+                {"when": "blank", "then": "finita"},
+            ],
+        },
+        CONTINUATION["moments"][2],
+    ],
+}
+
+
+def an_experience(**changes: Any) -> Any:
+    from shared.experience import Experience
+
+    payload = dict(AN_EXPERIENCE)
+    payload.update(changes)
+    return Experience.from_dict(payload)
+
+
+def test_the_title_and_the_overview_are_screened_too() -> None:
+    """The parent reads these, and a model wrote them. That is the only qualification
+    this door asks for."""
+    words = words_for_a_person(an_experience())
+
+    assert "Un pomeriggio di ombre" in words
+    assert "cercare un'ombra" in words
+    assert "Disegnala qui" in words, "the pages inside it are screened as well"
+
+
+def test_a_devised_afternoon_comes_back_sealed() -> None:
+    screener = Screener()
+
+    payload = asyncio.run(screen_experience(screener, an_experience(), context="test"))
+
+    assert payload.record.verdict is SafetyVerdict.ALLOW
+    assert len(screener.seen) == 1, "one refusal covers the whole afternoon, not a moment"
+
+
+def test_a_refusal_stops_the_whole_afternoon() -> None:
+    with pytest.raises(SafetyBlocked, match="severity 4"):
+        asyncio.run(screen_experience(Screener(refuse=True), an_experience()))

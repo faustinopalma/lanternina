@@ -27,6 +27,7 @@ from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 
 from .devices import DeviceStatus, Thing, order_of
+from .experiences import OfferedExperience
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
@@ -50,6 +51,7 @@ RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
+EXPERIENCES_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
 
@@ -341,6 +343,90 @@ def _to_sentence(document: dict[str, Any]) -> Sentence:
         days=tuple(str(day) for day in document.get("days") or ()),
         question=str(document.get("question") or ""),
         words=tuple(str(word) for word in document.get("words") or ()),
+    )
+
+
+class CosmosExperienceStore:
+    """Conforms to :class:`~panel.experiences.ExperienceStore`."""
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(EXPERIENCES_CONTAINER)
+        )
+
+    def offer(self, record: OfferedExperience) -> OfferedExperience:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.create_item(_from_offered(record))
+        except exceptions.CosmosResourceExistsError:
+            # Idempotent on id, like the in-memory store: a house that retries must not
+            # leave a parent two copies of one afternoon to refuse.
+            existing = self._container.read_item(item=record.id, partition_key=record.household_id)
+            return _to_offered(existing)
+        return record
+
+    def list(self, household_id: str, state: str | None = None) -> list[OfferedExperience]:
+        rows = self._container.query_items(
+            query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'experience'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        found = [_to_offered(row) for row in rows]
+        if state is not None:
+            found = [row for row in found if row.state == state]
+        return sorted(found, key=lambda row: row.created_at)
+
+    def get(self, household_id: str, experience_id: str) -> OfferedExperience | None:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(item=experience_id, partition_key=household_id)
+        except exceptions.CosmosResourceNotFoundError:
+            return None
+        return _to_offered(document)
+
+    def decide(
+        self, household_id: str, experience_id: str, state: str, *, decided_by: str, note: str = ""
+    ) -> OfferedExperience:
+        if not decided_by:
+            raise ValueError("a decision must record who made it")
+        document = self._container.read_item(item=experience_id, partition_key=household_id)
+        document["state"] = state
+        document["decidedAt"] = time.time()
+        document["decidedBy"] = decided_by
+        document["note"] = note
+        self._container.upsert_item(document)
+        return _to_offered(document)
+
+
+def _from_offered(record: OfferedExperience) -> dict[str, Any]:
+    return {
+        "id": record.id,
+        "familyId": record.household_id,
+        "type": "experience",
+        "experience": record.experience,
+        "createdAt": record.created_at,
+        "state": record.state,
+        "decidedAt": record.decided_at,
+        "decidedBy": record.decided_by,
+        "note": record.note,
+    }
+
+
+def _to_offered(document: dict[str, Any]) -> OfferedExperience:
+    decided = document.get("decidedAt")
+    return OfferedExperience(
+        id=str(document["id"]),
+        household_id=str(document["familyId"]),
+        experience=dict(document.get("experience") or {}),
+        created_at=float(document.get("createdAt") or 0.0),
+        state=str(document.get("state") or ""),
+        decided_at=None if decided is None else float(decided),
+        decided_by=str(document.get("decidedBy") or ""),
+        note=str(document.get("note") or ""),
     )
 
 

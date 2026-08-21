@@ -32,6 +32,7 @@ from .devices import (
     InMemoryInventoryStore,
     InventoryStore,
 )
+from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
 from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
@@ -87,6 +88,7 @@ def create_app(
     preferences: PreferencesStore | None = None,
     reminders: SentenceStore | None = None,
     requests: RequestStore | None = None,
+    experiences: ExperienceStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -112,6 +114,9 @@ def create_app(
     )
     app.state.requests = (
         requests if requests is not None else _request_store(app.state.settings)
+    )
+    app.state.experiences = (
+        experiences if experiences is not None else _experience_store(app.state.settings)
     )
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
@@ -173,6 +178,14 @@ def _proposal_store(settings: Settings) -> ProposalStore:
     from .cosmos_store import CosmosProposalStore
 
     return CosmosProposalStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _experience_store(settings: Settings) -> ExperienceStore:
+    if not settings.cosmos_configured:
+        return InMemoryExperienceStore()
+    from .cosmos_store import CosmosExperienceStore
+
+    return CosmosExperienceStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _picture_archive(settings: Settings) -> PictureArchive:

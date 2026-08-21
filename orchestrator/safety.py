@@ -1,18 +1,18 @@
 """The content-safety gate: the single door model output passes before it is proposed.
 
 This module and ``orchestrator/router.py`` are the only two places permitted to import a
-cloud SDK. Two callers reach the gate and no more: the router, for everything an agent
-generates, and :func:`screen_continuation`, for the rest of an afternoon. Agents never see
-unscreened text, so an agent cannot route around screening even by mistake.
+cloud SDK. Three callers reach the gate and no more: the router, for everything an agent
+generates, :func:`screen_experience`, for a whole afternoon before a parent reads it, and
+:func:`screen_continuation`, for the rest of one. Agents never see unscreened text, so an
+agent cannot route around screening even by mistake.
 
 The gate holds the ``CONTENT_SAFETY`` sealer. That is what makes the rule enforceable
 rather than customary: anyone can construct a :class:`~shared.safety.ScreenedPayload`,
 but only this module can produce one whose seal survives ``assert_deliverable``.
 
-:func:`screen_continuation` is the second way in, added 21 August 2026. It is here rather
-than beside the experience code for the reason the router is: the gate is the only thing
-between a model and a person, and a caller who could reach the words without reaching this
-function would be a way around it.
+The two experience functions are here rather than beside the experience code for the
+reason the router is: the gate is the only thing between a model and a person, and a
+caller who could reach the words without reaching one of these would be a way around it.
 
 TODO(poc): :class:`~shared.safety.SafetyCategory` also declares AGE_INAPPROPRIATE,
 FRIGHTENING and OFF_TASK. Azure Content Safety has no detector for those, so they are
@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from typing import Any, Final, Protocol
 
 from shared.errors import CloudUnavailable, SafetyBlocked
-from shared.experience import Close, Continuation, HandOver, Say
+from shared.experience import Close, Continuation, Experience, HandOver, Say
 from shared.safety import (
     ContentKind,
     ContentSafetyGate,
@@ -206,15 +206,19 @@ class AzureContentSafetyGate:
                 return
 
 
-# ── A continuation ───────────────────────────────────────────────────────────────────
+# ── An afternoon, whole or in part ───────────────────────────────────────────────────
 
 
-def words_for_a_person(carrying_on: Continuation) -> str:
-    """Everything in a continuation that somebody will read, one line each.
+def words_for_a_person(plan: Continuation | Experience) -> str:
+    """Everything in an afternoon that somebody will read, one line each.
 
-    Gathered rather than screened field by field, because a continuation is one thing
-    arriving and a refusal applies to all of it: half an afternoon is not a thing this
-    house can put on a display.
+    Gathered rather than screened field by field, because what arrives arrives as one
+    thing and a refusal applies to all of it: half an afternoon is not a thing this house
+    can put on a display.
+
+    A whole experience also carries a title and an overview, and those go in too. They are
+    the parent's half rather than the adolescent's — the overview is what approval is
+    given to — and a model wrote them, which is the only qualification this door asks for.
 
     What is left out is left out because nobody reads it: moment ids, rectangles, mark
     kinds and groups. Everything a person's eye lands on is here — the headings and lines
@@ -222,7 +226,10 @@ def words_for_a_person(carrying_on: Continuation) -> str:
     label beside every box, line and space to draw.
     """
     lines: list[str] = []
-    for moment in carrying_on.moments:
+    if isinstance(plan, Experience):
+        lines.append(plan.title)
+        lines.append(plan.overview)
+    for moment in plan.moments:
         if isinstance(moment, Say | Close):
             lines.append(moment.heading)
             lines.extend(moment.lines)
@@ -232,6 +239,23 @@ def words_for_a_person(carrying_on: Continuation) -> str:
             lines.extend(words.text for words in moment.design.words)
             lines.extend(item.label for item in moment.design.readable)
     return "\n".join(line for line in lines if line.strip())
+
+
+async def screen_experience(
+    gate: ContentSafetyGate, experience: Experience, *, context: str = ""
+) -> ScreenedPayload:
+    """The door a devised afternoon passes before a parent is offered it.
+
+    Earlier than :func:`screen_continuation`, and for a different reason. A parent does
+    read this one, so the gate is not the only thing between a model and a person here —
+    but an overview is what they read, and everything else in the document reaches an
+    adolescent on the strength of that overview. Screening the whole thing now is what
+    makes approving it from a summary an honest thing to ask.
+    """
+    body = words_for_a_person(experience)
+    if not body:
+        raise SafetyBlocked("an afternoon with no words for anybody is not one")
+    return await gate.screen(ContentKind.PLAIN_TEXT, body, context=context)
 
 
 async def screen_continuation(

@@ -1,8 +1,8 @@
-"""The route that answers an ask, and the four ways it says no.
+"""The two routes a house calls, and what a parent may do between them.
 
 What is checked here is our half. The model is stood in for, because a test that measures
-the cloud measures the cloud. The direction is checked as well: there is nothing in this
-route that lets the panel start or extend an afternoon, and a test that names the routes
+the cloud measures the cloud. The direction is checked as well: there is nothing in these
+routes that lets the panel start or extend an afternoon, and a test that names the routes
 is the only way that stays true as routes are added.
 """
 
@@ -19,8 +19,9 @@ from panel.app import create_app
 from panel.config import Settings
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
+from shared.capabilities import HouseCapability
 from shared.errors import CloudUnavailable, SafetyBlocked
-from shared.experience import Continuation, ExperienceError
+from shared.experience import Continuation, Experience, ExperienceError
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -199,6 +200,206 @@ def test_the_monthly_cap_is_refused_and_nothing_is_asked(
     assert asked == {}
 
 
+# ── Devising one, and the parent deciding about it ───────────────────────────────────
+
+
+def devising(monkeypatch: pytest.MonkeyPatch, outcome: Any) -> dict[str, Any]:
+    """Stand in for the cloud. ``outcome`` is a document to return or an exception."""
+    asked: dict[str, Any] = {}
+
+    async def _devise(**given: Any) -> Any:
+        asked.update(given)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return Experience.from_dict(outcome), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", _devise)
+    return asked
+
+
+def ask_for_one(client: TestClient, household: str, **changes: Any) -> Any:
+    body: dict[str, Any] = {"capabilities": ["print_a4", "scan_a4", "show_800x480_1bit"]}
+    body.update(changes)
+    return client.post(
+        f"/api/device/{household}/experiences",
+        json=body,
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+
+def what_the_house_may_run(client: TestClient, household: str) -> Any:
+    response = client.get(
+        f"/api/device/{household}/experiences", headers={"X-Device-Key": DEVICE_KEY}
+    )
+    return response.json()["experiences"]
+
+
+def test_a_devised_afternoon_waits_for_the_parent_rather_than_going_home(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The house asked and was answered, and still may not run it. That is the shape of
+    approval: nothing reaches an adolescent because a machine wanted it to."""
+    client = client_for()
+    devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+
+    response = ask_for_one(client, household)
+
+    assert response.status_code == 200
+    assert response.json()["state"] == "pending"
+    assert what_the_house_may_run(client, household) == []
+
+
+def test_the_parent_reads_the_overview_and_may_read_every_branch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    devising(monkeypatch, THE_AFTERNOON)
+    ask_for_one(client, household_of(client))
+
+    waiting = client.get("/api/experiences", headers=headers()).json()["experiences"]
+
+    assert len(waiting) == 1
+    assert waiting[0]["overview"].startswith("Il display dice")
+    assert [m["id"] for m in waiting[0]["experience"]["moments"]][0] == "comincia"
+
+
+def test_the_house_may_run_it_once_it_is_approved_and_not_before(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+    offered = ask_for_one(client, household).json()["id"]
+
+    client.post(
+        f"/api/experiences/{offered}/decision",
+        json={"state": "approved"},
+        headers=headers(),
+    )
+
+    runnable = what_the_house_may_run(client, household)
+    assert [row["id"] for row in runnable] == [offered]
+    assert runnable[0]["experience"]["title"] == "Un pomeriggio di nuvole"
+
+
+def test_withdrawing_takes_it_back_out_of_what_the_house_may_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+    offered = ask_for_one(client, household).json()["id"]
+    client.post(
+        f"/api/experiences/{offered}/decision",
+        json={"state": "approved"},
+        headers=headers(),
+    )
+
+    taken_back = client.post(
+        f"/api/experiences/{offered}/decision",
+        json={"state": "withdrawn"},
+        headers=headers(),
+    )
+
+    assert taken_back.status_code == 200
+    assert what_the_house_may_run(client, household) == []
+
+
+def test_only_the_titles_of_earlier_afternoons_are_handed_to_the_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """So that the next one is different, and nothing else: not who did them, not how far
+    anybody got, not what came back."""
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+    ask_for_one(client, household)
+    asked.clear()
+
+    ask_for_one(client, household)
+
+    assert asked["already"] == ("Un pomeriggio di nuvole",)
+    assert set(asked) == {"capabilities", "language", "interests", "avoid", "already", "now"}
+
+
+def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+    client.post(
+        "/api/preferences",
+        json={
+            "interests": ["le nuvole"],
+            "avoid": ["i ragni"],
+            "difficulty": "gentle",
+            "variety": "balanced",
+            "maxWordsPerLine": 6,
+            "language": "en",
+        },
+        headers=headers(),
+    )
+
+    ask_for_one(client, household)
+
+    assert asked["language"] == "en"
+    assert asked["interests"] == ("le nuvole",)
+    assert asked["avoid"] == ("i ragni",)
+
+
+def test_equipment_the_house_does_not_have_is_not_devised_for(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+
+    ask_for_one(client, household_of(client), capabilities=["show_800x480_1bit"])
+
+    assert asked["capabilities"] == frozenset({HouseCapability.SHOW_800X480_1BIT})
+
+
+def test_a_house_that_claims_equipment_nobody_defined_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+
+    response = ask_for_one(client, household_of(client), capabilities=["read_minds"])
+
+    assert response.status_code == 400
+    assert asked == {}, "nothing was asked of the cloud"
+
+
+def test_an_afternoon_the_gate_refuses_is_not_stored_for_anybody_to_read(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    devising(monkeypatch, SafetyBlocked("refused at severity 4: violence"))
+    household = household_of(client)
+
+    response = ask_for_one(client, household)
+
+    assert response.status_code == 422
+    assert client.get("/api/experiences", headers=headers()).json()["experiences"] == []
+
+
+def test_the_cap_stops_an_afternoon_being_devised(monkeypatch: pytest.MonkeyPatch) -> None:
+    settings = Settings(
+        dev_auth=True, bootstrap_contact=PARENT, device_key=DEVICE_KEY, monthly_call_cap=1
+    )
+    client = TestClient(create_app(store=InMemoryAccountStore(), settings=settings))
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+
+    assert ask_for_one(client, household).status_code == 200
+    asked.clear()
+
+    assert ask_for_one(client, household).status_code == 429
+    assert asked == {}
+
+
 def test_the_hub_cannot_ask_without_the_device_key() -> None:
     client = client_for()
     household = household_of(client)
@@ -210,10 +411,19 @@ def test_the_hub_cannot_ask_without_the_device_key() -> None:
 
 
 def test_nothing_in_the_panel_can_start_or_change_an_afternoon() -> None:
-    """The rule that was not smoothed. Every path this feature adds is one the house
-    calls; there is no route a browser could use to put moments into a house."""
+    """The rule that was not smoothed, pinned by naming every route this feature has.
+
+    Two of these are the house calling; the two a browser can call are a list and a
+    decision. There is no path a browser could use to put moments into a house, and this
+    test fails the moment somebody adds one — which is the only way that stays true.
+    """
     client = client_for()
     published = client.get("/openapi.json").json()["paths"]
-    paths = {path for path in published if "experience" in path}
+    paths = {path: sorted(published[path]) for path in published if "experience" in path}
 
-    assert paths == {"/api/device/{household_id}/experience"}
+    assert paths == {
+        "/api/device/{household_id}/experience": ["post"],
+        "/api/device/{household_id}/experiences": ["get", "post"],
+        "/api/experiences": ["get"],
+        "/api/experiences/{experience_id}/decision": ["post"],
+    }

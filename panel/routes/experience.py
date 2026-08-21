@@ -1,18 +1,18 @@
-"""The house asking what happens next, and the model thinking inside the answer.
+"""The house asking for an afternoon, and asking what happens next inside one.
 
-One route, and its direction is the whole design. An experience is played by the hub. When
-an outcome says ``ask``, the hub posts what came back off its own glass and receives the
-rest of the afternoon in the reply. Nothing here can reach a house, start an afternoon,
-extend one or change one that is running — there is no path in that direction, which is
-what makes "a write from the panel is inert" true of this feature rather than merely
-intended.
+Every route here points the same way, and the direction is the whole design. An experience
+is devised because the hub asked whether there was one to be had, and continued because
+the hub posted what came back off its own glass. Nothing here can reach a house, start an
+afternoon, extend one or change one that is running — there is no path in that direction,
+which is what makes "a write from the panel is inert" true of this feature rather than
+merely intended. The parent's two routes below record a decision and nothing else.
 
-What arrives is an experience, which carries nothing about a person, and a reading, which
-describes ink. No name, no profile, no learner.
+What arrives from a house is an experience, which carries nothing about a person, and a
+reading, which describes ink. No name, no profile, no learner.
 
-What goes back has been screened. That is not decoration on this path: the parent approved
-the experience once from its overview, so these are the only eyes on it before an
-adolescent's.
+What goes back has been screened. On the continuing path that is not decoration: the
+parent approved the experience once from its overview, so those are the only eyes on it
+before an adolescent's.
 """
 
 from __future__ import annotations
@@ -22,14 +22,24 @@ import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
+from shared.approval import ApprovalState
+from shared.capabilities import HouseCapability
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 from shared.experience import ASK, Came, Collect, Experience, ExperienceError
 
 from ..config import Settings
-from ..gate import DeviceKey
+from ..experiences import (
+    DECIDABLE,
+    WITHDRAWABLE_FROM,
+    ExperienceStore,
+    OfferedExperience,
+)
+from ..gate import CurrentAccount, DeviceKey
+from ..preferences import PreferencesStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, over_cap
+from . import Decision
 
 router = APIRouter()
 
@@ -141,3 +151,138 @@ def _count(
         )
     except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a continuation
         logging.getLogger(__name__).warning("usage not recorded: %s", exc)
+
+
+# ── Devising one, and deciding about it ──────────────────────────────────────────────
+
+
+class WhatTheHouseHas(BaseModel):
+    """The equipment an afternoon must be devised for, as the house itself reports it."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    capabilities: list[str] = Field(default_factory=list)
+
+
+@router.post("/api/device/{household_id}/experiences")
+async def devise_afternoon(
+    household_id: str, has: WhatTheHouseHas, _: DeviceKey, request: Request
+) -> Any:
+    """Devise one afternoon for this house and leave it waiting for the parent.
+
+    The house is told what was written, and not that it may run it: what comes back here
+    is pending, and it stays pending until somebody decides. So this route can be called
+    on any rhythm the hub likes and it still cannot put anything in front of anybody.
+
+    Refused the same way the continuing route is, and for the same reason: there is no
+    reduced version of an afternoon, so the cap, the cloud, the gate and a malformed
+    answer all end with the house not being offered one.
+    """
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if over_cap(counter, household_id, settings.monthly_call_cap):
+        raise HTTPException(status_code=429, detail="monthly_cap_reached")
+
+    try:
+        capabilities = frozenset(HouseCapability(name) for name in has.capabilities)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"not a capability: {exc}") from exc
+    if not capabilities:
+        raise HTTPException(status_code=400, detail="a house with no equipment has no afternoon")
+
+    store: ExperienceStore = request.app.state.experiences
+    preferences: PreferencesStore = request.app.state.preferences
+    settings_of_the_house = preferences.get(household_id)
+    # Titles only. What is kept about earlier afternoons is what they were called, so that
+    # the next one differs — never who did them, how far they got or what came back.
+    already = tuple(row.title for row in store.list(household_id) if row.title)
+
+    from ..devising import devise_experience
+
+    spent: Any = None
+    outcome = FAILED
+    try:
+        experience, spent = await devise_experience(
+            capabilities=capabilities,
+            language=settings_of_the_house.language,
+            interests=settings_of_the_house.interests,
+            avoid=settings_of_the_house.avoid,
+            already=already,
+            now=time.time(),
+        )
+        outcome = SERVED
+    except SafetyBlocked as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("afternoon refused: %s", exc)
+        raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
+    except ExperienceError as exc:
+        logging.getLogger(__name__).warning("not an experience: %s", exc)
+        raise HTTPException(status_code=502, detail=f"not_an_experience: {exc}") from exc
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        logging.getLogger(__name__).warning("afternoon not devised: %s", exc)
+        raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
+    finally:
+        _count(counter, household_id, KIND_TEXT, outcome, spent)
+
+    stored = store.offer(
+        OfferedExperience(
+            id=experience.experience_id,
+            household_id=household_id,
+            experience=experience.to_dict(),
+            created_at=time.time(),
+        )
+    )
+    return {"id": stored.id, "title": stored.title, "state": stored.state}
+
+
+@router.get("/api/device/{household_id}/experiences")
+def afternoons_for_the_house(
+    household_id: str,
+    _: DeviceKey,
+    request: Request,
+    state: str = ApprovalState.APPROVED.value,
+) -> Any:
+    """What the house may run. It pulls; nothing is ever pushed to a house."""
+    store: ExperienceStore = request.app.state.experiences
+    rows = store.list(household_id, state or None)
+    return {"experiences": [row.to_device() for row in rows]}
+
+
+@router.get("/api/experiences")
+def list_afternoons(account: CurrentAccount, request: Request, state: str = "pending") -> Any:
+    store: ExperienceStore = request.app.state.experiences
+    rows = store.list(str(account.household_id), state or None)
+    return {"experiences": [row.to_public() for row in rows]}
+
+
+@router.post("/api/experiences/{experience_id}/decision")
+def decide_afternoon(
+    experience_id: str, decision: Decision, account: CurrentAccount, request: Request
+) -> Any:
+    """Record what the parent decided about an afternoon. It starts nothing.
+
+    Approving does not run it and does not tell anybody: the house asks on its own rhythm
+    and finds it then. Withdrawing is a second decision on something already approved, and
+    it applies to the future only — an afternoon already begun is beyond reach from here,
+    because there is no route in that direction at all.
+    """
+    if decision.state not in {s.value for s in DECIDABLE}:
+        raise HTTPException(status_code=400, detail="unsupported_state")
+    store: ExperienceStore = request.app.state.experiences
+    if decision.state == ApprovalState.WITHDRAWN.value:
+        current = store.get(str(account.household_id), experience_id)
+        if current is None:
+            raise HTTPException(status_code=404, detail="unknown_experience")
+        if current.state not in WITHDRAWABLE_FROM:
+            raise HTTPException(status_code=409, detail="not_approved")
+    try:
+        row = store.decide(
+            str(account.household_id),
+            experience_id,
+            decision.state,
+            decided_by=str(account.id),
+            note=decision.note,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="unknown_experience") from exc
+    return row.to_public()

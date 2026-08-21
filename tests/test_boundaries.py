@@ -259,6 +259,16 @@ def test_a_continuation_cannot_reach_a_house_without_passing_the_gate() -> None:
     )
 
 
+def test_a_devised_afternoon_cannot_be_stored_without_passing_the_gate() -> None:
+    """The same door, one step earlier. What is devised is stored where a parent reads
+    it, so screening it after storage would mean the words were already kept."""
+    producer = REPO / "panel" / "devising.py"
+    assert "screen_experience" in _identifiers(producer), (
+        f"{producer.relative_to(REPO)} offers an afternoon to a parent without screening "
+        "it. See ideas/08 §2a."
+    )
+
+
 # ── The camera is a scanner, not an observer ─────────────────────────────────────────
 
 FORBIDDEN_IN_VISION = {
