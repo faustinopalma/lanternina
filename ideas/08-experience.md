@@ -591,6 +591,25 @@ a branch has already found the cloud there. And it widens the gap `§2` records 
 approved a branch that says "the rest is written at that moment", which is a hole they read
 and agreed to, with the gate the only thing inside it.
 
+### What ran on the house
+
+The panel was rebuilt from this commit — 46 s of server-side build in ACR — and
+`az containerapp update` produced revision `--0000047`. The new route appeared in the
+public `/openapi.json` within 15 s of the update, which is the cheapest proof that traffic
+moved without holding a credential.
+
+The hub was updated, and `deploy/lanternina-afternoon.timer` enabled. Enabling it started
+nothing, which is the default paying for itself: the household's rhythm document predates
+the two settings, so it has no day, and the unit reads that and stops. The first run did do
+one thing, at 14:02 on 21 August 2026 — it found `aft_5ec79e85`, the afternoon begun at
+09:17 and never finished, saw its hours had passed, and forgot it. That is the sweep, on
+the real machine, on a run that was left over rather than one built for it.
+
+Then the house asked the deployed panel what it may run, from the hub with its own device
+key: **the rhythm in 0.16 s**, `afternoonDays: []`; **the afternoons in 0.33 s**,
+`waiting=2` and nothing runnable. Both correct — two afternoons are with the parent and
+none is approved — and both are the numbers the clock decides on.
+
 ### What is not built, and is next
 
 1. **Nothing is learnt from an afternoon that happened**, which is `§6`'s last item and is
@@ -600,8 +619,13 @@ and agreed to, with the gate the only thing inside it.
 2. **A parent cannot see an afternoon that is running.** The panel shows offered, approved
    and begun; where a run has got to lives only on the hub, and there is no route in that
    direction on purpose. Whether there should be is a decision, not an omission.
-3. **The clock has not run against the house on a real chosen day.** Everything below `§7`
-   is tested with the panel stood in for.
+3. **The browser tier is not published.** It is built by `.github/workflows/panel.yml` on a
+   push to `main` that touches `web/`, and this commit has not been pushed. Until it is,
+   `web/src/sections/Experiences.tsx` exists and nobody can open it.
+4. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a
+   day in the panel, which is the page in item 3. Everything below `§7` is otherwise tested
+   with the panel stood in for.
+
 
 
 
