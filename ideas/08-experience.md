@@ -610,6 +610,10 @@ key: **the rhythm in 0.16 s**, `afternoonDays: []`; **the afternoons in 0.33 s**
 `waiting=2` and nothing runnable. Both correct — two afternoons are with the parent and
 none is approved — and both are the numbers the clock decides on.
 
+The browser tier followed, published by `.github/workflows/panel.yml` on the push: **84 s**
+from the push to the site serving `main-Bv5qiJ6g.js`, which is byte for byte the bundle the
+local build produced, since Vite names a bundle after its own content.
+
 ### What is not built, and is next
 
 1. **Nothing is learnt from an afternoon that happened**, which is `§6`'s last item and is
@@ -619,12 +623,13 @@ none is approved — and both are the numbers the clock decides on.
 2. **A parent cannot see an afternoon that is running.** The panel shows offered, approved
    and begun; where a run has got to lives only on the hub, and there is no route in that
    direction on purpose. Whether there should be is a decision, not an omission.
-3. **The browser tier is not published.** It is built by `.github/workflows/panel.yml` on a
-   push to `main` that touches `web/`, and this commit has not been pushed. Until it is,
-   `web/src/sections/Experiences.tsx` exists and nobody can open it.
-4. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a
-   day in the panel, which is the page in item 3. Everything below `§7` is otherwise tested
-   with the panel stood in for.
+3. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a
+   day in the panel, and picking one is the first thing the page of this section exists for.
+   Everything below `§7` is otherwise tested with the panel stood in for.
+4. **No devised afternoon has used `ask` yet.** The prompt asks for one as of this commit,
+   and both afternoons in the store predate it. Whether the model takes the branch is the
+   next thing the real service is asked.
+
 
 
 
