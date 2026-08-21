@@ -6,6 +6,7 @@ Type=oneshot
 User=fausto
 Group=lanternina
 EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
 EnvironmentFile=-/etc/lanternina/scanner.env
 Environment=PYTHONDONTWRITEBYTECODE=1
 WorkingDirectory=/opt/lanternina
