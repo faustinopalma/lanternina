@@ -5,30 +5,35 @@ worksheet with extra steps, and it is not what this is for. What it should be is
 experience — thought up fresh, run across an afternoon, landing partly on a display and
 partly on paper, and coming back through the glass. It has a beginning and it ends.
 
-This file is the design. Nothing in it is built, and the entry below is deliberately not
-the agent: three things have to be decided first, because each one closes off work if it
-is decided late.
+This file is the design. Nothing in it is built. The three decisions it turned on were
+taken on 21 August 2026 and are recorded below; what is left is a contract, and then one
+experience written by hand in it before a model fills it.
 
 ---
 
-## 1. What dies, what survives, and what must not be thrown away
+## 1. What dies, what moves, and what must not be thrown away
 
-**What dies.** Four ArUco markers at the corners, the QR code, the 50 mm ruler, and the
-cell geometry underneath all three.
+**What dies.** The cell geometry: a page is no longer a set of declared rectangles that a
+reader is asked about one at a time. With it goes the 50 mm ruler, which existed only to
+prove the print had not been scaled — and scaling mattered only because it broke the
+rectangle arithmetic.
 
-They are not wrong. They are the machinery for one question — *is there a mark inside this
-rectangle* — and that question is going away. The markers exist so a scanned page can be
-rectified onto a fixed canvas, after which a declared rectangle becomes a pixel rectangle
-by multiplication. The ruler exists to prove the print was not scaled, which matters only
-because scaling breaks that multiplication. When the page is read as a page — *what did
-somebody do here* — none of it is load-bearing, and it costs a corner of every sheet, a
-detector, a spec version, and a class of failure where a marker decodes but reports corners
-a few pixels out.
+**What moves rather than dies — decided 21 August 2026.** The ArUco markers and their
+detector stay in the codebase, with their tests, and come off the printed sheet. A flatbed
+gives a flat image at a known scale and needs no help; a camera does not, and the capture
+station of `06 §1` is where four corners in a photograph earn their keep. So the code is
+not museum material, it is early: a later experience whose sheet is meant to be
+photographed can carry markers again, and the machinery will be there and still tested.
 
-**What survives, and it is one thing.** A page comes back hours later, and the house has to
-know which experience it belongs to and which step. That is identity, and it does not need
-a QR: a short code printed in a corner, read by the same model that reads the rest, is
-enough. One subsystem instead of two.
+**What goes to the museum.** `printing/layout.py`, the template that placed four questions
+of four choices, and the arithmetic that read ink out of a rectangle. Kept readable, out of
+packaging and out of the test run. They are good code and they answer a question nobody is
+asking any more.
+
+**What survives out of the sheet path, and it is one thing.** A page comes back hours
+later, and the house has to know which experience it belongs to and which step. That is
+identity, and it does not need a QR: a short code printed in a corner, read by the same
+model that reads the rest.
 
 **What must not be thrown away.** The ecology is not a matter of care, it is a mechanism,
 and it is independent of everything above. `shared/pagedesign.py` has no mark that fills an
@@ -37,65 +42,70 @@ measures the ink in square millimetres and refuses above a budget. Both were mea
 against real sheets on 20 August 2026, `03 §6`. Restarting the sheet code and keeping those
 two properties is a different thing from restarting and losing them.
 
-**The cost of reading a page as a page, stated once.** Today `CHECKBOX` and `CHOICE_BOX`
-are readable on the hub by arithmetic, which is what makes "the cloud is unreachable" mean
-reduced capability rather than a stopped system on the paper path. A page read as a whole
-has no local tier at all: no cloud, no reading. That is a real loss and belongs in a
-decision rather than in a discovery six weeks from now.
+**Pages are read by a model, and the local tier is given up on purpose.** Decided 21 August
+2026. Reading ink out of declared rectangles on the hub kept the paper path alive without
+the cloud, and it bought that by making a sheet a form — the only pages it can read are
+pages made of boxes. That is too much to pay. The consequence is stated once so it is never
+a surprise: **no cloud, no reading.** A page that comes back while the cloud is unreachable
+waits; it is not guessed at, and nothing is said to anybody about it.
 
 ---
 
-## 2. The three decisions that come before code
+## 2. The three decisions, taken 21 August 2026
 
 ### Who decides what happens next, and when
 
-An experience unfolds over hours, so something has to hold it and move it along. The rule
-that shapes the answer already exists: a write from the panel is inert, and the panel has
-no way to reach into the house. So the house asks, and the cloud thinks inside the answer
-to that request — the shape `POST /api/device/{household}/reminders` already has, where a
-sentence is read by a model inside the call the hub made on its own timer.
+The house asks, and the cloud thinks inside the answer to that request — the shape
+`POST /api/device/{household}/reminders` already has, where a sentence is read by a model
+inside the call the hub made on its own timer. An experience is a row the hub asks about:
+*this is what came back, what now*. Nothing is pushed, nothing is scheduled from outside,
+and an experience nobody continues simply stops.
 
-An experience is then a row the hub asks about: *this is what came back, what now*. Nothing
-is pushed, nothing is scheduled from outside, and an experience that nobody continues
-simply stops — which is what "stopping is a legitimate outcome" has to mean here.
+This one was derived rather than chosen: it falls straight out of a write from the panel
+being inert. Of everything in the working rules this is the one to smooth last, and the
+reason is not philosophy — it is the property that stops something outside a house reaching
+into it. Smoothing it is a different kind of decision from smoothing the others and should
+be taken as one.
 
 ### What the parent approves
 
-Today an agent proposes and a parent approves each thing. An experience invented fresh
-every time and unfolding over an afternoon cannot work that way without the parent becoming
-a relay.
+The experience, once, **from an overview at a general level** — not step by step, and not
+each thing an adolescent will see. And there is a second setting beside it: a mode with
+less intervention, for a parent who has decided they do not want to be asked each time.
 
-The candidate answer is that the parent approves **the experience**, once, before it
-starts: its plan in full, in a form they can read to the end. The agent may then move
-within it. This is the same trade a picture theme already makes — the parent approves the
-subject, not each image — and it has the same cost, said plainly: what the adolescent sees
-inside an approved experience has not been seen by an adult first. The content gate is
-still the only thing between a model and a person.
-
-What that requires of the plan is that it be readable. A plan that is prose is a signature
-on something nobody read; a plan over a closed vocabulary of verbs is not. `shared/
-blueprint.py` already made that argument and it still holds — what changes is that a
-blueprint was written by hand and this is devised, which raises the stakes on the same
-property rather than lowering them.
+What that costs is said plainly rather than discovered: inside an approved experience, what
+reaches the adolescent has not been seen by an adult. The content gate is then the only
+thing between a model and a person, and it is doing more work than it was designed to.
+This is the same trade a picture theme already makes — approve the subject, not each image
+— taken further.
 
 ### Whether the thing that ends is allowed to be satisfying
 
-`docs/NON-GOALS.md` and the working rules refuse streaks, daily goals, don't-break-the-
-chain, variable reward schedules, and any notification triggered by inactivity.
+Yes, and the general policy is below rather than a special case here.
 
-Every one of those exists to pull somebody back on a day they were not going to come. An
-experience that starts in the afternoon, has a shape, and finishes — with something at the
-end that was worth getting to — is not that, and needs no rule relaxed. It is already
-allowed and always was.
+---
 
-The line is worth stating exactly, because it is thin and it is the whole of what the
-project is: **an ending is allowed to be satisfying; nothing may be built whose purpose is
-to make the next one more likely.** A reveal at the end of an afternoon is the first. A
-counter of how many afternoons in a row is the second wearing its coat.
+## 2a. Rules get smoothed, and each one is written down
 
-If a specific thing is wanted that falls on the wrong side, it should be named, and the
-rule edited deliberately, in the file, with the date and the reason — the way the two rules
-dropped on 19 August 2026 were.
+Decided 21 August 2026: where this work collides with a rule, the rule is smoothed rather
+than the work abandoned. There is a review at the end, and steps back are taken then.
+
+A review needs something to review, so the price of smoothing a rule is one entry here:
+**which rule, what it blocked, what was done instead, and the date.** A rule bent without a
+line in this table is not freedom, it is drift — the kind nobody notices until it has
+already done harm, which is what the working rules say about themselves.
+
+| Date | Rule | What it blocked | What was done instead |
+| --- | --- | --- | --- |
+| | | | *(nothing yet)* |
+
+One line is worth keeping in view while smoothing, because it is the difference between
+this project and the thing it refuses to be: **an ending may be satisfying; nothing is
+built whose purpose is to make the next one more likely.** A reveal at the end of an
+afternoon is the first. A counter of how many afternoons in a row is the second wearing its
+coat. Streaks, daily goals and notifications triggered by inactivity all exist to pull
+somebody back on a day they were not going to come, and none of them is needed for an
+afternoon that has a shape and finishes.
 
 ---
 
@@ -120,14 +130,15 @@ Sketch, not a contract. The contract is written after the three decisions above.
 `shared/blueprint.py` for the argument about readable plans, which stays even though the
 format will not. `panel/routes/reminders.py` for the shape of "the house asks and the cloud
 thinks inside the answer". `agents/sheet_designer.py` for the prompt work already measured.
+`printing/render.py` and `vision/` for the markers, which stay for the camera.
 
-**Done when.** One experience is devised by a model, approved by a parent in full, run
-across an afternoon on the two displays and the printer, followed through at least one
+**Done when.** One experience is devised by a model, approved by a parent from an overview,
+run across an afternoon on the two displays and the printer, followed through at least one
 page coming back off the glass, and finished — with the parent able to read afterwards what
 happened, and nothing kept that is a claim about anybody.
 
 **What it costs.** The largest thing attempted here. It replaces the paper loop, changes
 what approval means, and puts a model in charge of a plan rather than of a paragraph. The
-mitigation is the order: the three decisions above, then a contract, then one experience by
-hand in that contract before any model fills it — the same sequence `07 §1` used, and the
-reason it found the reading defect before the format was built on.
+mitigation is the order: the contract first, then one experience by hand in that contract
+before any model fills it — the same sequence `07 §1` used, and the reason it found the
+reading defect before the format was built on.
