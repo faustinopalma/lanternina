@@ -1,4 +1,4 @@
-"""When the display may change, and how often.
+"""When the house may do something, and how often.
 
 Both were constants in the hub's code. Neither is ours to choose: a picture at four in the
 morning spends battery on something nobody will look at, and the right spacing depends on
@@ -8,10 +8,19 @@ The parent writes it here and nothing happens. The hub reads it on its next run 
 decides for itself, which is the only order that keeps the panel unable to reach into the
 house.
 
-Everything is minutes past midnight, in one unit: the two ends of the pause and the
-spacing between pictures are all clock arithmetic, and a second unit is the usual way that
-goes wrong. What crosses the API is "HH:MM" for the ends and a count of minutes for the
-spacing.
+An afternoon has its own two settings, added 21 August 2026, and they are here rather than
+in their own store because they answer the same question the other three do: when. The
+default is no day at all. A house that has never been told when an afternoon may begin
+never begins one, which is the right default for something that prints paper and puts
+words on a display — and it means the feature arrives switched off rather than arriving.
+
+There is no setting for how many, and there will not be one. The days say when it may
+happen and nothing counts what did.
+
+Everything is minutes past midnight, in one unit: the two ends of the pause, the spacing
+between pictures and the hour an afternoon may start are all clock arithmetic, and a
+second unit is the usual way that goes wrong. What crosses the API is "HH:MM" for the
+hours and a count of minutes for the spacing.
 """
 
 from __future__ import annotations
@@ -19,8 +28,11 @@ from __future__ import annotations
 import re
 import threading
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
+
+from .reminders import DAYS
 
 # The hub's timer fires once a minute, so a minute is the finest spacing it can honour.
 # Above a day the setting stops being a rhythm.
@@ -30,6 +42,10 @@ MAX_CADENCE_MINUTES = 24 * 60
 DEFAULT_QUIET_FROM_MINUTES = 22 * 60
 DEFAULT_QUIET_UNTIL_MINUTES = 7 * 60
 DEFAULT_CADENCE_MINUTES = 60
+
+# Mid-afternoon, which is what the word means. It is only the default hour: no day is
+# chosen by default, so this decides nothing until a parent picks one.
+DEFAULT_AFTERNOON_FROM_MINUTES = 15 * 60
 
 _CLOCK = re.compile(r"^(\d{1,2}):(\d{2})$")
 
@@ -55,6 +71,10 @@ class Rhythm:
     quiet_from_minutes: int = DEFAULT_QUIET_FROM_MINUTES
     quiet_until_minutes: int = DEFAULT_QUIET_UNTIL_MINUTES
     cadence_minutes: int = DEFAULT_CADENCE_MINUTES
+    # Which days an afternoon may begin on, and from what hour. Empty means none, which
+    # is where every household starts.
+    afternoon_days: tuple[str, ...] = ()
+    afternoon_from_minutes: int = DEFAULT_AFTERNOON_FROM_MINUTES
     updated_at: float = 0.0
     updated_by: str = ""
 
@@ -63,6 +83,9 @@ class Rhythm:
             "quietFrom": clock(self.quiet_from_minutes),
             "quietUntil": clock(self.quiet_until_minutes),
             "cadenceMinutes": self.cadence_minutes,
+            "afternoonDays": list(self.afternoon_days),
+            "afternoonFrom": clock(self.afternoon_from_minutes),
+            "dayChoices": list(DAYS),
             "updatedAt": self.updated_at,
             "minCadenceMinutes": MIN_CADENCE_MINUTES,
             "maxCadenceMinutes": MAX_CADENCE_MINUTES,
@@ -93,12 +116,27 @@ class InMemoryRhythmStore:
             return rhythm
 
 
+def days_of(value: Any) -> tuple[str, ...]:
+    """The chosen days, in week order and without repeats. Raises ValueError on a name
+    that is not a day: an unrecognised one dropped quietly is a day the parent believes
+    they chose."""
+    if isinstance(value, str) or not isinstance(value, Iterable):
+        raise ValueError("the days are a list")
+    chosen = {str(day).strip().lower() for day in value}
+    unknown = sorted(chosen - set(DAYS))
+    if unknown:
+        raise ValueError(f"not a day of the week: {', '.join(unknown)}")
+    return tuple(day for day in DAYS if day in chosen)
+
+
 def clean_rhythm(
     household_id: str,
     *,
     quiet_from: Any,
     quiet_until: Any,
     cadence_minutes: Any,
+    afternoon_days: Any = (),
+    afternoon_from: Any = None,
     updated_by: str = "",
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
@@ -114,6 +152,12 @@ def clean_rhythm(
         quiet_from_minutes=minutes_of(quiet_from, "the start of the pause"),
         quiet_until_minutes=minutes_of(quiet_until, "the end of the pause"),
         cadence_minutes=cadence_minutes,
+        afternoon_days=days_of(afternoon_days),
+        afternoon_from_minutes=(
+            DEFAULT_AFTERNOON_FROM_MINUTES
+            if afternoon_from is None
+            else minutes_of(afternoon_from, "the hour an afternoon may begin")
+        ),
         updated_at=time.time(),
         updated_by=updated_by,
     )

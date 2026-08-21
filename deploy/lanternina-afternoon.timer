@@ -1,0 +1,15 @@
+[Unit]
+Description=Look, once on each day the parent chose, for an afternoon to begin
+
+[Timer]
+# Every ten minutes, and almost every run does nothing at all: it reads a cached copy of
+# the rhythm off the disk, sees that today is not a chosen day or that the hour has not
+# come, and stops without touching the network. The one run that matters makes one call.
+# Ten minutes rather than one because nothing here is due to the minute — the hour an
+# afternoon may begin is a threshold, not an appointment.
+OnCalendar=*:0/10:00
+AccuracySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

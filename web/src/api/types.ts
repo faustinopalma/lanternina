@@ -68,18 +68,76 @@ export interface Reminders {
   textLimit: number;
 }
 
+/** One mark on a designed page, as `shared/pagedesign.py` writes it. Only the fields a
+ *  parent reads are named: a rectangle is a position, and a position on a page they are
+ *  not holding tells them nothing. */
+export interface Mark {
+  mark: string;
+  text?: string;
+  label?: string;
+}
+
+export interface PageDesign {
+  title: string;
+  instructions: string;
+  marks: Mark[];
+}
+
+/** One step of an afternoon. The four acts are `shared/experience.py`'s, and a `collect`
+ *  is the only one that branches: `then` names a later moment, or is `ask`, which means
+ *  the rest is written when the page comes back. */
+export interface Moment {
+  act: string;
+  id: string;
+  heading?: string;
+  lines?: string[];
+  design?: PageDesign;
+  outcomes?: { when: string; then: string }[];
+}
+
+export interface ExperiencePlan {
+  experience_id: string;
+  title: string;
+  overview: string;
+  minutes: number;
+  moments: Moment[];
+}
+
+/** An afternoon a model devised for this house, waiting for the parent to decide.
+ *  `overview` is what approval is given to; `experience` is the whole plan, present so
+ *  that an overview is not the only thing that exists. */
+export interface OfferedExperience {
+  id: string;
+  title: string;
+  overview: string;
+  minutes: number;
+  createdAt: number;
+  state: string;
+  experience: ExperiencePlan;
+  /* When the house began it, or 0. Written by the house, not by anybody deciding: it is
+   * what stops an approved afternoon being handed over again the next day. */
+  begunAt: number;
+}
+
 export interface Rhythm {
   quietFrom: string;
   quietUntil: string;
   cadenceMinutes: number;
   minCadenceMinutes: number;
   maxCadenceMinutes: number;
+  /* Which days an afternoon may begin on, and from what hour. Empty means none, which is
+   * where every household starts: nothing happens until the parent picks a day. */
+  afternoonDays: string[];
+  afternoonFrom: string;
+  dayChoices: string[];
 }
 
 export interface NewRhythm {
   quietFrom: string;
   quietUntil: string;
   cadenceMinutes: number;
+  afternoonDays: string[];
+  afternoonFrom: string;
 }
 
 /** Exactly the fields `prompt_hints()` lets out of the house. There is no field for a
@@ -206,4 +264,6 @@ export interface Api {
   usage(): Promise<UsageAnswer>;
   askAgain(pictureId: string): Promise<HouseRequest>;
   standingRequest(): Promise<HouseRequest | null>;
+  experiences(state: string): Promise<OfferedExperience[]>;
+  decideExperience(id: string, state: Decision): Promise<void>;
 }

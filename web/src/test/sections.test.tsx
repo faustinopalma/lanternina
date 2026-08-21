@@ -124,8 +124,26 @@ describe("the rhythm", () => {
       quietFrom: "21:30",
       quietUntil: "07:00",
       cadenceMinutes: 90,
+      // Sent back untouched: one form saves five settings, and changing the spacing must
+      // not quietly clear the days an afternoon may begin on.
+      afternoonDays: ["wed", "sat"],
+      afternoonFrom: "15:00",
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
+  });
+
+  it("turns afternoons off by unticking the last day, and saves that", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    await user.click(await screen.findByLabelText("mer"));
+    await user.click(screen.getByLabelText("sab"));
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
+    expect(api.recorded.rhythm[0]!.afternoonDays).toEqual([]);
   });
 
   it("keeps the note about the display waking about every ten minutes", async () => {

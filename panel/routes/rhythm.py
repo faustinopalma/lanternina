@@ -18,11 +18,15 @@ router = APIRouter()
 
 
 class NewRhythm(BaseModel):
-    """When the display may change, and how often. Saving it starts nothing."""
+    """When the house may do something, and how often. Saving it starts nothing."""
 
     quietFrom: str
     quietUntil: str
     cadenceMinutes: int
+    # Which days an afternoon may begin on, and from what hour. Absent means no day, so a
+    # panel that has not been rebuilt cannot switch afternoons on by omission.
+    afternoonDays: list[str] = []
+    afternoonFrom: str = ""
 
 
 @router.get("/api/rhythm")
@@ -42,6 +46,8 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
             quiet_from=new.quietFrom,
             quiet_until=new.quietUntil,
             cadence_minutes=new.cadenceMinutes,
+            afternoon_days=new.afternoonDays,
+            afternoon_from=new.afternoonFrom or None,
             updated_by=str(account.id),
         )
     except ValueError as exc:

@@ -157,6 +157,49 @@ def _forget(sheets_dir: Path, run: Afternoon, sheets: list[SheetSpec]) -> None:
         _page_file(sheets_dir, str(spec.sheet_id)).unlink(missing_ok=True)
 
 
+def waiting_runs(sheets_dir: Path) -> list[str]:
+    """Every afternoon this house has begun and not finished.
+
+    One at a time is the rule the caller applies, and it is a rule about the house rather
+    than about a person: two sheets on the table from two different afternoons is a house
+    that has stopped making sense, not a person doing too much.
+    """
+    return sorted(path.stem for path in sorted(_runs(sheets_dir).glob("*.json")))
+
+
+def forget_what_is_over(sheets_dir: Path, now: float) -> list[str]:
+    """Delete every run whose hours have passed, and the notes on its paper.
+
+    The runner itself notices the hours when a page arrives, because that is the only
+    moment it is awake. A run nobody ever brought a page back to would otherwise sit on
+    disk for good, holding a whole afternoon's text and blocking the next one. Nothing is
+    said to anybody and nothing is recorded: an afternoon that ran out of hours is over,
+    which is what an afternoon nobody continued was always going to be.
+    """
+    gone: list[str] = []
+    for path in sorted(_runs(sheets_dir).glob("*.json")):
+        try:
+            run = Afternoon.from_dict(json.loads(path.read_text(encoding="utf-8")))
+        except (OSError, ValueError, KeyError, ExperienceError):
+            # A run file this house cannot read is not an afternoon it can carry on.
+            path.unlink(missing_ok=True)
+            gone.append(path.stem)
+            continue
+        if now <= run.over_at:
+            continue
+        path.unlink(missing_ok=True)
+        gone.append(run.run_id)
+    for note in sorted((_runs(sheets_dir) / "pages").glob("*.json")):
+        try:
+            run_id = str(json.loads(note.read_text(encoding="utf-8"))["run_id"])
+        except (OSError, ValueError, KeyError):
+            note.unlink(missing_ok=True)
+            continue
+        if run_id in gone:
+            note.unlink(missing_ok=True)
+    return gone
+
+
 # ── Playing ──────────────────────────────────────────────────────────────────────────
 
 

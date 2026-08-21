@@ -11,6 +11,7 @@ import type {
   NewAssignment,
   NewPreferences,
   NewRhythm,
+  OfferedExperience,
   PicturePage,
   Preferences,
   Proposal,
@@ -33,6 +34,7 @@ export interface Recorded {
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
   askedAgain: string[];
+  experienceDecisions: { id: string; state: Decision }[];
 }
 
 export interface FakeApi extends Api {
@@ -95,6 +97,50 @@ export const SAMPLE_APPROVED: Proposal[] = [
     body: "Annaffia le piante.",
   },
 ];
+
+/** One devised afternoon, in the shape the panel hands it over: a display, a sheet, a
+ *  page coming back, and a branch left to be written when it does. */
+const SAMPLE_AFTERNOON: OfferedExperience = {
+  id: "aftn-1",
+  title: "Sei passaggi di una trasformazione",
+  overview:
+    "Un oggetto della stanza, disegnato sei volte mentre cambia. Il foglio torna dallo scanner e il pomeriggio va avanti da lì.",
+  minutes: 90,
+  createdAt: NOW - 1800,
+  state: "pending",
+  begunAt: 0,
+  experience: {
+    experience_id: "aftn-1",
+    title: "Sei passaggi di una trasformazione",
+    overview: "Un oggetto della stanza, disegnato sei volte mentre cambia.",
+    minutes: 90,
+    moments: [
+      { act: "say", id: "guarda", heading: "Scegli un oggetto", lines: ["Uno che sta in mano."] },
+      {
+        act: "hand_over",
+        id: "il-foglio",
+        design: {
+          title: "Sei riquadri",
+          instructions: "Disegna lo stesso oggetto sei volte.",
+          marks: [
+            { mark: "words", text: "Comincia da come è adesso." },
+            { mark: "draw_area", label: "primo riquadro" },
+            { mark: "write_line", label: "una parola" },
+          ],
+        },
+      },
+      {
+        act: "collect",
+        id: "come-e-tornato",
+        outcomes: [
+          { when: "marks", then: "ask" },
+          { when: "blank", then: "basta-cosi" },
+        ],
+      },
+      { act: "close", id: "basta-cosi", heading: "Va bene così", lines: [] },
+    ],
+  },
+};
 
 const SAMPLE_PICTURES: PicturePage = {  pictures: Array.from({ length: 6 }, (_, index) => ({
     id: `pic-${index + 1}`,
@@ -178,6 +224,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     assignments: [],
     devicesRemoved: [],
     askedAgain: [],
+    experienceDecisions: [],
   };
   let themes: Theme[] = [
     { id: "theme-1", label: "gatti che dormono" },
@@ -186,6 +233,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let devices: Device[] = SAMPLE_DEVICES;
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
+  let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
   // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
     {
@@ -217,6 +265,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     cadenceMinutes: 60,
     minCadenceMinutes: 1,
     maxCadenceMinutes: 1440,
+    afternoonDays: ["wed", "sat"],
+    afternoonFrom: "15:00",
+    dayChoices: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
   };
   let preferences: Preferences = {
     interests: ["gatti", "vele"],
@@ -361,6 +412,12 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       return standing;
     },
     standingRequest: async () => standing,
+
+    experiences: async (state) => afternoons.filter((row) => row.state === state),
+    decideExperience: async (id, state) => {
+      recorded.experienceDecisions.push({ id, state });
+      afternoons = afternoons.map((row) => (row.id === id ? { ...row, state } : row));
+    },
   };
 
   return { ...base, ...overrides, recorded };

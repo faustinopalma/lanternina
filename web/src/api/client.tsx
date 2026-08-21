@@ -16,6 +16,7 @@ import {
   type NewAssignment,
   type NewPreferences,
   type NewRhythm,
+  type OfferedExperience,
   type PicturePage,
   type Preferences,
   type Proposal,
@@ -39,6 +40,9 @@ const RHYTHM_FIELDS = [
   "cadenceMinutes",
   "minCadenceMinutes",
   "maxCadenceMinutes",
+  "afternoonDays",
+  "afternoonFrom",
+  "dayChoices",
 ] as const;
 
 const PREFERENCES_FIELDS = [
@@ -197,6 +201,21 @@ export function httpApi(token: string): Api {
         "request",
       ]);
       return answer.request;
+    },
+
+    async experiences(state: string): Promise<OfferedExperience[]> {
+      const answer = await json<{ experiences: OfferedExperience[] }>(
+        `/api/experiences?state=${encodeURIComponent(state)}`,
+        {},
+        ["experiences"],
+      );
+      return answer.experiences;
+    },
+
+    // The whole effect of approving an afternoon: a row changes state. Nothing is
+    // devised, nothing is printed, and the house finds it when it next asks.
+    async decideExperience(id: string, state: Decision): Promise<void> {
+      await json(`/api/experiences/${id}/decision`, write({ state, note: "" }));
     },
   };
 }

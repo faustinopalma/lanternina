@@ -12,11 +12,13 @@ import { useLoad } from "@/lib/useLoad";
  * first paint. Copying it in afterwards showed an empty form for a moment, which reads as
  * "nothing has been chosen yet". */
 function Form({ spacing }: { spacing: Spacing }) {
-  const { t } = useWords();
+  const { t, weekday } = useWords();
   const api = useApi();
   const [quietFrom, setQuietFrom] = useState(spacing.quietFrom);
   const [quietUntil, setQuietUntil] = useState(spacing.quietUntil);
   const [cadence, setCadence] = useState(String(spacing.cadenceMinutes));
+  const [days, setDays] = useState<string[]>(spacing.afternoonDays);
+  const [afternoonFrom, setAfternoonFrom] = useState(spacing.afternoonFrom);
   const [status, setStatus] = useState<MessageKey | null>(
     spacing.quietFrom === spacing.quietUntil ? "rhythm.quietOff" : null,
   );
@@ -26,7 +28,13 @@ function Form({ spacing }: { spacing: Spacing }) {
   async function save(event: FormEvent) {
     event.preventDefault();
     try {
-      await api.saveRhythm({ quietFrom, quietUntil, cadenceMinutes: Number(cadence) });
+      await api.saveRhythm({
+        quietFrom,
+        quietUntil,
+        cadenceMinutes: Number(cadence),
+        afternoonDays: days,
+        afternoonFrom,
+      });
       setStatus("rhythm.saved");
     } catch {
       setStatus("rhythm.saveFailed");
@@ -76,11 +84,46 @@ function Form({ spacing }: { spacing: Spacing }) {
           />
           <span className="text-quiet">{t("rhythm.minutes")}</span>
         </span>
+        {/* No day chosen means no afternoon, which is where every house starts. There is
+            no count beside this and there will not be one: the days say when one may
+            happen, and nothing keeps track of the ones that did. */}
+        <fieldset className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 border-0 p-0">
+          <legend className="sr-only">{t("rhythm.afternoonDays")}</legend>
+          <span className="text-quiet">{t("rhythm.afternoonDays")}</span>
+          {spacing.dayChoices.map((day) => (
+            <label key={day} className="flex items-center gap-1.5">
+              <input
+                type="checkbox"
+                checked={days.includes(day)}
+                onChange={(event) =>
+                  setDays((chosen) =>
+                    event.target.checked
+                      ? [...chosen, day]
+                      : chosen.filter((one) => one !== day),
+                  )
+                }
+              />
+              {weekday(day)}
+            </label>
+          ))}
+        </fieldset>
+        <span className="flex items-center gap-2">
+          <Label htmlFor="afternoon-from">{t("rhythm.afternoonFrom")}</Label>
+          <Input
+            id="afternoon-from"
+            type="time"
+            required
+            className="w-34"
+            value={afternoonFrom}
+            onChange={(event) => setAfternoonFrom(event.target.value)}
+          />
+        </span>
         <Button type="submit" variant="primary" className="ml-auto flex-none">
           {t("rhythm.save")}
         </Button>
       </form>
       <Quiet>{t("rhythm.wakeNote")}</Quiet>
+      <Quiet>{t("rhythm.afternoonNote")}</Quiet>
       <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );

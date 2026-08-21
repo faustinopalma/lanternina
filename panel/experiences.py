@@ -48,6 +48,11 @@ class OfferedExperience:
     decided_at: float | None = None
     decided_by: str = ""
     note: str = ""
+    # When the house began it. Not a decision — the state above is the parent's word and
+    # stays theirs — but a fact about the house, and the only thing that keeps an approved
+    # afternoon from being handed over again every day. Nothing about who did it, how far
+    # they got or whether it finished: an afternoon that ends still leaves nothing.
+    begun_at: float = 0.0
 
     @property
     def title(self) -> str:
@@ -71,6 +76,7 @@ class OfferedExperience:
             "decidedAt": self.decided_at,
             "decidedBy": self.decided_by,
             "note": self.note,
+            "begunAt": self.begun_at,
         }
 
     def to_device(self) -> dict[str, Any]:
@@ -89,6 +95,8 @@ class ExperienceStore(Protocol):
     def decide(
         self, household_id: str, experience_id: str, state: str, *, decided_by: str, note: str = ""
     ) -> OfferedExperience: ...
+
+    def begun(self, household_id: str, experience_id: str, at: float) -> OfferedExperience: ...
 
 
 @dataclass
@@ -134,6 +142,28 @@ class InMemoryExperienceStore:
                 decided_at=time.time(),
                 decided_by=decided_by,
                 note=note,
+                begun_at=current.begun_at,
             )
             self._rows[(household_id, experience_id)] = decided
         return decided
+
+    def begun(self, household_id: str, experience_id: str, at: float) -> OfferedExperience:
+        with self._lock:
+            current = self._rows[(household_id, experience_id)]
+            # The first time stands. A house that says it again is a retry, not a second
+            # afternoon, and moving the moment would say something that is not true.
+            if current.begun_at:
+                return current
+            started = OfferedExperience(
+                id=current.id,
+                household_id=current.household_id,
+                experience=current.experience,
+                created_at=current.created_at,
+                state=current.state,
+                decided_at=current.decided_at,
+                decided_by=current.decided_by,
+                note=current.note,
+                begun_at=at,
+            )
+            self._rows[(household_id, experience_id)] = started
+        return started

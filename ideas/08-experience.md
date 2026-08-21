@@ -103,6 +103,8 @@ already done harm, which is what the working rules say about themselves.
 | 21 Aug 2026 | *One content-safety chokepoint* (working rules §3), read strictly | The gate had one caller — the model router — and a continuation is not routed through a proposal, so the router had nothing to screen | There are now two callers of one gate: `orchestrator/router.py` and `orchestrator/safety.screen_continuation`. Still one door, two ways up to it, and the second is named in the module docstring so a third does not arrive quietly. The boundary test refuses `panel/routes/experience.py` importing an agent, which is what a way round would look like |
 | 21 Aug 2026 | *Cloud unavailable means reduced capability, not a stopped system* (working rules §3) | The rest of an afternoon has no reduced version. Half a continuation is moments that lead somewhere nobody wrote | `POST /api/device/{household}/experience` refuses — 429 at the cap, 503 with no cloud, 502 for an answer that is not a continuation, 422 when the gate says no — and the house treats every one of them the same way: it stops. That is not a degradation, it is the ordinary ending of an afternoon nobody continues, which costs nothing because nothing was waiting on it |
 | 21 Aug 2026 | *One content-safety chokepoint* (working rules §3), a third time | Devising a whole afternoon produces model text that reaches a parent, and the two existing callers screen a proposal and a continuation. Neither covers a document that is stored where an adult reads it | Three callers of one gate now: `orchestrator/router.py`, `screen_continuation` and `screen_experience`. `words_for_a_person` is the single function both experience callers gather words with, so a field added to one and forgotten in the other fails a test rather than reaching somebody. Held by `tests/test_boundaries.py`, which refuses `panel/devising.py` that does not name `screen_experience` |
+| 21 Aug 2026 | *Nothing here runs while nobody is doing anything* (`§5` of this file, the third of the runner's decisions) | Nothing began an afternoon. `begin` took a path on a command line, so an afternoon happened because somebody typed one, and the hours of a run nobody brought a page back to were noticed by nobody at all | `devices/afternoon.py`, on a timer every ten minutes. Almost every run reads a cached rhythm off the disk and stops without touching the network. What it may do is begin an afternoon on a day and at an hour the parent chose, and delete a run whose hours have passed. It notifies nobody and it is not triggered by anybody's inactivity — the distinction that matters is between a clock that offers something and a clock that chases somebody, and only the first is here |
+| 21 Aug 2026 | *An afternoon that ends leaves nothing behind, not even that it happened* (`§5`) | An approved afternoon the house had already run was still approved, so it would be handed over again the next chosen day — an approval nobody gave, every day until the parent thought to withdraw it | `OfferedExperience.begun_at`, written by the house through `POST /api/device/{h}/experiences/{id}/begun`. One timestamp beside a title that was already kept. It is not a decision and does not become one: the parent's word stays in `state`, and nothing records who did the afternoon, how far it got or whether it finished. The run in the house still deletes itself and its paper when it closes |
 
 Not smoothed, and named so that it stays that way: **a write from the panel is inert.**
 Nothing in this work touched it. An experience is devised because a hub asked; a
@@ -506,5 +508,100 @@ whether to ask for it is a decision rather than a fix.
    afternoon left behind is deleted when it closes, on purpose (`§5`), so the thing to
    decide first is what may survive an ending — and that decision is the one where a record
    of what happened turns into a verdict about a person if it is taken carelessly.
+
+---
+
+## 7. The parent's page, the house's clock, and the branch nobody used, 21 August 2026
+
+The loop was open at both ends. An afternoon was devised and left pending, and there was
+nothing that a parent could decide with and nothing that would begin what they decided.
+This closes both, and takes the decision `§6` left open.
+
+### The parent's page
+
+`web/src/sections/Experiences.tsx`. Title, overview and length; a control that opens every
+step, including the branches; approve, refuse, and withdraw afterwards. Approving calls
+`POST /api/experiences/{id}/decision` and that is the whole effect — one row changes state,
+and the house finds it when it next looks.
+
+There is no button that asks for an afternoon. That is the rule of `§2a` showing through
+into a screen rather than staying in a file: the obvious feature is the exact thing an
+inert panel forbids, and `tests/experiences.test.tsx` fails if a control whose name reads
+like one appears. What replaces it is `experiences.laterNote`, which says plainly that the
+house asks and the parent decides about what came back.
+
+Everything a model wrote is rendered as text. A page's marks are shown as the words beside
+them — the label of each box, line and drawing area, and anything printed on the sheet —
+and not as rectangles: where a mark sits on paper means nothing to somebody who is not
+holding it.
+
+### The house's clock
+
+`devices/afternoon.py`, on `deploy/lanternina-afternoon.timer`, every ten minutes. The
+rhythm gained two settings, in `panel/rhythm.py` beside the three it had: which days an
+afternoon may begin on, and from what hour. **The default is no day at all**, so a house
+that has never been told begins none — the feature arrives switched off rather than
+arriving.
+
+Four decisions, each the answer to something that could have gone the other way.
+
+- **There is no end-hour setting, and there will not be one.** An afternoon may begin only
+  if the whole of its own `minutes` is over before the pause the parent already chose. The
+  second setting would have been a second copy of the first, out of step with it within a
+  week.
+- **One look a day, and the record of it is a date.** The stamp beside the runs holds
+  `2026-08-19` and nothing else. It stops two things: a second afternoon on the same day,
+  and a devise request every ten minutes at a panel answering 503 — measured worst case
+  without it, 42 calls between three o'clock and the pause. It is not a tally, there is
+  nothing for a tally to be about, and no setting says how many afternoons there should be.
+- **The house asks for one only when nothing is approved and nothing is with the parent.**
+  So the answer to `GET /api/device/{h}/experiences` carries `waiting`, a count of
+  undecided rows. That is the depth of somebody's inbox and says nothing about anybody's
+  afternoon. The consequence is a lag of one cycle: an afternoon asked for on a Wednesday
+  is read by a parent afterwards and can happen the following Wednesday at the earliest.
+  That lag is the approval, working.
+- **The device route no longer takes a state.** It used to, defaulting to approved, and a
+  house could therefore pull a pending document and run it — leaving the one decision this
+  whole feature rests on held up by the hub's own code rather than by the panel.
+
+What it cost is one thing the runner did not do. A run nobody ever brought a page back to
+sat on disk for good, because `§5` decided the hours are noticed when a page arrives and
+that is the only moment the runner is awake. Now there is a moment when something else is
+awake, so `forget_what_is_over` deletes such a run and the notes on its paper. Nothing is
+said to anybody: an afternoon that ran out of hours is over, which is what an afternoon
+nobody continued was always going to be.
+
+### `ask`, and what it is worth
+
+`§6` ended on the observation that neither devised afternoon used `ask` — the format allows
+a branch to be left unwritten, the prompt listed the syntax and never said when it was the
+right thing, and a model that can see the whole afternoon writes the whole afternoon. The
+decision taken here is to press for it, once, and on one branch.
+
+**Once, on the outcome for a page that came back with marks.** A blank page carries nothing
+to write from, so continuing from one buys a paragraph out of no information; and one
+continuation per afternoon bounds the wait, which was measured at 14.6 s from the hub on 21
+August 2026 with somebody standing at the scanner.
+
+The price, stated rather than discovered. A branch that says `ask` costs one more model
+call, about fifteen seconds of waiting, and one more chance of a refusal at a moment when
+somebody has just done the thing. The last of those is narrower than it first looks: the
+page was read by the same cloud a moment earlier, so an afternoon that got as far as taking
+a branch has already found the cloud there. And it widens the gap `§2` records — the parent
+approved a branch that says "the rest is written at that moment", which is a hole they read
+and agreed to, with the gate the only thing inside it.
+
+### What is not built, and is next
+
+1. **Nothing is learnt from an afternoon that happened**, which is `§6`'s last item and is
+   untouched. `begun_at` is now kept, which is the first thing that survives an ending; the
+   question of what else may is the one where a record of what happened turns into a verdict
+   about a person if it is taken carelessly.
+2. **A parent cannot see an afternoon that is running.** The panel shows offered, approved
+   and begun; where a run has got to lives only on the hub, and there is no route in that
+   direction on purpose. Whether there should be is a decision, not an omission.
+3. **The clock has not run against the house on a real chosen day.** Everything below `§7`
+   is tested with the panel stood in for.
+
 
 

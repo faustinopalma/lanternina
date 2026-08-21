@@ -9,6 +9,7 @@ import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Devices } from "@/sections/Devices";
+import { Experiences } from "@/sections/Experiences";
 import { Pictures } from "@/sections/Pictures";
 import { Preferences } from "@/sections/Preferences";
 import { Proposals } from "@/sections/Proposals";
@@ -33,6 +34,12 @@ export function Dashboard({ api }: { api: Api }) {
   // runtime is a key no test can find missing.
   const sections: Section[] = [
     { name: "proposals", title: t("proposals.title"), note: t("proposals.note"), Body: Proposals },
+    {
+      name: "experiences",
+      title: t("experiences.title"),
+      note: t("experiences.note"),
+      Body: Experiences,
+    },
     { name: "pictures", title: t("pictures.title"), note: t("pictures.note"), Body: Pictures },
     { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
     {

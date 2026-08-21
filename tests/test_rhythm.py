@@ -119,6 +119,59 @@ def test_a_spacing_of_no_minutes_is_refused() -> None:
         clean_rhythm("h1", quiet_from="22:00", quiet_until="07:00", cadence_minutes=0)
 
 
+# ── The two settings that say when an afternoon may begin ────────────────────────────
+
+
+def test_a_household_that_never_chose_has_no_day_for_an_afternoon() -> None:
+    """The feature arrives switched off. A default that begins one would be this program
+    deciding something the parent has not."""
+    client = client_for()
+    answer = client.get("/api/rhythm", headers=headers()).json()
+    assert answer["afternoonDays"] == []
+    assert answer["afternoonFrom"] == "15:00"
+    assert answer["dayChoices"] == ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+
+def test_the_days_reach_the_hub_in_week_order_and_without_repeats() -> None:
+    client = client_for()
+    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+
+    client.post(
+        "/api/rhythm",
+        json={
+            "quietFrom": "22:00",
+            "quietUntil": "07:00",
+            "cadenceMinutes": 60,
+            "afternoonDays": ["sat", "wed", "wed"],
+            "afternoonFrom": "16:20",
+        },
+        headers=headers(),
+    )
+
+    device = client.get(
+        f"/api/device/{household}/rhythm", headers={"X-Device-Key": DEVICE_KEY}
+    ).json()
+    assert device["afternoonDays"] == ["wed", "sat"]
+    assert device["afternoonFrom"] == "16:20"
+
+
+def test_a_day_that_is_not_a_day_is_refused_rather_than_dropped() -> None:
+    """Dropped quietly, it is a day the parent believes they chose."""
+    client = client_for()
+    refused = client.post(
+        "/api/rhythm",
+        json={
+            "quietFrom": "22:00",
+            "quietUntil": "07:00",
+            "cadenceMinutes": 60,
+            "afternoonDays": ["mercoledi"],
+            "afternoonFrom": "15:00",
+        },
+        headers=headers(),
+    )
+    assert refused.status_code in (400, 422)
+
+
 @pytest.mark.parametrize(
     ("minutes", "quiet"),
     [

@@ -238,16 +238,46 @@ async def devise_afternoon(
 
 
 @router.get("/api/device/{household_id}/experiences")
-def afternoons_for_the_house(
-    household_id: str,
-    _: DeviceKey,
-    request: Request,
-    state: str = ApprovalState.APPROVED.value,
-) -> Any:
-    """What the house may run. It pulls; nothing is ever pushed to a house."""
+def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) -> Any:
+    """What the house may run, and whether one is still with the parent.
+
+    Approved only. There used to be a parameter here that chose a state, and it is gone:
+    a house able to pull a pending document could run one, and then the single decision
+    this whole feature rests on would be held up by the hub's own code rather than by the
+    panel. It pulls; nothing is ever pushed to a house.
+
+    ``waiting`` is how many are with the parent, undecided. The house needs it so that it
+    does not ask for a second afternoon while the first is still unread — it is the depth
+    of somebody's inbox, and it says nothing about anybody's afternoon.
+    """
     store: ExperienceStore = request.app.state.experiences
-    rows = store.list(household_id, state or None)
-    return {"experiences": [row.to_device() for row in rows]}
+    runnable = [
+        row
+        for row in store.list(household_id, ApprovalState.APPROVED.value)
+        if not row.begun_at
+    ]
+    return {
+        "experiences": [row.to_device() for row in runnable],
+        "waiting": len(store.list(household_id, ApprovalState.PENDING.value)),
+    }
+
+
+@router.post("/api/device/{household_id}/experiences/{experience_id}/begun")
+def afternoon_begun(
+    household_id: str, experience_id: str, _: DeviceKey, request: Request
+) -> Any:
+    """The house says it started this one, so it is not handed the same one tomorrow.
+
+    A fact about the house, written by the house. It is not a decision and it does not
+    become one: the parent's word stays in ``state``, and nothing here records who did the
+    afternoon, how far it got or whether it finished. The first moment stands, so a hub
+    that retries does not move it.
+    """
+    store: ExperienceStore = request.app.state.experiences
+    if store.get(household_id, experience_id) is None:
+        raise HTTPException(status_code=404, detail="unknown_experience")
+    row = store.begun(household_id, experience_id, time.time())
+    return {"id": row.id, "begunAt": row.begun_at}
 
 
 @router.get("/api/experiences")

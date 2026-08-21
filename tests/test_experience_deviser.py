@@ -246,6 +246,24 @@ def test_the_deviser_states_the_limits_only_it_has() -> None:
         assert str(limit) in DEVISER
 
 
+def test_the_deviser_is_told_where_to_leave_a_branch_unwritten() -> None:
+    """Both afternoons devised on 21 August 2026 used no `ask`, because the prompt listed
+    the syntax and never said when it was the right thing. A model that can see the whole
+    afternoon writes the whole afternoon, and the branch that makes an experience devised
+    rather than precomputed goes unused.
+
+    The instruction names the branch as well as the word: `marks` is where there is
+    something on the paper to write from, and `blank` is where the afternoon ends.
+    """
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    assert "Use ask once" in DEVISER
+    marks = DEVISER.find("Use ask once")
+    assert "marks" in DEVISER[marks : marks + 200]
+    blank = DEVISER.find("came back blank always names a moment")
+    assert blank > marks, "the deviser never says which branch stays written"
+
+
 # ── What is refused ──────────────────────────────────────────────────────────────────
 
 
