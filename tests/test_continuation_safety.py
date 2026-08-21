@@ -1,0 +1,174 @@
+"""The door a continuation passes, and what it would let through if it were not there.
+
+The gate itself is Azure's and is not exercised here. What is checked is the part this
+repository owns: that everything an adolescent will read is handed to the screener, that
+a refusal stops the whole continuation rather than part of it, and that a continuation
+with nothing to read does not pass by having nothing to object to.
+"""
+
+from __future__ import annotations
+
+import asyncio
+from typing import Any
+
+import pytest
+
+from orchestrator.safety import screen_continuation, words_for_a_person
+from shared.errors import SafetyBlocked
+from shared.safety import (
+    ContentKind,
+    SafetyVerdict,
+    ScreenedPayload,
+    ScreeningRecord,
+)
+from shared.seal import Sealer, SealPurpose
+
+CONTINUATION: dict[str, Any] = {
+    "format_version": 1,
+    "experience_id": "un-pomeriggio-di-nuvole",
+    "after": "l-ultimo-foglio",
+    "moments": [
+        {
+            "act": "say",
+            "id": "ancora-una",
+            "heading": "Ancora una cosa",
+            "lines": ["Sta uscendo un foglio."],
+        },
+        {
+            "act": "hand_over",
+            "id": "il-terzo",
+            "design": {
+                "title": "La nuvola di domani",
+                "instructions": "Disegnala come vuoi.",
+                "marks": [
+                    {
+                        "mark": "words",
+                        "rect": {"x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045},
+                        "text": "La nuvola di domani",
+                        "size_mm": 6.5,
+                    },
+                    {
+                        "mark": "draw_area",
+                        "id": "il-disegno",
+                        "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
+                        "label": "Disegnala qui",
+                        "group": "domani",
+                    },
+                ],
+            },
+        },
+        {
+            "act": "close",
+            "id": "finita",
+            "heading": "Finita qui",
+            "lines": ["A domani."],
+        },
+    ],
+}
+
+
+def a_continuation(**changes: Any) -> Any:
+    from shared.experience import Continuation
+
+    payload = dict(CONTINUATION)
+    payload.update(changes)
+    return Continuation.from_dict(payload)
+
+
+class Screener:
+    """Stands in for Azure. Records what it was given and answers as it was told to."""
+
+    def __init__(self, *, refuse: bool = False) -> None:
+        self.refuse = refuse
+        self.seen: list[str] = []
+
+    async def screen(
+        self, kind: ContentKind, body: str, *, context: str = ""
+    ) -> ScreenedPayload:
+        self.seen.append(body)
+        if self.refuse:
+            raise SafetyBlocked("refused at severity 4: violence")
+        record = ScreeningRecord(verdict=SafetyVerdict.ALLOW, screener="a test")
+        sealer = Sealer(SealPurpose.CONTENT_SAFETY, b"k" * 32, "test")
+        draft = {"kind": str(kind), "body": body, "record": record.to_dict()}
+        return ScreenedPayload(kind=kind, body=body, record=record, seal=sealer.seal(draft))
+
+
+def test_everything_a_person_will_read_is_handed_to_the_screener() -> None:
+    """Each of these is a place a model writes and an adolescent reads. A field missing
+    here is a sentence that reaches somebody without passing anything."""
+    words = words_for_a_person(a_continuation())
+
+    for line in (
+        "Ancora una cosa",
+        "Sta uscendo un foglio.",
+        "La nuvola di domani",
+        "Disegnala come vuoi.",
+        "Disegnala qui",
+        "Finita qui",
+        "A domani.",
+    ):
+        assert line in words, f"{line!r} would reach somebody unscreened"
+
+
+def test_nothing_the_reader_never_sees_is_screened() -> None:
+    """Moment ids and rectangles are not text anybody reads, and a screener asked about
+    them reports on the wrong thing."""
+    words = words_for_a_person(a_continuation())
+
+    assert "il-terzo" not in words
+    assert "0.9" not in words
+
+
+def test_a_screened_continuation_comes_back_sealed() -> None:
+    screener = Screener()
+
+    payload = asyncio.run(screen_continuation(screener, a_continuation(), context="test"))
+
+    assert payload.record.verdict is SafetyVerdict.ALLOW
+    assert payload.seal.purpose is SealPurpose.CONTENT_SAFETY
+    assert len(screener.seen) == 1, "one refusal covers the whole continuation, not a moment"
+
+
+def test_a_refusal_stops_the_whole_continuation() -> None:
+    with pytest.raises(SafetyBlocked, match="severity 4"):
+        asyncio.run(screen_continuation(Screener(refuse=True), a_continuation()))
+
+
+def test_a_continuation_with_nothing_to_read_does_not_pass_by_saying_nothing() -> None:
+    """The one way an unscreened afternoon could get through: an empty body clears any
+    screener, so it is refused here instead."""
+    silent = a_continuation(
+        moments=[
+            {
+                "act": "hand_over",
+                "id": "muto",
+                "design": {
+                    "title": "",
+                    "instructions": "",
+                    "marks": [
+                        {
+                            "mark": "draw_area",
+                            "id": "vuoto",
+                            "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
+                            "label": "",
+                            "group": "",
+                        }
+                    ],
+                },
+            },
+            {
+                "act": "collect",
+                "id": "e-poi",
+                "outcomes": [
+                    {"when": "marks", "then": "ask"},
+                    {"when": "blank", "then": "ask"},
+                ],
+            },
+        ]
+    )
+    screener = Screener()
+
+    with pytest.raises(SafetyBlocked, match="no words"):
+        asyncio.run(screen_continuation(screener, silent))
+    assert screener.seen == [], "it was refused before anybody was asked about it"

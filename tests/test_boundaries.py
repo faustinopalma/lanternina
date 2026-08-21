@@ -240,6 +240,25 @@ def test_proposal_payload_is_screened_by_type() -> None:
     )
 
 
+def test_a_continuation_cannot_reach_a_house_without_passing_the_gate() -> None:
+    """A continuation is not a Proposal, so no type is holding this one.
+
+    A parent approves an experience once, from its overview, so what a continuation puts
+    on a display has been read by no adult. Two things keep the gate on that path: the
+    module that produces one calls it, and the route cannot produce one for itself.
+    """
+    producer = REPO / "panel" / "continuing.py"
+    assert "screen_continuation" in _identifiers(producer), (
+        f"{producer.relative_to(REPO)} hands a continuation to a house without screening "
+        "it. See ideas/08 §2a."
+    )
+    route = REPO / "panel" / "routes" / "experience.py"
+    assert "agents" not in _imported_modules(route), (
+        f"{route.relative_to(REPO)} reaches an agent directly, which is a way round the "
+        "gate in panel/continuing.py."
+    )
+
+
 # ── The camera is a scanner, not an observer ─────────────────────────────────────────
 
 FORBIDDEN_IN_VISION = {

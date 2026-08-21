@@ -5,9 +5,9 @@ worksheet with extra steps, and it is not what this is for. What it should be is
 experience — thought up fresh, run across an afternoon, landing partly on a display and
 partly on paper, and coming back through the glass. It has a beginning and it ends.
 
-This file is the design. Nothing in it is built. The three decisions it turned on were
-taken on 21 August 2026 and are recorded below; what is left is a contract, and then one
-experience written by hand in it before a model fills it.
+This file is the design, and then the record of building it. The three decisions it turned
+on were taken on 21 August 2026 and are recorded below; §4 is the contract and the one
+afternoon written by hand in it, and §5 is the day it first ran on the house.
 
 ---
 
@@ -99,7 +99,9 @@ already done harm, which is what the working rules say about themselves.
 | --- | --- | --- | --- |
 | 21 Aug 2026 | *Cloud unavailable means reduced capability, not a stopped system* (working rules §3) | Keeping a page readable with no network required the sheet to stay a template of declared rectangles, which is the shape a sheet has stopped being | The offline reader is in `attic/`. **No cloud, no reading**: `devices/read_page.py` raises, a run stops at its `collect`, and somebody who pressed the scan button gets one sentence that claims nothing about the page. Tested in `tests/test_read_page.py` |
 | 21 Aug 2026 | *The parent is the point, not a bottleneck to remove* (working rules §1) | Approving each thing an adolescent sees makes an afternoon that changes course impossible to run — every branch would need a parent awake at the moment it was taken | The parent approves the experience once, from its overview. `Experience.overview` is the field approval is given to, and `Continuation` is what arrives unapproved. Recorded rather than argued: this is a real reduction in what an adult sees, and §2 above states its cost |
-| 21 Aug 2026 | *One content-safety chokepoint before anything reaches the adolescent* (working rules §3) | Nothing yet — no experience runs, so nothing has reached anybody unscreened | Written down here because it stops being free the moment something runs one. `Continuation` is model-written text bound for a display, and it has to pass `orchestrator/safety.py` before the first afternoon, not after it |
+| 21 Aug 2026 | *One content-safety chokepoint before anything reaches the adolescent* (working rules §3) | Nothing yet — no experience runs, so nothing has reached anybody unscreened | Written down here because it stops being free the moment something runs one. `Continuation` is model-written text bound for a display, and it has to pass `orchestrator/safety.py` before the first afternoon, not after it. **Built the same day**: `screen_continuation`, called by `panel/continuing.py`, tested in `tests/test_continuation_safety.py` and held in place by `tests/test_boundaries.py` |
+| 21 Aug 2026 | *One content-safety chokepoint* (working rules §3), read strictly | The gate had one caller — the model router — and a continuation is not routed through a proposal, so the router had nothing to screen | There are now two callers of one gate: `orchestrator/router.py` and `orchestrator/safety.screen_continuation`. Still one door, two ways up to it, and the second is named in the module docstring so a third does not arrive quietly. The boundary test refuses `panel/routes/experience.py` importing an agent, which is what a way round would look like |
+| 21 Aug 2026 | *Cloud unavailable means reduced capability, not a stopped system* (working rules §3) | The rest of an afternoon has no reduced version. Half a continuation is moments that lead somewhere nobody wrote | `POST /api/device/{household}/experience` refuses — 429 at the cap, 503 with no cloud, 502 for an answer that is not a continuation, 422 when the gate says no — and the house treats every one of them the same way: it stops. That is not a degradation, it is the ordinary ending of an afternoon nobody continues, which costs nothing because nothing was waiting on it |
 
 Not smoothed, and named so that it stays that way: **a write from the panel is inert.**
 Nothing in this work touched it. An experience is devised because a hub asked; a
@@ -153,8 +155,9 @@ reading defect before the format was built on.
 
 ## 4. What was built, 21 August 2026
 
-The museum, the contract, and one afternoon written by hand. Nothing runs yet: there is no
-runner, no agent that devises one, and no panel route that answers an `ask`.
+The museum, the contract, and one afternoon written by hand. At the time of writing this
+section nothing ran: there was no runner, no agent that devises one, and no panel route
+that answers an `ask`. §5 is what happened next, the same day.
 
 ### The museum
 
@@ -233,24 +236,121 @@ noticing — the drawing is the part a model is better at.
 
 ### What is not built, and is next
 
-1. **A runner.** Nothing executes an `Experience`. `devices/run_blueprint.py` is the shape
-   to copy and the seam is different: a blueprint had two halves, an experience has one per
-   page that comes back.
-2. **The short code that replaces the QR.** `§1` says identity survives as a few characters
+1. **The short code that replaces the QR.** `§1` says identity survives as a few characters
    printed in a corner and read by the same model. The sheet still carries a QR and four
    markers, because the flatbed path uses them today and the reader's prompt is written
    around declared rectangles. Untouched on purpose: it is a change to `printing/render.py`,
    `shared/sheet.py` and the reader prompt at once.
-3. **The ruler.** It dies with the cell geometry, and the cell geometry has not finished
+2. **The ruler.** It dies with the cell geometry, and the cell geometry has not finished
    dying: the model reader is still handed rectangles. It goes when the reader stops being
    given them.
-4. **The safety chokepoint on a continuation**, before anything runs. See the table in §2a.
+3. **The button.** Pressing it still runs `devices/scan_sheet.py`, which knows nothing
+   about afternoons: it reads the page and says what is on it. Carrying an afternoon on
+   from a button press is `systemctl start lanternina-experience@carry-on` today, run by
+   hand.
+4. **An agent that devises one.** `agents/experience_continuer.py` writes the rest of an
+   afternoon; nothing writes the beginning of one. A parent still has no overview to
+   approve, because there is nothing yet that produces an `Experience` to be approved.
 
-**Nothing of this is on the hub.** `/opt/lanternina` still runs the copy of
-`devices/scan_sheet.py` that read pages with arithmetic, so the button path there is
-unchanged and still works. Two things go together when it is updated, and in this order:
-`deploy/lanternina-scan.service` gained `EnvironmentFile=/etc/lanternina/panel.env`,
-because until 21 August the button path never touched the network and the unit had no
-reason to carry the panel's address. Copying the Python without the unit would make every
-press answer "adesso non riesco a leggerlo" with the panel perfectly reachable.
+---
+
+## 5. It ran, 21 August 2026
+
+### The runner
+
+`devices/run_experience.py`, and `devices/house.py` under it. The house-level pieces —
+which display a notice lands on, and who owns the file afterwards — came out of
+`devices/run_blueprint.py` unchanged, because a second runner should not import the first
+one's private names in order to write a screen.
+
+The seam is `begin` and `carry_on`, and `carry_on` may be called as many times as the
+afternoon has collects. `begin` plays forward to the first `collect` and writes down two
+things: the run, holding the whole experience rather than its id, and one note per printed
+sheet saying which afternoon that paper belongs to. `carry_on` reads the page on the glass,
+finds the afternoon from the paper, and plays the stretch that follows.
+
+Four decisions, each the answer to something that could have gone the other way:
+
+- **An afternoon that ends leaves nothing**, not even that it happened. The run file and
+  the notes on its paper are deleted when a `close` is reached. A page that arrives after
+  that is told the afternoon is over, and the note deletes itself.
+- **A page nobody could read is neither `marks` nor `blank`.** The two words describe ink,
+  and a page of cells the reader was unsure about has no ink it can vouch for. Reading it
+  as `blank` would close an afternoon on a page that was filled in — `blank` is usually the
+  branch that ends things kindly — so the run stops where it is instead, which is what it
+  already does when the panel is unreachable.
+- **The hours are noticed when a page arrives**, not by a timer. Nothing here runs while
+  nobody is doing anything, so an afternoon that ran out of hours finds out when somebody
+  comes back to it, and then it is over whatever moment it had reached.
+- **A continuation is a self-contained segment.** Its branches name its own moments, so an
+  id it shares with the approved document is a coincidence and not a jump backwards.
+
+### What ran on the house
+
+The hub was updated in the order this file gave — `deploy/lanternina-scan.service` first,
+then the code — and `printing/layout.py` was removed from `/opt/lanternina`. A new unit
+runs the afternoon: `deploy/lanternina-experience@.service`, instanced on `begin` or
+`carry-on`.
+
+Then, at 09:17 on 21 August 2026: **`Un pomeriggio di nuvole: aft_5ec79e85`**. The notice
+went to `screen-CF7D04.bmp` — one of the two displays holding the sheet job, picked at
+random as designed — `sh_04a8adc9` went to the CUPS queue as job `Lanternina-8`, and the
+run stopped waiting at `come-e-tornato` with a note on disk pointing that sheet at that
+afternoon. Whether paper physically came out of the Epson is the one thing here that
+nobody checked from this keyboard.
+
+### What it cost, and what it caught
+
+- **A unit, not a shell.** An interactive `fausto` is not in the group `lanternina`, and
+  `sudo -n` on this hub grants root but not another user. Running by hand therefore could
+  not read `jobs.json` — and the failure was silent in the worst way: `load_jobs` came back
+  empty, no display was found holding the sheet job, and the notice was quietly addressed
+  to the shared screen file instead. The fallback that keeps a house working without the
+  panel also hides a permission error. Nothing was changed about that; it is written here.
+- **A new screen file cannot be given to root.** `devices/house.replace` took the
+  directory's user for a file that did not exist yet. The state directory is
+  `root:lanternina`, so a process that is not root was asking Linux to give a file away,
+  and the answer is `Operation not permitted`. The first real run died at its first moment
+  with a display that had never been written. It now takes the directory's **group** and
+  not its user, and a chown it is not allowed to make no longer costs the screen: no screen
+  at all is a display showing yesterday. Two tests, one of which was made to fail by
+  putting the defect back.
+- **`replace` leaves its `.tmp` behind when it fails.** `screen-FB9F18.bmp.tmp` sat in the
+  state directory from the failed run and was removed by hand. Not fixed, because the next
+  write overwrites it and it is one file; written down because a stray temp file beside a
+  display's own screen is the sort of thing somebody later reads as content.
+- **Three guarantees of the runner were broken deliberately and each failed its test**: a
+  `close` ending the afternoon, the unsure-page refusal, and the check that a continuation
+  belongs to this afternoon. Two more on the panel side: the gate being called at all, and
+  the refusal to buy a continuation for a branch that already says what happens.
+
+### The chokepoint, and the route
+
+`orchestrator/safety.screen_continuation` gathers every word an adolescent will read out of
+a continuation — headings, lines, a page's title and instructions, the words printed on it
+and the label beside every box — and hands them to the gate as one thing. One refusal
+covers the whole continuation, because half an afternoon is not something to put on a
+display. A continuation with nothing to read is refused rather than screened, since an
+empty body passes any screener trivially and that is the one way an unscreened afternoon
+could get through the function whose job is to stop it.
+
+`POST /api/device/{household}/experience` is the route, and it is shaped like the reminders
+one on purpose: the house asks, and the model thinks inside the answer. Before anything is
+paid for, the route parses the experience and checks that the moment named really is a
+`collect` whose outcome for that page says `ask` — a house asking about a branch somebody
+already wrote would otherwise buy a step that exists. The document that reaches the model
+is the one that came out of the parse, so a heading that arrived with a control character
+in it reaches the prompt without one.
+
+What the model is given is the experience, which carries nothing about a person, and the
+page in the reader's own three words. What it may answer is `{"moments": [...]}` and
+nothing else: which afternoon this is and which branch it follows are known already, and a
+model made to echo two ids can only get them wrong.
+
+**The panel in the cloud is still the old image.** `ca-lanternina-dev-api` runs revision
+`--0000041`, which has no `/api/device/{household}/experience`. So an afternoon can be
+begun, a page can be read, and a branch that names a moment can be taken — but an outcome
+that says `ask` will get "the panel refused to go on: 404" until the container is rebuilt
+and deployed.
+
 

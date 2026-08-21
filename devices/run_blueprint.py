@@ -27,19 +27,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import random
-import stat
 import sys
-from collections.abc import Mapping
-from dataclasses import dataclass
 from pathlib import Path
 
-from devices.epaper import render_notice_bmp
-from devices.inventory import holders, load_jobs
+from devices.house import CannotRun, House, screen_in, show
 from devices.print_sheet import compose_and_print, recall
 from devices.read_page import PanelUnreachable, read_page
 from devices.scan_sheet import describe, find_scanner, scan_page
-from devices.trmnl_byos import screen_for
 from shared.blueprint import (
     Blueprint,
     BlueprintError,
@@ -49,113 +43,14 @@ from shared.blueprint import (
     Step,
     Verb,
 )
-from shared.capabilities import JOB_SHEET, HouseCapability
 from shared.ids import SheetId, new_exercise_id, new_sheet_id
 from shared.sheet import SheetSpec
 from shared.vision_contracts import PageReading
 from vision.read_sheet import detect_markers, read_qr, rectify
 
 
-class CannotRun(RuntimeError):
-    """The house cannot do what this step needs, or the sheet is not where it should be."""
-
-
-# Looked up rather than imported because `os.chown` does not exist on Windows, where
-# there is no owner to preserve. Development happens there and the running happens on the
-# hub, so the check has to hold on both.
-_chown = getattr(os, "chown", None)
-
-
-@dataclass(frozen=True, slots=True)
-class House:
-    """The three things a run touches, or nothing where a thing is absent."""
-
-    printer: str = ""
-    scanner: str = ""
-    screen: Path | None = None
-    sheets_dir: Path = Path(".")
-    # Where the reading happens. Empty means the house cannot have a page read at all:
-    # since 21 August 2026 there is no arithmetic underneath, so a run that reaches its
-    # `read_sheet` step with no panel simply stops there.
-    panel: str = ""
-    household: str = ""
-    device_key: str = ""
-
-    @property
-    def capabilities(self) -> frozenset[HouseCapability]:
-        found: set[HouseCapability] = set()
-        if self.printer:
-            found.add(HouseCapability.PRINT_A4)
-        if self.scanner:
-            found.add(HouseCapability.SCAN_A4)
-        if self.screen is not None:
-            found.add(HouseCapability.SHOW_800X480_1BIT)
-        return frozenset(found)
-
-
 def load_blueprint(path: Path) -> Blueprint:
     return Blueprint.from_dict(json.loads(path.read_text(encoding="utf-8")))
-
-
-def sheet_file(shared: Path, jobs_file: Path) -> Path:
-    """Where a notice about the sheet goes: the file of one of the displays that hold it.
-
-    The same resolution the picture path makes for itself. Until 19 August 2026 this half
-    of the house took the screen from whoever called it, so a caller working from a stale
-    note put the sheet's notice on the picture display, and nothing here could tell.
-
-    Several displays may hold the job, and one of them is picked at random each time. That
-    is what was asked for and it has a cost worth saying plainly: on a house with two, a
-    notice appears on one of them, and somebody standing at the other does not see it.
-
-    With no answer from the panel the shared file is still the target, which is what the
-    house did before anybody could say which display was which.
-    """
-    labels = sorted(
-        str(thing.get("label") or "")
-        for thing in holders(load_jobs(jobs_file), JOB_SHEET)
-        if thing.get("label")
-    )
-    return screen_for(shared, random.choice(labels)) if labels else shared
-
-
-def screen_in(env: Mapping[str, str]) -> Path | None:
-    """The file the sheet's display reads, or None if this house has no display at all."""
-    shared = env.get("TRMNL_SCREEN_FILE", "")
-    if not shared:
-        return None
-    path = Path(shared)
-    jobs = env.get("LANTERNINA_JOBS_FILE", "") or str(path.with_name("jobs.json"))
-    return sheet_file(path, Path(jobs))
-
-
-def _show(house: House, heading: str, lines: list[str]) -> None:
-    if house.screen is None:
-        raise CannotRun("there is no display in this house")
-    _replace(house.screen, render_notice_bmp(heading, lines))
-
-
-def _replace(path: Path, data: bytes) -> None:
-    """Write the file whole, and leave it belonging to whoever owned it.
-
-    Temp-file-and-rename keeps a half-written screen off the display. It also silently
-    hands the file to whoever ran the command: on 17 August 2026 that turned
-    ``trmnl-devices.json`` from ``root:lanternina`` into ``root:root``, the display server
-    lost its read, and the symptom was a display that looked dead.
-
-    A file that does not exist yet has no owner to keep, so it takes the directory's and is
-    made group-writable. On 19 August 2026 a run under ``sudo`` created
-    ``screen-CF7D04.bmp`` as ``root:root``: the display server could still read it, but the
-    button path — ``fausto:lanternina`` — could no longer write that display at all.
-    """
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_bytes(data)
-    existing = path.stat() if path.exists() else None
-    was = existing or path.parent.stat()
-    if _chown is not None:
-        _chown(temporary, was.st_uid, was.st_gid)
-    temporary.chmod(stat.S_IMODE(was.st_mode) if existing else 0o664)
-    temporary.replace(path)
 
 
 def _print(house: House, step: PrintSheet, *, send: bool) -> SheetSpec:
@@ -265,7 +160,7 @@ def _do(
     send: bool,
 ) -> SheetSpec | None:
     if isinstance(step, ShowWords):
-        _show(house, step.heading, list(step.lines))
+        show(house, step.heading, list(step.lines))
         return None
     if isinstance(step, PrintSheet):
         return _print(house, step, send=send)
@@ -273,7 +168,7 @@ def _do(
         if reading is None or printed is None:
             raise CannotRun("there is no reading to show")
         _, lines = describe(reading, printed.title)
-        _show(house, step.heading, lines)
+        show(house, step.heading, lines)
         return None
     if step.verb is Verb.READ_SHEET:
         raise CannotRun("reading is the seam between the two halves of a run")

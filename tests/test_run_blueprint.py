@@ -14,8 +14,8 @@ from pathlib import Path
 
 import pytest
 
+from devices.house import replace, screen_in, sheet_file
 from devices.inventory import save_jobs
-from devices.run_blueprint import _replace, screen_in, sheet_file
 
 THE_HOUSE = [
     {"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": "sheet"},
@@ -70,7 +70,7 @@ def test_a_screen_written_for_the_first_time_stays_writable_by_the_group(
     pressing the button on that display stopped changing anything."""
     fresh = tmp_path / "screen-CF7D04.bmp"
 
-    _replace(fresh, b"BM-not-really")
+    replace(fresh, b"BM-not-really")
 
     assert stat.S_IMODE(fresh.stat().st_mode) & stat.S_IWGRP
 
@@ -82,7 +82,45 @@ def test_a_screen_that_already_exists_keeps_the_mode_it_had(tmp_path: Path) -> N
     existing.write_bytes(b"old")
     existing.chmod(0o600)
 
-    _replace(existing, b"new")
+    replace(existing, b"new")
 
     assert stat.S_IMODE(existing.stat().st_mode) == 0o600
+    assert existing.read_bytes() == b"new"
+
+
+def test_a_new_screen_is_not_given_to_the_directory_owner(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The defect of 21 August 2026. The state directory is root:lanternina, so taking
+    the directory's user means a process that is not root giving a file to root, which
+    Linux refuses. The afternoon stopped at its first moment, display untouched."""
+    asked: list[tuple[int, int]] = []
+
+    def _watch(path: object, uid: int, gid: int) -> None:
+        asked.append((uid, gid))
+
+    monkeypatch.setattr("devices.house._chown", _watch)
+    fresh = tmp_path / "screen-FB9F18.bmp"
+
+    replace(fresh, b"BM-not-really")
+
+    assert asked and asked[0][0] == -1, "a new screen must not be given to another user"
+    assert fresh.read_bytes() == b"BM-not-really"
+
+
+def test_a_screen_is_written_even_when_the_owner_cannot_be_kept(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """No screen at all is a display showing yesterday, which is worse than a screen
+    belonging to whoever wrote it."""
+
+    def _refuse(path: object, uid: int, gid: int) -> None:
+        raise PermissionError(1, "Operation not permitted")
+
+    monkeypatch.setattr("devices.house._chown", _refuse)
+    existing = tmp_path / "screen.bmp"
+    existing.write_bytes(b"old")
+
+    replace(existing, b"new")
+
     assert existing.read_bytes() == b"new"

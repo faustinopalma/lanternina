@@ -1,12 +1,18 @@
 """The content-safety gate: the single door model output passes before it is proposed.
 
 This module and ``orchestrator/router.py`` are the only two places permitted to import a
-cloud SDK, and only the router calls this gate. Agents never see unscreened text, so an
-agent cannot route around screening even by mistake.
+cloud SDK. Two callers reach the gate and no more: the router, for everything an agent
+generates, and :func:`screen_continuation`, for the rest of an afternoon. Agents never see
+unscreened text, so an agent cannot route around screening even by mistake.
 
 The gate holds the ``CONTENT_SAFETY`` sealer. That is what makes the rule enforceable
 rather than customary: anyone can construct a :class:`~shared.safety.ScreenedPayload`,
 but only this module can produce one whose seal survives ``assert_deliverable``.
+
+:func:`screen_continuation` is the second way in, added 21 August 2026. It is here rather
+than beside the experience code for the reason the router is: the gate is the only thing
+between a model and a person, and a caller who could reach the words without reaching this
+function would be a way around it.
 
 TODO(poc): :class:`~shared.safety.SafetyCategory` also declares AGE_INAPPROPRIATE,
 FRIGHTENING and OFF_TASK. Azure Content Safety has no detector for those, so they are
@@ -21,8 +27,10 @@ from dataclasses import dataclass
 from typing import Any, Final, Protocol
 
 from shared.errors import CloudUnavailable, SafetyBlocked
+from shared.experience import Close, Continuation, HandOver, Say
 from shared.safety import (
     ContentKind,
+    ContentSafetyGate,
     SafetyCategory,
     SafetyVerdict,
     ScreenedPayload,
@@ -196,3 +204,53 @@ class AzureContentSafetyGate:
             if closer is not None:
                 await closer()
                 return
+
+
+# ── A continuation ───────────────────────────────────────────────────────────────────
+
+
+def words_for_a_person(carrying_on: Continuation) -> str:
+    """Everything in a continuation that somebody will read, one line each.
+
+    Gathered rather than screened field by field, because a continuation is one thing
+    arriving and a refusal applies to all of it: half an afternoon is not a thing this
+    house can put on a display.
+
+    What is left out is left out because nobody reads it: moment ids, rectangles, mark
+    kinds and groups. Everything a person's eye lands on is here — the headings and lines
+    of a display, and a page's title, its instructions, the words printed on it and the
+    label beside every box, line and space to draw.
+    """
+    lines: list[str] = []
+    for moment in carrying_on.moments:
+        if isinstance(moment, Say | Close):
+            lines.append(moment.heading)
+            lines.extend(moment.lines)
+        elif isinstance(moment, HandOver):
+            lines.append(moment.design.title)
+            lines.append(moment.design.instructions)
+            lines.extend(words.text for words in moment.design.words)
+            lines.extend(item.label for item in moment.design.readable)
+    return "\n".join(line for line in lines if line.strip())
+
+
+async def screen_continuation(
+    gate: ContentSafetyGate, carrying_on: Continuation, *, context: str = ""
+) -> ScreenedPayload:
+    """The door a continuation passes before a house is told to play it.
+
+    This is the gate doing more work than it was built for, and the reason is recorded in
+    `ideas/08 §2` rather than discovered here: a parent approves an experience once, from
+    its overview, so what a continuation puts on a display and on paper has been seen by
+    no adult. Between a model and a person there is this call and nothing else.
+
+    Raises :class:`~shared.errors.SafetyBlocked` when the gate refuses, which the caller
+    treats as a normal outcome — an afternoon that is not continued simply stops, which is
+    what an afternoon nobody continues does anyway.
+    """
+    body = words_for_a_person(carrying_on)
+    if not body:
+        # A continuation with nothing to read passes any screen trivially, which is the
+        # one way an unscreened afternoon could reach a house through this function.
+        raise SafetyBlocked("a continuation with no words for anybody is not one")
+    return await gate.screen(ContentKind.PLAIN_TEXT, body, context=context)

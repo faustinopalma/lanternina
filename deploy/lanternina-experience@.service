@@ -1,0 +1,22 @@
+[Unit]
+Description=Play an experience in this house, because somebody asked for it
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+EnvironmentFile=-/etc/lanternina/scanner.env
+EnvironmentFile=/etc/lanternina/experience.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+# The instance is which half: `begin` or `carry-on`. `--experience` is read by both and
+# ignored by the second, which finds its afternoon from the paper on the glass instead.
+ExecStart=/usr/bin/python3 -m devices.run_experience %i --experience ${LANTERNINA_EXPERIENCE} --sheets-dir ${LANTERNINA_SHEETS_DIR} --printer ${LANTERNINA_PRINTER} --scanner ${LANTERNINA_SCANNER}
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+ReadWritePaths=/var/lib/lanternina/state

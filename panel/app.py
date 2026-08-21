@@ -41,6 +41,7 @@ from .requests import InMemoryRequestStore, RequestStore
 from .rhythm import InMemoryRhythmStore, RhythmStore
 from .routes import admin, painting
 from .routes import devices as device_routes
+from .routes import experience as experience_routes
 from .routes import pictures as picture_routes
 from .routes import preferences as preference_routes
 from .routes import proposals as proposal_routes
@@ -69,6 +70,7 @@ SECTIONS = (
     painting,
     usage_routes,
     request_routes,
+    experience_routes,
 )
 
 
