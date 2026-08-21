@@ -246,3 +246,11 @@ noticing — the drawing is the part a model is better at.
    given them.
 4. **The safety chokepoint on a continuation**, before anything runs. See the table in §2a.
 
+**Nothing of this is on the hub.** `/opt/lanternina` still runs the copy of
+`devices/scan_sheet.py` that read pages with arithmetic, so the button path there is
+unchanged and still works. Two things go together when it is updated, and in this order:
+`deploy/lanternina-scan.service` gained `EnvironmentFile=/etc/lanternina/panel.env`,
+because until 21 August the button path never touched the network and the unit had no
+reason to carry the panel's address. Copying the Python without the unit would make every
+press answer "adesso non riesco a leggerlo" with the panel perfectly reachable.
+
