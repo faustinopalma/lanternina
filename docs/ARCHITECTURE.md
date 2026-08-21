@@ -182,10 +182,13 @@ onto a fixed canvas, after which a cell rectangle is a multiplication.
 The QR code carries the spec version. A sheet whose version the reader does not understand
 is **refused**, not guessed at.
 
-Reading degrades honestly: without the cloud, only `LOCALLY_READABLE` cell kinds
-(checkboxes, choice boxes) are attempted; everything else is marked `needs_review` and
-`PageReading.degraded` is set. The system prefers "the parent should look at this" to a
-confident wrong answer.
+Reading is a model's job. Until 21 August 2026 there was a second reader underneath —
+arithmetic over `LOCALLY_READABLE` cell kinds, used with no cloud and flagged
+`PageReading.degraded` — and it is in `attic/` now: **no cloud, no reading**, and a page
+that comes back while the panel is unreachable waits. What survives is the preference that
+put it there in the first place: a cell the model did not answer for, or answered for with
+anything outside its three words, is marked `needs_review`. "The parent should look at
+this" beats a confident wrong answer.
 
 ## 8. Trust boundaries
 

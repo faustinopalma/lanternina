@@ -105,8 +105,9 @@ can adjust is the wrong instrument, and the quantity it measures — what fracti
 rectangle is dark — is only loosely related to whether somebody put a mark in a box. So the
 reader is now a vision model: `agents/sheet_reader.py`, the first implementation of the
 `VisionAgent` protocol that had been declared since the beginning and never written. The
-arithmetic stays as the answer the house gives when the cloud is unreachable, and says so
-by setting `degraded`.
+arithmetic stayed for a day as the answer the house gives when the cloud is unreachable,
+marked `degraded`; on 21 August 2026 it went to `attic/` and the rule became **no cloud, no
+reading** — see `08 §1`.
 
 The hub holds no Azure credential, so the house asks the panel: `POST
 /api/device/{household}/read-sheet`, device key, carrying the rectified crop and the
@@ -137,11 +138,12 @@ Three defects found on the way there, none of them in the blueprint format:
 
 ### The limits, next to the claims
 
-- **A sheet that will not fit still validates.** How many boxes fit is arithmetic about
-  millimetres and belongs to `printing/layout.py`, which refuses what it cannot draw. So a
-  blueprint can be well-formed and unprintable, and the refusal arrives one layer down.
-  `tests/test_blueprint.py` lays both hand-written sheets out for this reason; an
-  administrator approving a third one has no such check yet.
+- **A sheet that will not fit still validates.** Until 21 August 2026 how many boxes fit
+  was arithmetic about millimetres in `printing/layout.py`, so a blueprint could be
+  well-formed and unprintable and the refusal arrived one layer down. The step now carries
+  a `PageDesign`, which brings its own geometry, and `tests/test_blueprint.py` checks that
+  every answerable place is on the paper and none is a sliver. What is still one layer down
+  is the marker quiet zones and the ink budget, which `printing/compose.py` enforces.
 - **A blueprint carries one language.** `title` and `summary` are English because an
   administrator reads them; the sheet and the display words are Italian because this
   household's content language is. There is no language field, so a house wanting another

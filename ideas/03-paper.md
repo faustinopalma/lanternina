@@ -20,11 +20,17 @@ So the geometry is no longer a risk: the ideas below are about the content.
 five cell kinds, but only two can be read without the network: `CHECKBOX` and `CHOICE_BOX`.
 If the link drops, choice sheets keep closing the loop and the others do not.
 
-**How it was closed, 19 August 2026.** `printing/layout.py` turns an exercise body into a
+**How it was closed, 19 August 2026 — and retired on 21 August.** `printing/layout.py`
+turned an exercise body into a
 `SheetSpec`: one `CHOICE_BOX` per choice, grouped per question so a mark can be attributed
 to the question it answers, positioned in the marker frame. It refuses rather than
 squeezing — more than four questions, or a question with fewer than two choices, raises
 `SheetTooFull` instead of reaching for a smaller font.
+
+The module is `attic/layout.py` now, and so is the offline reading it existed for. §6 below
+holds the order it went in, and `ideas/08 §1` holds why. This section is left standing
+because the two things it added underneath — headings, and the distinction between a cell
+and a printed word — are still the contract.
 
 Two things had to be added underneath. A sheet needs printed words, and a cell is a place
 an answer can be, which a question is not: `SheetSpec` gained `headings`, text drawn on the
@@ -204,15 +210,14 @@ rendered page rather than by a test:
 
 **The limits, next to the claims.**
 
-- **The old path is still the one that runs.** `printing/layout.py` is superseded and says
-  so in its docstring, but the blueprint runner's `print_sheet` verb carries questions and
-  choices rather than a design, so deleting it would take the working paper loop with it.
-  The order is below.
+- ~~**The old path is still the one that runs.**~~ Closed 21 August 2026: the `print_sheet`
+  step carries a design and `printing/layout.py` is in `attic/`.
 - **No model has yet used a `tick_box`.** All the sheets across four runs chose writing
-  lines. Tick boxes are the only cells readable without the cloud, so a page of handwriting
-  reads as nothing at all when the cloud is unreachable — the degraded path silently gets
-  worse as the pages get better. The prompt now says so; whether it changes anything is
-  measured below.
+  lines. Tick boxes used to be the only cells readable without the cloud, so this was also
+  a warning that the degraded path got worse as the pages got better. That half of it went
+  away on 21 August with the degraded path itself — there is no offline reader to be worse
+  than the model. What is left is the plain observation, and the prompt still points at
+  tick boxes; whether it changes anything is measured below.
 - **Text is not in the ink figure.** `drawing_to_array` draws words only when a caller asks
   for a preview, so a page of long sentences costs more than it reports.
 
@@ -290,12 +295,37 @@ millimetres and the budget, `agents/sheet_designer.py` for the prompt,
 
 **Done when — the order for retiring the old path.** Each step leaves the loop working:
 
-1. The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions
-   and choices, and the two catalogue experiences are rewritten in it.
+1. ~~The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions
+   and choices, and the two catalogue experiences are rewritten in it~~ — done, 21 August
+   2026. The step carries a `PageDesign`; `SheetContent` and `Question` are gone.
 2. ~~`devices/print_sheet.py` composes a design instead of calling `sheet_for`~~ — done,
    20 August 2026: `compose_and_print` sits beside `lay_out_and_print` and what it
-   remembers is a `SheetSpec` either way.
-3. `printing/layout.py` and `tests/test_layout.py` move to `attic/`, out of packaging and
-   out of the test run, with a note saying what replaced them.
+   remembers is a `SheetSpec` either way. `lay_out_and_print` was deleted on 21 August.
+3. ~~`printing/layout.py` and `tests/test_layout.py` move to `attic/`~~ — done, 21 August
+   2026, with `attic/README.md` saying what replaced them. The arithmetic that read ink
+   out of a rectangle went with them, and so did the two instruments that measured its
+   thresholds.
 4. A designed sheet is printed, filled in by hand, and read back. **Half done**: printed
    and scanned, but nothing has been written on one and put on the glass.
+
+### How the two catalogue sheets were converted, 21 August 2026
+
+The two hand-written blueprints carried questions and choices, and the module that turned
+those into rectangles was the one being retired. So it was run once more and what came out
+was frozen into the files as designs: headings became `words`, choice cells became
+`tick_box`. That is the honest description — the sheets are no longer hand-written all the
+way down, and the files say so in their `author` line.
+
+Checked rather than assumed, both sheets: the cells the template produced and the cells the
+frozen design produces are **identical**, ids, kinds, rectangles, labels and groups, and so
+are the headings. Composed through `printing/compose.py` at 150 dpi:
+
+| | answerable places | raster coverage |
+| --- | --- | --- |
+| `four-things-about-today` | 16 | 2.752% |
+| `three-words` | 12 | 2.434% |
+
+The sheet this format replaced measured 2.78% on 20 August. The small difference is the
+same page drawn by the same renderer from the same rectangles, so it is measurement noise
+in the rasteriser rather than a change to the page.
+

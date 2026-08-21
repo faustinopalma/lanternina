@@ -1,23 +1,26 @@
-"""Read a sheet back: find the markers, flatten the page, and say what ink is where.
+"""Find the four markers on a page, flatten it, and say which sheet it is.
 
 The functions here were proven in `tools/check_scan.py` on a real scanned page before they
 were a package; this is the same arithmetic in the place the architecture says it belongs.
 Nothing writes a file and nothing looks at anything but the quadrilateral the four markers
 enclose — if they are not all found the page is refused rather than guessed at.
 
-What comes out describes ink: this cell is dark, this one is not. Whether a mark is the
-right one is not decided here and is not decided anywhere.
+What used to be here as well, and is not any more: the arithmetic that counted dark pixels
+inside a declared rectangle and called the result a reading. It went to `attic/` on
+21 August 2026 with the template that drew those rectangles. Reading a page is a model's
+job now, and the consequence is stated rather than worked around — no cloud, no reading.
+
+The markers stay, and not out of sentiment. A flatbed hands back a flat image at a known
+scale and needs no help; a camera does not, and `ideas/06 §1` is where four corners in a
+photograph earn their keep.
 """
 
 from __future__ import annotations
-
-import time
 
 import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from shared.ids import CellId
 from shared.sheet import (
     ARUCO_DICT_NAME,
     MARKER_ID_BOTTOM_LEFT,
@@ -28,9 +31,7 @@ from shared.sheet import (
     RECTIFIED_WIDTH,
     REQUIRED_MARKER_IDS,
     QrPayload,
-    SheetSpec,
 )
-from shared.vision_contracts import CellReading, PageReading, ReadConfidence
 
 # OpenCV returns a marker's corners clockwise from its own top-left, so which of the four
 # is the *inner* one depends on which corner of the page the marker sits in.
@@ -40,23 +41,6 @@ INNER_CORNER_INDEX = {
     MARKER_ID_BOTTOM_RIGHT: 0,
     MARKER_ID_BOTTOM_LEFT: 1,
 }
-
-# The fallback reader's two constants. The reader is a vision model — see
-# `agents/sheet_reader.py` — and this arithmetic is what the house says when the cloud is
-# unreachable, with `degraded` set so nobody mistakes one for the other.
-#
-# Set from measurement on 19 August 2026, after the first values reported four ticked
-# boxes as empty, with certainty, on a sheet somebody had actually filled in. Three sheets
-# read by hand in pen: marks land between 0.0121 and 0.0196, and an empty cell reads
-# exactly 0.0000 — there is no noise floor to clear, because the 10% inset per side keeps
-# the printed border out of the sample.
-#
-# The limit is what these numbers cannot fix, and it is why they are no longer the reader.
-# A light pencil mark also reads 0.0000, and lowering an area threshold does nothing for
-# it: the grey threshold is Otsu over the whole page and is therefore set by print black,
-# so pale graphite falls on the paper side before any area is counted.
-INK_PRESENT = 0.010
-INK_UNCERTAIN = 0.003
 
 
 class MarkersNotFound(ValueError):
@@ -94,34 +78,6 @@ def rectify(image: NDArray[np.uint8], found: dict[int, NDArray[np.float32]]) -> 
     return np.asarray(warped, dtype=np.uint8)
 
 
-def page_ink_threshold(rectified: NDArray[np.uint8]) -> int:
-    """One threshold for the whole page, computed once.
-
-    Otsu needs a bimodal histogram. The page has one — paper plus printed lines — but an
-    empty cell does not, so thresholding a cell on its own splits paper texture down the
-    middle and reports scanner noise as ink.
-    """
-    value, _ = cv2.threshold(rectified, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    return int(value)
-
-
-def ink_fraction(
-    rectified: NDArray[np.uint8], box: tuple[int, int, int, int], threshold: int
-) -> float | None:
-    """Dark fraction strictly inside a cell, or None when the cell is too small to sample.
-
-    The inset is per-axis: derived from the width alone it swallowed the whole height of a
-    wide, flat cell, leaving an empty patch that used to be reported as clean.
-    """
-    x0, y0, x1, y1 = box
-    inset_x = max(2, (x1 - x0) // 10)
-    inset_y = max(2, (y1 - y0) // 10)
-    patch = rectified[y0 + inset_y : y1 - inset_y, x0 + inset_x : x1 - inset_x]
-    if patch.size == 0:
-        return None
-    return float(np.count_nonzero(patch < threshold)) / float(patch.size)
-
-
 def read_qr(rectified: NDArray[np.uint8]) -> QrPayload:
     """Decode the code that says which sheet this is. Unreadable is refused, not guessed.
 
@@ -132,59 +88,3 @@ def read_qr(rectified: NDArray[np.uint8]) -> QrPayload:
     if not raw:
         raise ValueError("no sheet code found on this page")
     return QrPayload.decode(raw)
-
-
-def read_cells(rectified: NDArray[np.uint8], spec: SheetSpec) -> PageReading:
-    """Report the ink in every declared cell, and hand the doubtful ones to the parent."""
-    threshold = page_ink_threshold(rectified)
-    readings: list[CellReading] = []
-    for cell in spec.cells:
-        fraction = ink_fraction(rectified, cell.rect.to_pixels(), threshold)
-        if fraction is None:
-            readings.append(
-                CellReading(
-                    cell_id=CellId(str(cell.id)),
-                    kind=cell.kind,
-                    value=None,
-                    confidence=ReadConfidence.UNSURE,
-                    needs_review=True,
-                    note="the cell is too small to sample",
-                )
-            )
-            continue
-        if fraction >= INK_PRESENT:
-            readings.append(
-                CellReading(
-                    cell_id=CellId(str(cell.id)),
-                    kind=cell.kind,
-                    value=cell.label,
-                    confidence=ReadConfidence.CERTAIN,
-                )
-            )
-        elif fraction >= INK_UNCERTAIN:
-            readings.append(
-                CellReading(
-                    cell_id=CellId(str(cell.id)),
-                    kind=cell.kind,
-                    value=None,
-                    confidence=ReadConfidence.UNSURE,
-                    needs_review=True,
-                    note=f"{fraction:.3f} of the cell is dark, between empty and marked",
-                )
-            )
-        else:
-            readings.append(
-                CellReading(
-                    cell_id=CellId(str(cell.id)),
-                    kind=cell.kind,
-                    value=None,
-                    confidence=ReadConfidence.CERTAIN,
-                )
-            )
-    return PageReading(
-        sheet_id=spec.sheet_id,
-        exercise_id=spec.exercise_id,
-        cells=tuple(readings),
-        read_at=time.time(),
-        degraded=any(reading.needs_review for reading in readings),
-    )

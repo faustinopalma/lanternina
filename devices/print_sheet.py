@@ -5,21 +5,19 @@ reader has to know where the boxes were; the QR on the page carries an id and no
 so the spec has to be somewhere on the hub when the page returns. Without this the printed
 sheet is a picture of an exercise rather than a thing that closes a loop.
 
-Nothing here decides content. The words came from the content agent and were approved as
-words; this chooses where they land and hands the result to CUPS.
+Nothing here decides content. The design came from somewhere that was approved; this
+composes it, measures its ink and hands the result to CUPS.
 """
 
 from __future__ import annotations
 
 import json
 import subprocess
-from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
 
-from printing.layout import sheet_for
-from printing.render import PageGeometry, build_drawing, drawing_to_pdf
+from printing.render import drawing_to_pdf
 from shared.ids import ExerciseId, SheetId
+from shared.pagedesign import PageDesign
 from shared.sheet import SheetSpec
 
 # CUPS scales to fit by default, and a sheet scaled to fit is a sheet whose every cell is
@@ -43,31 +41,8 @@ def recall(directory: Path, sheet_id: SheetId) -> SheetSpec:
     return SheetSpec.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 
-def lay_out_and_print(
-    body: Mapping[str, Any],
-    *,
-    sheets_dir: Path,
-    sheet_id: SheetId,
-    exercise_id: ExerciseId,
-    printer: str,
-    now: float = 0.0,
-    send: bool = True,
-) -> SheetSpec:
-    """Lay the exercise out, remember it, and put it on paper."""
-    spec = sheet_for(body, sheet_id=sheet_id, exercise_id=exercise_id, created_at=now)
-    pdf = drawing_to_pdf(build_drawing(spec, PageGeometry()))
-    remember(sheets_dir, spec)
-    if send:
-        subprocess.run(
-            ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
-            input=pdf,
-            check=True,
-        )
-    return spec
-
-
 def compose_and_print(
-    design: Mapping[str, Any],
+    design: PageDesign,
     *,
     sheets_dir: Path,
     sheet_id: SheetId,
@@ -76,20 +51,18 @@ def compose_and_print(
     now: float = 0.0,
     send: bool = True,
 ) -> SheetSpec:
-    """The same, for a sheet a model designed rather than a template it filled.
+    """Compose a designed page, remember it, and put it on paper.
 
-    Identical in every way that matters to the reader: what is remembered is a
-    ``SheetSpec``, so a page that comes back on Thursday is found and read exactly as
-    before. What differs is only where the rectangles came from.
+    What is remembered is a ``SheetSpec``, so a page that comes back on Thursday is found
+    and read exactly as it was before a model designed anything.
 
-    Imported here rather than at the top because the hub prints far more often than it
-    designs, and ``printing.compose`` pulls in OpenCV to measure the ink.
+    ``printing.compose`` is imported here rather than at the top because it pulls in
+    OpenCV to measure the ink, and every other function in this module runs without it.
     """
     from printing.compose import compose
-    from shared.pagedesign import PageDesign
 
     sheet = compose(
-        PageDesign.from_dict(design),
+        design,
         sheet_id=sheet_id,
         exercise_id=exercise_id,
         created_at=now,

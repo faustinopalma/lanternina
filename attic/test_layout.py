@@ -1,5 +1,8 @@
 """Where a box lands on the sheet, and whether the reader will find it there.
 
+Retired 21 August 2026 with the module it tests. Run from the repository root with
+`pytest attic`; the ordinary run does not collect it.
+
 The renderer already refuses a layout that would sit in a marker's quiet zone. What it
 cannot see is the weaker thing that matters just as much: that two boxes never overlap,
 because a mark inside an overlap belongs to two questions at once and there is no honest
@@ -8,12 +11,18 @@ way to attribute it.
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import pytest
 
-from printing.layout import MAX_QUESTIONS, SheetTooFull, sheet_for
-from printing.render import PageGeometry, build_drawing, drawing_to_svg
-from shared.ids import ExerciseId, SheetId
-from shared.sheet import CellKind
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from layout import MAX_QUESTIONS, SheetTooFull, sheet_for  # noqa: E402
+
+from printing.render import PageGeometry, build_drawing, drawing_to_svg  # noqa: E402
+from shared.ids import ExerciseId, SheetId  # noqa: E402
+from shared.sheet import CellKind  # noqa: E402
 
 BODY = {
     "title": "Le stagioni",

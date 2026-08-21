@@ -19,6 +19,7 @@ import time
 
 from devices.print_sheet import compose_and_print
 from shared.ids import ExerciseId, SheetId, new_id
+from shared.pagedesign import PageDesign
 
 
 def main(argv: list[str]) -> int:
@@ -29,7 +30,7 @@ def main(argv: list[str]) -> int:
     design_file, sheets_dir, printer = pathlib.Path(args[0]), pathlib.Path(args[1]), args[2]
     send = "--dry-run" not in argv
 
-    design = json.loads(design_file.read_text(encoding="utf-8"))
+    design = PageDesign.from_dict(json.loads(design_file.read_text(encoding="utf-8")))
     sheet_id = SheetId(str(new_id("sh")))
     spec = compose_and_print(
         design,

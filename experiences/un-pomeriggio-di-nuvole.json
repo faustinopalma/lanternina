@@ -1,0 +1,152 @@
+{
+  "format_version": 1,
+  "experience_id": "un-pomeriggio-di-nuvole",
+  "title": "Un pomeriggio di nuvole",
+  "overview": "Il display dice di affacciarsi, poi esce un foglio: il cielo di adesso, da disegnare, con tre caselle sull'altezza delle nuvole e una riga per una parola. Se il foglio torna con qualcosa sopra, ne esce un secondo, che chiede una nuvola inventata; quello che succede dopo il secondo foglio lo decide la casa quando lo vede. Se un foglio torna in bianco, il pomeriggio si chiude lì, e va bene così. Niente aspetta un foglio che non torna. Dura un pomeriggio e finisce dicendo che è finito.",
+  "minutes": 180,
+  "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+  "moments": [
+    {
+      "act": "say",
+      "id": "comincia",
+      "heading": "Guarda fuori",
+      "lines": [
+        "Fra poco esce un foglio dalla stampante.",
+        "Prima però affacciati un momento."
+      ]
+    },
+    {
+      "act": "hand_over",
+      "id": "il-cielo",
+      "design": {
+        "title": "Il cielo di oggi",
+        "instructions": "Guarda fuori, poi riempi quello che vuoi. Puoi anche lasciare in bianco.",
+        "marks": [
+          {
+            "mark": "words",
+            "rect": { "x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045 },
+            "text": "Il cielo di oggi",
+            "size_mm": 6.5
+          },
+          {
+            "mark": "words",
+            "rect": { "x": 0.04, "y": 0.1, "w": 0.7, "h": 0.035 },
+            "text": "Guarda fuori. Riempi quello che vuoi.",
+            "size_mm": 4.0
+          },
+          {
+            "mark": "draw_area",
+            "id": "il-disegno",
+            "rect": { "x": 0.05, "y": 0.17, "w": 0.9, "h": 0.4 },
+            "label": "Disegna il cielo che vedi adesso",
+            "group": "cielo"
+          },
+          {
+            "mark": "words",
+            "rect": { "x": 0.05, "y": 0.61, "w": 0.9, "h": 0.035 },
+            "text": "Le nuvole di oggi sono...",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "tick_box",
+            "id": "alte",
+            "rect": { "x": 0.05, "y": 0.67, "w": 0.26, "h": 0.05 },
+            "label": "alte",
+            "group": "altezza"
+          },
+          {
+            "mark": "tick_box",
+            "id": "basse",
+            "rect": { "x": 0.37, "y": 0.67, "w": 0.26, "h": 0.05 },
+            "label": "basse",
+            "group": "altezza"
+          },
+          {
+            "mark": "tick_box",
+            "id": "non-si-vedono",
+            "rect": { "x": 0.69, "y": 0.67, "w": 0.26, "h": 0.05 },
+            "label": "non si vedono",
+            "group": "altezza"
+          },
+          {
+            "mark": "write_line",
+            "id": "una-parola",
+            "rect": { "x": 0.05, "y": 0.79, "w": 0.9, "h": 0.05 },
+            "label": "Una parola per il cielo di oggi:",
+            "group": "parola"
+          }
+        ]
+      }
+    },
+    {
+      "act": "collect",
+      "id": "come-e-tornato",
+      "outcomes": [
+        { "when": "marks", "then": "il-seguito" },
+        { "when": "blank", "then": "basta-cosi" }
+      ]
+    },
+    {
+      "act": "say",
+      "id": "il-seguito",
+      "heading": "Ho visto il foglio",
+      "lines": [
+        "Ne sta uscendo un altro.",
+        "Questo lo inventi tu."
+      ]
+    },
+    {
+      "act": "hand_over",
+      "id": "la-seconda",
+      "design": {
+        "title": "La nuvola che non c'era",
+        "instructions": "Inventane una che oggi non c'era, e dalle un nome.",
+        "marks": [
+          {
+            "mark": "words",
+            "rect": { "x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045 },
+            "text": "La nuvola che non c'era",
+            "size_mm": 6.5
+          },
+          {
+            "mark": "words",
+            "rect": { "x": 0.04, "y": 0.1, "w": 0.7, "h": 0.035 },
+            "text": "Inventane una che oggi non c'era.",
+            "size_mm": 4.0
+          },
+          {
+            "mark": "draw_area",
+            "id": "la-nuvola",
+            "rect": { "x": 0.05, "y": 0.17, "w": 0.9, "h": 0.52 },
+            "label": "Disegnala qui",
+            "group": "nuvola"
+          },
+          {
+            "mark": "write_line",
+            "id": "il-nome",
+            "rect": { "x": 0.05, "y": 0.75, "w": 0.9, "h": 0.05 },
+            "label": "Come si chiama:",
+            "group": "nome"
+          }
+        ]
+      }
+    },
+    {
+      "act": "collect",
+      "id": "l-ultimo-foglio",
+      "outcomes": [
+        { "when": "marks", "then": "ask" },
+        { "when": "blank", "then": "basta-cosi" }
+      ]
+    },
+    {
+      "act": "close",
+      "id": "basta-cosi",
+      "heading": "Per oggi basta così",
+      "lines": [
+        "Il pomeriggio delle nuvole finisce qui.",
+        "I fogli restano lì, sono tuoi."
+      ]
+    }
+  ]
+}

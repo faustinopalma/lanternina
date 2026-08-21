@@ -36,8 +36,8 @@ from pathlib import Path
 
 from devices.epaper import render_notice_bmp
 from devices.inventory import holders, load_jobs
-from devices.print_sheet import lay_out_and_print, recall
-from devices.read_page import read_page
+from devices.print_sheet import compose_and_print, recall
+from devices.read_page import PanelUnreachable, read_page
 from devices.scan_sheet import describe, find_scanner, scan_page
 from devices.trmnl_byos import screen_for
 from shared.blueprint import (
@@ -74,9 +74,9 @@ class House:
     scanner: str = ""
     screen: Path | None = None
     sheets_dir: Path = Path(".")
-    # Where the reading happens. Empty means the house reads its own pages with
-    # arithmetic and says the answer is degraded, which is what it does when the panel is
-    # unreachable anyway.
+    # Where the reading happens. Empty means the house cannot have a page read at all:
+    # since 21 August 2026 there is no arithmetic underneath, so a run that reaches its
+    # `read_sheet` step with no panel simply stops there.
     panel: str = ""
     household: str = ""
     device_key: str = ""
@@ -161,8 +161,8 @@ def _replace(path: Path, data: bytes) -> None:
 def _print(house: House, step: PrintSheet, *, send: bool) -> SheetSpec:
     if not house.printer:
         raise CannotRun("there is no printer in this house")
-    return lay_out_and_print(
-        step.sheet.to_body(),
+    return compose_and_print(
+        step.design,
         sheets_dir=house.sheets_dir,
         sheet_id=new_sheet_id(),
         exercise_id=new_exercise_id(),
@@ -172,20 +172,28 @@ def _print(house: House, step: PrintSheet, *, send: bool) -> SheetSpec:
 
 
 def _read(house: House) -> tuple[SheetSpec, PageReading]:
-    """Read whatever is on the glass, and refuse it if it is not one of our sheets."""
+    """Read whatever is on the glass, and refuse it if it is not one of our sheets.
+
+    With the panel unreachable there is no reading and no second-best one: the page stays
+    where it is and the run stops here. Nothing is said on a display, because the run was
+    started by the house rather than by somebody standing at the scanner.
+    """
     if not house.scanner:
         raise CannotRun("there is no scanner in this house")
     page = scan_page(find_scanner(house.scanner))
     rectified = rectify(page, detect_markers(page))
     payload = read_qr(rectified)
     spec = recall(house.sheets_dir, payload.sheet_id)
-    reading = read_page(
-        rectified,
-        spec,
-        panel=house.panel,
-        household=house.household,
-        key=house.device_key,
-    )
+    try:
+        reading = read_page(
+            rectified,
+            spec,
+            panel=house.panel,
+            household=house.household,
+            key=house.device_key,
+        )
+    except PanelUnreachable as exc:
+        raise CannotRun(f"the page was not read: {exc}") from exc
     return spec, reading
 
 

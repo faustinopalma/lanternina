@@ -14,7 +14,6 @@ from typing import Any
 
 import pytest
 
-from printing.layout import sheet_for
 from shared.blueprint import (
     MAX_LINE,
     AskModel,
@@ -22,15 +21,15 @@ from shared.blueprint import (
     Blueprint,
     BlueprintError,
     PrintSheet,
-    Question,
     ReadSheet,
-    SheetContent,
     ShowReading,
     ShowWords,
     Verb,
 )
 from shared.capabilities import HouseCapability
-from shared.ids import BlueprintId, new_exercise_id, new_sheet_id
+from shared.ids import BlueprintId
+from shared.pagedesign import MIN_BOX_SIDE, PageDesign, TickBox, Words
+from shared.sheet import Rect
 
 CATALOGUE = Path(__file__).resolve().parent.parent / "catalogue"
 
@@ -39,11 +38,15 @@ GLASS = HouseCapability.SCAN_A4
 SCREEN = HouseCapability.SHOW_800X480_1BIT
 
 
-def a_sheet() -> SheetContent:
-    return SheetContent(
+def a_sheet() -> PageDesign:
+    return PageDesign(
         title="Due cose",
         instructions="Segna quello che vuoi.",
-        questions=(Question(text="Che tempo ha fatto?", choices=("sole", "pioggia")),),
+        marks=(
+            Words(Rect(0.0, 0.0, 1.0, 0.05), "Che tempo ha fatto?"),
+            TickBox("q1c1", Rect(0.0, 0.1, 0.4, 0.05), label="sole", group="q1"),
+            TickBox("q1c2", Rect(0.5, 0.1, 0.4, 0.05), label="pioggia", group="q1"),
+        ),
     )
 
 
@@ -54,7 +57,7 @@ def a_blueprint(**changed: Any) -> Blueprint:
         "title": "A test blueprint",
         "summary": "Prints a sheet and reads it back.",
         "author": "the test suite",
-        "steps": (PrintSheet(sheet=a_sheet()), ReadSheet()),
+        "steps": (PrintSheet(design=a_sheet()), ReadSheet()),
         "requires": frozenset({PAPER, GLASS}),
         "uses_if_present": frozenset(),
     }
@@ -84,20 +87,23 @@ def test_a_hand_written_experience_reads_back_as_written(path: Path) -> None:
 
 
 @pytest.mark.parametrize("path", catalogue_files(), ids=lambda p: p.stem)
-def test_a_hand_written_sheet_actually_fits_on_paper(path: Path) -> None:
-    """The check `shared` cannot do: how many boxes fit is arithmetic about millimetres.
+def test_a_hand_written_sheet_has_boxes_big_enough_to_aim_at(path: Path) -> None:
+    """The check that used to be `sheet_for` refusing a sheet it could not lay out.
 
-    Without this, a blueprint that validates would still fail in the house, one layer down,
-    with the sheet already promised.
+    A design carries its own geometry, so what is left to check here is that a page which
+    validates is also a page somebody can use: every answerable place is on the paper and
+    none of them is a sliver.
     """
     blueprint = Blueprint.from_dict(json.loads(path.read_text(encoding="utf-8")))
     printing = [step for step in blueprint.steps if isinstance(step, PrintSheet)]
     assert printing, "both experiences put something on paper"
     for step in printing:
-        spec = sheet_for(
-            step.sheet.to_body(), sheet_id=new_sheet_id(), exercise_id=new_exercise_id()
-        )
-        assert spec.cells, "a sheet with no cell cannot be read back"
+        places = step.design.readable
+        assert places, "a sheet with no answerable place cannot be read back"
+        for place in places:
+            assert place.rect.w >= MIN_BOX_SIDE and place.rect.h >= MIN_BOX_SIDE
+            assert place.rect.x + place.rect.w <= 1.0
+            assert place.rect.y + place.rect.h <= 1.0
 
 
 def test_the_two_experiences_need_different_equipment() -> None:
@@ -132,7 +138,7 @@ def test_a_blueprint_cannot_overstate_what_it_needs_either() -> None:
 
 def test_an_optional_step_lands_in_uses_if_present() -> None:
     blueprint = a_blueprint(
-        steps=(ShowWords(heading="Ciao", lines=()), PrintSheet(sheet=a_sheet()), ReadSheet()),
+        steps=(ShowWords(heading="Ciao", lines=()), PrintSheet(design=a_sheet()), ReadSheet()),
         uses_if_present=frozenset(),
         requires=frozenset({PAPER, GLASS, SCREEN}),
     )
@@ -141,7 +147,7 @@ def test_an_optional_step_lands_in_uses_if_present() -> None:
     optional = a_blueprint(
         steps=(
             ShowWords(heading="Ciao", lines=(), optional=True),
-            PrintSheet(sheet=a_sheet()),
+            PrintSheet(design=a_sheet()),
             ReadSheet(),
         ),
         uses_if_present=frozenset({SCREEN}),
@@ -174,13 +180,13 @@ def test_a_verb_that_does_not_exist_is_refused() -> None:
 
 def test_a_sheet_cannot_be_read_before_it_is_printed() -> None:
     with pytest.raises(BlueprintError, match="never printed"):
-        a_blueprint(steps=(ReadSheet(), PrintSheet(sheet=a_sheet())))
+        a_blueprint(steps=(ReadSheet(), PrintSheet(design=a_sheet())))
 
 
 def test_a_reading_cannot_be_shown_before_it_happened() -> None:
     with pytest.raises(BlueprintError, match="never happened"):
         a_blueprint(
-            steps=(ShowReading(heading="Fatto"), PrintSheet(sheet=a_sheet()), ReadSheet()),
+            steps=(ShowReading(heading="Fatto"), PrintSheet(design=a_sheet()), ReadSheet()),
             requires=frozenset({PAPER, GLASS, SCREEN}),
         )
 

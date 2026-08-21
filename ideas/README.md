@@ -49,6 +49,12 @@ to be made before any of it is written.
 Most of the table below still stands, because it is about the house those experiences run
 in. The paper entries are the ones to read against 08 rather than on their own.
 
+The first three steps were taken on 21 August 2026 and are written up in
+[08-experience.md §4](08-experience.md): the retired template and the ink arithmetic are in
+`attic/`, `shared/experience.py` is the contract, and
+`experiences/un-pomeriggio-di-nuvole.json` is one afternoon written by hand in it. Nothing
+runs yet.
+
 ### First: the two that are dangerous today
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
@@ -64,7 +70,7 @@ in. The paper entries are the ones to read against 08 rather than on their own.
 | 5 | ~~The request channel, panel → hub~~ — **done, 20 August 2026** | 01 §7 | "Put this picture back" is its first user, and the shape it fixed is the one every later request copies: the parent presses, one row is written, and the hub finds it when it next asks. `panel/requests.py` holds the contract, `devices/pull_picture.py` the side that acts. |
 | 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |
 | 7 | ~~Reading the sheet back~~ — **done, 19 August 2026** | 06 | The loop closes on real paper: a press on KEY3 scans the glass, finds the markers, decodes the code, and the display says what came back. `vision/read_sheet.py` holds the reading. |
-| 8 | ~~A mark by hand reads as an empty box~~ — **closed, 19 August 2026** | 06 §0 | Both exit conditions were taken on one sheet. Four ticked boxes were reported empty, with certainty, in front of somebody; the thresholds moved to 0.010/0.003 and the same page then read correctly. Then the reader changed altogether: a vision model reads the page and the arithmetic is what the house says when the cloud is unreachable. |
+| 8 | ~~A mark by hand reads as an empty box~~ — **closed, 19 August 2026** | 06 §0 | Both exit conditions were taken on one sheet. Four ticked boxes were reported empty, with certainty, in front of somebody; the thresholds moved to 0.010/0.003 and the same page then read correctly. Then the reader changed altogether: a vision model reads the page, and on 21 August the arithmetic went to `attic/` rather than staying as a second reader — no cloud, no reading. |
 | 9 | ~~Answer the press immediately~~ — **done, 19 August 2026** | 02 §4 | Measured with a finger on both units: the waiting screen lands in the response the press caused, and the reading follows in 35 s and 36 s, of which 26 s and 27 s are the scanner. Before the change the same chain took 65 s and 71 s. There is no longer a reason to hold the button down. |
 | 10 | ~~Take the destructive presses out of the firmware~~ — **done, 19 August 2026** | 02 §5 | Both units flashed. Ten seconds of holding — twice the five at which the stock firmware wipes the Wi-Fi — leaves the display on the network, and the press starts a scan instead. |
 | 11 | The capture station | 06 §1 | For what a flatbed cannot take: a model, a drawing too big for the glass. Not on the paper loop's critical path any more. |
@@ -75,7 +81,7 @@ in. The paper entries are the ones to read against 08 rather than on their own.
 | --- | --- | --- | --- |
 | 12 | ~~How much approved content is left~~ — **done, 20 August 2026** | 01 §6 | One line at the foot of the approvals page, counted from routes that already existed. Written as a label and a number, with a test that the page carries no imperative. |
 | 13 | ~~Withdrawing an approval~~ — **done, 20 August 2026** | 01 §3 | `withdrawn` is admitted as a second decision on something approved, and refused on anything else. The panel says in the same breath that a sheet already printed is beyond reach. |
-| 13a | **Retire the sheet template for sheets a model designs** | 03 §6 | nothing — the new path is built, measured and tested. What is left is four steps in a stated order, because `printing/layout.py` is still what the blueprint runner prints through. |
+| 13a | ~~Retire the sheet template for sheets a model designs~~ — **done, 21 August 2026** | 03 §6 | The `print_sheet` step carries a design; `printing/layout.py`, its tests and the arithmetic that read ink out of a rectangle are in `attic/`, out of packaging and out of the test run. The two catalogue sheets were converted with every cell in the same place, checked. |
 | 14 | Reminders at times the parent chose | 05 §1 | 3 |
 | 15 | **Everything in the house, with a job and a name** | 01 §9, 02 §6 | nothing — and it is now blocking: one press on 19 August turned the picture display into the sheet display for good |
 | 16 | One step at a time | 05 §2 | 11, and the second display in the house |

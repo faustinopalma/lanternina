@@ -1,14 +1,15 @@
-"""Ask the panel to read a page, and fall back to arithmetic if it cannot be reached.
+"""Ask the panel to read a page. If it cannot be reached, the page is not read.
 
-The model is the reader. The pixel counting in ``vision/read_sheet.py`` is what the house
-says when the cloud is unreachable, and it says so: the reading comes back marked
-``degraded``, which is the flag the rest of the system already understands.
+The model is the reader, and until 21 August 2026 there was a second one underneath: the
+pixel counting in `vision/read_sheet.py`, used when the cloud was unreachable and marked
+``degraded``. It is in `attic/` now, and what replaces it is a sentence rather than a
+mechanism — **no cloud, no reading**. A page that comes back while the panel is
+unreachable waits, and nothing is said about it to anybody.
 
-That ordering is the whole point of this module. Before it, two constants decided whether
-a box had a mark in it, and on 19 August 2026 they reported four ticked boxes as empty and
-called it certain. Thresholds are the wrong instrument here: nobody in a house can tune
-one, and the quantity they measure — what fraction of a rectangle is dark — is only
-loosely related to the question, which is whether somebody put a mark in a box.
+That is a real loss and it is the point of the trade. The arithmetic kept the paper path
+alive with no network at all, and it bought that by making a sheet a form: the only pages
+it can read are pages made of boxes in declared places. A page a model designs is not that
+shape, so keeping the fallback would have meant keeping the template that fed it.
 
 Stdlib plus OpenCV, which the hub already has. No credential lives here: the panel holds
 the identity that reaches Foundry, and this sends a device key over TLS.
@@ -20,7 +21,6 @@ import base64
 import json
 import urllib.error
 import urllib.request
-from dataclasses import replace
 
 import cv2
 import numpy as np
@@ -28,7 +28,6 @@ from numpy.typing import NDArray
 
 from shared.sheet import SheetSpec
 from shared.vision_contracts import PageReading
-from vision.read_sheet import read_cells
 
 # A page is a few hundred kilobytes and the model takes seconds to look at it. Long enough
 # that a slow answer is still an answer, short enough that the person who put the sheet on
@@ -37,7 +36,7 @@ READ_TIMEOUT_SECONDS = 90
 
 
 class PanelUnreachable(RuntimeError):
-    """The panel did not answer. Not a fault to show anybody: the house carries on."""
+    """The panel did not answer, so nobody knows what is on the page and nobody guesses."""
 
 
 def read_page(
@@ -49,25 +48,11 @@ def read_page(
     key: str,
     timeout: int = READ_TIMEOUT_SECONDS,
 ) -> PageReading:
-    """Read the page with the model, or locally and marked degraded if that fails."""
-    try:
-        return ask_panel(
-            rectified, spec, panel=panel, household=household, key=key, timeout=timeout
-        )
-    except (PanelUnreachable, urllib.error.URLError, OSError, ValueError, KeyError):
-        return replace(read_cells(rectified, spec), degraded=True)
+    """Post the rectified crop and the sheet's own description of where its boxes are.
 
-
-def ask_panel(
-    rectified: NDArray[np.uint8],
-    spec: SheetSpec,
-    *,
-    panel: str,
-    household: str,
-    key: str,
-    timeout: int = READ_TIMEOUT_SECONDS,
-) -> PageReading:
-    """Post the rectified crop and the sheet's own description of where its boxes are."""
+    Raises :class:`PanelUnreachable` for anything that stops an answer arriving. The
+    caller decides what to put on a display; it does not get a reading either way.
+    """
     if not (panel and household and key):
         raise PanelUnreachable("no panel is configured")
     ok, encoded = cv2.imencode(".png", rectified)
@@ -96,4 +81,12 @@ def ask_panel(
         # status leaves the next person to guess between a key, a quota and a model.
         detail = exc.read().decode("utf-8", "replace")[:300]
         raise PanelUnreachable(f"the panel refused: {exc.code} {detail}") from exc
-    return PageReading.from_dict(answer)
+    except (OSError, ValueError) as exc:
+        # `URLError` is an `OSError`, so naming it here as well would say nothing.
+        raise PanelUnreachable(f"the panel did not answer: {exc}") from exc
+    try:
+        return PageReading.from_dict(answer)
+    except (ValueError, KeyError, TypeError) as exc:
+        # An answer that cannot be read is not a reading. Salvaging part of one produces
+        # something that looks whole by the time it reaches a display.
+        raise PanelUnreachable(f"the panel's answer was not a reading: {exc}") from exc

@@ -41,8 +41,9 @@ find the edge. Until then this is a known limit of a component on its way out, w
 next to the evidence.
 
 **What was measured, 19 August 2026.** A calibration sheet was printed, marked by hand and
-read back — `tools/make_calibration_sheet.py` and `tools/measure_calibration.py`, so it can
-be repeated in two minutes.
+read back — `tools/make_calibration_sheet.py` and `attic/measure_calibration.py`, which
+moved to the attic on 21 August 2026 with the arithmetic it measures, and can still be run
+from the repository root.
 
 | | measured |
 | --- | --- |
@@ -99,15 +100,18 @@ reader is now a vision model. `agents/sheet_reader.py` is the first implementati
 credential. On the same sheet it returned the same four choices and marked nothing
 doubtful, in **13.0 s** against the scanner's 37 s.
 
-So the arithmetic is no longer the reader. It is what the house says when the cloud cannot
-be reached, and it says so by setting `degraded`. The two constants still matter for that
-case and no longer decide what anybody is told on an ordinary day.
+So the arithmetic is no longer the reader. It was what the house said when the cloud could
+not be reached, marked `degraded`, and on 21 August 2026 it stopped being that too: it is
+in `attic/`, and the rule is now **no cloud, no reading** — a page that comes back while
+the panel is unreachable waits. The two constants are recorded there with the sheets they
+were measured on.
 
-**What is still true and still unfixed.** A light pencil mark reads 0.0000 in the fallback,
-and no area threshold reaches it: the page-wide Otsu threshold is fitted to printed black.
-The model has not been tested on pencil, on a handled page, or on handwriting — it has been
-tested on one sheet, in pen, where it agreed with arithmetic that was also right. That is
-evidence the path works, not evidence it reads better.
+**What is still true and still unfixed.** A light pencil mark read 0.0000 in the
+arithmetic, and no area threshold reached it: the page-wide Otsu threshold is fitted to
+printed black. That was the second reason to retire it. The model has not been tested on
+pencil, on a handled page, or on handwriting — it has been tested on one sheet, in pen,
+where it agreed with arithmetic that was also right. That is evidence the path works, not
+evidence it reads better.
 
 ---
 

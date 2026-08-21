@@ -1,11 +1,14 @@
 """Turn an approved exercise into a sheet that can be printed and read back.
 
-Superseded on 20 August 2026 by :mod:`shared.pagedesign` and :mod:`printing.compose`,
-where a model designs the page instead of filling this template. Kept, and still the path
-the blueprint runner uses, because the `print_sheet` verb carries questions and choices
-rather than a design: retiring this means changing that verb, and until then deleting this
-would take the working paper loop with it. `ideas/03 §6` holds the order that has to be
-followed.
+Retired 21 August 2026. It laid out four questions of four boxes, always in the same
+places, and that fixed shape is what a page stopped being: `shared/pagedesign.py` and
+`printing/compose.py` took over, where a model designs the page and the ink it may spend
+is bounded by the vocabulary rather than by arithmetic. `attic/README.md` holds the rest.
+
+Nothing was wrong with it. The two catalogue experiences it drew were converted to designs
+by running this module one last time and freezing what came out, and every cell and every
+heading came out in exactly the same place — checked on 21 August 2026, both sheets, cells
+and headings identical.
 
 This is the missing half of the paper loop: the content agent writes the words, the
 renderer draws millimetres, and nothing until now decided where a box goes. The decision is

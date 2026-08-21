@@ -4,9 +4,14 @@
   "version": 1,
   "title": "Three words",
   "summary": "Three questions, each offering four words, and the sheet asks which one is preferred rather than which one is correct. It exists to be the pair of the other experience: it needs only paper, so a house with a printer and a scanner and no display runs the whole of it, and the two steps that speak on a screen are simply skipped there.",
-  "author": "written by hand, 19 August 2026",
-  "requires": ["print_a4", "scan_a4"],
-  "uses_if_present": ["show_800x480_1bit"],
+  "author": "written by hand 19 Aug 2026, sheet frozen as design 21 Aug",
+  "requires": [
+    "print_a4",
+    "scan_a4"
+  ],
+  "uses_if_present": [
+    "show_800x480_1bit"
+  ],
   "steps": [
     {
       "verb": "show_words",
@@ -20,21 +25,208 @@
     {
       "verb": "print_sheet",
       "optional": false,
-      "sheet": {
+      "design": {
         "title": "Tre parole",
         "instructions": "Scegli quella che preferisci. Non ce n'è una giusta.",
-        "questions": [
+        "marks": [
           {
-            "text": "Quale parola ti piace di più?",
-            "choices": ["mare", "bosco", "neve", "vento"]
+            "mark": "words",
+            "rect": {
+              "x": 0.04,
+              "y": 0.005,
+              "w": 0.92,
+              "h": 0.04
+            },
+            "text": "Tre parole",
+            "size_mm": 6.5
           },
           {
-            "text": "Quale suona meglio?",
-            "choices": ["campana", "farfalla", "tamburo", "lanterna"]
+            "mark": "words",
+            "rect": {
+              "x": 0.04,
+              "y": 0.065,
+              "w": 0.7,
+              "h": 0.032
+            },
+            "text": "Scegli quella che preferisci. Non ce n'è una giusta.",
+            "size_mm": 4.0
           },
           {
-            "text": "Quale porteresti con te?",
-            "choices": ["un libro", "una torcia", "una corda", "un fischietto"]
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.19,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "1. Quale parola ti piace di più?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.325,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "2. Quale suona meglio?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.46,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "3. Quale porteresti con te?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "mare",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "bosco",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "neve",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "vento",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "campana",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "farfalla",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "tamburo",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "lanterna",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "un libro",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "una torcia",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "una corda",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "un fischietto",
+            "group": "q3"
           }
         ]
       }

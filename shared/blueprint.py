@@ -17,6 +17,11 @@ pay that rather than accept the alternative, which is a blueprint that carries a
 then an agent writes programs that run in other people's houses and an administrator
 approves them by reading prose, which is a signature on something that was not read.
 
+:mod:`shared.experience` is where that price was reconsidered, on 21 August 2026, and it
+draws the line in a different place: branching yes, computation no. This module is not
+superseded by it — a blueprint is a thing designed once for every house and approved by an
+administrator, and an experience is devised for one house and approved by its parent.
+
 Three absences are load-bearing.
 
 * **Nothing points a sensor at a person.** ``READ_SHEET`` reads the sheet the same run
@@ -44,8 +49,8 @@ from enum import StrEnum
 from typing import Any, ClassVar, Final
 
 from .capabilities import HouseCapability
-from .exercise import CHOICES, EXERCISES, INSTRUCTIONS, QUESTION, TITLE
 from .ids import BlueprintId
+from .pagedesign import DesignError, PageDesign
 
 BLUEPRINT_FORMAT_VERSION: Final = 1
 
@@ -85,9 +90,6 @@ MAX_LINES: Final = 4
 MAX_TITLE: Final = 60
 MAX_SUMMARY: Final = 400
 MAX_AUTHOR: Final = 60
-MAX_INSTRUCTIONS: Final = 120
-MAX_QUESTION: Final = 80
-MAX_CHOICE: Final = 20
 MAX_TOPIC_HINT: Final = 60
 # Long enough for the two experiences written by hand and for the shape they suggest.
 # A blueprint that needs more steps than this is probably two experiences.
@@ -127,92 +129,6 @@ def _only(values: Mapping[str, Any], allowed: set[str], what: str) -> None:
     unknown = sorted(set(values) - allowed)
     if unknown:
         raise BlueprintError(f"{what} carries {unknown}, which this format does not define")
-
-
-# ── What goes on a sheet ─────────────────────────────────────────────────────────────
-
-
-@dataclass(frozen=True, slots=True)
-class Question:
-    """One question and the boxes under it. Nothing here is an answer.
-
-    ``CellSpec`` has a place for an expected answer and the layout never fills it, so a
-    blueprint has nowhere to put one either. What comes back is read as ink and reported
-    as ink.
-    """
-
-    text: str
-    choices: tuple[str, ...]
-
-    def __post_init__(self) -> None:
-        if not self.text:
-            raise BlueprintError("a question with no text has nothing to ask")
-        if len(self.choices) < 2:
-            raise BlueprintError(f"question {self.text!r} offers fewer than two choices")
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"text": self.text, "choices": list(self.choices)}
-
-    @staticmethod
-    def from_dict(values: Mapping[str, Any]) -> Question:
-        _only(values, {"text", "choices"}, "a question")
-        raw = values.get("choices", [])
-        if not isinstance(raw, Sequence) or isinstance(raw, str):
-            raise BlueprintError("choices must be a list")
-        return Question(
-            text=plain(values.get("text", ""), MAX_QUESTION, "a question"),
-            choices=tuple(plain(c, MAX_CHOICE, "a choice") for c in raw),
-        )
-
-
-@dataclass(frozen=True, slots=True)
-class SheetContent:
-    """The words that go on paper, in the shape ``printing.layout`` reads.
-
-    How many questions fit on one sheet is not decided here. That is arithmetic about
-    millimetres and it belongs to the module that draws them, which refuses a sheet it
-    cannot lay out. The consequence is that this type accepts a sheet that will not fit,
-    and the refusal arrives one layer down — see the limit recorded in ideas/07.
-    """
-
-    title: str
-    instructions: str
-    questions: tuple[Question, ...]
-
-    def __post_init__(self) -> None:
-        if not self.questions:
-            raise BlueprintError("a sheet with no question has nothing to print")
-
-    def to_body(self) -> dict[str, Any]:
-        """The exercise body, spelled as ``shared.exercise`` names its fields."""
-        return {
-            TITLE: self.title,
-            INSTRUCTIONS: self.instructions,
-            EXERCISES: [
-                {QUESTION: q.text, CHOICES: list(q.choices)} for q in self.questions
-            ],
-        }
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "title": self.title,
-            "instructions": self.instructions,
-            "questions": [q.to_dict() for q in self.questions],
-        }
-
-    @staticmethod
-    def from_dict(values: Mapping[str, Any]) -> SheetContent:
-        _only(values, {"title", "instructions", "questions"}, "a sheet")
-        raw = values.get("questions", [])
-        if not isinstance(raw, Sequence) or isinstance(raw, str):
-            raise BlueprintError("questions must be a list")
-        return SheetContent(
-            title=plain(values.get("title", ""), MAX_TITLE, "a sheet title"),
-            instructions=plain(
-                values.get("instructions", ""), MAX_INSTRUCTIONS, "sheet instructions"
-            ),
-            questions=tuple(Question.from_dict(q) for q in raw),
-        )
 
 
 # ── The five steps ───────────────────────────────────────────────────────────────────
@@ -257,24 +173,36 @@ class ShowWords:
 
 @dataclass(frozen=True, slots=True)
 class PrintSheet:
-    """Lay the sheet out and put it on paper."""
+    """Put a designed page on paper.
+
+    The design is a :class:`~shared.pagedesign.PageDesign`: marks over a closed
+    vocabulary, with no mark that fills an area, so a blueprint cannot ask a house to
+    spend an afternoon's ink. Until 21 August 2026 this carried questions and choices
+    instead, and one module turned them into rectangles — which meant the only page this
+    format could express was four questions of four boxes.
+    """
 
     verb: ClassVar[Verb] = Verb.PRINT_SHEET
 
-    sheet: SheetContent
+    design: PageDesign
     optional: bool = False
 
     def to_dict(self) -> dict[str, Any]:
-        return {"verb": str(self.verb), "sheet": self.sheet.to_dict(), "optional": self.optional}
+        return {"verb": str(self.verb), "design": self.design.to_dict(), "optional": self.optional}
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> PrintSheet:
-        _only(values, {"verb", "sheet", "optional"}, "a print_sheet step")
-        raw = values.get("sheet")
+        _only(values, {"verb", "design", "optional"}, "a print_sheet step")
+        raw = values.get("design")
         if not isinstance(raw, Mapping):
-            raise BlueprintError("a print_sheet step needs a sheet")
+            raise BlueprintError("a print_sheet step needs a design")
+        try:
+            design = PageDesign.from_dict(raw)
+        except DesignError as exc:
+            # One refusal for an administrator to read, whichever layer noticed.
+            raise BlueprintError(f"the sheet it prints is not a design: {exc}") from exc
         return PrintSheet(
-            sheet=SheetContent.from_dict(raw),
+            design=design,
             optional=_flag(values.get("optional", False), "optional"),
         )
 

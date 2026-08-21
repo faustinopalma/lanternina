@@ -1,5 +1,8 @@
 """One-off: scan the sheet on the glass and print the ink fraction of every cell.
 
+Retired 21 August 2026 with the arithmetic it measures. Run from the repository root as
+`python attic/probe_sheet_ink.py <sheets-dir>`.
+
 Says what the reader measured and what it concluded, side by side, so that a wrong answer
 can be told apart from a wrong threshold. Nothing is written to disk.
 """
@@ -9,19 +12,20 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from devices.print_sheet import recall
-from devices.scan_sheet import find_scanner, scan_page
-from shared.ids import SheetId
-from vision.read_sheet import (
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from ink_arithmetic import (  # noqa: E402
     INK_PRESENT,
     INK_UNCERTAIN,
-    detect_markers,
     ink_fraction,
     page_ink_threshold,
     read_cells,
-    read_qr,
-    rectify,
 )
+
+from devices.print_sheet import recall  # noqa: E402
+from devices.scan_sheet import find_scanner, scan_page  # noqa: E402
+from shared.ids import SheetId  # noqa: E402
+from vision.read_sheet import detect_markers, read_qr, rectify  # noqa: E402
 
 sheets = Path(sys.argv[1])
 page = scan_page(find_scanner("ET-2870"))

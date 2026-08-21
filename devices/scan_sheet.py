@@ -11,11 +11,16 @@ refused outright if the four markers are not all there rather than read at a gue
 
 What it says back describes ink. Which boxes carry a mark, which are empty, and which the
 parent should look at. Nothing here decides whether a mark is the right one.
+
+Reading happens in the cloud, through the panel, and there is no arithmetic underneath any
+more. With the panel unreachable the page is not read: the display says so in a sentence
+that blames nobody, and nothing is recorded.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -26,9 +31,10 @@ from numpy.typing import NDArray
 
 from devices.epaper import render_notice_bmp, render_waiting_bmp
 from devices.print_sheet import recall
+from devices.read_page import PanelUnreachable, read_page
 from devices.trmnl_byos import screen_for
 from shared.vision_contracts import PageReading
-from vision.read_sheet import MarkersNotFound, detect_markers, read_cells, read_qr, rectify
+from vision.read_sheet import MarkersNotFound, detect_markers, read_qr, rectify
 
 # 300 dpi over A4 is 2480x3508: enough that an ArUco module is about 30 pixels, and the
 # detector wants four. Higher costs seconds per scan and buys nothing measurable.
@@ -149,7 +155,22 @@ def main() -> int:
         say("Non l'ho riconosciuto", ["Questo foglio non è di Lanternina."])
         return 0
 
-    reading = read_cells(flat, spec)
+    try:
+        reading = read_page(
+            flat,
+            spec,
+            panel=os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/"),
+            household=os.environ.get("LANTERNINA_HOUSEHOLD", ""),
+            key=os.environ.get("LANTERNINA_DEVICE_KEY", ""),
+        )
+    except PanelUnreachable as exc:
+        # The button was pressed, so somebody is standing there. Saying nothing at all is
+        # what the page gets; the person gets a sentence that claims nothing about it.
+        print(f"the page was not read: {exc}")
+        say("Il foglio è arrivato", ["Adesso non riesco a leggerlo.", "Lo lascio lì."])
+        button_file.unlink(missing_ok=True)
+        return 0
+
     heading, lines = describe(reading, spec.title)
     say(heading, lines)
     marks = ", ".join(

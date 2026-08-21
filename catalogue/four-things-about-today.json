@@ -4,8 +4,12 @@
   "version": 1,
   "title": "Four things about today",
   "summary": "A sheet with four questions about the day, each answered by ticking one box of four. Nothing on it has a right answer: it asks what the weather was, where the time went, what was drunk and how the day went. The house prints it, says on the display that it is coming, and reads it back, reporting which boxes carry a mark. Leaving it blank, or never picking it up, ends it with nothing recorded.",
-  "author": "written by hand, 19 August 2026",
-  "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+  "author": "written by hand 19 Aug 2026, sheet frozen as design 21 Aug",
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
   "uses_if_present": [],
   "steps": [
     {
@@ -20,25 +24,267 @@
     {
       "verb": "print_sheet",
       "optional": false,
-      "sheet": {
+      "design": {
         "title": "Quattro cose di oggi",
         "instructions": "Segna quello che vuoi. Puoi lasciare in bianco.",
-        "questions": [
+        "marks": [
           {
-            "text": "Che tempo ha fatto?",
-            "choices": ["sole", "nuvole", "pioggia", "vento"]
+            "mark": "words",
+            "rect": {
+              "x": 0.04,
+              "y": 0.005,
+              "w": 0.92,
+              "h": 0.04
+            },
+            "text": "Quattro cose di oggi",
+            "size_mm": 6.5
           },
           {
-            "text": "Dove sei stato di più?",
-            "choices": ["dentro", "fuori", "in giro", "a tavola"]
+            "mark": "words",
+            "rect": {
+              "x": 0.04,
+              "y": 0.065,
+              "w": 0.7,
+              "h": 0.032
+            },
+            "text": "Segna quello che vuoi. Puoi lasciare in bianco.",
+            "size_mm": 4.0
           },
           {
-            "text": "Cosa hai bevuto?",
-            "choices": ["acqua", "latte", "succo", "tè"]
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.19,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "1. Che tempo ha fatto?",
+            "size_mm": 4.5
           },
           {
-            "text": "Com'è andata la giornata?",
-            "choices": ["piano", "veloce", "così così", "bene"]
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.325,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "2. Dove sei stato di più?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.46,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "3. Cosa hai bevuto?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "words",
+            "rect": {
+              "x": 0.0,
+              "y": 0.595,
+              "w": 1.0,
+              "h": 0.035
+            },
+            "text": "4. Com'è andata la giornata?",
+            "size_mm": 4.5
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "sole",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "nuvole",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "pioggia",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q1c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.255,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "vento",
+            "group": "q1"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "dentro",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "fuori",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "in giro",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q2c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.39,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "a tavola",
+            "group": "q2"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "acqua",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "latte",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "succo",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q3c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.525,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "tè",
+            "group": "q3"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q4c1",
+            "rect": {
+              "x": 0.0,
+              "y": 0.6599999999999999,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "piano",
+            "group": "q4"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q4c2",
+            "rect": {
+              "x": 0.255,
+              "y": 0.6599999999999999,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "veloce",
+            "group": "q4"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q4c3",
+            "rect": {
+              "x": 0.51,
+              "y": 0.6599999999999999,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "così così",
+            "group": "q4"
+          },
+          {
+            "mark": "tick_box",
+            "id": "q4c4",
+            "rect": {
+              "x": 0.765,
+              "y": 0.6599999999999999,
+              "w": 0.235,
+              "h": 0.042
+            },
+            "label": "bene",
+            "group": "q4"
           }
         ]
       }

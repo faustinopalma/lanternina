@@ -97,7 +97,13 @@ already done harm, which is what the working rules say about themselves.
 
 | Date | Rule | What it blocked | What was done instead |
 | --- | --- | --- | --- |
-| | | | *(nothing yet)* |
+| 21 Aug 2026 | *Cloud unavailable means reduced capability, not a stopped system* (working rules §3) | Keeping a page readable with no network required the sheet to stay a template of declared rectangles, which is the shape a sheet has stopped being | The offline reader is in `attic/`. **No cloud, no reading**: `devices/read_page.py` raises, a run stops at its `collect`, and somebody who pressed the scan button gets one sentence that claims nothing about the page. Tested in `tests/test_read_page.py` |
+| 21 Aug 2026 | *The parent is the point, not a bottleneck to remove* (working rules §1) | Approving each thing an adolescent sees makes an afternoon that changes course impossible to run — every branch would need a parent awake at the moment it was taken | The parent approves the experience once, from its overview. `Experience.overview` is the field approval is given to, and `Continuation` is what arrives unapproved. Recorded rather than argued: this is a real reduction in what an adult sees, and §2 above states its cost |
+| 21 Aug 2026 | *One content-safety chokepoint before anything reaches the adolescent* (working rules §3) | Nothing yet — no experience runs, so nothing has reached anybody unscreened | Written down here because it stops being free the moment something runs one. `Continuation` is model-written text bound for a display, and it has to pass `orchestrator/safety.py` before the first afternoon, not after it |
+
+Not smoothed, and named so that it stays that way: **a write from the panel is inert.**
+Nothing in this work touched it. An experience is devised because a hub asked; a
+continuation arrives inside the answer to a request the hub made. Nothing is pushed.
 
 One line is worth keeping in view while smoothing, because it is the difference between
 this project and the thing it refuses to be: **an ending may be satisfying; nothing is
@@ -142,3 +148,101 @@ what approval means, and puts a model in charge of a plan rather than of a parag
 mitigation is the order: the contract first, then one experience by hand in that contract
 before any model fills it — the same sequence `07 §1` used, and the reason it found the
 reading defect before the format was built on.
+
+---
+
+## 4. What was built, 21 August 2026
+
+The museum, the contract, and one afternoon written by hand. Nothing runs yet: there is no
+runner, no agent that devises one, and no panel route that answers an `ask`.
+
+### The museum
+
+`printing/layout.py`, `tests/test_layout.py`, the arithmetic that read ink out of a
+rectangle, and the two instruments that measured its thresholds are in `attic/` — out of
+packaging, out of `testpaths`, still runnable with `pytest attic`. `attic/README.md` says
+what replaced each and why. The ArUco markers and their detector stay in `vision/` with
+their tests, for the camera of `06 §1`.
+
+The order of `03 §6` was followed and each step left the loop working. The one that cost
+something was the first: the `print_sheet` step had to carry a design before the template
+could go, so the two catalogue sheets were converted by running the template one last time
+and freezing what came out. Cells and headings came out **identical** on both sheets,
+checked rather than assumed.
+
+### The contract
+
+`shared/experience.py`. Four acts — `say`, `hand_over`, `collect`, `close` — one frozen
+dataclass each, and an `Experience` that is an ordered list of them. A moment that is not
+a `collect` is followed by the next in the list; a `collect` is followed by whichever of
+its outcomes the page turned out to be. That is the whole of the control flow.
+
+Four decisions worth their sentence each:
+
+- **Branching yes, computation no.** There is no expression, no variable and no counter.
+  Outcomes point forward only, a backward edge is refused while the document is read, and
+  a moment nobody arrives at is refused too. A parent reading it reads every branch,
+  because every branch is written down.
+- **A page comes back two ways: `marks` or `blank`.** Not three. "Some of them" is a count
+  of somebody's marks one step from being a score, and the reader's own vocabulary has no
+  honest way to produce it. Which boxes carry a mark is the richer question and it is not
+  answered in the format — it is what `ask` carries upward.
+- **`ask` is how the afternoon stays devised rather than precomputed.** An outcome may say
+  `ask` instead of naming a moment; then the house posts what came back and receives a
+  `Continuation` — more moments, same vocabulary, same checks, with an ending of its own.
+  A model steers an afternoon and still cannot write a program, because data over this
+  vocabulary is the only thing it can hand back.
+- **The last moment closes, or collects.** An experience whose last moment is a `say` runs
+  off the end of the list and trails off, and that is refused. It ends, and it says so.
+
+There is nothing about a person anywhere in it — no name, no learner, no profile, not even
+a household — and a test says so by looking at the field names.
+
+### The afternoon written by hand
+
+`experiences/un-pomeriggio-di-nuvole.json`. Seven moments: the display says to look out of
+the window; a page comes out with the sky to draw, three boxes for how high the clouds are
+and a line for one word; what comes back decides whether a second page follows or the
+afternoon closes; and after the second page the rest is `ask`. A blank page closes it
+kindly, from either branch.
+
+Both pages compose on A4 without touching a marker's quiet zone, measured through
+`printing/compose.py` at 150 dpi:
+
+| | answerable places | raster coverage |
+| --- | --- | --- |
+| the sky as it is | 5 | 2.240% |
+| the cloud that was not there | 2 | 2.033% |
+
+Both are lighter than the form they replace, which measured 2.78% on 20 August. Neither
+spends any stroke ink: a page a person wrote has no drawing on it, which is itself worth
+noticing — the drawing is the part a model is better at.
+
+### What it cost, and what it caught
+
+- **`URLError` is an `OSError`.** Found by breaking the refusal on purpose to check the
+  test could fail: removing `urllib.error.URLError` from an `except` tuple changed nothing,
+  because it was already covered. The redundant clause is gone.
+- **A test asserting an unreachable moment is refused was passing for the wrong reason.**
+  Appending the unreachable moment at the end made the document trail off, and that error
+  arrived first. The test now puts it in the middle, where only the reachability check can
+  catch it.
+- **Three guarantees were broken deliberately and each failed the test that claims it**:
+  the backward-edge refusal, the collect-before-hand-over refusal, and the panel refusal.
+  All three restored from copies taken first.
+
+### What is not built, and is next
+
+1. **A runner.** Nothing executes an `Experience`. `devices/run_blueprint.py` is the shape
+   to copy and the seam is different: a blueprint had two halves, an experience has one per
+   page that comes back.
+2. **The short code that replaces the QR.** `§1` says identity survives as a few characters
+   printed in a corner and read by the same model. The sheet still carries a QR and four
+   markers, because the flatbed path uses them today and the reader's prompt is written
+   around declared rectangles. Untouched on purpose: it is a change to `printing/render.py`,
+   `shared/sheet.py` and the reader prompt at once.
+3. **The ruler.** It dies with the cell geometry, and the cell geometry has not finished
+   dying: the model reader is still handed rectangles. It goes when the reader stops being
+   given them.
+4. **The safety chokepoint on a continuation**, before anything runs. See the table in §2a.
+

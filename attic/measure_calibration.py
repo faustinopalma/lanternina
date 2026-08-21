@@ -1,11 +1,12 @@
 """Measure the calibration sheet and say what the thresholds should be.
 
+Retired 21 August 2026 with the arithmetic it measures. Run from the repository root as
+`python attic/measure_calibration.py`.
+
 Run it with the sheet on the glass. It scans once, reads every declared box, and prints
 three groups: what an untouched box measures, what a printed area of known size measures,
 and what a hand-made mark measures. The gap between the last two groups and the first is
 the only thing that decides a threshold, and this is the only way to see it.
-
-    python -m tools.measure_calibration
 
 Nothing is changed by running this. The numbers come out; the decision stays with a person
 looking at them, because one sheet is one sample and a threshold set from it would be a
@@ -15,19 +16,22 @@ guess wearing a measurement's clothes.
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
-from devices.print_sheet import recall
-from devices.scan_sheet import find_scanner, scan_page
-from shared.ids import SheetId
-from vision.read_sheet import (
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from ink_arithmetic import (  # noqa: E402
     INK_PRESENT,
     INK_UNCERTAIN,
-    detect_markers,
     ink_fraction,
     page_ink_threshold,
-    rectify,
 )
+
+from devices.print_sheet import recall  # noqa: E402
+from devices.scan_sheet import find_scanner, scan_page  # noqa: E402
+from shared.ids import SheetId  # noqa: E402
+from vision.read_sheet import detect_markers, rectify  # noqa: E402
 
 
 def verdict(fraction: float) -> str:
