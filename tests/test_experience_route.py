@@ -17,6 +17,7 @@ from fastapi.testclient import TestClient
 
 from panel.app import create_app
 from panel.config import Settings
+from panel.preferences import LANGUAGE_CHOICES, LANGUAGE_NAMES
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 from shared.capabilities import HouseCapability
@@ -344,9 +345,37 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
 
     ask_for_one(client, household)
 
-    assert asked["language"] == "en"
+    assert asked["language"] == "English", "the code is a pronoun in an English sentence"
     assert asked["interests"] == ("le nuvole",)
     assert asked["avoid"] == ("i ragni",)
+
+
+def test_the_language_reaches_the_model_by_name_and_not_by_code(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Measured on the house on 21 August 2026: a household set to "it" was handed the
+    sentence "Write it in it.", and the afternoon came back in English. Every choice must
+    have a name, or the next one added repeats it."""
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+
+    for code in LANGUAGE_CHOICES:
+        client.post(
+            "/api/preferences",
+            json={
+                "interests": [],
+                "avoid": [],
+                "difficulty": "gentle",
+                "variety": "balanced",
+                "maxWordsPerLine": 6,
+                "language": code,
+            },
+            headers=headers(),
+        )
+        ask_for_one(client, household)
+        assert asked["language"] == LANGUAGE_NAMES[code]
+        assert asked["language"] != code
 
 
 def test_equipment_the_house_does_not_have_is_not_devised_for(

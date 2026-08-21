@@ -150,7 +150,12 @@ def plain(raw: object, limit: int, what: str) -> str:
 
 def _identifier(raw: object, what: str) -> str:
     if not isinstance(raw, str) or not _ID.match(raw):
-        raise ExperienceError(f"{what} must be 2 to 32 characters of a-z, 0-9 or hyphen")
+        # The offending value is quoted because this refusal travels to whoever asked, and
+        # "a moment id is wrong" in a document with nine of them is a message that costs a
+        # reader the work of finding which. Truncated: it is text a model wrote.
+        raise ExperienceError(
+            f"{what} must be 2 to 32 characters of a-z, 0-9 or hyphen, not {str(raw)[:40]!r}"
+        )
     return raw
 
 

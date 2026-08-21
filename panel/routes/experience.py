@@ -37,7 +37,7 @@ from ..experiences import (
     OfferedExperience,
 )
 from ..gate import CurrentAccount, DeviceKey
-from ..preferences import PreferencesStore
+from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, over_cap
 from . import Decision
 
@@ -204,7 +204,9 @@ async def devise_afternoon(
     try:
         experience, spent = await devise_experience(
             capabilities=capabilities,
-            language=settings_of_the_house.language,
+            language=LANGUAGE_NAMES.get(
+                settings_of_the_house.language, settings_of_the_house.language
+            ),
             interests=settings_of_the_house.interests,
             avoid=settings_of_the_house.avoid,
             already=already,

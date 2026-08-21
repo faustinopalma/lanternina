@@ -28,6 +28,11 @@ VARIETY_CHOICES = tuple(str(value) for value in ContentVariety)
 # approved in another.
 LANGUAGE_CHOICES = ("it", "en")
 
+# The name for the code, for anything that puts the choice into a sentence. "Write it in
+# it." reads as a pronoun, and on 21 August 2026 that produced an afternoon in English for
+# a household set to Italian — an instruction the model could only ignore.
+LANGUAGE_NAMES = {"it": "Italian", "en": "English"}
+
 # A line on the e-paper display is about eight words wide at the size it is read at, so
 # anything above that would be a setting the hardware cannot honour.
 WORDS_PER_LINE_CHOICES = (3, 4, 5, 6, 7, 8)

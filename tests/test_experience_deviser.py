@@ -15,6 +15,7 @@ from typing import Any
 import pytest
 
 from agents.experience_deviser import MAX_EXPERIENCE_CHARS, ExperienceDeviser, experience_in
+from shared import experience, pagedesign
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import EXPERIENCE_FORMAT_VERSION, Collect, ExperienceError, HandOver
@@ -175,7 +176,7 @@ def test_what_the_house_has_and_what_the_parent_wrote_reach_the_prompt() -> None
 
     assert "show_800x480_1bit" in prompt
     assert "print_a4" not in prompt
-    assert "Write it in English" in prompt
+    assert "Write every word of it in English" in prompt
     assert "cats" in prompt and "spiders" in prompt
     assert "Un pomeriggio di nuvole" in prompt
 
@@ -210,6 +211,39 @@ def test_the_budget_is_asked_for_and_is_larger_than_a_continuation() -> None:
     _, router = devised(json.dumps(AN_AFTERNOON))
 
     assert router.asked.max_output_chars == MAX_EXPERIENCE_CHARS  # type: ignore[union-attr]
+
+
+def test_every_limit_that_refuses_a_document_is_stated_in_both_prompts() -> None:
+    """A limit the format enforces and the prompt does not mention is a refusal the model
+    had no way to avoid.
+
+    Found on the house on 21 August 2026: the first afternoon devised against the real
+    service came back with page instructions of 189 characters, refused at 160, and 160
+    appeared nowhere in the prompt. Both agents write pages, so both are checked here.
+    """
+    from agents.experience_continuer import _INSTRUCTION as CONTINUER
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for name, limit in (
+        ("a page title", pagedesign.MAX_TITLE),
+        ("page instructions", pagedesign.MAX_INSTRUCTIONS),
+        ("words printed on a page", pagedesign.MAX_WORDS),
+        ("a label", pagedesign.MAX_LABEL),
+        ("a heading", experience.MAX_HEADING),
+        ("a line", experience.MAX_LINE),
+        ("lines on a screen", experience.MAX_LINES),
+    ):
+        for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
+            assert str(limit) in prompt, f"{who} never tells the model {name} is {limit}"
+
+
+def test_the_deviser_states_the_limits_only_it_has() -> None:
+    """A whole afternoon has a title, an overview and a length; a continuation has none
+    of the three, because which afternoon it belongs to is settled already."""
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for limit in (experience.MAX_OVERVIEW, experience.MIN_MINUTES, experience.MAX_MINUTES):
+        assert str(limit) in DEVISER
 
 
 # ── What is refused ──────────────────────────────────────────────────────────────────

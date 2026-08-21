@@ -456,6 +456,41 @@ beginning of one, so a parent had no overview to approve because nothing produce
   approved. All three restored from copies taken first, and the test count checked to have
   risen by exactly the twenty-five that were added — 495 to 520.
 
+### Three defects the real service found, and the tests were not going to
+
+Deployed and called from the hub, three times, each refusal a different one. None of them
+was reachable by a test with the model stood in for, which is the point of running it.
+
+- **A limit the format enforces and the prompt never mentions is a refusal the model had
+  no way to avoid.** The first afternoon came back with page instructions of 189
+  characters, refused at 160, and 160 appeared nowhere in the prompt. Both agents write
+  pages and both had the same gap. What replaced it is a test that walks the limits and
+  asserts each number appears in both prompts, checked by removing one and watching it
+  fail.
+- **The id rule was stated as `<a-z0-9- , 2 to 32 chars>`**, which the model read as
+  permission for something else. Now it is a sentence: no capitals, no accented letters,
+  no underscores, no spaces, and written in English even when the afternoon is not, because
+  nobody reads them. The refusal also names the offending value now — "a moment id is
+  wrong" in a document with nine of them costs the reader the work of finding which.
+- **The prompt said "Write it in it."** The household stores a language *code*, and the
+  code went into an English sentence where "it" is a pronoun. The afternoon came back in
+  English for a house set to Italian, which is not a refusal at all: it succeeded and was
+  wrong. `LANGUAGE_NAMES` sits beside `LANGUAGE_CHOICES` now, and a test walks every choice
+  and asserts the name reaches the model and the code does not — so the next language added
+  cannot repeat it.
+
+Then it worked. **HTTP 200 in 29.1 s**, from the hub, with the equipment the house reports
+about itself: *Sei passaggi di una trasformazione* — an object in the room, six frames of a
+slow change on one sheet, words optional, blank allowed, and two closes that both end the
+afternoon without asking for an explanation. Stored pending. Nothing about a person in it,
+nothing counted, and no path that does not end.
+
+One thing neither devised afternoon did: use `ask`. The format allows a branch to be left
+unwritten and the prompt does not press for one, so a model that can see the whole
+afternoon writes the whole afternoon. That is not wrong — but the branch that makes an
+experience devised rather than precomputed is the one the deviser does not reach for, and
+whether to ask for it is a decision rather than a fix.
+
 ### What is not built, and is next
 
 1. **The parent has no page.** The two routes exist and are tested; there is nothing in

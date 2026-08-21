@@ -41,7 +41,14 @@ from shared.experience import (
     ExperienceError,
 )
 from shared.ids import new_request_id
-from shared.pagedesign import MAX_LABEL, MAX_READABLE, MIN_BOX_SIDE
+from shared.pagedesign import (
+    MAX_INSTRUCTIONS,
+    MAX_LABEL,
+    MAX_READABLE,
+    MAX_TITLE,
+    MAX_WORDS,
+    MIN_BOX_SIDE,
+)
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
 
@@ -57,14 +64,16 @@ _FORMAT: Final = (
     "Which afternoon this is and which moment it follows are known already and are not "
     "yours to write.\n"
     "A moment is one of these four, and carries no other key:\n"
-    '  {"act": "say", "id": "<a-z0-9- , 2 to 32 chars>", "heading": "<text>", '
-    '"lines": ["<text>"]}\n'
+    '  {"act": "say", "id": "...", "heading": "<text>", "lines": ["<text>"]}\n'
     '  {"act": "hand_over", "id": "...", "design": {"title": "<text>", '
     '"instructions": "<text>", "marks": [ ... ]}}\n'
     '  {"act": "collect", "id": "...", "outcomes": ['
     '{"when": "marks", "then": "<a later moment id, or ask>"}, '
     '{"when": "blank", "then": "<a later moment id, or ask>"}]}\n'
     '  {"act": "close", "id": "...", "heading": "<text>", "lines": ["<text>"]}\n'
+    "Every id — of a moment and of a mark — is 2 to 32 characters of lowercase a-z, digits "
+    "and hyphens. No capitals, no accented letters, no underscores and no spaces. Ids are "
+    "never shown to anybody, so write them in English even when the afternoon is not.\n"
     "A mark on a page is one of these four, and carries no other key:\n"
     '  {"mark": "words", "rect": {...}, "text": "<printed on the page>", '
     '"size_mm": 2.5 to 8.0}\n'
@@ -78,8 +87,10 @@ _FORMAT: Final = (
 
 _RULES: Final = (
     f"At most {MAX_MOMENTS} moments. A heading is at most {MAX_HEADING} characters, a "
-    f"line at most {MAX_LINE}, and there are at most {MAX_LINES} lines on a screen. A "
-    f"label is at most {MAX_LABEL} characters.\n"
+    f"line at most {MAX_LINE}, and there are at most {MAX_LINES} lines on a screen.\n"
+    f"On a page: its title is at most {MAX_TITLE} characters, its instructions at most "
+    f"{MAX_INSTRUCTIONS}, any words printed on it at most {MAX_WORDS}, and a label at "
+    f"most {MAX_LABEL}. These are refused, not trimmed.\n"
     "The last moment closes, or collects. An afternoon that does not say it is over is "
     "refused.\n"
     "An outcome leads to a moment later in your list, or says ask. It never leads "
