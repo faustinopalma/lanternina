@@ -12,15 +12,18 @@ approves one has not started anything.
 
 **The rhythm, and what it is not.** The parent chooses which days an afternoon may begin
 on and from what hour. The default is no day at all, so a house that has never been told
-begins none: the feature arrives switched off. On a chosen day, at or after the hour, the
-house looks once. That is one network call a chosen day, not one a minute.
+begins none: the feature arrives switched off. Every run reads that setting from the panel
+and almost every run stops there; on a chosen day, at or after the hour, the house looks
+once at what it may run.
 
 Three limits, each of them about the house and none of them about a person:
 
 * **One afternoon at a time.** Two sheets on the table from two afternoons is a house that
   has stopped making sense.
-* **One look a day.** The stamp is a date, not a tally. Nothing counts how many afternoons
-  happened, this week or ever, and there is no setting for how many there should be.
+* **One thing a day.** The stamp is a date, not a tally, and it is written when the house
+  does something — begins an afternoon, or asks for one. A run that finds nothing to do
+  because the parent has not decided yet stamps nothing, so a decision taken at four
+  o'clock is honoured at ten past rather than tomorrow.
 * **It has to fit.** An afternoon may begin only if its whole length is over before the
   house goes quiet. That is why nothing here has an end-hour setting: the pause the parent
   already chose is the end, and the afternoon's own ``minutes`` say whether it fits.
@@ -53,18 +56,13 @@ from shared.experience import Experience, ExperienceError
 # `devices/show_reminders.py` reads them, and a fourth spelling is a day nobody matches.
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 
-# What the house falls back on when it has never reached the panel: no day, so nothing
-# happens. A default that began an afternoon would be this program deciding something the
-# parent has not.
+# What the house falls back on when it cannot reach the panel: no day, so nothing happens.
+# That is not a degradation to be avoided — an afternoon is pulled from the panel, so a
+# panel that will not answer means there is nothing to begin whatever the rhythm says.
 NO_DAYS: tuple[str, ...] = ()
 DEFAULT_AFTERNOON_FROM = "15:00"
 DEFAULT_QUIET_FROM = "22:00"
 DEFAULT_QUIET_UNTIL = "07:00"
-
-# How stale the copy of the rhythm may get. The panel's API scales to zero, so reading it
-# every minute would hold a replica awake all day for an answer that changes once a month.
-# What it costs is freshness: a parent who changes the days is honoured within this.
-RHYTHM_MAX_AGE_SECONDS = 6 * 3600
 
 LOOK_TIMEOUT_SECONDS = 30
 # Devising a whole afternoon is a model writing a dozen moments. Measured from the hub on
@@ -112,7 +110,7 @@ def _day(now: float) -> str:
 
 
 def looked_today(stamp: Path, now: float) -> bool:
-    """Whether the house has already looked today.
+    """Whether the house has already done its one thing for today.
 
     The file holds a date, deliberately, and not a count. What it stops is a second
     afternoon on the same day and a devise request every ten minutes at a panel that is
@@ -128,24 +126,6 @@ def looked_today(stamp: Path, now: float) -> bool:
 def mark_looked(stamp: Path, now: float) -> None:
     stamp.parent.mkdir(parents=True, exist_ok=True)
     stamp.write_text(_day(now) + "\n", encoding="utf-8")
-
-
-def load_rhythm(path: Path, now: float) -> dict[str, Any] | None:
-    """The last rhythm the panel gave us, or None if there is none or it is too old."""
-    try:
-        if now - path.stat().st_mtime > RHYTHM_MAX_AGE_SECONDS:
-            return None
-        saved: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return None
-    return saved
-
-
-def save_rhythm(path: Path, rhythm: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(rhythm), encoding="utf-8")
-    temporary.replace(path)
 
 
 def _get(url: str, key: str, timeout: int) -> Any:
@@ -176,17 +156,21 @@ def read_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
     }
 
 
-def the_rhythm(panel: str, household: str, key: str, cache: Path, now: float) -> dict[str, Any]:
-    """The rhythm, from the copy on disk while it is fresh enough.
+def the_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
+    """The rhythm, read fresh on every run, or no day at all.
 
-    An unreachable panel and an empty cache mean no day at all, which is a house that does
-    nothing rather than a house that guesses.
+    There was a copy on disk here until 21 August 2026, kept for six hours so that the
+    panel's API could scale to zero between afternoons. It was wrong twice over. A parent
+    who turned afternoons on watched nothing happen and had nothing to tell them why —
+    measured that same evening, the days were saved at 15:21 and the house was still
+    deciding on a rhythm read at 14:02. And it bought nothing: the afternoon itself is
+    pulled from the panel, so a house that cannot reach it has nothing to begin however
+    fresh its idea of the days.
+
+    What it costs is one small request per run of the timer, so 144 a day rather than 4.
     """
-    saved = load_rhythm(cache, now)
-    if saved is not None:
-        return saved
     try:
-        fresh = read_rhythm(panel, household, key)
+        return read_rhythm(panel, household, key)
     except (urllib.error.URLError, OSError, ValueError) as exc:
         print(f"cannot read the rhythm ({exc}); no afternoon begins")
         return {
@@ -195,8 +179,6 @@ def the_rhythm(panel: str, household: str, key: str, cache: Path, now: float) ->
             "quietFrom": DEFAULT_QUIET_FROM,
             "quietUntil": DEFAULT_QUIET_UNTIL,
         }
-    save_rhythm(cache, fresh)
-    return fresh
 
 
 def its_moment(rhythm: dict[str, Any], now: time.struct_time) -> bool:
@@ -285,8 +267,7 @@ def main(argv: list[str] | None = None) -> int:
         device_key=key,
     )
     # Beside the runs rather than among them: `waiting_runs` reads every .json in
-    # `afternoons/` as an afternoon, so a cache file in there would be one.
-    cache = sheets_dir / "afternoon-rhythm.json"
+    # `afternoons/` as an afternoon.
     stamp = sheets_dir / "afternoon-looked.stamp"
     now = time.time()
 
@@ -297,7 +278,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"an afternoon is already under way: {', '.join(still_going)}")
         return 0
 
-    rhythm = the_rhythm(panel, household, key, cache, now)
+    rhythm = the_rhythm(panel, household, key)
     try:
         if not its_moment(rhythm, time.localtime(now)):
             return 0
@@ -311,19 +292,21 @@ def main(argv: list[str] | None = None) -> int:
     try:
         offered, waiting = what_the_house_may_run(panel, household, key)
     except (urllib.error.URLError, OSError, ValueError) as exc:
-        # Not stamped: the house did not manage to look, so it may look again in a minute.
         print(f"the panel did not say what this house may run ({exc})")
         return 0
-    # Stamped as soon as the look succeeded, and before anything else can fail. One look a
-    # day is the rule, so a printer that is off costs the afternoon rather than costing a
-    # sheet every ten minutes until somebody notices.
-    mark_looked(stamp, now)
 
     chosen = choose(offered, house)
     if chosen is None:
         if waiting:
+            # Nothing was spent and nothing was decided, so the day is not stamped: a
+            # parent who approves one of these in the next ten minutes is honoured today
+            # rather than tomorrow. What it costs is one small request every ten minutes
+            # for as long as an afternoon sits unread.
             print(f"{waiting} waiting for the parent; nothing to begin")
             return 0
+        # Stamped before the asking, not after: a panel refusing to devise would otherwise
+        # be asked again every ten minutes, which is 42 model calls in an afternoon.
+        mark_looked(stamp, now)
         try:
             title = ask_for_one(panel, household, key, house)
         except (urllib.error.URLError, OSError, ValueError) as exc:
@@ -334,6 +317,9 @@ def main(argv: list[str] | None = None) -> int:
 
     offered_id, experience = chosen
     minutes_now = time.localtime(now).tm_hour * 60 + time.localtime(now).tm_min
+    # Stamped either way: an afternoon that does not fit now fits less as the pause gets
+    # nearer, and one that is about to begin must not begin twice if the printer refuses.
+    mark_looked(stamp, now)
     if not fits_before_the_pause(
         minutes_now,
         experience.minutes,

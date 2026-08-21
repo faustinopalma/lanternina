@@ -549,10 +549,9 @@ Four decisions, each the answer to something that could have gone the other way.
   if the whole of its own `minutes` is over before the pause the parent already chose. The
   second setting would have been a second copy of the first, out of step with it within a
   week.
-- **One look a day, and the record of it is a date.** The stamp beside the runs holds
-  `2026-08-19` and nothing else. It stops two things: a second afternoon on the same day,
-  and a devise request every ten minutes at a panel answering 503 — measured worst case
-  without it, 42 calls between three o'clock and the pause. It is not a tally, there is
+- **One thing a day, and the record of it is a date.** The stamp beside the runs holds
+  `2026-08-19` and nothing else. It is written when the house does something — begins an
+  afternoon, or asks for one — and not when a run merely looks. It is not a tally, there is
   nothing for a tally to be about, and no setting says how many afternoons there should be.
 - **The house asks for one only when nothing is approved and nothing is with the parent.**
   So the answer to `GET /api/device/{h}/experiences` carries `waiting`, a count of
@@ -570,6 +569,28 @@ that is the only moment the runner is awake. Now there is a moment when somethin
 awake, so `forget_what_is_over` deletes such a run and the notes on its paper. Nothing is
 said to anybody: an afternoon that ran out of hours is over, which is what an afternoon
 nobody continued was always going to be.
+
+### Two defects the first evening found, both about a house that says nothing
+
+The clock was written with a copy of the rhythm on disk, six hours old at most, so that the
+panel's API could scale to zero between afternoons. Within the hour it produced the failure
+it was built to avoid a smaller version of: **the days were saved at 15:21 and the house was
+still deciding on a rhythm read at 14:02**, so the parent switched afternoons on and watched
+nothing happen, with nothing anywhere to say why. The cache also bought nothing, which is
+the part worth keeping in view — the afternoon itself is pulled from the panel, so a house
+that cannot reach it has nothing to begin however fresh its idea of the days. It is gone.
+Every run reads the rhythm: 144 small requests a day rather than 4, 0.33 s each measured
+from the hub.
+
+The second was the same shape one level down. The day's stamp was written as soon as the
+look succeeded, so a run that found only "two afternoons are with the parent" used up the
+day — and an afternoon approved five minutes later would have waited until tomorrow. The
+stamp now marks doing something rather than looking. What that costs is one small request
+every ten minutes for as long as something sits unread, and what it buys is that a decision
+taken at four o'clock is honoured at ten past.
+
+Both were found by running it, not by a test, and both are the same mistake: optimising the
+quiet path of a system whose whole job is to act rarely and visibly.
 
 ### `ask`, and what it is worth
 

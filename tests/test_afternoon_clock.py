@@ -100,6 +100,24 @@ def test_the_stamp_holds_a_date_and_not_a_tally(tmp_path: Path) -> None:
     assert stamp.read_text(encoding="utf-8").strip() == "2026-08-19"
 
 
+def test_a_run_that_found_nothing_to_do_does_not_use_up_the_day(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """An afternoon approved at four o'clock begins at ten past, not tomorrow. Nothing was
+    spent on a run that only found the parent had not decided yet."""
+    offered: list[dict[str, Any]] = []
+    calls = a_panel(monkeypatch, offered=offered, waiting=1)
+
+    a_turn(monkeypatch, house, WHEN)
+    assert not (house.sheets_dir / "afternoon-looked.stamp").exists()
+
+    offered.append(offered_row())
+    a_turn(monkeypatch, house, WHEN + 600)
+
+    assert calls["looked"] == 2
+    assert calls["begun"] == ["aftn-1"]
+
+
 # ── What the runner leaves behind, and who clears it ─────────────────────────────────
 
 
@@ -282,4 +300,23 @@ def test_no_second_afternoon_begins_while_one_is_under_way(
     a_turn(monkeypatch, house, WHEN + 600)
 
     assert calls["looked"] == 1
+    assert len(waiting_runs(house.sheets_dir)) == 1
+
+
+def test_a_parent_who_turns_afternoons_on_is_honoured_by_the_next_run(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """There was a copy of the rhythm on disk here, kept for six hours. The days were
+    saved at 15:21 on 21 August 2026 and the house was still deciding on a rhythm read at
+    14:02 — nothing happened, and nothing said why."""
+    chosen: dict[str, Any] = a_rhythm(afternoonDays=[])
+    calls = a_panel(monkeypatch, offered=[offered_row()], rhythm=chosen)
+
+    a_turn(monkeypatch, house, WHEN)
+    assert waiting_runs(house.sheets_dir) == []
+
+    chosen["afternoonDays"] = [THAT_DAY]
+    a_turn(monkeypatch, house, WHEN + 600)
+
+    assert calls["begun"] == ["aftn-1"]
     assert len(waiting_runs(house.sheets_dir)) == 1

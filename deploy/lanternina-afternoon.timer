@@ -2,11 +2,14 @@
 Description=Look, once on each day the parent chose, for an afternoon to begin
 
 [Timer]
-# Every ten minutes, and almost every run does nothing at all: it reads a cached copy of
-# the rhythm off the disk, sees that today is not a chosen day or that the hour has not
-# come, and stops without touching the network. The one run that matters makes one call.
-# Ten minutes rather than one because nothing here is due to the minute — the hour an
-# afternoon may begin is a threshold, not an appointment.
+# Every ten minutes. Each run asks the panel for the days and the hours the parent chose —
+# one small request, 0.33 s measured on 21 August 2026 — and almost every run stops there,
+# because today is not a chosen day or the hour has not come. The expensive look, at what
+# this house may actually run, happens once on a chosen day.
+#
+# Ten minutes rather than one because nothing here is due to the minute: the hour an
+# afternoon may begin is a threshold, not an appointment. It is also what a parent waits
+# after switching afternoons on before anything can happen.
 OnCalendar=*:0/10:00
 AccuracySec=30s
 Persistent=true
