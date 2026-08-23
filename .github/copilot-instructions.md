@@ -15,6 +15,9 @@ anything down, and drift in it does not get noticed until it has done harm.
 
 ## 1. Still binding — these are about the adolescent, not about code quality
 
+The same lines are stated at more length, for a reader, in `docs/NON-GOALS.md`. Neither is
+generated from the other: revising one means revising the other.
+
 - **The parent is the point, not a bottleneck to remove.** Never propose a feature whose
   value is "the parent no longer has to think about this".
 - **Never build**: streaks, daily goals, "don't break the chain", variable reward

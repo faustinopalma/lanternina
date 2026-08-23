@@ -13,6 +13,10 @@ differences in preference, communication or performance into labels about the pe
 If you fork this project, these are the lines that make it Lanternina rather than a
 different project with the same name.
 
+The rules an agent works under are in `.github/copilot-instructions.md`, which states the
+same lines more briefly. Neither is generated from the other: revising one means revising
+the other.
+
 ---
 
 ## The camera does not look at people
