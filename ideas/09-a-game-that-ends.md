@@ -4,9 +4,13 @@
 devising agent, the runner, the clock. This file is a design for the same afternoon, taken
 further than anything built so far, and it is not a decision. It was written outside this
 repository as five documents — an architecture, a generation prompt, a JSON schema, an
-executor contract and a validator — and the raw source is kept in `_reference/afternoon-game/`,
-in Italian, out of git. What follows is what survived reading it against
-`shared/experience.py`, which is the contract that actually runs.
+executor contract and a validator, 51 KB in Italian — and the raw source is kept in
+`_reference/afternoon-game/`, out of git.
+
+This is meant to stand in for that source rather than summarise it: everything from it that
+bears on what gets built is here, read against `shared/experience.py`, which is the contract
+that actually runs. The one thing deliberately not carried across is its JSON schema, and
+§18 says why.
 
 The single idea underneath all of it: **an afternoon must be unable to end badly**, and
 the way to get that is not care at runtime but structure decided before the afternoon
@@ -220,7 +224,143 @@ the short branch, the next one starts there. That is `§1` of the working rules 
 may learn from what happens — and it stays on the right side of the line as long as it
 appears in no text, is never called calibration, and is not shown anywhere.
 
-## 11. Where this disagrees with what is built
+## 11. One agent while it runs, decomposed by function and not by concurrency
+
+Across an afternoon there are thirty to eighty real events, one every several minutes.
+There is no concurrency to exploit. More agents at run time add only surfaces on which to
+lose the thread: two voices writing the same character diverge within hours.
+
+So the split is by function inside one loop, not by parallelism. The deterministic part
+holds the moments, the timers, the counters, the print queue and the trigger for the
+ending. The model proposes; the state machine disposes. The practical gain is that a
+connection dropping halfway through an afternoon does not stop it: the timers keep running
+locally, and every moment with pre-written text stays runnable with no model at all.
+
+This is not what `agents/` looks like today, and it does not have to be: devising can stay
+as many agents as it likes, because it happens once and offline. The rule is about the
+running afternoon.
+
+## 12. What the model may invent, and the points where it is called
+
+"Poetic licence" with no stated boundary is not freedom, it is drift. The boundary:
+
+**It may invent** the character's words inside the tone the plan fixes; the text of a
+display that was not pre-written, within the length limit; the reading of what came back
+off the glass or out of the camera; a detail of colour that adds no new task; which weight
+to take on entering a moment; and a re-wording of help for somebody who has already seen it.
+
+**It may not invent** new moments, new objects to build, new rules, new conditions for
+going on, or an ending other than the one written.
+
+The call points are few and each one is separate:
+
+| Called for | Gives back |
+| --- | --- |
+| A page or object that came back | a narrative hook, and acceptance that is never refusal |
+| A photograph | a prompt for the image, and a caption that does not describe it |
+| Entering a moment | which of the three weights |
+| A text slot not pre-written | the words, inside the tone |
+| An ambiguous parent message | which typed message it is, if free text is kept at all |
+
+Everything else is code: help escalation, transitions, replanning, printing, the ending,
+the pause.
+
+**Each call gets the minimum context it needs.** If every event makes the model re-read
+everything and decide again, it reopens decisions already taken and the afternoon
+oscillates. That is a specific failure with a specific cause, and it is cheaper to avoid by
+construction than to detect.
+
+## 13. What wins when two things disagree
+
+In order, and the order is the whole point:
+
+1. The invariants of §14.
+2. The household's own constraints: what it will not have, what is not in the house, which
+   rooms are out.
+3. What the parent sent.
+4. The text written in the plan.
+5. What the model proposed.
+
+When a parent's message is ambiguous, or pulls against the ending arriving safely, the
+reading that leads to a complete and shorter conclusion is the one taken.
+
+## 14. The invariants, as a list to check against
+
+These are not requests to a model. They are properties the code applies: if what comes back
+violates one, the runner drops it and uses the fallback written in the plan.
+
+| # | Property | Where it is applied |
+| --- | --- | --- |
+| 1 | The ending always arrives, before the end hour | the trigger in code, never a model's decision |
+| 2 | There is no terminal state that is a failure | the graph has no end node but the ending |
+| 3 | Nothing is asked for that this house cannot receive | the set of possible inputs is closed |
+| 4 | Nothing comments on how the person is doing | the filter on every text going out |
+| 5 | Every moment has a way out under twenty minutes | checked before saving |
+| 6 | Asking for help works in every moment | help belongs to the runner, not to the moment |
+| 7 | No moment is repeated or redone | transitions only move forward |
+| 8 | The parent's channel is never revealed | no generated text may carry a trace of it |
+| 9 | Every photograph is accepted | there is no rejected-photograph branch |
+| 10 | At most one change of weight every two moments | a counter in the runner |
+| 11 | After the last help level the moment is over | a timer in the runner, and no further wait |
+| 12 | Nothing already printed is printed again | the record of what was printed |
+
+## 15. When a device is missing
+
+The printer is the single point of failure of an afternoon made largely of paper: the toner
+runs out at 15:30 and everything stops.
+
+- The printer is asked whether it is well **before the afternoon starts**, not at the first
+  failure.
+- Every moment carries the version of itself that runs without printing, with its text
+  already written and checked. Not error handling improvised by a model at the moment it
+  fails.
+- A plan whose moments do not all carry that version is refused before it is saved.
+
+## 16. The ten dimensions, and what the written text has to be like
+
+Variety is drawn along ten dimensions, and recording which was drawn is what makes the
+non-repetition of §10 checkable: frame, the person's role, the mechanic, how it progresses,
+what the paper is for, what the glass is for, what the displays are for, what the camera is
+for, the tone, and the shape of the ending. The source lists a dozen candidates under each
+and says two useful things about drawing from them: never take the option that comes first
+or that would be the default, and when a combination does not hold together, redraw one
+dimension rather than all of them.
+
+It also names what to refuse by default, because they are what a model reaches for: pirate
+treasure hunts, escape rooms with a countdown, question-and-answer quizzes, murder
+mysteries, apocalypses, and the computer that has gone mad.
+
+What the text itself must be like, and these are the lines that are easy to lose:
+
+- One instruction at a time, saying what to do, with what, and where.
+- Everything that matters exists on two surfaces — a sheet and a screen, or a screen and a
+  button — so that missing one is not missing it.
+- Nothing asks for speed, fine dexterity, strength, reading aloud, a phone call, going
+  outside, or a specific thing learnt at school.
+- Every action moves the story on. An approximate answer is taken as a valid one: what is
+  recognised is the intention, not the precision.
+- The register is for an adolescent — never childish, never school-like, never a tutorial.
+  No remark on how the person did, and no question about themselves.
+- **The plan does not contain its own reasons.** No reference to difficulty, to
+  simplification, to adapting, to age, or to anything about the person. The text has to read
+  as good design for anybody, because that is what it is.
+
+## 17. Two things this design leaves open
+
+**Who holds the button for help.** The source fixes one of three buttons as the help button
+for the whole game, unchanging. Here a button belongs to a display, and there are two
+displays. Either help moves to a surface that is always there, or an afternoon declares
+which button it is and the runner enforces it for the duration.
+
+**Whether approval stays where it is.** The source keeps approve-every-time as the default
+but warns that it makes an afternoon depend on the parent being available at an unplanned
+moment, and that the real risk is that nothing ever starts. Its answer is that the move to
+running unattended should be something the system *proposes* after several afternoons that
+ended well, not a setting buried in a page. That is in tension with the rule that the parent
+approves, which is not up for quiet erosion. It is written here because leaving it unsaid
+would let it arrive later as a convenience.
+
+## 18. Where this disagrees with what is built
 
 Stated rather than smoothed over, because these are the places where taking the design
 whole would break something that works.
@@ -239,7 +379,7 @@ whole would break something that works.
   are not games. The parts about tone and endings are about the afternoon, not about
   everything.
 
-## 12. Where it starts, done when, what it costs
+## 19. Where it starts, done when, what it costs
 
 **Where it starts.** `shared/experience.py` for the contract and its reader.
 `agents/experience_deviser.py` for the prompt already measured at 29.1 s from the hub.
