@@ -6,7 +6,7 @@ from shared.domain import ContentVariety, Difficulty, LearnerProfile
 from shared.ids import LearnerId
 
 
-def test_prompt_hints_include_explicit_variety_without_identity() -> None:
+def test_prompt_hints_are_choices_and_not_a_measurement() -> None:
     profile = LearnerProfile(
         id=LearnerId("learner-local"),
         display_name="Local name",
@@ -19,6 +19,4 @@ def test_prompt_hints_include_explicit_variety_without_identity() -> None:
 
     assert hints["content_variety"] == "frequent"
     assert hints["difficulty"] == "steady"
-    assert "id" not in hints
-    assert "display_name" not in hints
     assert "performance" not in hints

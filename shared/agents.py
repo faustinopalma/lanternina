@@ -35,7 +35,7 @@ class AgentContext:
 
     router: ModelRouter
     learner_id: LearnerId
-    # Redacted hints only — see LearnerProfile.prompt_hints(). Never the full profile.
+    # What LearnerProfile.prompt_hints() returns; no wider field has been asked for yet.
     learner_hints: dict[str, Any]
     now: float
 

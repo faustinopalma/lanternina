@@ -1,8 +1,9 @@
 """Core domain objects.
 
-Everything here stays on the mini-PC. The only things permitted to leave the device are
-content-generation prompts and rectified page crops (see docs/THREAT-MODEL.md), so nothing
-in this module may be embedded in a model prompt without being explicitly redacted first.
+These live on the hub. Nothing here is barred from a model prompt: the cloud tier holds
+personal material on the same terms as the house (see docs/THREAT-MODEL.md).
+``LearnerProfile.prompt_hints`` is what callers send today because it is the only subset
+anyone has asked for.
 """
 
 from __future__ import annotations
@@ -63,7 +64,8 @@ class LearnerProfile:
     language: str = "it"
 
     def prompt_hints(self) -> dict[str, Any]:
-        """The redacted subset that may be sent to a model. No name, no id."""
+        """What callers send today: the content settings, and neither name nor id — because
+        no wider field has been asked for, not because one may not be sent."""
         return {
             "interests": list(self.interests),
             "avoid": list(self.avoid),

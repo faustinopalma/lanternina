@@ -274,8 +274,8 @@ class AskModel:
     written in prose, and the closed vocabulary would be closed only on paper. What it
     carries instead is which of the named things it wants and, at most, a topic — the same
     surface ``ContentAgent.propose_exercise`` already exposes. Everything else about the
-    request comes from the household's own settings, which never leave the house except as
-    the redacted hints ``prompt_hints()`` lets out.
+    request comes from the household's own settings, which reach a model as the hints
+    ``prompt_hints()`` returns.
 
     Neither hand-written experience uses this verb, and the runner on the hub refuses it:
     generating content centrally is the next entry in ideas/07, not this one.

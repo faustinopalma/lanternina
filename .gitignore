@@ -2,7 +2,7 @@
 # Lanternina — .gitignore
 #
 # This repository will be public. Two categories below are not "untidy files",
-# they are things that must never leave the device:
+# they are things that must never enter a git history nobody can recall:
 #   (1) key material — the sealing keys are what make the safety and approval
 #       guarantees real; a leaked key lets anyone forge approved content;
 #   (2) anything about the learner — scans of her work, her profile, her

@@ -30,7 +30,7 @@ non-goals structural rather than aspirational.
        │ single shot, button press                              ▼
    desk camera                                    e-paper / LCD / printer
                                                                  
-       └────────────── only prompts + page crops ──────────▶ Azure AI Foundry
+       └──────────────── prompts and page crops ──────────▶ Azure AI Foundry
 ```
 
 `shared/` holds types and protocols and nothing else. Everything else depends on it; it
@@ -59,8 +59,9 @@ Concentrating it buys three things that are hard to get otherwise:
   the content-safety chokepoint would be one forgotten call away from being bypassed.
 - **Degradation is uniform.** The fallback ladder lives in one place instead of being
   re-implemented, differently and worse, at each call site.
-- **Redaction is uniform.** The rule "a name never enters a prompt" is enforceable when
-  there is one function that builds prompts.
+- **What a prompt carries is decided once.** The rule that kept a name out of a prompt is
+  gone, but the reason for a single builder is not: whatever a prompt may include is
+  decided in one place rather than at each call site.
 
 The router exposes two methods with deliberately different return types:
 

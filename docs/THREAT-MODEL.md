@@ -8,6 +8,12 @@ doing something nobody decided it should do.
 Scope: the mini-PC, the ESP32 devices, the camera, the printed sheets, the parent panel,
 and the Azure services the router calls.
 
+Personal material may be processed in the cloud tier and not only in the house. That was
+decided on 23 August 2026: the tier runs in the EU and is held to the confidentiality a
+bank owes the records it keeps. That is a standard this model assumes of it, not one it
+verifies. What follows is therefore about who can reach the data, not about which side of
+the boundary it sits on.
+
 ---
 
 ## Assets, in priority order

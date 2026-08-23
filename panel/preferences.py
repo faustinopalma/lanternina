@@ -5,10 +5,10 @@ generated so far was tuned to a person who does not exist. They live here for th
 reason the rhythm does: the parent writes them, the hub reads them on its next run and
 decides for itself, and saving them starts nothing.
 
-What is stored is exactly the redacted subset `LearnerProfile.prompt_hints()` lets out of
-the device. There is no field here for a name or an id, and no route that could carry
-one: the hub holds them and never sends them up. Keeping the field list identical is what
-keeps the separation between household and person from dissolving into a text field.
+What is stored is exactly the field list `LearnerProfile.prompt_hints()` returns. There is
+no field here for a name or an id, and no route that carries one — not because the panel
+may not hold one, but because nothing has needed it yet. Keeping the two lists identical is
+what keeps household settings and person from dissolving into one text field.
 """
 
 from __future__ import annotations

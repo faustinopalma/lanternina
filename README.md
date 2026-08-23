@@ -179,11 +179,15 @@ pretends to work.
 ## Privacy
 
 No personal data is in this repository and none should ever be added — not in fixtures,
-tests, screenshots or example configuration. Demo material is synthetic.
+tests, screenshots or example configuration. Demo material is synthetic. The repository is
+public and a git history cannot be recalled.
 
-At runtime, only two things leave the device: content-generation prompts and rectified page
-crops. No full camera frames, no identifiers, no profile, no history, and no name in a
-prompt. See [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+Where the system processes what it holds is a separate question, and the answer changed on
+23 August 2026: the cloud tier runs in the EU and is treated as holding personal material
+on the same terms as the house, so a prompt may carry a name, a profile, or what came back
+before. One limit stays, and it is about the camera rather than the cloud: only the
+rectified page crop inside the four markers is kept or sent, never a full frame. See
+[docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
 
 ## Licence
 

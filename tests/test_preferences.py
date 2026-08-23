@@ -120,9 +120,9 @@ def test_a_setting_that_cannot_be_honoured_is_refused(body: dict[str, object]) -
     )
 
 
-def test_a_name_has_no_way_in() -> None:
-    """An unknown field is refused rather than dropped: a body carrying a name would
-    otherwise be accepted and quietly ignored, which reads exactly like working."""
+def test_an_unknown_field_is_refused_rather_than_dropped() -> None:
+    """A body carrying a field the settings do not have would otherwise be accepted and
+    quietly ignored, which reads exactly like working."""
     client = client_for()
     refused = client.post(
         "/api/preferences",
@@ -137,9 +137,9 @@ def test_a_name_has_no_way_in() -> None:
 
 
 def test_the_panel_holds_exactly_the_fields_a_prompt_may_carry() -> None:
-    """`prompt_hints()` is the redacted subset. The settings must be that subset and no
-    more: a field here that is not a hint is a field with no way to reach a model, and a
-    field here that identifies a person is the separation gone."""
+    """The settings and `prompt_hints()` are one list. A field here that is not a hint has
+    no way to reach a model; a hint the panel does not hold cannot be set by anybody. If
+    the hints grow, this fails until the panel grows with them."""
     bookkeeping = {"household_id", "updated_at", "updated_by"}
     renamed = {"variety": "content_variety"}
     held = {renamed.get(row.name, row.name) for row in fields(Preferences)} - bookkeeping

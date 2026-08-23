@@ -17,8 +17,8 @@ Three things it is held to, and each one is checked here rather than asked for p
 * **What it produces is a proposal.** It reaches nobody until a parent has approved it,
   and the words on it went through the gate on the way out of the router.
 
-The prompt describes the material, not a person. What it may carry about the household is
-what ``prompt_hints()`` lets out — the same list every other agent gets.
+The prompt describes the material. What it carries about the household is what
+``prompt_hints()`` returns — the same list every other agent gets.
 """
 
 from __future__ import annotations

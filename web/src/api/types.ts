@@ -140,8 +140,8 @@ export interface NewRhythm {
   afternoonFrom: string;
 }
 
-/** Exactly the fields `prompt_hints()` lets out of the house. There is no field for a
- *  name, here or on the route, which is what keeps it out of a model prompt. */
+/** Exactly the fields `prompt_hints()` returns. There is no field for a name, here or on
+ *  the route, because nothing has needed one yet. */
 export interface NewPreferences {
   interests: string[];
   avoid: string[];
