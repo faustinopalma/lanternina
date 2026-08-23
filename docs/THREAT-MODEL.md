@@ -69,17 +69,7 @@ The parent approval gate is the backstop — nothing generated is delivered unre
 
 **Residual risk:** the framing guarantee is physical until the frame-fill check lands.
 
-## T4 — Data leaving the house
-
-| Vector | Mitigation |
-| --- | --- |
-| Learner data in a prompt | Only `LearnerProfile.prompt_hints()` is sendable: interests, avoid-list, difficulty, language. No name, no id, no history |
-| Full frames sent to a model | `PageImage` accepts a rectified crop; `RawFrame` has no path to bytes |
-| Learner data committed to a public repo | `.gitignore` excludes `data/`, `captures/`, all image types, all `*.local.*`; fixtures are synthetic |
-| Cloud-hosted panel exposing proposals and scans | The panel is LAN-bound; hosting it externally is out of scope |
-| Telemetry or crash reporting carrying content | None collected |
-
-## T5 — Key and credential compromise
+## T4 — Key and credential compromise
 
 | Vector | Mitigation |
 | --- | --- |
@@ -92,7 +82,7 @@ The parent approval gate is the backstop — nothing generated is delivered unre
 **Rotation:** rotating a sealing key invalidates every existing approval. That is correct —
 the parent re-approves rather than inheriting state nobody can verify.
 
-## T6 — Local network and devices
+## T5 — Local network and devices
 
 The mini-PC and the ESP32s share a home LAN with phones, TVs and guests.
 
@@ -106,7 +96,7 @@ The mini-PC and the ESP32s share a home LAN with phones, TVs and guests.
 This is the weakest area today, and the weakness matters: the device transport delivers
 text to a screen an adolescent reads.
 
-## T7 — Availability
+## T6 — Availability
 
 Not a security threat, but a harm.
 

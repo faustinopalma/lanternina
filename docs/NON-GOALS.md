@@ -45,22 +45,14 @@ The only trigger is a physical button press.
 
 ## Nothing here is a verdict about a person
 
-The system may learn from what it sees. That is not in question here, and was settled on
-19 August 2026: a system that cannot change what it offers on the basis of what came back
-is a fixed system, and a fixed system is the more likely failure. What follows bounds what
-it may conclude, not whether it may adapt.
+The system may learn from what it sees. A system that cannot change what it offers on the basis of what came back is a fixed system, and a fixed system is the more likely failure. What follows bounds what it may conclude, not whether it may adapt.
 
 - **No assessment or diagnostic function.** This system does not screen, evaluate, or
   characterise cognitive ability, and will not manufacture a proxy for a diagnosis.
-- **No scores, grades, ranks, percentages, ability estimates, mastery levels, or progress
-  trends.** Not stored, not computed, not displayed, not sent to a model. What may be kept
-  is what happened — this cell was empty, this took four minutes, this topic came back
-  untouched twice. The difference is not cosmetic: one is a record, the other is a claim
-  about a person, and only the first can be checked against the paper it came from.
 - **No judgement reaching anybody.** Adaptation happens inside; it does not surface as a
   statement about how somebody is doing, on a display, on paper, or in the parent's panel.
   The parent sees what the system proposes to offer, and can refuse it.
-- **No comparison** to peers, to norms, to age expectations, or to a person's own past.
+- **No comparison** to peers, to norms, to age expectations.
 
 Vision output describes ink on paper: "cell 3 is empty", "cell 4 has a mark". What that
 means, if anything, is for the parent to decide.
@@ -93,17 +85,6 @@ consequence and no follow-up.
 - **No dashboard-triggered work.** A parent write persists state and returns. It does not
   call a model, enqueue generation, notify or wake the home server, or schedule work for
   later. Only the home server can initiate processing, when it chooses to make a request.
-
-## Data does not leave the house
-
-- **No learner data in the cloud.** The profile, the routines, the history and the scanned
-  pages stay on the mini-PC. Only content-generation prompts and rectified page crops are
-  sent to Azure.
-- **No personal identifiers in model prompts.** Not a name, not an id, not a history.
-- **No telemetry, analytics, or crash reporting** that carries anything about a person.
-- **No learner data in this repository** — not in fixtures, tests, screenshots,
-  documentation, or example configuration. Demo material is synthetic.
-- **No account for the adolescent.** They do not sign in to anything.
 
 ## Open, deliberately
 
