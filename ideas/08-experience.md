@@ -644,6 +644,9 @@ local build produced, since Vite names a bundle after its own content.
 2. **A parent cannot see an afternoon that is running.** The panel shows offered, approved
    and begun; where a run has got to lives only on the hub, and there is no route in that
    direction on purpose. Whether there should be is a decision, not an omission.
+   Decided since: there is none, and the reason is in
+   [09 §8](09-a-game-that-ends.md) and now in `docs/NON-GOALS.md`. The person who did the
+   thing is the only source on how it went.
 3. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a
    day in the panel, and picking one is the first thing the page of this section exists for.
    Everything below `§7` is otherwise tested with the panel stood in for.

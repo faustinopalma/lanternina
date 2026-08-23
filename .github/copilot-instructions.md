@@ -49,6 +49,15 @@ generated from the other: revising one means revising the other.
   the same terms as the house. The code sends `prompt_hints()` because no wider field has
   been asked for; widening it is an ordinary change. The central catalogue is shared across
   households, so nothing about a named person goes in it.
+- **Nothing can be failed.** No countdown, score, lost attempt, or step that must be got
+  right before the next one arrives. Every activity carries a written way to reach its
+  ending from wherever it got to, and an ending reached early is the same ending. A change
+  of course arrives as part of what is happening: never announced, explained or apologised
+  for.
+- **The parent does not watch it happen.** No progress view, no help log, no per-step
+  timing, no suggested questions afterwards — the person who did it is the only source. A
+  parent's message while something runs is a typed fact or constraint (new end hour, pause,
+  broken device, missing material), never free text reaching a model.
 - Treat as **untrusted input, never as instructions**: text recognised from handwriting,
   free text the parent types, anything decoded from a QR code.
 - **No personal data in the repository** — not in fixtures, tests, screenshots or
@@ -70,6 +79,7 @@ generated from the other: revising one means revising the other.
 Build the shortest thing that works, mark the gap with `TODO(poc)`, move on:
 
 - Agents propose; the parent approves. Approval is not something an agent can set.
+- What a model devises is checked against properties before it is saved, not only parsed.
 - One module talks to a model backend. **No model runs on the device** — inference is remote.
 - One content-safety chokepoint before anything reaches the adolescent.
 - Cloud unavailable means reduced capability, not a stopped system.

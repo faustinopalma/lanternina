@@ -26,6 +26,7 @@ among themselves; no file has been re-ranked as a whole since.
 | [06-capture.md](06-capture.md) | The capture station, and what it is made of |
 | [07-catalogue.md](07-catalogue.md) | Experiences designed once, for every house |
 | [08-experience.md](08-experience.md) | An experience devised and run in the house, over an afternoon |
+| [09-a-game-that-ends.md](09-a-game-that-ends.md) | The same afternoon designed further: weights, a way out of every moment, checks before saving |
 
 ## Where to start
 

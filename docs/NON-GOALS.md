@@ -29,6 +29,12 @@ the other.
   from text, from timing, or from anything else.
 - **No gaze or eye tracking.**
 - **No biometrics** of any kind.
+- **No description or assessment of a photograph.** Where an activity invites somebody to
+  photograph something, the picture is transformed into something else — never described
+  ("I see a chair"), never judged ("nice framing"). No recognisable face is returned to a
+  display, no original outlives the session, and no photograph appears in the parent's
+  panel. A photograph of something irrelevant is accepted and transformed like any other,
+  with no comment and no correction.
 
 The camera is on a fixed arm at 90° over a sheet of paper, with a field of view narrow
 enough that nobody's face is in frame. The software backs this up: if the ArUco quadrilateral
@@ -76,6 +82,40 @@ means, if anything, is for the parent to decide.
 
 Stopping is a legitimate outcome. Every activity can be abandoned at any point with no
 consequence and no follow-up.
+
+## Nothing here can be failed
+
+- **No countdown, no score, no lost attempt**, and no step that has to be got right before
+  the next one arrives.
+- **No ending that reports how it went.** An activity that reached its ending early and one
+  that reached it in full finish the same way, with the same object and the same closing,
+  and neither refers to what was not seen.
+- **No announcement that the system adapted.** A change of course arrives as part of what
+  is happening. The system does not explain it, apologise for it, or ask whether it is all
+  right.
+
+Every activity that starts carries a written way to reach its ending from wherever it has
+got to. That is a property of the plan, checked before anybody sees it, rather than care
+taken while it runs.
+
+## The parent does not watch it happen
+
+The person who did the thing is the only source on how it went. This is a product choice
+and not a missing feature: if the parent already knows, the question at dinner becomes a
+check, and the account loses its worth.
+
+- **No progress view.** Not step by step, not which help was given, not what came back off
+  the glass, not how long each part took.
+- **No list of questions to ask afterwards.** That is the same monitor written as prose,
+  and the person would work out that the parent had been told.
+- **No judgement on the live channel.** What a parent sends while something is running is a
+  fact or a constraint — a new end hour, a pause, a broken printer, a missing material — as
+  a typed message rather than free text. A sentence about how somebody is doing would enter
+  the tone of everything written after it.
+
+What the parent does see: whether it is running, how long is left, the controls, and any
+device that has failed. Before it starts, an overview of what was devised, with the ending
+behind an explicit click. Afterwards, one line about what was made.
 
 ## The system does not replace the parent
 
