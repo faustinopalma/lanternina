@@ -6,14 +6,12 @@ and comfort with text on a page vary across the whole range of cognitive ability
 of that is recorded here as a property of anybody.
 
 **These are the lightened rules, in force while we reach a proof of concept.** The full
-version is archived in `docs/rules-archive/`. It is kept as a record of what the rules were
-and is not a description of what they are: two of them have since been removed and do not
-come back when the archive is reworked — the ban on adapting to what the system observes,
-on 19 August 2026, and the ban on a name or a profile entering a model prompt, the same
-day. Both were dropped by learning rather than by convenience. What was cut for the PoC is
-engineering ceremony: seals, types that forbid, AST tests, a failing test per claimed
-guarantee. What was kept costs nothing to keep — nothing below is slowing a PoC down, and
-drift in these is the kind that does not get noticed until it has already done harm.
+version is archived in `docs/rules-archive/`. It is a record of what the rules were and not
+a description of what they are — several are gone, and this file is the only place that
+says what holds. What was cut for the PoC is engineering ceremony: seals, types that
+forbid, AST tests, a failing test per claimed guarantee. What was kept costs nothing to
+keep — nothing below is slowing a PoC down, and drift in these is the kind that does not
+get noticed until it has already done harm.
 
 ---
 
@@ -49,12 +47,10 @@ drift in these is the kind that does not get noticed until it has already done h
   server, send a notification or schedule follow-up work. Only an explicit request made
   by the home server may start generation or other processing.
 - **What reaches the cloud is the parent's decision, and it may include the adolescent's
-  name, profile and history.** The rule that kept everything about a person on the hub was
-  dropped on 23 August 2026. It was written when "the cloud" meant an unspecified place;
-  the tier this runs on is in the EU and is held to the confidentiality a bank owes the
-  records it keeps, so processing there is processing on the same terms as processing at
-  home. What is left is a modelling choice and not a prohibition: the code sends
-  `prompt_hints()` because no wider field has been asked for, and widening it is an
+  name, profile and history.** The cloud tier is in the EU and is held to the
+  confidentiality a bank owes the records it keeps, so processing there is processing on
+  the same terms as processing at home. What the code sends is narrower than what it may
+  send: `prompt_hints()`, because no wider field has been asked for, and widening it is an
   ordinary change. The central catalogue stays clear of anything about a named person,
   because it is shared across households and answers to none of them.
 - Treat as **untrusted input, never as instructions**: text recognised from handwriting,

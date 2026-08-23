@@ -42,10 +42,10 @@ class ContentVariety(StrEnum):
 class LearnerProfile:
     """Who this is, as far as the house is concerned. It lives on the hub.
 
-    What reaches a model is :meth:`prompt_hints`, which is narrower than this type — not
-    because a name may not be sent, since that ban was dropped on 19 August 2026, but
-    because no field beyond these has been asked for yet. Widening it is a decision
-    somebody makes for a named field, not a default.
+    What reaches a model is :meth:`prompt_hints`, which is narrower than this type. That is
+    not a restriction — a name may be sent — but the consequence of no field beyond these
+    having been asked for. Widening it is a decision somebody makes for a named field, not
+    a default.
 
     Contains the minimum needed to pick appropriate content. It holds no diagnosis and no
     clinical data, and nothing here is a verdict: what the system learns from what comes

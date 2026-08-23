@@ -59,9 +59,8 @@ Concentrating it buys three things that are hard to get otherwise:
   the content-safety chokepoint would be one forgotten call away from being bypassed.
 - **Degradation is uniform.** The fallback ladder lives in one place instead of being
   re-implemented, differently and worse, at each call site.
-- **What a prompt carries is decided once.** The rule that kept a name out of a prompt is
-  gone, but the reason for a single builder is not: whatever a prompt may include is
-  decided in one place rather than at each call site.
+- **What a prompt carries is decided once.** Whatever a prompt may include is decided in
+  one place rather than at each call site.
 
 The router exposes two methods with deliberately different return types:
 
