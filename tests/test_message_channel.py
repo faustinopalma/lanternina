@@ -43,7 +43,9 @@ PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
 THE_AFTERNOON = Path("experiences/un-pomeriggio-di-nuvole.json")
 THE_TIMER = Path("deploy/lanternina-afternoon.timer")
-# A moment in the middle of an afternoon, named by the calendar rather than asserted.
+# A moment in the middle of an afternoon, named by the calendar rather than asserted. It is
+# the clock the runs are played against; anything that goes through the store's own hour of
+# life is written from the running clock instead, or it ages out of being offered.
 WHEN = time.mktime((2026, 8, 24, 14, 0, 0, 0, 0, -1))
 
 
@@ -237,9 +239,15 @@ def test_a_message_written_while_the_house_was_busy_survives(
     store: InMemoryMessageStore,
 ) -> None:
     """The house asked, the parent said something else, then the house said it had heard
-    the first. Clearing by id is what keeps the second."""
-    first = store.add(clean_message("h1", says=Says.END_BY, at="17:30", now=WHEN))
-    second = store.add(clean_message("h1", says=Says.CLOSE_NOW, now=WHEN + 1))
+    the first. Clearing by id is what keeps the second.
+
+    Written just now rather than at :data:`WHEN`: a message is only offered for an hour, so a
+    fixed calendar instant stops being a message the store will hand over as the day goes on.
+    These two tests passed at 13:41 on 24 August 2026 and failed at 14:30.
+    """
+    now = time.time()
+    first = store.add(clean_message("h1", says=Says.END_BY, at="17:30", now=now - 60))
+    second = store.add(clean_message("h1", says=Says.CLOSE_NOW, now=now))
 
     assert store.heard("h1", first.id) is True
     assert [row.id for row in store.pending("h1")] == [second.id]
@@ -247,8 +255,9 @@ def test_a_message_written_while_the_house_was_busy_survives(
 
 def test_they_are_handed_over_oldest_first(store: InMemoryMessageStore) -> None:
     """``hear`` folds them in order, so the order is part of what is handed over."""
-    later = store.add(clean_message("h1", says=Says.CLOSE_NOW, now=WHEN + 60))
-    earlier = store.add(clean_message("h1", says=Says.END_BY, at="17:30", now=WHEN))
+    now = time.time()
+    later = store.add(clean_message("h1", says=Says.CLOSE_NOW, now=now))
+    earlier = store.add(clean_message("h1", says=Says.END_BY, at="17:30", now=now - 60))
 
     assert [row.id for row in store.pending("h1")] == [earlier.id, later.id]
 

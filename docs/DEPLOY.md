@@ -180,6 +180,77 @@ scripts from this origin only — the identity library comes from npm, not a CDN
 images, because a picture is fetched with the bearer token and handed to the `<img>` as a
 blob URL.
 
+### The house on a new card
+
+The other half is a Raspberry Pi in the room, and until 24 August 2026 nothing said what it
+needed. The hub had been built by hand over three weeks; the knowledge of which packages had
+been installed and which of the seventeen units mattered lived in one filesystem. That is the
+porting problem, and [deploy/hub-install.sh](../deploy/hub-install.sh) is the answer to it —
+the declared list, and a check that says whether a machine has it.
+
+Measured on the hub, aarch64 Debian 13, on 24 August 2026: nine packages on top of a
+Raspberry Pi OS base, whose recursive dependency closure is **597 packages and 1378 MB
+installed**. The card is 14 GB with 5.3 GB free.
+
+```bash
+# On a machine with the repository:
+git archive HEAD devices shared orchestrator printing vision experiences -o lanternina.tar
+scp lanternina.tar deploy/hub-install.sh deploy/lanternina-* pi@newhub.local:/tmp/
+
+# On the card, as root:
+cd /tmp && ./hub-install.sh --install /tmp/lanternina.tar
+#   → installs the packages, the tree as root:root 644, the units, and enables the timers.
+#   → does NOT write /etc/lanternina: see below.
+./hub-install.sh --check
+```
+
+The tar is what `git archive` holds rather than the working copy, so the file on the card is
+the committed file: this machine checks out CRLF and the hub keeps LF, and a plain copy would
+differ from the commit in every line while being functionally identical.
+
+**Four environment files are not written by the script, on purpose.** They carry the device
+key and the household id, and the household id has no second copy — it names the rows in
+Cosmos. A script that invented them would produce a house that starts and then fails for a
+reason nobody can see, so `--check` names each file and each variable it must set instead:
+
+| File | Sets |
+| --- | --- |
+| `panel.env` | `LANTERNINA_PANEL_URL`, `LANTERNINA_HOUSEHOLD`, `LANTERNINA_DEVICE_KEY` |
+| `experience.env` | `LANTERNINA_EXPERIENCE`, `LANTERNINA_PRINTER` |
+| `scanner.env` | `LANTERNINA_SHEETS_DIR`, `LANTERNINA_SCANNER` |
+| `trmnl-byos.env` | `TRMNL_BASE_URL`, `TRMNL_SCREEN_FILE`, `TRMNL_DEVICE_REGISTRY`, `TRMNL_PORT`, `LANTERNINA_JOBS_FILE` |
+
+Three things the card must also have, and none of them is Python: a CUPS queue pointing at
+the printer, `sane-airscan` able to see the scanner over the network, and `avahi-daemon`
+running — the display resolves `lanternina.local` by mDNS, which the machine answers and the
+code does not. The printer and the scanner are reached by address, so they are configuration
+of the room rather than of the card.
+
+[deploy/install-trmnl-byos.sh](../deploy/install-trmnl-byos.sh) predates this and does the
+display half of the same job. It is what installed the running hub and is left where it is;
+on a new card `hub-install.sh` covers all of it, and running both expecting different trees
+is how they would drift.
+
+**What is verified and what is not.** `--check` was run against the working hub and found
+nothing, and then run again with a package name that does not exist and a variable that is
+not set, where it reported both and exited 1. `--install` has never been run: doing that
+takes a second card, and a script that has only ever been read is not a script that works.
+
+**Whether the hub is behind** is a separate question with its own answer,
+[scripts/hub-stale.ps1](../scripts/hub-stale.ps1): it compares the git blob content of every
+package the hub runs against what is on the machine. Until 24 August 2026 it compared two
+directories and reported a clean hub while `orchestrator/` was missing altogether.
+
+**Why this is not a container image.** It was considered on 24 August 2026 and deferred, with
+the numbers above as the reason. An image would carry the same 1378 MB, would need building
+for arm64 and pulling onto a card with 5.3 GB free, and would run a `podman` per oneshot for
+a unit that fires once a minute and costs 1.1 s of CPU. It would also give up most of what a
+container is for: `lp`, `scanimage` and `avahi-browse` reach cupsd, the scanner and the
+avahi socket, so the container would want host networking and the host's D-Bus, while the
+units already have `ProtectSystem=strict` and `ReadOnlyPaths=/opt/lanternina`. What it would
+buy is Python dependency versions independent of Debian's, and one artefact instead of two
+steps. The answer changes when there is a second machine or a platform that is not Debian.
+
 ---
 
 ## 4. Entra External ID

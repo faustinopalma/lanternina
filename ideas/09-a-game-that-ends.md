@@ -843,8 +843,32 @@ there is nothing to report, and was made to fail on this morning's hub before be
 
 **The hub is not containerised, and that is now the largest gap between the two halves.** The
 panel is an image in a registry; the house is a tar extracted into `/opt/lanternina`, run by
-`/usr/bin/python3` under fourteen systemd units, with its Python dependencies satisfied by
+`/usr/bin/python3` under seventeen systemd units, with its Python dependencies satisfied by
 whatever the machine happens to have. There is no declared list of what a new machine needs.
+
+`deploy/hub-install.sh` is that list, written the same day: nine packages, the tree, the
+units, and a `--check` that says whether a machine has them. Verified against the working hub,
+where it found nothing, and then against a copy of itself naming a package that does not exist
+and a variable that is not set, where it reported both and exited 1. `--install` has never
+been run, because that takes a second card.
+
+**Containerising was considered and deferred, with numbers rather than taste.** The recursive
+dependency closure of what the code imports is **597 packages and 1378 MB installed** on
+aarch64 Debian 13; the card is 14 GB with 5.3 GB free. An image would carry the same weight,
+need building for arm64, and run a `podman` per oneshot for a unit that fires once a minute
+and costs 1.1 s of CPU. It would also give up most of what a container is for: `lp`,
+`scanimage` and `avahi-browse` reach cupsd, the scanner and the avahi socket, so it would want
+host networking and the host's D-Bus, while the units already have `ProtectSystem=strict` and
+`ReadOnlyPaths=/opt/lanternina`. And it would not remove the list — cupsd, avahi-daemon and a
+scanner on the network are requirements of the machine either way. What it buys is Python
+versions independent of Debian's and one artefact instead of two steps. The answer changes
+when there is a second machine, or a platform that is not Debian.
+
+**One test broke itself, and the lesson is worth more than the fix.** Two of the seventeen
+built messages at a fixed calendar instant, 14:00 on 24 August 2026, and asserted the store
+hands them over. They passed at 13:41 and failed at 14:30, because a message is only offered
+for an hour and the wall clock had walked past it. A test that measures something with a
+lifetime has to be written from the running clock, or it is a test with an expiry date.
 
 ### What is next, and where it starts
 
