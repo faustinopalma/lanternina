@@ -611,32 +611,40 @@ asserts that, and asserts that no transcript line carries a word for a verdict.
 
 ### What is next, and where it starts
 
-Two things, and neither is design work.
+Two things, and neither is design work. **Both were done on 24 August 2026**; what follows
+is kept because the reasoning and the traps are worth more than the tick.
 
-**1. The panel is behind the commit.** `panel/routes/experience.py` and everything under it
-have been at format 2 since `7ec527c`; the running revision was built before that. Until it
-is rebuilt, an afternoon that reaches `ask` is refused by the panel's own continuation route,
-and that is the one branch the simulator cannot exercise.
+**1. The panel was behind the commit.** `panel/routes/experience.py` and everything under it
+had been at format 2 since `7ec527c`; the running revision was built before that, so an
+afternoon that reached `ask` was refused by the panel's own continuation route with
+`an experience carries ['drawn'], which this format does not define`.
 
-*Where it starts:* `scripts/` for the build and deploy, `az acr build` with `--no-logs`
-because the CLI dies on the log stream and the server-side build succeeds anyway, then
+*Done:* image `panel:5da465c`, built in ACR in **59 s** server-side with `--no-logs`, then
 `az containerapp update --image` rather than a full deploy, because a full deploy demands
-parameters that reset the access configuration if they are guessed wrong.
+parameters that reset the access configuration if they are guessed wrong. Revision
+`--0000048`, traffic 100%.
 
-*Done when:* `python -m tools.pretend play --hand marks` reaches a close instead of a 400,
-which means the house asked, the panel wrote the rest of the afternoon, and the runner
-played it.
+*The proof:* `python -m tools.pretend play --hand marks` now reaches a close. The house
+asked, the panel wrote three more moments in **46.7 s**, and the runner played them — a
+whole afternoon, devise excluded, in **49.3 s** with nobody in the room.
 
-**2. The device key was exposed and has not been rotated.** On 24 August 2026 a PowerShell
-command that was setting environment variables failed part-way and printed the value it was
-setting. The key grants the device routes — reading a page, asking for an afternoon,
-continuing one — to anyone who has it.
+**2. The device key was exposed and is now rotated.** On 24 August 2026 a PowerShell command
+that was setting environment variables failed part-way and printed the value it was setting.
+The key grants the device routes — reading a page, asking for an afternoon, continuing one.
 
-*Where it starts:* the container app secret, `secrets.local.yaml` on the development
-machine, and `/etc/lanternina/panel.env` on the hub, in that order, because the hub is what
-breaks if the three disagree.
+*Done:* a new 48-character key in three places, in this order, because the hub is what breaks
+if the three disagree: the container app secret, `secrets.local.yaml`, and
+`/etc/lanternina/panel.env` on the hub. Verified by fingerprint rather than by value —
+`tools/key_fingerprint.py` prints a salted digest — and then by asking the panel: the new key
+answers 200, the exposed one answers 403, and the hub's own `lanternina-afternoon.service`
+runs clean.
 
-*Done when:* the hub reads its rhythm and its afternoons again, and the old value is refused.
+*Two traps, both paid for.* A container app secret does not take effect until the revision is
+restarted, and `az containerapp secret set` says so in a warning that is easy to scroll past;
+the old key went on working for 20 s after the restart. And a multi-line rotation is the wrong
+shape: this one broke after its first line, leaving the hub and the local file on the new key
+and the panel on the old, which reads exactly like a bad key rather than like a half-finished
+job. Do it in one command, or check all three fingerprints before believing any of them.
 
 The lesson is worth keeping separately from the incident: a secret read from a file must be
 read inside the process that needs it. `tools/pretend.py` does that now. A shell that fails
