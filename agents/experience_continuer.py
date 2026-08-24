@@ -151,6 +151,9 @@ class ExperienceContinuer:
         Nothing is salvaged from a partial answer. Half a continuation is half an
         afternoon, and the house handles "no continuation" already — it stops.
 
+        An answer the format cannot read is asked for once more rather than thrown away:
+        see :meth:`repair_unreadable` for what changed that and why.
+
         ``bounds`` and ``household_bounds`` are what it may improvise within when the page
         did not come back the way the plan assumed. With neither given it is told nothing
         about taking liberties, which is the narrowest this ever is.
@@ -158,27 +161,78 @@ class ExperienceContinuer:
         instruction = (
             with_bounds(bounds, household_bounds) if bounds or household_bounds else _INSTRUCTION
         )
+        asked = (
+            f"{instruction}\n"
+            f"The experience so far: {json.dumps(experience, ensure_ascii=False)}\n"
+            f"The moment that asked: {after}\n"
+            f"The page came back: {came}\n"
+            f"What was on it: {json.dumps(_ink(reading), ensure_ascii=False)}\n"
+        )
+        answer = await self._ask(ctx, asked, experience, after)
+        try:
+            return _continuation_in(
+                answer,
+                experience_id=str(experience.get("experience_id", "")),
+                after=after,
+            )
+        except ExperienceError as refusal:
+            return await self.repair_unreadable(
+                ctx, answer=answer, refusal=str(refusal), experience=experience, after=after
+            )
+
+    async def repair_unreadable(
+        self,
+        ctx: AgentContext,
+        *,
+        answer: str,
+        refusal: str,
+        experience: dict[str, Any],
+        after: str,
+    ) -> Continuation:
+        """The same answer, for a continuation the format would not read at all.
+
+        `ideas/08 §7` said there would be no repair on this path, and gave the reason: a
+        second model call is another fifteen seconds with somebody standing at the scanner,
+        and an afternoon that is not continued stops — which is what an afternoon nobody
+        continues does anyway. **That last clause was wrong**, and a simulated run of
+        24 August 2026 is what showed it: the continuation was refused for
+        ``a line is 45 characters; at most 44`` and the afternoon ended there. It could have
+        gone on. One character is not a reason to lose an hour.
+
+        Once, and no more. The refusal is already written for whoever has to fix it — it
+        names the rule and the offending number — which is why the parser's messages are
+        worded the way they are.
+        """
+        again = await self._ask(
+            ctx,
+            "This continuation was refused because the format could not read it.\n"
+            f"What was wrong: {refusal}\n"
+            "Write it again with that corrected and everything else exactly as it is — the "
+            "same moments, the same words, the same branches. Change what the refusal names "
+            "until it stops being true; rewording the rest is not a repair.\n"
+            f"{_FORMAT}{_RULES}"
+            f"What was refused: {answer}\n",
+            experience,
+            after,
+        )
+        return _continuation_in(
+            again, experience_id=str(experience.get("experience_id", "")), after=after
+        )
+
+    async def _ask(
+        self, ctx: AgentContext, prompt: str, experience: dict[str, Any], after: str
+    ) -> str:
         payload = await ctx.router.generate_for_user(
             ModelRequest(
                 capability=Capability.PLANNING,
-                prompt=(
-                    f"{instruction}\n"
-                    f"The experience so far: {json.dumps(experience, ensure_ascii=False)}\n"
-                    f"The moment that asked: {after}\n"
-                    f"The page came back: {came}\n"
-                    f"What was on it: {json.dumps(_ink(reading), ensure_ascii=False)}\n"
-                ),
+                prompt=prompt,
                 request_id=new_request_id(),
                 max_output_chars=MAX_CONTINUATION_CHARS,
                 purpose=f"continuing {experience.get('experience_id', '')} after {after}",
                 content_kind=ContentKind.EXERCISE_JSON,
             )
         )
-        return _continuation_in(
-            payload.body,
-            experience_id=str(experience.get("experience_id", "")),
-            after=after,
-        )
+        return str(payload.body)
 
 
 def _ink(reading: dict[str, Any]) -> list[dict[str, str]]:
