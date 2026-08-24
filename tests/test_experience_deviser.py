@@ -209,6 +209,33 @@ def test_every_limit_that_refuses_a_document_is_stated_in_both_prompts() -> None
             assert str(limit) in prompt, f"{who} never tells the model {name} is {limit}"
 
 
+def test_both_prompts_say_what_makes_an_afternoon_worth_doing() -> None:
+    """Added 24 August 2026, from the parent. Until then the prompt was almost entirely
+    prohibitions, and a model told only what it may not write writes the safest thing it can
+    think of — a worksheet with a story on top."""
+    from agents.experience_continuer import _INSTRUCTION as CONTINUER
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
+        assert "begins in the middle of something" in prompt, who
+        assert "Something is found out, made or named" in prompt, who
+        assert "It ends on the object" in prompt, who
+        assert "never a teacher" in prompt, who
+
+
+def test_being_worth_doing_is_never_asked_for_as_being_hard_to_stop() -> None:
+    """The word this gets built under by accident. The rules forbid a streak, a run of days
+    and anything withheld until later, and the prompt has to say so where the craft is asked
+    for — otherwise "more engaging" is read as "more retaining"."""
+    from shared.experience_prompt import WHAT_MAKES_IT_WORTH_DOING
+
+    said = WHAT_MAKES_IT_WORTH_DOING.lower()
+    assert "none of this works by making it hard to stop" in said
+    assert "no streak" in said
+    assert "nothing withheld until later" in said
+    assert "worth nothing at all afterwards" in said
+
+
 def test_the_deviser_states_the_limits_only_it_has() -> None:
     """A whole afternoon has a title, an overview and a length; a continuation has none
     of the three, because which afternoon it belongs to is settled already."""

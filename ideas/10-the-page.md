@@ -529,6 +529,39 @@ notebook; the page comes out of the printer; and the same afternoon carries on f
 first two halves are built and the third runs in the simulator; the house has not been asked
 yet.
 
+### What makes an afternoon worth doing — 24 August 2026
+
+The parent, the same day: *il gioco deve essere più engaging*, and the prompts are where that
+is decided. Until now `shared/experience_prompt.py` was almost entirely prohibitions — six
+things to refuse by default, six properties every sentence must have, nothing at all about
+what the afternoon is supposed to be like. A model told only what it may not write writes the
+safest thing it can think of, which is a worksheet with a story on top.
+
+`WHAT_MAKES_IT_WORTH_DOING` is eight lines and both agents get it:
+
+* it begins in the middle of something, never with what the afternoon is called;
+* it is set here and now — the window, the tap, the light at five, what the sky is doing;
+* something is found out, made or named, and belongs to whoever made it;
+* the paper is a thing and not a form;
+* what comes back changes what happens next, which is the whole reason `ask` exists;
+* it ends on the object, without summing it up;
+* the voice is somebody who is also interested, never a teacher.
+
+**And the eighth line is the one that matters most.** *None of this works by making it hard to
+stop.* No streak, no run of days, nothing withheld until later, nothing worth more for being
+finished. "Engaging" is the word under which retention gets built by accident, and the working
+rules forbid every mechanism that would deliver it — so the prompt says so where the craft is
+asked for, and a test asserts the sentence is there.
+
+**Measured against the real service, one call.** Before: *Un pomeriggio di nuvole*, whose paper
+was "il registro di quello che si è visto". After, in 100.2 s and four moments: **Il confine
+che la luce lascia sul tavolo** — set at "il tavolo vicino alla finestra, oggi", the person is
+"custode di un confine di luce", they move a cup and trace an edge, the paper is "la mappa che
+conserva confine e nome", and it ends with "la tazza resta tra le mani". Every check passed.
+
+One call is one call and not a measurement of the change. What it does show is that the
+afternoon it produces is now about an hour in a particular room rather than about a subject.
+
 ## 7. What is not decided here
 
 1. **What the strategy layer is allowed to say.** A closed list of artefact kinds is checkable
