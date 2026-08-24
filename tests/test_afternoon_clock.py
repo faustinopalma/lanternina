@@ -15,6 +15,7 @@ from typing import Any
 import pytest
 
 from devices import afternoon as clock
+from devices import run_experience
 from devices.afternoon import (
     DAYS,
     fits_before_the_pause,
@@ -23,7 +24,7 @@ from devices.afternoon import (
     mark_looked,
 )
 from devices.house import House
-from devices.run_experience import forget_what_is_over, load_experience, waiting_runs
+from devices.run_experience import conclude_what_is_over, load_experience, waiting_runs
 from shared.experience import Experience
 
 THE_AFTERNOON = Path("experiences/un-pomeriggio-di-nuvole.json")
@@ -140,26 +141,54 @@ def a_run(house: House, run_id: str, started_at: float) -> Path:
     return path
 
 
-def test_a_run_whose_hours_have_passed_is_forgotten_along_with_its_paper(
-    house: House,
+def test_a_run_whose_hour_has_come_reaches_its_ending_rather_than_being_deleted(
+    house: House, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """The runner notices the hours when a page arrives, which is the only moment it is
-    awake. A run nobody ever brought a page back to would otherwise sit there for good."""
-    a_run(house, "aft_old", WHEN - 10 * 3600)
+    """The defect this replaced, and the reason the test is written this way round.
+
+    Until 23 August 2026 a run whose hours had passed was unlinked and nothing was said to
+    anybody — measured on the house at 14:02 on 21 August, on `aft_5ec79e85`. That is an
+    afternoon that stops without ending, which is the failure the whole project exists to
+    prevent. So this asserts what went on the display, in order, and it fails on the old
+    behaviour rather than merely passing on the new one.
+    """
+    said: list[str] = []
+    monkeypatch.setattr(
+        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+    )
+    experience = an_experience()
+    # Twenty minutes left, so the ending has already been due for ten.
+    a_run(house, "aft_old", WHEN - (experience.minutes - 20) * 60)
     notes = house.sheets_dir / "afternoons" / "pages"
     notes.mkdir(parents=True)
     (notes / "sh_1.json").write_text(json.dumps({"run_id": "aft_old"}), encoding="utf-8")
 
     assert waiting_runs(house.sheets_dir) == ["aft_old"]
-    assert forget_what_is_over(house.sheets_dir, WHEN) == ["aft_old"]
+
+    # First pass: the way out of wherever it got to, and the run is still there.
+    assert conclude_what_is_over(house, WHEN, send=False) == []
+    assert said == [experience.moment("come-e-tornato").way_out.heading]
+    assert waiting_runs(house.sheets_dir) == ["aft_old"]
+
+    # Second pass, once the way out has had its own minutes: the ending, then nothing left.
+    out = experience.moment("come-e-tornato").way_out
+    assert conclude_what_is_over(house, WHEN + out.minutes * 60, send=False) == ["aft_old"]
+    assert said[-1] == experience.moment("basta-cosi").heading
     assert waiting_runs(house.sheets_dir) == []
     assert not (notes / "sh_1.json").exists()
 
 
-def test_a_run_still_inside_its_hours_is_left_alone(house: House) -> None:
+def test_a_run_still_inside_its_hours_is_left_alone(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    said: list[str] = []
+    monkeypatch.setattr(
+        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+    )
     a_run(house, "aft_now", WHEN - 600)
 
-    assert forget_what_is_over(house.sheets_dir, WHEN) == []
+    assert conclude_what_is_over(house, WHEN, send=False) == []
+    assert said == [], "nothing was said to anybody about an afternoon still under way"
     assert waiting_runs(house.sheets_dir) == ["aft_now"]
 
 

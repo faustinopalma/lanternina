@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import afternoons as a
 import pytest
 
 from devices import run_experience
@@ -173,16 +174,15 @@ class _Answer:
 
 def a_continuation(after: str = "l-ultimo-foglio", **changes: Any) -> dict[str, Any]:
     payload: dict[str, Any] = {
-        "format_version": 1,
+        "format_version": 2,
         "experience_id": "un-pomeriggio-di-nuvole",
         "after": after,
         "moments": [
-            {
-                "act": "close",
-                "id": "la-terza-nuvola",
-                "heading": "Le hai fatte tutte e due",
-                "lines": ["Il pomeriggio finisce qui."],
-            }
+            a.close(
+                moment_id="la-terza-nuvola",
+                heading="Le hai fatte tutte e due",
+                weights=a.weights(lines=("Il foglio resta sul tavolo.",)),
+            )
         ],
     }
     payload.update(changes)
@@ -266,18 +266,31 @@ def test_with_no_panel_the_afternoon_stops_rather_than_carrying_on_by_itself(
 # ── Stopping ─────────────────────────────────────────────────────────────────────────
 
 
-def test_an_afternoon_whose_hours_ran_out_is_over_when_the_page_arrives(
+def test_a_page_arriving_after_the_ending_is_due_takes_the_way_out(
     house: House, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Nothing here runs on a timer, so the hours are noticed when somebody comes back."""
-    begin(house, an_experience(), now=0.0, send=False)
+    """The ending is the hour's decision, and the page is the moment it becomes visible.
+
+    Before 23 August 2026 this returned "that afternoon is over" and deleted the run: an
+    afternoon that stopped without ending, on the branch where somebody had just done the
+    thing and walked over with it. Now the way out of wherever it got to goes on the
+    display, and the run stays until the close follows it.
+    """
+    said: list[str] = []
+    monkeypatch.setattr(
+        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+    )
+    experience = an_experience()
+    begin(house, experience, now=0.0, send=False)
     glass(monkeypatch, house, marks=True)
 
-    said = carry_on(house, now=180 * 60 + 1, send=False)
+    # Twenty minutes before the end hour, which is ten minutes past when the ending is due.
+    when = (experience.minutes - 20) * 60
+    told = carry_on(house, now=when, send=False)
 
-    assert said == "that afternoon is over"
-    assert runs(house) == []
-    assert pointers(house) == []
+    assert told == "that afternoon is on its way to the ending"
+    assert said[-1] == experience.moment("come-e-tornato").way_out.heading
+    assert len(runs(house)) == 1, "it ends properly, so it is not gone yet"
 
 
 def test_a_page_from_no_afternoon_is_refused(

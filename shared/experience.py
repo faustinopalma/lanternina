@@ -48,6 +48,32 @@ moment by moment — so inside an approved experience, and behind an ``ask``, wh
 the adolescent has not been seen by an adult. :mod:`orchestrator.safety` is then the only
 thing between a model and a person, and it is doing more work than it was built for. That
 is the trade, and it is recorded in `ideas/08 §2` rather than discovered here.
+
+**Format 2, and why it is a version rather than four fields.** `ideas/09` is a design for
+an afternoon that cannot end badly, and the way it gets there is structure decided before
+the afternoon starts rather than care while it runs. Four things it needs did not fit the
+format as it was, and each one turns a hope about the runner into a property of the
+document:
+
+* **A way out of every moment** — :class:`WayOut`, twenty minutes at the most, naming
+  something the person is holding. The ending is then reachable from anywhere by reading,
+  not by improvising, and an ending reached early is the same ending.
+* **Three weights** — :class:`Weighing`, short, standard and extended, with the same
+  narrative outcome and different cost. Shortening an afternoon becomes picking a column
+  that was written with the same care as the others. **The limit, stated where the field
+  is:** the weight changes the minutes and the words, not the page. A ``hand_over`` hands
+  over the same design at all three weights, because three page designs per moment is
+  three times the drawing for a difference nobody asked for yet.
+* **Four rungs of help** — :class:`Help`, each carrying the minutes after which the next
+  arrives. The same text whether somebody asked or the time passed, and after the last one
+  the moment is over.
+* **The version that runs without printing** — ``instead`` on a ``hand_over`` and
+  ``if_no_page`` on a ``collect``. The printer is the single point of failure of an
+  afternoon made of paper, and improvising around it at 15:30 is the thing this avoids.
+
+None of that counts anything about a person. Minutes and rungs are facts about an
+afternoon that is happening, they are discarded when it ends, and there is still no field
+here that could hold a verdict.
 """
 
 from __future__ import annotations
@@ -61,7 +87,7 @@ from typing import Any, ClassVar, Final
 from .capabilities import HouseCapability
 from .pagedesign import DesignError, PageDesign
 
-EXPERIENCE_FORMAT_VERSION: Final = 1
+EXPERIENCE_FORMAT_VERSION: Final = 2
 
 
 class Act(StrEnum):
@@ -71,6 +97,24 @@ class Act(StrEnum):
     HAND_OVER = "hand_over"
     COLLECT = "collect"
     CLOSE = "close"
+
+
+class Weight(StrEnum):
+    """How much of a moment gets done. Three versions of one narrative outcome.
+
+    Chosen on entering a moment and unchanged until the next one. That single sentence is
+    what makes an afternoon shortenable without anybody noticing: shortening is picking a
+    column somebody wrote, not a runtime edit of somebody else's words.
+    """
+
+    SHORT = "short"
+    STANDARD = "standard"
+    EXTENDED = "extended"
+
+
+# The order is the order of cost, and the parser relies on it: a document that gives the
+# short version more minutes than the standard one is refused.
+WEIGHTS: Final[tuple[Weight, ...]] = (Weight.SHORT, Weight.STANDARD, Weight.EXTENDED)
 
 
 # What each act needs the house to be able to do. The document does not get to say: a
@@ -124,6 +168,44 @@ MAX_MINUTES: Final = 360
 # unread.
 MAX_MOMENTS: Final = 12
 
+# Four rungs of help and no more: a narrative nudge, a concrete clue, an almost explicit
+# instruction, and the answer handed over as a gift inside the story. After the last one
+# the moment is over — there is no fifth wait and nothing to get right before going on.
+HELP_LEVELS: Final = 4
+MAX_HELP_AFTER: Final = 30
+
+# A way out has to be short enough to be worth taking, and the number is the one the
+# design fixes. It is also what the arithmetic in `longest_at` is measured against.
+MAX_WAY_OUT_MINUTES: Final = 20
+
+# One moment, at one weight. Under a minute is not a moment; an hour is an afternoon.
+MIN_WEIGHT_MINUTES: Final = 1
+MAX_WEIGHT_MINUTES: Final = 60
+
+MAX_IN_HAND: Final = 40
+MAX_DIMENSION: Final = 40
+
+# The ten dimensions an afternoon is drawn along. They are recorded on the document for
+# one reason: it makes "not the same afternoon again" a thing that can be checked instead
+# of a thing that is hoped for. Nothing here is about a person — every one of them
+# describes the afternoon.
+DIMENSIONS: Final[tuple[str, ...]] = (
+    "frame",
+    "role",
+    "mechanic",
+    "progress",
+    "paper",
+    "glass",
+    "displays",
+    "camera",
+    "tone",
+    "ending",
+)
+
+# How many of the ten two afternoons may share before they are the same afternoon wearing
+# a different hat. Three is a refusal; two is a coincidence.
+MAX_SHARED_DIMENSIONS: Final = 2
+
 _ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,31}$")
 _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
 
@@ -172,56 +254,333 @@ def _only(values: Mapping[str, Any], allowed: set[str], what: str) -> None:
         raise ExperienceError(f"{what} carries {unknown}, which this format does not define")
 
 
-def _lines(raw: object) -> tuple[str, ...]:
+def _lines(raw: object, what: str = "lines") -> tuple[str, ...]:
+    """A screenful, and never an empty one.
+
+    Format 1 allowed no lines at all, on the grounds that a heading is enough. It is not,
+    now that the same shape carries a way out and a rung of help: a rung with nothing in
+    it is a rung the runner shows to nobody, and it would pass every other check.
+    """
     if not isinstance(raw, Sequence) or isinstance(raw, str):
-        raise ExperienceError("lines must be a list")
+        raise ExperienceError(f"{what} must be a list")
+    if not raw:
+        raise ExperienceError(f"{what} says nothing, so there is nothing to show")
     if len(raw) > MAX_LINES:
-        raise ExperienceError(f"{len(raw)} lines; a screen holds {MAX_LINES}")
+        raise ExperienceError(f"{len(raw)} {what}; a screen holds {MAX_LINES}")
     return tuple(plain(line, MAX_LINE, "a line") for line in raw)
+
+
+def _minutes(raw: object, low: int, high: int, what: str) -> int:
+    value = _whole(raw, what)
+    if not low <= value <= high:
+        raise ExperienceError(f"{what} is {value} minutes; it must be {low} to {high}")
+    return value
+
+
+def _folded(text: str) -> str:
+    """Text as it is compared, not as it is shown. Case and spacing carry no meaning here."""
+    return " ".join(text.lower().split())
+
+
+# ── The three weights, the ladder, and the way out ───────────────────────────────────
+
+
+@dataclass(frozen=True, slots=True)
+class Weighing:
+    """One moment at one of its three costs: how long it takes, and what it says.
+
+    The design's short version is "about a third of the time, one step, material already
+    to hand". That is a description of what somebody writes, not something this format can
+    check — what it does check is that the three are genuinely different, so a model that
+    writes the same number three times is refused rather than quietly giving the runner
+    nothing to shorten with.
+    """
+
+    minutes: int
+    lines: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not MIN_WEIGHT_MINUTES <= self.minutes <= MAX_WEIGHT_MINUTES:
+            raise ExperienceError(
+                f"a weight of {self.minutes} minutes is outside "
+                f"{MIN_WEIGHT_MINUTES}–{MAX_WEIGHT_MINUTES}"
+            )
+        if not self.lines:
+            raise ExperienceError("a weight with no lines shows nothing")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"minutes": self.minutes, "lines": list(self.lines)}
+
+    @staticmethod
+    def from_dict(values: object) -> Weighing:
+        if not isinstance(values, Mapping):
+            raise ExperienceError("a weight must be an object")
+        _only(values, {"minutes", "lines"}, "a weight")
+        return Weighing(
+            minutes=_minutes(
+                values.get("minutes"), MIN_WEIGHT_MINUTES, MAX_WEIGHT_MINUTES, "a weight"
+            ),
+            lines=_lines(values.get("lines"), "lines of a weight"),
+        )
+
+
+def _weights(raw: object) -> tuple[Weighing, ...]:
+    """The three versions of one moment, in the order of their cost."""
+    if not isinstance(raw, Mapping):
+        raise ExperienceError("weights must be an object with short, standard and extended")
+    _only(raw, {str(w) for w in WEIGHTS}, "weights")
+    missing = [str(w) for w in WEIGHTS if str(w) not in raw]
+    if missing:
+        raise ExperienceError(
+            f"this moment has no {', '.join(missing)} version, so it cannot be shortened "
+            f"or stretched without somebody inventing one at the time"
+        )
+    weighed = tuple(Weighing.from_dict(raw[str(w)]) for w in WEIGHTS)
+    named = (("short", "standard"), ("standard", "extended"))
+    for lighter, heavier, names in zip(weighed[:-1], weighed[1:], named, strict=True):
+        if lighter.minutes >= heavier.minutes:
+            raise ExperienceError(
+                f"the {names[0]} version takes {lighter.minutes} minutes and the "
+                f"{names[1]} one {heavier.minutes}; three weights that cost the same are "
+                f"one weight written out three times"
+            )
+    return weighed
+
+
+@dataclass(frozen=True, slots=True)
+class Help:
+    """One rung: what is said, and after how many minutes the next rung arrives.
+
+    The same text is used whether somebody asked for help or whether the time simply
+    passed. Two voices for the same thing is how a system tells a person it noticed they
+    were stuck, and there is nowhere here to put the second one.
+    """
+
+    after_minutes: int
+    lines: tuple[str, ...]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"after_minutes": self.after_minutes, "lines": list(self.lines)}
+
+    @staticmethod
+    def from_dict(values: object) -> Help:
+        if not isinstance(values, Mapping):
+            raise ExperienceError("a rung of help must be an object")
+        _only(values, {"after_minutes", "lines"}, "a rung of help")
+        return Help(
+            after_minutes=_minutes(
+                values.get("after_minutes"), 1, MAX_HELP_AFTER, "a rung of help"
+            ),
+            lines=_lines(values.get("lines"), "lines of a rung of help"),
+        )
+
+
+def _ladder(raw: object) -> tuple[Help, ...]:
+    if not isinstance(raw, Sequence) or isinstance(raw, str):
+        raise ExperienceError("help must be a list of rungs")
+    if len(raw) != HELP_LEVELS:
+        raise ExperienceError(
+            f"this moment carries {len(raw)} rungs of help; it must carry {HELP_LEVELS}, "
+            f"ending with the answer handed over"
+        )
+    rungs = tuple(Help.from_dict(rung) for rung in raw)
+    # Not strict: the second list is the first one shifted, so it is one shorter by design.
+    for lower, upper in zip(rungs, rungs[1:], strict=False):
+        if lower.after_minutes >= upper.after_minutes:
+            raise ExperienceError(
+                f"a rung arrives after {upper.after_minutes} minutes and the one before it "
+                f"after {lower.after_minutes}; the ladder goes up"
+            )
+    return rungs
+
+
+@dataclass(frozen=True, slots=True)
+class WayOut:
+    """How to reach the ending from exactly this moment, in twenty minutes or less.
+
+    ``in_hand`` names something the person is holding right then, and the text has to name
+    it too — that is checked here, and it is the whole reason this field exists rather
+    than the way out being three more lines. The recurring defect of a generated plan is
+    the goodbye that is not anchored to anything: the character says farewell and it is
+    over, and the shortening is felt as a cut. A way out that starts from the sheet in
+    somebody's hands does not read as one.
+
+    That this is a *way out* and not an *ending* matters: it leads to the same close the
+    afternoon was always going to reach, and nothing in it says anything was skipped.
+    """
+
+    in_hand: str
+    heading: str
+    lines: tuple[str, ...]
+    minutes: int
+
+    def __post_init__(self) -> None:
+        if len(self.in_hand) < 3:
+            raise ExperienceError(
+                f"{self.in_hand!r} is too short to name an object somebody is holding"
+            )
+        if not self.heading:
+            raise ExperienceError("a way out needs a heading")
+        if self.minutes > MAX_WAY_OUT_MINUTES:
+            raise ExperienceError(
+                f"this way out takes {self.minutes} minutes; a way out is at most "
+                f"{MAX_WAY_OUT_MINUTES}, or it is not a way out"
+            )
+        said = _folded(" ".join((self.heading, *self.lines)))
+        if _folded(self.in_hand) not in said:
+            raise ExperienceError(
+                f"this way out is about {self.in_hand!r} and never says so; an ending that "
+                f"names nothing in the person's hands is the goodbye that is felt as a cut"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "in_hand": self.in_hand,
+            "heading": self.heading,
+            "lines": list(self.lines),
+            "minutes": self.minutes,
+        }
+
+    @staticmethod
+    def from_dict(values: object) -> WayOut:
+        if not isinstance(values, Mapping):
+            raise ExperienceError("a moment with no way out cannot reach the ending from itself")
+        _only(values, {"in_hand", "heading", "lines", "minutes"}, "a way out")
+        return WayOut(
+            in_hand=plain(values.get("in_hand", ""), MAX_IN_HAND, "what is in hand"),
+            heading=plain(values.get("heading", ""), MAX_HEADING, "a heading"),
+            lines=_lines(values.get("lines"), "lines of a way out"),
+            minutes=_minutes(values.get("minutes"), 1, MAX_WAY_OUT_MINUTES, "a way out"),
+        )
 
 
 # ── The four moments ─────────────────────────────────────────────────────────────────
 
 
 @dataclass(frozen=True, slots=True)
-class Say:
+class _Moment:
+    """What every moment carries, whatever it does.
+
+    Five fields and none of them optional. The three that are new in format 2 are here
+    rather than on the acts that seem to need them, because the guarantee is about every
+    moment: an afternoon where one moment out of nine has no way out is an afternoon that
+    can strand, and where the missing one is is not something anybody can hold in mind.
+    """
+
+    id: str
+    heading: str
+    weights: tuple[Weighing, ...]
+    help: tuple[Help, ...]
+    way_out: WayOut
+
+    act: ClassVar[Act]
+
+    def __post_init__(self) -> None:
+        if not self.heading:
+            raise ExperienceError(f"moment {self.id!r} has no heading")
+        if len(self.weights) != len(WEIGHTS):
+            raise ExperienceError(f"moment {self.id!r} does not carry its three weights")
+        if len(self.help) != HELP_LEVELS:
+            raise ExperienceError(f"moment {self.id!r} does not carry {HELP_LEVELS} rungs of help")
+        self._also()
+
+    def _also(self) -> None:
+        """Whatever this act needs beyond the common fields. Nothing, for most of them."""
+
+    def at(self, weight: Weight) -> Weighing:
+        return self.weights[WEIGHTS.index(weight)]
+
+    @property
+    def words(self) -> tuple[str, ...]:
+        """Everything in this moment a person's eye lands on.
+
+        One list, so that the block-list check, the repair loop and the safety gate cannot
+        disagree about what counts as text somebody reads. What is left out is left out
+        because nobody reads it: ids, rectangles, mark kinds and groups.
+        """
+        said = [self.heading]
+        for weighing in self.weights:
+            said.extend(weighing.lines)
+        for rung in self.help:
+            said.extend(rung.lines)
+        said.append(self.way_out.heading)
+        said.extend(self.way_out.lines)
+        said.append(self.way_out.in_hand)
+        said.extend(self._more_words())
+        return tuple(said)
+
+    @property
+    def words_before_the_way_out(self) -> tuple[str, ...]:
+        """The same, without the way out itself.
+
+        The check that a way out starts from something already in hand needs this: counting
+        a way out's own sentences as evidence would make every way out its own proof.
+        """
+        said = [self.heading]
+        for weighing in self.weights:
+            said.extend(weighing.lines)
+        for rung in self.help:
+            said.extend(rung.lines)
+        said.extend(self._more_words())
+        return tuple(said)
+
+    def _more_words(self) -> tuple[str, ...]:
+        """Whatever this act puts in front of somebody besides a display."""
+        return ()
+
+
+def _common(values: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "id": _identifier(values.get("id"), "a moment id"),
+        "heading": plain(values.get("heading", ""), MAX_HEADING, "a heading"),
+        "weights": _weights(values.get("weights")),
+        "help": _ladder(values.get("help")),
+        "way_out": WayOut.from_dict(values.get("way_out")),
+    }
+
+
+def _common_dict(moment: _Moment) -> dict[str, Any]:
+    return {
+        "act": str(moment.act),
+        "id": moment.id,
+        "heading": moment.heading,
+        "weights": {str(w): moment.at(w).to_dict() for w in WEIGHTS},
+        "help": [rung.to_dict() for rung in moment.help],
+        "way_out": moment.way_out.to_dict(),
+    }
+
+
+_COMMON_KEYS: Final[set[str]] = {"act", "id", "heading", "weights", "help", "way_out"}
+
+
+@dataclass(frozen=True, slots=True)
+class Say(_Moment):
     """Put words on a display. The words are in the document, so they were read."""
 
     act: ClassVar[Act] = Act.SAY
 
-    id: str
-    heading: str
-    lines: tuple[str, ...] = ()
-
-    def __post_init__(self) -> None:
-        if not self.heading:
-            raise ExperienceError("a moment that says something needs a heading")
-
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "act": str(self.act),
-            "id": self.id,
-            "heading": self.heading,
-            "lines": list(self.lines),
-        }
+        return _common_dict(self)
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> Say:
-        _only(values, {"act", "id", "heading", "lines"}, "a say moment")
-        return Say(
-            id=_identifier(values.get("id"), "a moment id"),
-            heading=plain(values.get("heading", ""), MAX_HEADING, "a heading"),
-            lines=_lines(values.get("lines", [])),
-        )
+        _only(values, _COMMON_KEYS, "a say moment")
+        return Say(**_common(values))
 
 
 @dataclass(frozen=True, slots=True)
-class HandOver:
+class HandOver(_Moment):
     """Print a designed page and leave it on the table.
 
     ``design`` is a :class:`~shared.pagedesign.PageDesign`: marks over a closed
     vocabulary with no mark that fills an area, so an experience cannot spend an
     afternoon's ink however enthusiastic the model that devised it was.
+
+    ``instead`` is the same moment with no printer: what the display says so that the
+    afternoon carries on when the toner ran out at half past three. It is written now and
+    checked now, because the alternative is a model improvising an apology at the moment
+    something broke. It is mandatory, and a plan whose paper moments do not all carry one
+    is refused.
 
     Nothing here says the page will come back. It is a physical object somebody may pick
     up, or not.
@@ -229,15 +588,28 @@ class HandOver:
 
     act: ClassVar[Act] = Act.HAND_OVER
 
-    id: str
     design: PageDesign
+    instead: tuple[str, ...]
+
+    def _more_words(self) -> tuple[str, ...]:
+        return (
+            self.design.title,
+            self.design.instructions,
+            *(printed.text for printed in self.design.words),
+            *(item.label for item in self.design.readable),
+            *self.instead,
+        )
 
     def to_dict(self) -> dict[str, Any]:
-        return {"act": str(self.act), "id": self.id, "design": self.design.to_dict()}
+        return {
+            **_common_dict(self),
+            "design": self.design.to_dict(),
+            "instead": list(self.instead),
+        }
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> HandOver:
-        _only(values, {"act", "id", "design"}, "a hand_over moment")
+        _only(values, _COMMON_KEYS | {"design", "instead"}, "a hand_over moment")
         raw = values.get("design")
         if not isinstance(raw, Mapping):
             raise ExperienceError("a hand_over moment needs a design")
@@ -246,7 +618,11 @@ class HandOver:
         except DesignError as exc:
             # One refusal for the parent to read, whichever layer noticed.
             raise ExperienceError(f"the page it hands over is not a design: {exc}") from exc
-        return HandOver(id=_identifier(values.get("id"), "a moment id"), design=design)
+        return HandOver(
+            **_common(values),
+            design=design,
+            instead=_lines(values.get("instead"), "what is said instead of printing"),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -280,12 +656,17 @@ class Outcome:
 
 
 @dataclass(frozen=True, slots=True)
-class Collect:
+class Collect(_Moment):
     """Read back the page this experience handed over, and go on knowing what came back.
 
     It takes no parameter about what to read, and that is the point: there is nothing to
     aim and no subject to choose. It reads whatever is on the glass and refuses the page
     if it is not one this experience put there.
+
+    ``if_no_page`` is where the afternoon goes when there is no page to read at all —
+    because the printer was unwell and the moment before this one ran its ``instead``.
+    It names a later moment, or says ``ask``. Without it a house with no printer would
+    reach a moment whose whole job is to read paper and have nowhere to go.
 
     Reading is a model's job, and the consequence is stated rather than worked around —
     no cloud, no reading. A page that comes back while the panel is unreachable waits, and
@@ -294,10 +675,10 @@ class Collect:
 
     act: ClassVar[Act] = Act.COLLECT
 
-    id: str
     outcomes: tuple[Outcome, ...]
+    if_no_page: str
 
-    def __post_init__(self) -> None:
+    def _also(self) -> None:
         seen = [outcome.when for outcome in self.outcomes]
         missing = [str(came) for came in Came if came not in seen]
         if missing:
@@ -310,25 +691,29 @@ class Collect:
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "act": str(self.act),
-            "id": self.id,
+            **_common_dict(self),
             "outcomes": [outcome.to_dict() for outcome in self.outcomes],
+            "if_no_page": self.if_no_page,
         }
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> Collect:
-        _only(values, {"act", "id", "outcomes"}, "a collect moment")
+        _only(values, _COMMON_KEYS | {"outcomes", "if_no_page"}, "a collect moment")
         raw = values.get("outcomes", [])
         if not isinstance(raw, Sequence) or isinstance(raw, str):
             raise ExperienceError("outcomes must be a list")
+        if_no_page = values.get("if_no_page", "")
+        if if_no_page != ASK:
+            if_no_page = _identifier(if_no_page, "where a moment goes when nothing was printed")
         return Collect(
-            id=_identifier(values.get("id"), "a moment id"),
+            **_common(values),
             outcomes=tuple(Outcome.from_dict(o) for o in raw),
+            if_no_page=str(if_no_page),
         )
 
 
 @dataclass(frozen=True, slots=True)
-class Close:
+class Close(_Moment):
     """Say on a display that the afternoon is over.
 
     Separate from :class:`Say` because of what it means rather than what it draws: an
@@ -338,30 +723,13 @@ class Close:
 
     act: ClassVar[Act] = Act.CLOSE
 
-    id: str
-    heading: str
-    lines: tuple[str, ...] = ()
-
-    def __post_init__(self) -> None:
-        if not self.heading:
-            raise ExperienceError("a moment that closes needs a heading")
-
     def to_dict(self) -> dict[str, Any]:
-        return {
-            "act": str(self.act),
-            "id": self.id,
-            "heading": self.heading,
-            "lines": list(self.lines),
-        }
+        return _common_dict(self)
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> Close:
-        _only(values, {"act", "id", "heading", "lines"}, "a close moment")
-        return Close(
-            id=_identifier(values.get("id"), "a moment id"),
-            heading=plain(values.get("heading", ""), MAX_HEADING, "a heading"),
-            lines=_lines(values.get("lines", [])),
-        )
+        _only(values, _COMMON_KEYS, "a close moment")
+        return Close(**_common(values))
 
 
 Moment = Say | HandOver | Collect | Close
@@ -389,6 +757,67 @@ def moment_from_dict(values: Mapping[str, Any]) -> Moment:
 
 
 @dataclass(frozen=True, slots=True)
+class Drawn:
+    """The ten dimensions this afternoon was drawn along, one short phrase each.
+
+    A seed alone flattens after a few afternoons: the same shape arrives wearing different
+    nouns. What produces variety is passing the last few combinations to the devising
+    agent as something it may not repeat, and that only works if a combination is written
+    down. So it is a field.
+
+    Everything in here describes the afternoon and nothing describes a person. "What the
+    paper is for" is a property of a plan; there is no dimension for who it is for,
+    because there is nowhere in this format for such a thing to live.
+    """
+
+    frame: str
+    role: str
+    mechanic: str
+    progress: str
+    paper: str
+    glass: str
+    displays: str
+    camera: str
+    tone: str
+    ending: str
+
+    def as_tuple(self) -> tuple[str, ...]:
+        return tuple(getattr(self, name) for name in DIMENSIONS)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {name: getattr(self, name) for name in DIMENSIONS}
+
+    @staticmethod
+    def from_dict(values: object) -> Drawn:
+        if not isinstance(values, Mapping):
+            raise ExperienceError(
+                "an experience must say which ten dimensions it was drawn along, or "
+                "nobody can tell it apart from the last one"
+            )
+        _only(values, set(DIMENSIONS), "the dimensions")
+        missing = [name for name in DIMENSIONS if not str(values.get(name, "")).strip()]
+        if missing:
+            raise ExperienceError(f"these dimensions were not drawn: {', '.join(missing)}")
+        return Drawn(
+            **{
+                name: plain(values.get(name, ""), MAX_DIMENSION, f"the {name} dimension")
+                for name in DIMENSIONS
+            }
+        )
+
+
+def shared_dimensions(one: Drawn, other: Drawn) -> tuple[str, ...]:
+    """Which of the ten two afternoons drew the same way. Compared folded, not literally."""
+    return tuple(
+        name
+        for name, mine, theirs in zip(
+            DIMENSIONS, one.as_tuple(), other.as_tuple(), strict=True
+        )
+        if _folded(mine) == _folded(theirs)
+    )
+
+
+@dataclass(frozen=True, slots=True)
 class Experience:
     """One afternoon, whole, in a form a parent reads before it may happen in their house.
 
@@ -406,6 +835,7 @@ class Experience:
     minutes: int
     moments: tuple[Moment, ...]
     requires: frozenset[HouseCapability]
+    drawn: Drawn
     format_version: int = EXPERIENCE_FORMAT_VERSION
 
     def __post_init__(self) -> None:
@@ -465,6 +895,7 @@ class Experience:
             "overview": self.overview,
             "minutes": self.minutes,
             "requires": sorted(str(c) for c in self.requires),
+            "drawn": self.drawn.to_dict(),
             "moments": [moment.to_dict() for moment in self.moments],
         }
 
@@ -481,6 +912,7 @@ class Experience:
                 "overview",
                 "minutes",
                 "requires",
+                "drawn",
                 "moments",
             },
             "an experience",
@@ -495,6 +927,7 @@ class Experience:
             minutes=_whole(values.get("minutes"), "minutes"),
             moments=tuple(moment_from_dict(m) for m in raw),
             requires=_capabilities(values.get("requires", [])),
+            drawn=Drawn.from_dict(values.get("drawn")),
             format_version=_whole(
                 values.get("format_version", EXPERIENCE_FORMAT_VERSION), "format_version"
             ),
@@ -618,23 +1051,31 @@ def _check_graph(moments: Sequence[Moment]) -> None:
     list, so an experience whose last moment is a ``say`` runs off the end and trails off.
     The last moment is therefore a ``close``, or a ``collect`` — and a ``collect`` at the
     end can only ask, because there is nothing after it to name.
+
+    Those two together already mean the ending is reachable from every moment, which is
+    `ideas/09 §14 #2`: edges only point forward, so every path arrives at the last moment,
+    and the last moment either closes or asks. A separate walk to prove it was written here
+    and taken out again — it could not be made to fail on any document this parser accepts,
+    and a check nobody can write a failing case for is a claim rather than a check. What is
+    left over is the document whose every branch says ``ask``, and that is refused by
+    :func:`shared.experience_checks.the_ending_is_written_down`.
     """
     position_of = {moment.id: index for index, moment in enumerate(moments)}
 
     for index, moment in enumerate(moments):
         if not isinstance(moment, Collect):
             continue
-        for outcome in moment.outcomes:
-            if outcome.then == ASK:
+        for where, target_id in _leads_from(moment):
+            if target_id == ASK:
                 continue
-            target = position_of.get(outcome.then)
+            target = position_of.get(target_id)
             if target is None:
                 raise ExperienceError(
-                    f"{moment.id!r} leads to {outcome.then!r}, which is not a moment"
+                    f"{moment.id!r} leads to {target_id!r} {where}, which is not a moment"
                 )
             if target <= index:
                 raise ExperienceError(
-                    f"{moment.id!r} leads back to {outcome.then!r}; an experience goes "
+                    f"{moment.id!r} leads back to {target_id!r}; an experience goes "
                     f"forward, and a loop is a program"
                 )
 
@@ -652,6 +1093,49 @@ def _check_graph(moments: Sequence[Moment]) -> None:
             f"{unreachable} cannot be reached; a moment nobody arrives at was approved "
             f"for nothing"
         )
+
+
+def _leads_from(moment: Collect) -> tuple[tuple[str, str], ...]:
+    """Every id a collect can send the afternoon to, and what sent it there.
+
+    ``if_no_page`` is an edge like any other. It was not one in format 1 because it did
+    not exist, and the printerless path is worth nothing if the graph does not know it is
+    a path.
+    """
+    return (
+        *((f"when a page comes back {outcome.when}", outcome.then) for outcome in moment.outcomes),
+        ("when nothing was printed", moment.if_no_page),
+    )
+
+
+def longest_at(moments: Sequence[Moment], weight: Weight, *, start: int = 0) -> int:
+    """The most minutes a run through these moments can take, at one weight.
+
+    The longest path and not the sum: branches are alternatives, and adding them together
+    would refuse a document that fits every way it can actually be run. Where a branch
+    says ``ask``, the way out of that moment is counted — the continuation is a document
+    nobody has written yet, and the only thing known about that stretch of afternoon is
+    that it can be brought to an end from there.
+
+    ``start`` is which moment to measure from, so the runner can ask the same question in
+    the middle of an afternoon that the checks asked before it began.
+    """
+    position_of = {moment.id: index for index, moment in enumerate(moments)}
+    beyond: list[int] = [0] * len(moments)
+    for index in range(len(moments) - 1, -1, -1):
+        moment = moments[index]
+        here = moment.at(weight).minutes
+        if moment.act is Act.CLOSE:
+            beyond[index] = here
+        elif isinstance(moment, Collect):
+            onward = [
+                moment.way_out.minutes if target == ASK else beyond[position_of[target]]
+                for _, target in _leads_from(moment)
+            ]
+            beyond[index] = here + max(onward, default=0)
+        else:
+            beyond[index] = here + (beyond[index + 1] if index + 1 < len(moments) else 0)
+    return beyond[start] if 0 <= start < len(beyond) else 0
 
 
 def _reachable(moments: Sequence[Moment]) -> set[str]:
@@ -673,9 +1157,9 @@ def _reachable(moments: Sequence[Moment]) -> set[str]:
             continue
         seen.add(moment.id)
         if isinstance(moment, Collect):
-            for outcome in moment.outcomes:
-                if outcome.then != ASK:
-                    pending.append(position_of[outcome.then])
+            for _, target in _leads_from(moment):
+                if target != ASK:
+                    pending.append(position_of[target])
         elif moment.act is not Act.CLOSE:
             pending.append(index + 1)
     return seen

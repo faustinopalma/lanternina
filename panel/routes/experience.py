@@ -27,7 +27,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from shared.approval import ApprovalState
 from shared.capabilities import HouseCapability
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
-from shared.experience import ASK, Came, Collect, Experience, ExperienceError
+from shared.experience import ASK, Came, Collect, Drawn, Experience, ExperienceError
 
 from ..config import Settings
 from ..experiences import (
@@ -76,6 +76,7 @@ async def continue_afternoon(
 
     experience = _asked(what)
     from ..continuing import continue_experience
+    from ..devising import RefusedByTheChecks
 
     spent: Any = None
     outcome = FAILED
@@ -94,6 +95,10 @@ async def continue_afternoon(
         outcome = REFUSED
         logging.getLogger(__name__).info("continuation refused: %s", exc)
         raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
+    except RefusedByTheChecks as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("continuation refused by the checks: %s", exc)
+        raise HTTPException(status_code=422, detail="refused_by_the_checks") from exc
     except ExperienceError as exc:
         logging.getLogger(__name__).warning("not a continuation: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_a_continuation: {exc}") from exc
@@ -196,8 +201,9 @@ async def devise_afternoon(
     # Titles only. What is kept about earlier afternoons is what they were called, so that
     # the next one differs — never who did them, how far they got or what came back.
     already = tuple(row.title for row in store.list(household_id) if row.title)
+    recent = _drawn_before(store, household_id)
 
-    from ..devising import devise_experience
+    from ..devising import RefusedByTheChecks, devise_experience
 
     spent: Any = None
     outcome = FAILED
@@ -210,6 +216,7 @@ async def devise_afternoon(
             interests=settings_of_the_house.interests,
             avoid=settings_of_the_house.avoid,
             already=already,
+            recent=recent,
             now=time.time(),
         )
         outcome = SERVED
@@ -217,6 +224,10 @@ async def devise_afternoon(
         outcome = REFUSED
         logging.getLogger(__name__).info("afternoon refused: %s", exc)
         raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
+    except RefusedByTheChecks as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("afternoon refused by the checks: %s", exc)
+        raise HTTPException(status_code=422, detail="refused_by_the_checks") from exc
     except ExperienceError as exc:
         logging.getLogger(__name__).warning("not an experience: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_an_experience: {exc}") from exc
@@ -235,6 +246,31 @@ async def devise_afternoon(
         )
     )
     return {"id": stored.id, "title": stored.title, "state": stored.state}
+
+
+# How many earlier afternoons the next one is drawn against. Five is a month of weekly
+# afternoons; more than that and a model is being asked to avoid so much that the honest
+# answer is a shrug. Chosen, not measured.
+DRAWN_BEFORE = 5
+
+
+def _drawn_before(store: ExperienceStore, household_id: str) -> tuple[Drawn, ...]:
+    """The dimensions the last few afternoons here were drawn along.
+
+    Ten short phrases per afternoon, all of them about the afternoon. This is the thing
+    `ideas/09 §10` says makes variety checkable instead of hoped for, and it is the reason
+    the field exists at all.
+
+    A row this container can no longer read is skipped rather than refused: an old document
+    in a store is not a reason to leave a house with no afternoon.
+    """
+    drawn: list[Drawn] = []
+    for row in store.list(household_id)[-DRAWN_BEFORE:]:
+        try:
+            drawn.append(Drawn.from_dict(row.experience.get("drawn")))
+        except ExperienceError:
+            continue
+    return tuple(drawn)
 
 
 @router.get("/api/device/{household_id}/experiences")

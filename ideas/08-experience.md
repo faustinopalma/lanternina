@@ -570,6 +570,12 @@ awake, so `forget_what_is_over` deletes such a run and the notes on its paper. N
 said to anybody: an afternoon that ran out of hours is over, which is what an afternoon
 nobody continued was always going to be.
 
+**Reversed on 23 August 2026, and it was wrong.** Deleting a run in silence is an afternoon
+that stops without ending, which is the failure this project exists to prevent, and it was
+seen doing exactly that to `aft_5ec79e85`. `conclude_what_is_over` replaced it: the way out
+of wherever the afternoon got to, then the ending, then the deletion.
+[09 §20](09-a-game-that-ends.md) has the measurement and the argument.
+
 ### Two defects the first evening found, both about a house that says nothing
 
 The clock was written with a copy of the rhythm on disk, six hours old at most, so that the

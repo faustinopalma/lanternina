@@ -12,6 +12,7 @@ import asyncio
 import json
 from typing import Any
 
+import afternoons as a
 import pytest
 
 from agents.experience_deviser import MAX_EXPERIENCE_CHARS, ExperienceDeviser, experience_in
@@ -19,59 +20,29 @@ from shared import experience, pagedesign
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import EXPERIENCE_FORMAT_VERSION, Collect, ExperienceError, HandOver
+from shared.experience_checks import Complaint
 from shared.ids import LearnerId
 from shared.routing import ModelRequest
 from shared.safety import ContentKind, SafetyVerdict, ScreenedPayload, ScreeningRecord
 from shared.seal import Sealer, SealPurpose
 
+# What a model answers with: the five fields it is asked for, and not the three it is not.
 AN_AFTERNOON: dict[str, Any] = {
     "title": "Un pomeriggio di ombre",
     "overview": "Il display dice di cercare un'ombra, poi esce un foglio da riempire.",
     "minutes": 120,
+    "drawn": a.drawn(frame="le ombre di casa"),
     "moments": [
-        {
-            "act": "say",
-            "id": "cerca",
-            "heading": "Cerca un'ombra",
-            "lines": ["Fra poco esce un foglio."],
-        },
-        {
-            "act": "hand_over",
-            "id": "il-foglio",
-            "design": {
-                "title": "L'ombra di oggi",
-                "instructions": "Riempi quello che vuoi.",
-                "marks": [
-                    {
-                        "mark": "words",
-                        "rect": {"x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045},
-                        "text": "L'ombra di oggi",
-                        "size_mm": 6.5,
-                    },
-                    {
-                        "mark": "draw_area",
-                        "id": "il-disegno",
-                        "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.45},
-                        "label": "Disegnala qui",
-                        "group": "ombra",
-                    },
-                ],
-            },
-        },
-        {
-            "act": "collect",
-            "id": "com-e-andata",
-            "outcomes": [
-                {"when": "marks", "then": "ask"},
-                {"when": "blank", "then": "basta"},
-            ],
-        },
-        {
-            "act": "close",
-            "id": "basta",
-            "heading": "Basta così",
-            "lines": ["Il foglio resta con te."],
-        },
+        a.say(moment_id="cerca", heading="Cerca un'ombra"),
+        a.hand_over(moment_id="il-foglio", heading="Esce un foglio"),
+        a.collect(
+            moment_id="com-e-andata",
+            heading="Mettilo sul vetro",
+            on_marks="ask",
+            on_blank="basta",
+            if_no_page="basta",
+        ),
+        a.close(moment_id="basta", heading="Basta così"),
     ],
 }
 
@@ -262,6 +233,124 @@ def test_the_deviser_is_told_where_to_leave_a_branch_unwritten() -> None:
     assert "marks" in DEVISER[marks : marks + 200]
     blank = DEVISER.find("came back blank always names a moment")
     assert blank > marks, "the deviser never says which branch stays written"
+
+
+# ── The ten dimensions, and what the text has to be like ─────────────────────────────
+
+
+def test_the_ten_dimensions_are_all_asked_for_by_name() -> None:
+    """A dimension the prompt never names is one the model has no way to write down, and
+    the whole point of writing them down is that the next afternoon can be checked."""
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for dimension in experience.DIMENSIONS:
+        assert f'"{dimension}"' in DEVISER, f"the deviser never asks for {dimension}"
+
+
+def test_the_prompt_refuses_the_six_things_a_model_reaches_for() -> None:
+    """`ideas/09 §16` names them rather than describing originality, and so does this."""
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for reached_for in (
+        "pirate treasure hunt",
+        "escape room",
+        "question-and-answer quiz",
+        "murder mystery",
+        "apocalypse",
+        "computer that has gone mad",
+    ):
+        assert reached_for in DEVISER
+
+
+def test_the_six_properties_of_the_text_are_in_both_prompts() -> None:
+    """They describe how a sentence is built rather than what it is about, so a model
+    concentrating on the story drops them first. Both agents write sentences."""
+    from agents.experience_continuer import _INSTRUCTION as CONTINUER
+    from agents.experience_deviser import _INSTRUCTION as DEVISER
+
+    for line in (
+        "One instruction at a time",
+        "two surfaces",
+        "Nothing asks for speed",
+        "approximate answer",
+        "never school-like",
+        "does not contain its own reasons",
+    ):
+        for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
+            assert line in prompt, f"{who} never says {line!r}"
+
+
+def test_the_recent_combinations_arrive_as_something_the_next_one_may_not_be() -> None:
+    _, router = devised(
+        json.dumps(AN_AFTERNOON),
+        recent=[experience.Drawn.from_dict(a.drawn(frame="un tetto di agosto"))],
+    )
+    prompt = router.asked.prompt  # type: ignore[union-attr]
+
+    assert "un tetto di agosto" in prompt
+    assert f"at most {experience.MAX_SHARED_DIMENSIONS} of the ten" in prompt
+
+
+def test_a_house_with_no_history_is_not_asked_to_avoid_nothing() -> None:
+    """An empty constraint is a sentence a model finds a way to be about."""
+    _, router = devised(json.dumps(AN_AFTERNOON))
+    prompt = router.asked.prompt  # type: ignore[union-attr]
+
+    assert "the dimensions the last afternoons here were drawn along" not in prompt
+
+
+# ── Repair ───────────────────────────────────────────────────────────────────────────
+
+
+def test_a_repair_keeps_the_id_so_it_is_the_same_afternoon() -> None:
+    """A refused document that comes back with a new id is a second afternoon, and the
+    store would then hold both."""
+    refused = experience_in(json.dumps(AN_AFTERNOON))
+    router = Router(json.dumps(AN_AFTERNOON))
+    context = AgentContext(
+        router=router,  # type: ignore[arg-type]
+        learner_id=LearnerId(""),
+        learner_hints={},
+        now=0.0,
+    )
+
+    repaired = asyncio.run(
+        ExperienceDeviser().repair(
+            context,
+            refused=refused,
+            complaints=[Complaint(where="moments[0].way_out.in_hand", says="it names nothing")],
+            language="italiano",
+        )
+    )
+
+    assert repaired.experience_id == refused.experience_id
+
+
+def test_a_repair_is_told_which_fields_failed_and_to_leave_the_rest_alone() -> None:
+    refused = experience_in(json.dumps(AN_AFTERNOON))
+    router = Router(json.dumps(AN_AFTERNOON))
+    context = AgentContext(
+        router=router,  # type: ignore[arg-type]
+        learner_id=LearnerId(""),
+        learner_hints={},
+        now=0.0,
+    )
+
+    asyncio.run(
+        ExperienceDeviser().repair(
+            context,
+            refused=refused,
+            complaints=[Complaint(where="minutes", says="the shortest way does not fit")],
+            language="italiano",
+        )
+    )
+    prompt = router.asked.prompt  # type: ignore[union-attr]
+
+    assert "minutes: the shortest way does not fit" in prompt
+    assert "the same ten dimensions" in prompt
+    # The three fields the model does not own are not handed back to it to be rewritten.
+    assert "experience_id" not in prompt
+    assert "format_version" not in prompt
 
 
 # ── What is refused ──────────────────────────────────────────────────────────────────

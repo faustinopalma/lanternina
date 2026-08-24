@@ -24,9 +24,12 @@ from typing import Any
 
 from shared.agents import AgentContext
 from shared.experience import Continuation
+from shared.experience_checks import check
 from shared.ids import LearnerId
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
+
+from .devising import RefusedByTheChecks
 
 
 async def continue_experience(
@@ -68,8 +71,15 @@ async def continue_experience(
         carrying_on = await ExperienceContinuer().continue_from(
             context, experience=experience, after=after, came=came, reading=reading
         )
+        # The same checks the whole afternoon passed, on the half nobody approved. There is
+        # no repair here and there will not be one: somebody is standing at the scanner, a
+        # second model call is another fifteen seconds, and an afternoon that is not
+        # continued stops — which is what an afternoon nobody continues does anyway.
+        complaints = check(carrying_on)
+        if complaints:
+            raise RefusedByTheChecks(complaints)
         # The chokepoint. Nothing below this line may be skipped by an early return above
-        # it: the parse can refuse, but only screening lets something through.
+        # it: the parse and the checks can refuse, but only screening lets something through.
         await screen_continuation(gate, carrying_on, context=f"continuing after {after}")
     finally:
         await gate.aclose()

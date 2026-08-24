@@ -13,11 +13,20 @@ glass. So there is no ``start``/``resume`` pair; there is :func:`begin` and
 :func:`carry_on`, and ``carry_on`` may be called as many times as the afternoon has
 collects.
 
+**The ending starts by itself, and that is what changed on 23 August 2026.** Until then an
+afternoon that ran out of hours was deleted where it stood: measured on the house on 21
+August, run `aft_5ec79e85` was begun at 09:17, never finished, and forgotten at 14:02 with
+nothing said to anybody. An afternoon that stops without ending is the failure this whole
+project exists to make impossible, so :func:`conclude_what_is_over` now plays the way out
+of wherever the afternoon got to and then its ending, and deletes the run afterwards. The
+trigger is arithmetic on a clock — thirty minutes before the end hour — and no model is
+asked whether it is time.
+
 Three things this does not do, each of them a rule rather than an omission.
 
-* **Nothing waits.** An afternoon nobody continues stops where it is. There is no timer,
-  no reminder and no record that something was left unfinished — the run file simply sits
-  there until a page arrives or the afternoon's own hours run out.
+* **Nothing waits for a person.** There is no timer that expects an answer, and stopping
+  is not recorded as anything. The clock that brings the ending is about the hour, not
+  about somebody being slow.
 * **Nothing is pushed.** A ``collect`` whose outcome says ``ask`` is answered inside the
   reply to a request this house makes, which is :func:`_ask`. The panel cannot start
   anything here.
@@ -43,8 +52,10 @@ from devices.house import CannotRun, House, screen_in, show
 from devices.print_sheet import compose_and_print, recall
 from devices.read_page import PanelUnreachable, read_page
 from devices.scan_sheet import find_scanner, scan_page
+from orchestrator.outgoing import Outgoing
 from shared.experience import (
     ASK,
+    Act,
     Came,
     Close,
     Collect,
@@ -53,7 +64,8 @@ from shared.experience import (
     ExperienceError,
     HandOver,
     Moment,
-    Say,
+    Weight,
+    longest_at,
     moment_from_dict,
 )
 from shared.ids import new_exercise_id, new_id, new_sheet_id
@@ -66,10 +78,17 @@ from vision.read_sheet import detect_markers, read_qr, rectify
 # front of. Chosen, not measured.
 ASK_TIMEOUT_SECONDS = 120
 
+# How long before the end hour the ending begins, whatever the afternoon had reached. The
+# design's number. What it has to cover is the longest way out a document may carry —
+# twenty minutes, refused above that by the format — plus the ten minutes the house's own
+# timer may take to notice. So an ending that starts as late as T-20 still has its twenty
+# minutes, and the close lands on the hour rather than after it.
+ENDING_STARTS_AT_MINUTES = 30
+
 
 @dataclass(frozen=True, slots=True)
 class Afternoon:
-    """One run, as much of it as the house has to remember between two pages.
+    """One run, as much of it as the house has to remember between two moments.
 
     It holds the whole experience rather than its id, for the reason ``resume`` gives in
     the blueprint runner: the house runs what it started. A document edited while a sheet
@@ -81,6 +100,14 @@ class Afternoon:
     moments are out of reach. That is what makes a continuation self-contained: its
     branches name its own moments, so an id it shares with the approved document is a
     coincidence rather than a jump.
+
+    **Where the line is between a record and a verdict**, because format 2 put more in
+    here than format 1 had. What this file holds is what is happening now: which moment,
+    which weight, which sheets have already come out of the printer, whether the ending has
+    begun. Every one of those is a fact about an afternoon, and every one of them is
+    deleted when the afternoon ends. What may never appear is a number about a person that
+    outlives the session — "took the short weight again" is a verdict, and there is nowhere
+    here for it to be written.
     """
 
     run_id: str
@@ -90,6 +117,15 @@ class Afternoon:
     # between two moments that do not touch paper has nothing to wait for.
     waiting_at: str
     segment: tuple[Moment, ...] = ()
+    weight: Weight = Weight.STANDARD
+    # Which sheets this run has already put on the table. Reprinting one is the failure
+    # `ideas/09 §6` names: restart from nothing at 16:40, print sheet three again, and the
+    # thing the person was inside of breaks.
+    printed: tuple[str, ...] = ()
+    # The moment whose way out is being taken. Non-empty means the ending has begun and
+    # the only thing left is the close.
+    leaving_at: str = ""
+    left_at: float = 0.0
 
     @property
     def moments(self) -> tuple[Moment, ...]:
@@ -99,6 +135,26 @@ class Afternoon:
     def over_at(self) -> float:
         return self.started_at + self.experience.minutes * 60.0
 
+    @property
+    def ending_starts_at(self) -> float:
+        """When the ending begins whatever has happened. Arithmetic, not a decision."""
+        return self.over_at - ENDING_STARTS_AT_MINUTES * 60.0
+
+    def closing_due_at(self) -> float:
+        """When the close follows a way out that is already in play.
+
+        The way out's own minutes, or the end hour, whichever comes first. An ending that
+        arrives after the hour the parent chose is not an ending that arrived.
+        """
+        out = self.moment(self.leaving_at).way_out
+        return min(self.left_at + out.minutes * 60.0, self.over_at)
+
+    def moment(self, moment_id: str) -> Moment:
+        for moment in self.moments:
+            if moment.id == moment_id:
+                return moment
+        raise CannotRun(f"there is no moment called {moment_id!r} in this afternoon")
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "run_id": self.run_id,
@@ -106,6 +162,10 @@ class Afternoon:
             "waiting_at": self.waiting_at,
             "experience": self.experience.to_dict(),
             "segment": [moment.to_dict() for moment in self.segment],
+            "weight": str(self.weight),
+            "printed": list(self.printed),
+            "leaving_at": self.leaving_at,
+            "left_at": self.left_at,
         }
 
     @staticmethod
@@ -116,6 +176,10 @@ class Afternoon:
             started_at=float(values["started_at"]),
             waiting_at=str(values["waiting_at"]),
             segment=tuple(moment_from_dict(m) for m in values.get("segment", [])),
+            weight=Weight(str(values.get("weight", Weight.STANDARD))),
+            printed=tuple(str(sheet) for sheet in values.get("printed", [])),
+            leaving_at=str(values.get("leaving_at", "")),
+            left_at=float(values.get("left_at", 0.0)),
         )
 
 
@@ -153,6 +217,8 @@ def _write(path: Path, values: dict[str, Any]) -> None:
 def _forget(sheets_dir: Path, run: Afternoon, sheets: list[SheetSpec]) -> None:
     """An afternoon that ended leaves nothing behind, not even that it happened."""
     _run_file(sheets_dir, run.run_id).unlink(missing_ok=True)
+    for sheet_id in run.printed:
+        _page_file(sheets_dir, sheet_id).unlink(missing_ok=True)
     for spec in sheets:
         _page_file(sheets_dir, str(spec.sheet_id)).unlink(missing_ok=True)
 
@@ -167,49 +233,148 @@ def waiting_runs(sheets_dir: Path) -> list[str]:
     return sorted(path.stem for path in sorted(_runs(sheets_dir).glob("*.json")))
 
 
-def forget_what_is_over(sheets_dir: Path, now: float) -> list[str]:
-    """Delete every run whose hours have passed, and the notes on its paper.
+def _read_run(path: Path) -> Afternoon | None:
+    try:
+        return Afternoon.from_dict(json.loads(path.read_text(encoding="utf-8")))
+    except (OSError, ValueError, KeyError, ExperienceError):
+        return None
 
-    The runner itself notices the hours when a page arrives, because that is the only
-    moment it is awake. A run nobody ever brought a page back to would otherwise sit on
-    disk for good, holding a whole afternoon's text and blocking the next one. Nothing is
-    said to anybody and nothing is recorded: an afternoon that ran out of hours is over,
-    which is what an afternoon nobody continued was always going to be.
+
+def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> list[str]:
+    """Bring every afternoon whose hour has come to its ending, and then forget it.
+
+    This replaced ``forget_what_is_over`` on 23 August 2026, and the two are not variants
+    of each other. The old one deleted a run whose hours had passed and said nothing to
+    anybody — measured doing exactly that on the house, to `aft_5ec79e85`, at 14:02 on 21
+    August. Deleting an afternoon is the one thing a system like this may not do: an
+    afternoon that stops without ending is the failure the rules call impossible.
+
+    Two steps, one per run of the house's timer, because a way out is something somebody
+    does rather than something a display finishes saying.
+
+    1. At thirty minutes before the end hour, the way out of wherever the afternoon got to
+       goes on the display. Nothing announces it, nothing apologises for it, and nothing
+       says the afternoon was shortened.
+    2. When that way out's own minutes are up — or the end hour arrives, whichever is
+       first — the ending goes on the display and the run is deleted.
+
+    A run whose file cannot be read is deleted without an ending, because there is no
+    document left to reach one through. That is the only path here that still forgets.
     """
-    gone: list[str] = []
-    for path in sorted(_runs(sheets_dir).glob("*.json")):
-        try:
-            run = Afternoon.from_dict(json.loads(path.read_text(encoding="utf-8")))
-        except (OSError, ValueError, KeyError, ExperienceError):
-            # A run file this house cannot read is not an afternoon it can carry on.
+    ended: list[str] = []
+    for path in sorted(_runs(house.sheets_dir).glob("*.json")):
+        run = _read_run(path)
+        if run is None:
             path.unlink(missing_ok=True)
-            gone.append(path.stem)
+            ended.append(path.stem)
             continue
-        if now <= run.over_at:
+        if run.leaving_at:
+            if now < run.closing_due_at():
+                continue
+            _close_it(house, run, send=send)
+            _forget(house.sheets_dir, run, [])
+            ended.append(run.run_id)
             continue
-        path.unlink(missing_ok=True)
-        gone.append(run.run_id)
+        if now < run.ending_starts_at:
+            continue
+        leaving = _take_the_way_out(house, run, now)
+        if leaving is None:
+            _forget(house.sheets_dir, run, [])
+            ended.append(run.run_id)
+            continue
+        _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
+    _forget_orphan_pages(house.sheets_dir)
+    return ended
+
+
+def _forget_orphan_pages(sheets_dir: Path) -> None:
+    """Notes pointing at a run that is gone. A sheet whose afternoon ended is just paper."""
+    still_here = set(waiting_runs(sheets_dir))
     for note in sorted((_runs(sheets_dir) / "pages").glob("*.json")):
         try:
             run_id = str(json.loads(note.read_text(encoding="utf-8"))["run_id"])
         except (OSError, ValueError, KeyError):
             note.unlink(missing_ok=True)
             continue
-        if run_id in gone:
+        if run_id not in still_here:
             note.unlink(missing_ok=True)
-    return gone
+
+
+def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | None:
+    """Put the way out of wherever this afternoon got to on the display.
+
+    None means there was nothing to leave from — a run pointing at a moment its own
+    document no longer has, which is a broken record rather than an afternoon.
+    """
+    try:
+        at = run.moment(run.waiting_at)
+    except CannotRun:
+        return None
+    out = at.way_out
+    show(house, out.heading, list(out.lines))
+    return Afternoon(
+        run_id=run.run_id,
+        experience=run.experience,
+        started_at=run.started_at,
+        waiting_at=run.waiting_at,
+        segment=run.segment,
+        weight=run.weight,
+        printed=run.printed,
+        leaving_at=at.id,
+        left_at=now,
+    )
+
+
+def _close_it(house: House, run: Afternoon, *, send: bool = True) -> None:
+    """The ending, reached early, which is the same ending.
+
+    It says nothing about what was not seen. `ideas/09 §3` is the whole argument for that
+    and it is one sentence: an ending that refers to what was skipped tells the person
+    something was taken away from them.
+    """
+    ending = _the_ending(run.moments)
+    if ending is None:
+        return
+    _do(house, ending, run.weight, send=send)
+
+
+def _the_ending(moments: tuple[Moment, ...]) -> Close | None:
+    """The close this afternoon was always going to reach.
+
+    The last one in the list when there are several: the branches that close earlier are
+    kinder endings for shorter paths, and the one at the end is the afternoon's own.
+    """
+    closes = [moment for moment in moments if isinstance(moment, Close)]
+    return closes[-1] if closes else None
 
 
 # ── Playing ──────────────────────────────────────────────────────────────────────────
 
 
-def _do(house: House, moment: Moment, *, send: bool) -> SheetSpec | None:
-    if isinstance(moment, Say | Close):
-        show(house, moment.heading, list(moment.lines))
-        return None
+def _do(
+    house: House,
+    moment: Moment,
+    weight: Weight,
+    *,
+    send: bool,
+    out: Outgoing | None = None,
+) -> SheetSpec | None:
+    """Play one moment at one weight. Returns the sheet it printed, if it printed one.
+
+    A ``hand_over`` in a house whose printer is not there plays its ``instead`` instead:
+    the words are already written and were already checked, so nothing is improvised at the
+    moment something breaks. It returns no sheet, and the ``collect`` that follows will
+    take its ``if_no_page`` branch.
+    """
+    said = out or Outgoing()
+    at_this_weight = moment.at(weight).lines
+    lines = said.lines(f"{moment.id}.{weight}", at_this_weight, written=at_this_weight)
     if isinstance(moment, HandOver):
         if not house.printer:
-            raise CannotRun("there is no printer in this house")
+            show(house, moment.heading, list(said.lines(f"{moment.id}.instead", moment.instead,
+                                                        written=moment.instead)))
+            return None
+        show(house, moment.heading, list(lines))
         return compose_and_print(
             moment.design,
             sheets_dir=house.sheets_dir,
@@ -218,32 +383,66 @@ def _do(house: House, moment: Moment, *, send: bool) -> SheetSpec | None:
             printer=house.printer,
             send=send,
         )
-    raise CannotRun("a collect is the seam between two stretches of an afternoon")
+    if moment.act is Act.COLLECT:
+        raise CannotRun("a collect is the seam between two stretches of an afternoon")
+    show(house, moment.heading, list(lines))
+    return None
+
+
+def _weight_for(moments: tuple[Moment, ...], start: int, minutes_left: float) -> Weight:
+    """Which of the three versions to run from here, so that the ending still fits.
+
+    In code, not in a model. `ideas/09 §5` gives the order — everything to its short
+    weight, then optional moments dropped, then merges, then the way out — and this is the
+    first of the four, which is the one that costs nothing and is always available. The
+    others are not built; the way out is, and it is what the clock reaches for at T-30.
+
+    Standard unless standard does not fit. Extended is never chosen here: choosing to make
+    an afternoon longer because there is room is a decision about what somebody wants, and
+    the runner does not know that.
+    """
+    if longest_at(moments, Weight.STANDARD, start=start) * 60.0 <= minutes_left:
+        return Weight.STANDARD
+    return Weight.SHORT
 
 
 def _play(
-    house: House, moments: tuple[Moment, ...], start: int, *, send: bool
-) -> tuple[Collect | None, list[SheetSpec]]:
+    house: House,
+    run: Afternoon,
+    start: int,
+    *,
+    now: float,
+    send: bool,
+    out: Outgoing | None = None,
+) -> tuple[Collect | None, list[SheetSpec], Weight]:
     """Run moments forward from ``start`` until a page has to come back, or it closes.
 
-    Returns the ``collect`` it stopped at — or None, meaning the afternoon is over — and
-    every sheet it put on the table on the way.
+    Returns the ``collect`` it stopped at — or None, meaning the afternoon is over — every
+    sheet it put on the table on the way, and the weight it ran at.
     """
+    moments = run.moments
+    weight = _weight_for(moments, start, run.over_at - now)
     printed: list[SheetSpec] = []
     for moment in moments[start:]:
         if isinstance(moment, Collect):
-            return moment, printed
-        spec = _do(house, moment, send=send)
+            return moment, printed, weight
+        spec = _do(house, moment, weight, send=send, out=out)
         if spec is not None:
             printed.append(spec)
         if isinstance(moment, Close):
-            return None, printed
+            return None, printed, weight
     # `_check_graph` refuses a document that could reach here, so this is a bug rather
     # than a badly written afternoon.
     raise CannotRun("the afternoon ran off the end of its moments")
 
 
-def _pause(house: House, run: Afternoon, at: Collect, printed: list[SheetSpec]) -> None:
+def _pause(
+    house: House,
+    run: Afternoon,
+    at: Collect,
+    printed: list[SheetSpec],
+    weight: Weight,
+) -> None:
     """Write down where the afternoon got to, and which paper points back at it."""
     waiting = Afternoon(
         run_id=run.run_id,
@@ -251,6 +450,8 @@ def _pause(house: House, run: Afternoon, at: Collect, printed: list[SheetSpec]) 
         started_at=run.started_at,
         waiting_at=at.id,
         segment=run.segment,
+        weight=weight,
+        printed=(*run.printed, *(str(spec.sheet_id) for spec in printed)),
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
     for spec in printed:
@@ -266,17 +467,27 @@ def begin(
     """
     if not experience.runnable_in(house.capabilities):
         raise CannotRun(f"this house cannot run {experience.title}")
+    moment = time.time() if now is None else now
     run = Afternoon(
         run_id=new_id("aft"),
         experience=experience,
-        started_at=time.time() if now is None else now,
+        started_at=moment,
         waiting_at="",
     )
-    at, printed = _play(house, run.moments, 0, send=send)
+    out = Outgoing()
+    at, printed, weight = _play(house, run, 0, now=moment, send=send, out=out)
+    _say_the_tally(out)
     if at is None:
         return None
-    _pause(house, run, at, printed)
+    _pause(house, run, at, printed, weight)
     return run.run_id
+
+
+def _say_the_tally(out: Outgoing) -> None:
+    """The refusal counts, to the journal and nowhere else."""
+    tally = out.tally()
+    if tally:
+        print(tally)
 
 
 def came_back(reading: PageReading) -> Came | None:
@@ -388,11 +599,20 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
         raise CannotRun("that afternoon is already over")
     run = Afternoon.from_dict(json.loads(run_path.read_text(encoding="utf-8")))
 
-    if moment > run.over_at:
-        # An afternoon lasts an afternoon. Noticed when a page arrives rather than by a
-        # timer, because nothing here runs while nobody is doing anything.
-        _forget(house.sheets_dir, run, [spec])
-        return "that afternoon is over"
+    if run.leaving_at:
+        # The ending is already on the display. A page arriving now is not late for
+        # anything: it is read, and the afternoon finishes where it was always going to.
+        return "that afternoon is finishing"
+
+    if moment >= run.ending_starts_at:
+        # The hour, not the person. Nothing here says the afternoon was shortened, and the
+        # ending this reaches is the same ending it would have reached the long way.
+        leaving = _take_the_way_out(house, run, moment)
+        if leaving is None:
+            _forget(house.sheets_dir, run, [spec])
+            return "that afternoon is over"
+        _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
+        return "that afternoon is on its way to the ending"
 
     at = run.moments[_index_of(run, run.waiting_at)]
     if not isinstance(at, Collect):
@@ -410,16 +630,20 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
             started_at=run.started_at,
             waiting_at=run.waiting_at,
             segment=carrying_on.moments,
+            weight=run.weight,
+            printed=run.printed,
         )
         start = 0
     else:
         start = _index_of(run, then)
 
-    following, printed = _play(house, run.moments, start, send=send)
+    out = Outgoing()
+    following, printed, weight = _play(house, run, start, now=moment, send=send, out=out)
+    _say_the_tally(out)
     if following is None:
         _forget(house.sheets_dir, run, [spec, *printed])
         return "the afternoon is finished"
-    _pause(house, run, following, printed)
+    _pause(house, run, following, printed, weight)
     return f"waiting for a page at {following.id}"
 
 

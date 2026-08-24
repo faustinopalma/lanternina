@@ -16,10 +16,12 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
+import afternoons as a
 import pytest
 
 from orchestrator.safety import screen_continuation, screen_experience, words_for_a_person
 from shared.errors import SafetyBlocked
+from shared.experience import ExperienceError
 from shared.safety import (
     ContentKind,
     SafetyVerdict,
@@ -28,47 +30,41 @@ from shared.safety import (
 )
 from shared.seal import Sealer, SealPurpose
 
-CONTINUATION: dict[str, Any] = {
-    "format_version": 1,
-    "experience_id": "un-pomeriggio-di-nuvole",
-    "after": "l-ultimo-foglio",
-    "moments": [
+A_PAGE: dict[str, Any] = {
+    "title": "La nuvola di domani",
+    "instructions": "Disegnala come vuoi.",
+    "marks": [
         {
-            "act": "say",
-            "id": "ancora-una",
-            "heading": "Ancora una cosa",
-            "lines": ["Sta uscendo un foglio."],
+            "mark": "words",
+            "rect": {"x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045},
+            "text": "La nuvola di domani",
+            "size_mm": 6.5,
         },
         {
-            "act": "hand_over",
-            "id": "il-terzo",
-            "design": {
-                "title": "La nuvola di domani",
-                "instructions": "Disegnala come vuoi.",
-                "marks": [
-                    {
-                        "mark": "words",
-                        "rect": {"x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045},
-                        "text": "La nuvola di domani",
-                        "size_mm": 6.5,
-                    },
-                    {
-                        "mark": "draw_area",
-                        "id": "il-disegno",
-                        "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
-                        "label": "Disegnala qui",
-                        "group": "domani",
-                    },
-                ],
-            },
-        },
-        {
-            "act": "close",
-            "id": "finita",
-            "heading": "Finita qui",
-            "lines": ["A domani."],
+            "mark": "draw_area",
+            "id": "il-disegno",
+            "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
+            "label": "Disegnala qui",
+            "group": "domani",
         },
     ],
+}
+
+MOMENTS: list[dict[str, Any]] = [
+    a.say(
+        moment_id="ancora-una",
+        heading="Ancora una cosa",
+        weights=a.weights(lines=("Sta uscendo un foglio.",)),
+    ),
+    a.hand_over(moment_id="il-terzo", heading="Esce un foglio", design=A_PAGE),
+    a.close(moment_id="finita", heading="Finita qui", weights=a.weights(lines=("A domani.",))),
+]
+
+CONTINUATION: dict[str, Any] = {
+    "format_version": 2,
+    "experience_id": "un-pomeriggio-di-nuvole",
+    "after": "l-ultimo-foglio",
+    "moments": MOMENTS,
 }
 
 
@@ -140,66 +136,49 @@ def test_a_refusal_stops_the_whole_continuation() -> None:
         asyncio.run(screen_continuation(Screener(refuse=True), a_continuation()))
 
 
-def test_a_continuation_with_nothing_to_read_does_not_pass_by_saying_nothing() -> None:
-    """The one way an unscreened afternoon could get through: an empty body clears any
-    screener, so it is refused here instead."""
-    silent = a_continuation(
-        moments=[
-            {
-                "act": "hand_over",
-                "id": "muto",
-                "design": {
-                    "title": "",
-                    "instructions": "",
-                    "marks": [
-                        {
-                            "mark": "draw_area",
-                            "id": "vuoto",
-                            "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
-                            "label": "",
-                            "group": "",
-                        }
-                    ],
-                },
-            },
-            {
-                "act": "collect",
-                "id": "e-poi",
-                "outcomes": [
-                    {"when": "marks", "then": "ask"},
-                    {"when": "blank", "then": "ask"},
-                ],
-            },
-        ]
-    )
-    screener = Screener()
+def test_a_continuation_with_nothing_to_read_cannot_be_built_at_all() -> None:
+    """The one way an unscreened afternoon could get through, closed one layer earlier.
 
-    with pytest.raises(SafetyBlocked, match="no words"):
-        asyncio.run(screen_continuation(screener, silent))
-    assert screener.seen == [], "it was refused before anybody was asked about it"
+    An empty body clears any screener, so :func:`screen_continuation` refuses one. In
+    format 1 that guard was the only thing standing there and this test built a silent
+    moment to prove it. Format 2 will not carry a silent moment: a heading is required, and
+    so is at least one line in every weight, in every rung of help and in the way out. So
+    what is asserted now is the refusal that comes first. The guard in the gate stays, and
+    it is now a belt rather than the braces.
+    """
+    from shared.experience import Continuation
+
+    with pytest.raises(ExperienceError, match="has no heading|says nothing"):
+        Continuation.from_dict(
+            {
+                **CONTINUATION,
+                "moments": [a.say(moment_id="muto", heading=""), a.close()],
+            }
+        )
 
 
 # ── The same door, for a whole afternoon ─────────────────────────────────────────────
 
 
 AN_EXPERIENCE: dict[str, Any] = {
-    "format_version": 1,
+    "format_version": 2,
     "experience_id": "un-pomeriggio-di-ombre",
     "title": "Un pomeriggio di ombre",
     "overview": "Il display dice di cercare un'ombra, poi esce un foglio da riempire.",
     "minutes": 120,
     "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+    "drawn": a.drawn(),
     "moments": [
-        *CONTINUATION["moments"][:2],
-        {
-            "act": "collect",
-            "id": "com-e-andata",
-            "outcomes": [
-                {"when": "marks", "then": "finita"},
-                {"when": "blank", "then": "finita"},
-            ],
-        },
-        CONTINUATION["moments"][2],
+        MOMENTS[0],
+        MOMENTS[1],
+        a.collect(
+            moment_id="com-e-andata",
+            heading="Mettilo sul vetro",
+            on_marks="finita",
+            on_blank="finita",
+            if_no_page="finita",
+        ),
+        MOMENTS[2],
     ],
 }
 

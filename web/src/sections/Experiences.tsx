@@ -32,60 +32,99 @@ function Plan({ moments }: { moments: Moment[] }) {
 
 function Step({ moment }: { moment: Moment }) {
   const { t } = useWords();
+  const kind =
+    moment.act === "close"
+      ? "experiences.close"
+      : moment.act === "hand_over"
+        ? "experiences.handOver"
+        : moment.act === "collect"
+          ? "experiences.collect"
+          : "experiences.say";
+  /* The standard version is what is shown, and the other two are named by how long they
+   * take. A parent reading the plan is reading what usually happens; that it can be run
+   * shorter or longer is a property of the document, not three paragraphs to read. */
+  const standard = moment.weights?.standard;
 
-  if (moment.act === "say" || moment.act === "close") {
-    return (
-      <>
-        <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-          {t(moment.act === "close" ? "experiences.close" : "experiences.say")}
-        </p>
-        <p>{moment.heading}</p>
-        {(moment.lines ?? []).map((line, index) => (
-          <Quiet key={index}>{line}</Quiet>
-        ))}
-      </>
-    );
-  }
+  return (
+    <>
+      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">{t(kind)}</p>
+      <p>{moment.heading}</p>
+      {(standard?.lines ?? []).map((line, index) => (
+        <Quiet key={index}>{line}</Quiet>
+      ))}
+      {moment.act === "hand_over" ? <Page moment={moment} /> : null}
+      {moment.act === "collect" ? <Branches moment={moment} /> : null}
+      <Ladder moment={moment} />
+      <WayOutOf moment={moment} />
+    </>
+  );
+}
 
-  if (moment.act === "hand_over") {
-    const design = moment.design;
-    /* The labels beside the boxes, the lines and the drawing areas: the words an
-     * adolescent is asked something by. Where the marks sit on the page is left out — a
-     * position means nothing to somebody not holding the sheet. */
-    const asked = (design?.marks ?? [])
-      .map((mark) => (mark.mark === "words" ? mark.text : mark.label))
-      .filter((words) => Boolean(words));
-    return (
-      <>
-        <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-          {t("experiences.handOver")}
-        </p>
-        <p>{design?.title}</p>
-        <Quiet>{design?.instructions}</Quiet>
-        {asked.length === 0 ? null : (
-          <Quiet>{asked.map((words) => `«${words}»`).join(" ")}</Quiet>
-        )}
-      </>
-    );
-  }
+function Page({ moment }: { moment: Moment }) {
+  const { t } = useWords();
+  const design = moment.design;
+  /* The labels beside the boxes, the lines and the drawing areas: the words an
+   * adolescent is asked something by. Where the marks sit on the page is left out — a
+   * position means nothing to somebody not holding the sheet. */
+  const asked = (design?.marks ?? [])
+    .map((mark) => (mark.mark === "words" ? mark.text : mark.label))
+    .filter((words) => Boolean(words));
+  return (
+    <>
+      <p className="mt-1">{design?.title}</p>
+      <Quiet>{design?.instructions}</Quiet>
+      {asked.length === 0 ? null : <Quiet>{asked.map((words) => `«${words}»`).join(" ")}</Quiet>}
+      {(moment.instead ?? []).length === 0 ? null : (
+        <Quiet>
+          {t("experiences.instead")} {(moment.instead ?? []).join(" ")}
+        </Quiet>
+      )}
+    </>
+  );
+}
 
-  if (moment.act === "collect") {
-    return (
-      <>
-        <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-          {t("experiences.collect")}
-        </p>
-        {(moment.outcomes ?? []).map((outcome) => (
-          <Quiet key={outcome.when}>
-            {t(outcome.when === "blank" ? "experiences.blank" : "experiences.marks")}{" "}
-            {outcome.then === "ask" ? t("experiences.asks") : outcome.then}
-          </Quiet>
-        ))}
-      </>
-    );
-  }
+function Branches({ moment }: { moment: Moment }) {
+  const { t } = useWords();
+  const named = (then: string) => (then === "ask" ? t("experiences.asks") : then);
+  return (
+    <>
+      {(moment.outcomes ?? []).map((outcome) => (
+        <Quiet key={outcome.when}>
+          {t(outcome.when === "blank" ? "experiences.blank" : "experiences.marks")}{" "}
+          {named(outcome.then)}
+        </Quiet>
+      ))}
+      {moment.if_no_page ? (
+        <Quiet>
+          {t("experiences.ifNoPage")} {named(moment.if_no_page)}
+        </Quiet>
+      ) : null}
+    </>
+  );
+}
 
-  return <Quiet>{moment.act}</Quiet>;
+/* Four rungs, written in the plan. What is shown is what is written, never what was given:
+ * `ideas/09 §8` is why there is no route in that direction at all. */
+function Ladder({ moment }: { moment: Moment }) {
+  const { t } = useWords();
+  if (!(moment.help ?? []).length) return null;
+  return (
+    <Quiet>
+      {t("experiences.help")}{" "}
+      {(moment.help ?? []).map((rung) => rung.lines.join(" ")).join(" · ")}
+    </Quiet>
+  );
+}
+
+function WayOutOf({ moment }: { moment: Moment }) {
+  const { t } = useWords();
+  const out = moment.way_out;
+  if (!out) return null;
+  return (
+    <Quiet>
+      {t("experiences.wayOut", { minutes: out.minutes })} {out.heading}. {out.lines.join(" ")}
+    </Quiet>
+  );
 }
 
 function Card({

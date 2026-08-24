@@ -98,6 +98,26 @@ export const SAMPLE_APPROVED: Proposal[] = [
   },
 ];
 
+/** The three weights, the four rungs and the way out, filled in once. What these tests are
+ *  about is what the page renders, not what a plausible afternoon says. */
+const weighed = (lines: string[]) => ({
+  short: { minutes: 5, lines },
+  standard: { minutes: 10, lines },
+  extended: { minutes: 15, lines },
+});
+const ladder = [
+  { after_minutes: 3, lines: ["Il foglio è lì."] },
+  { after_minutes: 6, lines: ["Comincia da un angolo."] },
+  { after_minutes: 10, lines: ["Basta un segno."] },
+  { after_minutes: 15, lines: ["Va bene anche una riga."] },
+];
+const wayOut = {
+  in_hand: "il foglio",
+  heading: "Basta così",
+  lines: ["Posa il foglio sul tavolo."],
+  minutes: 10,
+};
+
 /** One devised afternoon, in the shape the panel hands it over: a display, a sheet, a
  *  page coming back, and a branch left to be written when it does. */
 const SAMPLE_AFTERNOON: OfferedExperience = {
@@ -114,11 +134,35 @@ const SAMPLE_AFTERNOON: OfferedExperience = {
     title: "Sei passaggi di una trasformazione",
     overview: "Un oggetto della stanza, disegnato sei volte mentre cambia.",
     minutes: 90,
+    drawn: {
+      frame: "una stanza di pomeriggio",
+      role: "chi guarda un oggetto",
+      mechanic: "disegnare la stessa cosa",
+      progress: "un riquadro alla volta",
+      paper: "i sei riquadri",
+      glass: "consegnare il foglio",
+      displays: "la voce che dice cosa fare",
+      camera: "nessuna",
+      tone: "asciutto",
+      ending: "il foglio resta lì",
+    },
     moments: [
-      { act: "say", id: "guarda", heading: "Scegli un oggetto", lines: ["Uno che sta in mano."] },
+      {
+        act: "say",
+        id: "guarda",
+        heading: "Scegli un oggetto",
+        weights: weighed(["Uno che sta in mano."]),
+        help: ladder,
+        way_out: wayOut,
+      },
       {
         act: "hand_over",
         id: "il-foglio",
+        heading: "Esce un foglio",
+        weights: weighed(["Sul tavolo c'è il foglio."]),
+        help: ladder,
+        way_out: wayOut,
+        instead: ["Oggi il foglio non esce."],
         design: {
           title: "Sei riquadri",
           instructions: "Disegna lo stesso oggetto sei volte.",
@@ -132,12 +176,24 @@ const SAMPLE_AFTERNOON: OfferedExperience = {
       {
         act: "collect",
         id: "come-e-tornato",
+        heading: "Mettilo sul vetro",
+        weights: weighed(["Metti il foglio sul vetro."]),
+        help: ladder,
+        way_out: wayOut,
         outcomes: [
           { when: "marks", then: "ask" },
           { when: "blank", then: "basta-cosi" },
         ],
+        if_no_page: "basta-cosi",
       },
-      { act: "close", id: "basta-cosi", heading: "Va bene così", lines: [] },
+      {
+        act: "close",
+        id: "basta-cosi",
+        heading: "Va bene così",
+        weights: weighed(["Il foglio resta lì."]),
+        help: ladder,
+        way_out: wayOut,
+      },
     ],
   },
 };

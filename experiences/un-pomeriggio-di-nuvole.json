@@ -1,23 +1,143 @@
 {
-  "format_version": 1,
+  "format_version": 2,
   "experience_id": "un-pomeriggio-di-nuvole",
   "title": "Un pomeriggio di nuvole",
-  "overview": "Il display dice di affacciarsi, poi esce un foglio: il cielo di adesso, da disegnare, con tre caselle sull'altezza delle nuvole e una riga per una parola. Se il foglio torna con qualcosa sopra, ne esce un secondo, che chiede una nuvola inventata; quello che succede dopo il secondo foglio lo decide la casa quando lo vede. Se un foglio torna in bianco, il pomeriggio si chiude lì, e va bene così. Niente aspetta un foglio che non torna. Dura un pomeriggio e finisce dicendo che è finito.",
+  "overview": "Il display dice di affacciarsi, poi esce un foglio: il cielo di adesso, da disegnare, con tre caselle sull'altezza delle nuvole e una riga per una parola. Se il foglio torna con qualcosa sopra, ne esce un secondo, che chiede una nuvola inventata; quello che succede dopo il secondo foglio lo decide la casa quando lo vede. Se un foglio torna in bianco, il pomeriggio si chiude lì, e va bene così. Ogni momento ha scritta la sua via per arrivare al finale, e il finale è lo stesso da qualunque punto ci si arrivi. Dura un pomeriggio e finisce dicendo che è finito.",
   "minutes": 180,
   "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+  "drawn": {
+    "frame": "il cielo sopra questa casa, adesso",
+    "role": "chi tiene il registro delle nuvole",
+    "mechanic": "guardare fuori e riportare sul foglio",
+    "progress": "un foglio alla volta",
+    "paper": "il registro di quello che si è visto",
+    "glass": "consegnare il foglio al registro",
+    "displays": "la voce che dice cosa succede adesso",
+    "camera": "nessuna",
+    "tone": "asciutto e senza fretta",
+    "ending": "i fogli restano a chi li ha fatti"
+  },
   "moments": [
     {
       "act": "say",
       "id": "comincia",
       "heading": "Guarda fuori",
-      "lines": [
-        "Fra poco esce un foglio dalla stampante.",
-        "Prima però affacciati un momento."
-      ]
+      "weights": {
+        "short": {
+          "minutes": 5,
+          "lines": [
+            "Fra poco esce un foglio dalla stampante.",
+            "Prima però apri la finestra un momento."
+          ]
+        },
+        "standard": {
+          "minutes": 8,
+          "lines": [
+            "Fra poco esce un foglio dalla stampante.",
+            "Prima però apri la finestra un momento.",
+            "Guarda che cielo c'è, senza fretta."
+          ]
+        },
+        "extended": {
+          "minutes": 12,
+          "lines": [
+            "Fra poco esce un foglio dalla stampante.",
+            "Prima però apri la finestra un momento.",
+            "Guarda che cielo c'è, senza fretta.",
+            "Guarda anche cosa fa la luce sui muri."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": ["Il cielo sopra questa casa va bene.", "Non serve andare da nessuna parte."]
+        },
+        {
+          "after_minutes": 6,
+          "lines": ["Basta una finestra qualunque.", "Anche una che dà su un muro."]
+        },
+        {
+          "after_minutes": 10,
+          "lines": ["Apri quella della stanza dove sei.", "Guarda in alto per un momento."]
+        },
+        {
+          "after_minutes": 15,
+          "lines": ["Il cielo di oggi è quello che è.", "Va bene anche se non c'è niente."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "la finestra",
+        "heading": "Un ultimo sguardo",
+        "lines": [
+          "Guarda il cielo ancora un momento.",
+          "Poi chiudi la finestra: per oggi basta."
+        ],
+        "minutes": 8
+      }
     },
     {
       "act": "hand_over",
       "id": "il-cielo",
+      "heading": "Sta uscendo un foglio",
+      "weights": {
+        "short": {
+          "minutes": 25,
+          "lines": [
+            "Sul tavolo c'è il foglio del cielo.",
+            "Disegna quello che vedi adesso."
+          ]
+        },
+        "standard": {
+          "minutes": 40,
+          "lines": [
+            "Sul tavolo c'è il foglio del cielo.",
+            "Disegna quello che vedi, con calma.",
+            "Poi segna com'è l'altezza delle nuvole."
+          ]
+        },
+        "extended": {
+          "minutes": 45,
+          "lines": [
+            "Sul tavolo c'è il foglio del cielo.",
+            "Disegna quello che vedi, con calma.",
+            "Poi segna com'è l'altezza delle nuvole.",
+            "In fondo c'è una riga per una parola."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 4,
+          "lines": ["Il cielo di oggi non ha una forma giusta.", "Bastano due segni."]
+        },
+        {
+          "after_minutes": 9,
+          "lines": ["Comincia dalla parte più grande.", "Il resto viene dopo, o non viene."]
+        },
+        {
+          "after_minutes": 15,
+          "lines": ["Una riga per l'orizzonte.", "Sopra, le macchie che vedi."]
+        },
+        {
+          "after_minutes": 22,
+          "lines": ["Una nuvola si disegna anche così:", "una macchia larga e piatta sotto."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il foglio",
+        "heading": "Lascia il foglio lì",
+        "lines": [
+          "Posa il foglio sul tavolo com'è.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 10
+      },
+      "instead": [
+        "Oggi il cielo si tiene a mente.",
+        "Guarda com'è e tienilo in testa.",
+        "Poi torna qui."
+      ],
       "design": {
         "title": "Il cielo di oggi",
         "instructions": "Guarda fuori, poi riempi quello che vuoi. Puoi anche lasciare in bianco.",
@@ -81,23 +201,178 @@
     {
       "act": "collect",
       "id": "come-e-tornato",
+      "heading": "Mettilo sul vetro",
+      "weights": {
+        "short": {
+          "minutes": 10,
+          "lines": ["Metti il foglio sul vetro, a faccia in giù."]
+        },
+        "standard": {
+          "minutes": 15,
+          "lines": [
+            "Metti il foglio sul vetro, a faccia in giù.",
+            "Abbassa il coperchio e aspetta."
+          ]
+        },
+        "extended": {
+          "minutes": 18,
+          "lines": [
+            "Metti il foglio sul vetro, a faccia in giù.",
+            "Abbassa il coperchio e aspetta.",
+            "Poi riprendilo: resta tuo."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": ["Il vetro è quello sotto il coperchio.", "Il foglio va appoggiato dritto."]
+        },
+        {
+          "after_minutes": 7,
+          "lines": ["A faccia in giù vuol dire", "con il disegno verso il vetro."]
+        },
+        {
+          "after_minutes": 12,
+          "lines": ["Appoggia l'angolo del foglio", "all'angolo del vetro, in alto a sinistra."]
+        },
+        {
+          "after_minutes": 18,
+          "lines": ["Va bene anche storto.", "Chiudi il coperchio e lascialo lì."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il foglio",
+        "heading": "Tienilo tu",
+        "lines": [
+          "Riprendi il foglio dal vetro.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 6
+      },
       "outcomes": [
         { "when": "marks", "then": "il-seguito" },
         { "when": "blank", "then": "basta-cosi" }
-      ]
+      ],
+      "if_no_page": "basta-cosi"
     },
     {
       "act": "say",
       "id": "il-seguito",
       "heading": "Ho visto il foglio",
-      "lines": [
-        "Ne sta uscendo un altro.",
-        "Questo lo inventi tu."
-      ]
+      "weights": {
+        "short": {
+          "minutes": 5,
+          "lines": ["Ne sta uscendo un altro.", "Questo lo inventi tu."]
+        },
+        "standard": {
+          "minutes": 8,
+          "lines": [
+            "Ne sta uscendo un altro.",
+            "Questo lo inventi tu.",
+            "Una nuvola che oggi non c'era."
+          ]
+        },
+        "extended": {
+          "minutes": 10,
+          "lines": [
+            "Ne sta uscendo un altro.",
+            "Questo lo inventi tu.",
+            "Una nuvola che oggi non c'era.",
+            "Nel registro ci vanno anche quelle."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": ["Il foglio esce dalla stampante.", "Aspetta che finisca."]
+        },
+        {
+          "after_minutes": 5,
+          "lines": ["Se la stampante è ferma,", "guarda se ha ancora carta."]
+        },
+        {
+          "after_minutes": 9,
+          "lines": ["Il primo foglio puoi tenerlo lì.", "Il secondo arriva a parte."]
+        },
+        {
+          "after_minutes": 14,
+          "lines": ["Se non arriva niente,", "la nuvola inventata pensala e basta."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il foglio",
+        "heading": "Resta il primo",
+        "lines": [
+          "Il foglio del cielo resta sul tavolo.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 6
+      }
     },
     {
       "act": "hand_over",
       "id": "la-seconda",
+      "heading": "Ne esce un altro",
+      "weights": {
+        "short": {
+          "minutes": 20,
+          "lines": [
+            "Sul tavolo c'è il secondo foglio.",
+            "Inventa una nuvola e dalle un nome."
+          ]
+        },
+        "standard": {
+          "minutes": 35,
+          "lines": [
+            "Sul tavolo c'è il secondo foglio.",
+            "Inventa una nuvola che oggi non c'era.",
+            "In fondo c'è la riga per il nome."
+          ]
+        },
+        "extended": {
+          "minutes": 45,
+          "lines": [
+            "Sul tavolo c'è il secondo foglio.",
+            "Inventa una nuvola che oggi non c'era.",
+            "In fondo c'è la riga per il nome.",
+            "Puoi disegnare anche da dove viene."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 4,
+          "lines": ["Una nuvola inventata può avere", "la forma che vuoi tu."]
+        },
+        {
+          "after_minutes": 9,
+          "lines": ["Parti da una che hai visto oggi", "e cambiale una cosa sola."]
+        },
+        {
+          "after_minutes": 16,
+          "lines": ["Per esempio: la stessa nuvola,", "ma con un buco in mezzo."]
+        },
+        {
+          "after_minutes": 24,
+          "lines": ["Una che c'è già: la nuvola scala,", "tutta a gradini. Il nome scegli tu."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il secondo foglio",
+        "heading": "Bastano quelli",
+        "lines": [
+          "Metti il secondo foglio sopra il primo.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 10
+      },
+      "instead": [
+        "Il secondo foglio oggi non esce.",
+        "La nuvola inventata falla a voce:",
+        "com'è fatta e come si chiama."
+      ],
       "design": {
         "title": "La nuvola che non c'era",
         "instructions": "Inventane una che oggi non c'era, e dalle un nome.",
@@ -134,19 +409,115 @@
     {
       "act": "collect",
       "id": "l-ultimo-foglio",
+      "heading": "Anche questo sul vetro",
+      "weights": {
+        "short": {
+          "minutes": 10,
+          "lines": ["Metti il secondo foglio sul vetro."]
+        },
+        "standard": {
+          "minutes": 15,
+          "lines": [
+            "Metti il secondo foglio sul vetro.",
+            "A faccia in giù, coperchio abbassato."
+          ]
+        },
+        "extended": {
+          "minutes": 18,
+          "lines": [
+            "Metti il secondo foglio sul vetro.",
+            "A faccia in giù, coperchio abbassato.",
+            "Poi riprendilo e mettilo sopra il primo."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": ["Come prima: sotto il coperchio,", "con il disegno verso il vetro."]
+        },
+        {
+          "after_minutes": 7,
+          "lines": ["Se il coperchio non si chiude bene,", "togli prima l'altro foglio."]
+        },
+        {
+          "after_minutes": 12,
+          "lines": ["Un foglio alla volta sul vetro.", "Questo è il secondo."]
+        },
+        {
+          "after_minutes": 18,
+          "lines": ["Va bene anche storto.", "Chiudi il coperchio e lascialo lì."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il secondo foglio",
+        "heading": "Tienili tu",
+        "lines": [
+          "Riprendi il secondo foglio dal vetro.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 15
+      },
       "outcomes": [
         { "when": "marks", "then": "ask" },
         { "when": "blank", "then": "basta-cosi" }
-      ]
+      ],
+      "if_no_page": "basta-cosi"
     },
     {
       "act": "close",
       "id": "basta-cosi",
       "heading": "Per oggi basta così",
-      "lines": [
-        "Il pomeriggio delle nuvole finisce qui.",
-        "I fogli restano lì, sono tuoi."
-      ]
+      "weights": {
+        "short": {
+          "minutes": 5,
+          "lines": ["Il pomeriggio delle nuvole finisce qui.", "Il foglio resta lì, è tuo."]
+        },
+        "standard": {
+          "minutes": 8,
+          "lines": [
+            "Il pomeriggio delle nuvole finisce qui.",
+            "Il foglio resta lì, è tuo.",
+            "Il cielo di oggi ce l'hai su carta."
+          ]
+        },
+        "extended": {
+          "minutes": 10,
+          "lines": [
+            "Il pomeriggio delle nuvole finisce qui.",
+            "Il foglio resta lì, è tuo.",
+            "Il cielo di oggi ce l'hai su carta.",
+            "Domani ce n'è un altro, fuori."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": ["Non c'è altro da fare.", "I fogli restano dove sono."]
+        },
+        {
+          "after_minutes": 5,
+          "lines": ["Se vuoi, mettili in ordine:", "prima quello visto, poi l'inventato."]
+        },
+        {
+          "after_minutes": 9,
+          "lines": ["Oppure lasciali sul tavolo.", "Vanno bene lì."]
+        },
+        {
+          "after_minutes": 14,
+          "lines": ["Il registro delle nuvole è chiuso.", "Buona sera."]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il foglio",
+        "heading": "È già finito",
+        "lines": [
+          "Il foglio resta lì, è tuo.",
+          "Il pomeriggio delle nuvole finisce qui."
+        ],
+        "minutes": 3
+      }
     }
   ]
 }

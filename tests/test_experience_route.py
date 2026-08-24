@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import afternoons as a
 import pytest
 from fastapi.testclient import TestClient
 
@@ -31,16 +32,15 @@ THE_AFTERNOON = json.loads(
 )
 
 THE_REST: dict[str, Any] = {
-    "format_version": 1,
+    "format_version": 2,
     "experience_id": "un-pomeriggio-di-nuvole",
     "after": "l-ultimo-foglio",
     "moments": [
-        {
-            "act": "close",
-            "id": "due-nuvole",
-            "heading": "Due nuvole",
-            "lines": ["Restano sul tavolo."],
-        }
+        a.close(
+            moment_id="due-nuvole",
+            heading="Due nuvole",
+            weights=a.weights(lines=("Il foglio resta sul tavolo.",)),
+        )
     ],
 }
 
@@ -424,7 +424,15 @@ def test_only_the_titles_of_earlier_afternoons_are_handed_to_the_model(
     ask_for_one(client, household)
 
     assert asked["already"] == ("Un pomeriggio di nuvole",)
-    assert set(asked) == {"capabilities", "language", "interests", "avoid", "already", "now"}
+    assert set(asked) == {
+        "capabilities",
+        "language",
+        "interests",
+        "avoid",
+        "already",
+        "recent",
+        "now",
+    }
 
 
 def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(

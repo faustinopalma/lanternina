@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from typing import Any, Final, Protocol
 
 from shared.errors import CloudUnavailable, SafetyBlocked
-from shared.experience import Close, Continuation, Experience, HandOver, Say
+from shared.experience import Continuation, Experience
 from shared.safety import (
     ContentKind,
     ContentSafetyGate,
@@ -220,24 +220,16 @@ def words_for_a_person(plan: Continuation | Experience) -> str:
     the parent's half rather than the adolescent's — the overview is what approval is
     given to — and a model wrote them, which is the only qualification this door asks for.
 
-    What is left out is left out because nobody reads it: moment ids, rectangles, mark
-    kinds and groups. Everything a person's eye lands on is here — the headings and lines
-    of a display, and a page's title, its instructions, the words printed on it and the
-    label beside every box, line and space to draw.
+    Which words those are is :attr:`shared.experience.Moment.words` and not a second list
+    kept here. It was a second list until format 2, and a second list is how the gate and
+    the block list end up disagreeing about whether a rung of help is text somebody reads.
     """
     lines: list[str] = []
     if isinstance(plan, Experience):
         lines.append(plan.title)
         lines.append(plan.overview)
     for moment in plan.moments:
-        if isinstance(moment, Say | Close):
-            lines.append(moment.heading)
-            lines.extend(moment.lines)
-        elif isinstance(moment, HandOver):
-            lines.append(moment.design.title)
-            lines.append(moment.design.instructions)
-            lines.extend(words.text for words in moment.design.words)
-            lines.extend(item.label for item in moment.design.readable)
+        lines.extend(moment.words)
     return "\n".join(line for line in lines if line.strip())
 
 

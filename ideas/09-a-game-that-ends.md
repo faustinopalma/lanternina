@@ -16,6 +16,11 @@ The single idea underneath all of it: **an afternoon must be unable to end badly
 the way to get that is not care at runtime but structure decided before the afternoon
 starts.
 
+**§20 is what was built on 23 August 2026.** Everything above it is the design as it was
+written; that section says what of it now runs, what it cost, and where it turned out to be
+wrong. The two are kept apart on purpose — a design edited to match what got built stops
+being a thing anybody can be held to.
+
 ---
 
 ## 1. Two times with opposite properties
@@ -408,3 +413,287 @@ and none requires the next.
 
 If it stops halfway, stopping after 3 leaves a system that never leaves an afternoon
 without an ending.
+
+## 20. What was built, 23 August 2026
+
+Steps 1, 2, 5 and 6 of `§19`, plus the output filter of `§7`. Step 3 — the record the
+runner rebuilds from — got the half it needs and no more. Steps 4 and 7 are untouched.
+
+### Format 2, and why it is a version
+
+`shared/experience.py` is at `EXPERIENCE_FORMAT_VERSION = 2`. Every moment now carries
+five things instead of two: an `id`, a `heading`, three `weights`, four rungs of `help`,
+and a `way_out`. A `hand_over` also carries `instead`, and a `collect` also carries
+`if_no_page`. An `Experience` also carries `drawn`, the ten dimensions of `§16`.
+
+Four decisions inside that, each of which could have gone the other way.
+
+- **The weight changes the minutes and the words, not the page.** A `hand_over` hands over
+  the same design at all three weights. Three page designs per moment is three times the
+  drawing for a difference nobody has asked for; what is lost is the short version of a
+  page, and `§2` wanted one. Written where the field is, not here.
+- **`in_hand` is a field, not a sentence.** The parser checks the way out names it in its
+  own lines; `shared/experience_checks.py` checks that something earlier said it too. Two
+  checks rather than one because the first alone can be satisfied by inventing the object
+  in the last sentence, which is exactly the generic goodbye `§3` is about.
+- **The version with no printer is two fields, not one.** `instead` is what a paper moment
+  says when nothing came out; `if_no_page` is where the `collect` after it goes. Without
+  the second, a house with no printer reaches a moment whose whole job is to read a sheet
+  and has nowhere to go.
+- **The walk that proves the ending is reachable from everywhere was written and taken
+  out.** Edges only point forward and the last moment closes or asks, so no document this
+  parser accepts can strand — there is no failing case to write, and a check nobody can
+  fail is a claim. What is left over is the plan whose every ending says `ask`, and that is
+  refused by name.
+
+`experiences/un-pomeriggio-di-nuvole.json` was rewritten by hand into format 2 rather than
+converted: weights, ladders and ways out are prose, and a script would have produced seven
+copies of one sentence. It went from 3 123 compact characters to 10 543, the same seven
+moments — 1 060 characters more per moment. Its longest path is 90 minutes short, 136
+standard, 163 extended, against the 180 it says it lasts.
+
+Format 1 did not go to `attic/`: it is the same module at a lower version, and there is no
+document anywhere written in it.
+
+### The checks, and one test per check
+
+`shared/experience_checks.py` returns a list of `Complaint`, each naming a field the way
+the document names it, so a repair can ask for that field back. Six of them:
+the way out starts from something already in hand; the short version fits the window; there
+is an ending somebody wrote; nothing from the block list; no placeholder left; not the same
+afternoon again. `tests/test_experience_checks.py` has one test per check, and each one
+takes a document that passes everything, breaks one thing, and asserts the refusal.
+
+The block list is `shared/blocklist.py`, in five groups — praise, blame, hurry, score,
+machinery — and it is used at both of `§1`'s two times, which is what keeps them one policy
+rather than two. What it costs is false refusals, and the cost is bounded by where they
+land: at devise time a repair round, at run time the pre-written text.
+
+### The ending that starts by itself
+
+`devices/run_experience.conclude_what_is_over`, called by the house's own ten-minute timer
+before it does anything else. At thirty minutes before an afternoon's end hour the way out
+of wherever it got to goes on the display; when that way out's own minutes are up, or the
+end hour arrives, the ending follows and the run is deleted. `carry_on` does the same when
+a page arrives after the ending is due.
+
+Thirty minutes is what it has to be: the longest way out a document may carry is twenty,
+and the timer may take ten to notice, so an ending that starts as late as T-20 still has
+its twenty minutes and the close lands on the hour rather than after it.
+
+**What this replaced was demonstrably wrong.** `forget_what_is_over` unlinked a run whose
+hours had passed and said nothing to anybody — measured on the house at 14:02 on 21 August
+2026, on `aft_5ec79e85`, begun at 09:17 and never finished. That is an afternoon that stops
+without ending, which is the failure this project exists to prevent. The test asserts what
+went on the display and in what order, so it fails on the old behaviour rather than merely
+passing on the new one.
+
+The weight is chosen in code, at every moment boundary: standard unless the longest path at
+standard no longer fits, then short. That is the first of `§5`'s four steps and the only one
+built. Extended is never chosen automatically — choosing to make an afternoon longer because
+there is room is a decision about what somebody wants, and the runner does not know that.
+
+### The filter on the way out
+
+`orchestrator/outgoing.py`, beside the safety gate and not inside it: the gate asks whether
+a text is harmful, over a network, and this asks whether it is the kind of thing this house
+says, locally, in microseconds. A refused text is replaced by the pre-written text from the
+plan, which is why the written texts are mandatory. Refusals are counted by slot and the
+tally goes to the journal when the afternoon ends — a slot refused often is a defect in the
+devising prompt, and a filter nobody reads the numbers off hides a bad prompt for months.
+
+### The prompt, against the real service
+
+`shared/experience_prompt.py` holds the format described once for both agents, generated
+from the format's own constants. The devising prompt gained the ten dimensions, the recent
+combinations as a negative constraint, the six things to refuse by default, and the six
+properties of the text. `ExperienceDeviser.repair` sends the document back with the
+complaints; `repair_unreadable` sends it back when it did not parse at all.
+
+**Fifteen calls to the deployed Foundry deployment `gpt-5.6-sol-2026-07-09` on 23 August
+2026, from this machine, through `tools/probe_devise.py`.** Three defects, and none of them
+was visible to a test with a fake model.
+
+1. **Every way out had the same `in_hand`, and it was not an object.** The first afternoon
+   used "il bordo dello schermo" — the edge of the screen — for all five moments. The prompt
+   had said "the object they are holding" and left what an object is to the model. It now
+   says: a thing that exists in the room, a sheet, a pencil, a cup; never part of a screen,
+   never an idea; and two moments usually have different things in hand.
+2. **The repair reworded instead of repairing.** Handed the five complaints, the model
+   returned "bordo dello schermo" — the same phrase without its article — and the fault was
+   exactly where it had been. The repair prompt now says to change what the complaint names
+   until the complaint stops being true, and that rewording is not a repair. Every repair
+   after that change fixed what it was sent.
+3. **A document the format would not read had no way back.** Two of the first seven answers
+   were refused outright — a line of 45 characters against 44, and a fifth line on a screen
+   that holds four — and the house was simply offered no afternoon. `repair_unreadable`
+   hands the answer back with the parser's own message, which is why those messages name
+   the rule *and* the offending number.
+
+What it costs, measured. A first answer takes **71.4 to 103.2 s** (n = 12), against 29.1 s
+for format 1 — the document is three times the size. It is **5 955 to 7 408 compact
+characters** against a 20 000 cap, and **4 to 5 moments** against a range of 3 to 12, so the
+model writes short afternoons and the cap is not what binds. A repair takes **15.6 to
+35.3 s**, so a refused afternoon costs 87 to 135 s in all.
+
+With everything above in place, **eight of eight afternoons ended usable**: three passed
+first time, three were refused by the parser, two by the checks, and every one of the five
+was fixed by a single repair. Before the two repairs existed it was five of seven.
+
+Every one of the five parser refusals was a limit overshot by a small margin — 45 against
+44, 5 against 4, 43 against 40. Stating the limits again inline, where the lines are asked
+for, did not stop it; the repair is what stops it. That is worth knowing before anyone
+spends an afternoon rewording a prompt.
+
+### What is not built
+
+1. **`§5`'s other three steps.** Optional moments are not dropped, adjacent moments are not
+   merged, and there is no path backwards when there is more time than needed. Only the
+   short weight and the way out are reached for.
+2. **The record is half of `§6`.** A run keeps which moment, which weight, which sheets have
+   been printed and whether the ending has begun, and all of it is deleted when the
+   afternoon ends. What is not there is the help level and the current end hour, because
+   nothing asks for help yet and nothing moves the hour.
+3. **Nothing asks for help.** The ladder is written in every moment, checked, and shown to
+   the parent, and no button reaches it. `§17` is why: help belongs to a surface that is
+   always there, and this house has a button per display rather than one button.
+4. **Typed messages from the parent, and the camera.** `§8` and `§9`, untouched.
+5. **Nothing has run on the house.** Everything in this section was measured against the
+   real model service and the test suite, on this machine. The hub has not been updated and
+   the panel has not been rebuilt, so no adolescent has seen a way out.
+
+## 20. What was built, 23 August 2026
+
+Steps 1, 2 and 6 of the order above, plus the output filter, the ten dimensions and the
+first half of 3. The order was changed on purpose: the three weights were meant to come
+sixth, and they came first, because the way out and the ending that starts by itself are
+both arithmetic over minutes, and minutes per moment is what a weight is. Building the
+checks first and the weights sixth would have meant checking a document that could not yet
+express what the checks are about.
+
+### Format 2 of `shared/experience.py`
+
+Every moment now carries five things instead of two: an `id`, a `heading`, three
+`weights`, four rungs of `help` and a `way_out`. A `hand_over` also carries `instead` — the
+words for the same moment with no printer — and a `collect` also carries `if_no_page`,
+which is where the afternoon goes when nothing came out of the printer at all.
+
+Four decisions inside that, each of which could have gone the other way.
+
+- **The weight changes the minutes and the words, not the page.** A `hand_over` hands over
+  the same design at all three weights. Three page designs per moment is three times the
+  drawing for a difference nobody has asked for, and it is the kind of thing that can be
+  added later without a third format version.
+- **`in_hand` is a field, not a sentence.** The way out has to name the object, the object
+  has to be in the way out's own text, and something at or before that moment has to have
+  mentioned it. The first two are refused by the parser; the third needs the whole document
+  and is a check. `§20`'s measurements below are the reason this is three separate rules
+  rather than one line of prompt.
+- **Format 1 was not moved to the attic.** It is the same module at version 2, and the
+  version number is the thing that refuses an old document. An `attic/` copy would be a
+  second definition of a word that already has one.
+- **The walk that proves an ending is reachable from every moment was written and then
+  taken out.** With forward-only edges and a last moment that closes or asks, no document
+  this parser accepts can strand — so it was a check nobody could write a failing test for.
+  What is left over is the plan whose every branch says `ask`, and that is a check that can
+  fail. The argument is in `_check_graph` and the test that stands in its place is
+  `test_a_branch_cannot_be_written_that_strands`.
+
+The hand-written afternoon in `experiences/` was rewritten rather than converted: the three
+weights, the four rungs and the seven ways out are new prose and no script could have
+invented them. It went from **3 123 to 10 543 characters** of compact JSON — measured, the
+same seven moments — which is 1 060 characters more per moment.
+
+### The checks that refuse before saving
+
+`shared/experience_checks.py`, six of them, each returning a list rather than raising,
+because what is done with a refusal is a repair request naming the fields that failed.
+`tests/test_experience_checks.py` has one test per check and each takes a document that
+passes everything, breaks one thing, and asserts the refusal.
+
+The block list is in `shared/blocklist.py` and is used twice, which is the whole reason it
+is its own module: before saving, over every pre-written word, and again at run time over
+whatever is about to be shown. Two copies of that list would be two policies.
+
+### The ending that starts by itself, and the sweep that concludes
+
+`conclude_what_is_over` in `devices/run_experience.py`, called by the house's ten-minute
+timer before it does anything else. At thirty minutes before an afternoon's end hour the
+way out of wherever it got to goes on the display; when that way out's own minutes are up,
+or the end hour arrives, the ending follows and the run is deleted.
+
+**What this replaced was demonstrably wrong.** `forget_what_is_over` unlinked a run whose
+hours had passed and said nothing to anybody — measured on the house at 14:02 on 21 August
+2026, on `aft_5ec79e85`, begun at 09:17 and never finished. An afternoon that stops without
+ending is the failure this project exists to prevent, and it was the actual behaviour for
+two days. The test asserts what went on the display and in what order, so it fails on the
+old code rather than merely passing on the new.
+
+The arithmetic of the thirty minutes: a way out is at most twenty minutes, refused above
+that by the format, and the timer runs every ten. So an ending noticed as late as T-20
+still has its twenty minutes and the close lands on the hour rather than after it.
+
+### The filter on the way out
+
+`orchestrator/outgoing.py`, beside `safety.py` and not inside it. The safety gate asks
+whether a text is harmful, over a network, with a model behind it; this asks whether a text
+is the kind of thing this house says, locally, with nothing to be unavailable. A refused
+text is replaced by the pre-written text from the plan, which is why the written texts are
+mandatory in the first place.
+
+Refusals are counted by slot and the counts go to the journal when the run ends. Nothing is
+kept: the counter holds places in a document, never afternoons or people.
+
+### The prompt, against the real service
+
+Eleven calls to `gpt-5.6-sol-2026-07-09` through `tools/probe_devise.py`, 23 August 2026,
+from this machine rather than from the hub.
+
+| | format 1, 21 Aug | format 2, 23 Aug |
+| --- | --- | --- |
+| one devise call | 29.1 s | 76.3–91.4 s |
+| document that came back | ~3 100 characters | 5 955–7 408 characters |
+| moments | 7 | 4–5 |
+
+**Three defects, and all three came from the real service.** The tests with a stood-in model
+were blind to every one of them, which is now the sixth time that has happened here.
+
+1. **Every way out named the same thing, and the thing was not an object.** The first run
+   put `'il bordo dello schermo'` — the edge of the screen — in all five moments. The prompt
+   said "the object they are holding"; that was not concrete enough. It now says what an
+   object is, that it is never part of a screen, and that two moments usually hold different
+   things.
+2. **The repair reworded instead of repairing.** Handed five complaints, the model returned
+   `'bordo dello schermo'` — the same phrase without its article — and the fault was exactly
+   where it had been. The complaint said what was wrong and never what to do. The repair
+   prompt now says: change what the complaint names so it stops being true, rewording is not
+   a repair, and if a way out reaches for something nothing mentions, put that object into
+   an earlier moment. After that, one run came back with a single complaint and the repair
+   cleared it in **35.3 s**.
+3. **Two answers in seven were refused by the parser and there was no way back.** A line of
+   45 characters against a limit of 44, and a fifth line on a screen that holds four. The
+   limits were stated in the prompt, and restating them beside the field they apply to did
+   not stop it. So `repair_unreadable` exists: the answer that would not parse goes back up
+   with the parser's own refusal, which names the rule and the offending number. That is why
+   the parser's messages are worded the way they are — `a line is 45 characters; at most 44`
+   is already an instruction.
+
+The ten dimensions varied on their own across the runs — a railway timetable, a coastline
+made of a cup and a pencil, a domestic radio, a cartography of household sound — and none
+of them was a treasure hunt, an escape room or a quiz. That is one observation over a
+handful of runs, not a measurement of variety, and the thing that will actually keep it
+varied is the negative constraint, which has not yet run against a house with a history.
+
+### What is not built, and is next
+
+1. **The durable record and the replanning of `§5` and `§6` are half done.** The run file
+   holds the weight, what has been printed and whether the ending has begun, and the runner
+   picks a weight by asking whether the standard one still fits. The other three moves —
+   dropping optional moments, merging adjacent pairs, and the same order run backwards when
+   there is more time — are not built. Neither is the pause.
+2. **Nothing runs the whole thing end to end on the house yet.** Everything above was tested
+   against the real model or in the suite; the afternoon that is devised, refused, repaired,
+   approved and then run to an early ending on the actual printer and the actual display is
+   `§19`'s "done when", and it has not happened.
+3. **The parent's typed messages, the history that moves the starting weight, and the
+   camera** are untouched, in that order of cost.

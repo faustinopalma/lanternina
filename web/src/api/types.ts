@@ -83,23 +83,53 @@ export interface PageDesign {
   marks: Mark[];
 }
 
+/** One step of an afternoon at one of its three costs: how long it takes, and what the
+ *  display says. `shared/experience.py` refuses a moment that does not carry all three. */
+export interface Weighing {
+  minutes: number;
+  lines: string[];
+}
+
+/** One rung of the help ladder, and after how many minutes the next one arrives. */
+export interface Help {
+  after_minutes: number;
+  lines: string[];
+}
+
+/** How to reach the ending from exactly this moment, starting from something in hand. */
+export interface WayOut {
+  in_hand: string;
+  heading: string;
+  lines: string[];
+  minutes: number;
+}
+
 /** One step of an afternoon. The four acts are `shared/experience.py`'s, and a `collect`
  *  is the only one that branches: `then` names a later moment, or is `ask`, which means
  *  the rest is written when the page comes back. */
 export interface Moment {
   act: string;
   id: string;
-  heading?: string;
-  lines?: string[];
+  heading: string;
+  weights: Record<string, Weighing>;
+  help: Help[];
+  way_out: WayOut;
   design?: PageDesign;
+  instead?: string[];
   outcomes?: { when: string; then: string }[];
+  if_no_page?: string;
 }
+
+/** The ten dimensions an afternoon was drawn along. Every one of them is about the
+ *  afternoon; there is no dimension here that is about a person. */
+export type Drawn = Record<string, string>;
 
 export interface ExperiencePlan {
   experience_id: string;
   title: string;
   overview: string;
   minutes: number;
+  drawn?: Drawn;
   moments: Moment[];
 }
 

@@ -28,6 +28,14 @@ Three limits, each of them about the house and none of them about a person:
   house goes quiet. That is why nothing here has an end-hour setting: the pause the parent
   already chose is the end, and the afternoon's own ``minutes`` say whether it fits.
 
+**The timer is also what ends an afternoon.** Every run calls
+:func:`devices.run_experience.conclude_what_is_over` before it does anything else, and
+that is what makes "the ending always arrives" true rather than likely: thirty minutes
+before an afternoon's end hour, the way out of wherever it got to goes on the display, and
+the ending follows it. Until 23 August 2026 the same call deleted the run in silence, which
+is the failure the whole project exists to prevent — measured on this house at 14:02 on 21
+August, on `aft_5ec79e85`.
+
 **What is asked for, and when.** If the look finds nothing approved and nothing waiting
 with the parent, the house asks for one to be devised. It arrives pending, so it cannot
 run today: the earliest it can happen is the next chosen day, after somebody has read it.
@@ -49,7 +57,7 @@ from pathlib import Path
 from typing import Any
 
 from devices.house import CannotRun, House, screen_in
-from devices.run_experience import begin, forget_what_is_over, waiting_runs
+from devices.run_experience import begin, conclude_what_is_over, waiting_runs
 from shared.experience import Experience, ExperienceError
 
 # Monday first, and these exact three letters: `panel/reminders.py` writes them and
@@ -271,8 +279,8 @@ def main(argv: list[str] | None = None) -> int:
     stamp = sheets_dir / "afternoon-looked.stamp"
     now = time.time()
 
-    for run_id in forget_what_is_over(sheets_dir, now):
-        print(f"{run_id} ran out of hours and is over")
+    for run_id in conclude_what_is_over(house, now, send=not args.no_paper):
+        print(f"{run_id} reached its ending and is over")
     still_going = waiting_runs(sheets_dir)
     if still_going:
         print(f"an afternoon is already under way: {', '.join(still_going)}")
