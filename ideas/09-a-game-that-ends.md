@@ -770,6 +770,77 @@ it without anything on any display saying so.
 message written a minute before, and a message meant to be picked up within ten minutes is
 exactly the thing that failure hides in.
 
+*Done 24 August 2026,* in `§24`.
+
+## 24. The channel, 24 August 2026
+
+`panel/messages.py`, `panel/routes/messages.py`, `devices/afternoon.listen`, and a control
+in `web/src/sections/Experiences.tsx`. The order above was followed as written and nothing
+in it turned out to be wrong.
+
+**A row the panel holds, and the house coming for it.** Four routes: the parent writes one
+and reads what is still waiting; the house collects and says which one it heard. There is no
+route the other way and the panel is not given one, so what a parent presses takes effect on
+the house's next look rather than at the moment they press.
+
+**The trap was real and the answer was not the interesting part.** `CosmosMessageStore` sits
+beside the in-memory twin the tests run against, exactly as every other store here does. What
+was worth deciding is what the store holds.
+
+- **A list, not one row per household.** `hear` takes a sequence and folds it in order.
+  Keeping only the last would give the same answer today, because both things a parent may
+  say assign the end hour outright — but that is a property of this vocabulary and not of the
+  channel, and it stops being true of the first message that is not an assignment.
+- **Cleared by id, by the house.** A message the parent writes while the house is midway
+  through the one before it is still there afterwards.
+- **An hour, and then it is gone** — six looks of the house's ten-minute timer. What it buys
+  is that a message cannot reach an afternoon it was not written about. What it costs is that
+  one written while the house is off is lost rather than reported, and the parent sees it
+  disappear. `tests/test_message_channel.py` reads the interval out of
+  `deploy/lanternina-afternoon.timer`, so changing the timer and not the lifetime fails.
+
+**Asked before the ending is decided, and that is the only ordering that matters.** The
+timer's next act is to ask whether an afternoon's hour has come; an hour that moved after that
+question would wait ten minutes, and "close now" that takes ten minutes is not what the words
+say.
+
+**A message the house cannot read is left rather than cleared.** It means the two sides
+disagree about what may be said, which is ours to fix; saying it was heard would hide that,
+and it stops being offered within the hour anyway.
+
+**The control is a time field and two buttons, beside an afternoon the house has begun.**
+There is no box to type in, which is `shared/message.py`'s whole argument rather than an
+omission, and a test asserts the page has no text field at all. Until today the same place
+said an afternoon already begun was out of reach; it now offers an hour, and nothing else.
+
+**Measured on 24 August 2026.** Image `panel:9ee9c7b` built in ACR in **55 s** server-side
+with `--no-logs`, then `az containerapp update --image` rather than a full deploy. Revision
+`--0000049`, traffic 100 %. The house's own route answered **200 in 0.33 s** against the real
+Cosmos store, and clearing a message that does not exist answered `{"heard": false}` — the
+read and the delete both exercised in the deployment rather than only in a twin. 655 tests,
+17 of them new; 51 in the panel.
+
+**What is still unproven, and it is one thing.** The parent's write reaches Cosmos through
+`create_item`, and that path needs a signed-in parent, so nothing above touched it. The panel
+front end publishes itself from `main`; the first press in a browser is the proof.
+
+### What is next, and where it starts
+
+**Approval.** `§19`'s sentence asked for an afternoon devised, approved by a parent, and run
+to its ending, and the approval is the half that has never been walked end to end in one
+sitting: the simulator devises and plays but decides for itself, and the panel decides but
+cannot run anything.
+
+*Where it starts:* `tools/pretend.py`, which already has every verb except the one that waits
+for a decision the panel recorded.
+
+*Done when:* one command devises an afternoon, stops until a parent approves it in the
+browser, and then plays it to its close.
+
+*The trap to expect:* the simulator holds the device key and the parent holds a bearer token,
+and they are different credentials for the same household. A command that quietly used the
+device key to approve would pass its own test and prove nothing.
+
 ## 20. What was built, 23 August 2026
 
 Steps 1, 2 and 6 of the order above, plus the output filter, the ten dimensions and the
