@@ -36,5 +36,23 @@ Run on 24 August 2026, 22:45, in 398 s.
 
 ## How it went
 
-_Written after looking at the pages. What an assertion cannot say._
+**It worked, end to end, and this is the first time.** Three pages drawn, three filled in,
+an `ask` continuation written while the second page was on the table, and a close on the
+object. 398 s of wall clock, most of it spent waiting out the model's rate limit.
+
+**The second page is the one to look at.** In `08-page-came-back.png` the hand wrote *inside
+the cloud the page had drawn*, rather than in the box below it; crossed a word out; drew a
+house with the number 24 on it; and named the cloud *Nina*. Nobody designed that. It happened
+because the page is an object with a drawing on it rather than a form with fields, and
+somebody treated it as one.
+
+**The Italian is exact**, on the page and in what was written on it — titles, accents,
+apostrophes. The spelling worry that shaped the whole earlier design came from a model writing
+its own captions. Given the words, it letters them.
+
+**What is not right yet.** The notebook page rules lines across the whole sheet and then
+leaves the top third of them empty above the box: it reads as a page that was going to say
+more. And the third page — the one the continuation devised — is a page *about the first two*.
+That is the right instinct and it is also where an afternoon could start to feel like an
+exercise about itself.
 

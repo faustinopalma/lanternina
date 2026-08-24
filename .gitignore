@@ -58,7 +58,10 @@ pretend/
 # there is no person in it — so what keeps the pixels out is size and not privacy: a page is
 # roughly a megabyte and a soak is dozens of them. The notes are kept, because what was
 # measured and what somebody thought of it are the parts worth having later.
-experiments/*
+#
+# `experiments/**` and not `experiments/*`: the second only matches direct children, so the
+# first commit of this took a transcript and two run files in with it.
+experiments/**
 !experiments/**/
 !experiments/**/notes.md
 !experiments/README.md
