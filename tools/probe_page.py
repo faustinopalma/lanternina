@@ -84,11 +84,18 @@ async def _once(page: Page, out: Path) -> None:
     )
     try:
         began = time.monotonic()
-        drawn = await PageMaker().draw(context, page)
+        drawn_png = await PageMaker().draw(context, page)
         seconds = time.monotonic() - began
     finally:
         await gate.aclose()
 
+    import cv2 as _cv2
+    import numpy as _np
+
+    drawn = _np.asarray(
+        _cv2.imdecode(_np.frombuffer(drawn_png, dtype=_np.uint8), _cv2.IMREAD_GRAYSCALE),
+        dtype=_np.uint8,
+    )
     sheet = to_paper(drawn)
     usage = router.last_usage
     print(

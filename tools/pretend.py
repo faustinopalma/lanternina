@@ -37,11 +37,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-from devices.print_sheet import recall
-
 from devices import pretend as simulated
 from devices.house import CannotRun, House
 from devices.pretend import Pretend
+from devices.print_page import recall
 from devices.run_experience import (
     Afternoon,
     begin,
@@ -52,10 +51,12 @@ from devices.run_experience import (
     offer_help,
     waiting_runs,
 )
+from printing.paper import ink_fraction
 from shared.capabilities import HouseCapability
 from shared.experience import HELP_LEVELS, Experience, ExperienceError
 from shared.ids import SheetId
 from shared.message import Message, MessageError, Says, at_the_clock
+from tools.handwriting import HANDS
 
 WHERE = Path(os.environ.get(simulated.PRETEND_DIR_ENV, "") or "pretend")
 
@@ -206,12 +207,16 @@ def look(where: Path) -> int:
     print(f"on the table: {', '.join(on_the_table) or 'nothing'}")
     for sheet_id in on_the_table:
         try:
-            spec = recall(house.sheets_dir, SheetId(sheet_id))
-        except (OSError, ValueError):
+            blank = recall(house.sheets_dir, SheetId(sheet_id))
+        except (OSError, ValueError, FileNotFoundError):
             continue
-        print(f"  {sheet_id}: {spec.title}")
-        for cell in spec.cells:
-            print(f"    {cell.id} ({cell.kind}) {cell.label}")
+        # A page says nothing about itself any more: it is pixels, and what can be reported
+        # is how much of it is ink and where to look at it.
+        print(
+            f"  {sheet_id}: {blank.shape[1]}x{blank.shape[0]}, "
+            f"{ink_fraction(blank) * 100:.2f}% ink "
+            f"({pretend.paper / (sheet_id + '.png')})"
+        )
     for run_id in waiting_runs(house.sheets_dir):
         run = _run(house, run_id)
         if run is None:
@@ -233,8 +238,14 @@ def _run(house: House, run_id: str) -> Afternoon | None:
         return None
 
 
-def hand(where: Path, asked: str) -> int:
-    """Write in the places asked for and lay the sheet on the glass, then carry on."""
+def hand(where: Path, asked: str, by: str = "") -> int:
+    """Put ink on the sheet and lay it on the glass, then carry on.
+
+    ``by`` names a hand from `tools/handwriting.py` and costs a model call: the page comes
+    back actually filled in, which is the only way the reading is exercised against
+    handwriting rather than against three polylines. Without it the bands are drawn, which
+    is free and answers a narrower question.
+    """
     house = a_house(where)
     pretend = Pretend(where)
     on_the_table = simulated.sheets_on_the_table(pretend)
@@ -242,20 +253,40 @@ def hand(where: Path, asked: str) -> int:
         print("there is no sheet on the table")
         return 1
     sheet_id = on_the_table[-1]
-    spec = recall(house.sheets_dir, SheetId(sheet_id))
-    try:
-        filled = simulated.which_places(spec, asked)
-    except ValueError as exc:
-        print(exc)
-        return 1
-    simulated.put_on_the_glass(pretend, sheet_id, filled)
-    print(f"{sheet_id} on the glass, ink in {list(filled) or 'nothing'}")
+
+    written = b""
+    filled: tuple[str, ...] = ()
+    if by:
+        from tools.handwriting import written_on
+
+        began = time.monotonic()
+        try:
+            written = written_on(recall_bytes(pretend, sheet_id), hand=by)
+        except (RuntimeError, OSError, ValueError) as exc:
+            print(f"the hand did not write: {exc}")
+            return 1
+        print(f"{sheet_id} filled in by the {by} hand in {time.monotonic() - began:.1f} s")
+    else:
+        try:
+            filled = simulated.which_places(asked)
+        except ValueError as exc:
+            print(exc)
+            return 1
+
+    simulated.put_on_the_glass(pretend, sheet_id, filled, written)
+    if not written:
+        print(f"{sheet_id} on the glass, ink in {list(filled) or 'nothing'}")
     try:
         print(carry_on(house, now=simulated.the_time(pretend), send=False))
     except (CannotRun, ExperienceError, OSError) as exc:
         print(f"it stopped: {exc}")
         return 1
     return 0
+
+
+def recall_bytes(pretend: Pretend, sheet_id: str) -> bytes:
+    """The sheet as it was handed over, as the PNG the hand will write on."""
+    return (pretend.paper / f"{sheet_id}.png").read_bytes()
 
 
 def wait(where: Path, minutes: float) -> int:
@@ -280,7 +311,9 @@ def wait(where: Path, minutes: float) -> int:
     return 0
 
 
-def play(where: Path, experience: Experience, asked: str, step_minutes: float) -> int:
+def play(
+    where: Path, experience: Experience, asked: str, step_minutes: float, by: str = ""
+) -> int:
     """Begin, and keep handing pages back until the afternoon ends.
 
     Stops of its own accord when there is nothing on the table and nothing waiting, which is
@@ -306,7 +339,7 @@ def play(where: Path, experience: Experience, asked: str, step_minutes: float) -
             if not waiting_runs(house.sheets_dir):
                 print("the afternoon is over")
                 return 0
-        if hand(where, asked) != 0:
+        if hand(where, asked, by) != 0:
             return 1
     print(f"it handed back {MOST_PAGES} pages and is still going; something is looping")
     return 1
@@ -399,7 +432,10 @@ def main(argv: list[str] | None = None) -> int:
     verbs.add_parser("look", help="what the display says and what is on the table")
 
     handing = verbs.add_parser("hand", help="write on the sheet and lay it on the glass")
-    handing.add_argument("how", help="marks, blank, all, or a comma-separated list of places")
+    handing.add_argument("how", help="marks, blank, all, or a comma-separated list of bands")
+    handing.add_argument(
+        "--by", default="", help=f"fill it in for real: one of {', '.join(HANDS)}"
+    )
 
     waiting = verbs.add_parser("wait", help="let minutes pass, and let the house look")
     waiting.add_argument("minutes", type=float)
@@ -409,6 +445,9 @@ def main(argv: list[str] | None = None) -> int:
 
     playing = verbs.add_parser("play", help="begin and keep going until it ends")
     playing.add_argument("--hand", default="marks")
+    playing.add_argument(
+        "--by", default="", help=f"fill each page in for real: one of {', '.join(HANDS)}"
+    )
     playing.add_argument("--step", type=float, default=0.0, help="minutes between pages")
 
     verbs.add_parser("transcript", help="what happened, in order")
@@ -435,12 +474,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.verb == "say":
         return say(where, args.what)
     if args.verb == "hand":
-        return hand(where, args.how)
+        return hand(where, args.how, args.by)
 
     chosen = load_experience(args.experience) if args.experience else _the_afternoon(where)
     if args.verb == "begin":
         return start(where, chosen)
-    return play(where, chosen, args.hand, args.step)
+    return play(where, chosen, args.hand, args.step, args.by)
 
 
 if __name__ == "__main__":

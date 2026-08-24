@@ -15,11 +15,13 @@ that; naming it here is so that nobody reads these tests as a guarantee.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import cv2
 import numpy as np
 import pytest
 
-from agents.page_maker import SIZE, WHITE_AT, asked_for, to_grey, to_png
+from agents.page_maker import SIZE, WHITE_AT, asked_for, on_paper
 from shared.page import Page, PageKind, Room, Space
 
 
@@ -40,6 +42,12 @@ def as_png(grey: np.ndarray) -> bytes:
     ok, encoded = cv2.imencode(".png", grey)
     assert ok
     return bytes(encoded.tobytes())
+
+
+def as_array(png: bytes) -> np.ndarray:
+    return np.asarray(
+        cv2.imdecode(np.frombuffer(png, dtype=np.uint8), cv2.IMREAD_GRAYSCALE), dtype=np.uint8
+    )
 
 
 # ── The words are given ──────────────────────────────────────────────────────────────
@@ -129,7 +137,7 @@ def test_the_near_white_wash_is_made_white_and_the_lines_are_left_alone() -> Non
     drawn = np.full((64, 64), WHITE_AT + 2, dtype=np.uint8)
     drawn[0:8, 0:8] = 20
 
-    grey = to_grey(as_png(drawn))
+    grey = as_array(on_paper(as_png(drawn)))
 
     assert grey[32, 32] == 255
     assert grey[2, 2] == 20
@@ -138,7 +146,7 @@ def test_the_near_white_wash_is_made_white_and_the_lines_are_left_alone() -> Non
 def test_a_tone_just_below_the_threshold_survives_because_it_may_be_a_light_line() -> None:
     drawn = np.full((8, 8), WHITE_AT - 1, dtype=np.uint8)
 
-    assert to_grey(as_png(drawn))[4, 4] == WHITE_AT - 1
+    assert as_array(on_paper(as_png(drawn)))[4, 4] == WHITE_AT - 1
 
 
 def test_the_threshold_sits_where_the_curve_is_flat() -> None:
@@ -154,18 +162,29 @@ def test_a_colour_drawing_becomes_one_grey_plane() -> None:
     ok, encoded = cv2.imencode(".png", colour)
     assert ok
 
-    assert to_grey(bytes(encoded.tobytes())).ndim == 2
+    assert as_array(on_paper(bytes(encoded.tobytes()))).ndim == 2
 
 
 def test_something_that_is_not_an_image_is_refused_rather_than_printed() -> None:
     with pytest.raises(ValueError, match="not an image"):
-        to_grey(b"this is not a png")
+        on_paper(b"this is not a png")
 
 
-def test_a_page_survives_the_round_trip_to_bytes_and_back() -> None:
-    """It is encoded to cross the wire from the panel to the house, and what arrives is
-    what will be printed: a lossy step here would be a page nobody chose."""
+def test_the_page_crosses_the_wire_without_losing_a_pixel() -> None:
+    """It is encoded to go from the panel to the house, and what arrives is what will be
+    printed: a lossy step here would be a page nobody chose."""
     drawn = np.full((32, 32), 200, dtype=np.uint8)
     drawn[4:8, 4:8] = 10
 
-    assert np.array_equal(to_grey(to_png(drawn)), drawn)
+    assert np.array_equal(as_array(on_paper(as_png(drawn))), drawn)
+
+
+def test_the_panel_can_draw_a_page_without_a_vision_stack() -> None:
+    """This runs in the web container, which holds the credential and deliberately holds no
+    OpenCV. The first version imported cv2 and the deployed route answered 500 with
+    `No module named 'cv2'` — found by a simulated house talking to the real panel."""
+    import agents.page_maker as maker
+
+    source = Path(maker.__file__).read_text(encoding="utf-8")
+    assert "import cv2" not in source
+    assert "import numpy" not in source

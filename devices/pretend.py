@@ -57,6 +57,12 @@ if TYPE_CHECKING:
     from devices.house import House
 
 PRETEND_DIR_ENV: Final = "LANTERNINA_PRETEND_DIR"
+# The switch, said as a word rather than as a path so that turning it off is turning off a
+# flag and not remembering to unset a directory. Set it and the house is simulated in
+# :data:`WHERE_BY_DEFAULT`; leave it, or set it to a false word, and the real house runs.
+PRETEND_ENV: Final = "LANTERNINA_PRETEND"
+WHERE_BY_DEFAULT: Final = "pretend"
+_TRUE: Final = frozenset({"1", "true", "yes", "on"})
 
 # The raster the page is kept as. The same 300 dpi the real scanner is configured for, so
 # the markers land on the same number of pixels — 176 to 178 px on real paper, measured
@@ -74,9 +80,18 @@ BANDS: Final[tuple[str, ...]] = ("top", "middle", "bottom")
 
 
 def pretend_in(env: Mapping[str, str]) -> Path | None:
-    """The directory a simulated house writes into, or None for a house with equipment."""
+    """The directory a simulated house writes into, or None for a house with equipment.
+
+    Two ways to say yes and one of them is a plain flag, because a switch that is a path is
+    a switch nobody is sure is off. Anything not in :data:`_TRUE` is off, so
+    ``LANTERNINA_PRETEND=false`` is the real house and reads as one.
+    """
     named = env.get(PRETEND_DIR_ENV, "").strip()
-    return Path(named) if named else None
+    if named:
+        return Path(named)
+    if env.get(PRETEND_ENV, "").strip().lower() in _TRUE:
+        return Path(WHERE_BY_DEFAULT)
+    return None
 
 
 @dataclass(frozen=True, slots=True)
@@ -215,11 +230,24 @@ def which_places(asked: str) -> tuple[str, ...]:
     return named
 
 
-def put_on_the_glass(pretend: Pretend, sheet_id: str, filled: Sequence[str]) -> None:
-    """Say which sheet is on the scanner and which of its places somebody wrote in."""
+def put_on_the_glass(
+    pretend: Pretend, sheet_id: str, filled: Sequence[str], written: bytes = b""
+) -> None:
+    """Say which sheet is on the scanner, and what is on it.
+
+    Two hands, and the difference is what the reading is being exercised against. ``filled``
+    names bands of the paper and draws three polylines in them, which costs nothing and
+    answers "is there ink". ``written`` is the whole sheet as somebody filled it in —
+    `tools/handwriting.py` — which costs a model call and is the only one that puts real
+    handwriting in front of the reader.
+    """
     pretend.where.mkdir(parents=True, exist_ok=True)
+    if written:
+        (pretend.paper / f"{sheet_id}-written.png").write_bytes(written)
     pretend.glass.write_text(
-        json.dumps({"sheet_id": sheet_id, "filled": list(filled)}) + "\n", encoding="utf-8"
+        json.dumps({"sheet_id": sheet_id, "filled": list(filled), "by_hand": bool(written)})
+        + "\n",
+        encoding="utf-8",
     )
 
 
@@ -227,7 +255,7 @@ def off_the_glass(pretend: Pretend, house: House) -> tuple[str, NDArray[np.uint8
     """The page laid on the glass, written on, as pixels the real reader would be handed.
 
     Everything from here down is the path the hub takes: the same blank, the same reading in
-    the cloud, the same comparison. What is injected is one thing — where the ink is.
+    the cloud, the same comparison. What is injected is one thing — what somebody wrote.
 
     Raises :class:`LookupError` when nothing was laid on the glass, which is the simulated
     equivalent of pressing the button with an empty scanner.
@@ -239,11 +267,14 @@ def off_the_glass(pretend: Pretend, house: House) -> tuple[str, NDArray[np.uint8
     filled = [str(name) for name in asked.get("filled", [])]
     sheet_id = str(asked["sheet_id"])
 
-    page = _page_image(pretend, sheet_id)
-    _by_hand(page, filled)
+    if asked.get("by_hand"):
+        page = _page_image(pretend, f"{sheet_id}-written")
+    else:
+        page = _page_image(pretend, sheet_id)
+        _by_hand(page, filled)
     # The sheet leaves the glass when it is read, exactly as a person picks it back up.
     pretend.glass.unlink(missing_ok=True)
-    note(pretend, "glass", sheet_id=sheet_id, filled=filled)
+    note(pretend, "glass", sheet_id=sheet_id, filled=filled, by_hand=bool(asked.get("by_hand")))
     return sheet_id, page
 
 

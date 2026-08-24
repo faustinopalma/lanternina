@@ -15,21 +15,20 @@ short — everything it can do about it is done here, by saying what the page ma
 as text, so the ask quotes it and tells the model to letter exactly that. A model that
 writes its own captions is a model writing to a person through a hole in the gate.
 
-**Little ink is asked for rather than enforced.** `printing/ink.py` still measures what comes
-back, because it is the only thing in the brief that can be measured, and nothing refuses on
-it: the parent has printed pages made this way and they are fine. What that costs is that a
-heavy page reaches paper; what it buys is that a page nobody objected to is not thrown away
-by arithmetic.
+**Bytes in, bytes out, and Pillow rather than OpenCV.** This runs in the panel container,
+which holds the credential that reaches the model and deliberately holds no vision stack:
+the first version imported `cv2` and the deployed route answered 500 with
+``No module named 'cv2'``. Nothing here needs an array — a PNG arrives, the paper is made
+paper, and a PNG goes back to the house, which does have OpenCV and decodes it there.
 """
 
 from __future__ import annotations
 
 import base64
+import io
 from typing import Final
 
-import cv2
-import numpy as np
-from numpy.typing import NDArray
+from PIL import Image
 
 from shared.agents import AgentContext
 from shared.ids import new_request_id
@@ -124,8 +123,8 @@ class PageMaker:
 
     name = "page_maker"
 
-    async def draw(self, ctx: AgentContext, page: Page) -> NDArray[np.uint8]:
-        """The page as a grey image, or raise whatever the router raises.
+    async def draw(self, ctx: AgentContext, page: Page) -> bytes:
+        """The page as a grey PNG, or raise whatever the router raises.
 
         The caller decides what a failure means. On this path it means the moment plays its
         ``instead``, which is written and screened long before anything broke.
@@ -140,28 +139,22 @@ class PageMaker:
                 metadata={"size": SIZE},
             )
         )
-        return to_grey(base64.b64decode(payload.body))
+        return on_paper(base64.b64decode(payload.body))
 
 
-def to_grey(png: bytes) -> NDArray[np.uint8]:
-    """PNG bytes as one grey plane, with the paper made paper.
+def on_paper(png: bytes) -> bytes:
+    """A PNG as the sheet that will be printed, with the paper made paper.
 
     Two things happen and only the first is obvious. Colour goes, because the page prints in
     black and is measured by tone. And everything at least :data:`WHITE_AT` becomes white,
     because an image model's white is a faint even wash and on an inkjet that wash is ink
     spent on nothing. The dark lines are left exactly as they came.
     """
-    decoded = cv2.imdecode(np.frombuffer(png, dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-    if decoded is None:
-        raise ValueError("the page that came back is not an image")
-    grey = np.asarray(decoded, dtype=np.uint8).copy()
-    grey[grey >= WHITE_AT] = 255
-    return grey
-
-
-def to_png(grey: NDArray[np.uint8]) -> bytes:
-    """Back to bytes, for the wire. Grey and lossless: this is what will be printed."""
-    ok, encoded = cv2.imencode(".png", grey)
-    if not ok:
-        raise ValueError("the page could not be encoded")
-    return bytes(encoded.tobytes())
+    try:
+        drawn = Image.open(io.BytesIO(png))
+    except OSError as exc:
+        raise ValueError("the page that came back is not an image") from exc
+    grey = drawn.convert("L").point(lambda tone: 255 if tone >= WHITE_AT else tone)
+    out = io.BytesIO()
+    grey.save(out, format="PNG")
+    return out.getvalue()

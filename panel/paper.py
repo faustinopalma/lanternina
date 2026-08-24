@@ -51,14 +51,14 @@ async def draw_page(page: Page, *, now: float) -> tuple[bytes, ModelUsage | None
     Raises what the router raises when the cloud will not serve it. The house treats that
     as a page it did not get, and the moment plays its ``instead``.
     """
-    from agents.page_maker import PageMaker, to_png
+    from agents.page_maker import PageMaker
 
     router, context, gate = _cloud(now)
     try:
-        grey = await PageMaker().draw(context, page)
+        png = await PageMaker().draw(context, page)
     finally:
         await gate.aclose()
-    return to_png(grey), router.last_usage
+    return png, router.last_usage
 
 
 async def read_the_page(
