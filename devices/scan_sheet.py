@@ -15,6 +15,19 @@ parent should look at. Nothing here decides whether a mark is the right one.
 Reading happens in the cloud, through the panel, and there is no arithmetic underneath any
 more. With the panel unreachable the page is not read: the display says so in a sentence
 that blames nobody, and nothing is recorded.
+
+**A press while an afternoon is under way belongs to the afternoon**, and until 24 August
+2026 it did not go there. This module is the standalone-sheet path: it reads a page, says
+what came back, and stops. `run_experience.carry_on` is the other reader, the one that moves
+an afternoon on from the moment it is waiting at, and nothing started it — the unit exists
+and had no caller. Measured in the house that day: a page went on the glass, was read
+correctly in 29 s, the display described it, and the afternoon stood at its `collect` giving
+out help about bringing the map to the glass while the map was on the glass.
+
+The choice is made before the scan and not after, because a scan is 29 s of somebody
+standing at the scanner and asking twice is not an option. So it is made from the only thing
+knowable beforehand — whether an afternoon is waiting — and the sheet's own QR stays what
+refuses a page that belongs somewhere else.
 """
 
 from __future__ import annotations
@@ -30,6 +43,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from devices.epaper import render_notice_bmp, render_waiting_bmp
+from devices.house import House
 from devices.print_sheet import recall
 from devices.read_page import PanelUnreachable, read_page
 from devices.trmnl_byos import screen_for
@@ -108,6 +122,41 @@ def describe(reading: PageReading, spec_title: str) -> tuple[str, list[str]]:
     return "Fatto", lines
 
 
+def _to_the_afternoon(
+    button_file: Path, sheets_dir: Path, target: Path, scanner: str
+) -> int:
+    """Hand the press to the afternoon's own reader, on the display that was pressed.
+
+    The screen is the one somebody is standing at, not the one `screen_in` would pick: that
+    chooses at random among the displays holding the job, and the person who pressed is here.
+
+    Never raises past this point. A press answered with a stack trace is a display left on
+    the waiting screen, and the afternoon still has its clock: whatever happens, it ends.
+    """
+    # Imported here because `run_experience` takes this module's scanner primitives, so the
+    # two would not import each other at module scope.
+    from devices.run_experience import carry_on
+
+    house = House(
+        printer=os.environ.get("LANTERNINA_PRINTER", ""),
+        scanner=scanner,
+        screen=target,
+        sheets_dir=sheets_dir,
+        panel=os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/"),
+        household=os.environ.get("LANTERNINA_HOUSEHOLD", ""),
+        device_key=os.environ.get("LANTERNINA_DEVICE_KEY", ""),
+    )
+    try:
+        print(f"carrying the afternoon on: {carry_on(house, send=True)}")
+    except Exception as exc:  # noqa: BLE001 - a press must not end in a traceback
+        print(f"the afternoon did not carry on: {exc}")
+        target.write_bytes(
+            render_notice_bmp("Il foglio è arrivato", ["Adesso non riesco a leggerlo."])
+        )
+    button_file.unlink(missing_ok=True)
+    return 0
+
+
 def main() -> int:
     button_file = Path(sys.argv[1] if len(sys.argv) > 1 else "")
     sheets_dir = Path(sys.argv[2] if len(sys.argv) > 2 else "")
@@ -127,6 +176,11 @@ def main() -> int:
 
     def say(heading: str, lines: list[str]) -> None:
         target.write_bytes(render_notice_bmp(heading, lines))
+
+    from devices.run_experience import waiting_runs
+
+    if waiting_runs(sheets_dir):
+        return _to_the_afternoon(button_file, sheets_dir, target, scanner)
 
     # The display server already put this same screen up in the response the press caused;
     # writing the identical bytes is what makes this a no-op rather than a second redraw.

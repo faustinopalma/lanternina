@@ -8,6 +8,9 @@ Group=lanternina
 EnvironmentFile=/etc/lanternina/trmnl-byos.env
 EnvironmentFile=/etc/lanternina/panel.env
 EnvironmentFile=-/etc/lanternina/scanner.env
+# The printer, because a press during an afternoon carries it on, and the moment after a
+# collect may be a sheet. Without this the afternoon moves and nothing comes out.
+EnvironmentFile=/etc/lanternina/experience.env
 Environment=PYTHONDONTWRITEBYTECODE=1
 WorkingDirectory=/opt/lanternina
 ExecStart=/usr/bin/python3 -m devices.scan_sheet ${TRMNL_BUTTON_FILE} ${LANTERNINA_SHEETS_DIR} ${TRMNL_SCREEN_FILE} ${LANTERNINA_SCANNER}

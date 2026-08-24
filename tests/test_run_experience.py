@@ -9,6 +9,7 @@ because a format that only runs on documents written for the test is not running
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -102,6 +103,64 @@ def test_a_house_without_the_equipment_is_not_offered_it(tmp_path: Path) -> None
     bare = House(sheets_dir=tmp_path)
     with pytest.raises(CannotRun, match="cannot run"):
         begin(bare, an_experience(), now=0.0, send=False)
+
+
+# ── The press goes to the afternoon ──────────────────────────────────────────────────
+
+
+def _a_press(house: House, tmp_path: Path) -> tuple[Path, list[str]]:
+    """The button file the display server writes, and a place to record where it went."""
+    button = tmp_path / "button.json"
+    button.write_text(json.dumps({"friendlyId": "CF7D04"}), encoding="utf-8")
+    return button, []
+
+
+def test_a_press_while_an_afternoon_waits_goes_to_the_afternoon(
+    house: House, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`ideas/09 §24`. Measured in the house on 24 August 2026: a page was read correctly
+    and the afternoon stood still, because the press went to the standalone reader."""
+    from devices import scan_sheet
+
+    begin(house, an_experience(), now=0.0, send=False)
+    button, went = _a_press(house, tmp_path)
+    monkeypatch.setattr(scan_sheet, "_to_the_afternoon", lambda *a, **k: went.append("run") or 0)
+    monkeypatch.setattr(
+        scan_sheet, "find_scanner", lambda *a: went.append("scanner") or "glass"
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["scan_sheet", str(button), str(house.sheets_dir), str(tmp_path / "s.bmp"), "glass"],
+    )
+
+    assert scan_sheet.main() == 0
+    assert went == ["run"]
+
+
+def test_a_press_with_no_afternoon_reads_the_sheet_on_its_own(
+    house: House, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The other half of the same decision: a sheet on the glass with nothing running is
+    still described the way it always was."""
+    from devices import scan_sheet
+
+    house.sheets_dir.mkdir(parents=True, exist_ok=True)
+    button, went = _a_press(house, tmp_path)
+    monkeypatch.setattr(scan_sheet, "_to_the_afternoon", lambda *a, **k: went.append("run") or 0)
+    monkeypatch.setattr(
+        scan_sheet,
+        "find_scanner",
+        lambda *a: went.append("scanner") or (_ for _ in ()).throw(OSError("no scanner")),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["scan_sheet", str(button), str(house.sheets_dir), str(tmp_path / "s.bmp"), "glass"],
+    )
+
+    assert scan_sheet.main() == 0
+    assert went == ["scanner"]
 
 
 # ── What came back ───────────────────────────────────────────────────────────────────
