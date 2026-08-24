@@ -149,10 +149,27 @@ def _space(sheet: _Sheet, space: Space, *, x: float, width_mm: float) -> None:
 def _picture(
     sheet: _Sheet, picture: NDArray[np.uint8] | None, rect: MmRect, *, framed: bool = False
 ) -> float:
-    """Place the picture and say how much height it used, which is none when there is none."""
+    """Place the picture and say how much height it used, which is none when there is none.
+
+    Fitted inside the rectangle rather than stretched to it: a cloud squashed to fit a wide
+    box reads as a mistake, and the paper it does not cover is white anyway. The frame, when
+    there is one, goes round the space the layout allotted and not round the picture, so a
+    map's border stays the same size whatever shape came back.
+    """
     if picture is None:
         return 0.0
-    sheet.images.append(PageImage(rect=rect, grey=picture))
+    rows, cols = picture.shape
+    scale = min(rect.w / cols, rect.h / rows)
+    width = cols * scale
+    height = rows * scale
+    sheet.images.append(
+        PageImage(
+            rect=MmRect(
+                rect.x + (rect.w - width) / 2, rect.y + (rect.h - height) / 2, width, height
+            ),
+            grey=picture,
+        )
+    )
     if framed:
         sheet.outlined.append(rect)
     return rect.h

@@ -364,6 +364,46 @@ wrong by.
 > label there can be, in wide letters — it fails on all four kinds without wrapping, and the
 > first thing it reports is a centred title starting to the left of the paper.
 
+### The picture, asked for and measured against the real model
+
+`agents/page_illustrator.py` asks `gpt-image-2` for the illustration, and `ideas/10 §5` is
+what shapes the ask: it says four different ways that there is to be no text in the image,
+because a model asked for a map letters it, and because a letter drawn into pixels reaches a
+person having passed no gate. Nothing anywhere draws the illustration's description as words.
+
+Measured with `tools/probe_page_illustration.py`, four real calls, 24 August 2026:
+
+| kind | seconds | the picture | the whole page | verdict |
+| --- | --- | --- | --- | --- |
+| map | 24.1 | 0.92 % | 2.52 % | within |
+| dossier | 18.8 | 0.80 % | 1.16 % | within |
+| label | 19.6 | 0.49 % | 0.54 % | within |
+| notebook | 19.2 | 0.93 % | 0.67 % | within |
+
+None of the four wrote a word. All four are line drawings on white, and the pages are pages
+somebody would pick up.
+
+**Two defects were found by looking at the first two, and both cost more than they looked.**
+
+* **What an image model returns as white is not white.** It is a faint even wash across the
+  whole square, and on an inkjet it was **more than half the ink on the page**: flattening
+  everything at or above 245 to paper took the map's picture from 2.94 % to 1.38 % and the
+  dossier's from 2.54 % to 0.97 %. The threshold is on the flat part of the curve — between
+  245 and 220 the answer moves by 0.03 percentage points — so it is a threshold and not a
+  tuning knob. This is not lightening a picture until it fits: the dark lines are untouched
+  and a drawing that is genuinely too heavy is still refused.
+* **A square picture in a wide box was being stretched.** It is now fitted inside and centred,
+  and each kind asks for the shape its layout will give it — landscape for a map and a
+  notebook, square for a dossier and a label.
+
+After both, every kind is inside the placeholder budget and **the number that decides is the
+map's border**: 2.52 % against 0.67 % for the notebook, on pictures that differ by 0.01
+percentage points. The furniture costs more than the illustration.
+
+> The rate limit is real and worth writing down: `gpt-image-2` is deployed at capacity 2 and
+> answers **429** to a second call within about half a minute. Four pages in a row need a wait
+> between them; one afternoon printing one page does not.
+
 ## 5. The words are ours
 
 A model that draws pages will write text into the pixels. The example page shows what that is
