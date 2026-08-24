@@ -25,14 +25,15 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
+from numpy.typing import NDArray
+
 from devices.epaper import render_notice_bmp
 from devices.inventory import holders, load_jobs
 from devices.pretend import Pretend
 from devices.trmnl_byos import screen_for
 from shared.capabilities import JOB_SHEET, HouseCapability
-from shared.ids import ExerciseId, SheetId
-from shared.pagedesign import PageDesign
-from shared.sheet import SheetSpec
+from shared.ids import SheetId
 
 
 class CannotRun(RuntimeError):
@@ -135,52 +136,37 @@ def show(house: House, heading: str, lines: list[str]) -> None:
 
 def hand_over(
     house: House,
-    design: PageDesign,
+    drawn: NDArray[np.uint8],
     *,
     sheet_id: SheetId,
-    exercise_id: ExerciseId,
-    now: float = 0.0,
     send: bool = True,
-) -> SheetSpec:
-    """Put a designed page on the table, wherever this house's table is.
+) -> NDArray[np.uint8]:
+    """Put a page on the table, wherever this house's table is, and keep its blank.
 
     The branch is here rather than in a runner on purpose. A runner that could tell a
     pretend house from a real one would grow a second way of running an afternoon, and the
     two would drift apart at exactly the speed nobody was watching.
+
+    ``drawn`` is the page as a model drew it. Nothing on this side decides what is on it.
     """
-    from devices.print_sheet import compose_and_print, compose_sheet
+    from devices.print_page import make_sheet, print_page
 
     pretending = house.pretending
     if pretending is not None:
         from devices import pretend as simulated
-        from printing.render import drawing_to_array
 
-        sheet, pdf = compose_sheet(
-            design,
-            sheets_dir=house.sheets_dir,
-            sheet_id=sheet_id,
-            exercise_id=exercise_id,
-            now=now,
-        )
-        # The raster comes from the same `Drawing` the PDF does, so the sheet that can be
-        # laid on the simulated glass is the sheet that would have come out of the printer.
-        simulated.hand_over(
-            pretending,
-            sheet.spec,
-            pdf,
-            drawing_to_array(sheet.drawing, dpi=simulated.PAGE_DPI),
-        )
-        spec: SheetSpec = sheet.spec
-        return spec
+        blank, pdf = make_sheet(drawn, sheets_dir=house.sheets_dir, sheet_id=sheet_id)
+        # The same blank the printer would have produced, so the sheet that can be laid on
+        # the simulated glass is the sheet that would have come out.
+        simulated.hand_over(pretending, sheet_id, pdf, blank)
+        return blank
     if not house.printer:
         raise CannotRun("there is no printer in this house")
-    return compose_and_print(
-        design,
+    return print_page(
+        drawn,
         sheets_dir=house.sheets_dir,
         sheet_id=sheet_id,
-        exercise_id=exercise_id,
         printer=house.printer,
-        now=now,
         send=send,
     )
 

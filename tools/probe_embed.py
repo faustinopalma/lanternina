@@ -28,10 +28,10 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
-
 from printing.render import PageGeometry, build_drawing, drawing_to_array
-from shared.ids import CellId, ExerciseId, SheetId
 from shared.sheet import CellKind, CellSpec, Rect, SheetSpec
+
+from shared.ids import CellId, ExerciseId, SheetId
 
 DEPLOYMENT = "embed-v-4-0"
 API_VERSION = "2024-05-01-preview"

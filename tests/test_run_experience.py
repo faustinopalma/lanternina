@@ -18,12 +18,11 @@ import pytest
 
 from devices import run_experience
 from devices.house import CannotRun, House
-from devices.print_sheet import recall
+from devices.print_page import recall
 from devices.run_experience import Afternoon, begin, came_back, carry_on, load_experience
 from shared.experience import Came, Experience
-from shared.ids import CellId, ExerciseId, SheetId
-from shared.sheet import CellKind, SheetSpec
-from shared.vision_contracts import CellReading, PageReading, ReadConfidence
+from shared.ids import SheetId
+from shared.vision_contracts import WhatCameBack
 
 THE_AFTERNOON = Path("experiences/un-pomeriggio-di-nuvole.json")
 
@@ -41,39 +40,46 @@ def house(tmp_path: Path) -> House:
     )
 
 
+@pytest.fixture(autouse=True)
+def the_page_is_drawn(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Every hand_over asks the panel for a page. Standing in for it here rather than in
+    each test: a test that forgot would reach the network and fail slowly and confusingly."""
+    import numpy as np
+
+    monkeypatch.setattr(
+        "devices.run_experience.draw_page",
+        lambda page, **_: np.full((1536, 1024), 255, dtype=np.uint8),
+    )
+
+
 def an_experience() -> Experience:
     return load_experience(THE_AFTERNOON)
 
 
-def last_sheet(house: House) -> SheetSpec:
-    """The spec of the most recently printed sheet, which is what would be on the glass."""
-    printed = sorted(house.sheets_dir.glob("sh_*.json"), key=lambda p: p.stat().st_mtime)
-    return recall(house.sheets_dir, SheetId(printed[-1].stem))
+def last_sheet(house: House) -> SheetId:
+    """The id of the most recently printed sheet, which is what would be on the glass."""
+    from devices.print_page import waiting
+
+    return waiting(house.sheets_dir)[-1]
 
 
-def _reading(spec: SheetSpec, *, marks: bool, unsure: bool = False) -> PageReading:
-    return PageReading(
-        sheet_id=spec.sheet_id,
-        exercise_id=spec.exercise_id,
-        cells=tuple(
-            CellReading(
-                cell_id=CellId(str(cell.id)),
-                kind=CellKind(cell.kind),
-                value=cell.label if marks and index == 0 else None,
-                confidence=ReadConfidence.UNSURE if unsure else ReadConfidence.LIKELY,
-                needs_review=unsure,
-            )
-            for index, cell in enumerate(spec.cells)
-        ),
+def _reading(*, marks: bool, degraded: bool = False) -> WhatCameBack:
+    return WhatCameBack(
+        written=marks,
+        same_sheet=True,
+        describes=("una casa disegnata in alto",) if marks else (),
         read_at=0.0,
+        degraded=degraded,
     )
 
 
-def glass(monkeypatch: pytest.MonkeyPatch, house: House, **how: Any) -> SheetSpec:
+def glass(monkeypatch: pytest.MonkeyPatch, house: House, **how: Any) -> SheetId:
     """Put the sheet that was printed last on the scanner, read as ``how`` says."""
-    spec = last_sheet(house)
-    monkeypatch.setattr(run_experience, "_read", lambda _house: (spec, _reading(spec, **how)))
-    return spec
+    sheet_id = last_sheet(house)
+    monkeypatch.setattr(
+        run_experience, "_read", lambda _house, _run=None: (str(sheet_id), _reading(**how))
+    )
+    return sheet_id
 
 
 def runs(house: House) -> list[Path]:
@@ -96,7 +102,7 @@ def test_it_plays_up_to_the_first_page_and_waits(house: House) -> None:
     at = Afternoon.from_dict(json.loads(runs(house)[0].read_text(encoding="utf-8")))
     assert at.waiting_at == "come-e-tornato"
     # The paper points back at the afternoon, so two sheets in the house cannot be confused.
-    assert [p.stem for p in pointers(house)] == [str(last_sheet(house).sheet_id)]
+    assert [p.stem for p in pointers(house)] == [str(last_sheet(house))]
 
 
 def test_a_house_without_the_equipment_is_not_offered_it(tmp_path: Path) -> None:
@@ -176,8 +182,10 @@ def test_a_page_with_a_mark_takes_the_branch_that_was_written(
 
     assert said == "waiting for a page at l-ultimo-foglio"
     second = last_sheet(house)
-    assert second.sheet_id != first.sheet_id
-    assert second.title == "La nuvola che non c'era"
+    assert second != first
+    # A sheet is named by nothing printed on it, so what says which page this is is the
+    # blank the house kept beside it. `ideas/10 §3`: expectation, and the page as evidence.
+    assert recall(house.sheets_dir, second).shape == recall(house.sheets_dir, first).shape
     # Both pages now point at the one afternoon: either can come back next.
     assert len(pointers(house)) == 2
 
@@ -200,7 +208,7 @@ def test_a_page_nobody_could_read_does_not_become_a_blank_one(
 ) -> None:
     """The failure this guards against closes an afternoon on a page that was filled in."""
     begin(house, an_experience(), now=0.0, send=False)
-    glass(monkeypatch, house, marks=False, unsure=True)
+    glass(monkeypatch, house, marks=False, degraded=True)
 
     said = carry_on(house, now=1.0, send=False)
 
@@ -209,9 +217,23 @@ def test_a_page_nobody_could_read_does_not_become_a_blank_one(
 
 
 def test_the_two_words_are_read_off_ink_and_nothing_else() -> None:
-    """A page with no cells at all is blank: there was nowhere for a mark to be."""
-    empty = PageReading(SheetId("sh_1"), ExerciseId("ex_1"), (), 0.0)
-    assert came_back(empty) is Came.BLANK
+    """Written or not written, and nothing between. A reading the model could not make is
+    neither: it stops the afternoon rather than closing it on a page that was filled in."""
+    assert came_back(_reading(marks=False)) is Came.BLANK
+    assert came_back(_reading(marks=True)) is Came.MARKS
+    assert came_back(_reading(marks=True, degraded=True)) is None
+
+
+def test_a_page_that_is_not_the_one_handed_over_is_still_read(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`ideas/10 §3`: somebody putting back an earlier sheet has not erred, and there is
+    nothing here that may refuse a person's paper. The afternoon goes on from what is on it."""
+    not_the_one = WhatCameBack(
+        written=True, same_sheet=False, describes=("una casa",), read_at=0.0
+    )
+
+    assert came_back(not_the_one) is Came.MARKS
 
 
 # ── Asking ───────────────────────────────────────────────────────────────────────────
@@ -275,7 +297,7 @@ def test_an_ask_is_answered_inside_the_reply_and_then_played(
     assert asked["body"]["after"] == "l-ultimo-foglio"
     assert asked["body"]["came"] == "marks"
     # What came back goes up: which boxes carry a mark is what the format cannot say.
-    assert asked["body"]["reading"]["sheet_id"] == str(last_sheet(house).sheet_id)
+    assert asked["body"]["reading"]["written"] is True
     assert runs(house) == []
 
 
@@ -356,8 +378,8 @@ def test_a_page_from_no_afternoon_is_refused(
     house: House, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     begin(house, an_experience(), now=0.0, send=False)
-    spec = glass(monkeypatch, house, marks=True)
-    (house.sheets_dir / "afternoons" / "pages" / f"{spec.sheet_id}.json").unlink()
+    sheet_id = glass(monkeypatch, house, marks=True)
+    (house.sheets_dir / "afternoons" / "pages" / f"{sheet_id}.json").unlink()
 
     with pytest.raises(CannotRun, match="does not belong to an afternoon"):
         carry_on(house, now=1.0, send=False)

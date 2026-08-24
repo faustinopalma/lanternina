@@ -16,12 +16,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Final
 
 from .errors import RetentionViolation
-from .ids import CellId, ExerciseId, SheetId
-from .sheet import CellKind
 
 if TYPE_CHECKING:  # keeps `shared` importable without numpy installed
     import numpy as np
@@ -94,127 +91,6 @@ class RawFrame:
 
     def __copy__(self) -> Any:
         raise RetentionViolation("full camera frames must never be copied")
-
-
-@dataclass(frozen=True, slots=True)
-class MarkerDetection:
-    """One located ArUco marker. Corners are in original-frame pixel coordinates."""
-
-    marker_id: int
-    corners: tuple[tuple[float, float], ...]
-
-
-@dataclass(frozen=True, slots=True)
-class RectifiedPage:
-    """The rectified page crop — the only image this system is allowed to keep.
-
-    It contains the area inside the marker quadrilateral and nothing else: no desk, no
-    room, no hands, no faces.
-    """
-
-    sheet_id: SheetId
-    exercise_id: ExerciseId
-    png: bytes
-    width: int
-    height: int
-    captured_at: float
-    spec_version: int
-    # Perspective transform used, kept for debugging a misread. 3x3, row-major.
-    homography: tuple[float, ...] = ()
-
-    def to_metadata(self) -> dict[str, Any]:
-        """Everything except the pixels, for logs and the parent panel."""
-        return {
-            "sheet_id": str(self.sheet_id),
-            "exercise_id": str(self.exercise_id),
-            "width": self.width,
-            "height": self.height,
-            "captured_at": self.captured_at,
-            "spec_version": self.spec_version,
-            "png_bytes": len(self.png),
-        }
-
-
-class ReadConfidence(StrEnum):
-    """Deliberately coarse. A false "certain" is worse than an honest "unsure"."""
-
-    CERTAIN = "certain"
-    LIKELY = "likely"
-    UNSURE = "unsure"
-
-
-@dataclass(frozen=True, slots=True)
-class CellReading:
-    """What was found in one cell. An observation, never a judgement about the person."""
-
-    cell_id: CellId
-    kind: CellKind
-    value: str | None
-    confidence: ReadConfidence
-    # True when the parent must look at this cell before anything is said to the learner.
-    needs_review: bool = False
-    note: str = ""
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "cell_id": str(self.cell_id),
-            "kind": str(self.kind),
-            "value": self.value,
-            "confidence": str(self.confidence),
-            "needs_review": self.needs_review,
-            "note": self.note,
-        }
-
-    @staticmethod
-    def from_dict(values: Mapping[str, Any]) -> CellReading:
-        raw = values.get("value")
-        return CellReading(
-            cell_id=CellId(str(values["cell_id"])),
-            kind=CellKind(str(values["kind"])),
-            value=None if raw is None else str(raw),
-            confidence=ReadConfidence(str(values["confidence"])),
-            needs_review=bool(values.get("needs_review", False)),
-            note=str(values.get("note", "")),
-        )
-
-
-@dataclass(frozen=True, slots=True)
-class PageReading:
-    """The structured result of reading one sheet."""
-
-    sheet_id: SheetId
-    exercise_id: ExerciseId
-    cells: tuple[CellReading, ...]
-    read_at: float
-    # True when the cloud was unavailable and only locally-readable cells were attempted.
-    degraded: bool = False
-    metadata: dict[str, Any] = field(default_factory=dict)
-
-    @property
-    def needs_review(self) -> bool:
-        return any(c.needs_review for c in self.cells)
-
-    def to_dict(self) -> dict[str, Any]:
-        """The whole reading, for the wire between the house and the panel."""
-        return {
-            "sheet_id": str(self.sheet_id),
-            "exercise_id": str(self.exercise_id),
-            "cells": [cell.to_dict() for cell in self.cells],
-            "read_at": self.read_at,
-            "degraded": self.degraded,
-            "metadata": dict(self.metadata),
-        }
-
-    @staticmethod
-    def from_dict(values: Mapping[str, Any]) -> PageReading:
-        return PageReading(
-            sheet_id=SheetId(str(values["sheet_id"])),
-            exercise_id=ExerciseId(str(values["exercise_id"])),
-            cells=tuple(CellReading.from_dict(c) for c in values.get("cells", [])),
-            read_at=float(values.get("read_at", 0.0)),
-            degraded=bool(values.get("degraded", False)),
-            metadata=dict(values.get("metadata", {})),
-        )
 
 
 # How many descriptions are kept. A page is one thing somebody did in an afternoon, and a

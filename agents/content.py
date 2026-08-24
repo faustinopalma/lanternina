@@ -25,8 +25,6 @@ from shared.ids import new_proposal_id, new_request_id
 from shared.proposal import Proposal, ProposalKind
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind, ScreenedPayload
-from shared.sheet import SheetSpec
-from shared.vision_contracts import PageReading
 
 # Content settings, glossed for the model. These describe the shape of the material asked
 # for — never an estimate of what somebody can do.
@@ -121,48 +119,6 @@ class HouseholdContentAgent:
             learner_id=ctx.learner_id,
             payload=payload,
             rationale=f"promemoria per il passo di routine '{step_label}'",
-            created_at=ctx.now,
-        )
-
-    async def propose_feedback(
-        self, ctx: Any, *, reading: PageReading, spec: SheetSpec
-    ) -> Proposal:
-        """Propose what to say back after a sheet was read.
-
-        The reading is described as ink on paper. The model is told what was written,
-        never told whether it was right, because nothing in this system decides that.
-        """
-        observed = "; ".join(
-            f"{cell.cell_id}: {'vuota' if cell.value is None else cell.value}"
-            for cell in reading.cells
-            if not cell.needs_review
-        )
-        prompt = (
-            f"Un foglio intitolato '{spec.title}' e tornato indietro.\n"
-            f"Sul foglio c'e scritto questo: {observed or 'niente'}.\n"
-            f"{self._boundaries(ctx.learner_hints)}\n"
-            "Scrivi due frasi sul lavoro fatto, rivolte a chi lo ha fatto: nomina qualcosa "
-            "di concreto che c'e sul foglio. Non dire se e giusto o sbagliato, non dare "
-            "voti, non confrontare con altre volte. Se il foglio e quasi vuoto va bene lo "
-            "stesso: non chiedere di finirlo."
-        )
-        payload = await ctx.router.generate_for_user(
-            ModelRequest(
-                capability=Capability.TEXT_GENERATION,
-                prompt=prompt,
-                request_id=new_request_id(),
-                max_output_chars=320,
-                purpose=f"feedback/{reading.sheet_id}",
-                content_kind=ContentKind.FEEDBACK_TEXT,
-            )
-        )
-        return Proposal(
-            id=new_proposal_id(),
-            kind=ProposalKind.FEEDBACK,
-            agent=self.name,
-            learner_id=ctx.learner_id,
-            payload=payload,
-            rationale=f"risposta al foglio {reading.sheet_id}",
             created_at=ctx.now,
         )
 

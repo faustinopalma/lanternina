@@ -44,8 +44,9 @@ describe("an afternoon offered to the parent", () => {
 
     expect(screen.getByText("Scegli un oggetto")).toBeInTheDocument();
     expect(screen.getByText("Sei riquadri")).toBeInTheDocument();
-    expect(screen.getByText("«Comincia da come è adesso.» «primo riquadro» «una parola»"))
-      .toBeInTheDocument();
+    // Every word that will be lettered on the paper, because the parent approves once.
+    expect(screen.getByText("Disegna lo stesso oggetto sei volte.")).toBeInTheDocument();
+    expect(screen.getByText("«primo riquadro» «una parola»")).toBeInTheDocument();
     // The branch the format leaves open reads as a sentence, not as the word `ask`.
     expect(
       screen.getByText("Con dei segni → il resto viene scritto in quel momento"),

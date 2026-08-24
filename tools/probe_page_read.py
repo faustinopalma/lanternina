@@ -26,13 +26,13 @@ import os
 from pathlib import Path
 
 from PIL import Image, ImageDraw
+from printing.render import PageGeometry, build_drawing, drawing_to_array
+from shared.sheet import CellKind, CellSpec, Rect, SheetSpec
 
 from agents.page_reader import PageReader
-from printing.render import PageGeometry, build_drawing, drawing_to_array
 from shared.agents import AgentContext
 from shared.ids import CellId, ExerciseId, LearnerId, SheetId
 from shared.routing import PageImage
-from shared.sheet import CellKind, CellSpec, Rect, SheetSpec
 
 
 def a_sheet(name: str, boxes: list[tuple[float, float, float, float]]) -> SheetSpec:

@@ -16,7 +16,6 @@ import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, ConfigDict, Field
 
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 
@@ -27,7 +26,6 @@ from ..themes import ThemeStore
 from ..usage import (
     FAILED,
     KIND_IMAGE,
-    KIND_READ,
     REFUSED,
     SERVED,
     UsageStore,
@@ -38,20 +36,7 @@ from ..usage import (
 router = APIRouter()
 
 
-class PageToRead(BaseModel):
-    """One rectified page and the sheet that says where its boxes are.
 
-    The image is the crop inside the four corner markers and nothing else. The sheet is
-    what ``SheetSpec.to_dict()`` produces, which carries no expected answer: there is no
-    field on the wire for what a mark should have been.
-    """
-
-    model_config = ConfigDict(extra="forbid")
-
-    imageBase64: str
-    width: int = 0
-    height: int = 0
-    sheet: dict[str, Any] = Field(default_factory=dict)
 
 
 @router.post("/api/device/{household_id}/paint")
@@ -121,68 +106,3 @@ async def paint_picture(
         "theme": chosen,
         "imageBase64": base64.b64encode(bitmap).decode(),
     }
-
-
-@router.post("/api/device/{household_id}/read-sheet")
-async def read_sheet_page(
-    household_id: str, page: PageToRead, _: DeviceKey, request: Request
-) -> Any:
-    """Read one filled-in sheet and hand back what is in each box.
-
-    The house calls this when a page comes off the glass. What comes back describes
-    ink — this box has a mark, this one does not, this one I could not tell — and the
-    house turns it into a sentence. Nothing here says anything about who filled it in,
-    and there is no field in which it could.
-
-    A refusal leaves the house to fall back on its own arithmetic and say so, which is
-    the whole of what "reduced capability, not a stopped system" means on this path. The
-    monthly cap is refused the same way, with 429: the reading is counted as its own kind
-    and stops when the household has paid for as many calls as it is allowed.
-    """
-    from shared.ids import new_id
-    from shared.sheet import SheetSpec
-    from shared.vision_contracts import RectifiedPage
-
-    from ..reading import read_sheet
-
-    settings: Settings = request.app.state.settings
-    counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
-        # The house reads the page with its own arithmetic and marks the reading degraded,
-        # which is the same thing it does when the panel cannot be reached at all.
-        raise HTTPException(status_code=429, detail="monthly_cap_reached")
-
-    try:
-        spec = SheetSpec.from_dict(page.sheet)
-    except (KeyError, ValueError) as exc:
-        raise HTTPException(status_code=400, detail=f"not a sheet: {exc}") from exc
-
-    png = base64.b64decode(page.imageBase64)
-    rectified = RectifiedPage(
-        sheet_id=spec.sheet_id,
-        exercise_id=spec.exercise_id,
-        png=png,
-        width=page.width,
-        height=page.height,
-        captured_at=time.time(),
-        spec_version=spec.spec_version,
-    )
-    spent: Any = None
-    outcome = FAILED
-    try:
-        reading, spent = await read_sheet(rectified, spec, now=time.time())
-        outcome = SERVED
-    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
-        raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
-    finally:
-        try:
-            counter.record(
-                event_from(
-                    household_id, KIND_READ, outcome, spent, event_id=str(new_id("use"))
-                )
-            )
-        except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a reading
-            # The call was already made and paid for; failing here would spend the money
-            # and deliver nothing. Loud in the log, silent to the house.
-            logging.getLogger(__name__).warning("usage not recorded: %s", exc)
-    return reading.to_dict()

@@ -31,23 +31,11 @@ from shared.safety import (
 from shared.seal import Sealer, SealPurpose
 
 A_PAGE: dict[str, Any] = {
+    "kind": "label",
     "title": "La nuvola di domani",
-    "instructions": "Disegnala come vuoi.",
-    "marks": [
-        {
-            "mark": "words",
-            "rect": {"x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045},
-            "text": "La nuvola di domani",
-            "size_mm": 6.5,
-        },
-        {
-            "mark": "draw_area",
-            "id": "il-disegno",
-            "rect": {"x": 0.05, "y": 0.2, "w": 0.9, "h": 0.5},
-            "label": "Disegnala qui",
-            "group": "domani",
-        },
-    ],
+    "illustration": "one cloud, alone, seen from below",
+    "note": ["Disegnala come vuoi."],
+    "spaces": [{"label": "Disegnala qui", "room": "a_box"}],
 }
 
 MOMENTS: list[dict[str, Any]] = [
@@ -56,7 +44,7 @@ MOMENTS: list[dict[str, Any]] = [
         heading="Ancora una cosa",
         weights=a.weights(lines=("Sta uscendo un foglio.",)),
     ),
-    a.hand_over(moment_id="il-terzo", heading="Esce un foglio", design=A_PAGE),
+    a.hand_over(moment_id="il-terzo", heading="Esce un foglio", page=A_PAGE),
     a.close(moment_id="finita", heading="Finita qui", weights=a.weights(lines=("A domani.",))),
 ]
 

@@ -80,7 +80,7 @@ def test_a_way_out_may_name_something_an_earlier_moment_mentioned() -> None:
 def test_a_way_out_can_start_from_something_printed_on_the_page() -> None:
     """A page is a surface somebody reads, so what it says counts as having been said."""
     moments = a.moments()
-    moments[2]["way_out"] = a.way_out(in_hand="pioggia")
+    moments[2]["way_out"] = a.way_out(in_hand="Che tempo ha fatto")
 
     assert the_way_out_starts_from_something(
         Experience.from_dict(a.an_afternoon(moments=moments)).moments

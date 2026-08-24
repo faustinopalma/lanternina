@@ -63,17 +63,17 @@ function Step({ moment }: { moment: Moment }) {
 
 function Page({ moment }: { moment: Moment }) {
   const { t } = useWords();
-  const design = moment.design;
-  /* The labels beside the boxes, the lines and the drawing areas: the words an
-   * adolescent is asked something by. Where the marks sit on the page is left out — a
-   * position means nothing to somebody not holding the sheet. */
-  const asked = (design?.marks ?? [])
-    .map((mark) => (mark.mark === "words" ? mark.text : mark.label))
-    .filter((words) => Boolean(words));
+  const page = moment.page;
+  /* Every word that will be lettered on the paper, because the parent approves the
+   * afternoon once and this is where the page's words are read. What is left out is the
+   * illustration: it describes a drawing and is never printed as text. */
+  const asked = (page?.spaces ?? []).map((space) => space.label).filter(Boolean);
   return (
     <>
-      <p className="mt-1">{design?.title}</p>
-      <Quiet>{design?.instructions}</Quiet>
+      <p className="mt-1">{page?.title}</p>
+      {(page?.note ?? []).map((line) => (
+        <Quiet key={line}>{line}</Quiet>
+      ))}
       {asked.length === 0 ? null : <Quiet>{asked.map((words) => `«${words}»`).join(" ")}</Quiet>}
       {(moment.instead ?? []).length === 0 ? null : (
         <Quiet>

@@ -1,16 +1,15 @@
 """Print a page, and keep the blank so that what comes back can be compared to it.
 
 The keeping is the point, and it is the only thing kept. `ideas/10 §3` reads a page by
-handing a model two images — the blank that was printed and what came off the glass — and
-asking what is different. So the house has to be able to produce the blank again hours
-later, and there is nothing else it needs: no spec, no cells, no id printed on the paper.
+handing a model two images — the page as it was handed over and what came off the glass —
+and asking what is different. So the house has to be able to produce the blank again hours
+later, and there is nothing else it needs: no spec, no cells, no code printed on the paper.
 
 **What is on disk is the blank, and never what somebody wrote.** A run keeps a PNG of the
-page as it was handed over; the scan that comes back is compared to it and is not stored.
+sheet as it was handed over; the scan that comes back is compared to it and is not stored.
 When the afternoon ends, ``_forget`` takes the folder and the blank goes with it.
 
-The picture is composed in, or is absent. A page whose illustration did not arrive prints
-anyway, because a cloud that is down should cost a plainer page and not the afternoon.
+Nothing here lays anything out. The page arrives drawn.
 """
 
 from __future__ import annotations
@@ -22,29 +21,13 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from printing.ink import check_ink
-from printing.page_layout import compose
-from printing.render import drawing_to_array, drawing_to_pdf
-from shared.experience_checks import Complaint
+from printing.paper import BLANK_DPI, ink_fraction, to_paper, to_pdf
 from shared.ids import SheetId
-from shared.page import Page
 
-# CUPS scales to fit by default. Nothing on this page is read back by position any more, so
-# a rescale no longer breaks the reading — but a page printed at 94 % is a page whose margins
-# are not the margins somebody chose, and the blank kept here would no longer be its twin.
+# CUPS scales to fit by default. Nothing is read back by position any more, so a rescale no
+# longer breaks the reading — but a page printed at 94 % has margins nobody chose, and the
+# blank kept here would no longer be its twin.
 PRINT_OPTIONS = ("-o", "media=A4", "-o", "print-scaling=none", "-o", "sides=one-sided")
-
-# What the blank is kept at. The reader looks at handwriting, and 150 dpi is what the scanner
-# path already rectifies to, so the two images arrive at the model the same size.
-BLANK_DPI = 150
-
-
-class TooMuchInk(ValueError):
-    """The page would cost more ink than the budget allows, and was not printed."""
-
-    def __init__(self, complaints: tuple[Complaint, ...]) -> None:
-        super().__init__("; ".join(str(one) for one in complaints))
-        self.complaints = complaints
 
 
 def blank_path(directory: Path, sheet_id: SheetId) -> Path:
@@ -52,7 +35,7 @@ def blank_path(directory: Path, sheet_id: SheetId) -> Path:
 
 
 def remember(directory: Path, sheet_id: SheetId, blank: NDArray[np.uint8]) -> Path:
-    """Store the page as it was handed over, which is the only copy that ever exists."""
+    """Store the sheet as it was handed over, which is the only copy that ever exists."""
     directory.mkdir(parents=True, exist_ok=True)
     path = blank_path(directory, sheet_id)
     temporary = path.with_suffix(".png.tmp")
@@ -73,30 +56,30 @@ def recall(directory: Path, sheet_id: SheetId) -> NDArray[np.uint8]:
     return np.asarray(image, dtype=np.uint8)
 
 
-def compose_page(
-    page: Page,
-    picture: NDArray[np.uint8] | None,
-    *,
-    sheets_dir: Path,
-    sheet_id: SheetId,
-) -> tuple[NDArray[np.uint8], bytes]:
-    """Compose, measure, remember, and return the blank raster and the PDF.
+def waiting(directory: Path) -> list[SheetId]:
+    """The sheets this house has handed out and not yet seen come back, newest last.
 
-    Raises :class:`TooMuchInk` before anything is written, so a page over the budget costs
-    no paper and leaves nothing behind to explain later.
+    Ordered by when the file was written and not by name: a sheet id is hexadecimal, and
+    sorting those alphabetically once gave the second half of an afternoon the first half's
+    page.
     """
-    drawing = compose(page, picture)
-    complaints = check_ink(page, drawing)
-    if complaints:
-        raise TooMuchInk(complaints)
-    blank = drawing_to_array(drawing, dpi=BLANK_DPI, text=True)
+    if not directory.exists():
+        return []
+    pages = sorted(directory.glob("*.png"), key=lambda path: path.stat().st_mtime)
+    return [SheetId(path.stem) for path in pages]
+
+
+def make_sheet(
+    drawn: NDArray[np.uint8], *, sheets_dir: Path, sheet_id: SheetId
+) -> tuple[NDArray[np.uint8], bytes]:
+    """Put the drawn page on A4, remember it, and return the blank and the PDF."""
+    blank = to_paper(drawn, dpi=BLANK_DPI)
     remember(sheets_dir, sheet_id, blank)
-    return blank, drawing_to_pdf(drawing)
+    return blank, to_pdf(drawn)
 
 
-def compose_and_print(
-    page: Page,
-    picture: NDArray[np.uint8] | None,
+def print_page(
+    drawn: NDArray[np.uint8],
     *,
     sheets_dir: Path,
     sheet_id: SheetId,
@@ -104,7 +87,7 @@ def compose_and_print(
     send: bool = True,
 ) -> NDArray[np.uint8]:
     """Put the page on paper, and hand back the blank it was printed from."""
-    blank, pdf = compose_page(page, picture, sheets_dir=sheets_dir, sheet_id=sheet_id)
+    blank, pdf = make_sheet(drawn, sheets_dir=sheets_dir, sheet_id=sheet_id)
     if send:
         subprocess.run(
             ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
@@ -112,3 +95,8 @@ def compose_and_print(
             check=True,
         )
     return blank
+
+
+def ink_on(sheet: NDArray[np.uint8]) -> float:
+    """What the page costs, for the log. Measured and never refused — `ideas/10 §4`."""
+    return ink_fraction(sheet)

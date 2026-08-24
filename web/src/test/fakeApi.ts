@@ -168,13 +168,14 @@ export const SAMPLE_AFTERNOON: OfferedExperience = {
         help: ladder,
         way_out: wayOut,
         instead: ["Oggi il foglio non esce."],
-        design: {
+        page: {
+          kind: "notebook",
           title: "Sei riquadri",
-          instructions: "Disegna lo stesso oggetto sei volte.",
-          marks: [
-            { mark: "words", text: "Comincia da come è adesso." },
-            { mark: "draw_area", label: "primo riquadro" },
-            { mark: "write_line", label: "una parola" },
+          illustration: "six empty frames in a row, drawn by hand",
+          note: ["Disegna lo stesso oggetto sei volte."],
+          spaces: [
+            { label: "primo riquadro", room: "a_box" },
+            { label: "una parola", room: "a_line" },
           ],
         },
       },

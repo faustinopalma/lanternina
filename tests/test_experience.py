@@ -115,35 +115,32 @@ def test_the_hand_written_afternoon_can_be_left_at_any_moment(path: Path) -> Non
 
 
 @pytest.mark.parametrize("path", experience_files(), ids=lambda p: p.stem)
-def test_a_hand_written_page_has_places_big_enough_to_use(path: Path) -> None:
-    """A design carries its own geometry, so nothing one layer down refuses it later."""
+def test_a_page_says_what_it_is_and_leaves_somewhere_to_write(path: Path) -> None:
+    """A page is an object out of the story, so it says what kind of object it is and what
+    its drawing shows. Somewhere to write is what lets it come back at all."""
     experience = Experience.from_dict(json.loads(path.read_text(encoding="utf-8")))
     pages = [m for m in experience.moments if isinstance(m, HandOver)]
     assert pages, "an afternoon that never reaches paper is not this one"
     for page in pages:
-        assert page.design.readable, "a page with nowhere to answer cannot come back"
-        for place in page.design.readable:
-            assert place.rect.x + place.rect.w <= 1.0
-            assert place.rect.y + place.rect.h <= 1.0
+        assert page.page.kind
+        assert page.page.illustration, "a page with no drawing is a form"
+        assert page.page.spaces, "a page with nowhere to write cannot come back"
 
 
 @pytest.mark.parametrize("path", experience_files(), ids=lambda p: p.stem)
-def test_a_hand_written_page_actually_lays_out_on_paper(path: Path) -> None:
-    """The check the format cannot do: millimetres, quiet zones and the ink budget.
-
-    Imported here rather than at the top because `printing.compose` pulls in OpenCV, and
-    the contract itself is stdlib — a test that made `shared` look like it needed a
-    renderer would be saying something false about the dependency.
-    """
-    from printing.compose import compose
-    from shared.ids import ExerciseId, SheetId
-
+def test_every_word_on_a_page_reaches_the_gate(path: Path) -> None:
+    """The words are written here and lettered by an image model exactly as written, so the
+    screening has to see every one of them. The illustration is not among them: it describes
+    a drawing and is never printed as text."""
     experience = Experience.from_dict(json.loads(path.read_text(encoding="utf-8")))
-    for page in (m for m in experience.moments if isinstance(m, HandOver)):
-        sheet = compose(
-            page.design, sheet_id=SheetId("sh_x"), exercise_id=ExerciseId("ex_x")
-        )
-        assert len(sheet.spec.cells) == len(page.design.readable)
+    for moment in (m for m in experience.moments if isinstance(m, HandOver)):
+        said = moment.words
+        assert moment.page.title in said
+        for line in moment.page.note:
+            assert line in said
+        for space in moment.page.spaces:
+            assert space.label in said
+        assert moment.page.illustration not in said
 
 
 # ── What the format refuses ──────────────────────────────────────────────────────────

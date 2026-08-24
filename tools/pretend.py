@@ -37,10 +37,11 @@ import time
 from pathlib import Path
 from typing import Any
 
+from devices.print_sheet import recall
+
 from devices import pretend as simulated
 from devices.house import CannotRun, House
 from devices.pretend import Pretend
-from devices.print_sheet import recall
 from devices.run_experience import (
     Afternoon,
     begin,

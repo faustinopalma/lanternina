@@ -85,7 +85,7 @@ from enum import StrEnum
 from typing import Any, ClassVar, Final
 
 from .capabilities import HouseCapability
-from .pagedesign import DesignError, PageDesign
+from .page import Page, PageError
 
 EXPERIENCE_FORMAT_VERSION: Final = 2
 
@@ -574,17 +574,18 @@ class Say(_Moment):
 
 @dataclass(frozen=True, slots=True)
 class HandOver(_Moment):
-    """Print a designed page and leave it on the table.
+    """Print a page and leave it on the table.
 
-    ``design`` is a :class:`~shared.pagedesign.PageDesign`: marks over a closed
-    vocabulary with no mark that fills an area, so an experience cannot spend an
-    afternoon's ink however enthusiastic the model that devised it was.
+    ``page`` is a :class:`~shared.page.Page`: what kind of object the paper is, the words on
+    it, where to leave room to write, and what its drawing shows. It carries no coordinates
+    and nothing on it has an identity — the whole sheet is drawn by a model from those words,
+    and it is read by handing a model the blank and what came back off the glass.
 
     ``instead`` is the same moment with no printer: what the display says so that the
     afternoon carries on when the toner ran out at half past three. It is written now and
     checked now, because the alternative is a model improvising an apology at the moment
     something broke. It is mandatory, and a plan whose paper moments do not all carry one
-    is refused.
+    is refused. It is also what plays when the page could not be drawn at all.
 
     Nothing here says the page will come back. It is a physical object somebody may pick
     up, or not.
@@ -592,39 +593,35 @@ class HandOver(_Moment):
 
     act: ClassVar[Act] = Act.HAND_OVER
 
-    design: PageDesign
+    page: Page
     instead: tuple[str, ...]
 
     def _more_words(self) -> tuple[str, ...]:
-        return (
-            self.design.title,
-            self.design.instructions,
-            *(printed.text for printed in self.design.words),
-            *(item.label for item in self.design.readable),
-            *self.instead,
-        )
+        # The illustration is not among them: it describes a drawing and is never lettered,
+        # so screening it here would say a page is safe because an ask was.
+        return (*self.page.words(), *self.instead)
 
     def to_dict(self) -> dict[str, Any]:
         return {
             **_common_dict(self),
-            "design": self.design.to_dict(),
+            "page": self.page.to_dict(),
             "instead": list(self.instead),
         }
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> HandOver:
-        _only(values, _COMMON_KEYS | {"design", "instead"}, "a hand_over moment")
-        raw = values.get("design")
+        _only(values, _COMMON_KEYS | {"page", "instead"}, "a hand_over moment")
+        raw = values.get("page")
         if not isinstance(raw, Mapping):
-            raise ExperienceError("a hand_over moment needs a design")
+            raise ExperienceError("a hand_over moment needs a page")
         try:
-            design = PageDesign.from_dict(raw)
-        except DesignError as exc:
+            page = Page.from_dict(raw)
+        except PageError as exc:
             # One refusal for the parent to read, whichever layer noticed.
-            raise ExperienceError(f"the page it hands over is not a design: {exc}") from exc
+            raise ExperienceError(f"what it hands over is not a page: {exc}") from exc
         return HandOver(
             **_common(values),
-            design=design,
+            page=page,
             instead=_lines(values.get("instead"), "what is said instead of printing"),
         )
 

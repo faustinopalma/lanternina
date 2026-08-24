@@ -42,16 +42,16 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
+from devices.ask_panel import PanelUnreachable, read_page
 from devices.epaper import render_notice_bmp, render_waiting_bmp
 from devices.house import House
-from devices.print_sheet import recall
-from devices.read_page import PanelUnreachable, read_page
+from devices.print_page import recall, waiting
 from devices.trmnl_byos import screen_for
-from shared.vision_contracts import PageReading
-from vision.read_sheet import MarkersNotFound, detect_markers, read_qr, rectify
+from shared.ids import SheetId
+from shared.vision_contracts import WhatCameBack
 
-# 300 dpi over A4 is 2480x3508: enough that an ArUco module is about 30 pixels, and the
-# detector wants four. Higher costs seconds per scan and buys nothing measurable.
+# 300 dpi over A4 is 2480x3508. A flatbed with the lid down needs no rectifying — the page
+# is flat and the resolution is known — so this is simply what the reader is shown.
 SCAN_RESOLUTION = "300"
 SCAN_TIMEOUT_SECONDS = 120
 LIST_TIMEOUT_SECONDS = 40
@@ -109,16 +109,20 @@ def scan_page(device: str) -> NDArray[np.uint8]:
     return np.asarray(image, dtype=np.uint8)
 
 
-def describe(reading: PageReading, spec_title: str) -> tuple[str, list[str]]:
-    """The words for the display. A count of marks, never a count of right answers."""
-    marked = [cell for cell in reading.cells if cell.value]
-    lines = [f"Ho letto il foglio: {spec_title}."]
-    if marked:
-        lines.append("Hai segnato: " + ", ".join(str(cell.value) for cell in marked) + ".")
-    else:
-        lines.append("Non ho trovato segni. Va bene lo stesso.")
-    if reading.degraded:
-        lines.append("Qualche casella non era chiara: la guarda un adulto.")
+def describe(came: WhatCameBack) -> tuple[str, list[str]]:
+    """The words for the display. What is on the paper, never how it was done.
+
+    A page that is not the one this house handed out is described anyway and not refused.
+    Somebody putting back an earlier sheet, or a drawing from school, has not erred, and
+    the old answer — *Questo foglio non è di Lanternina* — was a refusal aimed at a person
+    for a mistake the working rules say cannot exist.
+    """
+    if not came.written:
+        return "Fatto", ["Il foglio è arrivato.", "Non ci ho trovato segni. Va bene lo stesso."]
+    lines = ["Ho guardato il foglio."]
+    lines.extend(str(one) for one in came.describes[:2])
+    if came.degraded:
+        lines.append("Non sono riuscito a guardarlo bene.")
     return "Fatto", lines
 
 
@@ -186,38 +190,32 @@ def main() -> int:
     # writing the identical bytes is what makes this a no-op rather than a second redraw.
     target.write_bytes(render_waiting_bmp())
     try:
-        page = scan_page(find_scanner(scanner))
+        came_off = scan_page(find_scanner(scanner))
     except (subprocess.SubprocessError, OSError, ValueError) as exc:
         print(f"the scanner did not answer: {exc}")
         say("Non ci sono riuscito", ["Lo scanner non ha risposto.", "Riprova più tardi."])
         return 0
 
-    try:
-        flat = rectify(page, detect_markers(page))
-    except MarkersNotFound as exc:
-        print(f"page refused: {exc}")
-        say(
-            "Non l'ho letto",
-            ["Il foglio era storto o coperto.", "Rimettilo dritto e premi di nuovo."],
-        )
+    handed_out = waiting(sheets_dir)
+    if not handed_out:
+        # No blank to compare against, so there is nothing to say about the page. Not a
+        # refusal: the sheet is fine, this house simply has nothing it is waiting for.
+        print("no page was handed out, so there is nothing to compare this one to")
+        say("Il foglio è arrivato", ["Adesso non ho niente con cui confrontarlo."])
+        button_file.unlink(missing_ok=True)
         return 0
+    sheet_id = SheetId(str(handed_out[-1]))
 
     try:
-        spec = recall(sheets_dir, read_qr(flat).sheet_id)
-    except (ValueError, OSError, KeyError) as exc:
-        print(f"cannot tell which sheet this is: {exc}")
-        say("Non l'ho riconosciuto", ["Questo foglio non è di Lanternina."])
-        return 0
-
-    try:
-        reading = read_page(
-            flat,
-            spec,
+        came = read_page(
+            recall(sheets_dir, sheet_id),
+            came_off,
+            about="",
             panel=os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/"),
             household=os.environ.get("LANTERNINA_HOUSEHOLD", ""),
             key=os.environ.get("LANTERNINA_DEVICE_KEY", ""),
         )
-    except PanelUnreachable as exc:
+    except (PanelUnreachable, FileNotFoundError) as exc:
         # The button was pressed, so somebody is standing there. Saying nothing at all is
         # what the page gets; the person gets a sentence that claims nothing about it.
         print(f"the page was not read: {exc}")
@@ -225,12 +223,9 @@ def main() -> int:
         button_file.unlink(missing_ok=True)
         return 0
 
-    heading, lines = describe(reading, spec.title)
+    heading, lines = describe(came)
     say(heading, lines)
-    marks = ", ".join(
-        f"{cell.cell_id}={'segno' if cell.value else 'vuota'}" for cell in reading.cells
-    )
-    print(f"read {spec.sheet_id}: {marks}")
+    print(f"read {sheet_id}: written={came.written} same_sheet={came.same_sheet}")
     button_file.unlink(missing_ok=True)
     return 0
 

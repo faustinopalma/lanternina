@@ -29,14 +29,17 @@ from .experience import (
     MAX_WEIGHT_MINUTES,
     MIN_WEIGHT_MINUTES,
 )
-from .pagedesign import (
-    MAX_INSTRUCTIONS,
+from .page import (
+    MAX_ILLUSTRATION,
     MAX_LABEL,
-    MAX_READABLE,
+    MAX_NOTE_LINE,
+    MAX_NOTE_LINES,
+    MAX_SPACES,
     MAX_TITLE,
-    MAX_WORDS,
-    MIN_BOX_SIDE,
+    PageKind,
 )
+
+_KINDS: Final = ", ".join(f'"{kind}"' for kind in PageKind)
 
 _LINES: Final = f"a list of at most {MAX_LINES} lines, each at most {MAX_LINE} characters"
 
@@ -76,8 +79,9 @@ THE_FOUR_ACTS: Final = (
     "A moment is one of these four, and carries no key other than the five above and the "
     "ones shown here:\n"
     '  {"act": "say", ...}\n'
-    '  {"act": "hand_over", ..., "design": {"title": "<text>", "instructions": "<text>", '
-    f'"marks": [ ... ]}}, "instead": [{_LINES}]}}\n'
+    '  {"act": "hand_over", ..., "page": {"kind": "...", "title": "<text>", '
+    '"note": [ ... ], "spaces": [ ... ], "illustration": "<text>"}, '
+    f'"instead": [{_LINES}]}}\n'
     "     instead is what the display says when there is no printer, so that this moment "
     "still reaches the same point in the story with no paper at all. It is not an apology "
     "and it does not mention the printer.\n"
@@ -90,15 +94,28 @@ THE_FOUR_ACTS: Final = (
 )
 
 THE_MARKS_ON_A_PAGE: Final = (
-    "A mark on a page is one of these four, and carries no other key:\n"
-    '  {"mark": "words", "rect": {...}, "text": "<printed on the page>", '
-    '"size_mm": 2.5 to 8.0}\n'
-    '  {"mark": "tick_box", "id": "...", "rect": {...}, "label": "<beside the box>", '
-    '"group": "<boxes that answer one thing>"}\n'
-    '  {"mark": "write_line", "id": "...", "rect": {...}, "label": "...", "group": "..."}\n'
-    '  {"mark": "draw_area", "id": "...", "rect": {...}, "label": "...", "group": "..."}\n'
-    '  A rect is {"x": .., "y": .., "w": .., "h": ..}, fractions of the page from the '
-    "top left.\n"
+    "A page is an object out of the story, and it is drawn whole: you say what it is and "
+    "what it says, and it is drawn from that. You never say where anything goes.\n"
+    f'  "kind": one of {_KINDS}. A map is drawn from above and has a legend; a dossier is a '
+    "file card with a specimen on it; a label is what a museum puts beside one thing; a "
+    "notebook is a leaf out of somebody's field book. Choose the one the afternoon is "
+    "already about.\n"
+    f'  "title": at most {MAX_TITLE} characters, lettered large. It names the object, not '
+    "the task: *Le nuvole del ventiquattro*, never *Scheda di osservazione*.\n"
+    f'  "note": at most {MAX_NOTE_LINES} lines of at most {MAX_NOTE_LINE} characters, '
+    "under the title. It is written from inside the story — what this object is, who it "
+    "belonged to, what it is for — and not as instructions to somebody.\n"
+    f'  "spaces": at most {MAX_SPACES} places to write, each '
+    f'{{"label": "<at most {MAX_LABEL} characters>", "room": "a_line" | "some_lines" | '
+    '"a_box"}}. a_line is a few words, some_lines is a sentence or two, a_box is for '
+    "drawing in. The label is lettered above the room it names, and it is part of the "
+    "object too: on a map it is a legend entry, on a label it is what the museum wants "
+    "known. A page with two or three is better than a page with six.\n"
+    f'  "illustration": at most {MAX_ILLUSTRATION} characters, in English, saying what is '
+    "drawn on the page. It is drawn as a picture and never lettered, so it names things to "
+    "see and nothing else: no titles, no captions, no writing of any kind.\n"
+    "Every word you put in title, note and label is lettered exactly as you write it, in "
+    "the language of the afternoon. Nothing else is written on the page.\n"
 )
 
 THE_LIMITS: Final = (
@@ -108,14 +125,9 @@ THE_LIMITS: Final = (
     f"arrives after 1 to {MAX_HELP_AFTER} minutes. A way out takes at most "
     f"{MAX_WAY_OUT_MINUTES} minutes, and what is in_hand is at most {MAX_IN_HAND} "
     f"characters.\n"
-    f"On a page: its title is at most {MAX_TITLE} characters, its instructions at most "
-    f"{MAX_INSTRUCTIONS}, any words printed on it at most {MAX_WORDS}, and a label at most "
-    f"{MAX_LABEL}. These are refused, not trimmed.\n"
-    f"At most {MAX_READABLE} boxes, lines and drawing areas on a page, none smaller than "
-    f"{MIN_BOX_SIDE} of the page on a side, and none overlapping another.\n"
-    "Leave the top right of the page clear from x 0.74 to 1.0 above y 0.16: the code that "
-    "says which sheet this is is printed there.\n"
-    "Keep every mark inside x 0.04 to 0.96 and below y 0.03.\n"
+    f"On a page: its title is at most {MAX_TITLE} characters, a line of its note at most "
+    f"{MAX_NOTE_LINE}, and a label at most {MAX_LABEL}. These are refused, not trimmed.\n"
+    f"At most {MAX_NOTE_LINES} lines of note and at most {MAX_SPACES} places to write.\n"
 )
 
 # `ideas/09 §16`. Six properties, and they are the ones that get lost first: they describe

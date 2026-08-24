@@ -4,7 +4,11 @@
   "title": "Un pomeriggio di nuvole",
   "overview": "Il display dice di affacciarsi, poi esce un foglio: il cielo di adesso, da disegnare, con tre caselle sull'altezza delle nuvole e una riga per una parola. Se il foglio torna con qualcosa sopra, ne esce un secondo, che chiede una nuvola inventata; quello che succede dopo il secondo foglio lo decide la casa quando lo vede. Se un foglio torna in bianco, il pomeriggio si chiude lì, e va bene così. Ogni momento ha scritta la sua via per arrivare al finale, e il finale è lo stesso da qualunque punto ci si arrivi. Dura un pomeriggio e finisce dicendo che è finito.",
   "minutes": 180,
-  "requires": ["print_a4", "scan_a4", "show_800x480_1bit"],
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
   "drawn": {
     "frame": "il cielo sopra questa casa, adesso",
     "role": "chi tiene il registro delle nuvole",
@@ -51,19 +55,31 @@
       "help": [
         {
           "after_minutes": 3,
-          "lines": ["Il cielo sopra questa casa va bene.", "Non serve andare da nessuna parte."]
+          "lines": [
+            "Il cielo sopra questa casa va bene.",
+            "Non serve andare da nessuna parte."
+          ]
         },
         {
           "after_minutes": 6,
-          "lines": ["Basta una finestra qualunque.", "Anche una che dà su un muro."]
+          "lines": [
+            "Basta una finestra qualunque.",
+            "Anche una che dà su un muro."
+          ]
         },
         {
           "after_minutes": 10,
-          "lines": ["Apri quella della stanza dove sei.", "Guarda in alto per un momento."]
+          "lines": [
+            "Apri quella della stanza dove sei.",
+            "Guarda in alto per un momento."
+          ]
         },
         {
           "after_minutes": 15,
-          "lines": ["Il cielo di oggi è quello che è.", "Va bene anche se non c'è niente."]
+          "lines": [
+            "Il cielo di oggi è quello che è.",
+            "Va bene anche se non c'è niente."
+          ]
         }
       ],
       "way_out": {
@@ -109,19 +125,31 @@
       "help": [
         {
           "after_minutes": 4,
-          "lines": ["Il cielo di oggi non ha una forma giusta.", "Bastano due segni."]
+          "lines": [
+            "Il cielo di oggi non ha una forma giusta.",
+            "Bastano due segni."
+          ]
         },
         {
           "after_minutes": 9,
-          "lines": ["Comincia dalla parte più grande.", "Il resto viene dopo, o non viene."]
+          "lines": [
+            "Comincia dalla parte più grande.",
+            "Il resto viene dopo, o non viene."
+          ]
         },
         {
           "after_minutes": 15,
-          "lines": ["Una riga per l'orizzonte.", "Sopra, le macchie che vedi."]
+          "lines": [
+            "Una riga per l'orizzonte.",
+            "Sopra, le macchie che vedi."
+          ]
         },
         {
           "after_minutes": 22,
-          "lines": ["Una nuvola si disegna anche così:", "una macchia larga e piatta sotto."]
+          "lines": [
+            "Una nuvola si disegna anche così:",
+            "una macchia larga e piatta sotto."
+          ]
         }
       ],
       "way_out": {
@@ -138,62 +166,25 @@
         "Guarda com'è e tienilo in testa.",
         "Poi torna qui."
       ],
-      "design": {
+      "page": {
+        "kind": "notebook",
         "title": "Il cielo di oggi",
-        "instructions": "Guarda fuori, poi riempi quello che vuoi. Puoi anche lasciare in bianco.",
-        "marks": [
+        "illustration": "clouds of different heights drifting over a row of rooftops",
+        "note": [
+          "Il registro di quello che si è visto, tenuto da chi guarda fuori."
+        ],
+        "spaces": [
           {
-            "mark": "words",
-            "rect": { "x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045 },
-            "text": "Il cielo di oggi",
-            "size_mm": 6.5
-          },
-          {
-            "mark": "words",
-            "rect": { "x": 0.04, "y": 0.1, "w": 0.7, "h": 0.035 },
-            "text": "Guarda fuori. Riempi quello che vuoi.",
-            "size_mm": 4.0
-          },
-          {
-            "mark": "draw_area",
-            "id": "il-disegno",
-            "rect": { "x": 0.05, "y": 0.17, "w": 0.9, "h": 0.4 },
             "label": "Disegna il cielo che vedi adesso",
-            "group": "cielo"
+            "room": "a_box"
           },
           {
-            "mark": "words",
-            "rect": { "x": 0.05, "y": 0.61, "w": 0.9, "h": 0.035 },
-            "text": "Le nuvole di oggi sono...",
-            "size_mm": 4.5
+            "label": "Le nuvole di oggi sono",
+            "room": "a_line"
           },
           {
-            "mark": "tick_box",
-            "id": "alte",
-            "rect": { "x": 0.05, "y": 0.67, "w": 0.26, "h": 0.05 },
-            "label": "alte",
-            "group": "altezza"
-          },
-          {
-            "mark": "tick_box",
-            "id": "basse",
-            "rect": { "x": 0.37, "y": 0.67, "w": 0.26, "h": 0.05 },
-            "label": "basse",
-            "group": "altezza"
-          },
-          {
-            "mark": "tick_box",
-            "id": "non-si-vedono",
-            "rect": { "x": 0.69, "y": 0.67, "w": 0.26, "h": 0.05 },
-            "label": "non si vedono",
-            "group": "altezza"
-          },
-          {
-            "mark": "write_line",
-            "id": "una-parola",
-            "rect": { "x": 0.05, "y": 0.79, "w": 0.9, "h": 0.05 },
-            "label": "Una parola per il cielo di oggi:",
-            "group": "parola"
+            "label": "Una parola per il cielo di oggi",
+            "room": "a_line"
           }
         ]
       }
@@ -205,7 +196,9 @@
       "weights": {
         "short": {
           "minutes": 10,
-          "lines": ["Metti il foglio sul vetro, a faccia in giù."]
+          "lines": [
+            "Metti il foglio sul vetro, a faccia in giù."
+          ]
         },
         "standard": {
           "minutes": 15,
@@ -226,19 +219,31 @@
       "help": [
         {
           "after_minutes": 3,
-          "lines": ["Il vetro è quello sotto il coperchio.", "Il foglio va appoggiato dritto."]
+          "lines": [
+            "Il vetro è quello sotto il coperchio.",
+            "Il foglio va appoggiato dritto."
+          ]
         },
         {
           "after_minutes": 7,
-          "lines": ["A faccia in giù vuol dire", "con il disegno verso il vetro."]
+          "lines": [
+            "A faccia in giù vuol dire",
+            "con il disegno verso il vetro."
+          ]
         },
         {
           "after_minutes": 12,
-          "lines": ["Appoggia l'angolo del foglio", "all'angolo del vetro, in alto a sinistra."]
+          "lines": [
+            "Appoggia l'angolo del foglio",
+            "all'angolo del vetro, in alto a sinistra."
+          ]
         },
         {
           "after_minutes": 18,
-          "lines": ["Va bene anche storto.", "Chiudi il coperchio e lascialo lì."]
+          "lines": [
+            "Va bene anche storto.",
+            "Chiudi il coperchio e lascialo lì."
+          ]
         }
       ],
       "way_out": {
@@ -251,8 +256,14 @@
         "minutes": 6
       },
       "outcomes": [
-        { "when": "marks", "then": "il-seguito" },
-        { "when": "blank", "then": "basta-cosi" }
+        {
+          "when": "marks",
+          "then": "il-seguito"
+        },
+        {
+          "when": "blank",
+          "then": "basta-cosi"
+        }
       ],
       "if_no_page": "basta-cosi"
     },
@@ -263,7 +274,10 @@
       "weights": {
         "short": {
           "minutes": 5,
-          "lines": ["Ne sta uscendo un altro.", "Questo lo inventi tu."]
+          "lines": [
+            "Ne sta uscendo un altro.",
+            "Questo lo inventi tu."
+          ]
         },
         "standard": {
           "minutes": 8,
@@ -286,19 +300,31 @@
       "help": [
         {
           "after_minutes": 2,
-          "lines": ["Il foglio esce dalla stampante.", "Aspetta che finisca."]
+          "lines": [
+            "Il foglio esce dalla stampante.",
+            "Aspetta che finisca."
+          ]
         },
         {
           "after_minutes": 5,
-          "lines": ["Se la stampante è ferma,", "guarda se ha ancora carta."]
+          "lines": [
+            "Se la stampante è ferma,",
+            "guarda se ha ancora carta."
+          ]
         },
         {
           "after_minutes": 9,
-          "lines": ["Il primo foglio puoi tenerlo lì.", "Il secondo arriva a parte."]
+          "lines": [
+            "Il primo foglio puoi tenerlo lì.",
+            "Il secondo arriva a parte."
+          ]
         },
         {
           "after_minutes": 14,
-          "lines": ["Se non arriva niente,", "la nuvola inventata pensala e basta."]
+          "lines": [
+            "Se non arriva niente,",
+            "la nuvola inventata pensala e basta."
+          ]
         }
       ],
       "way_out": {
@@ -344,19 +370,31 @@
       "help": [
         {
           "after_minutes": 4,
-          "lines": ["Una nuvola inventata può avere", "la forma che vuoi tu."]
+          "lines": [
+            "Una nuvola inventata può avere",
+            "la forma che vuoi tu."
+          ]
         },
         {
           "after_minutes": 9,
-          "lines": ["Parti da una che hai visto oggi", "e cambiale una cosa sola."]
+          "lines": [
+            "Parti da una che hai visto oggi",
+            "e cambiale una cosa sola."
+          ]
         },
         {
           "after_minutes": 16,
-          "lines": ["Per esempio: la stessa nuvola,", "ma con un buco in mezzo."]
+          "lines": [
+            "Per esempio: la stessa nuvola,",
+            "ma con un buco in mezzo."
+          ]
         },
         {
           "after_minutes": 24,
-          "lines": ["Una che c'è già: la nuvola scala,", "tutta a gradini. Il nome scegli tu."]
+          "lines": [
+            "Una che c'è già: la nuvola scala,",
+            "tutta a gradini. Il nome scegli tu."
+          ]
         }
       ],
       "way_out": {
@@ -373,35 +411,21 @@
         "La nuvola inventata falla a voce:",
         "com'è fatta e come si chiama."
       ],
-      "design": {
+      "page": {
+        "kind": "label",
         "title": "La nuvola che non c'era",
-        "instructions": "Inventane una che oggi non c'era, e dalle un nome.",
-        "marks": [
+        "illustration": "one imaginary cloud, alone, seen from below",
+        "note": [
+          "Trovata da nessuno, sopra questa casa, il ventiquattro."
+        ],
+        "spaces": [
           {
-            "mark": "words",
-            "rect": { "x": 0.04, "y": 0.04, "w": 0.66, "h": 0.045 },
-            "text": "La nuvola che non c'era",
-            "size_mm": 6.5
-          },
-          {
-            "mark": "words",
-            "rect": { "x": 0.04, "y": 0.1, "w": 0.7, "h": 0.035 },
-            "text": "Inventane una che oggi non c'era.",
-            "size_mm": 4.0
-          },
-          {
-            "mark": "draw_area",
-            "id": "la-nuvola",
-            "rect": { "x": 0.05, "y": 0.17, "w": 0.9, "h": 0.52 },
             "label": "Disegnala qui",
-            "group": "nuvola"
+            "room": "a_box"
           },
           {
-            "mark": "write_line",
-            "id": "il-nome",
-            "rect": { "x": 0.05, "y": 0.75, "w": 0.9, "h": 0.05 },
-            "label": "Come si chiama:",
-            "group": "nome"
+            "label": "Come si chiama",
+            "room": "a_line"
           }
         ]
       }
@@ -413,7 +437,9 @@
       "weights": {
         "short": {
           "minutes": 10,
-          "lines": ["Metti il secondo foglio sul vetro."]
+          "lines": [
+            "Metti il secondo foglio sul vetro."
+          ]
         },
         "standard": {
           "minutes": 15,
@@ -434,19 +460,31 @@
       "help": [
         {
           "after_minutes": 3,
-          "lines": ["Come prima: sotto il coperchio,", "con il disegno verso il vetro."]
+          "lines": [
+            "Come prima: sotto il coperchio,",
+            "con il disegno verso il vetro."
+          ]
         },
         {
           "after_minutes": 7,
-          "lines": ["Se il coperchio non si chiude bene,", "togli prima l'altro foglio."]
+          "lines": [
+            "Se il coperchio non si chiude bene,",
+            "togli prima l'altro foglio."
+          ]
         },
         {
           "after_minutes": 12,
-          "lines": ["Un foglio alla volta sul vetro.", "Questo è il secondo."]
+          "lines": [
+            "Un foglio alla volta sul vetro.",
+            "Questo è il secondo."
+          ]
         },
         {
           "after_minutes": 18,
-          "lines": ["Va bene anche storto.", "Chiudi il coperchio e lascialo lì."]
+          "lines": [
+            "Va bene anche storto.",
+            "Chiudi il coperchio e lascialo lì."
+          ]
         }
       ],
       "way_out": {
@@ -459,8 +497,14 @@
         "minutes": 15
       },
       "outcomes": [
-        { "when": "marks", "then": "ask" },
-        { "when": "blank", "then": "basta-cosi" }
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "basta-cosi"
+        }
       ],
       "if_no_page": "basta-cosi"
     },
@@ -471,7 +515,10 @@
       "weights": {
         "short": {
           "minutes": 5,
-          "lines": ["Il pomeriggio delle nuvole finisce qui.", "Il foglio resta lì, è tuo."]
+          "lines": [
+            "Il pomeriggio delle nuvole finisce qui.",
+            "Il foglio resta lì, è tuo."
+          ]
         },
         "standard": {
           "minutes": 8,
@@ -494,19 +541,31 @@
       "help": [
         {
           "after_minutes": 2,
-          "lines": ["Non c'è altro da fare.", "I fogli restano dove sono."]
+          "lines": [
+            "Non c'è altro da fare.",
+            "I fogli restano dove sono."
+          ]
         },
         {
           "after_minutes": 5,
-          "lines": ["Se vuoi, mettili in ordine:", "prima quello visto, poi l'inventato."]
+          "lines": [
+            "Se vuoi, mettili in ordine:",
+            "prima quello visto, poi l'inventato."
+          ]
         },
         {
           "after_minutes": 9,
-          "lines": ["Oppure lasciali sul tavolo.", "Vanno bene lì."]
+          "lines": [
+            "Oppure lasciali sul tavolo.",
+            "Vanno bene lì."
+          ]
         },
         {
           "after_minutes": 14,
-          "lines": ["Il registro delle nuvole è chiuso.", "Buona sera."]
+          "lines": [
+            "Il registro delle nuvole è chiuso.",
+            "Buona sera."
+          ]
         }
       ],
       "way_out": {

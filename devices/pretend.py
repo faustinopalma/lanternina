@@ -52,8 +52,6 @@ import numpy as np
 from numpy.typing import NDArray
 
 from shared.ids import SheetId
-from shared.sheet import RECTIFIED_HEIGHT, RECTIFIED_WIDTH, CellKind, CellSpec, SheetSpec
-from shared.vision_contracts import PageReading
 
 if TYPE_CHECKING:
     from devices.house import House
@@ -69,6 +67,10 @@ PAGE_DPI: Final = 300
 NOTHING: Final = "blank"
 SOMETHING: Final = "marks"
 EVERYTHING: Final = "all"
+
+# A page has no declared boxes, so a hand writes in thirds of the sheet. Named rather than
+# numbered so that a transcript reads as somewhere on the paper and not as an index.
+BANDS: Final[tuple[str, ...]] = ("top", "middle", "bottom")
 
 
 def pretend_in(env: Mapping[str, str]) -> Path | None:
@@ -159,26 +161,19 @@ def show(pretend: Pretend, heading: str, lines: list[str]) -> Path:
 # ── What the person would have picked up ─────────────────────────────────────────────
 
 
-def hand_over(pretend: Pretend, spec: SheetSpec, pdf: bytes, page: NDArray[np.uint8]) -> Path:
+def hand_over(pretend: Pretend, sheet_id: SheetId, pdf: bytes, page: NDArray[np.uint8]) -> Path:
     """Put a sheet on the table: the PDF the printer would have had, and the page itself.
 
     Both, because they answer different questions. The PDF is what `lp` would have been
-    given and is the thing to open when a layout looks wrong. The raster is the sheet as an
-    object — it is what gets marks drawn on it and laid on the glass, so the page that comes
-    back is the page that went out, markers and QR included.
+    given and is the thing to open when a page looks wrong. The raster is the sheet as an
+    object — it is what gets written on and laid on the glass, so the page that comes back
+    is the page that went out.
     """
     pretend.paper.mkdir(parents=True, exist_ok=True)
-    page_pdf = pretend.paper / f"{spec.sheet_id}.pdf"
+    page_pdf = pretend.paper / f"{sheet_id}.pdf"
     page_pdf.write_bytes(pdf)
-    cv2.imwrite(str(pretend.paper / f"{spec.sheet_id}.png"), page)
-    note(
-        pretend,
-        "paper",
-        sheet_id=str(spec.sheet_id),
-        title=spec.title,
-        places=[f"{cell.id}: {cell.label}" for cell in spec.cells],
-        file=page_pdf.name,
-    )
+    cv2.imwrite(str(pretend.paper / f"{sheet_id}.png"), page)
+    note(pretend, "paper", sheet_id=str(sheet_id), file=page_pdf.name)
     return page_pdf
 
 
@@ -199,24 +194,24 @@ def sheets_on_the_table(pretend: Pretend) -> list[str]:
 # ── What the person would have written, and laid on the glass ────────────────────────
 
 
-def which_places(spec: SheetSpec, asked: str) -> tuple[str, ...]:
-    """Turn a word into the places that carry ink.
+def which_places(asked: str) -> tuple[str, ...]:
+    """Turn a word into the bands of the page that carry ink.
 
-    ``marks`` fills one place and no more. What a branch turns on is whether anything came
-    back at all, and filling every box would be inventing an afternoon's worth of work
-    nobody did.
+    A page has no declared places any more, so a hand writes in bands: the page in thirds,
+    top to bottom, named so a transcript can say where the ink went. ``marks`` writes in one
+    and no more — what a branch turns on is whether anything came back at all, and filling
+    the page would be inventing an afternoon's worth of work nobody did.
     """
-    answerable = [str(cell.id) for cell in spec.cells]
     if asked == NOTHING:
         return ()
     if asked == EVERYTHING:
-        return tuple(answerable)
+        return BANDS
     if asked == SOMETHING:
-        return tuple(answerable[:1])
+        return BANDS[1:2]
     named = tuple(part.strip() for part in asked.split(",") if part.strip())
-    unknown = [name for name in named if name not in answerable]
+    unknown = [name for name in named if name not in BANDS]
     if unknown:
-        raise ValueError(f"this sheet has no place called {unknown}; it has {answerable}")
+        raise ValueError(f"a page has no band called {unknown}; it has {list(BANDS)}")
     return named
 
 
@@ -228,50 +223,28 @@ def put_on_the_glass(pretend: Pretend, sheet_id: str, filled: Sequence[str]) -> 
     )
 
 
-def off_the_glass(pretend: Pretend, house: House) -> tuple[SheetSpec, PageReading]:
-    """The page laid on the glass, read by the model that reads real pages.
+def off_the_glass(pretend: Pretend, house: House) -> tuple[str, NDArray[np.uint8]]:
+    """The page laid on the glass, written on, as pixels the real reader would be handed.
 
-    Everything from here down is the path the hub takes. The raster of the sheet is
-    rectified against its own markers, the QR is decoded to find out which sheet it is, the
-    spec is recalled, and the crop goes to the panel where a vision model looks at it. What
-    was injected is one thing: where the ink is.
+    Everything from here down is the path the hub takes: the same blank, the same reading in
+    the cloud, the same comparison. What is injected is one thing — where the ink is.
 
     Raises :class:`LookupError` when nothing was laid on the glass, which is the simulated
     equivalent of pressing the button with an empty scanner.
     """
-    from devices.print_sheet import recall
-    from devices.read_page import read_page
-    from vision.read_sheet import detect_markers, read_qr, rectify
-
+    del house  # the reading happens in the runner now; this hands back pixels
     if not pretend.glass.is_file():
         raise LookupError("nothing is on the glass")
     asked = json.loads(pretend.glass.read_text(encoding="utf-8"))
     filled = [str(name) for name in asked.get("filled", [])]
+    sheet_id = str(asked["sheet_id"])
 
-    page = _page_image(pretend, str(asked["sheet_id"]))
-    rectified = rectify(page, detect_markers(page))
-    spec = recall(house.sheets_dir, SheetId(read_qr(rectified).sheet_id))
-    _by_hand(rectified, spec, filled)
-    reading = read_page(
-        rectified,
-        spec,
-        panel=house.panel,
-        household=house.household,
-        key=house.device_key,
-    )
+    page = _page_image(pretend, sheet_id)
+    _by_hand(page, filled)
     # The sheet leaves the glass when it is read, exactly as a person picks it back up.
     pretend.glass.unlink(missing_ok=True)
-    note(
-        pretend,
-        "glass",
-        sheet_id=str(spec.sheet_id),
-        filled=filled,
-        read=[
-            {"place": str(cell.cell_id), "ink": bool(cell.value), "sure": str(cell.confidence)}
-            for cell in reading.cells
-        ],
-    )
-    return spec, reading
+    note(pretend, "glass", sheet_id=sheet_id, filled=filled)
+    return sheet_id, page
 
 
 def _page_image(pretend: Pretend, sheet_id: str) -> NDArray[np.uint8]:
@@ -284,55 +257,45 @@ def _page_image(pretend: Pretend, sheet_id: str) -> NDArray[np.uint8]:
     return np.asarray(page, dtype=np.uint8)
 
 
-# Where a hand goes inside a place, as fractions of it. Three shapes rather than one,
-# because a tick, a word and a drawing do not look alike and a reader that only recognises
-# one of them should fail here rather than in the house.
+# Where a hand goes inside a band, as fractions of it. Three shapes rather than one, because
+# a tick, a word and a drawing do not look alike, and a reader that only recognises one of
+# them should fail here rather than in the house.
 _TICK: Final = ((0.25, 0.55), (0.45, 0.80), (0.80, 0.20))
 _WORD: Final = ((0.05, 0.70), (0.15, 0.30), (0.25, 0.70), (0.35, 0.35), (0.45, 0.70))
 _DRAWING: Final = ((0.20, 0.80), (0.35, 0.25), (0.50, 0.75), (0.65, 0.20), (0.80, 0.70))
 
+_SHAPES: Final = {"top": _WORD, "middle": _DRAWING, "bottom": _TICK}
 
-def _by_hand(rectified: NDArray[np.uint8], spec: SheetSpec, filled: Sequence[str]) -> None:
-    """Draw ink where somebody would have drawn it, in place, on the rectified page.
 
-    After rectification rather than before, because after it the sheet's own coordinates are
-    the image's coordinates and no mapping has to be reinvented here. What it costs is that
-    the ink does not go through the perspective transform, which for a sheet lying flat under
-    a lid is a transform that does nothing anyway.
+def _by_hand(page: NDArray[np.uint8], filled: Sequence[str]) -> None:
+    """Draw ink where somebody would have drawn it, in place, on the page itself.
+
+    A page has no declared boxes, so the bands are thirds of the sheet and the shape drawn
+    in each differs. That is deliberate: the reader has to describe what it sees rather than
+    look up what was expected, and three different marks give it three different things to
+    say.
     """
-    places = {str(cell.id): cell for cell in spec.cells}
+    height, width = page.shape[:2]
     for name in filled:
-        cell = places.get(name)
-        if cell is None:
+        if name not in BANDS:
             continue
-        if cell.kind in (CellKind.CHECKBOX, CellKind.CHOICE_BOX):
-            _stroke(rectified, cell, _TICK)
-        elif cell.kind is CellKind.WORD_LINE:
-            _stroke(rectified, cell, _WORD)
-        else:
-            _stroke(rectified, cell, _DRAWING)
-
-
-def _stroke(
-    rectified: NDArray[np.uint8], cell: CellSpec, path: Sequence[tuple[float, float]]
-) -> None:
-    points = [
-        (
-            round((cell.rect.x + across * cell.rect.w) * RECTIFIED_WIDTH),
-            round((cell.rect.y + down * cell.rect.h) * RECTIFIED_HEIGHT),
+        third = BANDS.index(name)
+        top = height * (0.08 + 0.30 * third)
+        band_h = height * 0.22
+        left = width * 0.12
+        band_w = width * 0.76
+        points = [
+            (round(left + across * band_w), round(top + down * band_h))
+            for across, down in _SHAPES[name]
+        ]
+        cv2.polylines(
+            page,
+            [np.array(points, dtype=np.int32)],
+            isClosed=False,
+            color=40,
+            thickness=max(2, round(min(band_w, band_h) / 40)),
+            lineType=cv2.LINE_AA,
         )
-        for across, down in path
-    ]
-    across_px = cell.rect.w * RECTIFIED_WIDTH
-    down_px = cell.rect.h * RECTIFIED_HEIGHT
-    cv2.polylines(
-        rectified,
-        [np.array(points, dtype=np.int32)],
-        isClosed=False,
-        color=40,
-        thickness=max(2, round(min(across_px, down_px) / 12)),
-        lineType=cv2.LINE_AA,
-    )
 
 
 # ── What the person would have waited for ────────────────────────────────────────────

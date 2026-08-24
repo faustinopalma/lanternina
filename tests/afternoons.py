@@ -73,29 +73,13 @@ def close(moment_id: str = "fine", heading: str = "Basta così", **changed: Any)
 
 def a_page() -> dict[str, Any]:
     return {
+        "kind": "dossier",
         "title": "Una cosa",
-        "instructions": "Segna quello che vuoi.",
-        "marks": [
-            {
-                "mark": "words",
-                "rect": {"x": 0.05, "y": 0.07, "w": 0.90, "h": 0.04},
-                "text": "Che tempo ha fatto?",
-                "size_mm": 4.5,
-            },
-            {
-                "mark": "tick_box",
-                "id": "c1",
-                "rect": {"x": 0.05, "y": 0.14, "w": 0.40, "h": 0.05},
-                "label": "sole",
-                "group": "q1",
-            },
-            {
-                "mark": "tick_box",
-                "id": "c2",
-                "rect": {"x": 0.55, "y": 0.14, "w": 0.40, "h": 0.05},
-                "label": "pioggia",
-                "group": "q1",
-            },
+        "illustration": "a single cloud over a roof",
+        "note": ["Segna quello che vuoi."],
+        "spaces": [
+            {"label": "Che tempo ha fatto", "room": "a_line"},
+            {"label": "Disegnalo", "room": "a_box"},
         ],
     }
 
@@ -106,7 +90,7 @@ def hand_over(
     return {
         "act": "hand_over",
         **_common(moment_id, heading, **changed),
-        "design": changed.get("design", a_page()),
+        "page": changed.get("page", a_page()),
         "instead": changed.get("instead", ["Oggi il foglio non esce.", "Tienilo a mente."]),
     }
 

@@ -49,9 +49,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from devices.ask_panel import PanelUnreachable, draw_page, read_page
 from devices.house import CannotRun, House, hand_over, screen_in, show
-from devices.print_sheet import recall
-from devices.read_page import PanelUnreachable, read_page
+from devices.print_page import recall
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
 from shared.experience import (
@@ -71,11 +71,9 @@ from shared.experience import (
     longest_at,
     moment_from_dict,
 )
-from shared.ids import new_exercise_id, new_id, new_sheet_id
+from shared.ids import SheetId, new_id, new_sheet_id
 from shared.message import Message, Says
-from shared.sheet import SheetSpec
-from shared.vision_contracts import PageReading, ReadConfidence
-from vision.read_sheet import detect_markers, read_qr, rectify
+from shared.vision_contracts import WhatCameBack
 
 # Asking for the rest of an afternoon is a model writing several moments, which takes
 # longer than wording one sentence and is still something a person may be standing in
@@ -237,13 +235,14 @@ def _write(path: Path, values: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
-def _forget(sheets_dir: Path, run: Afternoon, sheets: list[SheetSpec]) -> None:
+def _forget(sheets_dir: Path, run: Afternoon, sheets: list[str]) -> None:
     """An afternoon that ended leaves nothing behind, not even that it happened."""
+    from devices.print_page import blank_path
+
     _run_file(sheets_dir, run.run_id).unlink(missing_ok=True)
-    for sheet_id in run.printed:
+    for sheet_id in (*run.printed, *sheets):
         _page_file(sheets_dir, sheet_id).unlink(missing_ok=True)
-    for spec in sheets:
-        _page_file(sheets_dir, str(spec.sheet_id)).unlink(missing_ok=True)
+        blank_path(sheets_dir, SheetId(sheet_id)).unlink(missing_ok=True)
 
 
 def waiting_runs(sheets_dir: Path) -> list[str]:
@@ -551,30 +550,38 @@ def _do(
     *,
     send: bool,
     out: Outgoing | None = None,
-) -> SheetSpec | None:
-    """Play one moment at one weight. Returns the sheet it printed, if it printed one.
+) -> str | None:
+    """Play one moment at one weight. Returns the id of the sheet it printed, if it did.
 
-    A ``hand_over`` in a house whose printer is not there plays its ``instead`` instead:
-    the words are already written and were already checked, so nothing is improvised at the
-    moment something breaks. It returns no sheet, and the ``collect`` that follows will
-    take its ``if_no_page`` branch.
+    A ``hand_over`` plays its ``instead`` when there is no printer, and also when the page
+    could not be drawn: the words are already written and were already checked, so nothing
+    is improvised at the moment something breaks. It returns no sheet, and the ``collect``
+    that follows takes its ``if_no_page`` branch.
     """
     said = out or Outgoing()
     at_this_weight = moment.at(weight).lines
     lines = said.lines(f"{moment.id}.{weight}", at_this_weight, written=at_this_weight)
     if isinstance(moment, HandOver):
-        if not house.printer and house.pretend is None:
+        drawn = None
+        if house.printer or house.pretend is not None:
+            try:
+                drawn = draw_page(
+                    moment.page.to_dict(),
+                    panel=house.panel,
+                    household=house.household,
+                    key=house.device_key,
+                )
+            except PanelUnreachable as exc:
+                # Loud in the journal, silent in the room: the afternoon has words for this.
+                print(f"the page was not drawn: {exc}")
+        if drawn is None:
             show(house, moment.heading, list(said.lines(f"{moment.id}.instead", moment.instead,
                                                         written=moment.instead)))
             return None
         show(house, moment.heading, list(lines))
-        return hand_over(
-            house,
-            moment.design,
-            sheet_id=new_sheet_id(),
-            exercise_id=new_exercise_id(),
-            send=send,
-        )
+        sheet_id = new_sheet_id()
+        hand_over(house, drawn, sheet_id=sheet_id, send=send)
+        return str(sheet_id)
     if moment.act is Act.COLLECT:
         raise CannotRun("a collect is the seam between two stretches of an afternoon")
     show(house, moment.heading, list(lines))
@@ -606,7 +613,7 @@ def _play(
     now: float,
     send: bool,
     out: Outgoing | None = None,
-) -> tuple[Collect | None, list[SheetSpec], Weight]:
+) -> tuple[Collect | None, list[str], Weight]:
     """Run moments forward from ``start`` until a page has to come back, or it closes.
 
     Returns the ``collect`` it stopped at — or None, meaning the afternoon is over — every
@@ -614,13 +621,13 @@ def _play(
     """
     moments = run.moments
     weight = _weight_for(moments, start, run.over_at - now)
-    printed: list[SheetSpec] = []
+    printed: list[str] = []
     for moment in moments[start:]:
         if isinstance(moment, Collect):
             return moment, printed, weight
-        spec = _do(house, moment, weight, send=send, out=out)
-        if spec is not None:
-            printed.append(spec)
+        sheet_id = _do(house, moment, weight, send=send, out=out)
+        if sheet_id is not None:
+            printed.append(sheet_id)
         if isinstance(moment, Close):
             return None, printed, weight
     # `_check_graph` refuses a document that could reach here, so this is a bug rather
@@ -632,7 +639,7 @@ def _pause(
     house: House,
     run: Afternoon,
     at: Collect,
-    printed: list[SheetSpec],
+    printed: list[str],
     weight: Weight,
     now: float,
 ) -> None:
@@ -648,13 +655,13 @@ def _pause(
         waiting_at=at.id,
         segment=run.segment,
         weight=weight,
-        printed=(*run.printed, *(str(spec.sheet_id) for spec in printed)),
+        printed=(*run.printed, *printed),
         waited_since=now,
         over_at=run.over_at,
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
-    for spec in printed:
-        _write(_page_file(house.sheets_dir, str(spec.sheet_id)), {"run_id": run.run_id})
+    for sheet_id in printed:
+        _write(_page_file(house.sheets_dir, sheet_id), {"run_id": run.run_id})
 
 
 def begin(
@@ -690,59 +697,72 @@ def _say_the_tally(out: Outgoing) -> None:
         print(tally)
 
 
-def came_back(reading: PageReading) -> Came | None:
+def came_back(came: WhatCameBack) -> Came | None:
     """Which of the two words describes this page, or None if neither honestly does.
 
-    A cell the reader could not tell about has no value and no mark, so a page of nothing
-    but unsure cells would otherwise read as ``blank`` — and ``blank`` is a branch somebody
-    wrote, usually the one that closes the afternoon kindly. Taking it because the reading
-    was poor would be closing an afternoon on a page that was filled in. So the run stops
-    instead, which is the same thing it does when the panel cannot be reached: the page
+    A reading the model could not make — ``degraded`` — is not "blank". Blank is a branch
+    somebody wrote, usually the one that closes the afternoon kindly, and taking it because
+    the reading failed would be closing an afternoon on a page that was filled in. So the
+    run stops instead, which is what it does when the panel cannot be reached: the page
     stays where it is and nothing is said about it.
+
+    A sheet that is not the one that was handed over is still read, and still answers. That
+    is `ideas/10 §3`: somebody putting back an earlier page has not erred, and there is
+    nothing here that may refuse a person's paper.
     """
-    if any(cell.value for cell in reading.cells):
-        return Came.MARKS
-    if any(cell.confidence is ReadConfidence.UNSURE for cell in reading.cells):
+    if came.degraded:
         return None
-    return Came.BLANK
+    return Came.MARKS if came.written else Came.BLANK
 
 
-def _read(house: House) -> tuple[SheetSpec, PageReading]:
-    """Read whatever is on the glass. With no panel there is no reading and no second-best.
+def _read(house: House, run: Afternoon | None = None) -> tuple[str, WhatCameBack]:
+    """Read whatever is on the glass, against the blank this house kept.
+
+    Which sheet it is comes from the house's own expectation — the last one it handed out
+    — and not from anything printed on the paper. `ideas/10 §3` chose that way round on
+    purpose: the page is the evidence and the expectation is only the tie-break, and the
+    model says in the same breath whether this looks like the sheet it was given.
 
     The one branch a pretend house needs, and it is here rather than further up because
     this is where the scanner is. What changes is where the pixels come from; what does not
     change is that a vision model in the cloud is what reads them.
     """
+    from devices.print_page import waiting
+
     pretending = house.pretending
     if pretending is not None:
         from devices import pretend as simulated
 
         try:
-            return simulated.off_the_glass(pretending, house)
+            sheet_id, came_off = simulated.off_the_glass(pretending, house)
         except LookupError as exc:
             raise CannotRun(str(exc)) from exc
-    if not house.scanner:
-        raise CannotRun("there is no scanner in this house")
-    page = scan_page(find_scanner(house.scanner))
-    rectified = rectify(page, detect_markers(page))
-    payload = read_qr(rectified)
-    spec = recall(house.sheets_dir, payload.sheet_id)
+    else:
+        if not house.scanner:
+            raise CannotRun("there is no scanner in this house")
+        came_off = scan_page(find_scanner(house.scanner))
+        handed_out = waiting(house.sheets_dir)
+        if not handed_out:
+            raise CannotRun("this house is not waiting for a page")
+        sheet_id = str(handed_out[-1])
+    blank = recall(house.sheets_dir, SheetId(sheet_id))
+    about = run.experience.title if run is not None else ""
     try:
-        reading = read_page(
-            rectified,
-            spec,
+        came = read_page(
+            blank,
+            came_off,
+            about=about,
             panel=house.panel,
             household=house.household,
             key=house.device_key,
         )
     except PanelUnreachable as exc:
         raise CannotRun(f"the page was not read: {exc}") from exc
-    return spec, reading
+    return sheet_id, came
 
 
 def _ask(
-    house: House, run: Afternoon, at: Collect, came: Came, reading: PageReading
+    house: House, run: Afternoon, at: Collect, came: Came, reading: WhatCameBack
 ) -> Continuation:
     """Post what came back and receive the rest of the afternoon.
 
@@ -800,10 +820,10 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
     and nothing about the person who filled the page in.
     """
     moment = time.time() if now is None else now
-    spec, reading = _read(house)
-    pointer = _page_file(house.sheets_dir, str(spec.sheet_id))
+    sheet_id, reading = _read(house)
+    pointer = _page_file(house.sheets_dir, sheet_id)
     if not pointer.is_file():
-        raise CannotRun(f"sheet {spec.sheet_id} does not belong to an afternoon this house started")
+        raise CannotRun(f"sheet {sheet_id} does not belong to an afternoon this house started")
     run_id = str(json.loads(pointer.read_text(encoding="utf-8"))["run_id"])
     run_path = _run_file(house.sheets_dir, run_id)
     if not run_path.is_file():
@@ -822,7 +842,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
         # ending this reaches is the same ending it would have reached the long way.
         leaving = _take_the_way_out(house, run, moment)
         if leaving is None:
-            _forget(house.sheets_dir, run, [spec])
+            _forget(house.sheets_dir, run, [sheet_id])
             return "that afternoon is over"
         _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
         return "that afternoon is on its way to the ending"
@@ -855,7 +875,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
     following, printed, weight = _play(house, run, start, now=moment, send=send, out=out)
     _say_the_tally(out)
     if following is None:
-        _forget(house.sheets_dir, run, [spec, *printed])
+        _forget(house.sheets_dir, run, [sheet_id, *printed])
         return "the afternoon is finished"
     _pause(house, run, following, printed, weight, moment)
     return f"waiting for a page at {following.id}"

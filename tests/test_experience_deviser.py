@@ -16,7 +16,7 @@ import afternoons as a
 import pytest
 
 from agents.experience_deviser import MAX_EXPERIENCE_CHARS, ExperienceDeviser, experience_in
-from shared import experience, pagedesign
+from shared import experience, page
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import EXPERIENCE_FORMAT_VERSION, Collect, ExperienceError, HandOver
@@ -196,10 +196,11 @@ def test_every_limit_that_refuses_a_document_is_stated_in_both_prompts() -> None
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
     for name, limit in (
-        ("a page title", pagedesign.MAX_TITLE),
-        ("page instructions", pagedesign.MAX_INSTRUCTIONS),
-        ("words printed on a page", pagedesign.MAX_WORDS),
-        ("a label", pagedesign.MAX_LABEL),
+        ("a page title", page.MAX_TITLE),
+        ("a line of the note", page.MAX_NOTE_LINE),
+        ("lines of note", page.MAX_NOTE_LINES),
+        ("places to write", page.MAX_SPACES),
+        ("a label", page.MAX_LABEL),
         ("a heading", experience.MAX_HEADING),
         ("a line", experience.MAX_LINE),
         ("lines on a screen", experience.MAX_LINES),

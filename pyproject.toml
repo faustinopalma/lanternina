@@ -63,6 +63,9 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# The attic is kept for its argument, not for its use. Nothing imports it, nothing runs it,
+# and holding it to the current style would mean editing retired code to say the same thing.
+exclude = ["attic"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

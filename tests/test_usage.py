@@ -44,10 +44,8 @@ from panel.usage import (
     over_cap,
 )
 from shared.errors import CloudUnavailable, SafetyBlocked
-from shared.ids import CellId, ExerciseId, SheetId
 from shared.routing import ModelUsage
-from shared.sheet import CellKind, CellSpec, Rect, SheetSpec
-from shared.vision_contracts import PageReading
+from shared.vision_contracts import WhatCameBack
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -298,48 +296,27 @@ READING_REPORTED = ModelUsage(
 )
 
 
-def a_spec() -> SheetSpec:
-    return SheetSpec(
-        sheet_id=SheetId("sh_test"),
-        exercise_id=ExerciseId("ex_test"),
-        title="Una casella",
-        cells=(
-            CellSpec(
-                id=CellId("q1c1"),
-                kind=CellKind.CHOICE_BOX,
-                rect=Rect(0.1, 0.5, 0.2, 0.05),
-                label="sole",
-                group="q1",
-            ),
-        ),
-        qr_rect=Rect(0.78, 0.025, 0.18, 0.118),
-    )
-
-
 def a_page_body() -> dict[str, Any]:
+    one = base64.b64encode(b"\x89PNG\r\n\x1a\n").decode()
     return {
-        "imageBase64": base64.b64encode(b"\x89PNG\r\n\x1a\n").decode(),
+        "blankBase64": one,
+        "cameBackBase64": one,
         "width": 1240,
         "height": 1754,
-        "sheet": a_spec().to_dict(),
+        "about": "il cielo di oggi",
     }
 
 
 def send_page(client: TestClient, household: str) -> Any:
     return client.post(
-        f"/api/device/{household}/read-sheet",
+        f"/api/device/{household}/read-page",
         json=a_page_body(),
         headers={"X-Device-Key": DEVICE_KEY},
     )
 
 
-def a_reading() -> PageReading:
-    return PageReading(
-        sheet_id=SheetId("sh_test"),
-        exercise_id=ExerciseId("ex_test"),
-        cells=(),
-        read_at=1.0,
-    )
+def a_reading() -> WhatCameBack:
+    return WhatCameBack(written=True, same_sheet=True, describes=(), read_at=1.0)
 
 
 def test_reading_a_page_is_counted(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -349,10 +326,10 @@ def test_reading_a_page_is_counted(monkeypatch: pytest.MonkeyPatch) -> None:
     client = client_for(store)
     household = household_of(client)
 
-    async def _reads(page: Any, spec: Any, *, now: float) -> Any:
+    async def _reads(blank: Any, came_back: Any, *, about: str, now: float) -> Any:
         return a_reading(), READING_REPORTED
 
-    monkeypatch.setattr("panel.reading.read_sheet", _reads)
+    monkeypatch.setattr("panel.paper.read_the_page", _reads)
     assert send_page(client, household).status_code == 200
 
     summary = store.summary(household, month_of(time.time()))
@@ -370,10 +347,10 @@ def test_a_reading_the_cloud_refused_is_counted_and_not_billed(
     client = client_for(store)
     household = household_of(client)
 
-    async def _fails(page: Any, spec: Any, *, now: float) -> Any:
+    async def _fails(blank: Any, came_back: Any, *, about: str, now: float) -> Any:
         raise CloudUnavailable("no route to Foundry")
 
-    monkeypatch.setattr("panel.reading.read_sheet", _fails)
+    monkeypatch.setattr("panel.paper.read_the_page", _fails)
     assert send_page(client, household).status_code == 503
 
     summary = store.summary(household, month_of(time.time()))
@@ -391,10 +368,10 @@ def test_the_cap_refuses_a_reading_before_the_model_is_called(
     household = household_of(client)
     store.record(an_event("use-1", household_id=household))
 
-    async def _must_not_run(page: Any, spec: Any, *, now: float) -> Any:
+    async def _must_not_run(blank: Any, came_back: Any, *, about: str, now: float) -> Any:
         raise AssertionError("the cap must be checked before the page is read")
 
-    monkeypatch.setattr("panel.reading.read_sheet", _must_not_run)
+    monkeypatch.setattr("panel.paper.read_the_page", _must_not_run)
     assert send_page(client, household).status_code == 429
 
 

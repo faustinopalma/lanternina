@@ -25,8 +25,6 @@ from typing import TYPE_CHECKING, Any
 from shared.agents import AgentContext
 from shared.ids import LearnerId
 from shared.routing import ModelUsage
-from shared.sheet import SheetSpec
-from shared.vision_contracts import PageReading, RectifiedPage
 
 if TYPE_CHECKING:
     from orchestrator.router import FoundryRouter
@@ -43,19 +41,6 @@ def _cloud(now: float) -> tuple[FoundryRouter, AgentContext]:
     return router, AgentContext(
         router=router, learner_id=LearnerId(""), learner_hints={}, now=now
     )
-
-
-async def read_sheet(
-    page: RectifiedPage, spec: SheetSpec, *, now: float
-) -> tuple[PageReading, ModelUsage | None]:
-    """Read every cell ``spec`` declares, and say what the call consumed. Raises what the
-    router raises when the cloud will not serve it, which the caller reports as a house
-    that could not be answered."""
-    from agents.sheet_reader import SheetReader
-
-    router, context = _cloud(now)
-    reading = await SheetReader().read_page(context, page=page, spec=spec)
-    return reading, router.last_usage
 
 
 async def read_sentences(

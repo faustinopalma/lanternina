@@ -47,6 +47,7 @@ from .routes import devices as device_routes
 from .routes import experience as experience_routes
 from .routes import guidelines as guideline_routes
 from .routes import messages as message_routes
+from .routes import paper as paper_routes
 from .routes import pictures as picture_routes
 from .routes import preferences as preference_routes
 from .routes import proposals as proposal_routes
@@ -78,6 +79,7 @@ SECTIONS = (
     experience_routes,
     message_routes,
     guideline_routes,
+    paper_routes,
 )
 
 

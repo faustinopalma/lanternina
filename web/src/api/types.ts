@@ -68,19 +68,22 @@ export interface Reminders {
   textLimit: number;
 }
 
-/** One mark on a designed page, as `shared/pagedesign.py` writes it. Only the fields a
- *  parent reads are named: a rectangle is a position, and a position on a page they are
- *  not holding tells them nothing. */
-export interface Mark {
-  mark: string;
-  text?: string;
-  label?: string;
+/** A place to write on a page, and how much of it there is. `room` is one of `a_line`,
+ *  `some_lines` and `a_box`: how much room, never where. */
+export interface Space {
+  label: string;
+  room: string;
 }
 
-export interface PageDesign {
+/** What kind of object the paper is, and every word that will be lettered on it. There are
+ *  no coordinates: the whole page is drawn from these words, and `illustration` describes a
+ *  drawing rather than anything printed as text. */
+export interface Page {
+  kind: string;
   title: string;
-  instructions: string;
-  marks: Mark[];
+  illustration: string;
+  note: string[];
+  spaces: Space[];
 }
 
 /** One step of an afternoon at one of its three costs: how long it takes, and what the
@@ -114,7 +117,7 @@ export interface Moment {
   weights: Record<string, Weighing>;
   help: Help[];
   way_out: WayOut;
-  design?: PageDesign;
+  page?: Page;
   instead?: string[];
   outcomes?: { when: string; then: string }[];
   if_no_page?: string;

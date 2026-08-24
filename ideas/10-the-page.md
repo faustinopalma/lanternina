@@ -425,6 +425,53 @@ What that implies for the artefact: the model's output is not a finished page. I
 composition — where the illustration goes, where the words go, what the words are *for* — and
 the rendering puts real text into it.
 
+### Overturned by the parent, 24 August 2026: the model draws the whole page
+
+Everything above this line is what was built and then retired the same day. The parent had
+already tried the other way — one prompt, one image, the whole sheet — and liked the pages
+that came out, and said so plainly: *l'AI deve generare l'intera pagina e tu ti devi
+preoccupare solo di scrivere un buon prompt*. So the composing is in `attic/`, `printing/`
+is one file that puts an image on A4, and the design work is the ask.
+
+**The words are given rather than invented, which is what survives of the argument above.**
+The afternoon writes the title, the note and the labels; those strings are screened as text
+when the afternoon is approved; and the ask quotes each of them and says to letter exactly
+that. So the sentence a person reads on the paper is a sentence that went through the gate,
+even though the pixels it is drawn in did not.
+
+**What that costs, measured rather than assumed.** Text drawn into pixels is screened by
+Content Safety as an *image* and never as *words*: the gate looks at the picture and not at
+what it says. And the instruction not to write anything else is not a guarantee — the map
+below came back with **N, W, E and S** on its compass rose, against a line in the prompt that
+names compass letters specifically. Four letters on a compass are harmless. The general fact
+is not, and it is the price of this shape: **a model can put a word on the paper that nobody
+screened.** Nothing in the code can prevent it; what the code does is give it every word it
+needs so that it has no reason to invent one.
+
+**And the spelling worry was wrong.** `L'OISONITÀ DUI VHRNA` came from a model asked to write
+its own captions. Given the words to letter, `gpt-image-2` set *La nuvola che non c'era*,
+*Trovata da nessuno, sopra questa casa, il ventiquattro*, *Il registro di quello che si è
+visto* and *Disegna quella che è durata di più* — accents, apostrophes and all, exactly as
+written.
+
+Measured with `tools/probe_page.py`, whole pages at 1024×1536:
+
+| kind | seconds | ink on the A4 sheet | its Italian |
+| --- | --- | --- | --- |
+| label | 28.7 | 1.15 % | exact |
+| map | 32.5 | 2.72 % | exact |
+
+Both are hand-drawn, both are pages somebody would pick up, and both are lighter than the
+composed pages they replace — the label at 1.15 % against 0.54 %, the map at 2.72 % against
+2.52 %, on a sheet that now carries a drawing over most of it rather than a box and a border.
+
+**Little ink is asked for and no longer refused.** The budget stays measured and reported by
+`printing/paper.ink_fraction`, because it is the only measurable thing in the brief, and
+nothing throws a page away on it. What that costs is that a heavy page can reach paper; what
+it buys is that a page nobody objected to is not discarded by arithmetic. The parent's
+instruction was *digli di consumare poco inchiostro e fidati*, and the two numbers above are
+what trusting it looks like.
+
 ## 6. What goes to the attic, and when
 
 The parent's instruction is that a few days of a system that does not work is acceptable,
@@ -441,49 +488,46 @@ help, ways out, the ending. None of that is about how a page looks.
 
 ### The swap, and where it starts — 24 August 2026
 
-It was started and put back, and that is written here rather than left as a half-finished
-tree. `HandOver.design` was changed to `HandOver.page`, the prompt was rewritten for the new
-format, and the sample afternoon was rewritten with it; then the reach of the change turned
-out to be **28 files**, and a swap left halfway is the one thing this project has twice said
-it will not build. So the format still hands over a `PageDesign` today, and everything the new
-page needs to exist stands beside it, finished and measured.
+Done the same day, in one move, because the composing could not leave until the format let
+go of it. `HandOver` carries a `Page` — a kind, a title, a note, labelled places to write and
+what the drawing shows — and `ideas/09`'s afternoon is otherwise untouched.
 
-*Where it starts, in the order that keeps the tree green at every step:*
+To the attic, together: `shared/pagedesign.py`, `shared/sheet.py`, `shared/blueprint.py`,
+`printing/compose.py`, `printing/render.py`, `printing/page_layout.py`,
+`vision/read_sheet.py`, `agents/sheet_designer.py`, `agents/sheet_reader.py`,
+`agents/page_illustrator.py`, `devices/print_sheet.py`, `devices/run_blueprint.py`,
+`panel/designing.py`, their tests and their tools. `ruff` no longer looks at `attic/`: it is
+kept for its argument, and holding retired code to the current style would mean editing it to
+say the same thing.
 
-1. `shared/experience.py` — `HandOver.design: PageDesign` becomes `page: Page`, `_more_words`
-   returns `page.words()` and never the illustration, `from_dict` reads `"page"`.
-2. `shared/experience_prompt.py` — `THE_MARKS_ON_A_PAGE` describes a kind, a title, a note,
-   places to write and an illustration, and says plainly that the model does not say where
-   anything goes. `THE_LIMITS` quotes the new constants.
-3. `tests/afternoons.py` and `experiences/un-pomeriggio-di-nuvole.json` — every other test
-   builds documents through these two.
-4. `devices/print_page.py` is written and tested: compose, measure the ink, keep the blank,
-   hand back the PDF. It replaces `devices/print_sheet.py`, and it is not wired to anything.
-5. `devices/house.hand_over` takes a page and a picture rather than a design.
-6. Two panel routes the house has no credentials to do without: one that draws the
-   illustration (`agents/page_illustrator.py`, written), and one that reads a page from the
-   blank and the scan (`agents/page_reader.py`, written and measured in `§3`).
-7. `devices/read_page.py` sends two images instead of an image and a spec;
-   `devices/scan_sheet.py` and `devices/run_experience.py` follow it.
-8. `devices/pretend.py` is the largest single piece and the least obvious: it draws
-   simulated handwriting **into declared cells**, so a house with no person in it needs a new
-   way to say where the ink goes.
-9. Then the attic, then `web/src/api/types.ts` and `web/src/sections/Experiences.tsx`, which
-   show a design to the parent.
+What replaced them is small. `printing/paper.py` fits an image on A4 and writes a PDF.
+`agents/page_maker.py` is one prompt. `devices/print_page.py` keeps the blank.
+`devices/ask_panel.py` asks for a page and for a reading, and `panel/routes/paper.py` answers
+both — the house holds a device key and no credential, so both are answers to a request it
+made.
 
-*The traps, named so they are not rediscovered:*
+Three things changed meaning on the way, and each is worth stating:
 
-* `shared/blueprint.py` and `catalogue/` also hold a `PageDesign`. That path is older than the
-  experience format and whether it goes to the attic with the rest is a decision nobody has
-  made — but `shared/pagedesign.py` cannot leave while it is there.
-* A page is no longer identified by anything printed on it, so `run.printed` and the sheet ids
-  on disk stop being names the paper carries and become the house's own expectation. `§3` says
-  that is the right way round; it is still a change of meaning in three files.
-* The ink budget refuses. Wiring it in means a `hand_over` can fail for a reason the afternoon
-  has no branch for. `if_no_page` is what that should reach, and nothing does that yet.
+* **A page is no longer named by anything printed on it.** There is no QR, so which sheet came
+  back is the house's own expectation — the last one it handed out — and the model says in the
+  same breath whether the page looks like that sheet. `§3` chose that way round: the page is
+  the evidence, the expectation is the tie-break.
+* **A page that is not the one handed over is read anyway.** *Questo foglio non è di
+  Lanternina* is gone. Somebody putting back an earlier sheet has not erred, and the afternoon
+  goes on from what is actually on the paper.
+* **The simulated hand writes in bands rather than in boxes.** `devices/pretend.py` drew into
+  declared cells, and there are none; it now writes in thirds of the sheet, with a different
+  shape in each, so the reader has to describe what it sees rather than look up what was
+  expected.
+
+The cell half of `shared/vision_contracts.py` went with them — `CellReading`, `PageReading`,
+`ReadConfidence`, `MarkerDetection`, `RectifiedPage`. `RawFrame` stays, because the camera
+path of `§9` is not built and its rule is still the rule.
 
 *Done when:* an afternoon devised by the model hands over a map, a dossier, a label or a
-notebook; the page comes out of the printer; and the same afternoon carries on from it.
+notebook; the page comes out of the printer; and the same afternoon carries on from it. The
+first two halves are built and the third runs in the simulator; the house has not been asked
+yet.
 
 ## 7. What is not decided here
 

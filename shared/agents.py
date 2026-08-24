@@ -23,10 +23,10 @@ from typing import Any, Protocol, runtime_checkable
 
 from .domain import ActivityKind, Difficulty, LearnerProfile
 from .ids import ExerciseId, LearnerId
+from .page import Page
 from .proposal import Proposal
-from .routing import ModelRouter
-from .sheet import SheetSpec
-from .vision_contracts import PageReading, RectifiedPage
+from .routing import ModelRouter, PageImage
+from .vision_contracts import WhatCameBack
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,34 +76,38 @@ class ContentAgent(Agent, Protocol):
         """Propose one exercise. Payload kind: EXERCISE_JSON."""
         ...
 
-    async def propose_feedback(
-        self, ctx: AgentContext, *, reading: PageReading, spec: SheetSpec
-    ) -> Proposal:
-        """Propose what to say back after a sheet was read.
 
-        Encouraging and specific to the work, never evaluative about the person.
-        Payload kind: FEEDBACK_TEXT.
-        """
+@runtime_checkable
+class PageAgent(Agent, Protocol):
+    """Draws the whole page. The words on it were written and screened elsewhere."""
+
+    async def draw(self, ctx: AgentContext, page: Page) -> Any:
+        """One page, as a grey image. Payload kind: IMAGE_PNG."""
         ...
 
 
 @runtime_checkable
 class VisionAgent(Agent, Protocol):
-    """Reads a completed worksheet. Produces observations, not proposals.
+    """Reads a page against the blank it was printed from. Produces observations.
 
-    This is the one agent that does not emit a Proposal: a reading is a measurement of
-    ink on paper, not content headed for the learner. Anything *said* about a reading
-    comes from :meth:`ContentAgent.propose_feedback`, which is screened and approved
-    like everything else.
+    The one agent that does not emit a Proposal: a reading is a description of ink on
+    paper, not content headed for anybody. It says what was added and whether the sheet
+    looks like the one that was handed over, and it has no field in which to say anything
+    about the person who wrote on it.
     """
 
-    async def read_page(
-        self, ctx: AgentContext, *, page: RectifiedPage, spec: SheetSpec
-    ) -> PageReading:
-        """Read every cell defined in ``spec``.
+    async def read(
+        self,
+        ctx: AgentContext,
+        *,
+        blank: PageImage,
+        came_back: PageImage,
+        about: str = "",
+    ) -> WhatCameBack:
+        """What is on the second image that is not on the first.
 
-        Must mark a cell ``needs_review`` rather than guessing when unsure, and must set
-        ``degraded`` when the cloud was unavailable and only local cell kinds were read.
+        Must set ``degraded`` rather than inventing an answer when it could not tell, and
+        must never say whether anything is right: there is nothing here to get wrong.
         """
         ...
 
