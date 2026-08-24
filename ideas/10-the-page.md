@@ -439,6 +439,52 @@ already holds things kept for their argument rather than their use, and this is 
 What does not go: the scanner, the print queue, and the whole afternoon — moments, weights,
 help, ways out, the ending. None of that is about how a page looks.
 
+### The swap, and where it starts — 24 August 2026
+
+It was started and put back, and that is written here rather than left as a half-finished
+tree. `HandOver.design` was changed to `HandOver.page`, the prompt was rewritten for the new
+format, and the sample afternoon was rewritten with it; then the reach of the change turned
+out to be **28 files**, and a swap left halfway is the one thing this project has twice said
+it will not build. So the format still hands over a `PageDesign` today, and everything the new
+page needs to exist stands beside it, finished and measured.
+
+*Where it starts, in the order that keeps the tree green at every step:*
+
+1. `shared/experience.py` — `HandOver.design: PageDesign` becomes `page: Page`, `_more_words`
+   returns `page.words()` and never the illustration, `from_dict` reads `"page"`.
+2. `shared/experience_prompt.py` — `THE_MARKS_ON_A_PAGE` describes a kind, a title, a note,
+   places to write and an illustration, and says plainly that the model does not say where
+   anything goes. `THE_LIMITS` quotes the new constants.
+3. `tests/afternoons.py` and `experiences/un-pomeriggio-di-nuvole.json` — every other test
+   builds documents through these two.
+4. `devices/print_page.py` is written and tested: compose, measure the ink, keep the blank,
+   hand back the PDF. It replaces `devices/print_sheet.py`, and it is not wired to anything.
+5. `devices/house.hand_over` takes a page and a picture rather than a design.
+6. Two panel routes the house has no credentials to do without: one that draws the
+   illustration (`agents/page_illustrator.py`, written), and one that reads a page from the
+   blank and the scan (`agents/page_reader.py`, written and measured in `§3`).
+7. `devices/read_page.py` sends two images instead of an image and a spec;
+   `devices/scan_sheet.py` and `devices/run_experience.py` follow it.
+8. `devices/pretend.py` is the largest single piece and the least obvious: it draws
+   simulated handwriting **into declared cells**, so a house with no person in it needs a new
+   way to say where the ink goes.
+9. Then the attic, then `web/src/api/types.ts` and `web/src/sections/Experiences.tsx`, which
+   show a design to the parent.
+
+*The traps, named so they are not rediscovered:*
+
+* `shared/blueprint.py` and `catalogue/` also hold a `PageDesign`. That path is older than the
+  experience format and whether it goes to the attic with the rest is a decision nobody has
+  made — but `shared/pagedesign.py` cannot leave while it is there.
+* A page is no longer identified by anything printed on it, so `run.printed` and the sheet ids
+  on disk stop being names the paper carries and become the house's own expectation. `§3` says
+  that is the right way round; it is still a change of meaning in three files.
+* The ink budget refuses. Wiring it in means a `hand_over` can fail for a reason the afternoon
+  has no branch for. `if_no_page` is what that should reach, and nothing does that yet.
+
+*Done when:* an afternoon devised by the model hands over a map, a dossier, a label or a
+notebook; the page comes out of the printer; and the same afternoon carries on from it.
+
 ## 7. What is not decided here
 
 1. **What the strategy layer is allowed to say.** A closed list of artefact kinds is checkable
