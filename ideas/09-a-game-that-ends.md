@@ -887,6 +887,73 @@ browser, and then plays it to its close.
 and they are different credentials for the same household. A command that quietly used the
 device key to approve would pass its own test and prove nothing.
 
+**The language of the house reaches one agent out of four.** Noticed by the parent on
+24 August 2026: of the two afternoons waiting to be approved, one was written in English.
+`panel/preferences.py` has held the household's content language since the beginning, and
+`web/src/i18n/index.tsx` states the rule at length — the display and the paper follow the
+household's setting and must never follow a browser preference, because content approved in
+one language is not approved in another. The rule is right and it is not carried.
+
+Where it actually goes today:
+
+* **Devising** is correct. `panel/routes/experience.py` reads the household's preferences and
+  passes `LANGUAGE_NAMES[...]`, so the deviser is told "Write every word of it in Italian" —
+  the name, not the code, which is the fix `§20` already paid for once.
+* **Continuing is not told at all.** `agents/experience_continuer.py` says "in the same
+  language as the experience", and `panel/continuing.py` never mentions preferences. The rest
+  of an afternoon inherits whatever the first half happened to be, so a document that drifted
+  once stays drifted for the rest of its life.
+* **The wording of a reminder is not told either.** `agents/reminder_wording.py` says "the
+  same language as the sentence" and `panel/wording.py` does not read preferences. That one
+  is defensible — the parent wrote the sentence — but it is inference, not the setting.
+* **The content agent passes the code and not the name.** `agents/content.py` writes
+  `Lingua: it`, which is the exact shape of the defect `§20` records: a two-letter code inside
+  a sentence, where `it` is also an English pronoun.
+
+*Where it starts:* the three call sites that build a prompt without a language —
+`panel/continuing.py`, `panel/wording.py` and `agents/content.py` — and the one place that
+already does it right, `panel/routes/experience.py`, which is the shape to copy.
+
+*Done when:* a household set to Italian cannot be handed anything in another language by any
+path, and the check is a test that walks every prompt this repository builds and fails on one
+that carries no language.
+
+*The trap to expect:* the language belongs to the household and not to the document, but a
+continuation that is told "Italian" while holding an English document is being asked to do two
+things at once. Whether the setting corrects a drifted afternoon or only prevents the next one
+is a decision, not a detail, and it has to be made before the code is written.
+
+**An afternoon that ended leaves its last screen in the room.** Found in the house on
+24 August 2026, from the other end: the parent said both displays had been showing old text
+for days and no picture had appeared. `devices/house.show` writes `screen-<label>.bmp` and
+nothing ever removes it. `_forget` deletes the run file and the pages — "an afternoon that
+ended leaves nothing behind, not even that it happened" — and leaves the screens, so the words
+of a moment stay up until some later afternoon happens to overwrite them.
+
+Measured on the hub: `screen-CF7D04.bmp` last written **21 August 09:17** and
+`screen-FB9F18.bmp` **21 August 10:49**, three days earlier, both from the run
+`conclude_what_is_over` was written to replace. A picture had been painted for CF7D04 that
+same afternoon at **14:23** and nobody had seen it, because `devices/trmnl_byos.py` chooses
+remind, then sheet, then picture, and a sheet layer that never ends outranks a picture
+forever. This is the defect the picture layer's own comment describes one storey down —
+FB9F18 showed a picture for a day and a half after it stopped being the picture display — and
+the sheet layer was given no ending at the time.
+
+The second display is not a fault: the parent gave FB9F18 `sheet` and `remind` and no
+`picture`, so it has nothing to paint. Only the stale text is wrong.
+
+*Where it starts:* `devices/house.py`, which is the one module that knows which files are
+sheet layers — `sheet_file` already computes them to pick one at random — and
+`conclude_what_is_over`, which is where an afternoon is known to be over.
+
+*Done when:* an afternoon that reaches its ending leaves no screen behind, and a house whose
+display holds both jobs is back to its picture by the next turn of the picture timer.
+
+*The trap to expect:* `sheet_file` picks a display at random **per process**, so the moments of
+one afternoon can be spread over every display that holds the job. Clearing only the one this
+run happens to have resolved would leave the others exactly as they are now, and the test would
+pass on a house with one display.
+
 ## 20. What was built, 23 August 2026
 
 Steps 1, 2 and 6 of the order above, plus the output filter, the ten dimensions and the
