@@ -55,6 +55,44 @@ is the layer that does not exist yet in any useful form.
 The value of separating them is not tidiness. It is that each layer can be checked before the
 next one is paid for, and that a page can be refused without throwing away the afternoon.
 
+### What the strategy layer says — proposed 24 August 2026, not yet built
+
+The layer is not missing. It is written and then dropped. The one afternoon in the repository
+says, in `drawn.paper`, that its paper is *il registro di quello che si è visto* — a register
+— and `experiences/un-pomeriggio-di-nuvole.json` is the only place that sentence ever reaches.
+Sixty characters of free text, read by nobody, while `hand_over` carries a `PageDesign` that
+knows only about boxes at coordinates.
+
+`§7.1` left open whether the strategy may say anything or must choose from a list. The answer
+comes from `§5` rather than from taste. **We draw the words, so we compose the page** — and a
+kind of object the renderer cannot draw produces nothing at all. Whatever the renderer reads
+therefore has to be a name it knows. That is not narrowness for its own sake; it is what not
+letting a model put text into pixels costs.
+
+**So: a kind, from a list the renderer implements, and a subject, in free words.** A map, and
+what it is a map of. A specimen label, and what specimen. The kind decides the composition —
+where the illustration sits, where the heading sits, what furniture surrounds them: a border
+and a legend for a map, a rule and a block of fields for a label. The subject decides nothing
+about the layout and everything about what the words and the illustration are about.
+
+This is the split this repository already makes twice. A device has a closed set of jobs and a
+name the parent writes; a message has a closed vocabulary and an hour. Closed where code has to
+understand it, open where only a person reads it.
+
+**The objection in `§7.1` — that a closed list produces ten afternoons that look the same — is
+answerable with a number rather than an opinion.** The deviser is already handed the last five
+`Drawn` as combinations it may not repeat, and `shared_dimensions` says which of the ten two
+afternoons drew the same way. The embedding margin from `§3` says whether the results can be
+told apart by looking. If four kinds and a free subject produce pages that sit at +0.0015 of
+each other, that is measured and the list is wrong.
+
+What it costs: each kind is a page of layout code and a test that the ink budget holds, so the
+list starts short and grows. Adding one is an ordinary change and not a commitment.
+
+*Not decided, and the questions are for somebody who has stood at the printer:* which kinds
+the list starts with, and whether the kind is devised with the afternoon or asked for
+separately.
+
 ### The execution layer improvises, inside bounds the parent can edit
 
 Added 24 August 2026, from the parent: once the strategy is written the middle layer has done
@@ -309,10 +347,17 @@ help, ways out, the ending. None of that is about how a page looks.
    and narrow; free description is expressive and unbounded. The project's habit is closed
    lists, and the habit exists for good reasons, but a closed list of "kinds of object a page
    can be" may be exactly the thing that produces ten afternoons that look the same.
+   *Answered in `§2` on 24 August 2026 — a closed kind and a free subject — except for which
+   kinds the list starts with.*
 2. **Whether the illustration is generated per page or drawn once and reused.** A generated
    illustration is a model call and money per page; a set of drawn elements composed
    differently each time is cheaper and more consistent, and less surprising. This is a cost
    question with a real number behind it and nobody has measured it.
+   *Half a number, 24 August 2026:* an image is **about 25 s**, measured on this account in
+   August; the published price for `gpt-image-1` output image tokens is **$0.04 per 1 000**,
+   so a 1024² image at medium quality is roughly **$0.04**. `gpt-image-2` is deployed here and
+   is not in the published price list, so the real figure has to be read off the usage store
+   after a call rather than quoted.
 3. **The ink budget**, above.
 4. **What a page looks like when the printer is black and white only**, which the ET-2870 is
    not, but a house might be.
