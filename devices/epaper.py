@@ -212,6 +212,20 @@ def _render(
     return canvas.point(lambda v: 255 if v > 127 else 0).convert("1")
 
 
+def _notice(heading: str, lines: Sequence[str]) -> Image.Image:
+    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
+    draw = ImageDraw.Draw(canvas)
+    fonts = _fonts()
+    inner = WIDTH - 2 * MARGIN
+
+    y = _draw_block(draw, heading, fonts.title, MARGIN + 24, inner, 52)
+    y += 18
+    for line in lines:
+        y = _draw_block(draw, line, fonts.body, y, inner, 42)
+        y += 10
+    return canvas.point(lambda v: 255 if v > 127 else 0).convert("1")
+
+
 def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
     """The house speaking about itself: a sheet waiting, a scanner ready, a reminder due.
 
@@ -224,17 +238,17 @@ def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
     must never happen is this becoming a way to draw text that came from anywhere else,
     so it takes strings from the caller and the caller is the hub, not an agent.
     """
-    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
-    draw = ImageDraw.Draw(canvas)
-    fonts = _fonts()
-    inner = WIDTH - 2 * MARGIN
+    return _encode(_notice(heading, lines), "BMP")
 
-    y = _draw_block(draw, heading, fonts.title, MARGIN + 24, inner, 52)
-    y += 18
-    for line in lines:
-        y = _draw_block(draw, line, fonts.body, y, inner, 42)
-        y += 10
-    return _encode(canvas.point(lambda v: 255 if v > 127 else 0).convert("1"), "BMP")
+
+def render_notice_png(heading: str, lines: Sequence[str]) -> bytes:
+    """The same pixels, in a format a person can open.
+
+    Only :mod:`devices.pretend` calls this, and the sharing of ``_notice`` is the point: a
+    simulated display that drew its own approximation of the screen would be a display
+    whose text wraps somewhere else than the real one.
+    """
+    return _encode(_notice(heading, lines), "PNG")
 
 
 # Two paths draw this: the display server answers a press with it, and the scan writes it a

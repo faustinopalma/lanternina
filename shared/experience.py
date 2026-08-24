@@ -183,7 +183,11 @@ MIN_WEIGHT_MINUTES: Final = 1
 MAX_WEIGHT_MINUTES: Final = 60
 
 MAX_IN_HAND: Final = 40
-MAX_DIMENSION: Final = 40
+# A dimension is a short phrase, compared with other short phrases and never shown to
+# anybody. Forty was chosen and it was too tight: on 24 August 2026 the real service was
+# refused twice in a row over it, at 41 and 43 characters, for phrases like "un tavolo di
+# casa nel tardo pomeriggio". Sixty is still a phrase and costs nothing.
+MAX_DIMENSION: Final = 60
 
 # The ten dimensions an afternoon is drawn along. They are recorded on the document for
 # one reason: it makes "not the same afternoon again" a thing that can be checked instead

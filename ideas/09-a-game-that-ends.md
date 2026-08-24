@@ -558,9 +558,56 @@ spends an afternoon rewording a prompt.
    the parent, and no button reaches it. `§17` is why: help belongs to a surface that is
    always there, and this house has a button per display rather than one button.
 4. **Typed messages from the parent, and the camera.** `§8` and `§9`, untouched.
-5. **Nothing has run on the house.** Everything in this section was measured against the
-   real model service and the test suite, on this machine. The hub has not been updated and
-   the panel has not been rebuilt, so no adolescent has seen a way out.
+5. **Nothing has run on the house.** The hub has not been updated and the panel has not been
+   rebuilt, so no adolescent has seen a way out. What has run is `§21`.
+
+## 21. A house with no person in it, 24 August 2026
+
+`devices/pretend.py`, `tools/pretend.py`, and one field on `House`. The division it is for
+is the one the work now splits along: whether the toner is in and the scanner answers is
+checked by standing in the room, and whether the afternoon reads well is checked without
+leaving the desk.
+
+**The boundary is the person, not the hardware, and that is what makes it worth having.**
+When it is on, the model is the real one, the page is composed and rasterised from the same
+`Drawing` the PDF comes from, its markers are found, it is rectified, its QR is decoded, and
+**the crop goes to the vision model in the cloud over the same device-key route the hub
+uses**. One thing is injected: where the ink is. Everything else that a simulator usually
+throws away is still there, and it is exactly the half this repository's defects have come
+from — the ink arithmetic that passed its synthetic test and produced 12 false positives out
+of 13 on real paper, three devising defects the real service found and the fake-model tests
+did not.
+
+What is not exercised: paper, the print queue, the scanner, a display that has to wake up.
+
+**Measured on 24 August 2026.** An afternoon devised against `gpt-5.6-sol` in **90.7 s**
+(2 189 input tokens, 6 281 output, of which 4 569 reasoning). Played from its first display
+to its close in **2.4 s**, of which 2.2 s was the cloud reading the page. The same afternoon
+taken to the ending that starts by itself — three hours of clock — in **2.5 s**, by moving
+the clock by hand twice. Against that: a scan alone is 37 s, and an afternoon is three
+hours.
+
+The reading was right, which is the part worth stating rather than assuming. Ink was drawn
+in one of the sheet's two places, and the model reported ink in that place and not in the
+other.
+
+**One flag, not two, and the recording is why.** A transcript of an afternoon on disk is a
+durable record of what somebody did, which `§6` and the working rules both forbid. It is
+written here because the person on the other side is whoever typed the command, and it is
+bound to the simulated house rather than being a setting of its own — a real house has no
+`pretend` directory, so there is nothing for a real run to record into. `tests/test_pretend.py`
+asserts that, and asserts that no transcript line carries a word for a verdict.
+
+**What it found on its first run.** Two things, both real.
+
+- The deployed panel is still serving format 1, so an afternoon that reaches `ask` is
+  refused by its own continuation route with `an experience carries ['drawn'], which this
+  format does not define`. That is not a defect in the design; it is the deployment being
+  behind the commit, and it is now visible instead of waiting to be discovered in the house.
+- `MAX_DIMENSION` was 40 characters and was too tight: the real service was refused twice in
+  a row over it, at 41 and 43 characters, for phrases like "un tavolo di casa nel tardo
+  pomeriggio". A dimension is compared with other dimensions and never shown to anybody, so
+  the limit was arbitrary and is now 60.
 
 ## 20. What was built, 23 August 2026
 

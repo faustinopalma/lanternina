@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
+from typing import Any
 
 from printing.render import drawing_to_pdf
 from shared.ids import ExerciseId, SheetId
@@ -41,6 +42,31 @@ def recall(directory: Path, sheet_id: SheetId) -> SheetSpec:
     return SheetSpec.from_dict(json.loads(path.read_text(encoding="utf-8")))
 
 
+def compose_sheet(
+    design: PageDesign,
+    *,
+    sheets_dir: Path,
+    sheet_id: SheetId,
+    exercise_id: ExerciseId,
+    now: float = 0.0,
+) -> tuple[Any, bytes]:
+    """Compose a designed page, remember it, and return the sheet and its PDF.
+
+    Split out on 24 August 2026 so a house with no printer can be handed the same bytes
+    `lp` would have been handed, and can also raster the very same ``Drawing``. Remembering
+    the spec belongs on this side of the split: a page that comes back is found by its id,
+    and whether it went to a printer or to a folder does not change that.
+
+    ``printing.compose`` is imported here rather than at the top because it pulls in OpenCV
+    to measure the ink, and every other function in this module runs without it.
+    """
+    from printing.compose import compose
+
+    sheet = compose(design, sheet_id=sheet_id, exercise_id=exercise_id, created_at=now)
+    remember(sheets_dir, sheet.spec)
+    return sheet, drawing_to_pdf(sheet.drawing)
+
+
 def compose_and_print(
     design: PageDesign,
     *,
@@ -55,24 +81,19 @@ def compose_and_print(
 
     What is remembered is a ``SheetSpec``, so a page that comes back on Thursday is found
     and read exactly as it was before a model designed anything.
-
-    ``printing.compose`` is imported here rather than at the top because it pulls in
-    OpenCV to measure the ink, and every other function in this module runs without it.
     """
-    from printing.compose import compose
-
-    sheet = compose(
+    sheet, pdf = compose_sheet(
         design,
+        sheets_dir=sheets_dir,
         sheet_id=sheet_id,
         exercise_id=exercise_id,
-        created_at=now,
+        now=now,
     )
-    pdf = drawing_to_pdf(sheet.drawing)
-    remember(sheets_dir, sheet.spec)
     if send:
         subprocess.run(
             ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
             input=pdf,
             check=True,
         )
-    return sheet.spec
+    spec: SheetSpec = sheet.spec
+    return spec

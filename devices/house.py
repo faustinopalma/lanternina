@@ -27,8 +27,12 @@ from pathlib import Path
 
 from devices.epaper import render_notice_bmp
 from devices.inventory import holders, load_jobs
+from devices.pretend import Pretend
 from devices.trmnl_byos import screen_for
 from shared.capabilities import JOB_SHEET, HouseCapability
+from shared.ids import ExerciseId, SheetId
+from shared.pagedesign import PageDesign
+from shared.sheet import SheetSpec
 
 
 class CannotRun(RuntimeError):
@@ -55,9 +59,22 @@ class House:
     panel: str = ""
     household: str = ""
     device_key: str = ""
+    # Set, and this house has no equipment and behaves as though it had all of it. Every
+    # path a simulated house writes is inside this directory, which is why a pretend run
+    # cannot reach a real display: not because something checks, but because the real
+    # paths are never built. See :mod:`devices.pretend`.
+    pretend: Path | None = None
 
     @property
     def capabilities(self) -> frozenset[HouseCapability]:
+        if self.pretend is not None:
+            return frozenset(
+                {
+                    HouseCapability.PRINT_A4,
+                    HouseCapability.SCAN_A4,
+                    HouseCapability.SHOW_800X480_1BIT,
+                }
+            )
         found: set[HouseCapability] = set()
         if self.printer:
             found.add(HouseCapability.PRINT_A4)
@@ -66,6 +83,10 @@ class House:
         if self.screen is not None:
             found.add(HouseCapability.SHOW_800X480_1BIT)
         return frozenset(found)
+
+    @property
+    def pretending(self) -> Pretend | None:
+        return Pretend(self.pretend) if self.pretend is not None else None
 
 
 def sheet_file(shared: Path, jobs_file: Path) -> Path:
@@ -101,9 +122,67 @@ def screen_in(env: Mapping[str, str]) -> Path | None:
 
 
 def show(house: House, heading: str, lines: list[str]) -> None:
+    pretending = house.pretending
+    if pretending is not None:
+        from devices import pretend as simulated
+
+        simulated.show(pretending, heading, lines)
+        return
     if house.screen is None:
         raise CannotRun("there is no display in this house")
     replace(house.screen, render_notice_bmp(heading, lines))
+
+
+def hand_over(
+    house: House,
+    design: PageDesign,
+    *,
+    sheet_id: SheetId,
+    exercise_id: ExerciseId,
+    now: float = 0.0,
+    send: bool = True,
+) -> SheetSpec:
+    """Put a designed page on the table, wherever this house's table is.
+
+    The branch is here rather than in a runner on purpose. A runner that could tell a
+    pretend house from a real one would grow a second way of running an afternoon, and the
+    two would drift apart at exactly the speed nobody was watching.
+    """
+    from devices.print_sheet import compose_and_print, compose_sheet
+
+    pretending = house.pretending
+    if pretending is not None:
+        from devices import pretend as simulated
+        from printing.render import drawing_to_array
+
+        sheet, pdf = compose_sheet(
+            design,
+            sheets_dir=house.sheets_dir,
+            sheet_id=sheet_id,
+            exercise_id=exercise_id,
+            now=now,
+        )
+        # The raster comes from the same `Drawing` the PDF does, so the sheet that can be
+        # laid on the simulated glass is the sheet that would have come out of the printer.
+        simulated.hand_over(
+            pretending,
+            sheet.spec,
+            pdf,
+            drawing_to_array(sheet.drawing, dpi=simulated.PAGE_DPI),
+        )
+        spec: SheetSpec = sheet.spec
+        return spec
+    if not house.printer:
+        raise CannotRun("there is no printer in this house")
+    return compose_and_print(
+        design,
+        sheets_dir=house.sheets_dir,
+        sheet_id=sheet_id,
+        exercise_id=exercise_id,
+        printer=house.printer,
+        now=now,
+        send=send,
+    )
 
 
 def replace(path: Path, data: bytes) -> None:

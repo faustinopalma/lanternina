@@ -48,8 +48,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from devices.house import CannotRun, House, screen_in, show
-from devices.print_sheet import compose_and_print, recall
+from devices.house import CannotRun, House, hand_over, screen_in, show
+from devices.print_sheet import recall
 from devices.read_page import PanelUnreachable, read_page
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
@@ -370,17 +370,16 @@ def _do(
     at_this_weight = moment.at(weight).lines
     lines = said.lines(f"{moment.id}.{weight}", at_this_weight, written=at_this_weight)
     if isinstance(moment, HandOver):
-        if not house.printer:
+        if not house.printer and house.pretend is None:
             show(house, moment.heading, list(said.lines(f"{moment.id}.instead", moment.instead,
                                                         written=moment.instead)))
             return None
         show(house, moment.heading, list(lines))
-        return compose_and_print(
+        return hand_over(
+            house,
             moment.design,
-            sheets_dir=house.sheets_dir,
             sheet_id=new_sheet_id(),
             exercise_id=new_exercise_id(),
-            printer=house.printer,
             send=send,
         )
     if moment.act is Act.COLLECT:
@@ -508,7 +507,20 @@ def came_back(reading: PageReading) -> Came | None:
 
 
 def _read(house: House) -> tuple[SheetSpec, PageReading]:
-    """Read whatever is on the glass. With no panel there is no reading and no second-best."""
+    """Read whatever is on the glass. With no panel there is no reading and no second-best.
+
+    The one branch a pretend house needs, and it is here rather than further up because
+    this is where the scanner is. What changes is where the pixels come from; what does not
+    change is that a vision model in the cloud is what reads them.
+    """
+    pretending = house.pretending
+    if pretending is not None:
+        from devices import pretend as simulated
+
+        try:
+            return simulated.off_the_glass(pretending, house)
+        except LookupError as exc:
+            raise CannotRun(str(exc)) from exc
     if not house.scanner:
         raise CannotRun("there is no scanner in this house")
     page = scan_page(find_scanner(house.scanner))
