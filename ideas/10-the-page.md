@@ -55,6 +55,39 @@ is the layer that does not exist yet in any useful form.
 The value of separating them is not tidiness. It is that each layer can be checked before the
 next one is paid for, and that a page can be refused without throwing away the afternoon.
 
+### The execution layer improvises, inside bounds the parent can edit
+
+Added 24 August 2026, from the parent: once the strategy is written the middle layer has done
+its job, and **if execution sees an obvious deviation it takes the liberty and carries on**.
+Following the plan when reality went elsewhere is wrong, and stopping is worse — an afternoon
+that ends because something deviated has failed somebody for being alive.
+
+Built the same day: `panel/guidelines.py` and `agents/experience_continuer.with_bounds`.
+
+**Two kinds of bound, and only one is the parent's.** `FIXED` is ours and has no field
+anywhere to edit it — nothing about the person, no announcing a change of course, an ending
+stays reachable, no invented equipment, nothing can be failed. What the parent owns is the
+latitude we cannot know: whether the garden counts as inside, whether the scissors are in the
+drawer, whether the printer may be used again. They go into the prompt as **two blocks in that
+order**, the household's marked as a description of the house rather than as instructions,
+because one merged list would let a sentence typed in a browser sit as an equal beside a rule
+about a person.
+
+**The licence and the limits are written by the same function.** Told it may improvise and not
+told the bounds is the one combination that must not exist, and a test asserts the licence does
+not appear without them.
+
+**The default is nothing written**, which is the narrowest the system ever is. Suggested lines
+belong in the panel, where a parent reads one and decides.
+
+*What is left:* the parent's two routes in `panel/routes/`, the section in `web/src/sections/`,
+and the read in `panel/continuing.py` that passes them to `continue_from`. Until that last one
+exists the store is a vocabulary with no verb behind it — the thing this project has said twice
+it will not do — so it is named here rather than left to be discovered.
+
+*Done when:* a parent writes "va bene uscire in giardino" in the panel, and an afternoon that
+improvises can use the garden while one in a household that wrote nothing cannot.
+
 ## 3. What a page must carry, and it may be nothing at all
 
 The page began this document carrying three things: four corner markers, a QR, and a declared

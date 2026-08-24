@@ -980,6 +980,14 @@ scanner. Deciding after the scan means scanning twice; deciding before it means 
 "a run is waiting" rather than from what is actually on the glass, so the run's own QR check
 has to stay the thing that refuses a sheet from somewhere else.
 
+> *Fixed the same day, in `4b964a8`*, and **not installed on the hub**. `scan_sheet` asks
+> `waiting_runs` before it scans and hands the press to `carry_on` on the display that was
+> pressed; `lanternina-scan.service` gains `experience.env`, because the moment after a collect
+> may be a sheet and without the printer the afternoon would move and nothing would come out.
+> Two tests, the first made to fail on the version without the routing, where it reports
+> `['scanner'] != ['run']`. The hub is one `deploy/hub-install.sh`-shaped copy behind, and
+> whether that is worth doing before the page is redesigned is a decision, not an oversight.
+
 **A way out told the person to read the screen they were reading it on.** The afternoon that
 ran on 24 August left by `send-map`, and its way out said: *Riprendi il foglio dal vetro.
 Posalo accanto alla tazza. **Leggi la chiusura sullo schermo.** Il pomeriggio è finito.* The
