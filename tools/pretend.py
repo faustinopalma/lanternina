@@ -45,10 +45,11 @@ from devices.run_experience import (
     carry_on,
     conclude_what_is_over,
     load_experience,
+    offer_help,
     waiting_runs,
 )
 from shared.capabilities import HouseCapability
-from shared.experience import Experience, ExperienceError
+from shared.experience import HELP_LEVELS, Experience, ExperienceError
 from shared.ids import SheetId
 
 WHERE = Path(os.environ.get(simulated.PRETEND_DIR_ENV, "") or "pretend")
@@ -212,6 +213,8 @@ def look(where: Path) -> int:
             continue
         left = (run.over_at - simulated.the_time(pretend)) / 60.0
         print(f"waiting at {run.waiting_at!r} on the {run.weight} weight, {left:.0f} min left")
+        if run.helped:
+            print(f"  {run.helped} of {HELP_LEVELS} rungs of help given at this moment")
         if run.leaving_at:
             print(f"  the ending has begun, from {run.leaving_at!r}")
     return 0
@@ -251,14 +254,21 @@ def hand(where: Path, asked: str) -> int:
 
 
 def wait(where: Path, minutes: float) -> int:
-    """Let time pass, and give the house its ten-minute look while it does.
+    """Let time pass, and give the house its looks while it does.
 
-    The look is the point: the ending starts by itself thirty minutes before the end hour,
-    and nothing else in this file would ever reach it.
+    Two of them, because the house has two rhythms. Help comes due to the minute, so the
+    minutes are walked one at a time; the ending starts by itself thirty minutes before the
+    end hour, and nothing else in this file would ever reach it.
     """
     house = a_house(where)
     pretend = Pretend(where)
-    simulated.move_on(pretend, minutes * 60.0)
+    for _ in range(max(1, int(minutes))):
+        simulated.move_on(pretend, 60.0)
+        for given in offer_help(house, simulated.the_time(pretend), send=False):
+            print(f"help: {given}")
+    left = minutes - int(minutes)
+    if left:
+        simulated.move_on(pretend, left * 60.0)
     for run_id in conclude_what_is_over(house, simulated.the_time(pretend), send=False):
         print(f"{run_id} reached its ending and is over")
     print(f"{minutes:.0f} minutes later")

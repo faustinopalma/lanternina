@@ -57,7 +57,7 @@ from pathlib import Path
 from typing import Any
 
 from devices.house import CannotRun, House, screen_in
-from devices.run_experience import begin, conclude_what_is_over, waiting_runs
+from devices.run_experience import begin, conclude_what_is_over, offer_help, waiting_runs
 from shared.experience import Experience, ExperienceError
 
 # Monday first, and these exact three letters: `panel/reminders.py` writes them and
@@ -255,6 +255,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--no-paper", action="store_true", help="lay the sheet out without sending it"
     )
+    parser.add_argument(
+        "--only-help",
+        action="store_true",
+        help="put the next rung of help on the display, and nothing else",
+    )
     args = parser.parse_args(argv)
 
     panel = os.environ.get("LANTERNINA_PANEL_URL", "").rstrip("/")
@@ -278,6 +283,14 @@ def main(argv: list[str] | None = None) -> int:
     # `afternoons/` as an afternoon.
     stamp = sheets_dir / "afternoon-looked.stamp"
     now = time.time()
+
+    # Help first, and on its own unit every minute, because a rung due at three minutes is
+    # not honoured by a timer that runs every ten. It touches no network: the ladder is in
+    # the run file and the rung goes to a display.
+    for given in offer_help(house, now, send=not args.no_paper):
+        print(f"help: {given}")
+    if args.only_help:
+        return 0
 
     for run_id in conclude_what_is_over(house, now, send=not args.no_paper):
         print(f"{run_id} reached its ending and is over")

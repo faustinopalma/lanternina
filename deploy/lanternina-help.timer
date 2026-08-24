@@ -1,0 +1,16 @@
+[Unit]
+Description=Look once a minute for a rung of help whose minutes have passed
+
+[Timer]
+# Once a minute, because a rung written to arrive after three minutes is not honoured by a
+# timer that runs every ten. The afternoon's own unit keeps its ten-minute rhythm: it asks
+# the panel things, and nothing it asks is due to the minute.
+#
+# A run costs nothing when there is nothing to do. It reads the afternoons in the state
+# directory — usually none — and stops. No network, no model.
+OnCalendar=*:*:00
+AccuracySec=10s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

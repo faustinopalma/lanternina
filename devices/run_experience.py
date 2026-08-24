@@ -55,6 +55,7 @@ from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
 from shared.experience import (
     ASK,
+    HELP_LEVELS,
     Act,
     Came,
     Close,
@@ -63,6 +64,7 @@ from shared.experience import (
     Experience,
     ExperienceError,
     HandOver,
+    Help,
     Moment,
     Weight,
     longest_at,
@@ -126,6 +128,13 @@ class Afternoon:
     # the only thing left is the close.
     leaving_at: str = ""
     left_at: float = 0.0
+    # When the afternoon arrived at the moment it is waiting at, and how many rungs of that
+    # moment's ladder have been given. Both are about this moment and are reset by the next
+    # one, which is what keeps them a fact about an afternoon rather than a tally about a
+    # person: there is nowhere here to write how much help an afternoon needed in total,
+    # and `waited_at` is discarded with the run.
+    waited_since: float = 0.0
+    helped: int = 0
 
     @property
     def moments(self) -> tuple[Moment, ...]:
@@ -166,20 +175,28 @@ class Afternoon:
             "printed": list(self.printed),
             "leaving_at": self.leaving_at,
             "left_at": self.left_at,
+            "waited_since": self.waited_since,
+            "helped": self.helped,
         }
 
     @staticmethod
     def from_dict(values: Any) -> Afternoon:
+        began = float(values["started_at"])
         return Afternoon(
             run_id=str(values["run_id"]),
             experience=Experience.from_dict(values["experience"]),
-            started_at=float(values["started_at"]),
+            started_at=began,
             waiting_at=str(values["waiting_at"]),
             segment=tuple(moment_from_dict(m) for m in values.get("segment", [])),
             weight=Weight(str(values.get("weight", Weight.STANDARD))),
             printed=tuple(str(sheet) for sheet in values.get("printed", [])),
             leaving_at=str(values.get("leaving_at", "")),
             left_at=float(values.get("left_at", 0.0)),
+            # A run written before the ladder existed counts from when the afternoon began,
+            # which is the best answer available. Not a falsy sentinel: zero is a real
+            # instant, and treating it as "absent" is how a ladder silently never arrives.
+            waited_since=float(values.get("waited_since", began)),
+            helped=int(values.get("helped", 0)),
         )
 
 
@@ -298,6 +315,87 @@ def _forget_orphan_pages(sheets_dir: Path) -> None:
             continue
         if run_id not in still_here:
             note.unlink(missing_ok=True)
+
+
+# ── Help ─────────────────────────────────────────────────────────────────────────────
+
+
+def offer_help(house: House, now: float, *, send: bool = True) -> list[str]:
+    """Put the next rung of the ladder on the display, for every afternoon whose is due.
+
+    `ideas/09 §4`. Four rungs, written into every moment, checked before the document was
+    saved, read by the parent — and until now nothing could reach them. A third of what a
+    model writes was going nowhere.
+
+    ``after_minutes`` is counted from arriving at the moment and not from the rung before,
+    which is why the format refuses a ladder that does not go up: 3, 6, 10, 15 means a nudge
+    at three minutes and the answer at fifteen, not at thirty-four.
+
+    **Two lines this deliberately does not cross.**
+
+    *After the last rung, nothing.* `ideas/09 §4` says the moment is over and the afternoon
+    moves on. Here the only moment an afternoon can be waiting at is a ``collect``, so moving
+    on would mean ending the afternoon because nobody had come back — an action triggered by
+    silence, which is the shape the working rules forbid. The ending stays where it is: the
+    clock at T-30, which is about the hour and not about the person. So there is no fifth
+    rung and no ending here.
+
+    *Nothing says that time passed.* The rung is the same text somebody would have been given
+    for asking, which is `§4`'s own rule, and it can only be that if it never mentions
+    waiting. Nothing here adds a word to it.
+
+    Asking for help is not built. When it is, it calls this with the rung it wants, and the
+    text is the same text — the decision left open in `§17` is which surface the asking lands
+    on, not what it says.
+    """
+    given: list[str] = []
+    for path in sorted(_runs(house.sheets_dir).glob("*.json")):
+        run = _read_run(path)
+        if run is None or run.leaving_at:
+            # An afternoon on its way to the ending is not stuck; it is finishing.
+            continue
+        helped = _next_rung(run, now)
+        if helped is None:
+            continue
+        rung, at = helped
+        out = Outgoing()
+        show(house, at.heading, list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines,
+                                               written=rung.lines)))
+        _say_the_tally(out)
+        _write(_run_file(house.sheets_dir, run.run_id), _one_rung_on(run).to_dict())
+        given.append(f"{run.run_id} {at.id} rung {run.helped + 1}")
+        del send  # a rung is words on a display; nothing is printed and nothing is sent
+    return given
+
+
+def _next_rung(run: Afternoon, now: float) -> tuple[Help, Moment] | None:
+    """The rung that has come due and not been given, or None."""
+    if run.helped >= HELP_LEVELS:
+        return None
+    try:
+        at = run.moment(run.waiting_at)
+    except CannotRun:
+        return None
+    rung = at.help[run.helped]
+    if now - run.waited_since < rung.after_minutes * 60.0:
+        return None
+    return rung, at
+
+
+def _one_rung_on(run: Afternoon) -> Afternoon:
+    return Afternoon(
+        run_id=run.run_id,
+        experience=run.experience,
+        started_at=run.started_at,
+        waiting_at=run.waiting_at,
+        segment=run.segment,
+        weight=run.weight,
+        printed=run.printed,
+        leaving_at=run.leaving_at,
+        left_at=run.left_at,
+        waited_since=run.waited_since,
+        helped=run.helped + 1,
+    )
 
 
 def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | None:
@@ -441,8 +539,13 @@ def _pause(
     at: Collect,
     printed: list[SheetSpec],
     weight: Weight,
+    now: float,
 ) -> None:
-    """Write down where the afternoon got to, and which paper points back at it."""
+    """Write down where the afternoon got to, and which paper points back at it.
+
+    Arriving at a moment resets its ladder. A rung given at the moment before has nothing to
+    do with this one, and carrying the count forward would be the beginning of a tally.
+    """
     waiting = Afternoon(
         run_id=run.run_id,
         experience=run.experience,
@@ -451,6 +554,7 @@ def _pause(
         segment=run.segment,
         weight=weight,
         printed=(*run.printed, *(str(spec.sheet_id) for spec in printed)),
+        waited_since=now,
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
     for spec in printed:
@@ -478,7 +582,7 @@ def begin(
     _say_the_tally(out)
     if at is None:
         return None
-    _pause(house, run, at, printed, weight)
+    _pause(house, run, at, printed, weight, moment)
     return run.run_id
 
 
@@ -655,7 +759,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
     if following is None:
         _forget(house.sheets_dir, run, [spec, *printed])
         return "the afternoon is finished"
-    _pause(house, run, following, printed, weight)
+    _pause(house, run, following, printed, weight, moment)
     return f"waiting for a page at {following.id}"
 
 

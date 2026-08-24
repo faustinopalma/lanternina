@@ -1,0 +1,23 @@
+[Unit]
+Description=Offer the next rung of help, if one has come due
+# No network dependency, and that is the point: the ladder is written in the run file on
+# this disk and a rung is words on a display. An afternoon whose house cannot reach the
+# panel still gets its help.
+
+[Service]
+Type=oneshot
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+EnvironmentFile=-/etc/lanternina/scanner.env
+EnvironmentFile=/etc/lanternina/experience.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.afternoon --only-help
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadOnlyPaths=/opt/lanternina
+ReadWritePaths=/var/lib/lanternina/state

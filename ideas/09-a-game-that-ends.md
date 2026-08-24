@@ -554,9 +554,9 @@ spends an afternoon rewording a prompt.
    been printed and whether the ending has begun, and all of it is deleted when the
    afternoon ends. What is not there is the help level and the current end hour, because
    nothing asks for help yet and nothing moves the hour.
-3. **Nothing asks for help.** The ladder is written in every moment, checked, and shown to
-   the parent, and no button reaches it. `§17` is why: help belongs to a surface that is
-   always there, and this house has a button per display rather than one button.
+3. **Asking for help is not built.** The ladder is written in every moment, checked, shown
+   to the parent, and now reached — but by the clock, not by a person. `§22` has what was
+   decided and what `§17` still leaves open.
 4. **Typed messages from the parent, and the camera.** `§8` and `§9`, untouched.
 5. **Nothing has run on the house.** The hub has not been updated and the panel has not been
    rebuilt, so no adolescent has seen a way out. What has run is `§21`.
@@ -650,6 +650,56 @@ The lesson is worth keeping separately from the incident: a secret read from a f
 read inside the process that needs it. `tools/pretend.py` does that now. A shell that fails
 while setting an environment variable prints what it was setting, and there is no way to
 un-print it.
+
+## 22. The ladder reaches somebody, 24 August 2026
+
+`devices/run_experience.offer_help`, on `deploy/lanternina-help.timer`, once a minute.
+
+Until today every moment carried four rungs of help that nothing could reach. That is a
+third of what a model writes, refused by the format when it is missing, read by the parent,
+and going nowhere. It was the largest piece of dead weight in the design.
+
+**A rung arrives because minutes passed, and it is the same words somebody would have got
+for asking.** That is `§4`'s own rule, and it is why building the clock half first is not a
+compromise: the asking half, whenever it arrives, calls the same function with the same
+text. What `§17` still leaves open is only which surface the asking lands on.
+
+`after_minutes` counts from arriving at the moment, not from the rung before. 3, 6, 10, 15
+means the answer at fifteen minutes, not at thirty-four, and that reading is what makes the
+format's refusal of a ladder that does not go up mean anything.
+
+**Its own unit, at one minute, with no network.** The afternoon's unit keeps its ten-minute
+rhythm because everything it does is a request to the panel and none of it is due to the
+minute; a rung written to arrive after three minutes is not honoured by a timer that runs
+every ten. The ladder is in the run file on the local disk and a rung is words on a display,
+so a house that cannot reach the panel still gets its help.
+
+**Two lines it does not cross, and both are decisions rather than omissions.**
+
+- *After the last rung, nothing.* `§4` says the moment is over and the afternoon moves on.
+  Here the only moment an afternoon waits at is a `collect`, so moving on would mean ending
+  the afternoon because nobody came back — an action triggered by silence, which is the
+  shape the working rules forbid outright. The ending stays where it is: the clock at T-30,
+  which is about the hour and not about the person.
+- *Nothing says that time passed.* A rung can only be the same words as an answer to a
+  question if it never mentions the question not having been asked.
+
+**What is kept, and what it may not become.** The run gains two fields: when the afternoon
+arrived at the moment it is waiting at, and how many rungs that moment has given. Arriving
+at the next moment resets both, which is what keeps them facts about a moment rather than
+the beginning of a tally — there is nowhere to write how much help an afternoon needed in
+total, and both are deleted with the run.
+
+**Watched in the simulator**, which is what it is for. An afternoon begun and left alone for
+sixteen minutes drew its four rungs at 2, 5, 9 and 13 minutes: *turn the map towards the
+glass*, *find the side with the pencil line*, *put that side against the glass*, *the screen
+shows the sheet on the glass*. Each one a step further into the thing itself, the last
+handing the answer over as something the story gives. Sixteen minutes of afternoon in 1.4 s.
+
+**One defect, and it is the kind a test catches only if it is written the right way round.**
+The first version treated `waited_since` as absent when it was falsy, and zero is a
+legitimate instant — so a ladder counted from zero never arrived at all. Seven of the twelve
+tests failed on it. A test that had checked only the bookkeeping would have passed.
 
 ## 20. What was built, 23 August 2026
 
