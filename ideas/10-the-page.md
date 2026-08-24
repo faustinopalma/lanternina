@@ -89,9 +89,17 @@ each other, that is measured and the list is wrong.
 What it costs: each kind is a page of layout code and a test that the ink budget holds, so the
 list starts short and grows. Adding one is an ordinary change and not a commitment.
 
-*Not decided, and the questions are for somebody who has stood at the printer:* which kinds
-the list starts with, and whether the kind is devised with the afternoon or asked for
-separately.
+**Decided 24 August 2026, by the parent.** Four kinds to start with: **a map**, **a dossier**,
+**a museum label** and **a field notebook**. A catalogue page was offered and left out. The
+kind is chosen **with the afternoon**, in the same document, so there is one thing to check and
+one thing to refuse. The illustration is **generated for every page** rather than composed from
+elements drawn once — about 25 s and roughly four cents each, against a set of reusable
+drawings that costs nothing and never surprises anybody.
+
+One thing that follows and was not asked: an illustration that does not arrive leaves a page
+with no illustration, composed to close up around the gap, rather than no page. The words are
+ours and already through the gate, so the paper still comes out; a house whose cloud is down
+gets a plainer page and not a stopped afternoon.
 
 ### The execution layer improvises, inside bounds the parent can edit
 
@@ -305,6 +313,56 @@ refusal can be handed back as a repair request naming what failed.
 on a page that is liked and a page that is not, and the answer stated with its provenance.
 Guessing it would be the same mistake this document exists to correct. `attic/ink_arithmetic.py`
 has the machinery for measuring coverage and can come back out for this.
+
+### Built and measured, 24 August 2026
+
+`shared/page.py` is the format — a kind, a title, a note, some labelled places to write, and
+what the picture shows in words — and `printing/page_layout.py` is the four layouts.
+`printing/ink.py` rasterises the composed page at 150 dpi and refuses it above the budget,
+returning a complaint the way `shared/experience_checks.py` does.
+
+**Coverage is counted by tone and not by dark pixels.** An inkjet laying a mid-grey pixel
+spends about half the ink of a black one, and the illustration is where the ink goes. A
+threshold would call a photographic page 100 % or 0 %.
+
+Measured with `tools/probe_page_ink.py`, on pages carrying a title, a note, and three places
+to write — one line, one box, three lines:
+
+| kind | words only | with a picture |
+| --- | --- | --- |
+| map | 1.99 % | 11.63 % |
+| dossier | 1.54 % | 2.84 % |
+| label | 0.95 % | 7.96 % |
+| notebook | 1.10 % | 1.58 % |
+
+The picture is a synthetic radial gradient, not a model's illustration, so the second column
+is an upper bound on a tone-filled picture rather than a prediction. What the two columns say
+between them is where the ink is: **the words and rules of a whole page cost between 0.95 and
+1.99 %, and one tone-filled picture costs five to ten times that.** The map's border alone is
+about 0.9 % — the difference between it and the notebook.
+
+Two things follow, and neither was obvious before the numbers.
+
+* **The illustration has to be asked for as line art on white**, not as a picture. That is not
+  a matter of style: it is the difference between a page that prints and a page the budget
+  refuses. The prompt to the image model is where this is enforced, and it is not written yet.
+* **The budget cannot be set from the old sheet.** `INK_BUDGET` is 2.78 % today, which is what
+  the sheet this replaces measures, and against it three of the four kinds are refused as soon
+  as they carry a picture. That is the placeholder doing its job — refusing to let a number
+  nobody measured be treated as decided — and it is the thing to settle at the printer.
+
+**The preview was made honest before it was believed.** The raster backend drew words in
+OpenCV's Hershey stroke font while the PDF sets Helvetica, so the preview overstated both the
+width of every line and the ink. It now uses Arial or Liberation Sans, whose character widths
+are Helvetica's, and falls back to Hershey where neither exists. The four figures above fell
+by 0.4 to 0.9 percentage points when that changed, which is how much the old numbers were
+wrong by.
+
+> One test wrote itself green. `test_no_word_runs_off_the_paper` first used plausible Italian,
+> and passed with the line wrapping switched off, because ordinary words are about half as
+> wide as the format allows. Walked at the format's own limits — the longest title, note and
+> label there can be, in wide letters — it fails on all four kinds without wrapping, and the
+> first thing it reports is a centred title starting to the left of the paper.
 
 ## 5. The words are ours
 

@@ -16,9 +16,11 @@ paper-independent: its coordinates are normalised over the marker quadrilateral.
 
 from __future__ import annotations
 
+import base64
+import zlib
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Final
+from typing import Any, Final
 
 import cv2
 import numpy as np
@@ -187,6 +189,20 @@ class StrokePath:
 
 
 @dataclass(frozen=True, slots=True)
+class PageImage:
+    """A grey picture placed on the paper, in page millimetres.
+
+    Grey and not colour, because the two things this ever goes to are an inkjet asked not
+    to spend much and an ink-coverage measurement, and both of them are about tone. The
+    array is what the backends resample; nothing here decides how big it was when it
+    arrived.
+    """
+
+    rect: MmRect
+    grey: NDArray[np.uint8]
+
+
+@dataclass(frozen=True, slots=True)
 class Drawing:
     """A resolution-independent description of one printable sheet."""
 
@@ -198,6 +214,8 @@ class Drawing:
     headings: tuple[tuple[float, float, float, str], ...] = ()
     # Line art, and the rules a writing line is drawn as.
     strokes: tuple[StrokePath, ...] = ()
+    # Drawn first, so words and rules land on top of a picture rather than under it.
+    images: tuple[PageImage, ...] = ()
 
 
 def _bitmap_to_rects(bitmap: NDArray[np.uint8], origin: MmRect, quiet_modules: int) -> list[MmRect]:
@@ -362,6 +380,16 @@ def drawing_to_svg(drawing: Drawing) -> str:
         f'height="{page.height_mm}mm" viewBox="0 0 {page.width_mm} {page.height_mm}">',
         f'<rect x="0" y="0" width="{page.width_mm}" height="{page.height_mm}" fill="#ffffff"/>',
     ]
+    for image in drawing.images:
+        ok, encoded = cv2.imencode(".png", image.grey)
+        if not ok:
+            raise SheetLayoutError("the picture could not be encoded")
+        data = base64.b64encode(encoded.tobytes()).decode("ascii")
+        parts.append(
+            f'<image x="{image.rect.x:.4f}" y="{image.rect.y:.4f}" '
+            f'width="{image.rect.w:.4f}" height="{image.rect.h:.4f}" '
+            f'href="data:image/png;base64,{data}"/>'
+        )
     for rect in drawing.filled:
         parts.append(
             f'<rect x="{rect.x:.4f}" y="{rect.y:.4f}" width="{rect.w:.4f}" '
@@ -412,6 +440,16 @@ def drawing_to_array(
     height = round(page.height_mm * scale)
     canvas: NDArray[np.uint8] = np.full((height, width), 255, dtype=np.uint8)
 
+    for image in drawing.images:
+        x0 = round(image.rect.x * scale)
+        y0 = round(image.rect.y * scale)
+        x1 = round(image.rect.right * scale)
+        y1 = round(image.rect.bottom * scale)
+        if x1 <= x0 or y1 <= y0:
+            continue
+        canvas[y0:y1, x0:x1] = cv2.resize(
+            image.grey, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA
+        )
     for rect in drawing.filled:
         x0 = round(rect.x * scale)
         y0 = round(rect.y * scale)
@@ -439,11 +477,64 @@ def drawing_to_array(
             lineType=cv2.LINE_AA,
         )
     if text:
+        _draw_text(canvas, drawing, scale)
+    return canvas
+
+
+# Arial and Liberation Sans carry the same character widths as Helvetica, which is the font
+# `drawing_to_pdf` sets. So a preview drawn in one of these puts the words where the print
+# will put them, and — the reason this matters more than looks — the ink measured on the
+# raster is the ink the page will actually spend. Hershey, the fallback, is a stroke font
+# and runs about a third wider and heavier, which overstates both.
+_FONT_CANDIDATES: Final = (
+    "C:/Windows/Fonts/arial.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+    "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+)
+
+
+def metric_font_path() -> str:
+    """The first font on this machine whose widths match the print, or "" for none."""
+    from pathlib import Path
+
+    for candidate in _FONT_CANDIDATES:
+        if Path(candidate).exists():
+            return candidate
+    return ""
+
+
+def _draw_text(canvas: NDArray[np.uint8], drawing: Drawing, scale: float) -> None:
+    """Set every word on the raster, in one pass, in the closest font this machine has."""
+    path = metric_font_path()
+    if not path:
         for x, y, label in drawing.labels:
             _put_text(canvas, x, y, LABEL_SIZE_MM, label, scale)
         for x, y, size, heading in drawing.headings:
             _put_text(canvas, x, y, size, heading, scale)
-    return canvas
+        return
+
+    from PIL import Image, ImageDraw, ImageFont
+
+    sheet = Image.fromarray(canvas)
+    pen = ImageDraw.Draw(sheet)
+    fonts: dict[int, Any] = {}
+
+    def font_for(size_mm: float) -> Any:
+        pixels = max(1, round(size_mm * scale))
+        if pixels not in fonts:
+            fonts[pixels] = ImageFont.truetype(path, pixels)
+        return fonts[pixels]
+
+    for x, y, label in drawing.labels:
+        if label:
+            pen.text(
+                (x * scale, y * scale), label, font=font_for(LABEL_SIZE_MM), fill=0, anchor="ls"
+            )
+    for x, y, size, heading in drawing.headings:
+        if heading:
+            pen.text((x * scale, y * scale), heading, font=font_for(size), fill=0, anchor="ls")
+    canvas[:, :] = np.asarray(sheet, dtype=np.uint8)
 
 
 def _put_text(
@@ -481,6 +572,28 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
     height = page.height_mm * scale
 
     body = ["0 0 0 rg", "0 0 0 RG", "0.85 w"]
+    # Pictures first, so a rule or a word drawn over one is on top of it and not under.
+    pictures: list[bytes] = []
+    for number, image in enumerate(drawing.images):
+        rows, cols = image.grey.shape
+        pixels = _deflated(image.grey)
+        pictures.append(
+            b"<< /Type /XObject /Subtype /Image /Width "
+            + str(cols).encode()
+            + b" /Height "
+            + str(rows).encode()
+            + b" /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /FlateDecode /Length "
+            + str(len(pixels)).encode()
+            + b" >>\nstream\n"
+            + pixels
+            + b"\nendstream"
+        )
+        rect = image.rect
+        # cm maps the unit square onto the rectangle; q/Q keeps it off everything after.
+        body.append(
+            f"q {rect.w * scale:.3f} 0 0 {rect.h * scale:.3f} {rect.x * scale:.3f} "
+            f"{height - rect.bottom * scale:.3f} cm /Im{number} Do Q"
+        )
     for rect in drawing.filled:
         body.append(
             f"{rect.x * scale:.3f} {height - rect.bottom * scale:.3f} "
@@ -509,13 +622,16 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
     # is what printed `6 ? 2 =` for `6 × 2 =` and `attivit?` for `attività`: the filtering
     # in `_pdf_text` was already correct and this line undid it.
     content = "\n".join(body).encode("cp1252", "replace")
+    xobjects = " ".join(f"/Im{number} {6 + number} 0 R" for number in range(len(pictures)))
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
         f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {page.width_mm * scale:.3f} "
-        f"{height:.3f}] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>".encode(),
+        f"{height:.3f}] /Resources << /Font << /F1 5 0 R >> /XObject << {xobjects} >> >> "
+        f"/Contents 4 0 R >>".encode(),
         b"<< /Length " + str(len(content)).encode() + b" >>\nstream\n" + content + b"\nendstream",
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+        *pictures,
     ]
 
     out = bytearray(b"%PDF-1.4\n")
@@ -531,6 +647,11 @@ def drawing_to_pdf(drawing: Drawing) -> bytes:
         f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{start}\n%%EOF\n"
     ).encode()
     return bytes(out)
+
+
+def _deflated(grey: NDArray[np.uint8]) -> bytes:
+    """Grey rows as a PDF image stream. Raw and deflated, so no decoder is guessed at."""
+    return zlib.compress(np.ascontiguousarray(grey, dtype=np.uint8).tobytes(), 6)
 
 
 def _pdf_text(x: float, y: float, size: float, text: str) -> str:
