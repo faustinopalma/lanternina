@@ -13,6 +13,8 @@ in :mod:`devices.pretend`.
     python -m tools.pretend hand all                  fill every place
     python -m tools.pretend hand c1,una-parola        fill the places named
     python -m tools.pretend wait 150                  let a hundred and fifty minutes pass
+    python -m tools.pretend say 17:30                 the parent says it must be over by then
+    python -m tools.pretend say close-now             the parent brings the ending forward
     python -m tools.pretend play --hand marks         all of the above, until it ends
     python -m tools.pretend transcript                what happened, in order
     python -m tools.pretend forget                    throw the afternoon away and start again
@@ -44,6 +46,7 @@ from devices.run_experience import (
     begin,
     carry_on,
     conclude_what_is_over,
+    hear,
     load_experience,
     offer_help,
     waiting_runs,
@@ -51,6 +54,7 @@ from devices.run_experience import (
 from shared.capabilities import HouseCapability
 from shared.experience import HELP_LEVELS, Experience, ExperienceError
 from shared.ids import SheetId
+from shared.message import Message, MessageError, Says, at_the_clock
 
 WHERE = Path(os.environ.get(simulated.PRETEND_DIR_ENV, "") or "pretend")
 
@@ -310,6 +314,32 @@ def play(where: Path, experience: Experience, asked: str, step_minutes: float) -
 # ── Looking at what happened ─────────────────────────────────────────────────────────
 
 
+def say(where: Path, what: str) -> int:
+    """Stand in for a parent typing one of the two things they may say while it runs.
+
+    In the house this arrives as a row the parent wrote and the house pulled on its next
+    look. Here it goes straight to the runner, because what is being checked is what the
+    afternoon does with it — the channel that carries it is not built yet, and `ideas/09
+    §23` says where it starts.
+    """
+    house = a_house(where)
+    pretend = Pretend(where)
+    now = simulated.the_time(pretend)
+    try:
+        if what == "close-now":
+            message = Message(says=Says.CLOSE_NOW, written_at=now)
+        else:
+            message = Message(says=Says.END_BY, written_at=now, minutes=at_the_clock(what))
+    except MessageError as exc:
+        print(f"{exc}; try close-now or an hour like 17:30")
+        return 1
+    changed = hear(house, [message], now)
+    simulated.note(pretend, "parent", says=str(message.says), minutes=message.minutes)
+    for line in changed or ["nothing was under way to hear it"]:
+        print(line)
+    return 0
+
+
 def transcript(where: Path) -> int:
     began = 0.0
     for line in simulated.read_transcript(Pretend(where)):
@@ -335,6 +365,8 @@ def _said(line: dict[str, Any]) -> str:
         return f"+{float(line['added_seconds']) / 60:.0f} min"
     if what == "devised":
         return f"{line['title']} in {line['seconds']} s"
+    if what == "parent":
+        return f"{line['says']} {line['minutes'] or ''}".strip()
     rest = {key: value for key, value in line.items() if key not in ("at", "what")}
     return json.dumps(rest, ensure_ascii=False)
 
@@ -371,6 +403,9 @@ def main(argv: list[str] | None = None) -> int:
     waiting = verbs.add_parser("wait", help="let minutes pass, and let the house look")
     waiting.add_argument("minutes", type=float)
 
+    saying = verbs.add_parser("say", help="what the parent says while it runs")
+    saying.add_argument("what", help="close-now, or an hour like 17:30 to end by")
+
     playing = verbs.add_parser("play", help="begin and keep going until it ends")
     playing.add_argument("--hand", default="marks")
     playing.add_argument("--step", type=float, default=0.0, help="minutes between pages")
@@ -396,6 +431,8 @@ def main(argv: list[str] | None = None) -> int:
         return forget(where)
     if args.verb == "wait":
         return wait(where, args.minutes)
+    if args.verb == "say":
+        return say(where, args.what)
     if args.verb == "hand":
         return hand(where, args.how)
 

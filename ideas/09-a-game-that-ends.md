@@ -550,14 +550,15 @@ spends an afternoon rewording a prompt.
 1. **`§5`'s other three steps.** Optional moments are not dropped, adjacent moments are not
    merged, and there is no path backwards when there is more time than needed. Only the
    short weight and the way out are reached for.
-2. **The record is half of `§6`.** A run keeps which moment, which weight, which sheets have
-   been printed and whether the ending has begun, and all of it is deleted when the
-   afternoon ends. What is not there is the help level and the current end hour, because
-   nothing asks for help yet and nothing moves the hour.
+2. **The record is `§6`, whole.** A run keeps which moment, which weight, which sheets have
+   been printed, whether the ending has begun, how many rungs of help this moment has given,
+   and the current end hour. All of it is deleted when the afternoon ends.
 3. **Asking for help is not built.** The ladder is written in every moment, checked, shown
    to the parent, and now reached — but by the clock, not by a person. `§22` has what was
    decided and what `§17` still leaves open.
-4. **Typed messages from the parent, and the camera.** `§8` and `§9`, untouched.
+4. **The parent's channel is half built.** The afternoon obeys an end hour that moved; there
+   is no route by which a parent can move it. `§23` says where it starts.
+5. **The camera.** `§9`, untouched.
 5. **Nothing has run on the house.** The hub has not been updated and the panel has not been
    rebuilt, so no adolescent has seen a way out. What has run is `§21`.
 
@@ -700,6 +701,74 @@ handing the answer over as something the story gives. Sixteen minutes of afterno
 The first version treated `waited_since` as absent when it was falsy, and zero is a
 legitimate instant — so a ladder counted from zero never arrived at all. Seven of the twelve
 tests failed on it. A test that had checked only the bookkeeping would have passed.
+
+## 23. The end hour can move, 24 August 2026
+
+`shared/message.py` and `devices/run_experience.hear`.
+
+`§8` says a parent may send facts and constraints into a running afternoon, as typed
+messages and never as free text, and the reason is not prompt injection: a sentence like
+"he is being lazy, push him" enters the model's context and colours the tone of everything
+written after it. The defence that works is not screening the sentence. It is having nowhere
+to put one, and that is what this format is — a closed list with a number where a number is
+needed, read by code, never by a model.
+
+**Two things a parent may say, and the shortness is the design.** The afternoon is over by
+this hour, or the ending comes forward to now. `§8` lists more — pause, this device is
+broken, this material is missing, an interruption — and each of those needs the runner to do
+something it cannot do yet. Writing them into the vocabulary now would be words with no
+verbs behind them, so they are named as not built rather than declared and ignored.
+
+**Moving the hour later is the same message with a later number.** There is no separate
+"more time", because two ways of saying one thing is how they drift apart.
+
+**Closing now is not stopping.** It sets the end hour to this instant plus the thirty minutes
+the ending needs, so the afternoon finishes the way it always would have: the way out of
+wherever it got to, then its close. Reusing the one path to an ending means there is no
+second way to finish, and therefore no second way to finish badly.
+
+**Applied at once, felt at a seam.** `§8` says a message is applied at the end of the current
+moment and never in the middle of an instruction. That holds here without any waiting,
+because moving the end hour changes nothing anybody can see — what it changes is when the
+clock next decides the ending is due. The one place it bites is an afternoon already on its
+way out: the way out is in somebody's hands, and moving the hour under it would either cut
+it short or leave it hanging, so a message arriving then is ignored.
+
+**Nothing announces it.** `§8` is explicit that no text a parent sends may reveal the channel
+exists, and the way to be sure is that the function draws nothing at all. A test counts the
+screens before and after.
+
+**The end hour is now a field on the run** rather than arithmetic on when it began, which is
+the last of the three things `§6` says a runner must be able to rebuild from. A run written
+before today still has one: it falls back to the length the document declares.
+
+**Watched in the simulator.** An afternoon begun, two rungs of help given, the parent saying
+*close now* — nothing on the display at that instant — the ladder carrying on to its fourth
+rung, and then the way out. The person sees an afternoon that ended; there is nothing in it
+about an hour having moved.
+
+**The acceptance test of `§19` is met, less two things.** `tests/test_message.py` runs an
+afternoon that is begun, helped, has its end hour pulled forward halfway through, and
+reaches its written close, and then walks every screen it drew past the block list. What is
+still missing from `§19`'s sentence is the parent themselves: approval, and the channel.
+
+### What is next, and where it starts
+
+**The channel.** Nothing sends a message yet. The house has to pull them, because a dashboard
+write is inert and only a request the home server makes starts anything.
+
+*Where it starts:* a store beside `panel/reminders.py`, which is the closest thing and holds
+something a parent typed; two device routes in `panel/routes/`, one to hand over what is
+pending and one to say it was heard; the ten-minute look in `devices/afternoon.py`, which is
+already the place the house asks the panel things; and a control in
+`web/src/sections/Experiences.tsx`, next to the afternoon it belongs to.
+
+*Done when:* a parent moves the end hour in the panel, and the afternoon in the house ends by
+it without anything on any display saying so.
+
+*The trap to expect:* an in-memory store on a container app that scales to zero loses a
+message written a minute before, and a message meant to be picked up within ten minutes is
+exactly the thing that failure hides in.
 
 ## 20. What was built, 23 August 2026
 

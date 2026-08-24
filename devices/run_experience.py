@@ -44,6 +44,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -71,6 +72,7 @@ from shared.experience import (
     moment_from_dict,
 )
 from shared.ids import new_exercise_id, new_id, new_sheet_id
+from shared.message import Message, Says
 from shared.sheet import SheetSpec
 from shared.vision_contracts import PageReading, ReadConfidence
 from vision.read_sheet import detect_markers, read_qr, rectify
@@ -135,14 +137,15 @@ class Afternoon:
     # and `waited_at` is discarded with the run.
     waited_since: float = 0.0
     helped: int = 0
+    # When this afternoon is over. It starts as the length the document declares and the
+    # parent may move it, which is why it is kept rather than computed: `ideas/09 §6` calls
+    # the current end hour one of the things a runner must be able to rebuild from, and an
+    # hour derived from `started_at` cannot be moved without lying about when it began.
+    over_at: float = 0.0
 
     @property
     def moments(self) -> tuple[Moment, ...]:
         return self.segment or self.experience.moments
-
-    @property
-    def over_at(self) -> float:
-        return self.started_at + self.experience.minutes * 60.0
 
     @property
     def ending_starts_at(self) -> float:
@@ -177,14 +180,16 @@ class Afternoon:
             "left_at": self.left_at,
             "waited_since": self.waited_since,
             "helped": self.helped,
+            "over_at": self.over_at,
         }
 
     @staticmethod
     def from_dict(values: Any) -> Afternoon:
         began = float(values["started_at"])
+        experience = Experience.from_dict(values["experience"])
         return Afternoon(
             run_id=str(values["run_id"]),
-            experience=Experience.from_dict(values["experience"]),
+            experience=experience,
             started_at=began,
             waiting_at=str(values["waiting_at"]),
             segment=tuple(moment_from_dict(m) for m in values.get("segment", [])),
@@ -197,6 +202,7 @@ class Afternoon:
             # instant, and treating it as "absent" is how a ladder silently never arrives.
             waited_since=float(values.get("waited_since", began)),
             helped=int(values.get("helped", 0)),
+            over_at=float(values.get("over_at", began + experience.minutes * 60.0)),
         )
 
 
@@ -317,6 +323,91 @@ def _forget_orphan_pages(sheets_dir: Path) -> None:
             note.unlink(missing_ok=True)
 
 
+# ── What the parent said ─────────────────────────────────────────────────────────────
+
+
+def hear(house: House, said: Sequence[Message], now: float) -> list[str]:
+    """Apply what a parent said to every afternoon under way. Returns what changed.
+
+    `ideas/09 §8`. Two things move an end hour and nothing else moves anything: the list in
+    :class:`~shared.message.Says` is short because everything on it has to be applicable at
+    a seam, and these two are applicable anywhere because they change a number the ending
+    already reads.
+
+    **Applied at once, and felt at the end of the moment.** `§8` says a message is applied at
+    the end of the current moment and never in the middle of an instruction. That holds here
+    without any waiting, because moving the end hour changes nothing a person can see: what
+    it changes is when :func:`conclude_what_is_over` next decides the ending is due, and that
+    is checked at moment boundaries and by the clock. Nothing is redrawn, nothing is
+    interrupted, and there is nothing to notice.
+
+    **Nothing says a message arrived.** No acknowledgement on the display, no change of tone,
+    no apology. `§8` is explicit that a text revealing the channel exists is the one thing
+    this must not produce, and the way to be sure is that this function draws nothing at all.
+
+    A message about an afternoon that has already begun its ending is ignored: the way out is
+    in somebody's hands, and moving the hour under it would either cut it short or leave it
+    hanging. That is the one place where "at a seam" bites.
+    """
+    changed: list[str] = []
+    for path in sorted(_runs(house.sheets_dir).glob("*.json")):
+        run = _read_run(path)
+        if run is None or run.leaving_at:
+            continue
+        moved = run
+        for message in said:
+            moved = _apply(moved, message, now)
+        if moved.over_at == run.over_at:
+            continue
+        _write(_run_file(house.sheets_dir, run.run_id), moved.to_dict())
+        changed.append(f"{run.run_id} is now over at {_clock(moved.over_at)}")
+    return changed
+
+
+def _apply(run: Afternoon, message: Message, now: float) -> Afternoon:
+    if message.says is Says.CLOSE_NOW:
+        # The ending is brought forward to this instant rather than the afternoon being
+        # stopped. Reusing the one path to an ending is the point: there is no second way
+        # to finish, so there is no second way to finish badly.
+        return _over_at(run, now + ENDING_STARTS_AT_MINUTES * 60.0)
+    if message.says is Says.END_BY:
+        return _over_at(run, _today_at(message.minutes, now))
+    return run
+
+
+def _today_at(minutes_past_midnight: int, now: float) -> float:
+    """An hour on the clock as an instant, on the day the afternoon is happening.
+
+    Local midnight is recomputed rather than derived from ``now`` by arithmetic, because a
+    day is not always 86 400 seconds long and an afternoon that ends an hour early on the
+    last Sunday of October is a bug nobody would look for.
+    """
+    today = time.localtime(now)
+    midnight = time.mktime((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, -1))
+    return midnight + minutes_past_midnight * 60.0
+
+
+def _clock(instant: float) -> str:
+    return time.strftime("%H:%M", time.localtime(instant))
+
+
+def _over_at(run: Afternoon, when: float) -> Afternoon:
+    return Afternoon(
+        run_id=run.run_id,
+        experience=run.experience,
+        started_at=run.started_at,
+        waiting_at=run.waiting_at,
+        segment=run.segment,
+        weight=run.weight,
+        printed=run.printed,
+        leaving_at=run.leaving_at,
+        left_at=run.left_at,
+        waited_since=run.waited_since,
+        helped=run.helped,
+        over_at=when,
+    )
+
+
 # ── Help ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -395,6 +486,7 @@ def _one_rung_on(run: Afternoon) -> Afternoon:
         left_at=run.left_at,
         waited_since=run.waited_since,
         helped=run.helped + 1,
+        over_at=run.over_at,
     )
 
 
@@ -420,6 +512,9 @@ def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | N
         printed=run.printed,
         leaving_at=at.id,
         left_at=now,
+        waited_since=run.waited_since,
+        helped=run.helped,
+        over_at=run.over_at,
     )
 
 
@@ -555,6 +650,7 @@ def _pause(
         weight=weight,
         printed=(*run.printed, *(str(spec.sheet_id) for spec in printed)),
         waited_since=now,
+        over_at=run.over_at,
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
     for spec in printed:
@@ -576,6 +672,7 @@ def begin(
         experience=experience,
         started_at=moment,
         waiting_at="",
+        over_at=moment + experience.minutes * 60.0,
     )
     out = Outgoing()
     at, printed, weight = _play(house, run, 0, now=moment, send=send, out=out)
@@ -748,6 +845,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
             segment=carrying_on.moments,
             weight=run.weight,
             printed=run.printed,
+            over_at=run.over_at,
         )
         start = 0
     else:
