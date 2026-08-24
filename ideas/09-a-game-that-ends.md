@@ -954,6 +954,32 @@ one afternoon can be spread over every display that holds the job. Clearing only
 run happens to have resolved would leave the others exactly as they are now, and the test would
 pass on a house with one display.
 
+**The button does not reach the afternoon.** Found by running one, on 24 August 2026, and it is
+the largest of the three. A page came back from the glass, was scanned and read correctly —
+`read sh_3efc270b: mappa=segno, titolo=segno, vicini=segno, separati=segno, incrociati=segno`,
+in 29 s — the display said something about it, and the afternoon did not move. It stayed at its
+`collect` and would have stood there until the clock ended it.
+
+The wiring goes to the wrong reader. The display server writes `button.json`,
+`lanternina-scan.path` starts `lanternina-scan.service`, and that runs `devices/scan_sheet.py`,
+which is the standalone-sheet path: it reads the page, describes it, deletes the button file
+and stops. The afternoon's own reader, `run_experience.carry_on`, exists and has a unit —
+`lanternina-experience@carry-on.service` — and **nothing anywhere starts it**. `grep -rl` over
+`/opt/lanternina` and every unit finds no caller. The simulator has never shown this because
+`tools/pretend.py hand` calls `carry_on` directly.
+
+*Where it starts:* `devices/scan_sheet.py`, before it scans. `waiting_runs(sheets_dir)` already
+answers "is an afternoon under way", and it is the only thing that can be known before a page
+is on the glass.
+
+*Done when:* a sheet put on the glass during an afternoon moves that afternoon on, and a sheet
+put there with no afternoon running is still described the way it is today.
+
+*The trap to expect:* both readers scan, and a scan is 29 s of a person standing at the
+scanner. Deciding after the scan means scanning twice; deciding before it means deciding from
+"a run is waiting" rather than from what is actually on the glass, so the run's own QR check
+has to stay the thing that refuses a sheet from somewhere else.
+
 ## 20. What was built, 23 August 2026
 
 Steps 1, 2 and 6 of the order above, plus the output filter, the ten dimensions and the
