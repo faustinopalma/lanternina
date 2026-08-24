@@ -84,31 +84,58 @@ breathe.
 > no person in frame — `devices/scan_sheet.py` says so in its own docstring. If the camera path
 > of `§9` is ever built, the markers come back with it and the rule with them.
 
-**And then the QR goes too, because the question it answers is already answered.** One
-afternoon at a time is a rule of this house. A run waits at exactly one `collect`, and
-`run.printed` names the sheets it handed out. **The set of candidate sheets has size one.**
-Recovering identity from the page — by a code printed on it or by a vector computed from it —
-is answering a question the house never had.
+**And then the QR goes too, because the page can be recognised by looking like itself.** The
+parent's proposal: embed the scan, and the blank it was printed from is the nearest neighbour.
+Identity without printing anything on the paper, which is exactly what a designed page wants.
 
-What the QR genuinely protects is the other case: somebody puts a different page on the glass,
-an old one or one from school, and today that produces *Questo foglio non è di Lanternina*.
-Without a QR that check becomes "is this the page we are waiting for?", and the reading call
-already receives the blank, so it can simply be asked. One call, no second model, nothing
-printed on the paper.
+An earlier draft of this section argued the QR could go because the house already knows which
+sheet it is waiting for — one afternoon at a time, one `collect`, `run.printed` naming what was
+handed out. That argument is weaker than it looked, and the parent said why: **the house knows
+by expectation, not by reading the object.** When the expectation is wrong — an earlier sheet
+put back on the glass — the afternoon carries on from false evidence, silently. An identifier
+exists so as not to assume.
 
-**An embedding was considered for this and is not proposed.** Checked on 24 August 2026: no
-embedding model is deployed, and of those available in swedencentral the OpenAI ones are text
-only — `embed-v-4-0` (Cohere Embed 4) is the one that could represent an image. It would earn
-its place when the candidate set stops being one: several sheets returned out of order, a page
-found days later, or the camera path. None of those exists. Until one does, it is a call per
-scan and a second model to keep working, for a question with one possible answer.
+**An embedding replaces the code, and it was measured before being believed.** The trick is
+the parent's: a page with handwriting on it is a small perturbation of the blank it was printed
+from, so its vector sits nearest that blank and the nearest neighbour says which sheet came
+back. `embed-v-4-0` — Cohere Embed 4, the only model in swedencentral that represents an image
+— was deployed on 24 August 2026 and `tools/probe_embed.py` put three real rendered pages and
+three scribbled copies through it.
+
+```
+                   una       due       tre
+ una scritta    0.8369    0.7760    0.8354   -> una
+ due scritta    0.7705    0.7922    0.7744   -> due
+ tre scritta    0.8231    0.7676    0.8383   -> tre
+```
+
+**Three out of three, and a smallest margin of +0.0015.** It works, and by an amount that is
+not an identifier: `una` beat `tre` by a thousandth and a half. The reason is the whole point of
+this document. These pages are white sheets with black rectangles on them, and to an embedding
+one form looks like another form. A treasure map, a dossier and a museum label would separate
+by a great deal more.
+
+So the visual redesign and the identification are not two pieces of work. **They are the same
+piece of work**: pages worth looking at are also pages that can be told apart. And the margin is
+the measurement that says whether a set of designs is distinctive enough — a number to check,
+not a matter of taste.
+
+> A limit of that probe, stated rather than glossed: the simulated handwriting was the same kind
+> of random scribble on all three, which pushes them together. Real handwriting differs page to
+> page and the margin would probably improve. Probably is not measured.
+
+**The one case an embedding cannot answer** is two blanks that are visually identical — the same
+design handed out twice in one afternoon. Nothing visual can separate those. There the house's
+own expectation is the tie-break: it knows which sheet it is waiting for. Expectation as the
+tie-break and the page as the evidence is the right way round; expectation alone was what this
+document proposed before the parent pointed out that it means never reading the object.
 
 **The blank page has to be reproducible, not stored.** The house can re-render it from the same
 description the printed one came from; `devices/pretend.py` already does exactly this. Nothing
 new is kept on disk, and a page keeps no copy of what somebody wrote on it.
 
-**So a page may carry nothing but what it is for.** No code, no markers, no grid — an object in
-a story, and the machine that reads it knows what it was expecting.
+**So a page carries nothing but what it is for.** No code, no markers, no grid — an object in a
+story, recognised by looking like itself.
 
 ## 4. Ink is a number
 
