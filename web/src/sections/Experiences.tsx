@@ -4,6 +4,7 @@ import { useApi } from "@/api/client";
 import type { Decision, Moment, OfferedExperience } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
+import { Input, Label } from "@/components/ui/field";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
@@ -127,6 +128,78 @@ function WayOutOf({ moment }: { moment: Moment }) {
   );
 }
 
+/* An afternoon the house has begun, and the only thing that reaches one from here.
+ *
+ * Two things, chosen from a list of two, with an hour where an hour is what moved. There
+ * is no box to type a sentence in and there will not be one: `shared/message.py` says why
+ * at length, and the short version is that a sentence about a person reaches a model and
+ * colours everything written after it.
+ *
+ * Pressing writes a row. Nothing is sent, nothing is woken, and the house applies it on
+ * the look it already makes every ten minutes. Nothing appears on any display when it
+ * does — an afternoon whose hour moved looks like an afternoon that is ending. */
+function Saying({ when }: { when: number }) {
+  const { t, dateTime } = useWords();
+  const api = useApi();
+  const [at, setAt] = useState("");
+  const [saying, setSaying] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [again, setAgain] = useState(0);
+  const [waiting] = useLoad(() => api.messages(), [again]);
+
+  async function say(said: { says: string; at?: string }) {
+    setSaying(true);
+    setFailed(false);
+    try {
+      await api.say(said);
+      setAgain((n) => n + 1);
+    } catch {
+      setFailed(true);
+    }
+    setSaying(false);
+  }
+
+  const pending = waiting.status === "ready" && waiting.data.length > 0;
+
+  return (
+    <div className="w-full">
+      <Quiet>{t("experiences.begun", { when: dateTime(when) })}</Quiet>
+      <form
+        className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void say({ says: "end_by", at });
+        }}
+      >
+        <Label htmlFor="end-by">{t("experiences.endBy")}</Label>
+        <Input
+          id="end-by"
+          type="time"
+          required
+          className="w-34"
+          value={at}
+          onChange={(event) => setAt(event.target.value)}
+        />
+        <Button type="submit" size="small" disabled={saying}>
+          {t("action.moveTheHour")}
+        </Button>
+        <Button
+          type="button"
+          size="small"
+          disabled={saying}
+          onClick={() => void say({ says: "close_now" })}
+        >
+          {t("action.closeNow")}
+        </Button>
+      </form>
+      <Quiet className="mt-2">{t("experiences.sayingNote")}</Quiet>
+      <Quiet aria-live="polite">
+        {failed ? t("experiences.sayFailed") : pending ? t("experiences.saidWaiting") : ""}
+      </Quiet>
+    </div>
+  );
+}
+
 function Card({
   offered,
   onDecided,
@@ -134,7 +207,7 @@ function Card({
   offered: OfferedExperience;
   onDecided: (state: Decision) => void;
 }) {
-  const { t, dateTime } = useWords();
+  const { t } = useWords();
   const api = useApi();
   const [open, setOpen] = useState(false);
   const [deciding, setDeciding] = useState(false);
@@ -165,9 +238,9 @@ function Card({
       <div className="mt-3.5 flex flex-wrap gap-2.5">
         {approved ? (
           offered.begunAt > 0 ? (
-            /* Nothing to press. An afternoon the house has begun is out of reach from
-               here, which is true of every afternoon once it has started. */
-            <Quiet>{t("experiences.begun", { when: dateTime(offered.begunAt) })}</Quiet>
+            /* An afternoon the house has begun cannot be withdrawn, stopped or watched
+               from here. What it can be given is an hour. */
+            <Saying when={offered.begunAt} />
           ) : (
             <Button size="small" disabled={deciding} onClick={() => decide("withdrawn")}>
               {t("action.withdraw")}

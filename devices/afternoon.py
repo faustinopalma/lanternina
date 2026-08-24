@@ -36,6 +36,12 @@ the ending follows it. Until 23 August 2026 the same call deleted the run in sil
 is the failure the whole project exists to prevent — measured on this house at 14:02 on 21
 August, on `aft_5ec79e85`.
 
+**And it is how the parent reaches an afternoon that is already running.** Before deciding
+whether an ending is due, the house asks the panel whether anything was said — an end hour
+that moved, or an ending brought forward. Still no route the other way: the panel holds a
+row and this machine comes for it, so what a parent writes takes effect within one turn of
+this timer and not at the moment they press.
+
 **What is asked for, and when.** If the look finds nothing approved and nothing waiting
 with the parent, the house asks for one to be devised. It arrives pending, so it cannot
 run today: the earliest it can happen is the next chosen day, after somebody has read it.
@@ -57,8 +63,15 @@ from pathlib import Path
 from typing import Any
 
 from devices.house import CannotRun, House, screen_in
-from devices.run_experience import begin, conclude_what_is_over, offer_help, waiting_runs
+from devices.run_experience import (
+    begin,
+    conclude_what_is_over,
+    hear,
+    offer_help,
+    waiting_runs,
+)
 from shared.experience import Experience, ExperienceError
+from shared.message import Message, MessageError
 
 # Monday first, and these exact three letters: `panel/reminders.py` writes them and
 # `devices/show_reminders.py` reads them, and a fourth spelling is a day nobody matches.
@@ -232,6 +245,65 @@ def say_it_began(panel: str, household: str, key: str, offered_id: str) -> None:
         print(f"the panel was not told it began ({exc})")
 
 
+def listen(house: House, now: float) -> list[str]:
+    """Ask the panel what the parent said, apply it, and say each one was heard.
+
+    `ideas/09 §23`. This is the whole channel from the panel into a running afternoon, and
+    it points the same way everything else here does: the panel holds a row, the house
+    comes for it. A parent moving the end hour reaches the room because this call happened,
+    not because anything was sent.
+
+    **Before the ending is decided, and that is the only ordering that matters.** The next
+    thing this timer does is ask whether an afternoon's hour has come; an hour that moved
+    after that question would wait ten minutes to be honoured, and "close now" that takes
+    ten minutes is not what the words say.
+
+    **Said to have been heard once it is applied**, one at a time and by id, so a message
+    the parent wrote in the meantime is still waiting afterwards. A message that cannot be
+    read is left alone rather than cleared: it means the two sides disagree about what may
+    be said, which is ours to fix, and it stops being offered within the hour anyway.
+
+    Never raises. A panel that will not answer means an afternoon that goes on exactly as
+    it was going.
+    """
+    try:
+        answer = _get(
+            f"{house.panel}/api/device/{house.household}/messages",
+            house.device_key,
+            LOOK_TIMEOUT_SECONDS,
+        )
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the panel did not say whether anything was said ({exc})")
+        return []
+
+    heard: list[tuple[str, Message]] = []
+    for row in answer.get("messages") or []:
+        if not isinstance(row, dict):
+            continue
+        said = dict(row)
+        message_id = str(said.pop("id", ""))
+        try:
+            heard.append((message_id, Message.from_dict(said)))
+        except MessageError as exc:
+            print(f"the panel said something this house cannot read ({exc})")
+    if not heard:
+        return []
+
+    changed = hear(house, [message for _, message in heard], now)
+    for message_id, _ in heard:
+        try:
+            _post(
+                f"{house.panel}/api/device/{house.household}/messages/{message_id}/heard",
+                house.device_key,
+                {},
+                LOOK_TIMEOUT_SECONDS,
+            )
+        except (urllib.error.URLError, OSError, ValueError) as exc:
+            # It was applied; being told again in ten minutes applies the same end hour.
+            print(f"the panel was not told it was heard ({exc})")
+    return changed
+
+
 def choose(offered: list[Any], house: House) -> tuple[str, Experience] | None:
     """The oldest approved afternoon this house can actually run, or nothing.
 
@@ -291,6 +363,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"help: {given}")
     if args.only_help:
         return 0
+
+    # Before the ending is decided, not after: an end hour that moved would otherwise wait
+    # ten minutes to be honoured, and "close now" that takes ten minutes is not that.
+    for moved in listen(house, now):
+        print(moved)
 
     for run_id in conclude_what_is_over(house, now, send=not args.no_paper):
         print(f"{run_id} reached its ending and is over")

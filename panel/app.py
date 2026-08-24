@@ -34,6 +34,7 @@ from .devices import (
 )
 from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
+from .messages import InMemoryMessageStore, MessageStore
 from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
 from .proposals import InMemoryProposalStore, ProposalStore
@@ -43,6 +44,7 @@ from .rhythm import InMemoryRhythmStore, RhythmStore
 from .routes import admin, painting
 from .routes import devices as device_routes
 from .routes import experience as experience_routes
+from .routes import messages as message_routes
 from .routes import pictures as picture_routes
 from .routes import preferences as preference_routes
 from .routes import proposals as proposal_routes
@@ -72,6 +74,7 @@ SECTIONS = (
     usage_routes,
     request_routes,
     experience_routes,
+    message_routes,
 )
 
 
@@ -89,6 +92,7 @@ def create_app(
     reminders: SentenceStore | None = None,
     requests: RequestStore | None = None,
     experiences: ExperienceStore | None = None,
+    messages: MessageStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -117,6 +121,9 @@ def create_app(
     )
     app.state.experiences = (
         experiences if experiences is not None else _experience_store(app.state.settings)
+    )
+    app.state.messages = (
+        messages if messages is not None else _message_store(app.state.settings)
     )
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
@@ -258,6 +265,14 @@ def _request_store(settings: Settings) -> RequestStore:
     from .cosmos_store import CosmosRequestStore
 
     return CosmosRequestStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _message_store(settings: Settings) -> MessageStore:
+    if not settings.cosmos_configured:
+        return InMemoryMessageStore()
+    from .cosmos_store import CosmosMessageStore
+
+    return CosmosMessageStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

@@ -17,6 +17,8 @@ import type {
   Proposal,
   Reminder,
   Rhythm,
+  Said,
+  NewSaid,
   Theme,
   UsageAnswer,
   HouseRequest,
@@ -35,6 +37,7 @@ export interface Recorded {
   devicesRemoved: string[];
   askedAgain: string[];
   experienceDecisions: { id: string; state: Decision }[];
+  said: NewSaid[];
 }
 
 export interface FakeApi extends Api {
@@ -120,7 +123,7 @@ const wayOut = {
 
 /** One devised afternoon, in the shape the panel hands it over: a display, a sheet, a
  *  page coming back, and a branch left to be written when it does. */
-const SAMPLE_AFTERNOON: OfferedExperience = {
+export const SAMPLE_AFTERNOON: OfferedExperience = {
   id: "aftn-1",
   title: "Sei passaggi di una trasformazione",
   overview:
@@ -281,6 +284,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     devicesRemoved: [],
     askedAgain: [],
     experienceDecisions: [],
+    said: [],
   };
   let themes: Theme[] = [
     { id: "theme-1", label: "gatti che dormono" },
@@ -290,6 +294,8 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
   let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
+  // What the parent has said to a running afternoon and the house has not yet come for.
+  let waiting: Said[] = [];
   // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
     {
@@ -474,6 +480,20 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       recorded.experienceDecisions.push({ id, state });
       afternoons = afternoons.map((row) => (row.id === id ? { ...row, state } : row));
     },
+
+    say: async (what) => {
+      recorded.said.push(what);
+      const [hours = "0", minutes = "0"] = (what.at ?? "").split(":");
+      const one: Said = {
+        id: `say_${recorded.said.length}`,
+        says: what.says,
+        writtenAt: NOW,
+        minutes: what.says === "end_by" ? Number(hours) * 60 + Number(minutes) : 0,
+      };
+      waiting = [...waiting, one];
+      return one;
+    },
+    messages: async () => waiting,
   };
 
   return { ...base, ...overrides, recorded };

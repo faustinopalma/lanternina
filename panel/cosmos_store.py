@@ -25,9 +25,11 @@ from azure.identity import DefaultAzureCredential
 
 from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
+from shared.message import Message, Says
 
 from .devices import DeviceStatus, Thing, order_of
 from .experiences import OfferedExperience
+from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
@@ -50,6 +52,7 @@ INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
+MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
 EXPERIENCES_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
@@ -343,6 +346,75 @@ def _to_sentence(document: dict[str, Any]) -> Sentence:
         days=tuple(str(day) for day in document.get("days") or ()),
         question=str(document.get("question") or ""),
         words=tuple(str(word) for word in document.get("words") or ()),
+    )
+
+
+class CosmosMessageStore:
+    """Conforms to :class:`~panel.messages.MessageStore`.
+
+    This is the store the in-memory twin cannot stand in for. A message is written by a
+    parent and collected by the house within ten minutes, and the container app scales to
+    zero in between — so a message held in a process is a message lost by the next
+    request, and the failure looks exactly like a house that did not obey.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(MESSAGES_CONTAINER)
+        )
+
+    def add(self, pending: PendingMessage) -> PendingMessage:
+        self._container.create_item(
+            {
+                "id": pending.id,
+                "familyId": pending.household_id,
+                "type": "message",
+                "says": str(pending.said.says),
+                "minutes": pending.said.minutes,
+                "writtenAt": pending.said.written_at,
+                "writtenBy": pending.written_by,
+            }
+        )
+        return pending
+
+    def pending(self, household_id: str) -> list[PendingMessage]:
+        now = time.time()
+        rows = self._container.query_items(
+            query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'message'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        fresh: list[PendingMessage] = []
+        for document in rows:
+            message = _to_message(document)
+            if message.stale(now):
+                self.heard(household_id, message.id)
+                continue
+            fresh.append(message)
+        return sorted(fresh, key=lambda row: row.said.written_at)
+
+    def heard(self, household_id: str, message_id: str) -> bool:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.delete_item(item=message_id, partition_key=household_id)
+        except exceptions.CosmosResourceNotFoundError:
+            return False
+        return True
+
+
+def _to_message(document: dict[str, Any]) -> PendingMessage:
+    return PendingMessage(
+        id=str(document["id"]),
+        household_id=str(document["familyId"]),
+        said=Message(
+            says=Says(str(document.get("says") or "")),
+            written_at=float(document.get("writtenAt") or 0.0),
+            minutes=int(document.get("minutes") or 0),
+        ),
+        written_by=str(document.get("writtenBy") or ""),
     )
 
 

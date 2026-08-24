@@ -31,6 +31,8 @@
   "action.approve": "Approva",
   "action.refuse": "Rifiuta",
   "action.withdraw": "Non più",
+  "action.moveTheHour": "Sposta l'ora",
+  "action.closeNow": "Falla finire adesso",
 
   "experiences.title": "Pomeriggi",
   "experiences.note": "Un pomeriggio intero, pensato per questa casa: qualcosa sul display, un foglio sul tavolo, e quello che torna dallo scanner decide come va avanti. Approvi il pomeriggio, non i singoli passaggi.",
@@ -55,8 +57,12 @@
   "experiences.approved": "Già approvati",
   "experiences.noneApproved": "Nessuno approvato. Finché non ce n'è, la casa non ha un pomeriggio da cominciare.",
   "experiences.decideFailed": "Non sono riuscito a registrare la decisione. Riprova più tardi.",
-  "experiences.withdrawn": "Ritirato. Non verrà più consegnato. Un pomeriggio già cominciato va avanti per conto suo: da qui non si può fermare.",
+  "experiences.withdrawn": "Ritirato. Non verrà più consegnato. Un pomeriggio già cominciato va avanti per conto suo: da qui si può solo spostare l'ora in cui finisce.",
   "experiences.begun": "Cominciato il {when}.",
+  "experiences.endBy": "Finisce entro",
+  "experiences.sayingNote": "Da qui si può spostare l'ora in cui finisce, o portarla a adesso. Non è un modo per fermarlo: il pomeriggio arriva comunque alla sua fine, dal punto in cui è. Sul display non compare niente.",
+  "experiences.saidWaiting": "Scritto. La casa lo trova alla prossima richiesta, entro dieci minuti.",
+  "experiences.sayFailed": "Non sono riuscito a registrarlo. Riprova più tardi.",
 
   "kind.exercise": "Foglio da stampare",
   "kind.routine_prompt": "Promemoria sul display",

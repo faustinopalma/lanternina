@@ -23,6 +23,8 @@ import {
   type Reminder,
   type Reminders,
   type Rhythm,
+  type Said,
+  type NewSaid,
   type Theme,
   type UsageAnswer,
 } from "./types";
@@ -216,6 +218,15 @@ export function httpApi(token: string): Api {
     // devised, nothing is printed, and the house finds it when it next asks.
     async decideExperience(id: string, state: Decision): Promise<void> {
       await json(`/api/experiences/${id}/decision`, write({ state, note: "" }));
+    },
+
+    // The whole effect of saying something to a running afternoon: one row. No display is
+    // touched from here — the house comes for it on the look it already makes.
+    say: (said: NewSaid) => json<Said>("/api/message", write(said), ["id", "says"]),
+
+    async messages(): Promise<Said[]> {
+      const answer = await json<{ messages: Said[] }>("/api/messages", {}, ["messages"]);
+      return answer.messages;
     },
   };
 }

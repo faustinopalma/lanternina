@@ -31,6 +31,8 @@
   "action.approve": "Approve",
   "action.refuse": "Refuse",
   "action.withdraw": "Not any more",
+  "action.moveTheHour": "Move the hour",
+  "action.closeNow": "End it now",
 
   "experiences.title": "Afternoons",
   "experiences.note": "A whole afternoon, devised for this house: something on the display, a sheet on the table, and what comes back off the scanner decides how it goes on. You approve the afternoon, not each step.",
@@ -55,8 +57,12 @@
   "experiences.approved": "Already approved",
   "experiences.noneApproved": "None approved. Until there is one, the house has no afternoon to begin.",
   "experiences.decideFailed": "I could not record the decision. Try again later.",
-  "experiences.withdrawn": "Withdrawn. It will not be handed over again. An afternoon already begun goes on by itself: it cannot be stopped from here.",
+  "experiences.withdrawn": "Withdrawn. It will not be handed over again. An afternoon already begun goes on by itself: all that can be done from here is move the hour it is over by.",
   "experiences.begun": "Begun on {when}.",
+  "experiences.endBy": "Over by",
+  "experiences.sayingNote": "From here you can move the hour it is over by, or bring that hour to now. It is not a way to stop it: the afternoon still reaches its ending, from wherever it got to. Nothing appears on any display.",
+  "experiences.saidWaiting": "Written down. The house finds it at its next request, within ten minutes.",
+  "experiences.sayFailed": "I could not record it. Try again later.",
 
   "kind.exercise": "Sheet to print",
   "kind.routine_prompt": "Reminder on the display",

@@ -250,6 +250,24 @@ export interface HouseRequest {
   askedAt: number;
 }
 
+/** One of the two things a parent may say to an afternoon that is already running.
+ *  `shared/message.py` says why there is no third and why none of them is a sentence:
+ *  `end_by` moves the hour it is over by, `close_now` brings that hour to now. `at` is
+ *  "HH:MM" and is read only for `end_by`. */
+export interface NewSaid {
+  says: string;
+  at?: string;
+}
+
+/** One said thing the house has not yet come for. `minutes` is past midnight, which is
+ *  what the house reads; the panel sends and shows the hour the parent chose. */
+export interface Said {
+  id: string;
+  says: string;
+  writtenAt: number;
+  minutes: number;
+}
+
 /** What `/api/me` said, without the number it said it with: an HTTP code is our problem
  *  and has no business being read by a parent. */
 export type Admission =
@@ -296,4 +314,6 @@ export interface Api {
   standingRequest(): Promise<HouseRequest | null>;
   experiences(state: string): Promise<OfferedExperience[]>;
   decideExperience(id: string, state: Decision): Promise<void>;
+  say(said: NewSaid): Promise<Said>;
+  messages(): Promise<Said[]>;
 }
