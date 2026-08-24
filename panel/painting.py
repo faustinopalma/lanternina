@@ -20,6 +20,7 @@ import secrets
 from collections.abc import Callable
 
 from shared.ids import new_id
+from shared.manner import a_manner
 from shared.routing import Capability, ModelRequest, ModelUsage
 from shared.safety import ContentKind
 from shared.seal import Sealer, SealPurpose
@@ -35,6 +36,10 @@ FALLBACK_THEMES = (
 
 # Written for a screen with two levels and no backlight: fine detail and text both vanish
 # once the picture is dithered, so neither is asked for.
+#
+# The manner is appended per call and never stored in this string. Without it the prompt was
+# a pure function of the theme, so a household with three themes saw the same three pictures
+# for as long as it kept them — noticed by the parent, 24 August 2026.
 PICTURE_PROMPT = (
     "Black and white ink illustration of {theme}. Bold clean outlines, large simple "
     "shapes, strong contrast, generous white space, calm and friendly. "
@@ -99,15 +104,16 @@ async def paint(
         Sealer(SealPurpose.CONTENT_SAFETY, key, "orchestrator.safety"),
     )
     router = FoundryRouter(FoundryConfig.from_env(environment), gate=gate)
+    drawn = a_manner()
     try:
         payload = await router.generate_for_user(
             ModelRequest(
                 capability=Capability.IMAGE_GENERATION,
-                prompt=PICTURE_PROMPT.format(theme=theme),
+                prompt=f"{PICTURE_PROMPT.format(theme=theme)} {drawn.as_sentence()}",
                 request_id=new_id("rq"),  # type: ignore[arg-type]
                 purpose=f"picture/{theme}",
                 content_kind=ContentKind.IMAGE_PNG,
-                metadata={"size": size},
+                metadata={"size": size, "manner": drawn.to_dict()},
             )
         )
     finally:

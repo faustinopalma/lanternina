@@ -1,14 +1,34 @@
 # Lanternina
 
-A home system that offers activities to an adolescent — sheets to print, short games on two
-buttons, and reminders on an e-paper display. A parent steers it, and the design does not
-try to remove that role.
+Lanternina invents an afternoon, gets a parent's agreement to it, and then runs it in a real
+room — on paper, on e-paper displays, and on the clock — for one adolescent, with nobody
+watching over their shoulder.
 
-It runs on a Linux mini-PC in the house. Today it serves two e-paper displays and draws
-sheets for a printer; a press on the display's button scans the sheet on the glass and the
-reading comes back on the screen about half a minute later. Every language and vision
-model call goes to Azure AI Foundry. No model runs on the device, and offline means serving
-what the parent has already approved.
+An afternoon is not a worksheet with a story on top. A model writes it as a whole document:
+four or five moments, each in three lengths so the plan can be shortened without being cut,
+a four-rung ladder of help that arrives whether or not anybody asked, and from every single
+point a written way out that reaches the same ending. That document is checked against six
+properties before a parent ever sees it, and a parent approves it once. Nothing in the cloud
+can start it, extend it or redirect it: the house asks, and the answer arrives inside the
+reply.
+
+Then it happens. The house prints a page — a map, a dossier, a museum label, a leaf from a
+field notebook, drawn whole by an image model from words that have already passed the safety
+gate. Somebody writes on it and puts it back on the scanner glass. The page is read by
+handing a model two images, the blank and what came back, and asking what is different: no
+QR code, no corner markers, no grid of declared boxes, nothing printed on the paper that is
+there for a machine. What comes back decides where the afternoon goes, and the rest of it is
+written while the page is still on the table.
+
+It ends. Thirty minutes before the hour the parent agreed to, whatever the afternoon has
+reached, the way out begins — and the ending it arrives at is the same ending, never
+announced as a shortened one.
+
+It runs on a Linux mini-PC in a house, serving two e-paper displays, an inkjet and a flatbed
+scanner. Every language and vision call goes to Azure AI Foundry in the EU; no model runs on
+the device. Measured on the deployment: an afternoon is devised in **76–100 s**, a page is
+drawn in **19–33 s** and covers **0.5–2.7 %** of the sheet in ink, and a page that comes back
+is read in **4.4–5.5 s**.
 
 ## Who it is for
 
@@ -107,20 +127,27 @@ product rather than the test.
 
 ```text
 shared/         types and protocols every package depends on; depends on nothing itself
+                  experience.py  — an afternoon: moments, weights, help, ways out, endings
+                  page.py        — a page: a kind of object, its words, and what it draws
 orchestrator/   planner + the three things nothing else may hold:
                   router.py    — the only door to a model backend
                   safety.py    — the only holder of the content-safety key
                   approval.py  — the only holder of the parent-approval key
 agents/         one module per agent; no agent imports another
-vision/         single-shot capture, ArUco detection, rectification, QR, cell reading
-printing/       the sheet renderer: markers, QR and cell outlines at exact millimetres
+                  experience_deviser.py / experience_continuer.py — the afternoon
+                  page_maker.py  — one prompt, one whole page
+                  page_reader.py — the blank against what came back off the glass
+printing/       paper.py: one image onto A4, and the ink it costs. Nothing lays anything out
 panel/          the parent-facing API — the only place approval happens
 web/            the panel in the browser, a React single-page application
-devices/        what runs in the house: display server, picture pull, status push
-tools/          the home server, and the command-line paths that are not a package yet
+devices/        what runs in the house: display server, runner, printing, scanning
+                  pretend.py — the same house with the person simulated
+tools/          the command-line paths, the probes, and the simulated hand
 infra/          the cloud tier as Bicep; deploy/ is the mini-PC side
 docs/           architecture, non-goals, threat model, hardware
 ideas/          what is not built, ranked, with costs
+experiments/    runs against the simulated house, kept whether they went well or badly
+attic/          what was built, argued about and retired — kept for the argument
 tests/          the boundary and delivery guarantees above
 ```
 
@@ -155,8 +182,36 @@ pip install -e ".[devices]"   # serial link to the ESP32s
 
 ## Status
 
-Parts of this are running in a house; parts do not exist. The full table is at the end of
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and it is kept honest rather than encouraging.
+An afternoon has run end to end in a house: devised, approved in the browser, printed,
+filled in, scanned, continued from what came back, and closed on its own hour. Four defects
+surfaced that day and none of them had been found by a test — they were found by somebody
+standing next to the printer, and they are written up in [ideas/09](ideas/09-a-game-that-ends.md).
+
+What is solid: the afternoon format and its checks, the parent panel and its approval, the
+page drawn whole and read against its blank, the clock that guarantees an ending, and the
+boundaries in the table above. What is not: a second house has never been provisioned, the
+installer's `--install` has never been run, and the page format's ink budget is measured but
+not yet decided against a printer somebody was watching.
+
+The full table is at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and it is kept
+honest rather than encouraging.
+
+## Running it without a house
+
+There is a simulated house: the same runner, the same panel, the same models, the same
+printing and the same reading — with the equipment replaced by files and the person replaced
+by an image model that fills the page in.
+
+```bash
+LANTERNINA_PRETEND=1 python -m tools.experiment run "what I am trying" --by teenager
+```
+
+Each run lands in `experiments/`, numbered, with the whole flow in order: every screen, every
+page as it was handed over, every page as it came back, and notes on how it went. Runs that
+failed are kept, because a run that failed is the only evidence of how it failed.
+
+The switch is one word. `LANTERNINA_PRETEND=1` simulates; anything else, or nothing, is the
+real house.
 
 Running: the cloud tier, the parent panel and its API, the content agent, the model router
 with real credentials, the safety gate, the hub services that serve the displays and pull an

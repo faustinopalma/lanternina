@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import base64
 import json
+import time
 import urllib.error
 import urllib.request
 
@@ -28,6 +29,9 @@ from shared.vision_contracts import WhatCameBack
 # nobody is left standing in front of a display that says nothing.
 DRAW_TIMEOUT_SECONDS = 180
 READ_TIMEOUT_SECONDS = 90
+# What the image deployment asks to be left alone for when it is over its rate: it says
+# "retry after 17 seconds", and this is that with room.
+BUSY_SECONDS = 25.0
 
 
 class PanelUnreachable(RuntimeError):
@@ -66,16 +70,31 @@ def draw_page(
     household: str,
     key: str,
     timeout: int = DRAW_TIMEOUT_SECONDS,
+    tries: int = 2,
 ) -> NDArray[np.uint8]:
-    """The page a model drew, as one grey image. Raises :class:`PanelUnreachable`."""
+    """The page a model drew, as one grey image. Raises :class:`PanelUnreachable`.
+
+    Tries again once when the cloud says it is busy, because that is a transient thing and
+    the alternative is an afternoon that plays its ``instead`` for a reason that would have
+    gone away in half a minute. It does not try again for anything else: a refusal, a bad
+    key and a page the format would not take are all answers, and repeating them costs money.
+    """
     if not (panel and household and key):
         raise PanelUnreachable("no panel is configured")
-    answer = _ask(
-        f"{panel.rstrip('/')}/api/device/{household}/page",
-        {"page": page},
-        key=key,
-        timeout=timeout,
-    )
+    for attempt in range(1, tries + 1):
+        try:
+            answer = _ask(
+                f"{panel.rstrip('/')}/api/device/{household}/page",
+                {"page": page},
+                key=key,
+                timeout=timeout,
+            )
+        except PanelUnreachable as exc:
+            if attempt < tries and _busy(str(exc)):
+                time.sleep(BUSY_SECONDS)
+                continue
+            raise
+        break
     encoded = answer.get("imageBase64")
     if not isinstance(encoded, str) or not encoded:
         raise PanelUnreachable("the panel answered without a page")
@@ -85,6 +104,11 @@ def draw_page(
     if drawn is None:
         raise PanelUnreachable("what the panel sent is not an image")
     return np.asarray(drawn, dtype=np.uint8)
+
+
+def _busy(said: str) -> bool:
+    """Whether the cloud said it was over its rate, rather than saying no."""
+    return "429" in said or "RateLimitReached" in said
 
 
 def read_page(

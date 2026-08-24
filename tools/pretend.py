@@ -35,7 +35,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from devices import pretend as simulated
 from devices.house import CannotRun, House
@@ -311,8 +311,20 @@ def wait(where: Path, minutes: float) -> int:
     return 0
 
 
+# The image deployment is capacity 2 and answers 429 to a second call inside about half a
+# minute. An afternoon with a written hand makes two image calls per page — one to draw it,
+# one to fill it in — so a run that does not wait spends half its pages on the `instead`
+# branch and looks like a system that cannot print. Measured 24 August 2026.
+PAUSE_SECONDS: Final = 35.0
+
+
 def play(
-    where: Path, experience: Experience, asked: str, step_minutes: float, by: str = ""
+    where: Path,
+    experience: Experience,
+    asked: str,
+    step_minutes: float,
+    by: str = "",
+    pause: float = 0.0,
 ) -> int:
     """Begin, and keep handing pages back until the afternoon ends.
 
@@ -339,10 +351,43 @@ def play(
             if not waiting_runs(house.sheets_dir):
                 print("the afternoon is over")
                 return 0
+        if pause:
+            time.sleep(pause)
         if hand(where, asked, by) != 0:
             return 1
     print(f"it handed back {MOST_PAGES} pages and is still going; something is looping")
     return 1
+
+
+def again(
+    where: Path,
+    experience: Experience,
+    asked: str,
+    step_minutes: float,
+    by: str,
+    pause: float,
+    times: int,
+) -> int:
+    """Run the same afternoon over and over, and say how many got to their ending.
+
+    What this is for is the thing one run cannot show: whether the loop holds. A model that
+    draws a page nobody can read, a reading that answers the same way whatever is on the
+    paper, a branch that is never taken — none of those look like anything once. Each run
+    writes into its own folder, so a run that went wrong can still be looked at afterwards.
+    """
+    finished = 0
+    for number in range(1, times + 1):
+        folder = where / f"run-{number:02d}"
+        # Plain ASCII: this prints to a Windows console whose default codec is cp1252, and a
+        # box-drawing character there is an exception rather than a heading.
+        print(f"\n-- {number} of {times} -- {folder}")
+        began = time.monotonic()
+        outcome = play(folder, experience, asked, step_minutes, by, pause)
+        seconds = time.monotonic() - began
+        finished += outcome == 0
+        print(f"   {'reached its ending' if outcome == 0 else 'stopped'} in {seconds:.0f} s")
+    print(f"\n{finished} of {times} reached an ending")
+    return 0 if finished == times else 1
 
 
 # ── Looking at what happened ─────────────────────────────────────────────────────────
@@ -449,6 +494,13 @@ def main(argv: list[str] | None = None) -> int:
         "--by", default="", help=f"fill each page in for real: one of {', '.join(HANDS)}"
     )
     playing.add_argument("--step", type=float, default=0.0, help="minutes between pages")
+    playing.add_argument(
+        "--pause",
+        type=float,
+        default=-1.0,
+        help=f"seconds to wait out the model's rate limit; {PAUSE_SECONDS} when --by is set",
+    )
+    playing.add_argument("--times", type=int, default=1, help="run it this many times")
 
     verbs.add_parser("transcript", help="what happened, in order")
     verbs.add_parser("forget", help="throw the run away and start again")
@@ -479,7 +531,10 @@ def main(argv: list[str] | None = None) -> int:
     chosen = load_experience(args.experience) if args.experience else _the_afternoon(where)
     if args.verb == "begin":
         return start(where, chosen)
-    return play(where, chosen, args.hand, args.step, args.by)
+    pause = PAUSE_SECONDS if args.pause < 0 and args.by else max(0.0, args.pause)
+    if args.times > 1:
+        return again(where, chosen, args.hand, args.step, args.by, pause, args.times)
+    return play(where, chosen, args.hand, args.step, args.by, pause)
 
 
 if __name__ == "__main__":

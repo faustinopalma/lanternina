@@ -54,6 +54,14 @@ private/
 # a record of what somebody did is exactly what must not enter a public history, and it is
 # only written at all because the somebody is whoever ran `python -m tools.pretend`.
 pretend/
+# The experiments run against the simulated house. Everything a run makes is invented —
+# there is no person in it — so what keeps the pixels out is size and not privacy: a page is
+# roughly a megabyte and a soak is dozens of them. The notes are kept, because what was
+# measured and what somebody thought of it are the parts worth having later.
+experiments/*
+!experiments/**/
+!experiments/**/notes.md
+!experiments/README.md
 # Browser tooling drops screenshots, accessibility snapshots and console dumps here;
 # any of the three can carry a page of the panel with real content in it.
 .playwright-mcp/

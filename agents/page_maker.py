@@ -32,6 +32,7 @@ from PIL import Image
 
 from shared.agents import AgentContext
 from shared.ids import new_request_id
+from shared.manner import Manner, a_manner
 from shared.page import Page, PageKind, Room
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
@@ -100,8 +101,13 @@ _ONLY_THESE_WORDS: Final = (
 )
 
 
-def asked_for(page: Page) -> str:
-    """The whole ask, from the page's own words. Outside the class so a test can read it."""
+def asked_for(page: Page, manner: Manner | None = None) -> str:
+    """The whole ask, from the page's own words. Outside the class so a test can read it.
+
+    ``manner`` says how it is drawn and never what it says, which is why it is safe to vary:
+    the words come from the afternoon and are quoted below whatever the manner is. Without
+    one, the same page asked for twice comes back twice the same — `shared/manner.py`.
+    """
     lines = [_FOR_KIND[page.kind], ""]
     lines.append(f'Letter this large, as the title: "{page.title}"')
     if page.note:
@@ -112,6 +118,8 @@ def asked_for(page: Page) -> str:
         lines.append(f'Leave {room}, with "{space.label}" lettered above it')
     lines.append("")
     lines.append(f"What the drawing on the page shows: {page.illustration}")
+    if manner is not None:
+        lines.append(manner.as_sentence())
     lines.append("")
     lines.append(_HOW_IT_IS_DRAWN)
     lines.append(_ONLY_THESE_WORDS)
@@ -129,14 +137,15 @@ class PageMaker:
         The caller decides what a failure means. On this path it means the moment plays its
         ``instead``, which is written and screened long before anything broke.
         """
+        drawn = a_manner()
         payload = await ctx.router.generate_for_user(
             ModelRequest(
                 capability=Capability.IMAGE_GENERATION,
-                prompt=asked_for(page),
+                prompt=asked_for(page, drawn),
                 request_id=new_request_id(),
                 purpose=f"drawing a {page.kind}",
                 content_kind=ContentKind.IMAGE_PNG,
-                metadata={"size": SIZE},
+                metadata={"size": SIZE, "manner": drawn.to_dict()},
             )
         )
         return on_paper(base64.b64decode(payload.body))

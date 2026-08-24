@@ -25,6 +25,8 @@ from __future__ import annotations
 
 import base64
 import os
+import re
+import time
 from typing import Final
 
 import httpx
@@ -77,12 +79,18 @@ def asked_of(hand: str) -> str:
     )
 
 
-def written_on(blank: bytes, *, hand: str = "teenager", size: str = "1024x1536") -> bytes:
+def written_on(
+    blank: bytes, *, hand: str = "teenager", size: str = "1024x1536", tries: int = 4
+) -> bytes:
     """The sheet with somebody's writing on it, as PNG bytes.
 
     Talks to the account endpoint directly rather than through `orchestrator.router`: this is
     a capability only the simulator has, and putting it in the router would put "write on a
     page" one import away from the code that serves a house.
+
+    Waits out a busy model rather than giving up. The deployment is capacity 2 and the region
+    is at its ceiling, so an unattended run of several afternoons meets 429 every time —
+    measured 24 August 2026, one soak of three where only one reached an ending.
     """
     from azure.identity import DefaultAzureCredential
 
@@ -94,15 +102,27 @@ def written_on(blank: bytes, *, hand: str = "teenager", size: str = "1024x1536")
         .get_token("https://cognitiveservices.azure.com/.default")
         .token
     )
-    answer = httpx.post(
-        f"{endpoint}/openai/deployments/{deployment}/images/edits?api-version={version}",
-        headers={"Authorization": f"Bearer {token}"},
-        files={"image": ("page.png", blank, "image/png")},
-        data={"prompt": asked_of(hand), "n": "1", "size": size},
-        timeout=TIMEOUT_SECONDS,
-    )
-    if answer.status_code != 200:
+    for attempt in range(1, tries + 1):
+        answer = httpx.post(
+            f"{endpoint}/openai/deployments/{deployment}/images/edits?api-version={version}",
+            headers={"Authorization": f"Bearer {token}"},
+            files={"image": ("page.png", blank, "image/png")},
+            data={"prompt": asked_of(hand), "n": "1", "size": size},
+            timeout=TIMEOUT_SECONDS,
+        )
+        if answer.status_code == 200:
+            return base64.b64decode(answer.json()["data"][0]["b64_json"])
+        if answer.status_code == 429 and attempt < tries:
+            time.sleep(retry_after(answer.text))
+            continue
         # The body says which of the reasons it was; a status alone leaves the next person
         # guessing between a quota, a key and a refusal.
         raise RuntimeError(f"the hand did not write: {answer.status_code} {answer.text[:300]}")
-    return base64.b64decode(answer.json()["data"][0]["b64_json"])
+    raise RuntimeError("the hand did not write: the model stayed busy")
+
+
+def retry_after(said: str, floor: float = 20.0) -> float:
+    """How long the service asked to be left alone, plus a little. Its own number when it
+    gives one, because guessing shorter is how a retry becomes a second refusal."""
+    found = re.search(r"retry after (\d+) second", said, re.IGNORECASE)
+    return max(floor, float(found.group(1)) + 5.0 if found else floor)
