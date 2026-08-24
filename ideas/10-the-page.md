@@ -95,6 +95,65 @@ by expectation, not by reading the object.** When the expectation is wrong — a
 put back on the glass — the afternoon carries on from false evidence, silently. An identifier
 exists so as not to assume.
 
+### Identity is a question inside the reading, not a gate before it
+
+Then the parent moved the frame again, and this one is the correction that matters most: **the
+model has to interpret what is on the paper anyway, so it should not first insist on the right
+sheet being there.**
+
+Everything above treats identity as a precondition — establish which sheet this is, refuse if
+it is not the expected one, and only then read. That is a machine's anxiety and not a person's
+need, and it is also against this project's own rules. Today an unrecognised page produces
+*Questo foglio non è di Lanternina*: a refusal, aimed at a person, for a mistake that the
+working rules say cannot exist. Somebody putting back an earlier sheet, or a drawing from
+school, has not erred. The calm answer is to look at what is there and go on from it.
+
+So the shape is: the scan goes to the model together with what the afternoon handed out and
+what this moment is about, and the model answers **what happened on this paper**. Whether it is
+the expected sheet is one of the things it can say, in the same breath, and the afternoon takes
+a branch that blames nobody — the way `if_no_page` already exists for a sheet the printer never
+produced.
+
+That demotes the embedding from mechanism to convenience. It earns its place when there are
+several blanks and handing the model the right one keeps the call small, or when a set of
+designs needs checking for distinctiveness. It is not what makes the reading possible.
+`embed-v-4-0` stays deployed: it costs nothing until it is called, and the margin it reports is
+useful on its own.
+
+**What is left undecided by this, and it is real:** a `collect` branches on what came back, and
+a branch taken on a page that is not the one the branch is about is a wrong turn taken
+confidently. The answer is probably that such a moment goes the way it would go with no page at
+all, which is written already. Probably is not decided.
+
+### Built and measured, 24 August 2026
+
+`shared/vision_contracts.WhatCameBack` and `agents/page_reader.py`: two images in — the blank
+and what came off the glass — and out comes whether anything was added, whether it looks like
+the sheet that was handed over, and a few short descriptions of the ink. No rectangles, no
+cell kinds, no ids, nothing printed on the paper. `tests/test_page_reader.py` holds the
+refusals; `tools/probe_page_read.py` asks the real service, because this project has been
+caught by tests that passed against a fake model while three defects waited in the real one.
+
+Against `gpt-5.6-sol`, on pages rendered by the real renderer with a house drawn in one box and
+three lines in another:
+
+| what was asked | written | same sheet | said | seconds |
+| --- | --- | --- | --- | --- |
+| a page written on | yes | yes | *a house with a triangular roof and door drawn in the left box*; *three horizontal lines added at the top of the right box* | 5.48 |
+| the same page, untouched | no | yes | nothing | 4.42 |
+| a different page | no | no | nothing | 4.47 |
+
+Three for three. What it drew is what it said, it invented nothing on the untouched page, and
+the page that was not the one handed over came back as a fact rather than a complaint.
+
+**And it said nothing about the person**, which is the line this reader exists on the right side
+of. Not "neatly drawn", not "a good attempt": a house, in the left box.
+
+> One thing the measurement exposes rather than settles: the descriptions came back in English.
+> They are read by code and by the continuation prompt, not by anybody in the house, so it may
+> not matter — but "may not matter" is how the language defect in `ideas/09 §24` got in, and it
+> should be decided rather than left.
+
 **An embedding replaces the code, and it was measured before being believed.** The trick is
 the parent's: a page with handwriting on it is a small perturbation of the blank it was printed
 from, so its vector sits nearest that blank and the nearest neighbour says which sheet came

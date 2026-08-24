@@ -17,7 +17,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 
 from .errors import RetentionViolation
 from .ids import CellId, ExerciseId, SheetId
@@ -211,6 +211,66 @@ class PageReading:
             sheet_id=SheetId(str(values["sheet_id"])),
             exercise_id=ExerciseId(str(values["exercise_id"])),
             cells=tuple(CellReading.from_dict(c) for c in values.get("cells", [])),
+            read_at=float(values.get("read_at", 0.0)),
+            degraded=bool(values.get("degraded", False)),
+            metadata=dict(values.get("metadata", {})),
+        )
+
+
+# How many descriptions are kept. A page is one thing somebody did in an afternoon, and a
+# list long enough to need scrolling is a model narrating rather than reporting.
+MAX_DESCRIPTIONS: Final = 8
+# One line each. Long enough for "a house drawn in the third box", short enough that there
+# is no room for a sentence about the person who drew it.
+MAX_DESCRIPTION_CHARS: Final = 120
+
+
+@dataclass(frozen=True, slots=True)
+class WhatCameBack:
+    """What is on a page that was not on the blank it was printed from.
+
+    `ideas/10 §3`. The reading that replaces :class:`PageReading` once a page stops being a
+    grid of declared cells. The model is given two images — the blank and the one that came
+    off the glass — and says what was added. No rectangles, no cell kinds, no ids: the
+    difference between two pictures is a thing a model can see, and describing where the
+    answer was supposed to go was only ever a way of asking it to look there.
+
+    **It describes ink, never a person.** The same line the working rules draw and the same
+    one `agents/sheet_reader.py` holds: "a house drawn in the third box" is a description of
+    a page; anything about who drew it, how well, or whether it is right, is not. There is no
+    field here for a verdict and there is not going to be one.
+
+    ``same_sheet`` is a fact the model reports, not a gate it enforces. `§3` again, and it is
+    the parent's correction: the model has to interpret what is on the paper anyway, so
+    insisting on the right sheet before looking is a machine's anxiety. A page that is not the
+    one handed over is still a page somebody worked on, and what the afternoon does about that
+    is the afternoon's business.
+    """
+
+    written: bool
+    same_sheet: bool
+    describes: tuple[str, ...]
+    read_at: float
+    # True when the cloud would not answer and this is the little that could be said anyway.
+    degraded: bool = False
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "written": self.written,
+            "same_sheet": self.same_sheet,
+            "describes": list(self.describes),
+            "read_at": self.read_at,
+            "degraded": self.degraded,
+            "metadata": dict(self.metadata),
+        }
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any]) -> WhatCameBack:
+        return WhatCameBack(
+            written=bool(values.get("written", False)),
+            same_sheet=bool(values.get("same_sheet", True)),
+            describes=tuple(str(line) for line in values.get("describes", ())),
             read_at=float(values.get("read_at", 0.0)),
             degraded=bool(values.get("degraded", False)),
             metadata=dict(values.get("metadata", {})),
