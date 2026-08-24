@@ -824,6 +824,28 @@ read and the delete both exercised in the deployment rather than only in a twin.
 `create_item`, and that path needs a signed-in parent, so nothing above touched it. The panel
 front end publishes itself from `main`; the first press in a browser is the proof.
 
+**In the house, the same afternoon.** The hub was three sections behind: `shared/message.py`
+was not there at all, `devices/afternoon.py` had no `listen`, and `shared/experience.py` was
+still at format 1 — so the panel was devising documents the house could not read, with two
+afternoons sitting unapproved and a timer saying `2 waiting for the parent` every ten minutes.
+Installed by shipping what `git archive` holds, extracted as `root:root 644` to match the tree
+it lands in, and `lanternina-help.{service,timer}` enabled, which is `§22` reaching a room for
+the first time. The house then asked the panel on the real route with its own key: **200 in
+0.148 s**, `{"messages":[]}`. The once-a-minute help run costs **1.1 s of CPU** and touches no
+network.
+
+**One defect found, and it is in the tool that exists to prevent it.** `scripts/hub-stale.ps1`
+compared `devices/*.py` and `shared/*.py` and reported a clean hub while `orchestrator/` was
+missing entirely — `devices/run_experience.py` imports `orchestrator.outgoing`, so the import
+failed on the first try. A check that looks at two directories can only answer about two
+directories. It now takes the list of packages the hub runs, walks them, says so out loud when
+there is nothing to report, and was made to fail on this morning's hub before being believed.
+
+**The hub is not containerised, and that is now the largest gap between the two halves.** The
+panel is an image in a registry; the house is a tar extracted into `/opt/lanternina`, run by
+`/usr/bin/python3` under fourteen systemd units, with its Python dependencies satisfied by
+whatever the machine happens to have. There is no declared list of what a new machine needs.
+
 ### What is next, and where it starts
 
 **Approval.** `§19`'s sentence asked for an afternoon devised, approved by a parent, and run
