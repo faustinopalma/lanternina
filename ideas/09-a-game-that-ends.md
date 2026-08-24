@@ -980,6 +980,36 @@ scanner. Deciding after the scan means scanning twice; deciding before it means 
 "a run is waiting" rather than from what is actually on the glass, so the run's own QR check
 has to stay the thing that refuses a sheet from somewhere else.
 
+**A way out told the person to read the screen they were reading it on.** The afternoon that
+ran on 24 August left by `send-map`, and its way out said: *Riprendi il foglio dal vetro.
+Posalo accanto alla tazza. **Leggi la chiusura sullo schermo.** Il pomeriggio è finito.* The
+closing then arrived on that same display, replacing those words up to 60 s later, with
+nothing to say that the new text was the closing the old text had promised. The parent read it
+and asked what it meant, which is the only test that matters.
+
+Two different things are wrong in one sentence.
+
+* **A way out may not send somebody to a surface it is itself occupying.** `shared/experience.py`
+  already refuses a way out that does not name an object in hand, because `§20` measured that
+  models write "the edge of the screen" when asked for an object. Nothing yet refuses a way out
+  that treats a display as a place to go and look.
+* **"The screen" is not one thing in this house.** `devices/house.sheet_file` picks among the
+  displays holding the job **at random, per process**, so the early moments went to CF7D04 and
+  the way out and the closing to FB9F18. The words of one afternoon scattered across two
+  objects in the room, and a sentence naming "the screen" stopped having a referent. The random
+  choice is written down as a deliberate cost — a notice appears on one of them and somebody at
+  the other does not see it — and this is the first time the cost has been paid where it hurts.
+
+*Where it starts:* `shared/experience_checks.py`, which is where a rule about what a way out may
+say already lives, and `devices/house.sheet_file`, which is where "which display" is decided.
+
+*Done when:* an afternoon cannot be saved whose way out points at a display, and the moments of
+one run all reach the same display.
+
+*The trap to expect:* refusing the word "schermo" is not the rule — a moment may legitimately
+say what is on a display. What may not happen is a way out deferring the ending to somewhere
+else. A check written against the word will refuse good documents and pass bad ones.
+
 ## 20. What was built, 23 August 2026
 
 Steps 1, 2 and 6 of the order above, plus the output filter, the ten dimensions and the
