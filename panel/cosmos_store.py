@@ -29,6 +29,7 @@ from shared.message import Message, Says
 
 from .devices import DeviceStatus, Thing, order_of
 from .experiences import OfferedExperience
+from .guidelines import Guidelines
 from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
@@ -51,6 +52,7 @@ DEVICES_CONTAINER = "sources"
 INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
+GUIDELINES_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
@@ -636,6 +638,56 @@ def _to_preferences(document: dict[str, Any]) -> Preferences:
         variety=str(document.get("variety") or DEFAULT_VARIETY),
         max_words_per_line=int(document.get("maxWordsPerLine") or DEFAULT_WORDS_PER_LINE),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
+        updated_at=float(document.get("updatedAt") or 0.0),
+        updated_by=str(document.get("updatedBy") or ""),
+    )
+
+
+class CosmosGuidelineStore:
+    """Conforms to :class:`~panel.guidelines.GuidelineStore`.
+
+    One document per household, overwritten. The parent's lines are kept as they wrote
+    them; the fixed bounds are a module constant in `panel/guidelines.py` and have no
+    document, which is the storage half of their not being editable.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(GUIDELINES_CONTAINER)
+        )
+
+    def get(self, household_id: str) -> Guidelines:
+        rows = list(
+            self._container.query_items(
+                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'guidelines'",
+                parameters=[{"name": "@family", "value": household_id}],
+                partition_key=household_id,
+            )
+        )
+        if not rows:
+            return Guidelines(household_id=household_id)
+        return _to_guidelines(rows[0])
+
+    def set(self, guidelines: Guidelines) -> Guidelines:
+        self._container.upsert_item(
+            {
+                "id": f"guidelines-{guidelines.household_id}",
+                "familyId": guidelines.household_id,
+                "type": "guidelines",
+                "lines": list(guidelines.lines),
+                "updatedAt": guidelines.updated_at,
+                "updatedBy": guidelines.updated_by,
+            }
+        )
+        return guidelines
+
+
+def _to_guidelines(document: dict[str, Any]) -> Guidelines:
+    return Guidelines(
+        household_id=str(document["familyId"]),
+        lines=tuple(str(line) for line in document.get("lines") or ()),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )

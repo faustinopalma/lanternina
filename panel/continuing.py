@@ -30,6 +30,7 @@ from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
 
 from .devising import RefusedByTheChecks
+from .guidelines import FIXED
 
 
 async def continue_experience(
@@ -39,8 +40,15 @@ async def continue_experience(
     came: str,
     reading: dict[str, Any],
     now: float,
+    household_bounds: str = "",
 ) -> tuple[Continuation, ModelUsage | None]:
     """The rest of the afternoon, screened, and what the call consumed.
+
+    ``household_bounds`` is what this house has written about what may be changed on the
+    fly, already quoted by :meth:`~panel.guidelines.Guidelines.as_material`. The fixed
+    bounds are not a parameter: they are ours, they hold in every household, and a caller
+    that forgot them would be handing out the licence to improvise with only a parent's
+    sentences behind it.
 
     Raises whatever the router raises when the cloud will not serve it,
     :class:`~shared.errors.SafetyBlocked` when the gate refuses what came back, and
@@ -69,7 +77,13 @@ async def continue_experience(
     context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=now)
     try:
         carrying_on = await ExperienceContinuer().continue_from(
-            context, experience=experience, after=after, came=came, reading=reading
+            context,
+            experience=experience,
+            after=after,
+            came=came,
+            reading=reading,
+            bounds=FIXED,
+            household_bounds=household_bounds,
         )
         # The same checks the whole afternoon passed, on the half nobody approved. There is
         # no repair here and there will not be one: somebody is standing at the scanner, a

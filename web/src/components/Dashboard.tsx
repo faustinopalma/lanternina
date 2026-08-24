@@ -10,6 +10,7 @@ import { useWords } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Devices } from "@/sections/Devices";
 import { Experiences } from "@/sections/Experiences";
+import { Guidelines } from "@/sections/Guidelines";
 import { Pictures } from "@/sections/Pictures";
 import { Preferences } from "@/sections/Preferences";
 import { Proposals } from "@/sections/Proposals";
@@ -54,6 +55,12 @@ export function Dashboard({ api }: { api: Api }) {
       title: t("preferences.title"),
       note: t("preferences.note"),
       Body: Preferences,
+    },
+    {
+      name: "guidelines",
+      title: t("guidelines.title"),
+      note: t("guidelines.note"),
+      Body: Guidelines,
     },
     { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
     { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },

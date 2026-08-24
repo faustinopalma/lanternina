@@ -11,6 +11,7 @@ import {
   type Api,
   type Decision,
   type Device,
+  type Guidelines,
   type HouseRequest,
   type Inventory,
   type NewAssignment,
@@ -59,6 +60,8 @@ const PREFERENCES_FIELDS = [
   "languageChoices",
   "wordsPerLineChoices",
 ] as const;
+
+const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;
 
 export function httpApi(token: string): Api {
   async function call(path: string, options: RequestInit = {}): Promise<Response> {
@@ -176,6 +179,13 @@ export function httpApi(token: string): Api {
     preferences: () => json<Preferences>("/api/preferences", {}, PREFERENCES_FIELDS),
     savePreferences: (preferences: NewPreferences) =>
       json<Preferences>("/api/preferences", write(preferences), PREFERENCES_FIELDS),
+
+    guidelines: () => json<Guidelines>("/api/guidelines", {}, GUIDELINES_FIELDS),
+
+    // The whole list every time: what is stored is what the parent last read back, so a
+    // line removed in one browser cannot be revived by a stale one in another.
+    saveGuidelines: (lines: string[]) =>
+      json<Guidelines>("/api/guidelines", write({ lines }), GUIDELINES_FIELDS),
 
     devices: () => json<Inventory>("/api/devices", {}, ["devices", "nameLimit"]),
 

@@ -80,10 +80,30 @@ not appear without them.
 **The default is nothing written**, which is the narrowest the system ever is. Suggested lines
 belong in the panel, where a parent reads one and decides.
 
-*What is left:* the parent's two routes in `panel/routes/`, the section in `web/src/sections/`,
-and the read in `panel/continuing.py` that passes them to `continue_from`. Until that last one
-exists the store is a vocabulary with no verb behind it — the thing this project has said twice
-it will not do — so it is named here rather than left to be discovered.
+*Finished 24 August 2026.* `panel/routes/guidelines.py` holds two routes and no third —
+`GET` and `POST /api/guidelines` — and `panel/routes/experience.py` reads the store on the
+continuing path and hands the lines to `panel/continuing.py`, which adds `FIXED` and calls
+`continue_from`. The section is `web/src/sections/Guidelines.tsx`, with three suggested lines
+that fill the field and are still added by a second press.
+
+Three decisions worth having written down rather than found later:
+
+* **There is no route for the house**, and the test that names every path containing
+  `guidelines` fails if one appears. The house never asks for these on their own: they are
+  read inside the answer to the request it already makes about a page off its own glass. A
+  device route would be a second place deciding what the model is told.
+* **`FIXED` is not a parameter of `continue_experience`.** It is added where the call is
+  made, because a caller that forgot it would hand out the licence to improvise with only a
+  parent's sentences behind it — and that is the one combination `§2` says must not exist.
+* **The panel says our bounds in the parent's language and the prompt says them in the
+  model's**, so there are two copies of one rule and they can drift. What is held down is the
+  count: a bound added to the prompt and not to the panel shows up as the API's own English
+  line rather than not being shown at all. A web test asserts the list is as long as what the
+  API sent, and it was made to fail on a version that showed three of the five.
+
+Both halves were made to fail before being believed. Without the read on the route the two
+tests report `KeyError: 'household_bounds'`; without `bounds=FIXED` in `continuing.py`,
+`KeyError: 'bounds'`. 693 tests and 54 in the panel.
 
 *Done when:* a parent writes "va bene uscire in giardino" in the panel, and an afternoon that
 improvises can use the garden while one in a household that wrote nothing cannot.

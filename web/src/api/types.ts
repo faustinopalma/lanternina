@@ -188,6 +188,17 @@ export interface Preferences extends NewPreferences {
   wordsPerLineChoices: number[];
 }
 
+/** How far the house may improvise when an afternoon did not go the way it was planned.
+ *  `lines` are the parent's and can be changed here; `fixed` are ours, sent so that what
+ *  they are adding to is legible, and refused if they come back. */
+export interface Guidelines {
+  lines: string[];
+  fixed: string[];
+  updatedAt: number;
+  lineLimit: number;
+  maxLines: number;
+}
+
 /** One thing in the house. `label` is what it calls itself — the id a display puts on its
  *  own screen, or the mDNS service name — and `name` is what the parent called it. The
  *  battery fields are present only for a display that has reported. */
@@ -306,6 +317,8 @@ export interface Api {
   saveRhythm(rhythm: NewRhythm): Promise<Rhythm>;
   preferences(): Promise<Preferences>;
   savePreferences(preferences: NewPreferences): Promise<Preferences>;
+  guidelines(): Promise<Guidelines>;
+  saveGuidelines(lines: string[]): Promise<Guidelines>;
   devices(): Promise<Inventory>;
   assignDevice(id: string, assignment: NewAssignment): Promise<Device>;
   removeDevice(id: string): Promise<void>;

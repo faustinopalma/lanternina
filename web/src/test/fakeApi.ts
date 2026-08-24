@@ -8,6 +8,7 @@ import type {
   Api,
   Decision,
   Device,
+  Guidelines,
   NewAssignment,
   NewPreferences,
   NewRhythm,
@@ -28,6 +29,7 @@ export interface Recorded {
   decisions: { id: string; state: Decision }[];
   rhythm: NewRhythm[];
   preferences: NewPreferences[];
+  guidelines: string[][];
   themesAdded: string[];
   themesRemoved: string[];
   remindersAdded: string[];
@@ -275,6 +277,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     decisions: [],
     rhythm: [],
     preferences: [],
+    guidelines: [],
     themesAdded: [],
     themesRemoved: [],
     remindersAdded: [],
@@ -343,6 +346,21 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     languageChoices: ["it", "en"],
     wordsPerLineChoices: [3, 4, 5, 6, 7, 8],
   };
+  /* One line written, so the page shows both halves: what this house allowed and what
+   * holds everywhere. The fixed ones are the API's own words, in the model's language. */
+  let guidelines: Guidelines = {
+    lines: ["va bene uscire in giardino"],
+    fixed: [
+      "Never say anything about the person: not how well anything was done, not how much effort it took, not what any of it suggests about them.",
+      "Never announce, explain or apologise for a change of course. It arrives as part of what is happening.",
+      "An ending stays reachable from wherever the afternoon has got to, and an ending reached early is the same ending.",
+      "Use only what this house has. Never invent equipment, materials or a place.",
+      "Nothing can be failed and nothing has to be finished.",
+    ],
+    updatedAt: NOW - 4000,
+    lineLimit: 160,
+    maxLines: 12,
+  };
 
   const base: Api = {
     admission: async (): Promise<Admission> => ({
@@ -409,6 +427,12 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       recorded.preferences.push(next);
       preferences = { ...preferences, ...next };
       return preferences;
+    },
+    guidelines: async () => guidelines,
+    saveGuidelines: async (lines) => {
+      recorded.guidelines.push(lines);
+      guidelines = { ...guidelines, lines };
+      return guidelines;
     },
     devices: async () => ({ devices, nameLimit: 40 }),
     assignDevice: async (id, assignment) => {

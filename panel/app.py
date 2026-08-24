@@ -34,6 +34,7 @@ from .devices import (
 )
 from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
+from .guidelines import GuidelineStore, InMemoryGuidelineStore
 from .messages import InMemoryMessageStore, MessageStore
 from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
@@ -44,6 +45,7 @@ from .rhythm import InMemoryRhythmStore, RhythmStore
 from .routes import admin, painting
 from .routes import devices as device_routes
 from .routes import experience as experience_routes
+from .routes import guidelines as guideline_routes
 from .routes import messages as message_routes
 from .routes import pictures as picture_routes
 from .routes import preferences as preference_routes
@@ -75,6 +77,7 @@ SECTIONS = (
     request_routes,
     experience_routes,
     message_routes,
+    guideline_routes,
 )
 
 
@@ -93,6 +96,7 @@ def create_app(
     requests: RequestStore | None = None,
     experiences: ExperienceStore | None = None,
     messages: MessageStore | None = None,
+    guidelines: GuidelineStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -124,6 +128,9 @@ def create_app(
     )
     app.state.messages = (
         messages if messages is not None else _message_store(app.state.settings)
+    )
+    app.state.guidelines = (
+        guidelines if guidelines is not None else _guideline_store(app.state.settings)
     )
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
@@ -273,6 +280,14 @@ def _message_store(settings: Settings) -> MessageStore:
     from .cosmos_store import CosmosMessageStore
 
     return CosmosMessageStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _guideline_store(settings: Settings) -> GuidelineStore:
+    if not settings.cosmos_configured:
+        return InMemoryGuidelineStore()
+    from .cosmos_store import CosmosGuidelineStore
+
+    return CosmosGuidelineStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

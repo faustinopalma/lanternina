@@ -37,6 +37,7 @@ from ..experiences import (
     OfferedExperience,
 )
 from ..gate import CurrentAccount, DeviceKey
+from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, over_cap
 from . import Decision
@@ -75,6 +76,10 @@ async def continue_afternoon(
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     experience = _asked(what)
+    # What this house allows to be changed on the fly. Read here rather than sent by the
+    # hub: the hub holds a device key and no parent, so a bound arriving from it would be
+    # a bound nobody in the house had written.
+    said: GuidelineStore = request.app.state.guidelines
     from ..continuing import continue_experience
     from ..devising import RefusedByTheChecks
 
@@ -87,6 +92,7 @@ async def continue_afternoon(
             came=what.came,
             reading=what.reading,
             now=time.time(),
+            household_bounds=said.get(household_id).as_material(),
         )
         outcome = SERVED
     except SafetyBlocked as exc:

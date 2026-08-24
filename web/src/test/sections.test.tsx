@@ -322,3 +322,55 @@ describe("the reminders", () => {
     expect(screen.getByText(/Un minuto per i denti/)).toBeInTheDocument();
   });
 });
+
+describe("the latitude", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("writes a line and takes one away, sending the whole list each time", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Margine");
+    await user.type(
+      await screen.findByLabelText("Cosa la casa può cambiare"),
+      "le forbici sono nel primo cassetto",
+    );
+    await user.click(screen.getByRole("button", { name: "Aggiungi" }));
+
+    await waitFor(() =>
+      expect(api.recorded.guidelines).toEqual([
+        ["va bene uscire in giardino", "le forbici sono nel primo cassetto"],
+      ]),
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Togli" })[0]!);
+    await waitFor(() => expect(api.recorded.guidelines).toHaveLength(2));
+    expect(api.recorded.guidelines[1]).toEqual(["le forbici sono nel primo cassetto"]);
+  });
+
+  it("shows every bound we wrote, in the parent's language and with nothing to press", async () => {
+    /* The panel's copy and the prompt's copy are two renderings of one rule, so what is
+     * held down is the count: a bound added to the prompt and not here would otherwise
+     * simply not be shown to the parent. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Margine");
+    const ours = await screen.findByText(/valgono in ogni casa/);
+    const listed = ours.parentElement!.querySelectorAll("li");
+
+    expect(listed).toHaveLength((await api.guidelines()).fixed.length);
+    expect(listed[0]!.textContent).toMatch(/niente sulla persona/);
+    expect(within(ours.parentElement as HTMLElement).queryAllByRole("button")).toEqual([]);
+  });
+
+  it("says plainly that writing here starts nothing", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Margine");
+    expect(await screen.findByText(/non fa partire niente/)).toBeInTheDocument();
+  });
+});
