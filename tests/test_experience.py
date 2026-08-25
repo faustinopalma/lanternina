@@ -26,12 +26,11 @@ from typing import Any
 import afternoons as a
 import pytest
 
-from shared.capabilities import HouseCapability
+from shared.capabilities import Act, HouseCapability
 from shared.experience import (
     ASK,
     MAX_LINE,
     MAX_WAY_OUT_MINUTES,
-    Act,
     Came,
     Close,
     Collect,

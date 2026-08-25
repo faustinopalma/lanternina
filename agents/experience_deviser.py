@@ -45,7 +45,7 @@ from collections.abc import Sequence
 from typing import Any, Final
 
 from shared.agents import AgentContext
-from shared.capabilities import HouseCapability
+from shared.capabilities import NEEDS, HouseCapability
 from shared.experience import (
     EXPERIENCE_FORMAT_VERSION,
     MAX_MINUTES,
@@ -54,7 +54,6 @@ from shared.experience import (
     MAX_SHARED_DIMENSIONS,
     MAX_TITLE,
     MIN_MINUTES,
-    NEEDS,
     Drawn,
     Experience,
     ExperienceError,
@@ -63,7 +62,7 @@ from shared.experience import (
 from shared.experience_checks import Complaint
 from shared.experience_prompt import (
     HOW_THE_TEXT_READS,
-    THE_FOUR_ACTS,
+    THE_ACTS,
     THE_LIMITS,
     THE_MARKS_ON_A_PAGE,
     THE_SHAPE_OF_A_MOMENT,
@@ -90,7 +89,7 @@ _FORMAT: Final = (
     "Do not write an id, a format version or a list of what the house needs: those are "
     "known already and are not yours to write.\n"
     + THE_SHAPE_OF_A_MOMENT
-    + THE_FOUR_ACTS
+    + THE_ACTS
     + THE_MARKS_ON_A_PAGE
 )
 

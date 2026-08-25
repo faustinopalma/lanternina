@@ -84,19 +84,10 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any, ClassVar, Final
 
-from .capabilities import HouseCapability
+from .capabilities import NEEDS, Act, HouseCapability
 from .page import Page, PageError
 
 EXPERIENCE_FORMAT_VERSION: Final = 2
-
-
-class Act(StrEnum):
-    """Everything an experience can ask for. A fifth entry is a person editing this file."""
-
-    SAY = "say"
-    HAND_OVER = "hand_over"
-    COLLECT = "collect"
-    CLOSE = "close"
 
 
 class Weight(StrEnum):
@@ -116,15 +107,6 @@ class Weight(StrEnum):
 # short version more minutes than the standard one is refused.
 WEIGHTS: Final[tuple[Weight, ...]] = (Weight.SHORT, Weight.STANDARD, Weight.EXTENDED)
 
-
-# What each act needs the house to be able to do. The document does not get to say: a
-# moment that puts paper on the table needs a printer whatever its author wrote.
-NEEDS: Final[Mapping[Act, HouseCapability]] = {
-    Act.SAY: HouseCapability.SHOW_800X480_1BIT,
-    Act.HAND_OVER: HouseCapability.PRINT_A4,
-    Act.COLLECT: HouseCapability.SCAN_A4,
-    Act.CLOSE: HouseCapability.SHOW_800X480_1BIT,
-}
 
 
 class Came(StrEnum):

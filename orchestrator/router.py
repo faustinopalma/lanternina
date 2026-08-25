@@ -113,7 +113,9 @@ class FoundryConfig:
         )
 
 
-def _chat_messages(prompt: str, images: tuple[bytes, ...], instructions: str) -> list[dict]:
+def _chat_messages(
+    prompt: str, images: tuple[bytes, ...], instructions: str
+) -> list[dict[str, Any]]:
     """The body of one chat turn: a system message, then the prompt and the pages.
 
     Separated from the call so the shape can be pinned without credentials. The shape is
@@ -137,131 +139,123 @@ def _chat_messages(prompt: str, images: tuple[bytes, ...], instructions: str) ->
     return messages
 
 
-def _checked(response: Any) -> Any:
-    """Raise on a bad status, with what the service said and not only the status line.
+# Everything on this account is reached with an Entra token for this scope.
+SCOPE = "https://cognitiveservices.azure.com/.default"
 
-    httpx builds its message from the status alone, so a 400 arrives as "Client error
-    '400 Bad Request'" and the sentence naming what was wrong stays in a body nobody
-    reads. Collapsed to one line and cut at 500 characters, because a gateway can answer
-    with a whole HTML page.
-    """
-    import httpx
+# How many times the client retries before giving up. It backs off exponentially and
+# honours `Retry-After` on its own. Four rather than the default two because
+# `gpt-image-2` is deployed at capacity 2 and the region is at its ceiling, so a 429 on
+# the image path is an ordinary Tuesday rather than a fault.
+RETRIES = 4
 
-    try:
-        response.raise_for_status()
-    except httpx.HTTPStatusError as exc:
-        detail = " ".join(response.text.split())[:500]
-        if not detail:
-            raise
-        raise httpx.HTTPStatusError(
-            f"{exc}\n{detail}", request=exc.request, response=exc.response
-        ) from exc
-    return response
+# Long enough for a reasoning model writing a dozen moments: 29.1 s was the slowest
+# devise measured from the hub on 21 August 2026, and a page takes longer than that.
+TIMEOUT_SECONDS = 300.0
+
+
+def _counted(usage: Any, *names: str) -> int:
+    """A count from a nested usage object, or zero. The details blocks are all optional."""
+    for name in names:
+        usage = getattr(usage, name, None)
+        if usage is None:
+            return 0
+    return int(usage)
 
 
 class _FoundryBackend:
     """Everything that reaches the cloud, in one place.
 
-    Narrow on purpose: the router is testable without the cloud packages because this is
-    the only thing that has to be swapped out. Both calls speak REST with httpx and a
-    token — the SDK that used to serve the chat path brought provider packages this
-    container never calls into an image the parent waits on when it scales from zero.
+    Narrow on purpose: the router is testable without a network because this is the only
+    thing that has to be swapped out. The transport is the official client rather than
+    ours — retries with backoff, `Retry-After`, connection reuse, and the reason inside a
+    refusal are all things it already does and this module used to keep correct by hand.
     """
 
-    def __init__(self, config: FoundryConfig, credential: Any | None) -> None:
+    def __init__(self, config: FoundryConfig, credential: Any | None = None) -> None:
         self._config = config
         self._credential = credential
+        # One client per API version: chat and images are pinned to different ones.
+        self._clients: dict[str, Any] = {}
         # Read back by the caller after a call. Safe because a router is built per
         # request; it would not be if one were shared between them.
         self.last_usage: ModelUsage | None = None
+
+    def _client(self, api_version: str) -> Any:
+        """Built on first use, so constructing a router still reaches no network."""
+        if api_version not in self._clients:
+            from openai import AsyncAzureOpenAI
+
+            self._clients[api_version] = AsyncAzureOpenAI(
+                azure_endpoint=self._config.account_endpoint,
+                api_version=api_version,
+                azure_ad_token_provider=self._token_provider(),
+                timeout=TIMEOUT_SECONDS,
+                max_retries=RETRIES,
+            )
+        return self._clients[api_version]
+
+    def _token_provider(self) -> Any:
+        """An async provider: the async client awaits it, so a sync credential will not do."""
+        from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
+
+        if self._credential is None:
+            self._credential = DefaultAzureCredential()
+        return get_bearer_token_provider(self._credential, SCOPE)
 
     async def complete(
         self, prompt: str, images: tuple[bytes, ...], instructions: str
     ) -> str:
         """One chat turn. The same shape as `generate_image`, against the same account."""
-        import asyncio
-
-        import httpx
-
         if not self._config.account_endpoint:
             raise ValueError("a chat call needs LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT")
-        token = await asyncio.to_thread(self._token)
-        url = (
-            f"{self._config.account_endpoint.rstrip('/')}/openai/deployments/"
-            f"{self._config.deployment}/chat/completions"
-            f"?api-version={self._config.chat_api_version}"
+        client = self._client(self._config.chat_api_version)
+        # `with_raw_response` because the id Azure bills under is a header, not a field.
+        answered = await client.chat.completions.with_raw_response.create(
+            model=self._config.deployment,
+            messages=_chat_messages(prompt, images, instructions),
         )
-        async with httpx.AsyncClient(timeout=300) as client:
-            response = await client.post(
-                url,
-                headers={"Authorization": f"Bearer {token}"},
-                json={"messages": _chat_messages(prompt, images, instructions)},
-            )
-            _checked(response)
-            body = response.json()
-            usage = body.get("usage") or {}
-            # The chat API names these differently from the image API, so the two paths
-            # cannot share one reader: prompt/completion here, input/output there.
-            self.last_usage = ModelUsage(
-                deployment=str(body.get("model") or self._config.deployment),
-                request_id=response.headers.get("apim-request-id", ""),
-                input_tokens=int(usage.get("prompt_tokens") or 0),
-                output_tokens=int(usage.get("completion_tokens") or 0),
-                cached_input_tokens=int(
-                    (usage.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
-                ),
-                reasoning_tokens=int(
-                    (usage.get("completion_tokens_details") or {}).get("reasoning_tokens") or 0
-                ),
-            )
-            message = body["choices"][0]["message"]
-            # A refusal comes back with a null content, and str(None) would put the word
-            # "None" on a sheet.
-            return str(message.get("content") or "")
-
-    def _token(self) -> str:
-        from azure.identity import DefaultAzureCredential
-
-        if self._credential is None:
-            self._credential = DefaultAzureCredential()
-        return str(self._credential.get_token("https://cognitiveservices.azure.com/.default").token)
+        body = answered.parse()
+        # The chat API names these differently from the image API, so the two paths
+        # cannot share one reader: prompt/completion here, input/output there.
+        self.last_usage = ModelUsage(
+            deployment=str(body.model or self._config.deployment),
+            request_id=answered.headers.get("apim-request-id", ""),
+            input_tokens=_counted(body.usage, "prompt_tokens"),
+            output_tokens=_counted(body.usage, "completion_tokens"),
+            cached_input_tokens=_counted(body.usage, "prompt_tokens_details", "cached_tokens"),
+            reasoning_tokens=_counted(
+                body.usage, "completion_tokens_details", "reasoning_tokens"
+            ),
+        )
+        # A refusal comes back with a null content, and str(None) would put the word
+        # "None" on a sheet.
+        return str(body.choices[0].message.content or "")
 
     async def generate_image(self, prompt: str, size: str) -> str:
         """Return one PNG, base64-encoded, from the image deployment."""
-        import asyncio
-
-        import httpx
-
         if not self._config.account_endpoint or not self._config.image_deployment:
             raise ValueError(
                 "image generation needs LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT and "
                 "LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT"
             )
-        token = await asyncio.to_thread(self._token)
-        url = (
-            f"{self._config.account_endpoint.rstrip('/')}/openai/deployments/"
-            f"{self._config.image_deployment}/images/generations"
-            f"?api-version={self._config.image_api_version}"
+        client = self._client(self._config.image_api_version)
+        answered = await client.images.with_raw_response.generate(
+            model=self._config.image_deployment, prompt=prompt, n=1, size=size
         )
-        async with httpx.AsyncClient(timeout=300) as client:
-            response = await client.post(
-                url,
-                headers={"Authorization": f"Bearer {token}"},
-                json={"prompt": prompt, "n": 1, "size": size},
-            )
-            _checked(response)
-            body = response.json()
-            usage = body.get("usage") or {}
-            self.last_usage = ModelUsage(
-                deployment=self._config.image_deployment,
-                request_id=response.headers.get("apim-request-id", ""),
-                input_tokens=int(usage.get("input_tokens") or 0),
-                output_tokens=int(usage.get("output_tokens") or 0),
-                size=str(body.get("size") or size),
-                # Echoed back by the service; we send no quality, so this is its default.
-                quality=str(body.get("quality") or ""),
-            )
-            return str(body["data"][0]["b64_json"])
+        body = answered.parse()
+        self.last_usage = ModelUsage(
+            deployment=self._config.image_deployment,
+            request_id=answered.headers.get("apim-request-id", ""),
+            input_tokens=_counted(body.usage, "input_tokens"),
+            output_tokens=_counted(body.usage, "output_tokens"),
+            size=str(body.size or size),
+            # Echoed back by the service; we send no quality, so this is its default.
+            quality=str(body.quality or ""),
+        )
+        if not body.data or not body.data[0].b64_json:
+            raise ValueError("the image deployment answered without an image")
+        return str(body.data[0].b64_json)
+
 
 
 class FoundryRouter:

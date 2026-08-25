@@ -385,7 +385,122 @@ The limit next to the claim: Mirror Azure Monitor is in public preview, so its b
 permissions may change; none of the analytical half is deployed; and only the image path
 reports usage, because it is the only path the Cloud panel takes today.
 
-## 12. What is not built yet
+## 12. Why there is no agent framework, and what is taken from libraries anyway
+
+The question came up as two complaints, and both were right. The first: adding a device
+touched a dozen places, so the design was fragile in exactly the way that gets worse with
+every device. The second: writing our own retry, our own error unwrapping and our own HTTP
+is rewriting what the community has already broken and fixed many times.
+
+The reading behind this section is eight posts from Anthropic's engineering blog, fetched
+on 25 August 2026 into `_reference/anthropic-agents/` — gitignored, because it is somebody
+else's writing. What follows is what was taken from them and what was not.
+
+### The loop is the part that does not apply
+
+Anthropic's working definition of an agent is "LLMs autonomously using tools in a loop".
+Every agent framework is built around that loop: the model picks a tool, the tool runs, the
+result comes back, repeat.
+
+Here the model never actuates anything. It writes a document; the parent approves it; the
+house plays it, possibly days later, from its own clock. If a framework were adopted, its
+central mechanism would be the first thing switched off — see section 4, and
+[NON-GOALS.md](NON-GOALS.md).
+
+So the frameworks were weighed for what remains, and what remains is not enough to import
+one. Measured with pip's resolver on 25 August 2026, into this environment:
+
+| Package | Transitive packages |
+| --- | ---: |
+| `agent-framework-core` | 9 |
+| `pydantic-ai-slim` | 20 |
+| `smolagents` | 27 |
+| `openai-agents` | 42 |
+| `atomic-agents` | 85 |
+
+Nine packages is not a slow container, so the weight argument that was made earlier was
+aimed at the wrong target: it was true of `agent-framework` with every provider extra, not
+of the base package. The reason for not adopting one is the loop, not the size.
+
+### The transport is not ours, and should never have been
+
+`orchestrator/router.py` spoke REST to Foundry with `httpx` and a hand-threaded Entra
+token. It now uses the `openai` client against the same endpoints. What that deleted, in
+order of how much it was worth:
+
+- **Retry with backoff, honouring `Retry-After`.** `gpt-image-2` is deployed at capacity 2
+  and the region is at its ceiling, so 429 on the image path is ordinary rather than a
+  fault. `max_retries=4` is set for that reason.
+- **The reason inside a refusal.** There was a hand-written unwrapper, `_checked`, whose
+  whole job was to pull `error.message` out of the body because `raise_for_status` throws
+  it away. Verified against the real client on 25 August 2026: `str(exc)` already reads
+  `Error code: 400 - {'error': ... 'message': 'Could not process image'}}`. The unwrapper
+  and its test are gone.
+- **Connection reuse, timeouts, and the `images/edits` path** the handwriting hand needs.
+
+What it costs: one more package in the `cloud` and `panel` extras, and a version of the API
+surface that can change under us. What it buys is that the two things this module still
+does by hand — the shape of a message, and reading what a call cost — are the two things
+nobody else can do for us.
+
+The boundary is unchanged. `openai` is still a forbidden import everywhere except the
+router and the safety gate, and `tests/test_boundaries.py` still enforces it by dotted
+path.
+
+### A device is a hand, and a hand is declared once
+
+The idea worth taking is from the Managed Agents post: separate the brain, the hands and
+the session, and give every hand one interface, so that "the harness doesn't know whether
+the sandbox is a container, a phone, or a Pokémon emulator".
+
+Here a hand is split the same way, along the line `shared/` already draws:
+
+| Half | Where | What it holds |
+| --- | --- | --- |
+| the words | `shared/capabilities.py` | the verb, the capability it needs, which kind of object carries it, which job the parent gives it, and one sentence saying what it does in the room |
+| the doing | `devices/hands.py` | one function, registered against the verb, that makes it happen |
+
+Everything else is read off that table rather than written again: what each verb needs
+(`NEEDS`), which job provides which capability (`_PROVIDED_BY`), what a pretend house can do
+(`REACHABLE`), what dispatches a moment (`devices/hands.play`), and the paragraph of the
+prompt that tells a deviser the verb exists (`THE_ACTS`).
+
+Counted before the change, by tracing what `scan_a4` touched: **thirteen edit sites across
+seven files** to add one device. After it: one entry in `HANDS`, one function in
+`devices/hands.py`, and — for a verb that carries its own keys — a moment class and its
+parser, which is the document format and genuinely needs code.
+
+`tests/test_hands_registry.py` holds the guarantees, and each was checked by injecting the
+break it is about rather than by passing on the fixed version:
+
+| Half-finished device | What fails |
+| --- | --- |
+| registered, but nothing carries it out | `test_every_hand_is_carried_out_by_something` |
+| carried out, but the deviser is never told | assembling `THE_ACTS` raises at import |
+| wants a job no parent can hand out | `test_a_hands_job_is_one_a_parent_can_actually_hand_out` |
+
+The limit, stated next to the claim: this makes a device cheap to *add*. It does nothing
+about whether the device is a good idea, and nothing about the moment class a new verb
+needs if it carries keys of its own. And `Act` moved from `shared/experience.py` down into
+`shared/capabilities.py`, which is a real cost: the document format no longer owns its own
+verb list, and a reader looking for it has to know that a verb and the equipment it needs
+are one fact rather than two.
+
+### What was not adopted, and might be
+
+Progressive disclosure — a module that announces itself with a name and a description, and
+is read in full only when it is relevant — is how `HANDS` works for devices. It is not yet
+how agents work: `agents/` are still plain classes the panel wires up by hand, and adding
+one still edits the module that calls it. Doing for agents what was done for devices is the
+obvious next step and has not been taken.
+
+Structured output with validation and repair is still hand-written, in
+`agents/experience_deviser.py` and `shared/experience_checks.py`. That is the part
+`pydantic-ai` would genuinely do better, and Pydantic is already installed underneath
+FastAPI. It was left alone in this pass because the checks encode product rules, not
+schema, and moving them is a change to what is enforced rather than to how.
+
+## 13. What is not built yet
 
 Honest status, so nobody mistakes scaffolding for a system:
 
@@ -396,7 +511,8 @@ Honest status, so nobody mistakes scaffolding for a system:
 | boundary tests | written and mutation-checked |
 | `printing/` renderer | written, and checked on real paper: the 50 mm ruler measures 50 mm |
 | `tools/check_scan.py` read-back | written, and proven end to end on a scanned sheet |
-| `orchestrator/router.py` | written, and called with real credentials from the Cloud panel |
+| `orchestrator/router.py` | written, and called with real credentials from the Cloud panel; the transport is the `openai` client since 25 August 2026 |
+| `shared/capabilities.py` + `devices/hands.py` | written: one entry and one function per device, everything else derived — see section 12 |
 | `infra/` cloud tier | deployed and verified — see [DEPLOY.md](DEPLOY.md) |
 | `panel/` parent dashboard and API | written and deployed: proposals, themes, pictures, devices |
 | safety gate | written, and on the path of everything the Cloud paints |
@@ -407,6 +523,7 @@ Honest status, so nobody mistakes scaffolding for a system:
 | `vision/` capture, ArUco, rectify, QR, cell read | not written as a package; the logic exists in `tools/` |
 | usage accounting and per-household cap | written and deployed — see section 11 |
 | analytical surface for those figures | not written — direction in section 11 |
+| agents announcing themselves the way devices do | not written — the gap named at the end of section 12 |
 | `firmware/` | not written, and may never be: the display runs stock firmware and the Hub serves it |
 
 Stubs in this repository raise `NotImplementedError` or return obviously fake data. If

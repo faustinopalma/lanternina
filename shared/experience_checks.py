@@ -39,9 +39,9 @@ from dataclasses import dataclass
 from typing import Final
 
 from .blocklist import blocked_in, fold
+from .capabilities import Act
 from .experience import (
     MAX_SHARED_DIMENSIONS,
-    Act,
     Continuation,
     Drawn,
     Experience,

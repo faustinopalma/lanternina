@@ -32,7 +32,7 @@ from devices.epaper import render_notice_bmp
 from devices.inventory import holders, load_jobs
 from devices.pretend import Pretend
 from devices.trmnl_byos import screen_for
-from shared.capabilities import JOB_SHEET, HouseCapability
+from shared.capabilities import JOB_SHEET, REACHABLE, HouseCapability
 from shared.ids import SheetId
 
 
@@ -68,14 +68,11 @@ class House:
 
     @property
     def capabilities(self) -> frozenset[HouseCapability]:
+        # A pretend house has whatever an experience can ask for, read off the registry
+        # rather than listed here: a device added to `shared/capabilities.py` is reachable
+        # in simulation on the same commit, which is the point of simulating at all.
         if self.pretend is not None:
-            return frozenset(
-                {
-                    HouseCapability.PRINT_A4,
-                    HouseCapability.SCAN_A4,
-                    HouseCapability.SHOW_800X480_1BIT,
-                }
-            )
+            return REACHABLE
         found: set[HouseCapability] = set()
         if self.printer:
             found.add(HouseCapability.PRINT_A4)

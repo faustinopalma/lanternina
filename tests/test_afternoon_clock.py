@@ -15,7 +15,6 @@ from typing import Any
 import pytest
 
 from devices import afternoon as clock
-from devices import run_experience
 from devices.afternoon import (
     DAYS,
     fits_before_the_pause,
@@ -154,7 +153,7 @@ def test_a_run_whose_hour_has_come_reaches_its_ending_rather_than_being_deleted(
     """
     said: list[str] = []
     monkeypatch.setattr(
-        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+        "devices.hands.show", lambda _h, heading, _lines: said.append(heading)
     )
     experience = an_experience()
     # Twenty minutes left, so the ending has already been due for ten.
@@ -183,7 +182,7 @@ def test_a_run_still_inside_its_hours_is_left_alone(
 ) -> None:
     said: list[str] = []
     monkeypatch.setattr(
-        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+        "devices.hands.show", lambda _h, heading, _lines: said.append(heading)
     )
     a_run(house, "aft_now", WHEN - 600)
 

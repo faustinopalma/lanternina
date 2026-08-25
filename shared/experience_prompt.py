@@ -15,8 +15,10 @@ constants so that a limit changed in one place cannot go on being described the 
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Final
 
+from .capabilities import HANDS, Act
 from .experience import (
     DIMENSIONS,
     HELP_LEVELS,
@@ -75,23 +77,55 @@ THE_SHAPE_OF_A_MOMENT: Final = (
     "     It never says that anything is being shortened, skipped or cut short.\n"
 )
 
-THE_FOUR_ACTS: Final = (
-    "A moment is one of these four, and carries no key other than the five above and the "
-    "ones shown here:\n"
-    '  {"act": "say", ...}\n'
-    '  {"act": "hand_over", ..., "page": {"kind": "...", "title": "<text>", '
-    '"note": [ ... ], "spaces": [ ... ], "illustration": "<text>"}, '
-    f'"instead": [{_LINES}]}}\n'
-    "     instead is what the display says when there is no printer, so that this moment "
-    "still reaches the same point in the story with no paper at all. It is not an apology "
-    "and it does not mention the printer.\n"
-    '  {"act": "collect", ..., "outcomes": ['
-    '{"when": "marks", "then": "<a later moment id, or ask>"}, '
-    '{"when": "blank", "then": "<a later moment id, or ask>"}], '
-    '"if_no_page": "<a later moment id, or ask>"}\n'
-    "     if_no_page is where the afternoon goes when nothing was printed at all.\n"
-    '  {"act": "close", ...}\n'
-)
+# What each verb looks like written down, and whatever its own keys need saying. The
+# sentence about what it does in the room is not here: that is on the hand in
+# `shared/capabilities.py`, said once, and this walks the registry to assemble the two. A
+# device added there with no shape written here raises at import rather than quietly
+# leaving the deviser a verb it was never told about.
+_WRITTEN_AS: Final[Mapping[Act, str]] = {
+    Act.SAY: '{"act": "say", ...}',
+    Act.HAND_OVER: (
+        '{"act": "hand_over", ..., "page": {"kind": "...", "title": "<text>", '
+        '"note": [ ... ], "spaces": [ ... ], "illustration": "<text>"}, '
+        f'"instead": [{_LINES}]}}'
+    ),
+    Act.COLLECT: (
+        '{"act": "collect", ..., "outcomes": ['
+        '{"when": "marks", "then": "<a later moment id, or ask>"}, '
+        '{"when": "blank", "then": "<a later moment id, or ask>"}], '
+        '"if_no_page": "<a later moment id, or ask>"}'
+    ),
+    Act.CLOSE: '{"act": "close", ...}',
+}
+
+_ABOUT_ITS_KEYS: Final[Mapping[Act, str]] = {
+    Act.HAND_OVER: (
+        "instead is what the display says when there is no printer, so that this moment "
+        "still reaches the same point in the story with no paper at all. It is not an "
+        "apology and it does not mention the printer."
+    ),
+    Act.COLLECT: "if_no_page is where the afternoon goes when nothing was printed at all.",
+}
+
+
+def _the_acts() -> str:
+    written = [
+        "A moment is one of these, and carries no key other than the five above and the "
+        "ones shown here:\n"
+    ]
+    for hand in HANDS:
+        shape = _WRITTEN_AS.get(hand.act)
+        if shape is None:
+            raise KeyError(f"the {hand.act} hand has no written form in this prompt")
+        written.append(f"  {shape}\n     It {hand.describe}.\n")
+        about = _ABOUT_ITS_KEYS.get(hand.act)
+        if about:
+            written.append(f"     {about}\n")
+    return "".join(written)
+
+
+THE_ACTS: Final = _the_acts()
+
 
 THE_MARKS_ON_A_PAGE: Final = (
     "A page is an object out of the story, and it is drawn whole: you say what it is and "

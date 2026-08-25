@@ -23,6 +23,7 @@ is present and what job the parent gave it — and it stays true when nobody is 
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import Final, Protocol
 
@@ -37,6 +38,20 @@ class HouseCapability(StrEnum):
     # today. It is here so that the capture station has a name waiting when the verb is
     # written, and so that the name is agreed before an agent gets to invent one.
     PHOTOGRAPH_TABLE = "photograph_table"
+
+
+class Act(StrEnum):
+    """The verb an experience writes down. One per hand, and no others.
+
+    Lives here rather than beside the document format because an act and the equipment it
+    needs are the same fact said twice, and they used to be written in two files.
+    """
+
+    SAY = "say"
+    HAND_OVER = "hand_over"
+    COLLECT = "collect"
+    CLOSE = "close"
+
 
 
 # The kinds and the jobs, written once. `shared` is what every other package imports and
@@ -75,11 +90,79 @@ JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
 # which is a sentence the panel can now write. The reminder job is absent for the same
 # reason and one more: a reminder appears at an hour the household chose, so a display
 # lent to an experience would either lose the reminder or interrupt the experience.
+#
+# The table is not written out any more. It is derived from `HANDS` below, which is the
+# only place a device is described, so a job that provides a capability and a verb that
+# asks for one cannot disagree.
+
+
+@dataclass(frozen=True, slots=True)
+class Hand:
+    """One thing the house can be asked to do, and the equipment that does it.
+
+    This is the half of a device that has to be said in words: the verb an experience
+    writes, the capability it needs, which object in the house carries it, and the
+    sentence the deviser is given so it knows the verb exists. How a hand actually moves
+    is the other half and lives in :mod:`devices.hands`, because a house is not something
+    ``shared`` is allowed to know about.
+
+    The split is the point. Adding a device is adding one entry here and one function
+    there; nothing else in the repository is edited, because everything else — what a
+    house can do, which job provides it, what dispatches the verb, and what the deviser is
+    told — is read off this table.
+    """
+
+    act: Act
+    needs: HouseCapability
+    kind: str
+    job: str
+    # One line, addressed to whoever is writing an afternoon. Plain, and about the room.
+    describe: str
+
+
+HANDS: Final[tuple[Hand, ...]] = (
+    Hand(
+        act=Act.SAY,
+        needs=HouseCapability.SHOW_800X480_1BIT,
+        kind=KIND_DISPLAY,
+        job=JOB_SHEET,
+        describe="puts words on the display and waits for however long they take to read",
+    ),
+    Hand(
+        act=Act.HAND_OVER,
+        needs=HouseCapability.PRINT_A4,
+        kind=KIND_PRINTER,
+        job=JOB_PRINT,
+        describe="prints one page and leaves it where it can be picked up",
+    ),
+    Hand(
+        act=Act.COLLECT,
+        needs=HouseCapability.SCAN_A4,
+        kind=KIND_SCANNER,
+        job=JOB_SCAN,
+        describe="takes a page back and reads what was added to it",
+    ),
+    Hand(
+        act=Act.CLOSE,
+        needs=HouseCapability.SHOW_800X480_1BIT,
+        kind=KIND_DISPLAY,
+        job=JOB_SHEET,
+        describe="ends the afternoon on the display, from wherever it got to",
+    ),
+)
+
+# What each act needs the house to be able to do. The document does not get to say: a
+# moment that puts paper on the table needs a printer whatever its author wrote.
+NEEDS: Final[Mapping[Act, HouseCapability]] = {hand.act: hand.needs for hand in HANDS}
+
+# Two acts share the display, so this is smaller than HANDS and that is not a mistake.
 _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
-    (KIND_PRINTER, JOB_PRINT): HouseCapability.PRINT_A4,
-    (KIND_SCANNER, JOB_SCAN): HouseCapability.SCAN_A4,
-    (KIND_DISPLAY, JOB_SHEET): HouseCapability.SHOW_800X480_1BIT,
+    (hand.kind, hand.job): hand.needs for hand in HANDS
 }
+
+# Every capability an experience can ask for, which is the set a pretend house claims.
+REACHABLE: Final[frozenset[HouseCapability]] = frozenset(NEEDS.values())
+
 
 
 class Assigned(Protocol):

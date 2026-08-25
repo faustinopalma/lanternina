@@ -76,7 +76,7 @@ def the_cloud(monkeypatch: pytest.MonkeyPatch) -> list[Any]:
             read_at=0.0,
         )
 
-    monkeypatch.setattr("devices.run_experience.draw_page", _draw)
+    monkeypatch.setattr("devices.hands.draw_page", _draw)
     monkeypatch.setattr("devices.run_experience.read_page", _read)
     return seen
 

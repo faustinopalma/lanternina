@@ -49,29 +49,28 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from devices.ask_panel import PanelUnreachable, draw_page, read_page
-from devices.house import CannotRun, House, hand_over, screen_in, show
+from devices import hands
+from devices.ask_panel import PanelUnreachable, read_page
+from devices.house import CannotRun, House, screen_in
 from devices.print_page import recall
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
 from shared.experience import (
     ASK,
     HELP_LEVELS,
-    Act,
     Came,
     Close,
     Collect,
     Continuation,
     Experience,
     ExperienceError,
-    HandOver,
     Help,
     Moment,
     Weight,
     longest_at,
     moment_from_dict,
 )
-from shared.ids import SheetId, new_id, new_sheet_id
+from shared.ids import SheetId, new_id
 from shared.message import Message, Says
 from shared.vision_contracts import WhatCameBack
 
@@ -449,7 +448,7 @@ def offer_help(house: House, now: float, *, send: bool = True) -> list[str]:
             continue
         rung, at = helped
         out = Outgoing()
-        show(house, at.heading, list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines,
+        hands.say(house, at.heading, list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines,
                                                written=rung.lines)))
         _say_the_tally(out)
         _write(_run_file(house.sheets_dir, run.run_id), _one_rung_on(run).to_dict())
@@ -500,7 +499,7 @@ def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | N
     except CannotRun:
         return None
     out = at.way_out
-    show(house, out.heading, list(out.lines))
+    hands.say(house, out.heading, list(out.lines))
     return Afternoon(
         run_id=run.run_id,
         experience=run.experience,
@@ -553,39 +552,11 @@ def _do(
 ) -> str | None:
     """Play one moment at one weight. Returns the id of the sheet it printed, if it did.
 
-    A ``hand_over`` plays its ``instead`` when there is no printer, and also when the page
-    could not be drawn: the words are already written and were already checked, so nothing
-    is improvised at the moment something breaks. It returns no sheet, and the ``collect``
-    that follows takes its ``if_no_page`` branch.
+    The verb is looked up rather than branched on: what each one does lives in
+    :mod:`devices.hands`, one function per device, so this stays the same length however
+    many devices a house grows.
     """
-    said = out or Outgoing()
-    at_this_weight = moment.at(weight).lines
-    lines = said.lines(f"{moment.id}.{weight}", at_this_weight, written=at_this_weight)
-    if isinstance(moment, HandOver):
-        drawn = None
-        if house.printer or house.pretend is not None:
-            try:
-                drawn = draw_page(
-                    moment.page.to_dict(),
-                    panel=house.panel,
-                    household=house.household,
-                    key=house.device_key,
-                )
-            except PanelUnreachable as exc:
-                # Loud in the journal, silent in the room: the afternoon has words for this.
-                print(f"the page was not drawn: {exc}")
-        if drawn is None:
-            show(house, moment.heading, list(said.lines(f"{moment.id}.instead", moment.instead,
-                                                        written=moment.instead)))
-            return None
-        show(house, moment.heading, list(lines))
-        sheet_id = new_sheet_id()
-        hand_over(house, drawn, sheet_id=sheet_id, send=send)
-        return str(sheet_id)
-    if moment.act is Act.COLLECT:
-        raise CannotRun("a collect is the seam between two stretches of an afternoon")
-    show(house, moment.heading, list(lines))
-    return None
+    return hands.play(house, moment, weight, out or Outgoing(), send)
 
 
 def _weight_for(moments: tuple[Moment, ...], start: int, minutes_left: float) -> Weight:

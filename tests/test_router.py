@@ -8,7 +8,6 @@ and pretending otherwise would be the kind of test that passes on broken code.
 
 from __future__ import annotations
 
-from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -26,6 +25,59 @@ from shared.routing import (
 )
 
 CONFIG = FoundryConfig(endpoint="https://example.invalid/", deployment="test-deployment")
+
+# The shape `gpt-5.6-sol-2026-07-09` returned on 20 August 2026, trimmed to what is read.
+_A_CHAT_ANSWER: dict[str, Any] = {
+    "model": "gpt-5.6-sol-2026-07-09",
+    "choices": [
+        {"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "ok"}}
+    ],
+    "usage": {
+        "prompt_tokens": 378,
+        "completion_tokens": 131,
+        "total_tokens": 509,
+        "prompt_tokens_details": {"cached_tokens": 12},
+        "completion_tokens_details": {"reasoning_tokens": 76},
+    },
+}
+
+
+def _backend_answering(
+    body: dict[str, Any], *, status: int = 200, headers: dict[str, str] | None = None
+) -> Any:
+    """A real backend whose socket is a fake, with no credential and no retries.
+
+    Faking the transport rather than the client keeps the request the SDK builds under
+    test. `max_retries=0` because the client would otherwise back off for real seconds
+    before surfacing the 400 this suite is about.
+    """
+    import httpx
+    from openai import AsyncAzureOpenAI
+
+    from orchestrator.router import _FoundryBackend
+
+    def answer(_: httpx.Request) -> httpx.Response:
+        return httpx.Response(status, json=body, headers=headers or {})
+
+    backend = _FoundryBackend(
+        FoundryConfig(
+            endpoint="https://project.invalid",
+            deployment="gpt-5.6-sol-2026-07-09",
+            account_endpoint="https://account.invalid",
+            image_deployment="gpt-image-2",
+        )
+    )
+    client = AsyncAzureOpenAI(
+        azure_endpoint="https://account.invalid",
+        api_version="2024-10-21",
+        api_key="not-a-real-key",
+        http_client=httpx.AsyncClient(transport=httpx.MockTransport(answer)),
+        max_retries=0,
+    )
+    backend._clients = dict.fromkeys(
+        (CONFIG.chat_api_version, "2025-04-01-preview"), client
+    )
+    return backend
 
 
 class RecordingBackend:
@@ -156,58 +208,17 @@ async def test_a_call_without_instructions_sends_no_system_message() -> None:
     assert messages[0]["content"] == [{"type": "text", "text": "plan something"}]
 
 
-async def test_a_chat_call_reports_what_it_consumed(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_a_chat_call_reports_what_it_consumed() -> None:
     """The chat API names its counts differently from the image API.
 
     Reading the image names off a chat answer gives a tidy row of zeroes and no error,
     which is how the text path spent its first day reporting nothing. The body below is
     the shape `gpt-5.6-sol-2026-07-09` returned on 20 August 2026, trimmed.
+
+    The socket is faked and everything above it is the real client, so this exercises the
+    request the SDK actually builds rather than one we would have had to keep in step.
     """
-    import httpx
-
-    from orchestrator.router import FoundryConfig, _FoundryBackend
-
-    answered = {
-        "model": "gpt-5.6-sol-2026-07-09",
-        "choices": [{"message": {"content": "ok"}}],
-        "usage": {
-            "prompt_tokens": 378,
-            "completion_tokens": 131,
-            "prompt_tokens_details": {"cached_tokens": 12},
-            "completion_tokens_details": {"reasoning_tokens": 76},
-        },
-    }
-
-    class _Client:
-        def __init__(self, **_: object) -> None: ...
-
-        async def __aenter__(self) -> _Client:
-            return self
-
-        async def __aexit__(self, *_: object) -> bool:
-            return False
-
-        async def post(self, url: str, **_: object) -> httpx.Response:
-            return httpx.Response(
-                200,
-                json=answered,
-                headers={"apim-request-id": "7995317f"},
-                request=httpx.Request("POST", url),
-            )
-
-    class _Credential:
-        def get_token(self, _: str) -> Any:
-            return SimpleNamespace(token="a-token")
-
-    monkeypatch.setattr(httpx, "AsyncClient", _Client)
-    backend = _FoundryBackend(
-        FoundryConfig(
-            endpoint="https://project.invalid",
-            deployment="gpt-5.6-sol-2026-07-09",
-            account_endpoint="https://account.invalid",
-        ),
-        _Credential(),
-    )
+    backend = _backend_answering(_A_CHAT_ANSWER, headers={"apim-request-id": "7995317f"})
 
     assert await backend.complete("say ok", (), "") == "ok"
     spent = backend.last_usage
@@ -217,23 +228,18 @@ async def test_a_chat_call_reports_what_it_consumed(monkeypatch: pytest.MonkeyPa
     assert spent.request_id == "7995317f"
 
 
-def test_a_refused_call_says_why_and_not_only_that_it_was_refused() -> None:
-    """The reason for a 400 is in the body, and httpx's own message throws it away.
+async def test_a_refused_call_says_why_and_not_only_that_it_was_refused() -> None:
+    """The reason for a 400 is in the body, and a bare status line throws it away.
 
-    Written against the message httpx builds, so it fails on the version that only called
-    ``raise_for_status``: that one carried "400 Bad Request" and nothing about the image.
+    This used to be a hand-written unwrapper. The client carries the body into the
+    exception on its own, which is the whole argument for having adopted it.
     """
-    import httpx
+    refusal = {"error": {"code": "BadRequest", "message": "Could not process image"}}
+    backend = _backend_answering(refusal, status=400)
 
-    from orchestrator.router import _checked
-
-    refusal = '{"error":{"code":"BadRequest","message":"Could not process image"}}'
-    response = httpx.Response(
-        400, text=refusal, request=httpx.Request("POST", "https://example.invalid/x")
-    )
-
-    with pytest.raises(httpx.HTTPStatusError) as raised:
-        _checked(response)
+    with pytest.raises(Exception) as raised:
+        await backend.generate_image("a page", "1024x1536")
 
     assert "Could not process image" in str(raised.value)
-    assert raised.value.response.status_code == 400
+    assert getattr(raised.value, "status_code", None) == 400
+

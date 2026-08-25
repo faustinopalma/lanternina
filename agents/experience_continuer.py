@@ -40,7 +40,7 @@ from shared.experience import (
 )
 from shared.experience_prompt import (
     HOW_THE_TEXT_READS,
-    THE_FOUR_ACTS,
+    THE_ACTS,
     THE_LIMITS,
     THE_MARKS_ON_A_PAGE,
     THE_SHAPE_OF_A_MOMENT,
@@ -63,7 +63,7 @@ _FORMAT: Final = (
     "Which afternoon this is and which moment it follows are known already and are not "
     "yours to write.\n"
     + THE_SHAPE_OF_A_MOMENT
-    + THE_FOUR_ACTS
+    + THE_ACTS
     + THE_MARKS_ON_A_PAGE
 )
 

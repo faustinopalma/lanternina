@@ -47,7 +47,7 @@ def the_page_is_drawn(monkeypatch: pytest.MonkeyPatch) -> None:
     import numpy as np
 
     monkeypatch.setattr(
-        "devices.run_experience.draw_page",
+        "devices.hands.draw_page",
         lambda page, **_: np.full((1536, 1024), 255, dtype=np.uint8),
     )
 
@@ -359,7 +359,7 @@ def test_a_page_arriving_after_the_ending_is_due_takes_the_way_out(
     """
     said: list[str] = []
     monkeypatch.setattr(
-        run_experience, "show", lambda _h, heading, _lines: said.append(heading)
+        "devices.hands.show", lambda _h, heading, _lines: said.append(heading)
     )
     experience = an_experience()
     begin(house, experience, now=0.0, send=False)
