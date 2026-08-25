@@ -23,7 +23,7 @@ import secrets
 from typing import Any
 
 from shared.agents import AgentContext
-from shared.experience import Continuation
+from shared.experience import Continuation, Experience
 from shared.experience_checks import check
 from shared.ids import LearnerId
 from shared.routing import ModelUsage
@@ -31,6 +31,24 @@ from shared.seal import Sealer, SealPurpose
 
 from .devising import RefusedByTheChecks
 from .guidelines import FIXED
+
+
+def _up_to(experience: dict[str, Any], after: str) -> tuple[str, ...]:
+    """Everything the afternoon put in front of somebody up to and including ``after``.
+
+    A document that will not parse yields nothing rather than raising: the continuer is
+    about to be handed the same document and its refusal is the one worth reading.
+    """
+    try:
+        whole = Experience.from_dict(experience)
+    except Exception:
+        return ()
+    said: list[str] = []
+    for moment in whole.moments:
+        said.extend(moment.words_before_the_way_out)
+        if moment.id == after:
+            break
+    return tuple(said)
 
 
 async def continue_experience(
@@ -85,11 +103,14 @@ async def continue_experience(
             bounds=FIXED,
             household_bounds=household_bounds,
         )
-        # The same checks the whole afternoon passed, on the half nobody approved. There is
-        # no repair here and there will not be one: somebody is standing at the scanner, a
-        # second model call is another fifteen seconds, and an afternoon that is not
-        # continued stops — which is what an afternoon nobody continues does anyway.
-        complaints = check(carrying_on)
+        # The same checks the whole afternoon passed, on the half nobody approved, and
+        # given the half that already happened: a continuation begins in the middle, so a
+        # check that starts counting at its first moment refuses an ending reaching for the
+        # page the earlier stretch handed over. There is no repair here and there will not
+        # be one: somebody is standing at the scanner, a second model call is another
+        # fifteen seconds, and an afternoon that is not continued stops — which is what an
+        # afternoon nobody continues does anyway.
+        complaints = check(carrying_on, already_said=_up_to(experience, after))
         if complaints:
             raise RefusedByTheChecks(complaints)
         # The chokepoint. Nothing below this line may be skipped by an early return above

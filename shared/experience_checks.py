@@ -82,16 +82,24 @@ class Complaint:
 
 
 def check(
-    plan: Experience | Continuation, *, recent: Sequence[Drawn] = ()
+    plan: Experience | Continuation,
+    *,
+    recent: Sequence[Drawn] = (),
+    already_said: Sequence[str] = (),
 ) -> tuple[Complaint, ...]:
     """Everything wrong with this plan, or nothing.
 
     ``recent`` is what the last few afternoons in this house were drawn along. It is empty
     for a continuation and for the first afternoon a house ever gets, and an empty list
     makes :func:`not_the_same_afternoon_again` say nothing rather than refuse everything.
+
+    ``already_said`` is what the afternoon put in front of somebody before this plan
+    begins. Empty for a whole experience, which begins at its own beginning; for a
+    continuation it is the stretch that came first, and leaving it out refuses an ending
+    that reaches for the very page the earlier stretch handed over.
     """
     complaints: list[Complaint] = []
-    complaints.extend(the_way_out_starts_from_something(plan.moments))
+    complaints.extend(the_way_out_starts_from_something(plan.moments, already_said))
     complaints.extend(the_ending_is_written_down(plan.moments))
     complaints.extend(nothing_from_the_block_list(plan))
     complaints.extend(no_placeholder_is_left(plan))
@@ -101,7 +109,9 @@ def check(
     return tuple(complaints)
 
 
-def the_way_out_starts_from_something(moments: Sequence[Moment]) -> tuple[Complaint, ...]:
+def the_way_out_starts_from_something(
+    moments: Sequence[Moment], already_said: Sequence[str] = ()
+) -> tuple[Complaint, ...]:
     """The way out has to name an object the afternoon already put in somebody's hands.
 
     The parser checks that the way out names its object in its own text. That alone lets a
@@ -110,13 +120,19 @@ def the_way_out_starts_from_something(moments: Sequence[Moment]) -> tuple[Compla
     the object has to have been mentioned before: in this moment, or in one that comes
     earlier, on a display or on a page.
 
+    ``already_said`` is what came before ``moments`` in the same afternoon, and it exists
+    because this was written for a whole experience and then applied unchanged to a
+    continuation. A continuation starts in the middle by definition, so its first moment
+    had nothing before it and any ending reaching for a page handed over in the earlier
+    stretch was refused — measured on 25 August 2026 on `aft_fd196b32`, one run in three.
+
     **What it checks and what it does not.** It checks that the words were said. It cannot
     check that the thing exists, that it is within reach, or that the sentence about it
     makes sense. That is the limit of a check against text, and the rest is what a parent
     reads the document for.
     """
     complaints: list[Complaint] = []
-    said = ""
+    said = fold(" ".join(already_said))
     for index, moment in enumerate(moments):
         said = f"{said} {fold(' '.join(moment.words_before_the_way_out))}"
         if fold(moment.way_out.in_hand) not in said:
