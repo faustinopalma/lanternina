@@ -22,9 +22,13 @@ from shared.capabilities import HouseCapability
 from shared.experience import EXPERIENCE_FORMAT_VERSION, Collect, ExperienceError, HandOver
 from shared.experience_checks import Complaint
 from shared.ids import LearnerId
-from shared.routing import ModelRequest
-from shared.safety import ContentKind, SafetyVerdict, ScreenedPayload, ScreeningRecord
-from shared.seal import Sealer, SealPurpose
+from shared.routing import (
+    DegradationLevel,
+    ModelRequest,
+    ModelResponse,
+    ModelTier,
+    RoutingDecision,
+)
 
 # What a model answers with: the five fields it is asked for, and not the three it is not.
 AN_AFTERNOON: dict[str, Any] = {
@@ -55,16 +59,18 @@ class Router:
         self.asked: ModelRequest | None = None
         self.last_usage = None
 
-    async def generate_for_user(self, request: ModelRequest) -> ScreenedPayload:
+    # Devising asks through `analyze`, not `generate_for_user`. The document is JSON, and
+    # what a person reads out of it is screened afterwards by `screen_experience` — one
+    # door, given the shape it was built for.
+    async def analyze(self, request: ModelRequest) -> ModelResponse:
         self.asked = request
-        record = ScreeningRecord(verdict=SafetyVerdict.ALLOW, screener="a test")
-        sealer = Sealer(SealPurpose.CONTENT_SAFETY, b"k" * 32, "test")
-        draft = {"kind": str(ContentKind.EXERCISE_JSON), "body": self.body}
-        return ScreenedPayload(
-            kind=ContentKind.EXERCISE_JSON,
-            body=self.body,
-            record=record,
-            seal=sealer.seal(draft),
+        return ModelResponse(
+            text=self.body,
+            request_id=request.request_id,
+            routing=RoutingDecision(
+                tier=ModelTier.CLOUD_FOUNDRY, degradation=DegradationLevel(0), reason="a test"
+            ),
+            latency_s=0.0,
         )
 
 

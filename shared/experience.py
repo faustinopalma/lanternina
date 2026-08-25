@@ -144,18 +144,25 @@ MAX_OVERVIEW: Final = 600
 MAX_THEME: Final = 40
 MAX_THEMES: Final = 5
 
-# How it should go, written for whoever runs it rather than for whoever reads it. Longer
-# than the overview and shorter than the moments: what the afternoon is trying to do, what
-# may be improvised and what must not, so that something acting on it has room and a shape
-# at the same time. The parent approves this along with the themes — the two halves of
-# "what is this and how will it go", and neither is a list of steps.
-MAX_STRATEGY: Final = 1400
+# The game itself, written out. Not a summary and not a brief: the world, the question it
+# turns on, the beats, what is held back and when it is given, what gets made, and where it
+# can go differently. Six thousand characters is about a thousand words — long enough for
+# something intricate, and short enough that whoever runs the afternoon can hold it.
+#
+# The number is large on purpose. At 1400 what came back was a paragraph of intentions, and
+# a paragraph of intentions is what produces an afternoon that could be any afternoon.
+MAX_STRATEGY: Final = 6000
 
-# An afternoon, bounded at both ends. Under half an hour is not an afternoon; over six
-# hours is something that has forgotten to finish. The hub applies it: when it next asks
-# and the time has passed, the experience is over whatever moment it had reached.
+# An afternoon, bounded at both ends, and the length is the game's to choose: an hour, two,
+# three. They are not all the same size and a format that treated them as one would be
+# asking for the same game every time.
+#
+# Four hours is the ceiling because that is an afternoon. Something that wants a week is a
+# different mode and will be built as one — it needs to survive being put down, which this
+# format cannot do: the hub applies the end, and when it next asks and the time has passed,
+# the experience is over whatever moment it had reached.
 MIN_MINUTES: Final = 30
-MAX_MINUTES: Final = 360
+MAX_MINUTES: Final = 240
 
 # How much a parent is asked to read. Each moment is a paragraph and each branch is
 # another path through them, so this is a limit on the document rather than on the

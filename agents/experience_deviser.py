@@ -219,7 +219,7 @@ class ExperienceDeviser:
         constraint that can actually be checked afterwards: a title can be changed without
         changing anything.
         """
-        payload = await ctx.router.generate_for_user(
+        payload = await ctx.router.analyze(
             ModelRequest(
                 capability=Capability.PLANNING,
                 prompt=the_prompt(
@@ -236,7 +236,7 @@ class ExperienceDeviser:
                 content_kind=ContentKind.EXERCISE_JSON,
             )
         )
-        return payload.body
+        return payload.text
 
     async def repair(
         self,
@@ -295,7 +295,7 @@ class ExperienceDeviser:
         language: str,
         experience_id: str,
     ) -> Experience:
-        payload = await ctx.router.generate_for_user(
+        payload = await ctx.router.analyze(
             ModelRequest(
                 capability=Capability.PLANNING,
                 prompt=(
@@ -311,7 +311,7 @@ class ExperienceDeviser:
                 content_kind=ContentKind.EXERCISE_JSON,
             )
         )
-        return experience_in(payload.body, experience_id=experience_id)
+        return experience_in(payload.text, experience_id=experience_id)
 
 
 def _not_again(recent: Sequence[Drawn]) -> str:
@@ -366,6 +366,8 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
             "experience_id": experience_id or f"aftn-{secrets.token_hex(4)}",
             "title": parsed.get("title", ""),
             "overview": parsed.get("overview", ""),
+            "themes": parsed.get("themes", []),
+            "strategy": parsed.get("strategy", ""),
             "minutes": parsed.get("minutes", 0),
             "requires": needs,
             "drawn": parsed.get("drawn"),

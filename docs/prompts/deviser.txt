@@ -1,5 +1,5 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-13597 characters, 92 lines
+15130 characters, 100 lines
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
 ==============================================================================
 Devise one afternoon for one household, from nothing.
@@ -8,7 +8,15 @@ Answer with JSON and nothing else, in this exact shape:
 Do not write an id, a format version or a list of what the house needs: those are known already and are not yours to write.
   "overview": at most 600 characters. What this afternoon is, in the words a parent decides by. Not a summary of the moments — those can be read. Say what it is like to be inside it.
   "themes": at most 5 of them, each at most 40 characters. What it is about, a few words each, and the first thing the parent reads. Nouns, not sentences.
-  "strategy": at most 1400 characters, written for whoever runs the afternoon rather than for whoever approves it. Say what is not known and could be — the real question the afternoon turns on — and what is held back, and when it is given. Then where it can afford to wander, what to lean on if interest drops, and the two or three things that would spoil it. Concrete: name the object that should be in their hands at the end. Not a list of steps — the moments are the steps.
+  "strategy": at most 6000 characters, and use them. This is the game itself, written out for whoever runs the afternoon — not a summary, not a statement of intent, not a paragraph about what you hope it will feel like. Write it in these parts, in this order, each headed by its own name on its own line:
+    THE WORLD. Where this is set and what is true in it that is not true here. Two or three specifics that do the work of twenty: what the light is like, what the place smells of, what nobody there ever mentions.
+    THE QUESTION. What is not known and could be, in one sentence, with an answer you also write down. Then the false answer that will look right for a while, and what makes it come apart.
+    THE BEATS. Six to twelve of them, each a line: what happens, and what it makes the person do. Say which beat turns the thing over, and which one is the one where the answer arrives.
+    WHAT IS HELD BACK. Three or four things, and the beat at which each is given. Nothing may be held past the last beat.
+    WHAT IS MADE. Every object that comes off the printer, one line each: what it is inside the story, what it says, what it asks for, and what a person is meant to do to it. Whoever runs the afternoon draws these from what you write here, so name the thing, not the format — a shipping manifest and not a table, a letter and not a form.
+    WHERE IT CAN GO DIFFERENTLY. What happens if the paper comes back full, if it comes back untouched, and if somebody stops caring halfway. Concrete moves, not principles.
+    WHAT WOULD SPOIL IT. Two or three, and they should be things you are actually tempted to do.
+    Nothing in this is a step to perform in order. It is the material the afternoon is made of, and whoever runs it decides which of it happens.
 Every moment, whatever it does, carries these five keys and then whatever its act adds:
   "id": 2 to 32 characters of lowercase a-z, digits and hyphens. No capitals, no accented letters, no underscores and no spaces. Ids are never shown to anybody, so write them in English even when the afternoon is not.
   "heading": at most 28 characters, on the display.
@@ -55,7 +63,7 @@ A line is at most 44 characters and there are at most 4 lines in any list of lin
 A weight takes 1 to 60 minutes. A rung of help arrives after 1 to 30 minutes. A way out takes at most 20 minutes, and what is in_hand is at most 40 characters.
 On a page: its title is at most 48 characters, a line of its note at most 72, and a label at most 40. These are refused, not trimmed.
 At most 4 lines of note and at most 8 places to write.
-minutes is how long the afternoon lasts, between 30 and 360. The longest way through your moments at their short weights has to be over inside it, or the afternoon never fitted.
+minutes is how long the afternoon lasts, between 30 and 240, and it is yours to choose. An hour, two, three: pick the length this particular game wants, and do not reach for the same number every time. A single question turned over twice is an hour; something with a middle that doubles back is three. The longest way through your moments at their short weights has to be over inside it, or the afternoon never fitted.
 The last moment closes, or collects. At least one moment closes. Every moment you write can reach an ending going forward.
 An outcome leads to a moment later in your list, or says ask. It never leads backwards.
 Every moment you write is reached by some path. A collect must follow a hand_over.
