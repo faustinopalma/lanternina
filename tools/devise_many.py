@@ -63,16 +63,24 @@ async def once(already: tuple[str, ...]) -> dict[str, Any]:
 
 
 async def run(name: str, times: int) -> int:
+    from shared.experience import Drawn
+
     folder = WHERE / f"{_next_number():02d}-{name}"
     folder.mkdir(parents=True, exist_ok=True)
     already: list[str] = []
+    # Carried forward, because this is what makes each afternoon unlike the last and a run
+    # that does not carry it is measuring a house with no history nine times over. The
+    # first nine of these were run without it and came back as one afternoon with nine
+    # titles: light, a map, an object on a table. `DRAWN_BEFORE` is what the panel uses.
+    drawn: list[Any] = []
     rows: list[dict[str, Any]] = []
     for turn in range(1, times + 1):
-        got = await once(tuple(already))
+        got = await once(tuple(already), tuple(drawn[-5:]))
         rows.append(got)
         document = got.get("experience")
         if document:
             already.append(str(document.get("title", "")))
+            drawn.append(Drawn.from_dict(document.get("drawn")))
             (folder / f"{turn:02d}.json").write_text(
                 json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8"
             )
