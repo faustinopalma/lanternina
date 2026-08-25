@@ -19,7 +19,13 @@ the other.
 
 ---
 
-## The camera does not look at people
+## The camera does not analyse people
+
+The camera is handheld: a battery, one button, no screen, carried around. Faces will be in
+frame — friends, rooms, whatever happens to be behind the thing being photographed. Nothing
+about the framing prevents that, and a rule that depended on framing would quietly stop
+being true the first time somebody turned round. So every rule below is about what may be
+inferred, and none of them depends on where the lens is pointed.
 
 - **No facial recognition.** Not for identification, not for "knowing who is at the desk".
 - **No face detection.** Including as an intermediate step, including "only to blur it",
@@ -28,30 +34,31 @@ the other.
 - **No emotion, affect, mood, stress, engagement or attention inference**, from images,
   from text, from timing, or from anything else.
 - **No gaze or eye tracking.**
+- **No age or identity inference.**
 - **No biometrics** of any kind.
-- **No description or assessment of a photograph.** Where an activity invites somebody to
-  photograph something, the picture is transformed into something else — never described
-  ("I see a chair"), never judged ("nice framing"). No recognisable face is returned to a
-  display, no original outlives the session, and no photograph appears in the parent's
-  panel. A photograph of something irrelevant is accepted and transformed like any other,
-  with no comment and no correction.
+- **No description or assessment of a photograph.** The picture is transformed into
+  something else — never described ("I see a chair"), never judged ("nice framing"). No
+  recognisable face is returned to a display. A photograph of something irrelevant is
+  accepted and transformed like any other, with no comment and no correction.
 
-The camera is on a fixed arm at 90° over a sheet of paper, with a field of view narrow
-enough that nobody's face is in frame. The software backs this up: if the ArUco quadrilateral
-is not found, the pipeline stops rather than analysing whatever else is in the picture.
+What is kept lands in a gallery its owner can see and delete from. Content Safety runs on
+inbound photographs as it does on generated output. Being able to delete is the guarantee
+here; not keeping anything stopped being one when the camera left the desk.
 
-## Capture is single-shot and local
+## Capture happens only when somebody presses the button
 
 - **No continuous capture.** No timer, no polling loop, no auto-capture when a sheet is
   detected, no burst mode.
 - **No motion trigger.** Movement in the room is not an event this system reacts to.
 - **No remote streaming.** There is no video endpoint, no MJPEG preview, no WebRTC, no
   "just for debugging" preview in the parent panel.
-- **No full frames retained.** Only the rectified region inside the marker quadrilateral is
-  kept. The full frame exists in memory for the duration of one capture and is never
-  written to disk, serialised, logged, or transmitted.
+- **No remote trigger.** Nothing in the cloud, and nothing in the parent's panel, can take
+  a photograph. Holding the button is the only path to the sensor having power, and the
+  activity light is wired in series on that rail rather than driven from a pin — a light
+  firmware can lie about is not evidence of anything.
 
-The only trigger is a physical button press.
+The only trigger is a physical button press. It is answered on the e-paper display within
+seconds; what is built out of the photograph is proposed minutes later.
 
 ## Nothing here is a verdict about a person
 
@@ -126,6 +133,10 @@ behind an explicit click. Afterwards, one line about what was made.
 - **No adaptation the parent cannot see.** The system may change what it offers on its own,
   but what it offers arrives as a proposal in words the parent can read and refuse. The
   settings remain the starting point and remain the parent's to change.
+- **No memory the parent cannot read.** The household memory lives in the cloud, so
+  locality is not what keeps it honest. The parent can read all of it, in plain language,
+  in the panel — a store read as sentences by the person who steers cannot quietly become a
+  dossier.
 - **No dashboard-triggered work.** A parent write persists state and returns. It does not
   call a model, enqueue generation, notify or wake the home server, or schedule work for
   later. Only the home server can initiate processing, when it chooses to make a request.

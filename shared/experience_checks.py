@@ -29,7 +29,10 @@ check                                        refuses
 :func:`no_placeholder_is_left`               the document that reads as finished and is not
 :func:`not_the_same_afternoon_again`         the fifth afternoon that is the first one
 ============================================ ==========================================
-"""
+There is a seventh property in the README that no function here covers: every moment has an
+answer that can be wrong, and the last moment produces something worth keeping. The six
+above are about safety and shape, and a plan can pass all of them and still be a worksheet.
+It is unchecked, and the README says so rather than implying otherwise."""
 
 from __future__ import annotations
 

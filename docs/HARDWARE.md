@@ -25,11 +25,12 @@ Written in English because this repository is destined to be public and the rest
 Before any device is interesting, it has to survive these. They come from
 `.github/copilot-instructions.md` and they are not preferences.
 
-**It must not watch a person.** Not with a camera, not with radar, not with a microphone,
-not with a wearable. The camera in this system is a scanner pointed at paper, triggered
-by a physical button. Anything that senses *a person* rather than *an object somebody chose
-to present* is out — including the entire category of devices marketed as "privacy-friendly
-presence detection".
+**It must not watch a person.** Not with radar, not with a microphone, not with a wearable.
+The camera in this system is handheld, and faces will be in frame — so the rule cannot be
+about where the lens points. It is about two other things: a capture happens only because
+the person holding the device pressed the button, and nothing infers anything about a person
+from what comes back. Anything that senses *a person* without either of those — including
+the entire category of devices marketed as "privacy-friendly presence detection" — is out.
 
 **It must not judge a person.** No device whose output is a score, a level, a streak, a
 percentage, a trend, or a comparison. No device whose appeal depends on somebody wanting to
@@ -97,7 +98,7 @@ needed to self-host. There is an ImageMagick guide for producing conformant imag
   something is pending. The deep-sleep latency limit becomes tunable rather than fixed.
 - Communication is one-way by design: *"Your TRMNL device pings our server, never the
   other way around."* No inbound path to the device, nothing on the home network to
-  attack. Same shape as "the camera is a scanner, not an observer".
+  attack. Same shape as the camera rule: nothing outside the room can make a device act.
 - Firmware is open source (`github.com/usetrmnl/firmware`) and modding it is explicitly
   permitted by their terms. So the escape hatch exists even though we shouldn't need it.
 
@@ -182,9 +183,9 @@ Laser was recommended and then **rejected on the user's objection, correctly**. 
 printers emit ultrafine particles and ozone during toner fusing; in a home, running often,
 in an occupied room, that trade is not worth a marginal gain in marker sharpness.
 
-Rechecking the numbers: an ArUco 4×4 at 15 mm has **2.5 mm modules** — ~30 pixels each at
-300 dpi. A 0.2 mm bleed is 8% of a module. Inkjet is fine, and the code comment in
-`shared/sheet.py` already assumed it.
+The marker argument that used to sit here is retired with the marker pipeline: a page is
+read against the blank it was printed from, and nothing on it is there for a machine. What
+survives is about ink and paper, not about detection:
 
 What actually matters, all free:
 - Print **black only**. Modern inkjet black is usually pigment, water- and smudge-resistant
@@ -192,8 +193,8 @@ What actually matters, all free:
 - **Normal quality, not high** — less ink means less paper cockling, and the homography
   assumes a plane.
 - **80–90 g/m² matte** paper. Never glossy.
-- `MARKER_SIZE_MM` is a constant. If detection is marginal, **18–20 mm costs only page
-  space** and buys a lot of robustness. It is a parameter, not a constraint.
+- Page geometry is a printing concern only. There is no detection to keep robust, so a page
+  is laid out for whoever is looking at it and for nothing else.
 
 **Use the printer already in the house.** Zero purchases, zero fumes.
 
@@ -252,9 +253,9 @@ slow, and GxEPD2 supports the IT8951 HAT family.
 
 ### 3.2 Things that can be touched
 
-**Arcade buttons** — 🔎 candidate, ~€3 each. 60 mm, real click, unambiguous. Already
-required by the architecture as the camera trigger. Buy several: one will break, and a
-second action will turn out to be needed.
+**Arcade buttons** — 🔎 candidate, ~€3 each. 60 mm, real click, unambiguous. This is how
+anything gets answered in the house: confirm, ask for help, say done. Buy several: one will
+break, and a second action will turn out to be needed.
 
 **NFC tags and a reader** (PN532 / RC522, ~€10, tags ~€0.30) — 💡 **idea worth serious
 attention.** A physical token placed on a pad *is* a command. No reading required, no
@@ -352,7 +353,13 @@ person it is for, rather than something configured in an interface they never se
   - ✅ **IO-VREF jumper confirmed on `3V3`** (verified on the board, 2026-08-04). GPIO
     logic is 3.3 V, so the §3.8 switch jack wires directly with a pull-up and no level
     shifting. The board also offers `1V8` — if that jumper ever moves, the jack breaks.
-- **Camera Module 3, Wide (102°)** — 🔎 candidate. Autofocus matters at 30–40 cm; the v2
+- ⚠️ **Superseded.** The three entries that follow — **Camera Module 3 Wide (102°)**, the
+  **22-pin to 15-pin adapter cable**, and **a gooseneck or desk arm** — were the fixed
+  capture station: a camera held at a known height over an A4, so that four printed markers
+  were always in frame. The scanner does that job now, and the camera that replaced this is
+  handheld, battery-powered and carried around. Kept because the sizing arithmetic is
+  correct and somebody may want a fixed station for a different reason.
+- **Camera Module 3, Wide (102°)** — autofocus matters at 30–40 cm; the v2
   is fixed-focus. Wide covers an A4 at ~25–30 cm, standard needs ~50 cm.
 - **⚠️ 22-pin to 15-pin camera adapter cable** — CM5 carriers use 22-pin; the Camera
   Module 3 ships with 15-pin. **They do not connect.** The €2 part that costs an evening.
@@ -380,7 +387,7 @@ that.
 
 The fix is free, and it falls out of a rule the project already has. Because **nothing
 infers on the device** — every model call goes to Foundry — the thermal envelope here is
-trivial: rendering PNGs with Pillow, one ArUco detection per scan, some HTTP. So the box
+trivial: rendering PNGs with Pillow, driving a printer and a scanner, some HTTP. So the box
 runs **passive, fanless, silent**, and the constraint that looked like a limitation buys
 back the thing that keeps the system alive in a home.
 
@@ -514,7 +521,7 @@ than rediscover it.
 
 | Category | Why it is out |
 | --- | --- |
-| ⛔ Any camera pointed at a person | The camera here is a scanner triggered by a button. Presence, person or face detection is forbidden even as an intermediate step. |
+| ⛔ Any camera that captures without a press | The camera here wakes on its own button and nothing else. No remote trigger, no timer, no motion. Presence, person or face detection is forbidden even as an intermediate step, and that matters more now that faces are in frame. |
 | ⛔ mmWave / radar / PIR presence sensors | Marketed as privacy-friendly because they don't record images. They still infer where a person is and what they are doing. That is a sensor pointed at a person. |
 | ⛔ Wearables — watches, bands, trackers, rings | Biometrics, explicitly forbidden. Also the one device category nobody can walk away from. |
 | ⛔ Always-on microphones | Voice-stress and affect inference are forbidden, and an always-listening device in a child's home is not defensible regardless of what it does with the audio. |
@@ -573,9 +580,10 @@ with the **heatsink and no fan**, install to eMMC, mount the NVMe for logs and c
 confirm it is inaudible before anything else gets attached to it. Add a **USB Bluetooth
 dongle (~€10)** so the wireless-switch category stays open.
 
-**Order tonight, cheap.** Camera Module 3 Wide, the 22-to-15-pin adapter cable, a desk
-arm, two arcade buttons, a diffuse light. Total maybe €90, and it unblocks the paper loop,
-which is the part of this system with no off-the-shelf equivalent.
+**Order tonight, cheap.** Two arcade buttons and a diffuse light. The camera line of this
+list — Camera Module 3 Wide, the 22-to-15-pin adapter, a desk arm — was for the fixed
+capture station and is superseded: the household scanner reads paper, and the camera that
+replaced it is handheld and not yet designed.
 
 **Buy one thermal printer** (~€30) and try it before committing to the A4 pipeline. If a
 torn-off strip turns out to be a better object than a printed sheet, that changes the

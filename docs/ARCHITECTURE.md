@@ -24,13 +24,13 @@ non-goals structural rather than aspirational.
 │   orchestrator/router.py ──▶ orchestrator/safety.py    delivery.py  │
 │      │  (the only model door)     (gate, key #1)       verifies     │
 │      │                                                        │     │
-│   vision/ ── rectified page ──────────────────────────────────┘     │
+│   devices/ ── page vs blank ──────────────────────────────────┘     │
 │      ▲                                                        │     │
 └──────┼────────────────────────────────────────────────────────┼─────┘
-       │ single shot, button press                              ▼
-   desk camera                                    e-paper / LCD / printer
+       │ a page put on the glass                                ▼
+   the scanner                                    e-paper / LCD / printer
                                                                  
-       └──────────────── prompts and page crops ──────────▶ Azure AI Foundry
+       └──────────────── prompts and page pairs ──────────▶ Azure AI Foundry
 ```
 
 `shared/` holds types and protocols and nothing else. Everything else depends on it; it
@@ -40,7 +40,7 @@ Two names are used throughout, because "the device" and "the cloud" stopped bein
 once both grew parts:
 
 - **Lanternina Hub** — the machine in the house. It holds the sealing keys, the ledger, the
-  camera and the link to the display. It is the only initiator of work.
+  scanner and the link to the display. It is the only initiator of work.
 - **Lanternina Cloud** — the Azure tier: the parent dashboard, the stored themes and
   approvals, and the single door to the models.
 
@@ -148,46 +148,52 @@ has to be a deliberate act rather than an omission.
 approval, blocked content wrapped as screened, seal reused across purposes, expired
 approval.
 
-## 6. Why the camera is a scanner
+## 6. Why the camera cannot be pointed at somebody by anyone but its owner
 
-The camera sits on a fixed 90° arm with a narrow field of view, framed so no face is in
-it. That is a hardware guarantee, and hardware guarantees do not survive someone
-remounting the arm — so the software backs it up:
+This section used to argue from framing: a fixed 90° arm, a narrow field of view, no face
+in shot, and software that stopped if the four markers were missing. That argument is
+retired along with the rig. The camera is handheld — a battery, one button, no screen — and
+faces will be in frame.
 
-- `RawFrame` is not a dataclass, has no encoder, and raises `RetentionViolation` on
-  `__getstate__`, `__reduce__`, `__copy__` and `__deepcopy__`. It cannot be pickled,
-  copied, or written out, and it zeroes its buffer on scope exit.
-- The only image type that crosses a package boundary is `RectifiedPage` — the crop inside
-  the marker quadrilateral.
-- `tests/test_boundaries.py` fails if anything in `vision/` references face/person/affect
-  detection, a streaming response, or `cv2.imwrite`.
-- If the four markers are not found, the pipeline raises `MarkersNotFound` rather than
-  analysing whatever else is in the frame.
+A guarantee about framing would have had to be withdrawn the first time somebody turned
+round, so what replaces it is about who can trigger a capture and what may be inferred:
 
-TODO(hackathon): add the frame-fill check — reject a capture where the marker quad covers
-less than a set fraction of the frame, which turns "the camera points at paper" from a
-mounting assumption into a runtime invariant.
+- Nothing in the cloud and nothing in the parent's panel can take a photograph. There is no
+  remote trigger, no stream, no timer and no motion trigger.
+- Holding the button is the only path to the sensor having power, and the activity light is
+  wired in series on that rail rather than driven from a pin. "It is off" is a property of
+  the wiring.
+- No facial recognition, no emotion or attention inference, no age or identity inference,
+  at any step including an intermediate one. This carries more weight now, not less.
+- Content Safety runs on inbound photographs as it does on generated output.
+- What is kept lands in a gallery its owner can see and delete from. Deletion is the
+  guarantee; not keeping anything stopped being one when the camera left the desk.
 
-## 7. Why the sheet spec is versioned
+None of this is enforced by a test. `vision/` is an empty package and there is nothing to
+enforce it against, which is where the README's Status section puts it. `RawFrame` and
+`RectifiedPage` survive in `shared/vision_contracts.py` as a technique for sealing a type,
+not as a rule the system still keeps.
 
-The print agent lays out a sheet; the vision pipeline reads it back. If the two drift,
-answers get attributed to the wrong questions — a failure that looks like data rather than
-a bug.
+## 7. Why nothing on the page is there for a machine
 
-`shared/sheet.py` defines cells in **page coordinates**: normalised 0–1 over the
-quadrilateral of the markers' inner corners. Cell positions are therefore independent of
-paper size, printer margins, camera distance and DPI. Rectification maps that quadrilateral
-onto a fixed canvas, after which a cell rectangle is a multiplication.
+A page is read by handing a model two images — the blank as it was printed, and the same
+sheet off the glass — and asking what is different. No QR code, no corner markers, no grid
+of declared cells.
 
-The QR code carries the spec version. A sheet whose version the reader does not understand
-is **refused**, not guessed at.
+The design this replaced is in `attic/`: cells in page coordinates normalised over the
+quadrilateral of four ArUco markers, a QR carrying the spec version, and a sheet whose
+version the reader did not understand refused rather than guessed at. It solved a real
+problem — print and read drifting apart, so answers get attributed to the wrong questions —
+by making the paper carry its own description. The cost was that every page had to be laid
+out by something that could also describe itself, which is why the pages all looked like
+forms.
 
 Reading is a model's job. Until 21 August 2026 there was a second reader underneath —
 arithmetic over `LOCALLY_READABLE` cell kinds, used with no cloud and flagged
 `PageReading.degraded` — and it is in `attic/` now: **no cloud, no reading**, and a page
 that comes back while the panel is unreachable waits. What survives is the preference that
-put it there in the first place: a cell the model did not answer for, or answered for with
-anything outside its three words, is marked `needs_review`. "The parent should look at
+put it there in the first place: anything the model did not answer for, or answered for
+with something outside what was asked, is marked `needs_review`. "The parent should look at
 this" beats a confident wrong answer.
 
 ## 8. Trust boundaries
@@ -196,7 +202,7 @@ Treated as **data, never as instructions**:
 
 - text recognised from handwriting,
 - free text the parent types,
-- anything decoded from a QR code.
+- anything decoded from a QR code, wherever one is still read.
 
 A worksheet is a piece of paper that a model reads. Anyone who can put text on a page can
 attempt prompt injection, so recognised text is never concatenated into an instruction
@@ -520,7 +526,7 @@ Honest status, so nobody mistakes scaffolding for a system:
 | picture archive and restore | written: blob-backed, restores byte-identical |
 | approval ledger, planner | not written |
 | `agents/` vision, scheduling, print | not written |
-| `vision/` capture, ArUco, rectify, QR, cell read | not written as a package; the logic exists in `tools/` |
+| `vision/` handheld camera intake | not written; the package is empty, and the camera rules in section 6 are enforced by nothing |
 | usage accounting and per-household cap | written and deployed — see section 11 |
 | analytical surface for those figures | not written — direction in section 11 |
 | agents announcing themselves the way devices do | not written — the gap named at the end of section 12 |

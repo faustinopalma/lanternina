@@ -1,15 +1,14 @@
 # The capture station
 
-The camera in this system is a scanner pointed at paper. It is not an observer: it looks at
-a tray, it fires on a button press, and what it can see is limited by a printed hood rather
-than by a promise in the code.
-
-`vision/read_sheet.py` now holds the reading — markers, rectification, the code on the page,
-one reading per declared cell — and the flatbed closes the loop end to end: a press on the
-display starts a scan and the answer comes back on the display about a minute later.
-`shared/vision_contracts.py` holds the shape of the answer, and `RawFrame` refuses to be
-pickled, copied or serialised. What is still missing is everything that produces a *frame*
-rather than a scan.
+> **Superseded as a premise, 25 August 2026.** This entry was written when the camera was a
+> scanner pointed at paper: a fixed station, a printed hood, four markers in frame, and a
+> rule that only the crop inside them was ever kept. None of that is the design any more.
+> The camera is handheld — a battery, one button, no screen, carried around — faces will be
+> in frame, and what protects somebody is what may be inferred and what can be deleted. The
+> ranking below still holds for anyone who wants a fixed station for a different reason, and
+> the measurements in it are still measurements. `vision/` is empty: `read_sheet.py` and the
+> cell half of `shared/vision_contracts.py` are in `attic/`, and a page is read by handing a
+> model the blank and what came back.
 
 The flatbed scanner already in the house stays: with its lid closed it physically cannot
 see anything but the sheet, which is a stronger guarantee than any camera can give. The

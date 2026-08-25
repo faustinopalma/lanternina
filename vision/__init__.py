@@ -1,15 +1,19 @@
-"""Vision — single-shot capture, ArUco detection, rectification, QR decode, cell reading.
+"""Vision — empty, and honestly so.
 
-Two constraints shape this whole package:
+The package that read a printed sheet through four markers and a QR code was retired: a
+page is now read by handing a model the blank and what came back off the glass, and that
+lives in ``agents/page_reader.py``. Nothing has replaced it here yet.
 
-1. **Only the rectified region inside the marker quadrilateral is ever retained.** The
-   full frame lives in a :class:`shared.vision_contracts.RawFrame`, which cannot be
-   pickled, copied or written out. Nothing in this package accepts a ``RawFrame`` and
-   returns bytes except the rectifier, and it returns only the crop.
-2. **Capture is single-shot, on a button press.** There is no streaming endpoint, no
-   timer loop and no motion trigger in this package, and none may be added — see
-   docs/NON-GOALS.md.
+What will land here is the handheld camera path: a photograph arrives from a battery device
+with one button, and something is proposed from it minutes later. Two rules will apply to
+it, and neither is about framing — faces will be in frame:
 
-This package does no face detection, no person detection and no emotion inference. It
-looks for four printed markers and a QR code.
+1. **Nothing infers anything about a person.** No face detection, no emotion or attention
+   inference, no age or identity inference, at any step including an intermediate one.
+2. **Capture happens only on a button press.** No streaming endpoint, no timer loop, no
+   motion trigger, and nothing in the cloud or in the parent's panel that can take a
+   photograph.
+
+See docs/NON-GOALS.md. Neither is enforced by a test today, because there is nothing here
+to enforce them against.
 """

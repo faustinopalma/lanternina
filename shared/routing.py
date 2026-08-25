@@ -60,10 +60,10 @@ class DegradationLevel(IntEnum):
 
 @dataclass(frozen=True, slots=True)
 class PageImage:
-    """A rectified page crop, the only image type that may be sent to a model.
+    """One image on its way to a model.
 
-    Full camera frames cannot reach here: :class:`~shared.vision_contracts.RawFrame`
-    exposes no conversion to bytes.
+    Today that is a page: the blank as it was printed, and the same sheet off the scanner
+    glass. A photograph from the handheld camera will arrive the same way.
     """
 
     png: bytes
@@ -76,7 +76,7 @@ class ModelRequest:
     capability: Capability
     prompt: str
     request_id: RequestId
-    # Populated only for VISION_READ. Never a full frame — see PageImage.
+    # Populated only for VISION_READ.
     images: tuple[PageImage, ...] = ()
     max_output_chars: int = 400
     # Free-text note for logs and the parent panel ("generating a counting exercise").

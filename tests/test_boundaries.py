@@ -175,7 +175,8 @@ def test_only_the_router_touches_a_cloud_model_backend() -> None:
 
 
 def test_nothing_runs_a_model_on_the_device() -> None:
-    """Inference is an Azure concern. The device does OpenCV, a web panel and serial.
+    """Inference is an Azure concern. The device renders images, serves a web panel, drives
+    a printer and a scanner, and talks to serial.
 
     Adding an on-device runtime would create a second inference path with its own failure
     modes, its own content-safety story, and weights to ship and update. If that ever
@@ -269,7 +270,12 @@ def test_a_devised_afternoon_cannot_be_stored_without_passing_the_gate() -> None
     )
 
 
-# ── The camera is a scanner, not an observer ─────────────────────────────────────────
+# ── What is left of the camera rules ─────────────────────────────────────────────────
+#
+# `vision/` is empty, so the two tests below currently guard nothing: the identifier check
+# has no files to scan, and nothing constructs a RawFrame. They are kept as the shape of
+# the check the handheld camera will need, not as evidence about the system today — the
+# README says so in Status rather than claiming them in its table.
 
 FORBIDDEN_IN_VISION = {
     # person / face / affect analysis, forbidden even as an intermediate step
@@ -286,22 +292,25 @@ FORBIDDEN_IN_VISION = {
     # continuous capture
     "StreamingResponse",
     "VideoWriter",
-    # writing an image straight to disk bypasses the RectifiedPage-only rule
+    # a photograph written straight to disk is one nobody chose to keep
     "imwrite",
 }
 
 
 def test_vision_does_not_look_at_people_or_stream() -> None:
+    """Faces will be in frame; what is forbidden is inferring anything from them."""
     for path in _python_files("vision"):
         leaked = _identifiers(path) & FORBIDDEN_IN_VISION
         assert not leaked, (
-            f"{path.relative_to(REPO)} references {sorted(leaked)}. The camera is a "
-            "single-shot scanner pointed at paper; see docs/NON-GOALS.md."
+            f"{path.relative_to(REPO)} references {sorted(leaked)}. Nothing here infers "
+            "anything about a person, and nothing captures without a button press; see "
+            "docs/NON-GOALS.md."
         )
 
 
 def test_raw_frames_cannot_be_serialised() -> None:
-    """Retention rule as a runtime behaviour, not a comment."""
+    """The seal on a type nothing constructs. Kept as a working technique, not as a
+    guarantee the product makes — see shared/vision_contracts.py."""
     import copy
     import pickle
 

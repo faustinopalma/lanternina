@@ -142,7 +142,7 @@
 <section id="shape">
   <h2><span class="num">02</span> The shape</h2>
   <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches the adolescent is made of paper.</p>
-  <p>Two names are used from here on, because <em>the device</em> and <em>the cloud</em> stopped being precise once both grew parts. <strong>Lanternina Hub</strong> is the machine in the house: sealing keys, ledger, camera, and the link to the display. <strong>Lanternina Cloud</strong> is the Azure tier: the parent dashboard, the stored themes and approvals, and the single door to the models.</p>
+  <p>Two names are used from here on, because <em>the device</em> and <em>the cloud</em> stopped being precise once both grew parts. <strong>Lanternina Hub</strong> is the machine in the house: sealing keys, ledger, scanner, and the link to the display. <strong>Lanternina Cloud</strong> is the Azure tier: the parent dashboard, the stored themes and approvals, and the single door to the models.</p>
 
   <div class="mermaid">
 flowchart TB
@@ -161,7 +161,6 @@ flowchart TB
 
     subgraph HOME["🏠 the house"]
       DEV["Mini-PC<br/><i>sealing keys · ledger</i>"]:::home
-      PROF[("Learner profile<br/>scans · sessions")]:::home
       PRN["Printer"]:::paper
       SCN["Scanner"]:::paper
       SHEET["Sheet of paper"]:::paper
@@ -177,13 +176,12 @@ flowchart TB
     API --- COS
     WRK --- COS
 
-    DEV --- PROF
     DEV -->|"seals the approval"| PRN
     PRN --> SHEET
     SHEET --> GIRL
     GIRL -->|"handwriting"| SHEET
     SHEET --> SCN
-    SCN -->|"rectified crop"| DEV
+    SCN -->|"the page, against its blank"| DEV
 
     classDef cloud fill:#16324a,stroke:#4ea1ff,color:#e6edf3;
     classDef data fill:#2a2140,stroke:#c08cff,color:#e6edf3;
@@ -263,38 +261,38 @@ sequenceDiagram
       <div class="metric-label">the 50 mm calibration ruler, measured by hand on the printed page. The chain does not rescale.</div>
     </div>
     <div class="card" style="text-align:center">
-      <div class="metric">176–178 px</div>
-      <div class="metric-label">ArUco marker sides on paper, against 177.2 expected at 300 dpi.</div>
+      <div class="metric">19–33 s</div>
+      <div class="metric-label">to draw a page whole, covering 0.5–2.7 % of the sheet in ink. Measured on the deployment.</div>
     </div>
     <div class="card" style="text-align:center">
-      <div class="metric">13 / 13</div>
-      <div class="metric-label">cells read correctly. Every empty cell at exactly 0.0 % ink; freeform cells correctly reported as <em>needs review</em>.</div>
+      <div class="metric">4.4–5.5 s</div>
+      <div class="metric-label">to read a page that came back, by handing a model the blank and the returned sheet.</div>
     </div>
   </div>
 
   <div class="mermaid">
 flowchart TB
-    SPEC["SheetSpec<br/><i>normalised 0–1 coords over<br/>the markers' INNER corners</i>"]:::code
-    SVG["Vector SVG · exact millimetres"]:::code
-    PDF["PDF at true A4<br/><i>595.3 × 841.9 pt</i>"]:::code
+    WORDS["The words of one moment<br/><i>already through the safety gate</i>"]:::code
+    DRAW["Image model draws the page whole"]:::code
+    BLANK[("The blank, kept")]:::code
     CUPS["CUPS · IPP Everywhere<br/><i>driverless, no vendor driver</i>"]:::paper
-    PAPER["Printed sheet<br/>4 ArUco markers + QR"]:::paper
+    PAPER["Printed sheet<br/><i>nothing on it is for a machine</i>"]:::paper
     HAND["Someone writes on it"]:::paper
     ESCL["Scanner · eSCL<br/><i>300 dpi ≈ 11.8 px/mm</i>"]:::paper
-    RECT["Detect markers → rectify"]:::code
-    INK["Ink fraction per declared cell"]:::code
+    READ["Model is handed both:<br/>what is different?"]:::code
+    NEXT["What comes back decides<br/>where the afternoon goes"]:::code
     PARENT["needs review → the parent"]:::person
 
-    SPEC --> SVG
-    SVG --> PDF
-    PDF --> CUPS
+    WORDS --> DRAW
+    DRAW --> BLANK
+    DRAW --> CUPS
     CUPS --> PAPER
     PAPER --> HAND
     HAND --> ESCL
-    ESCL --> RECT
-    RECT --> INK
-    INK -->|"not locally readable"| PARENT
-    RECT -.->|"the QR carries the spec version;<br/>an unknown version is REFUSED"| SPEC
+    ESCL --> READ
+    BLANK -.->|"the other image"| READ
+    READ --> NEXT
+    READ -->|"unanswered, or outside what was asked"| PARENT
 
     classDef code fill:#16324a,stroke:#4ea1ff,color:#e6edf3;
     classDef paper fill:#3a3020,stroke:#ffcf5c,color:#e6edf3;
@@ -303,17 +301,13 @@ flowchart TB
 
   <div class="grid grid-2">
     <div class="card">
-      <h3 style="margin-top:0">Why the coordinates are normalised</h3>
-      <p class="muted">Cells are defined as 0–1 over the quadrilateral of the markers' <strong>inner</strong> corners, so their positions are independent of paper size, printer margins, camera distance and DPI. If the generator and the reader ever disagreed on the geometry, answers would be attributed to the wrong questions — a failure that looks like data rather than a bug. The QR carries the spec version, and a sheet the reader does not understand is <strong>refused</strong>, not guessed at.</p>
+      <h3 style="margin-top:0">Why nothing on the page is for a machine</h3>
+      <p class="muted">The design this replaced put four ArUco markers and a QR code on every sheet, and defined cells as 0–1 coordinates over the markers' inner corners — so that the generator and the reader could not disagree about geometry. It worked: marker sides measured 176–178 px against 177.2 expected at 300 dpi, and 13 of 13 cells read correctly. The cost was that every page had to be laid out by something that could also describe itself, which is why they all looked like forms. It is in <code>attic/</code>.</p>
     </div>
     <div class="card">
       <h3 style="margin-top:0">Degradation is honest</h3>
-      <p class="muted">Without the cloud, only checkbox-like cells are attempted; everything else is marked <code>needs_review</code> and the reading is flagged <code>degraded</code>. The system prefers <em>"the parent should look at this"</em> to a confident wrong answer. A smiley drawn <em>outside</em> every declared cell is invisible to the pipeline — correct behaviour, and now a known design property.</p>
+      <p class="muted">Reading is a model's job and there is no reader underneath it: <strong>no cloud, no reading</strong>, and a page that comes back while the panel is unreachable waits. Anything the model did not answer for, or answered for with something outside what was asked, is marked <code>needs_review</code>. The system prefers <em>"the parent should look at this"</em> to a confident wrong answer.</p>
     </div>
-  </div>
-
-  <div class="callout warn">
-    <strong>Known and unfixed:</strong> the ink threshold is badly centred. <code>INK_PRESENT = 0.04</code> against a lightest real mark of <strong>0.045</strong> — about 8 % headroom, calibrated on <em>one</em> sheet, one pen, one scanner. The proposal is to move ambiguity into <em>needs review</em>, which routes to the parent: the correct direction to fail in.
   </div>
 </section>
 
@@ -354,27 +348,30 @@ flowchart TB
 <!-- ============ BOUNDARY ============ -->
 <section id="boundary">
   <h2><span class="num">06</span> What crosses the boundary</h2>
-  <p>The list is short on purpose, and it is the claim the whole design exists to be able to make.</p>
+  <p>This list used to be short, and being short was the claim the whole design existed to make. It stopped being the claim on 23 August 2026: the cloud tier is in the EU and holds personal material on the same terms as the house. Saying so plainly is better than a boundary that quietly moved.</p>
 
   <div class="grid grid-2">
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-ok">leaves the device</span></h3>
+      <h3 style="margin-top:0"><span class="badge b-ok">leaves the house</span></h3>
       <ul class="muted">
-        <li>content-generation prompts</li>
-        <li>rectified page crops</li>
+        <li>content-generation prompts, which may carry a name, a profile, and what came back before — the parent decides what is sent</li>
+        <li>a page off the glass, together with the blank it was printed from</li>
+        <li>the household memory, which lives in the cloud rather than in the house</li>
+        <li>photographs from the handheld camera, once it exists</li>
       </ul>
-      <p class="muted">That is the entire list.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-no">never leaves the device</span></h3>
+      <h3 style="margin-top:0"><span class="badge b-no">never leaves the house</span></h3>
       <ul class="muted">
-        <li>a name, a profile, interests attached to an identified person</li>
         <li>the sealing keys</li>
         <li>the approval ledger</li>
-        <li>scans and session records</li>
-        <li>the mapping from an opaque household id to a real person</li>
       </ul>
+      <p class="muted">Two things, and both are about who may authorise — not about who may know. Nothing about a named person goes in the shared catalogue, which crosses households.</p>
     </div>
+  </div>
+
+  <div class="callout">
+    <strong>What replaced locality.</strong> The memory is the most sensitive object in the system, and it is no longer protected by where it sits. It is protected by being readable: the parent can read all of it, in plain language, in the panel, and a store read as sentences by the person who steers cannot quietly become a dossier. <em>That view is not built yet</em> — see the README's Status.
   </div>
 
   <div class="callout warn">

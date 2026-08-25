@@ -1,15 +1,15 @@
-"""Vision contracts, including the retention rule expressed as a type.
+"""Vision contracts, left over from the marker-and-QR pipeline.
 
-The rule: **the full camera frame is never written to disk.** Only the rectified region
-inside the ArUco quadrilateral is retained.
+**Nothing in the running system constructs any of these.** A page is read by handing a
+model the blank and what came back off the glass, and the rule these types were built to
+enforce — only the rectified region inside the ArUco quadrilateral is ever retained — no
+longer describes the product. The camera is handheld now, faces will be in frame, and what
+protects somebody is what may be inferred and what can be deleted, not what was cropped.
 
-:class:`RawFrame` enforces this rather than documenting it. It refuses to be pickled,
-copied or serialised, exposes no encoder, and is a context manager that wipes its buffer
-on exit. The only way to get bytes out of the vision pipeline is
-:class:`RectifiedPage`, which by construction contains just the rectified crop.
-
-Capture is single-shot, on a physical button press. There is no streaming endpoint, no
-timer, and no motion trigger anywhere in this package — see docs/NON-GOALS.md.
+:class:`RawFrame` is kept because the sealing technique is worth having on hand: a type
+that refuses to be pickled, copied or serialised, exposing no encoder, releasing its buffer
+on exit. If a retention rule is ever wanted again, it is written here already. Read it as a
+technique, not as a guarantee the system currently makes.
 """
 
 from __future__ import annotations
@@ -27,8 +27,9 @@ if TYPE_CHECKING:  # keeps `shared` importable without numpy installed
 class RawFrame:
     """A full camera frame. In-memory only, for the lifetime of one capture.
 
-    Deliberately *not* a dataclass: it must not be frozen-copyable, comparable or
-    serialisable. Every escape hatch Python would normally provide is closed.
+    Nothing constructs one. Deliberately *not* a dataclass: it must not be frozen-copyable,
+    comparable or serialisable, and every escape hatch Python would normally provide is
+    closed.
 
     Use it as a context manager so the buffer is released as soon as rectification is
     done::

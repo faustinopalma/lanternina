@@ -521,8 +521,10 @@ Three things changed meaning on the way, and each is worth stating:
   expected.
 
 The cell half of `shared/vision_contracts.py` went with them — `CellReading`, `PageReading`,
-`ReadConfidence`, `MarkerDetection`, `RectifiedPage`. `RawFrame` stays, because the camera
-path of `§9` is not built and its rule is still the rule.
+`ReadConfidence`, `MarkerDetection`, `RectifiedPage`. `RawFrame` stays, but not because its
+rule stands: the crop-only rule fell with the fixed rig, and what a handheld camera needs is
+a guarantee about who may trigger it and what may be inferred. It stays as a worked example
+of sealing a type against every escape hatch Python offers.
 
 *Done when:* an afternoon devised by the model hands over a map, a dossier, a label or a
 notebook; the page comes out of the printer; and the same afternoon carries on from it. The

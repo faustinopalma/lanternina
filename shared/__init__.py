@@ -12,7 +12,7 @@ one-directional:
 Nothing in ``shared`` may import ``orchestrator``, ``agents``, ``vision`` or ``panel``,
 and no agent may import another agent. See docs/ARCHITECTURE.md.
 
-Four invariants are expressed as *types* here, so that violating them is a type error
+Three invariants are expressed as *types* here, so that violating them is a type error
 or a runtime seal-verification failure rather than a code-review oversight:
 
 1. Model output that can reach the user exists only as :class:`~shared.safety.ScreenedPayload`.
@@ -20,7 +20,9 @@ or a runtime seal-verification failure rather than a code-review oversight:
    agent could set to mark its own work approved.
 3. Delivery to the user requires an :class:`~shared.approval.ApprovedItem` carrying two
    valid seals (safety + parent approval).
-4. The only persistable image type is :class:`~shared.vision_contracts.RectifiedPage`.
+
+:mod:`shared.vision_contracts` used to carry a fourth, restricting what an image could be.
+It no longer holds: see that module.
 """
 
 from __future__ import annotations

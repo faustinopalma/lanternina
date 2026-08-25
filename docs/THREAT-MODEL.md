@@ -49,30 +49,36 @@ requires a decision, not an oversight.
 ## T2 — Prompt injection through a worksheet
 
 A worksheet is paper. Anyone who can write on paper — the adolescent, a classmate, a
-sibling — can put text in front of a vision model. The QR code is likewise attacker-writable:
-anyone can print one.
+sibling — can put text in front of a vision model.
 
 | Vector | Mitigation |
 | --- | --- |
 | Handwritten "ignore previous instructions…" | Recognised text is data, never placed in an instruction position |
 | Free text the parent types (interests, notes) | Same treatment; the parent is trusted as a person, not as a prompt author |
-| A QR code from another sheet, or a hand-made one | Fixed `LNT1\|version\|sheet\|exercise` grammar, parsed strictly; unknown ids rejected; unknown spec versions refused rather than guessed |
+| A QR code held up to the glass | Nothing is printed on a page that is there for a machine, so there is no QR the reader is looking for; where one is still decoded, the `LNT1\|version\|sheet\|exercise` grammar is parsed strictly and unknown ids are rejected |
 | A sheet crafted to trigger a "safety" alert | Escalation covers system faults and blocked content, not conclusions about a person |
 
 **Residual risk:** a sufficiently clever injection could still influence generated content.
 The parent approval gate is the backstop — nothing generated is delivered unreviewed.
 
-## T3 — Camera captures more than a page
+## T3 — The camera photographs a person
+
+It will. It is handheld and carried around, so friends, rooms and faces end up in frame.
+The threat is not that a person appears in a photograph; it is that something is inferred
+from them, or that a capture happens without the person holding the device choosing it.
 
 | Vector | Mitigation |
 | --- | --- |
-| Camera remounted or knocked, framing the room | Pipeline requires four ArUco markers; without them it raises `MarkersNotFound` and stops. TODO(hackathon): add the frame-fill check |
-| Full frames written for debugging | `RawFrame` cannot be pickled, copied or serialised; `cv2.imwrite` in `vision/` fails the boundary test |
-| A preview endpoint added "temporarily" | No streaming endpoint exists; forbidden in NON-GOALS and enforced by test |
+| A capture triggered from outside the room | No remote trigger exists; nothing in the cloud and nothing in the parent's panel can take a photograph |
+| Firmware that captures without a press | Holding the button is the only path to the sensor having power, and the activity light is wired in series on that rail rather than driven from a pin |
+| A preview endpoint added "temporarily" | No streaming endpoint exists; forbidden in NON-GOALS |
 | Continuous or motion capture | Single-shot on button press only; no timer or trigger loop exists |
-| Face or affect analysis | Forbidden including as an intermediate step; identifier-level test |
+| Face, age, identity or affect analysis | Forbidden including as an intermediate step |
+| A photograph nobody meant to keep | What is kept lands in a gallery its owner can see and delete from; Content Safety runs on inbound photographs as well as generated output |
 
-**Residual risk:** the framing guarantee is physical until the frame-fill check lands.
+**Residual risk:** none of the above is enforced by a test, because `vision/` is empty and
+there is nothing yet to enforce it against. Until the intake exists, every row here is a
+design decision. The README says so in Status.
 
 ## T4 — Key and credential compromise
 
@@ -107,7 +113,7 @@ Not a security threat, but a harm.
 
 | Failure | Behaviour |
 | --- | --- |
-| Azure unreachable | Serve previously approved cached content; read only locally-readable cells |
+| Azure unreachable | Serve previously approved cached content; a page that comes back waits until the cloud is reachable |
 | Nothing approved in reserve | The system has nothing to show. With no on-device model this is the only offline path, so keeping a reserve stocked is a hard product requirement |
 | Mini-PC down | Devices show their last content; no error text on the displays |
 

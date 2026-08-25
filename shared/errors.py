@@ -33,8 +33,8 @@ class UnscreenedContentError(BoundaryViolation):
 class RetentionViolation(BoundaryViolation):
     """An attempt to persist or serialise data the retention policy forbids.
 
-    Raised by :class:`shared.vision_contracts.RawFrame` when anything tries to pickle,
-    copy or write a full camera frame.
+    Raised by :class:`shared.vision_contracts.RawFrame`, which nothing constructs. The
+    retention rule it belonged to no longer describes the system — see that module.
     """
 
 
@@ -74,11 +74,13 @@ class VisionError(OperationalError):
 
 
 class MarkersNotFound(VisionError):
-    """Fewer than four ArUco markers were located, so the page cannot be rectified."""
+    """Fewer than four ArUco markers were located. Nothing raises this: the marker
+    pipeline was retired, and a page is read against the blank it was printed from."""
 
 
 class SheetNotRecognised(VisionError):
-    """The QR code was unreadable or references an unknown sheet."""
+    """The QR code was unreadable or references an unknown sheet. Nothing raises this
+    either — there is nothing printed on a page that is there for a machine."""
 
 
 class AuthNotConfigured(OperationalError):
