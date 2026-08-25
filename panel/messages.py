@@ -3,7 +3,7 @@
 `shared/message.py` says what may be said and `devices/run_experience.hear` applies it.
 This is the part in between: where a message sits between the parent typing it and the
 house asking. Nothing here interprets anything — a row is written, and the house finds it
-on the look it already makes every ten minutes.
+on the look it already makes every minute.
 
 **Inert on the way in**, which is the rule and not a preference. Writing one calls no
 model, queues nothing and wakes nothing. There is no route from here into the house, and
@@ -20,11 +20,10 @@ and it would stop being true of the first message that is not an assignment.
 through the previous one is still there afterwards, because the house says which one it
 heard rather than saying "that lot".
 
-**An hour, and then it is gone.** The house looks every ten minutes, so an hour is six
-looks; a message still waiting after that was written to a house that was not listening.
-What that buys is that a message cannot reach an afternoon it was not written about. What
-it costs is that a message written while the house is off is lost, and the parent sees it
-disappear rather than being told it did not arrive.
+**An hour, and then it is gone.** A message still waiting after an hour was written to a
+house that was not listening. What that buys is that a message cannot reach an afternoon
+it was not written about. What it costs is that a message written while the house is off
+is lost, and the parent sees it disappear rather than being told it did not arrive.
 """
 
 from __future__ import annotations
@@ -37,7 +36,12 @@ from typing import Any, Protocol, runtime_checkable
 from shared.ids import new_id
 from shared.message import Message, Says, at_the_clock
 
-# See the module docstring: six looks of the house's ten-minute timer.
+# An hour. It was written as "six looks of the house's ten-minute timer", which was the
+# same number until the timer went to one minute on 25 August 2026 and would have taken
+# this to six. The quantity that matters is how long a parent's sentence should survive a
+# house that is off or unreachable, and that has nothing to do with how often a healthy
+# one looks: an hour is long enough to cover a reboot and short enough that a sentence
+# about an afternoon cannot arrive inside the next one.
 MESSAGE_LIFETIME_SECONDS = 60 * 60
 
 

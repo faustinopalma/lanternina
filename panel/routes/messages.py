@@ -45,7 +45,7 @@ def say_something(what: WhatIsSaid, account: CurrentAccount, request: Request) -
     """Say it. One row is written and that is the whole effect.
 
     No model is called, nothing is queued, and no display is touched. The afternoon in the
-    house changes when the house next looks, which is within ten minutes of now.
+    house changes when the house next looks, which is within a minute of now.
     """
     store: MessageStore = request.app.state.messages
     try:

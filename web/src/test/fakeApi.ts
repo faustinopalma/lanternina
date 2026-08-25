@@ -357,7 +357,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     fixed: [
       "Never say anything about the person: not how well anything was done, not how much effort it took, not what any of it suggests about them.",
       "Never announce, explain or apologise for a change of course. It arrives as part of what is happening.",
-      "An ending stays reachable from wherever the afternoon has got to, and an ending reached early is the same ending.",
+      "An ending stays reachable from wherever the activity has got to, and an ending reached early is the same ending.",
       "Use only what this house has. Never invent equipment, materials or a place.",
       "Nothing can be failed and nothing has to be finished.",
     ],

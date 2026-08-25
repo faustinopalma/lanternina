@@ -156,7 +156,7 @@ describe("the rhythm", () => {
     renderPanel(api);
 
     await open(user, "Ritmo");
-    await user.click(await screen.findByRole("button", { name: "Comincia un pomeriggio" }));
+    await user.click(await screen.findByRole("button", { name: "Comincia un'attività" }));
 
     await waitFor(() => expect(api.recorded.begunNow).toBe(1));
     expect(await screen.findByText(/La casa lo trova al prossimo giro/)).toBeInTheDocument();

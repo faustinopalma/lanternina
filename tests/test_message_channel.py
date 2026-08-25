@@ -269,13 +269,24 @@ def test_a_message_nobody_collected_stops_being_offered(store: InMemoryMessageSt
     assert store.pending("h1") == []
 
 
-def test_the_lifetime_is_six_looks_of_the_houses_own_timer() -> None:
-    """Not a round number chosen for looking tidy. Past six looks the house was not
-    listening, and the afternoon it was written about is not the one running now."""
+def test_the_lifetime_outlives_a_house_that_missed_several_looks() -> None:
+    """An hour, and not a multiple of the timer.
+
+    It was written as six looks of a ten-minute timer, which read as a derivation and was
+    a coincidence: the two numbers matched. On 25 August 2026 the timer went to one minute
+    so the parent could press "begin now", and the derivation would have cut a parent's
+    sentence from an hour to six minutes — a hub rebooting would have dropped it.
+
+    So what is checked is the property the number is for: it survives a house that missed
+    many looks, and it does not survive so long that a sentence about one afternoon can
+    arrive inside the next.
+    """
     every = re.search(r"OnCalendar=\*:0/(\d+):00", THE_TIMER.read_text(encoding="utf-8"))
 
     assert every is not None
-    assert MESSAGE_LIFETIME_SECONDS == 6 * int(every.group(1)) * 60
+    looks = MESSAGE_LIFETIME_SECONDS / (int(every.group(1)) * 60)
+    assert looks >= 6, "a message must outlive a house that missed a few looks"
+    assert MESSAGE_LIFETIME_SECONDS <= 2 * 60 * 60, "and must not reach the next afternoon"
 
 
 # ── The whole channel, panel to run file ─────────────────────────────────────────────

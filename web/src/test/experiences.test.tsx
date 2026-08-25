@@ -15,7 +15,7 @@ import { renderPanel } from "@/test/render";
 
 async function openAfternoons(user: ReturnType<typeof userEvent.setup>) {
   await user.click(
-    within(screen.getByRole("navigation")).getByRole("button", { name: "Pomeriggi" }),
+    within(screen.getByRole("navigation")).getByRole("button", { name: "Attività" }),
   );
 }
 
@@ -63,7 +63,7 @@ describe("an afternoon offered to the parent", () => {
     await screen.findByText("Sei passaggi di una trasformazione");
     await user.click(screen.getByRole("button", { name: "Approva" }));
 
-    await waitFor(() => expect(screen.getByText("Nessun pomeriggio in attesa.")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Nessuna attività in attesa.")).toBeInTheDocument());
     expect(api.recorded.experienceDecisions).toEqual([{ id: "aftn-1", state: "approved" }]);
     // Approving is the whole effect: no proposal was decided, nothing else was called.
     expect(api.recorded.decisions).toEqual([]);
@@ -162,7 +162,7 @@ describe("an afternoon the house has begun", () => {
     expect(api.recorded.experienceDecisions).toEqual([]);
     expect(
       await screen.findByText(
-        "Scritto. La casa lo trova alla prossima richiesta, entro dieci minuti.",
+        "Scritto. La casa lo trova alla prossima richiesta, entro un minuto.",
       ),
     ).toBeInTheDocument();
   });
