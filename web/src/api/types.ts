@@ -143,6 +143,10 @@ export interface OfferedExperience {
   id: string;
   title: string;
   overview: string;
+  /* What it is about, a few words each, and how it should go. Approved together with the
+   * overview: this is the idea, and the moments are only how it was written down. */
+  themes: string[];
+  strategy: string;
   minutes: number;
   createdAt: number;
   state: string;
@@ -150,6 +154,21 @@ export interface OfferedExperience {
   /* When the house began it, or 0. Written by the house, not by anybody deciding: it is
    * what stops an approved afternoon being handed over again the next day. */
   begunAt: number;
+}
+
+/* How much the house has in hand, for a parent about to close the panel for a week.
+ * `days` is the stock spread over the days a week the rhythm allows, rounded down: a floor
+ * and never a promise. Nothing here counts what was run — see docs/NON-GOALS.md. */
+export interface Backlog {
+  approved: number;
+  minutes: number;
+  perWeek: number;
+  days: number;
+}
+
+export interface OfferedList {
+  experiences: OfferedExperience[];
+  backlog: Backlog;
 }
 
 export interface Rhythm {
@@ -351,8 +370,9 @@ export interface Api {
   /** Ask that an afternoon begin at the house's next look, whatever the hour says. */
   beginNow(): Promise<HouseRequest>;
   standingRequest(): Promise<HouseRequest | null>;
-  experiences(state: string): Promise<OfferedExperience[]>;
+  experiences(state: string): Promise<OfferedList>;
   decideExperience(id: string, state: Decision): Promise<void>;
+  decideSeveral(ids: string[], state: Decision): Promise<Backlog>;
   say(said: NewSaid): Promise<Said>;
   messages(): Promise<Said[]>;
 }

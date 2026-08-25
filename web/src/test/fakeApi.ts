@@ -134,6 +134,9 @@ export const SAMPLE_AFTERNOON: OfferedExperience = {
   title: "Sei passaggi di una trasformazione",
   overview:
     "Un oggetto della stanza, disegnato sei volte mentre cambia. Il foglio torna dallo scanner e il pomeriggio va avanti da lì.",
+  themes: ["un oggetto della stanza", "trasformazioni"],
+  strategy:
+    "Non dire che è lo stesso oggetto finché non lo dice il quarto disegno. Se si ferma, torna sul dettaglio più piccolo. Alla fine il foglio con i sei disegni resta a lei.",
   minutes: 90,
   createdAt: NOW - 1800,
   state: "pending",
@@ -546,10 +549,33 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
     standingRequest: async () => standing,
 
-    experiences: async (state) => afternoons.filter((row) => row.state === state),
+    experiences: async (state) => {
+      const rows = afternoons.filter((row) => row.state === state);
+      const ready = afternoons.filter((row) => row.state === "approved" && !row.begunAt);
+      return {
+        experiences: rows,
+        backlog: {
+          approved: ready.length,
+          minutes: ready.reduce((total, row) => total + row.minutes, 0),
+          perWeek: 2,
+          days: Math.floor((ready.length * 7) / 2),
+        },
+      };
+    },
     decideExperience: async (id, state) => {
       recorded.experienceDecisions.push({ id, state });
       afternoons = afternoons.map((row) => (row.id === id ? { ...row, state } : row));
+    },
+    decideSeveral: async (ids, state) => {
+      for (const id of ids) recorded.experienceDecisions.push({ id, state });
+      afternoons = afternoons.map((row) => (ids.includes(row.id) ? { ...row, state } : row));
+      const ready = afternoons.filter((row) => row.state === "approved" && !row.begunAt);
+      return {
+        approved: ready.length,
+        minutes: ready.reduce((total, row) => total + row.minutes, 0),
+        perWeek: 2,
+        days: Math.floor((ready.length * 7) / 2),
+      };
     },
 
     say: async (what) => {

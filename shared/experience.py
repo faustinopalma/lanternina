@@ -138,6 +138,19 @@ MAX_LINES: Final = 4
 MAX_TITLE: Final = 60
 MAX_OVERVIEW: Final = 600
 
+# What the afternoon is about, in a handful of words each: *mappe*, *il vento*, *un museo
+# di oggetti trovati*. Short on purpose — a theme a parent has to read twice is a summary,
+# and the summary is the overview.
+MAX_THEME: Final = 40
+MAX_THEMES: Final = 5
+
+# How it should go, written for whoever runs it rather than for whoever reads it. Longer
+# than the overview and shorter than the moments: what the afternoon is trying to do, what
+# may be improvised and what must not, so that something acting on it has room and a shape
+# at the same time. The parent approves this along with the themes — the two halves of
+# "what is this and how will it go", and neither is a list of steps.
+MAX_STRATEGY: Final = 1400
+
 # An afternoon, bounded at both ends. Under half an hour is not an afternoon; over six
 # hours is something that has forgotten to finish. The hub applies it: when it next asks
 # and the time has passed, the experience is over whatever moment it had reached.
@@ -188,8 +201,18 @@ DIMENSIONS: Final[tuple[str, ...]] = (
     "ending",
 )
 
-# How many of the ten two afternoons may share before they are the same afternoon wearing
-# a different hat. Three is a refusal; two is a coincidence.
+# Which of the ten may come back. `frame` is where and when it is set, `role` is what the
+# person is inside it: those are what a world is made of, and a house that liked one wants
+# it again next week. The rest are the machinery — how it moves, what the paper is for, how
+# it sounds, how it ends — and machinery repeated is the same afternoon in a different hat.
+#
+# This is the axis the whole thing turns on. Forcing every dimension to differ made variety
+# checkable and made a run of afternoons impossible: nothing could recur, so nothing could
+# be built on. Letting the world persist and the machinery vary is what a series is.
+MAY_RECUR: Final[frozenset[str]] = frozenset({"frame", "role"})
+
+# How many of the varying eight two afternoons may share before they are the same afternoon
+# wearing a different hat. Three is a refusal; two is a coincidence.
 MAX_SHARED_DIMENSIONS: Final = 2
 
 _ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,31}$")
@@ -819,6 +842,11 @@ class Experience:
     moments: tuple[Moment, ...]
     requires: frozenset[HouseCapability]
     drawn: Drawn
+    # What it is about, and how it should go. This is the idea the parent approves, and it
+    # is what whatever runs the afternoon reads. Empty is allowed: the moments are a whole
+    # plan on their own.
+    themes: tuple[str, ...] = ()
+    strategy: str = ""
     format_version: int = EXPERIENCE_FORMAT_VERSION
 
     def __post_init__(self) -> None:
@@ -876,6 +904,8 @@ class Experience:
             "experience_id": self.experience_id,
             "title": self.title,
             "overview": self.overview,
+            "themes": list(self.themes),
+            "strategy": self.strategy,
             "minutes": self.minutes,
             "requires": sorted(str(c) for c in self.requires),
             "drawn": self.drawn.to_dict(),
@@ -893,6 +923,8 @@ class Experience:
                 "experience_id",
                 "title",
                 "overview",
+                "themes",
+                "strategy",
                 "minutes",
                 "requires",
                 "drawn",
@@ -907,6 +939,8 @@ class Experience:
             experience_id=_identifier(values.get("experience_id"), "an experience id"),
             title=plain(values.get("title", ""), MAX_TITLE, "a title"),
             overview=plain(values.get("overview", ""), MAX_OVERVIEW, "an overview"),
+            themes=_themes(values.get("themes", [])),
+            strategy=plain(values.get("strategy", ""), MAX_STRATEGY, "a strategy"),
             minutes=_whole(values.get("minutes"), "minutes"),
             moments=tuple(moment_from_dict(m) for m in raw),
             requires=_capabilities(values.get("requires", [])),
@@ -992,6 +1026,15 @@ class Continuation:
                 values.get("format_version", EXPERIENCE_FORMAT_VERSION), "format_version"
             ),
         )
+
+
+def _themes(raw: object) -> tuple[str, ...]:
+    """What the afternoon is about. Empty is allowed; a document may predate the field."""
+    if not isinstance(raw, Sequence) or isinstance(raw, str):
+        raise ExperienceError("themes must be a list")
+    if len(raw) > MAX_THEMES:
+        raise ExperienceError(f"{len(raw)} themes; at most {MAX_THEMES}")
+    return tuple(plain(str(one), MAX_THEME, "a theme") for one in raw if str(one).strip())
 
 
 def _capabilities(raw: object) -> frozenset[HouseCapability]:

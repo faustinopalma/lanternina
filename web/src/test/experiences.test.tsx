@@ -121,7 +121,12 @@ describe("an afternoon offered to the parent", () => {
 describe("an afternoon the house has begun", () => {
   const begun = { ...SAMPLE_AFTERNOON, state: "approved", begunAt: 1_755_500_000 };
   const running = () =>
-    fakeApi({ experiences: async (state) => (state === "approved" ? [begun] : []) });
+    fakeApi({
+      experiences: async (state) => ({
+        experiences: state === "approved" ? [begun] : [],
+        backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
+      }),
+    });
 
   beforeEach(() => window.localStorage.clear());
 
@@ -166,7 +171,10 @@ describe("an afternoon the house has begun", () => {
 
   it("says so and keeps the hour when it does not get through", async () => {
     const api = fakeApi({
-      experiences: async (state) => (state === "approved" ? [begun] : []),
+      experiences: async (state) => ({
+      experiences: state === "approved" ? [begun] : [],
+      backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
+    }),
       say: () => Promise.reject(new Error("no")),
     });
     const user = userEvent.setup();

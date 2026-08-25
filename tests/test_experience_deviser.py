@@ -316,7 +316,9 @@ def test_the_recent_combinations_arrive_as_something_the_next_one_may_not_be() -
     prompt = router.asked.prompt  # type: ignore[union-attr]
 
     assert "un tetto di agosto" in prompt
-    assert f"at most {experience.MAX_SHARED_DIMENSIONS} of the ten" in prompt
+    assert f"at most {experience.MAX_SHARED_DIMENSIONS} of those" in prompt
+    # The world may come back, and the prompt has to say so or a model avoids everything.
+    assert "Two of them may come back" in prompt
 
 
 def test_a_house_with_no_history_is_not_asked_to_avoid_nothing() -> None:

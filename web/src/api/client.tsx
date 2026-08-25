@@ -9,6 +9,7 @@ import {
   ApiError,
   type Admission,
   type Api,
+  type Backlog,
   type Decision,
   type Device,
   type Guidelines,
@@ -17,7 +18,7 @@ import {
   type NewAssignment,
   type NewPreferences,
   type NewRhythm,
-  type OfferedExperience,
+  type OfferedList,
   type PicturePage,
   type Preferences,
   type Proposal,
@@ -237,19 +238,29 @@ export function httpApi(token: string): Api {
       return answer.request;
     },
 
-    async experiences(state: string): Promise<OfferedExperience[]> {
-      const answer = await json<{ experiences: OfferedExperience[] }>(
+    async experiences(state: string): Promise<OfferedList> {
+      return json<OfferedList>(
         `/api/experiences?state=${encodeURIComponent(state)}`,
         {},
-        ["experiences"],
+        ["experiences", "backlog"],
       );
-      return answer.experiences;
     },
 
     // The whole effect of approving an afternoon: a row changes state. Nothing is
     // devised, nothing is printed, and the house finds it when it next asks.
     async decideExperience(id: string, state: Decision): Promise<void> {
       await json(`/api/experiences/${id}/decision`, write({ state, note: "" }));
+    },
+
+    // A sitting, not a sequence: one request for the handful the parent just decided
+    // about, so half of it cannot succeed while the page is closing.
+    async decideSeveral(ids: string[], state: Decision): Promise<Backlog> {
+      const answer = await json<{ backlog: Backlog }>(
+        "/api/experiences/decisions",
+        write({ ids, state, note: "" }),
+        ["backlog"],
+      );
+      return answer.backlog;
     },
 
     // The whole effect of saying something to a running afternoon: one row. No display is

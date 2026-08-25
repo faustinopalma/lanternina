@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useApi } from "@/api/client";
-import type { Decision, Moment, OfferedExperience } from "@/api/types";
+import type { Backlog, Decision, Moment, OfferedExperience } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
@@ -218,9 +218,13 @@ function Saying({ when }: { when: number }) {
 
 function Card({
   offered,
+  picked,
+  onPick,
   onDecided,
 }: {
   offered: OfferedExperience;
+  picked?: boolean;
+  onPick?: (on: boolean) => void;
   onDecided: (state: Decision) => void;
 }) {
   const { t } = useWords();
@@ -255,9 +259,46 @@ function Card({
 
   return (
     <article className="mt-3.5 max-w-[42rem] rounded-control border border-edge bg-paper p-[18px] pb-4">
-      <h3 className="text-[1.05rem] font-semibold">{offered.title}</h3>
+      <h3 className="text-[1.05rem] font-semibold">
+        {onPick ? (
+          <label className="flex items-start gap-2.5">
+            {/* Ticking is how a sitting is built. It decides nothing on its own: the
+                buttons at the bottom send whatever is ticked, in one request. */}
+            <input
+              type="checkbox"
+              className="mt-1.5"
+              checked={picked ?? false}
+              onChange={(event) => onPick(event.target.checked)}
+              aria-label={t("experiences.pick", { title: offered.title })}
+            />
+            <span>{offered.title}</span>
+          </label>
+        ) : (
+          offered.title
+        )}
+      </h3>
       <Quiet className="mb-2">{summary}</Quiet>
+      {offered.themes?.length ? (
+        <p className="mb-2 flex flex-wrap gap-1.5">
+          {offered.themes.map((theme) => (
+            <span
+              key={theme}
+              className="rounded-full border border-edge px-2.5 py-0.5 text-[0.8rem]"
+            >
+              {theme}
+            </span>
+          ))}
+        </p>
+      ) : null}
       <p className="mb-2">{offered.overview}</p>
+      {offered.strategy ? (
+        <details className="mb-2">
+          <summary className="cursor-pointer text-[0.88rem] text-quiet">
+            {t("experiences.strategy")}
+          </summary>
+          <p className="mt-1.5 text-[0.9rem]">{offered.strategy}</p>
+        </details>
+      ) : null}
       <Button size="small" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}>
         {t(open ? "experiences.hide" : "experiences.read")}
       </Button>
@@ -303,7 +344,7 @@ function Approved({ again }: { again: number }) {
   const [withdrawn, setWithdrawn] = useState<string[]>([]);
 
   if (state.status !== "ready") return null;
-  const left = state.data.filter((offered) => !withdrawn.includes(offered.id));
+  const left = state.data.experiences.filter((offered) => !withdrawn.includes(offered.id));
 
   return (
     <section className="mt-7 border-t border-edge pt-5">
@@ -326,33 +367,92 @@ export function Experiences() {
   const api = useApi();
   const [state] = useLoad(() => api.experiences("pending"));
   const [decided, setDecided] = useState<string[]>([]);
-  // An approval moves an afternoon from one list to the other, so the second is asked
-  // again rather than left showing what was true before the button was pressed.
   const [approvals, setApprovals] = useState(0);
+  // What the parent has ticked in this sitting but not yet sent. Held here rather than on
+  // each card, because the whole point is that they go up together.
+  const [picked, setPicked] = useState<string[]>([]);
+  const [sending, setSending] = useState(false);
+  const [stock, setStock] = useState<Backlog | null>(null);
 
   if (state.status === "loading") return <Quiet>{t("experiences.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("experiences.unreadable")}</Quiet>;
 
-  const waiting = state.data.filter((offered) => !decided.includes(offered.id));
+  const waiting = state.data.experiences.filter((offered) => !decided.includes(offered.id));
+  const backlog = stock ?? state.data.backlog;
+
+  async function sit(decision: "approved" | "rejected") {
+    const ids = picked;
+    setSending(true);
+    try {
+      setStock(await api.decideSeveral(ids, decision));
+      setDecided((seen) => [...seen, ...ids]);
+      setPicked([]);
+      if (decision === "approved") setApprovals((n) => n + 1);
+    } catch {
+      // Nothing is removed from the list, so what failed is still there to try again.
+    }
+    setSending(false);
+  }
 
   return (
     <div aria-live="polite">
+      <Stock backlog={backlog} />
       <Quiet>{t("experiences.laterNote")}</Quiet>
       {waiting.length === 0 ? (
         <Quiet className="mt-3.5">{t("experiences.empty")}</Quiet>
       ) : (
-        waiting.map((offered) => (
-          <Card
-            key={offered.id}
-            offered={offered}
-            onDecided={(state) => {
-              setDecided((seen) => [...seen, offered.id]);
-              if (state === "approved") setApprovals((n) => n + 1);
-            }}
-          />
-        ))
+        <>
+          {waiting.map((offered) => (
+            <Card
+              key={offered.id}
+              offered={offered}
+              picked={picked.includes(offered.id)}
+              onPick={(on) =>
+                setPicked((chosen) =>
+                  on ? [...chosen, offered.id] : chosen.filter((id) => id !== offered.id),
+                )
+              }
+              onDecided={(state) => {
+                setDecided((seen) => [...seen, offered.id]);
+                if (state === "approved") setApprovals((n) => n + 1);
+              }}
+            />
+          ))}
+          {picked.length > 0 ? (
+            <div className="sticky bottom-3 mt-3.5 flex max-w-[42rem] flex-wrap items-center gap-2.5 rounded-control border border-edge bg-paper p-3">
+              <Quiet>{t("experiences.picked", { count: picked.length })}</Quiet>
+              <span className="ml-auto flex gap-2">
+                <Button
+                  variant="primary"
+                  size="small"
+                  disabled={sending}
+                  onClick={() => void sit("approved")}
+                >
+                  {t("action.approveThese")}
+                </Button>
+                <Button size="small" disabled={sending} onClick={() => void sit("rejected")}>
+                  {t("action.refuseThese")}
+                </Button>
+              </span>
+            </div>
+          ) : null}
+        </>
       )}
       <Approved again={approvals} />
     </div>
+  );
+}
+
+/* What the house has in hand, read before closing the panel for a week. `days` is a floor:
+ * the stock spread over the days the rhythm allows, rounded down. Nothing here says how
+ * many afternoons happened — that number does not exist anywhere, on purpose. */
+function Stock({ backlog }: { backlog: Backlog }) {
+  const { t } = useWords();
+  if (backlog.approved === 0) return <Quiet className="mb-2">{t("experiences.stockNone")}</Quiet>;
+  return (
+    <p className="mb-2 font-medium">
+      {t("experiences.stock", { approved: backlog.approved })}
+      {backlog.days > 0 ? ` · ${t("experiences.stockDays", { days: backlog.days })}` : ""}
+    </p>
   );
 }

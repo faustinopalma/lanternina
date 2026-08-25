@@ -45,6 +45,7 @@ from .blocklist import blocked_in, fold
 from .capabilities import Act
 from .experience import (
     MAX_SHARED_DIMENSIONS,
+    MAY_RECUR,
     Continuation,
     Drawn,
     Experience,
@@ -254,23 +255,28 @@ def no_placeholder_is_left(plan: Experience | Continuation) -> tuple[Complaint, 
 def not_the_same_afternoon_again(
     drawn: Drawn, recent: Sequence[Drawn]
 ) -> tuple[Complaint, ...]:
-    """Not the last few afternoons with different nouns.
+    """Not the last few afternoons with different nouns, and not a new world every time.
 
-    A seed produces variety that cannot be checked. Ten recorded dimensions produce variety
-    that can: sharing more than two of them with something recent is refused, and the
-    refusal names which ones, so a repair can redraw those rather than the whole afternoon.
+    A seed produces variety that cannot be checked. Recorded dimensions produce variety
+    that can. But two of the ten are the world — where it is set and what the person is
+    inside it — and those are allowed to come back: a house that liked a place wants to
+    return to it, and nothing can be built across afternoons if nothing may recur.
+
+    So the count is over the eight that are machinery. Sharing more than two of those is
+    refused, and the refusal names which, so a repair redraws those rather than the whole
+    afternoon.
     """
     complaints: list[Complaint] = []
     for before in recent:
-        same = shared_dimensions(drawn, before)
+        same = tuple(one for one in shared_dimensions(drawn, before) if one not in MAY_RECUR)
         if len(same) > MAX_SHARED_DIMENSIONS:
             complaints.append(
                 Complaint(
                     where="drawn",
                     says=(
-                        f"this shares {len(same)} of the ten dimensions with an afternoon "
-                        f"this house has already had ({', '.join(same)}); redraw those "
-                        f"rather than the rest"
+                        f"this works the same way as an afternoon this house has already "
+                        f"had ({', '.join(same)}); redraw those rather than the rest. Where "
+                        f"it is set and who they are may come back"
                     ),
                 )
             )

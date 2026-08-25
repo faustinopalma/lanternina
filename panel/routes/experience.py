@@ -133,6 +133,62 @@ async def continue_afternoon(
     return carrying_on.to_dict()
 
 
+class WhereItIs(BaseModel):
+    """An afternoon in progress, as the house sees it, asking what to do next."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    experience: dict[str, Any]
+    happened: list[dict[str, Any]] = []
+    minutesLeft: int
+
+
+@router.post("/api/device/{household_id}/next-move")
+async def next_move(
+    household_id: str, where: WhereItIs, _: DeviceKey, request: Request
+) -> Any:
+    """One move, decided from the strategy the parent approved and what has happened.
+
+    Refused the same way a continuation is, and for the same reason: the house has a written
+    plan that was approved and always works, so a move it cannot get is a move it does not
+    make. Nothing is said to anybody about why.
+    """
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        raise HTTPException(status_code=429, detail="monthly_cap_reached")
+
+    try:
+        afternoon = Experience.from_dict(where.experience)
+    except ExperienceError as exc:
+        raise HTTPException(status_code=400, detail=f"not_an_experience: {exc}") from exc
+
+    from ..moving import decide_a_move
+
+    spent: Any = None
+    outcome = FAILED
+    try:
+        move, spent = await decide_a_move(
+            afternoon=afternoon,
+            happened=where.happened,
+            minutes_left=where.minutesLeft,
+        )
+        outcome = SERVED
+    except SafetyBlocked as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("move refused: %s", exc)
+        raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
+    except ExperienceError as exc:
+        logging.getLogger(__name__).warning("not a move: %s", exc)
+        raise HTTPException(status_code=502, detail=f"not_a_move: {exc}") from exc
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        logging.getLogger(__name__).warning("no move decided: %s", exc)
+        raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
+    finally:
+        _count(counter, household_id, KIND_TEXT, outcome, spent)
+    return move.to_dict()
+
+
 def _asked(what: WhatCameBack) -> Experience:
     """Check that this is a real afternoon asking a real question, before paying for one.
 

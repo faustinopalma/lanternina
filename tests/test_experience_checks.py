@@ -275,14 +275,37 @@ def test_an_ellipsis_is_ordinary_italian_and_is_not_a_placeholder() -> None:
 # ── Not the same afternoon again ─────────────────────────────────────────────────────
 
 
-def test_three_of_the_ten_dimensions_shared_with_a_recent_one_is_refused() -> None:
+def test_an_afternoon_that_works_the_same_way_is_refused() -> None:
     before = Drawn.from_dict(a.drawn())
     now = Drawn.from_dict(a.drawn(frame="un balcone", role="chi guarda", mechanic="ascoltare"))
 
     complaints = not_the_same_afternoon_again(now, [before])
 
     assert where(complaints) == ["drawn"]
-    assert "7 of the ten dimensions" in complaints[0].says
+    assert "works the same way" in complaints[0].says
+
+
+def test_the_same_place_and_the_same_person_may_come_back() -> None:
+    """Where it is set and who they are inside it are the world, and a series needs one.
+
+    Everything else here differs, so the only thing shared is the world. Refusing this made
+    a run of afternoons impossible: nothing could recur, so nothing could be built on.
+    """
+    before = Drawn.from_dict(a.drawn())
+    now = Drawn.from_dict(
+        a.drawn(
+            mechanic="ascoltare",
+            progress="a domande",
+            paper="una mappa",
+            glass="niente",
+            displays="il tempo che passa",
+            camera="una foto del tavolo",
+            tone="asciutto",
+            ending="una cosa da tenere",
+        )
+    )
+
+    assert not_the_same_afternoon_again(now, [before]) == ()
 
 
 def test_two_shared_dimensions_are_a_coincidence_and_are_allowed() -> None:

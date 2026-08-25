@@ -52,6 +52,9 @@ from shared.experience import (
     MAX_MOMENTS,
     MAX_OVERVIEW,
     MAX_SHARED_DIMENSIONS,
+    MAX_STRATEGY,
+    MAX_THEME,
+    MAX_THEMES,
     MAX_TITLE,
     MIN_MINUTES,
     Drawn,
@@ -88,7 +91,16 @@ SAYS: Final = beside(__file__)
 # The order is the argument: what shape the answer has, then what a moment is, then what
 # holds an afternoon together, then how it reads. Each block is a file next to this one.
 _FORMAT: Final = (
-    SAYS.text("format") + THE_SHAPE_OF_A_MOMENT + THE_ACTS + THE_MARKS_ON_A_PAGE
+    SAYS.text(
+        "format",
+        max_overview=MAX_OVERVIEW,
+        max_themes=MAX_THEMES,
+        max_theme=MAX_THEME,
+        max_strategy=MAX_STRATEGY,
+    )
+    + THE_SHAPE_OF_A_MOMENT
+    + THE_ACTS
+    + THE_MARKS_ON_A_PAGE
 )
 
 _RULES: Final = (

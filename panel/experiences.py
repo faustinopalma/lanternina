@@ -59,16 +59,18 @@ class OfferedExperience:
         return str(self.experience.get("title", ""))
 
     def to_public(self) -> dict[str, Any]:
-        """What the parent is shown: the overview they judge it by, and the whole plan.
+        """What the parent is shown: the idea they judge it by, and the whole plan.
 
-        Both, not one. Approval is given to the overview — that is what `ideas/08 §2`
-        settled — but a parent who wants to read every branch must be able to, or the
-        overview is the only thing that exists and the document is a claim about itself.
+        The idea is the overview, the themes and the strategy — what it is about and how it
+        should go. That is what approval is given to, and `ideas/08 §2` settled it. The plan
+        goes too, for a parent who wants to look; nothing may assume they did.
         """
         return {
             "id": self.id,
             "title": self.title,
             "overview": self.experience.get("overview", ""),
+            "themes": list(self.experience.get("themes") or ()),
+            "strategy": self.experience.get("strategy", ""),
             "minutes": self.experience.get("minutes", 0),
             "createdAt": self.created_at,
             "state": self.state,
