@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lanternina — How an afternoon is devised and run</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a212b; --panel-2: #222b38; --border: #2c3849;
+    --text: #e6edf3; --muted: #9fb0c3; --accent: #4ea1ff; --accent-2: #7ee0a1;
+    --warn: #ffcf5c; --danger: #ff7a7a; --purple: #c08cff;
+    --mono: "Cascadia Code", "Consolas", "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: linear-gradient(180deg, #0c1117 0%, #0f1419 100%);
+    color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px 80px; }
+  header.hero {
+    padding: 56px 24px 40px; text-align: center;
+    background: radial-gradient(1200px 400px at 50% -120px, rgba(78,161,255,0.18), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero h1 { margin: 0 0 8px; font-size: 2.1rem; letter-spacing: -0.5px; }
+  header.hero .sub { color: var(--muted); font-size: 1.05rem; max-width: 860px; margin: 0 auto; }
+  .pill {
+    display: inline-block; margin-top: 18px; padding: 6px 14px; border-radius: 999px;
+    background: rgba(78,161,255,0.12); border: 1px solid rgba(78,161,255,0.35);
+    color: var(--accent); font-size: 0.82rem; font-weight: 600;
+  }
+  nav.toc {
+    position: sticky; top: 0; z-index: 20; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center;
+  }
+  nav.toc a { color: var(--muted); text-decoration: none; font-size: 0.86rem; font-weight: 500; }
+  nav.toc a:hover { color: var(--accent); }
+  section { margin-top: 48px; }
+  h2 { font-size: 1.5rem; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  h2 .num { font-size: 0.85rem; color: var(--accent); border: 1px solid rgba(78,161,255,0.4); border-radius: 8px; padding: 2px 8px; font-weight: 700; }
+  h3 { font-size: 1.12rem; margin: 28px 0 10px; color: var(--accent-2); }
+  p { margin: 10px 0; }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin: 16px 0; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+  code { font-family: var(--mono); font-size: 0.86em; background: var(--panel-2); padding: 1px 6px; border-radius: 5px; color: var(--accent-2); }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; white-space: nowrap; }
+  .b-ok    { background: rgba(126,224,161,0.15); color: var(--accent-2); border: 1px solid rgba(126,224,161,0.4); }
+  .b-todo  { background: rgba(255,207,92,0.13); color: var(--warn); border: 1px solid rgba(255,207,92,0.38); }
+  .b-no    { background: rgba(255,122,122,0.13); color: var(--danger); border: 1px solid rgba(255,122,122,0.38); }
+  .b-data  { background: rgba(192,140,255,0.14); color: var(--purple); border: 1px solid rgba(192,140,255,0.4); }
+  .callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 18px 0; }
+  .callout.warn { border-left-color: var(--warn); background: rgba(255,207,92,0.06); }
+  .callout.danger { border-left-color: var(--danger); background: rgba(255,122,122,0.06); }
+  .callout.good { border-left-color: var(--accent-2); background: rgba(126,224,161,0.06); }
+  .mermaid { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin: 16px 0; text-align: center; overflow-x: auto; }
+  .mermaid svg { max-width: 100%; height: auto; }
+  footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; text-align: center; }
+  .metric { font-size: 1.9rem; font-weight: 700; color: var(--accent-2); line-height: 1.1; }
+  .metric small { display: block; font-size: 0.78rem; font-weight: 500; color: var(--muted); margin-top: 4px; }
+
+  /* ---- The stepper: one frame at a time, driven by a button ---- */
+  .stage { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 16px 0; }
+  .stage-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  button.step {
+    background: rgba(78,161,255,0.14); border: 1px solid rgba(78,161,255,0.45); color: var(--accent);
+    border-radius: 10px; padding: 8px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  button.step:hover { background: rgba(78,161,255,0.24); }
+  button.step.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+  .stage-where { color: var(--muted); font-size: 0.85rem; }
+  .flow { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; }
+  .node {
+    flex: 1 1 150px; min-width: 140px; border: 1px solid var(--border); border-radius: 12px;
+    background: var(--panel-2); padding: 12px 14px; opacity: 0.28; transition: opacity .35s, border-color .35s, transform .35s, box-shadow .35s;
+  }
+  .node.on { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 1px rgba(78,161,255,0.35), 0 8px 26px rgba(78,161,255,0.12); transform: translateY(-2px); }
+  .node.done { opacity: 0.75; border-color: rgba(126,224,161,0.45); }
+  .node .who { font-size: 0.7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .node .what { font-weight: 600; margin: 4px 0 2px; font-size: 0.95rem; }
+  .node .how { font-family: var(--mono); font-size: 0.72rem; color: var(--accent-2); word-break: break-all; }
+  .stage-note { margin-top: 16px; min-height: 4.5em; border-top: 1px solid var(--border); padding-top: 14px; color: var(--muted); font-size: 0.92rem; }
+  .stage-note strong { color: var(--text); }
+
+  /* ---- The afternoon clock ---- */
+  .clock { position: relative; height: 132px; margin: 22px 0 8px; }
+  .clock .rail { position: absolute; left: 0; right: 0; top: 58px; height: 6px; border-radius: 3px; background: var(--panel-2); border: 1px solid var(--border); }
+  .clock .run { position: absolute; top: 58px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--purple)); width: 0; transition: width .1s linear; }
+  .clock .tick { position: absolute; top: 70px; transform: translateX(-50%); font-size: 0.72rem; color: var(--muted); font-family: var(--mono); }
+  .clock .tick::before { content: ""; position: absolute; left: 50%; top: -14px; width: 1px; height: 10px; background: var(--border); }
+  .clock .mark { position: absolute; top: 14px; transform: translateX(-50%); text-align: center; width: 150px; opacity: .3; transition: opacity .3s; }
+  .clock .mark.on { opacity: 1; }
+  .clock .mark .dot { width: 11px; height: 11px; border-radius: 50%; margin: 0 auto 6px; background: var(--muted); }
+  /* Five of the eight fall inside the first forty-seven minutes, so only the one just
+     reached is named; the rest stay dots. */
+  .clock .mark .lbl { font-size: 0.74rem; line-height: 1.3; opacity: 0; transition: opacity .25s; }
+  .clock .mark.said .lbl { opacity: 1; }
+  .clock .mark.help .dot { background: var(--warn); }
+  .clock .mark.out .dot { background: var(--purple); }
+  .clock .mark.end .dot { background: var(--danger); }
+  .clock .mark.page .dot { background: var(--accent-2); }
+  .clock .now { position: absolute; top: 46px; width: 2px; height: 30px; background: var(--text); transform: translateX(-50%); z-index: 3; }
+  /* A chip, because the hand passes under the label of whatever mark it has just reached. */
+  .clock .now::after { content: attr(data-at); position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 0.74rem; color: var(--text); white-space: nowrap; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 0 5px; }
+
+  ul.tight { margin: 8px 0; padding-left: 20px; }
+  ul.tight li { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>How an afternoon is devised, and how it is run</h1>
+  <p class="sub">A walk through the two loops the system actually turns: one in the cloud that writes an afternoon and waits for a parent, and one in the house that reads the clock, prints paper, and decides what happens next from what comes back on it.</p>
+  <div class="pill">Written 25 August 2026 · describes the code at commit <code>b18f91d</code></div>
+</header>
+
+<nav class="toc">
+  <a href="#shape">The shape</a>
+  <a href="#devise">1 · Devising</a>
+  <a href="#format">2 · What a moment is</a>
+  <a href="#approve">3 · Approval</a>
+  <a href="#begin">4 · Beginning</a>
+  <a href="#page">5 · A page</a>
+  <a href="#back">6 · A page coming back</a>
+  <a href="#clock">7 · The clock</a>
+  <a href="#parent">8 · The parent</a>
+  <a href="#numbers">9 · Numbers</a>
+  <a href="#weak">10 · Where it is weak</a>
+</nav>
+
+<div class="wrap">
+
+<section id="shape">
+  <h2><span class="num">0</span> The shape, before any detail</h2>
+
+  <p>Two loops, and they never touch directly. The cloud tier holds a panel a parent reads and writes; it stores decisions and it never starts anything. The house holds a small computer, a printer, a scanner, e-paper displays and a button; it runs on a one-minute timer and it is the only thing that <em>asks</em>.</p>
+
+  <div class="callout">
+    <strong>Every arrow that starts work points from the house to the cloud.</strong> A parent approving an afternoon writes a row and stops — no model call, no queued job, nothing woken. The house finds that row the next time it looks. This is a rule, not an accident: it is what keeps a panel unable to reach into a room.
+  </div>
+
+  <div class="mermaid">
+flowchart LR
+  subgraph HOUSE["The house — lanternina.local, timer every minute"]
+    T["devices/afternoon.py<br/>main()"]
+    R["devices/run_experience.py<br/>plays the moments"]
+    P["printer · scanner<br/>displays · button"]
+  end
+  subgraph CLOUD["The cloud — Container App in Sweden"]
+    A["panel/routes/*<br/>FastAPI"]
+    G["orchestrator/router.py<br/>the one door to a model"]
+    M["Azure AI Foundry"]
+  end
+  PARENT["the parent's browser"] -- "writes a decision, inertly" --> A
+  T -- "asks: what may I run?" --> A
+  T --> R
+  R -- "draw me this page" --> A
+  R -- "read this page" --> A
+  R -- "what happens next?" --> A
+  A --> G --> M
+  R <--> P
+  style HOUSE fill:#1a212b,stroke:#2c3849
+  style CLOUD fill:#1a212b,stroke:#2c3849
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="metric">6<small>agents, each one prompt</small></div>
+      <p class="muted" style="font-size:.88rem">deviser, continuer, page maker, page reader, reminder reader, reminder wording. No framework, no orchestrator: <code>orchestrator/router.py</code> is the only door.</p>
+    </div>
+    <div class="card">
+      <div class="metric">1 min<small>the house's heartbeat</small></div>
+      <p class="muted" style="font-size:.88rem"><code>deploy/lanternina-afternoon.timer</code>. It was ten minutes until 25 August 2026.</p>
+    </div>
+    <div class="card">
+      <div class="metric">0<small>things a panel write starts</small></div>
+      <p class="muted" style="font-size:.88rem">Approving, adding a theme, changing a setting: all of them persist state and return.</p>
+    </div>
+  </div>
+</section>
+
+<section id="devise">
+  <h2><span class="num">1</span> Devising — where an afternoon comes from</h2>
+
+  <p>Nothing is devised on a schedule. The house asks for one only when it has looked and found nothing: no approved afternoon it can run, and nothing already sitting with the parent unread. Press the button below to walk the chain.</p>
+
+  <div class="stage" id="devise-stage">
+    <div class="stage-controls">
+      <button class="step" data-act="next">Next step ▸</button>
+      <button class="step ghost" data-act="reset">Start again</button>
+      <span class="stage-where"><span class="at">0</span> / <span class="of">9</span></span>
+    </div>
+    <div class="flow"></div>
+    <div class="stage-note"></div>
+  </div>
+
+  <h3>What the model is actually sent</h3>
+  <p>The whole prompt is in the repository, rendered: <code>docs/prompts/deviser.txt</code>, 11 608 characters. It is assembled from Markdown files sitting beside the agent — <code>agents/experience_deviser.task.md</code>, <code>.format.md</code>, <code>.rules-head.md</code> and so on — plus the format describing itself from <code>shared/experience_prompt.py</code>, plus the household's own material at the end.</p>
+
+  <div class="callout good">
+    <strong>The interests are a starting point, not a fence.</strong> <code>agents/experience_deviser.household.md</code> says so in as many words: begin from one of them when one fits, and you may go elsewhere if something here points that way — but never towards what the parent listed to avoid. That asymmetry is deliberate.
+  </div>
+
+  <h3>What happens to the answer before anybody sees it</h3>
+  <div class="grid grid-4">
+    <div class="card"><span class="badge b-data">1</span><p><strong>Parsed.</strong> JSON out of the text. Not JSON, or not an object, and it is refused.</p></div>
+    <div class="card"><span class="badge b-data">2</span><p><strong>Checked.</strong> <code>shared/experience_checks.py</code> returns a <em>list</em> of complaints, each naming a field and the offending value.</p></div>
+    <div class="card"><span class="badge b-data">3</span><p><strong>Repaired, once.</strong> <code>ExperienceDeviser.repair()</code> gets the complaints and is told to change what each one names. Rewording is not a repair, and the prompt says that.</p></div>
+    <div class="card"><span class="badge b-data">4</span><p><strong>Screened and stored.</strong> Through the gate, then written as an offer the parent has not seen yet.</p></div>
+  </div>
+
+  <p>The checks are where most of what this project believes lives. A way out that reaches for an object nobody was given is refused. A line one character over the display's width is refused. Ten dimensions sharing too many values with the last five afternoons is refused. None of that is style — it is the difference between an afternoon that can be run in a room and one that reads well and then fails at the printer.</p>
+</section>
+
+<section id="format">
+  <h2><span class="num">2</span> What a moment is — the shape everything else obeys</h2>
+
+  <p>An afternoon is a title, an overview, a length in minutes, ten dimensions it was drawn along, and a list of moments. Every moment carries the same five keys whatever it does, and then whatever its verb adds.</p>
+
+  <div class="mermaid">
+flowchart TD
+  M["one moment"] --> ID["id<br/><i>2–32 chars, a–z 0–9 -</i>"]
+  M --> H["heading<br/><i>≤ 28 chars, on the display</i>"]
+  M --> W["weights<br/><i>short · standard · extended</i>"]
+  M --> HP["help<br/><i>exactly 4 rungs</i>"]
+  M --> WO["way_out<br/><i>an object in hand, ≤ 20 min</i>"]
+  M --> V{"and its verb"}
+  V --> S["say"]
+  V --> HO["hand_over<br/>+ page, + instead"]
+  V --> C["collect<br/>+ outcomes, + if_no_page"]
+  V --> CL["close"]
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0">Three weights, one story</h3>
+      <p>The same moment written at three costs, all reaching the same point. Short is about a third of standard, with what is already to hand; extended adds an optional step. The three must take different numbers of minutes. The house picks one at runtime from how much clock is left.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Four rungs of help, written in advance</h3>
+      <p>A nudge inside the story, a concrete clue, an almost explicit instruction, and then the answer handed over as something the story gives. The same words are used whether somebody asked for help or whether the time simply passed — so none of them can be worded as an answer to a question.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">A way out from every moment</h3>
+      <p>Not one ending: a way to reach the ending from <em>exactly here</em>. It names a physical object the person is already holding, and those words must appear in a line of this moment or an earlier one. It never says anything is being cut short.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Nothing can be failed</h3>
+      <p>There is no score, no countdown, no step that must be got right. <code>collect</code> branches on whether there is ink on the paper, never on whether the ink is correct. The reader is forbidden from saying so.</p>
+    </div>
+  </div>
+</section>
+
+<section id="approve">
+  <h2><span class="num">3</span> Approval — the only gate that is a person</h2>
+
+  <p>The devised afternoon lands in the panel as something the parent has not read. They see the title, the overview, and what it will do; they approve, refuse or withdraw it.</p>
+
+  <table>
+    <tr><th>What</th><th>Route</th><th>Effect</th></tr>
+    <tr><td>The parent lists what is waiting</td><td><code>GET /api/experiences</code></td><td>reads</td></tr>
+    <tr><td>The parent decides</td><td><code>POST /api/experiences/{id}/decision</code></td><td>writes one row and returns</td></tr>
+    <tr><td>The house asks what it may run</td><td><code>GET /api/device/{h}/experiences</code></td><td>reads; also returns how many are still unread</td></tr>
+    <tr><td>The house says one began</td><td><code>POST /api/device/{h}/experiences/{id}/begun</code></td><td>stops it being offered again</td></tr>
+  </table>
+
+  <div class="callout">
+    <strong>The unread count is why nothing is devised behind the parent's back.</strong> If something is waiting for them, the house does not ask for another one. A parent who has not read the first is not handed a second to refuse.
+  </div>
+</section>
+
+<section id="begin">
+  <h2><span class="num">4</span> Beginning — and the four verbs</h2>
+
+  <p>On a chosen day, inside the band, with nothing already running, the house takes the oldest approved afternoon whose whole length still fits before the band closes and begins it. When one finishes early it begins the next, as long as that one fits too.</p>
+
+  <div class="mermaid">
+flowchart LR
+  A["timer fires"] --> B{"an afternoon<br/>already under way?"}
+  B -- yes --> Z1["leave it alone"]
+  B -- no --> D{"pressed begin,<br/>or a chosen day<br/>inside the band?"}
+  D -- no --> Z2["say why, and stop"]
+  D -- yes --> F["ask what may be run"]
+  F --> G{"anything<br/>approved?"}
+  G -- "no, none waiting" --> H["devise one<br/><i>once a day</i>"]
+  G -- "no, some waiting" --> Z3["nothing to begin"]
+  G -- yes --> I{"does the whole of it fit<br/>before the band closes?"}
+  I -- no --> Z4["not this one"]
+  I -- yes --> J["begin"]
+  </div>
+
+  <p>Beginning writes one file — <code>{sheets_dir}/afternoons/{run_id}.json</code> — and then plays moments until it reaches a <code>collect</code>. That file is the whole state of a running afternoon: which moment, which weight, what was printed, when help last fired, when it is over. <code>waiting_runs()</code> is a listing of that directory, and it is how the next minute's run knows not to start a second one.</p>
+
+  <div class="grid grid-4">
+    <div class="card"><span class="badge b-ok">say</span><p>Puts words on the display and waits for however long they take to read. Nothing is written to disk.</p></div>
+    <div class="card"><span class="badge b-ok">hand_over</span><p>Draws one page, prints it, and remembers the blank. If there is no printer, the pre-written <code>instead</code> lines go on the display and the story reaches the same point with no paper at all.</p></div>
+    <div class="card"><span class="badge b-todo">collect</span><p>Not a step that runs — a <em>seam</em>. The afternoon stops here and the file sits on disk until somebody presses the button.</p></div>
+    <div class="card"><span class="badge b-ok">close</span><p>Ends it on the display, from wherever it got to. An ending reached early is the same ending.</p></div>
+  </div>
+</section>
+
+<section id="page">
+  <h2><span class="num">5</span> A page — from a few words to something on the table</h2>
+
+  <p>The afternoon does not lay out a page. It says what the object <em>is</em> and what it <em>says</em>, and the page is drawn whole from that by an image model. Layout code for this existed and is in <code>attic/</code>; the decision on 24 August 2026 was one prompt, one image, the whole sheet.</p>
+
+  <div class="mermaid">
+flowchart LR
+  P["Page<br/>kind · title · note<br/>spaces · illustration"] --> Q["agents/page_maker.py<br/>asked_for()"]
+  Q --> R["POST /api/device/{h}/page"]
+  R --> S["PageMaker.draw()<br/>1024×1536, line art"]
+  S --> T["flatten everything<br/>lighter than 245 to white"]
+  T --> U["printing/paper.py<br/>PNG → A4 PDF"]
+  U --> V["lp → CUPS → Epson ET-2870"]
+  S --> W["remember the blank<br/>{sheet_id}.png"]
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0">The words are given, never invented</h3>
+      <p>Every string that will appear has already been through the gate, and the prompt quotes it and says <em>letter exactly this, and no other word anywhere</em>. That is why the Italian comes back correct, accents and apostrophes included. It is not a guarantee: a map once came back with <strong>N/W/E/S</strong> on its compass rose against a line forbidding exactly those letters.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">A model's white is not white</h3>
+      <p>What looks like blank paper is a faint even tone, and it was more than half the ink on the page. Flattening everything above 245 took two measured pages from 2.94 % to 1.38 % and from 2.54 % to 0.97 %. Between 245 and 220 the answer moves by 0.03 points, so it is a threshold and not a knob.</p>
+    </div>
+  </div>
+
+  <p>The blank is kept because reading depends on it. There are no printed cells, no markers and no QR code on the sheet: the reader is given the page as printed and the page as it came back, and it says what is on the second that is not on the first.</p>
+</section>
+
+<section id="back">
+  <h2><span class="num">6</span> A page coming back — the only branch there is</h2>
+
+  <p>The seam ends when somebody presses the physical button. The scan takes about 29 s. Then two images go up, and what comes back decides the rest.</p>
+
+  <div class="stage" id="read-stage">
+    <div class="stage-controls">
+      <button class="step" data-act="next">Next step ▸</button>
+      <button class="step ghost" data-act="reset">Start again</button>
+      <span class="stage-where"><span class="at">0</span> / <span class="of">7</span></span>
+    </div>
+    <div class="flow"></div>
+    <div class="stage-note"></div>
+  </div>
+
+  <div class="callout danger">
+    <strong>The reader describes ink, and is forbidden from describing a person.</strong> <em>"cell 3 is empty"</em>, <em>"a house drawn in the box on the left"</em>, <em>"three words on the first line"</em>. It may not say how well it was done, how much effort it took, or whether anything is correct — because there is nothing here that can be got wrong. That prohibition is written into <code>agents/page_reader.instruction.md</code> and it is the reason the branch is <code>marks</code> / <code>blank</code> and not <code>right</code> / <code>wrong</code>.
+  </div>
+
+  <table>
+    <tr><th>What came back</th><th>Where it goes</th></tr>
+    <tr><td><code>marks</code> — anything at all was added</td><td>the moment id the plan names, or <code>ask</code></td></tr>
+    <tr><td><code>blank</code> — nothing was added</td><td>the moment id the plan names, or <code>ask</code>. A good answer, not a failure.</td></tr>
+    <tr><td>nothing was ever printed</td><td><code>if_no_page</code></td></tr>
+    <tr><td>the reading was degraded</td><td>the afternoon waits rather than guessing</td></tr>
+  </table>
+
+  <h3>When the plan says <code>ask</code></h3>
+  <p>The afternoon was written before anyone knew how it would go, and <code>ask</code> is the plan admitting it. The house sends the afternoon so far, which moment asked, whether a page came back, and the reader's own three words per cell — nothing else. <code>agents/experience_continuer.py</code> writes the moments that follow, they are checked and screened the same way, and they are appended to the run file as a <em>segment</em>.</p>
+
+  <div class="callout warn">
+    <strong>A continuation gets one repair and no more.</strong> Somebody is standing at the scanner while this happens, and a second model call is another fifteen seconds. Refused twice, the afternoon takes its way out rather than making them wait.
+  </div>
+</section>
+
+<section id="clock">
+  <h2><span class="num">7</span> The clock — help, the way out, and the ending</h2>
+
+  <p>Every minute, a second unit looks at every run on disk and asks three questions: is a rung of help due, is it time to start leaving, and is it over. Press play to watch one afternoon.</p>
+
+  <div class="stage">
+    <div class="stage-controls">
+      <button class="step" id="clock-play">Play the afternoon ▸</button>
+      <button class="step ghost" id="clock-reset">Reset</button>
+      <span class="stage-where">15:00 begins · 19:00 is the end hour the parent set</span>
+    </div>
+    <div class="clock" id="afternoon-clock"></div>
+    <div class="stage-note" id="clock-note"></div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card">
+      <h3 style="margin-top:0">Which weight</h3>
+      <p>Measured against the clock left, not chosen by a person. If the standard version fits before the end hour, it runs; otherwise the short one does. Extended exists in the document and is never picked at runtime.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Help arrives on its own</h3>
+      <p>Each rung has an <code>after_minutes</code> counted from arriving at that moment. Nobody has to ask. The rungs go up in time and the fourth hands the answer over as something the story gives.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Thirty minutes before the end</h3>
+      <p>The way out for whatever moment it is on goes up, and the afternoon starts heading for its ending. It never says it is being shortened. Then the ending, then the run file and its pages are deleted.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The forgetting used to be the bug.</strong> A run that had expired was deleted in silence — measured on <code>aft_5ec79e85</code>, 21 August 2026: started 09:17, gone at 14:02, no ending shown to anybody. Now the expiry <em>plays</em>: way out, then the ending, then delete.
+  </div>
+</section>
+
+<section id="parent">
+  <h2><span class="num">8</span> The parent while it is running</h2>
+
+  <p>There is no progress view. No per-step timing, no help log, no list of what was answered. The person who did it is the only source, and that is a decision rather than an omission.</p>
+
+  <p>What the parent <em>can</em> do is send a typed fact. Not free text — free text would reach a model and colour what it writes. Exactly two things, both about the clock:</p>
+
+  <div class="grid grid-2">
+    <div class="card"><span class="badge b-data">END_BY</span><p>The afternoon is over at this hour instead. The run file's <code>over_at</code> moves, and the ending arranges itself around the new one.</p></div>
+    <div class="card"><span class="badge b-data">CLOSE_NOW</span><p>Start leaving now. The way out plays, then the ending.</p></div>
+  </div>
+
+  <p>A message lives one hour and is read at the top of every run, before any clock question is asked — an hour moved <em>after</em> that question would sit unanswered for ten minutes, and "close now" that takes ten minutes is not what those words mean.</p>
+</section>
+
+<section id="numbers">
+  <h2><span class="num">9</span> What it costs, measured</h2>
+
+  <p>Every number below was measured on the real service or the real hardware, on the date given. Nothing here is an estimate unless it says so.</p>
+
+  <table>
+    <tr><th>Step</th><th>Time</th><th>Measured</th></tr>
+    <tr><td>Devising a whole afternoon</td><td>29.1 s, and 76–91 s under the current format</td><td>21 and 23 Aug 2026, from the hub</td></tr>
+    <tr><td>Repairing a refused one</td><td>21.3–35.3 s</td><td>23 Aug 2026</td></tr>
+    <tr><td>Drawing one whole page</td><td>18.8–32.5 s</td><td>24 Aug 2026, four kinds</td></tr>
+    <tr><td>Ink on a printed page</td><td>0.54 % – 2.72 % of the sheet</td><td>24 Aug 2026, after flattening</td></tr>
+    <tr><td>Scanning</td><td>≈ 29 s</td><td>24 Aug 2026, Epson ET-2870 over eSCL</td></tr>
+    <tr><td>Reading a page against its blank</td><td>13.0 s</td><td>19 Aug 2026</td></tr>
+    <tr><td>Writing a continuation</td><td>14.6 s</td><td>21 Aug 2026</td></tr>
+    <tr><td>A whole afternoon, end to end</td><td>238–398 s of model and machine time, 2–3 pages, an <code>ask</code> included</td><td>24 Aug 2026</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <strong>The tightest constraint is not a model, it is a quota.</strong> <code>gpt-image-2</code> has capacity 2, and that is the ceiling for the region. Two calls for one page means a 429; the code now waits and retries, reading <em>retry after N seconds</em> from the message. Before that, one run in three failed.
+  </div>
+</section>
+
+<section id="weak">
+  <h2><span class="num">10</span> Where this is weakest — read this part first</h2>
+
+  <p>You said these need to improve a great deal. Here is what I would put on the list, from having just traced it end to end.</p>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-no">1</span> An afternoon is a straight line with one hinge</h3>
+      <p>Four verbs, and only <code>collect</code> branches. In practice the shape is: say something, hand over a page, read it, say something else, close. The ten dimensions vary the <em>dressing</em>; they do not vary the structure. Two afternoons drawn along completely different dimensions still have the same skeleton.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-no">2</span> The branch carries almost no information</h3>
+      <p>The reader can describe eight things about the ink, and the plan is allowed to use exactly one bit of it: was there any. Everything the reader saw is passed to the continuer and then only when the plan happened to say <code>ask</code>. The richest signal in the system is mostly discarded.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-no">3</span> Nothing survives the afternoon</h3>
+      <p>The run file and its pages are deleted at the end. That is right for privacy and wrong for learning: the working rules say the system <em>should</em> move beyond what was chosen on what it observes, and today there is nothing left to observe from. What a system may remember about what happened, without holding a record about a person, is the open question this project has not answered.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-no">4</span> One shot, and then it is fixed</h3>
+      <p>The whole afternoon is written before it starts, by one call, and then only patched at <code>ask</code>. A model that could see the page come back and rewrite what is left would be a different system. The reason it is not that today is latency: somebody is standing at the scanner, and that is 15 s per call.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-todo">5</span> The devising prompt is long and does two jobs</h3>
+      <p>11 608 characters, and most of them describe the JSON. The part that says what makes an afternoon worth doing is eight lines. The ratio is probably backwards, and the format could enforce more of what the prose currently asks for.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0"><span class="badge b-todo">6</span> The seam is silent</h3>
+      <p>Between printing a page and somebody pressing the button, the system does not exist. No page came back for an hour and nothing knows whether that means "still working" or "left the room". The help ladder fires blind into that gap.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Lanternina · <a href="ARCHITECTURE.md">ARCHITECTURE.md</a> · <a href="NON-GOALS.md">NON-GOALS.md</a> · <a href="prompts/README.md">the prompts, whole</a></p>
+  <p>Written from the code, not from memory. Where a number has no date, it was chosen rather than measured.</p>
+</footer>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "dark",
+    themeVariables: {
+      background: "#1a212b", primaryColor: "#222b38", primaryTextColor: "#e6edf3",
+      primaryBorderColor: "#2c3849", lineColor: "#4ea1ff", fontSize: "14px",
+    },
+  });
+
+  /* Two steppers, same machinery. Each frame lights one node and says what is happening
+     in a sentence; the point is the order, which a static diagram cannot show. */
+  const STAGES = {
+    "devise-stage": {
+      nodes: [
+        { who: "the house", what: "the timer fires", how: "devices/afternoon.py" },
+        { who: "the house", what: "reads the rhythm", how: "GET /api/device/{h}/rhythm" },
+        { who: "the house", what: "asks what it may run", how: "GET …/experiences" },
+        { who: "the house", what: "asks for one", how: "POST …/experiences" },
+        { who: "the panel", what: "builds the prompt", how: "the_prompt()" },
+        { who: "the panel", what: "one model call", how: "orchestrator/router.py" },
+        { who: "the panel", what: "parses and checks", how: "experience_checks.py" },
+        { who: "the panel", what: "screens and stores", how: "ExperienceStore" },
+        { who: "the parent", what: "reads it, later", how: "GET /api/experiences" },
+      ],
+      notes: [
+        "<strong>Every minute.</strong> Not on a schedule of its own — the same tick does everything: reads the parent's messages, looks for a run already going, and only then thinks about starting something.",
+        "<strong>Read fresh, never cached.</strong> There was a six-hour cache here until 21 August 2026. A parent turned afternoons on at 15:21 and watched nothing happen, because the house was still deciding on a rhythm it had read at 14:02.",
+        "<strong>Two answers, not one.</strong> What is approved, and how many are still sitting unread with the parent. The second number is what stops it devising behind their back.",
+        "<strong>Only when both are empty.</strong> Nothing approved and nothing waiting. And once a day: the stamp is written <em>before</em> the asking, so a panel that refuses is not asked again in a minute.",
+        "<strong>Assembled, not stored whole.</strong> Markdown blocks beside the agent, plus the format describing itself, plus this household's language, capabilities, interests, what to avoid, and the titles already offered.",
+        "<strong>29.1 s when it worked; 76–91 s under the current format.</strong> The document that comes back is 6 000–7 400 characters, four or five moments.",
+        "<strong>A list of complaints, not a yes or no.</strong> Each names a field and the value that broke it, so a repair can be asked for precisely. One repair, then it gives up.",
+        "<strong>Nothing is delivered yet.</strong> It is a row a parent has not read. The house will not see it until they approve it.",
+        "<strong>The loop closes here, at human speed.</strong> The parent reads it whenever they read it, and the house finds it the next time it looks.",
+      ],
+    },
+    "read-stage": {
+      nodes: [
+        { who: "the room", what: "the button is pressed", how: "devices/trmnl_byos.py" },
+        { who: "the house", what: "scans the sheet", how: "scanimage, 300 dpi" },
+        { who: "the house", what: "recalls the blank", how: "{sheet_id}.png" },
+        { who: "the house", what: "sends both images", how: "POST …/read-page" },
+        { who: "the panel", what: "reads ink, not people", how: "PageReader.read()" },
+        { who: "the house", what: "marks or blank", how: "outcomes[]" },
+        { who: "either", what: "a named moment, or ask", how: "…/experience" },
+      ],
+      notes: [
+        "<strong>One press, one capture.</strong> No streaming, no preview, no timer, no motion trigger. The press is also how the display knows to stop showing what it was showing.",
+        "<strong>About 29 s.</strong> Grayscale, whole sheet. The full frame lives in memory and is never written anywhere it could be found later.",
+        "<strong>This is why there is no QR code and no markers.</strong> The page as printed is on disk; the reader is given the pair and does the difference itself.",
+        "<strong>Blank first, written second, and the instruction names them in that order.</strong> Get the order wrong and every answer inverts.",
+        "<strong>13.0 s.</strong> It answers with a boolean, whether it is even the same sheet, and up to eight short phrases about where the ink sits. It is forbidden from saying anything about the person or whether anything is correct.",
+        "<strong>One bit of it decides.</strong> Was anything added at all. Blank is a real answer and goes somewhere written in advance — it is not a failure and nothing says so.",
+        "<strong>A named moment is instant; <code>ask</code> is another 14.6 s.</strong> And somebody is standing there for it, which is why <code>ask</code> gets one repair and no more.",
+      ],
+    },
+  };
+
+  for (const [id, spec] of Object.entries(STAGES)) {
+    const root = document.getElementById(id);
+    if (!root) continue;
+    const flow = root.querySelector(".flow");
+    const note = root.querySelector(".stage-note");
+    const at = root.querySelector(".at");
+    root.querySelector(".of").textContent = String(spec.nodes.length);
+    flow.innerHTML = spec.nodes
+      .map((n) => `<div class="node"><div class="who">${n.who}</div><div class="what">${n.what}</div><div class="how">${n.how}</div></div>`)
+      .join("");
+    const cards = [...flow.children];
+    let step = 0;
+    const paint = () => {
+      cards.forEach((c, i) => {
+        c.classList.toggle("on", i === step - 1);
+        c.classList.toggle("done", i < step - 1);
+      });
+      at.textContent = String(step);
+      note.innerHTML = step === 0 ? "<span class='muted'>Press <em>Next step</em>.</span>" : spec.notes[step - 1];
+    };
+    root.querySelector('[data-act="next"]').addEventListener("click", () => {
+      step = step >= spec.nodes.length ? 1 : step + 1;
+      paint();
+    });
+    root.querySelector('[data-act="reset"]').addEventListener("click", () => { step = 0; paint(); });
+    paint();
+  }
+
+  /* The afternoon clock. Minutes are real: 15:00 to 19:00 is 240 of them, played in 24 s. */
+  (function () {
+    // Not `clock`: that is the section's id, and writing innerHTML into it wiped the page.
+    const rail = document.getElementById("afternoon-clock");
+    if (!rail) return;
+    const START = 15 * 60, END = 19 * 60, SPAN = END - START;
+    const marks = [
+      { at: 15 * 60,      cls: "",     lbl: "begins · standard weight fits" },
+      { at: 15 * 60 + 12, cls: "page", lbl: "a page is printed" },
+      { at: 15 * 60 + 26, cls: "help", lbl: "help, rung 1" },
+      { at: 15 * 60 + 34, cls: "help", lbl: "help, rung 2" },
+      { at: 15 * 60 + 47, cls: "page", lbl: "the page comes back · ask" },
+      { at: 16 * 60 + 20, cls: "page", lbl: "a second page" },
+      { at: 18 * 60 + 30, cls: "out",  lbl: "T−30 · the way out" },
+      { at: 18 * 60 + 48, cls: "end",  lbl: "the ending, then forgotten" },
+    ];
+    const ticks = [15, 16, 17, 18, 19];
+    const pos = (m) => ((m - START) / SPAN) * 100;
+    rail.innerHTML =
+      '<div class="rail"></div><div class="run"></div>' +
+      ticks.map((h) => `<div class="tick" style="left:${pos(h * 60)}%">${h}:00</div>`).join("") +
+      marks.map((m, i) => `<div class="mark ${m.cls}" data-i="${i}" style="left:${pos(m.at)}%"><div class="dot"></div><div class="lbl">${m.lbl}</div></div>`).join("") +
+      '<div class="now" data-at="15:00" style="left:0%"></div>';
+    const run = rail.querySelector(".run");
+    const now = rail.querySelector(".now");
+    const dots = [...rail.querySelectorAll(".mark")];
+    const note = document.getElementById("clock-note");
+    const NOTES = [
+      "The whole of it fits before 19:00, so the standard weight is the one that runs. Had it not fitted, the short one would have — same story, about a third of the time.",
+      "One prompt, one image, the whole A4 sheet. The blank is kept on disk, because reading it later is a comparison and not a recognition.",
+      "Nobody asked. The rung fired because the minutes written on it had passed since arriving at this moment.",
+      "The second rung is a concrete clue. There are four, and the fourth hands the answer over as something the story gives rather than as a correction.",
+      "Ink on the paper: <code>marks</code>. The plan said <code>ask</code> here, so the continuer writes what comes next from what the reader saw. 14.6 s, with somebody standing at the scanner.",
+      "The continuation printed its own page. Everything that matters exists on two surfaces, so missing one is not missing it.",
+      "Thirty minutes before the end hour, the way out for whatever moment it is on goes up. It names something already in their hands, and it never says anything is being cut short.",
+      "The same ending it would have had at 19:00. Then the run file and its pages are deleted — which was once done in silence, and is now done only after the ending has played.",
+    ];
+    let timer = null;
+    const seek = (m) => {
+      run.style.width = pos(m) + "%";
+      now.style.left = pos(m) + "%";
+      now.dataset.at = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+      let last = -1;
+      dots.forEach((d, i) => {
+        const on = marks[i].at <= m;
+        d.classList.toggle("on", on);
+        if (on) last = i;
+      });
+      dots.forEach((d, i) => d.classList.toggle("said", i === last));
+      note.innerHTML = last < 0 ? "<span class='muted'>Press <em>Play</em>.</span>" : NOTES[last];
+    };
+    document.getElementById("clock-play").addEventListener("click", () => {
+      clearInterval(timer);
+      let m = START;
+      timer = setInterval(() => {
+        m += 2;
+        if (m >= END) { m = END; clearInterval(timer); }
+        seek(m);
+      }, 200);
+    });
+    document.getElementById("clock-reset").addEventListener("click", () => {
+      clearInterval(timer);
+      seek(START - 1);
+    });
+    seek(START - 1);
+  })();
+</script>
+</body>
+</html>

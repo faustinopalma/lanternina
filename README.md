@@ -102,6 +102,8 @@ The overview page is the shortest route in: one screen, three diagrams, and each
 | | |
 | --- | --- |
 | [docs/architecture-overview.html](docs/architecture-overview.html) | The whole system on one page, with diagrams. Start here. |
+| [docs/an-afternoon.html](docs/an-afternoon.html) | How an afternoon is devised and how it is run, step by step, with the clock playable. Includes what is weakest about it. |
+| [docs/prompts/](docs/prompts/README.md) | Every prompt sent to a model, whole, as the model receives it. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Why each boundary exists, and what the design costs. |
 | [docs/NON-GOALS.md](docs/NON-GOALS.md) | What will never be built, and why. |
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
