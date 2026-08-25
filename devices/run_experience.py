@@ -51,7 +51,7 @@ from typing import Any
 
 from devices import hands
 from devices.ask_panel import PanelUnreachable, read_page
-from devices.house import CannotRun, House, screen_in
+from devices.house import CannotRun, House, screen_in, the_sheet_layer_is_done
 from devices.print_page import recall
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
@@ -304,6 +304,11 @@ def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> lis
             ended.append(run.run_id)
             continue
         _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
+    if ended:
+        # Whatever the afternoon last put on a display now has an ending of its own.
+        # Without this the sheet layer outranks the picture for as long as the display is
+        # on the wall, which on the house was measured at two days.
+        the_sheet_layer_is_done(house, now)
     _forget_orphan_pages(house.sheets_dir)
     return ended
 

@@ -123,7 +123,7 @@ describe("the gallery", () => {
 
     await open(user, "Quadri");
     // Written rather than left at the default, so the test does not depend on today.
-    fireEvent.change(await screen.findByLabelText("Dal giorno"), {
+    fireEvent.change(await screen.findByLabelText("Scarica i quadri dal"), {
       target: { value: "2000-01-01" },
     });
     await user.click(screen.getByRole("button", { name: "Scarica" }));
@@ -148,7 +148,7 @@ describe("the gallery", () => {
 
     await open(user, "Quadri");
     // Later than every picture in the archive, so the walk ends on the first one it reads.
-    fireEvent.change(await screen.findByLabelText("Dal giorno"), {
+    fireEvent.change(await screen.findByLabelText("Scarica i quadri dal"), {
       target: { value: "2099-01-01" },
     });
     await user.click(screen.getByRole("button", { name: "Scarica" }));
@@ -434,7 +434,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Margine");
+    await open(user, "Cosa può cambiare");
     await user.type(
       await screen.findByLabelText("Cosa la casa può cambiare"),
       "le forbici sono nel primo cassetto",
@@ -460,7 +460,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Margine");
+    await open(user, "Cosa può cambiare");
     const ours = await screen.findByText(/valgono in ogni casa/);
     const listed = ours.parentElement!.querySelectorAll("li");
 
@@ -473,7 +473,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());
 
-    await open(user, "Margine");
+    await open(user, "Cosa può cambiare");
     expect(await screen.findByText(/non fa partire niente/)).toBeInTheDocument();
   });
 });

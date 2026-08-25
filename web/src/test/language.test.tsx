@@ -13,7 +13,7 @@ import { renderPanel } from "@/test/render";
 
 async function openSettings(user: ReturnType<typeof userEvent.setup>) {
   const menu = screen.getByRole("navigation");
-  await user.click(within(menu).getByRole("button", { name: "Impostazioni" }));
+  await user.click(within(menu).getByRole("button", { name: "Interessi e difficoltà" }));
 }
 
 describe("the language of the page", () => {

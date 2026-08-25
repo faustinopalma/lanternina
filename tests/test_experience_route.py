@@ -187,7 +187,7 @@ def test_the_monthly_cap_is_refused_and_nothing_is_asked(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     settings = Settings(
-        dev_auth=True, bootstrap_contact=PARENT, device_key=DEVICE_KEY, monthly_call_cap=1
+        dev_auth=True, bootstrap_contact=PARENT, device_key=DEVICE_KEY, monthly_limit=1
     )
     client = TestClient(create_app(store=InMemoryAccountStore(), settings=settings))
     asked = answering(monkeypatch, THE_REST)
@@ -527,7 +527,7 @@ def test_an_afternoon_the_gate_refuses_is_not_stored_for_anybody_to_read(
 
 def test_the_cap_stops_an_afternoon_being_devised(monkeypatch: pytest.MonkeyPatch) -> None:
     settings = Settings(
-        dev_auth=True, bootstrap_contact=PARENT, device_key=DEVICE_KEY, monthly_call_cap=1
+        dev_auth=True, bootstrap_contact=PARENT, device_key=DEVICE_KEY, monthly_limit=1
     )
     client = TestClient(create_app(store=InMemoryAccountStore(), settings=settings))
     asked = devising(monkeypatch, THE_AFTERNOON)

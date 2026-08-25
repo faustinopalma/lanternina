@@ -199,10 +199,10 @@ export function httpApi(token: string): Api {
       await json(`/api/devices/${encodeURIComponent(id)}/remove`, { method: "POST" });
     },
 
-    usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "cap", "reached"]),
+    usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "limit", "reached"]),
 
-    raiseFuse: (calls: number) =>
-      json<UsageAnswer>("/api/usage/fuse", write({ calls }), ["usage", "cap", "reached"]),
+    setLimit: (calls: number) =>
+      json<UsageAnswer>("/api/usage/limit", write({ calls }), ["usage", "limit", "reached"]),
 
     // The whole effect of asking: one row is written. Nothing is sent to the house, which
     // has no way of being reached, and nothing is generated.

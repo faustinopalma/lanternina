@@ -3,8 +3,8 @@ import { useEffect, useState, type ComponentType } from "react";
 
 import { ApiProvider } from "@/api/client";
 import type { Api } from "@/api/types";
-import { BlownFuse } from "@/components/BlownFuse";
 import { Boundary } from "@/components/Boundary";
+import { LimitReached } from "@/components/LimitReached";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
@@ -27,46 +27,89 @@ interface Section {
   Body: ComponentType;
 }
 
+interface Group {
+  name: string;
+  title: string;
+  sections: Section[];
+}
+
 export function Dashboard({ api }: { api: Api }) {
   const { t } = useWords();
   const [current, setCurrent] = useState("proposals");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Written out one by one rather than built from the name: a key that only exists at
-  // runtime is a key no test can find missing.
-  const sections: Section[] = [
-    { name: "proposals", title: t("proposals.title"), note: t("proposals.note"), Body: Proposals },
+  // runtime is a key no test can find missing. The four groups answer four different
+  // questions — what wants an answer now, what the house has to say, how it should
+  // behave, what it is made of — and a flat list of ten made all four look alike.
+  const groups: Group[] = [
     {
-      name: "experiences",
-      title: t("experiences.title"),
-      note: t("experiences.note"),
-      Body: Experiences,
-    },
-    { name: "pictures", title: t("pictures.title"), note: t("pictures.note"), Body: Pictures },
-    { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
-    {
-      name: "reminders",
-      title: t("reminders.title"),
-      note: t("reminders.note"),
-      Body: Reminders,
-    },
-    { name: "rhythm", title: t("rhythm.title"), note: t("rhythm.note"), Body: Rhythm },
-    {
-      name: "preferences",
-      title: t("preferences.title"),
-      note: t("preferences.note"),
-      Body: Preferences,
+      name: "decide",
+      title: t("menu.group.decide"),
+      sections: [
+        {
+          name: "proposals",
+          title: t("proposals.title"),
+          note: t("proposals.note"),
+          Body: Proposals,
+        },
+        {
+          name: "experiences",
+          title: t("experiences.title"),
+          note: t("experiences.note"),
+          Body: Experiences,
+        },
+      ],
     },
     {
-      name: "guidelines",
-      title: t("guidelines.title"),
-      note: t("guidelines.note"),
-      Body: Guidelines,
+      name: "content",
+      title: t("menu.group.content"),
+      sections: [
+        { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
+        {
+          name: "reminders",
+          title: t("reminders.title"),
+          note: t("reminders.note"),
+          Body: Reminders,
+        },
+        {
+          name: "pictures",
+          title: t("pictures.title"),
+          note: t("pictures.note"),
+          Body: Pictures,
+        },
+      ],
     },
-    { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
-    { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
+    {
+      name: "settings",
+      title: t("menu.group.settings"),
+      sections: [
+        { name: "rhythm", title: t("rhythm.title"), note: t("rhythm.note"), Body: Rhythm },
+        {
+          name: "preferences",
+          title: t("preferences.title"),
+          note: t("preferences.note"),
+          Body: Preferences,
+        },
+        {
+          name: "guidelines",
+          title: t("guidelines.title"),
+          note: t("guidelines.note"),
+          Body: Guidelines,
+        },
+      ],
+    },
+    {
+      name: "house",
+      title: t("menu.group.house"),
+      sections: [
+        { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
+        { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
+      ],
+    },
   ];
 
+  const sections = groups.flatMap((group) => group.sections);
   const section = sections.find((entry) => entry.name === current) ?? sections[0]!;
 
   useEffect(() => {
@@ -78,9 +121,9 @@ export function Dashboard({ api }: { api: Api }) {
 
   return (
     <ApiProvider api={api}>
-      {/* Above the sections rather than inside one: the fuse stops every one of them, and
+      {/* Above the sections rather than inside one: the limit stops every one of them, and
           the parent who needs to read this did not come looking for it. */}
-      <BlownFuse />
+      <LimitReached />
       <section className="rounded-panel border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
         <div className="wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
           {/* Icon only: the heading right below already names the section, and saying it
@@ -121,25 +164,32 @@ export function Dashboard({ api }: { api: Api }) {
               <X aria-hidden className="size-5" />
             </Button>
             <nav aria-label={t("menu.aria")} className="flex flex-col gap-0.5">
-              {sections.map((entry) => (
-                <button
-                  key={entry.name}
-                  type="button"
-                  aria-current={entry.name === current ? "true" : undefined}
-                  onClick={() => {
-                    setCurrent(entry.name);
-                    setDrawerOpen(false);
-                  }}
-                  className={cn(
-                    "w-full cursor-pointer rounded-r-control border-0 border-l-[3px]",
-                    "border-transparent px-3 py-2.5 pl-3.5 text-left font-sans text-base",
-                    entry.name === current
-                      ? "border-l-accent bg-accent-soft font-semibold text-ink"
-                      : "bg-transparent text-quiet hover:bg-paper hover:text-ink",
-                  )}
-                >
-                  {entry.title}
-                </button>
+              {groups.map((group) => (
+                <div key={group.name} className="mt-3.5 first:mt-0">
+                  <h4 className="mb-1 px-3.5 text-[0.75rem] font-semibold tracking-[0.06em] text-quiet uppercase">
+                    {group.title}
+                  </h4>
+                  {group.sections.map((entry) => (
+                    <button
+                      key={entry.name}
+                      type="button"
+                      aria-current={entry.name === current ? "true" : undefined}
+                      onClick={() => {
+                        setCurrent(entry.name);
+                        setDrawerOpen(false);
+                      }}
+                      className={cn(
+                        "w-full cursor-pointer rounded-r-control border-0 border-l-[3px]",
+                        "border-transparent px-3 py-2.5 pl-3.5 text-left font-sans text-base",
+                        entry.name === current
+                          ? "border-l-accent bg-accent-soft font-semibold text-ink"
+                          : "bg-transparent text-quiet hover:bg-paper hover:text-ink",
+                      )}
+                    >
+                      {entry.title}
+                    </button>
+                  ))}
+                </div>
               ))}
             </nav>
           </aside>

@@ -364,8 +364,12 @@ export function Pictures() {
             total: answer.total,
           })}
         </span>
-        <span className="ml-auto flex items-center gap-2">
-          <Label htmlFor="pictures-since">{t("pictures.since")}</Label>
+        {/* The three read as one control. Kept apart, the button looked like a second,
+            unrelated thing and nobody could tell it was the date it would act on. */}
+        <span className="ml-auto flex items-center gap-2 rounded-control border border-edge bg-paper px-2.5 py-1.5">
+          <Label htmlFor="pictures-since" className="mb-0">
+            {t("pictures.since")}
+          </Label>
           <Input
             id="pictures-since"
             type="date"

@@ -43,7 +43,7 @@ from .reminders import Sentence
 from .requests import HouseRequest
 from .rhythm import DEFAULT_AFTERNOON_FROM_MINUTES, Rhythm
 from .themes import Theme
-from .usage import Fuse, UsageEvent, UsageSummary, summarise
+from .usage import Limit, UsageEvent, UsageSummary, summarise
 
 ACCOUNTS_CONTAINER = "families"
 PROPOSALS_CONTAINER = "proposals"
@@ -57,7 +57,7 @@ REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
 EXPERIENCES_CONTAINER = "sources"
-FUSE_CONTAINER = "sources"
+LIMIT_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
 
@@ -950,50 +950,50 @@ def _to_usage(document: dict[str, Any]) -> UsageEvent:
     )
 
 
-class CosmosFuseStore:
-    """Conforms to :class:`~panel.usage.FuseStore`.
+class CosmosLimitStore:
+    """Conforms to :class:`~panel.usage.LimitStore`.
 
-    One document per household, written only when somebody moves the fuse. No document
-    means the configured default still applies, so raising the default in the deployment
-    still reaches every household that has never touched it.
+    One document per household, written only when somebody sets it. No document means the
+    configured default still applies, so raising the default in the deployment still
+    reaches every household that has never touched it.
     """
 
     def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
         self._container = (
             _client(endpoint, credential)
             .get_database_client(database)
-            .get_container_client(FUSE_CONTAINER)
+            .get_container_client(LIMIT_CONTAINER)
         )
 
-    def get(self, household_id: str) -> Fuse | None:
+    def get(self, household_id: str) -> Limit | None:
         rows = list(
             self._container.query_items(
-                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'fuse'",
+                query="SELECT * FROM c WHERE c.familyId = @family AND c.type = 'limit'",
                 parameters=[{"name": "@family", "value": household_id}],
                 partition_key=household_id,
             )
         )
         if not rows:
             return None
-        return Fuse(
+        return Limit(
             household_id=household_id,
             calls=int(rows[0].get("calls") or 0),
-            raised_at=float(rows[0].get("raisedAt") or 0.0),
-            raised_by=str(rows[0].get("raisedBy") or ""),
+            changed_at=float(rows[0].get("changedAt") or 0.0),
+            changed_by=str(rows[0].get("changedBy") or ""),
         )
 
-    def set(self, fuse: Fuse) -> Fuse:
+    def set(self, limit: Limit) -> Limit:
         self._container.upsert_item(
             {
-                "id": f"fuse-{fuse.household_id}",
-                "familyId": fuse.household_id,
-                "type": "fuse",
-                "calls": fuse.calls,
-                "raisedAt": fuse.raised_at,
-                "raisedBy": fuse.raised_by,
+                "id": f"limit-{limit.household_id}",
+                "familyId": limit.household_id,
+                "type": "limit",
+                "calls": limit.calls,
+                "changedAt": limit.changed_at,
+                "changedBy": limit.changed_by,
             }
         )
-        return fuse
+        return limit
 
 
 class CosmosRequestStore:

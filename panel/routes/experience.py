@@ -39,7 +39,7 @@ from ..experiences import (
 from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
-from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, fuse_blown
+from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
 from . import Decision
 
 router = APIRouter()
@@ -67,12 +67,12 @@ async def continue_afternoon(
     cap, the cloud, the gate and a malformed answer all end the same way for the house —
     it does not get moments, and nothing is said to anybody about the page.
 
-    The monthly cap is refused rather than degraded, unlike the reminders route. There is
+    The monthly limit is refused rather than degraded, unlike the reminders route. There is
     no reduced version of the rest of an afternoon: half a continuation is not one.
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     experience = _asked(what)
@@ -196,7 +196,7 @@ async def devise_afternoon(
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     try:

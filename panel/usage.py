@@ -50,22 +50,22 @@ FAILED = "failed"
 # life, so one new sentence a day is 62. Total 1116 in a month nobody would call unusual.
 #
 # The figure that stood here was 1000, chosen when a picture was the only thing counted.
-# It is now below an ordinary month, which makes the cap the thing that decides how much a
-# house may do rather than the thing that stops a fault.
+# It is now below an ordinary month, which makes the limit the thing that decides how much
+# a house may do rather than the thing that stops a fault.
 #
 # Twice the ordinary month. What that buys is that a house behaving as designed never
-# meets the cap; what it costs is that a loop which has lost its mind runs about a day
+# meets the limit; what it costs is that a loop which has lost its mind runs about a day
 # longer before it is stopped. The finest spacing a parent can set is one minute, which is
 # 900 pictures a day inside the default waking hours, so 2000 ends it on the third day.
-DEFAULT_MONTHLY_CALL_CAP = 2000
+DEFAULT_MONTHLY_LIMIT = 2000
 
-# The highest a parent may raise the fuse from the panel. A fuse that can be set to
-# anything is not a fuse, and one that cannot be raised stops legitimate work: this is the
-# line between the two. At the finest spacing a parent may set — one minute, 900 calls a
-# day inside the default waking hours — a runaway loop reaches 20000 in about three weeks,
-# so the calendar month ends it either way. It bounds calls and not money: the unit price
-# is still not known, which is written up in ideas/04-system.md.
-MAX_MONTHLY_CALL_CAP = 20000
+# The highest a parent may set from the panel. A limit that can be set to anything stops
+# nothing, and one that cannot be moved stops legitimate work: this is the line between the
+# two. At the finest spacing a parent may choose — one minute, 900 calls a day inside the
+# default waking hours — a runaway loop reaches 20000 in about three weeks, so the calendar
+# month ends it either way. It bounds calls and not money: the unit price is still not
+# known, which is written up in ideas/04-system.md.
+MAX_MONTHLY_LIMIT = 20000
 
 
 def month_of(at: float) -> str:
@@ -183,74 +183,75 @@ class InMemoryUsageStore:
         return summarise(household_id, period, events)
 
 
-def over_cap(store: UsageStore, household_id: str, cap: int, now: float | None = None) -> bool:
+def over_limit(store: UsageStore, household_id: str, limit: int, now: float | None = None) -> bool:
     """Whether this household has already paid for as many calls as it is allowed."""
-    if cap <= 0:
+    if limit <= 0:
         return False
-    return store.summary(household_id, month_of(now or time.time())).total.billed_calls >= cap
+    return store.summary(household_id, month_of(now or time.time())).total.billed_calls >= limit
 
 
 @dataclass(frozen=True, slots=True)
-class Fuse:
-    """Where a household's fuse has been set, and who last moved it.
+class Limit:
+    """Where a household's limit has been set, and who last moved it.
 
     Absent means nobody has moved it and the configured default applies, so changing
-    `LANTERNINA_MONTHLY_CALL_CAP` still reaches every household that never touched it.
+    `LANTERNINA_MONTHLY_LIMIT` still reaches every household that never touched it.
     """
 
     household_id: str
     calls: int
-    raised_at: float = 0.0
-    raised_by: str = ""
+    changed_at: float = 0.0
+    changed_by: str = ""
 
 
 @runtime_checkable
-class FuseStore(Protocol):
-    def get(self, household_id: str) -> Fuse | None: ...
+class LimitStore(Protocol):
+    def get(self, household_id: str) -> Limit | None: ...
 
-    def set(self, fuse: Fuse) -> Fuse: ...
+    def set(self, limit: Limit) -> Limit: ...
 
 
 @dataclass
-class InMemoryFuseStore:
-    _rows: dict[str, Fuse] = field(default_factory=dict)
+class InMemoryLimitStore:
+    _rows: dict[str, Limit] = field(default_factory=dict)
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
-    def get(self, household_id: str) -> Fuse | None:
+    def get(self, household_id: str) -> Limit | None:
         with self._lock:
             return self._rows.get(household_id)
 
-    def set(self, fuse: Fuse) -> Fuse:
+    def set(self, limit: Limit) -> Limit:
         with self._lock:
-            self._rows[fuse.household_id] = fuse
-        return fuse
+            self._rows[limit.household_id] = limit
+        return limit
 
 
-def cap_of(store: FuseStore, household_id: str, configured: int) -> int:
-    """Where this household's fuse sits: where it was moved to, or the configured default."""
-    moved = store.get(household_id)
-    return configured if moved is None else moved.calls
+def limit_of(store: LimitStore, household_id: str, configured: int) -> int:
+    """This household's limit: what it was set to, or the configured default."""
+    chosen = store.get(household_id)
+    return configured if chosen is None else chosen.calls
 
 
-def clean_cap(calls: int, spent: int) -> int:
-    """The fuse a parent may set. Raises ValueError with what is wrong and what is allowed.
+def clean_limit(calls: int, spent: int) -> int:
+    """The limit a parent may set. Raises ValueError with what is wrong and what is allowed.
 
-    Zero is not reachable from the panel. It means "no fuse at all" to :func:`over_cap`,
+    Zero is not reachable from the panel. It means "no limit at all" to :func:`over_limit`,
     and switching the protection off is a deployment decision, not a click.
     """
-    if calls < 1 or calls > MAX_MONTHLY_CALL_CAP:
-        raise ValueError(f"the fuse is between 1 and {MAX_MONTHLY_CALL_CAP} calls a month")
+    if calls < 1 or calls > MAX_MONTHLY_LIMIT:
+        raise ValueError(f"the limit is between 1 and {MAX_MONTHLY_LIMIT} calls a month")
     if calls <= spent:
-        # Otherwise the parent raises it, nothing starts, and the panel looks broken.
+        # Below what the month has already paid for, the house stops the moment it is
+        # saved. That is a way to halt the house by accident, not a limit.
         raise ValueError(f"this month has already spent {spent} calls; set it above that")
     return calls
 
 
-def fuse_blown(
-    usage: UsageStore, fuses: FuseStore, household_id: str, configured: int
+def at_the_limit(
+    usage: UsageStore, limits: LimitStore, household_id: str, configured: int
 ) -> bool:
-    """Whether this household's fuse has gone, wherever it has been set."""
-    return over_cap(usage, household_id, cap_of(fuses, household_id, configured))
+    """Whether this household has reached its limit, wherever that has been set."""
+    return over_limit(usage, household_id, limit_of(limits, household_id, configured))
 
 
 def event_from(

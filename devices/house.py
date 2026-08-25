@@ -31,7 +31,7 @@ from numpy.typing import NDArray
 from devices.epaper import render_notice_bmp
 from devices.inventory import holders, load_jobs
 from devices.pretend import Pretend
-from devices.trmnl_byos import screen_for
+from devices.trmnl_byos import screen_for, sheet_layer_until
 from shared.capabilities import JOB_SHEET, REACHABLE, HouseCapability
 from shared.ids import SheetId
 
@@ -128,7 +128,37 @@ def show(house: House, heading: str, lines: list[str]) -> None:
         return
     if house.screen is None:
         raise CannotRun("there is no display in this house")
+    # Something new on the sheet layer means it is current again, whatever the last
+    # afternoon's ending said about when it was done.
+    sheet_layer_until(house.screen).unlink(missing_ok=True)
     replace(house.screen, render_notice_bmp(heading, lines))
+
+
+# How long an ending stays on the wall before the display goes back to its picture.
+# Long enough that somebody in another room still finds it; short enough that a wall does
+# not become a museum. Before this existed the answer was "until some later afternoon
+# happens to overwrite it", which on the house was two days.
+SHEET_LAYER_MINUTES = 20
+
+
+def the_sheet_layer_is_done(house: House, now: float) -> None:
+    """The afternoon is over: its screen has this long left, and then the picture returns.
+
+    One marker for the house rather than one per display, which is also what covers the
+    trap: a run's moments are spread at random over every display that holds the job, so
+    clearing only the one this process picked would leave the others exactly as they were.
+
+    No branch on pretending: a simulated house has no screen path at all, which is the
+    same guarantee by construction rather than by a check.
+    """
+    if house.screen is None:
+        return
+    ends = sheet_layer_until(house.screen)
+    try:
+        ends.write_text(str(now + SHEET_LAYER_MINUTES * 60.0), encoding="utf-8")
+    except OSError:
+        # An afternoon that ended must not fail because a marker could not be written.
+        pass
 
 
 def hand_over(

@@ -30,7 +30,7 @@ from panel.rhythm import DEFAULT_CADENCE_MINUTES
 from panel.store import InMemoryAccountStore
 from panel.themes import InMemoryThemeStore
 from panel.usage import (
-    DEFAULT_MONTHLY_CALL_CAP,
+    DEFAULT_MONTHLY_LIMIT,
     FAILED,
     KIND_IMAGE,
     KIND_READ,
@@ -41,7 +41,7 @@ from panel.usage import (
     UsageEvent,
     event_from,
     month_of,
-    over_cap,
+    over_limit,
 )
 from shared.errors import CloudUnavailable, SafetyBlocked
 from shared.routing import ModelUsage
@@ -160,9 +160,9 @@ def test_a_cap_of_zero_never_stops_anything() -> None:
     for index in range(5):
         store.record(an_event(f"use-{index}"))
 
-    assert over_cap(store, "house-1", 0) is False
-    assert over_cap(store, "house-1", 5) is True
-    assert over_cap(store, "house-1", 6) is False
+    assert over_limit(store, "house-1", 0) is False
+    assert over_limit(store, "house-1", 5) is True
+    assert over_limit(store, "house-1", 6) is False
 
 
 def test_the_cap_counts_a_wording_as_well_as_a_picture() -> None:
@@ -170,7 +170,7 @@ def test_the_cap_counts_a_wording_as_well_as_a_picture() -> None:
     store.record(an_event("use-1"))
     store.record(an_event("use-2", kind=KIND_TEXT))
 
-    assert over_cap(store, "house-1", 2) is True
+    assert over_limit(store, "house-1", 2) is True
 
 
 def test_the_cap_leaves_room_for_a_month_of_ordinary_use() -> None:
@@ -188,7 +188,7 @@ def test_the_cap_leaves_room_for_a_month_of_ordinary_use() -> None:
     ordinary = pictures + readings + reminders
 
     assert (pictures, readings, reminders, ordinary) == (744, 310, 62, 1116)
-    assert DEFAULT_MONTHLY_CALL_CAP > ordinary
+    assert DEFAULT_MONTHLY_LIMIT > ordinary
 
 
 def test_the_count_is_per_household() -> None:
@@ -205,7 +205,7 @@ def client_for(store: InMemoryUsageStore, cap: int = 1000) -> TestClient:
         dev_auth=True,
         bootstrap_contact=PARENT,
         device_key=DEVICE_KEY,
-        monthly_call_cap=cap,
+        monthly_limit=cap,
     )
     return TestClient(
         create_app(
@@ -274,7 +274,7 @@ def test_the_parent_can_read_the_month(monkeypatch: pytest.MonkeyPatch) -> None:
     store.record(an_event("use-3", household_id=household, kind=KIND_READ, output_tokens=140))
 
     body = client.get("/api/usage", headers=headers()).json()
-    assert body["cap"] == 42
+    assert body["limit"] == 42
     assert body["usage"]["total"]["calls"] == 3
     assert body["usage"]["total"]["outputTokens"] == 367
     # Every figure the parent reads arrives under the kind it belongs to.

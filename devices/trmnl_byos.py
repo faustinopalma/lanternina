@@ -431,6 +431,26 @@ def picture_for(shared: Path, friendly_id: str) -> Path:
     return shared.with_name(f"{shared.stem}-{friendly_id}-picture{shared.suffix}")
 
 
+def sheet_layer_until(shared: Path) -> Path:
+    """When the sheet layer stops being served, if anything has said so.
+
+    One file for the house rather than one per display, because an afternoon is the thing
+    that ends and a house runs one at a time. Its absence means the sheet layer is current,
+    which is how it reads on a house that has never run an afternoon at all.
+    """
+    return shared.with_name("sheet-layer-until")
+
+
+def sheet_layer_is_over(shared: Path, now: float) -> bool:
+    """Whether the last afternoon's screen has had its time on the wall."""
+    try:
+        return float(sheet_layer_until(shared).read_text(encoding="utf-8").strip()) <= now
+    except (OSError, ValueError):
+        # No marker, or one nobody can read: serve the layer. A display that goes blank
+        # because a small file was unreadable is a worse failure than one showing old text.
+        return False
+
+
 def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     # Validated once here so a broken file fails at startup, not in front of a device.
     last_good = validate_screen(config.screen_file)
@@ -468,7 +488,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             due = _valid_or_none(reminder_for(config.screen_file, device.friendly_id))
             if due is not None:
                 return due
-        if _holds(jobs, JOB_SHEET):
+        if _holds(jobs, JOB_SHEET) and not sheet_layer_is_over(config.screen_file, time.time()):
             own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
             if own is not None:
                 return own

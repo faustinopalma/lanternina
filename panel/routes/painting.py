@@ -29,8 +29,8 @@ from ..usage import (
     REFUSED,
     SERVED,
     UsageStore,
+    at_the_limit,
     event_from,
-    fuse_blown,
 )
 
 router = APIRouter()
@@ -53,8 +53,8 @@ async def paint_picture(
 
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
-        # Reaching the cap is a decision, not a fault: the display keeps its picture.
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        # Reaching the limit is a decision, not a fault: the display keeps its picture.
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     themes: ThemeStore = request.app.state.themes
