@@ -9,14 +9,30 @@ import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
 /* An afternoon a model devised, shown to the one person who decides whether it may happen
- * in this house. Approval is given to the overview — that is what `ideas/08 §2` settled —
- * and the whole plan is here underneath it, because an overview nobody can check against
- * the document is a claim about itself.
+ * in this house.
+ *
+ * **The parent judges an idea, not a script.** Approval is given to the overview — that is
+ * what `ideas/08 §2` settled — and nothing here may assume they read the steps. The steps
+ * are behind a button because an overview nobody *can* check is a claim about itself; being
+ * able to look and choosing not to are different things, and only the first is designed for.
+ *
+ * So the summary has to be enough on its own. Title, length and overview were not: none of
+ * them says what will actually happen in the room. `shapeOf` counts that off the document —
+ * how many sheets it prints, whether the scanner is wanted — because a parent decides on
+ * "two sheets and the scanner" without wanting the sheets themselves.
  *
  * There is no button that asks for one. The house asks on its own rhythm and the parent
  * decides about what came back; a "devise me one" control is the exact thing an inert
  * panel forbids, and its absence is the feature.
  */
+
+/** What the afternoon does to the room, counted off the moments rather than described. */
+function shapeOf(moments: Moment[]): { sheets: number; scanner: boolean } {
+  return {
+    sheets: moments.filter((moment) => moment.act === "hand_over").length,
+    scanner: moments.some((moment) => moment.act === "collect"),
+  };
+}
 
 /** Everything a model wrote reaches this page as text. Nothing here is markup. */
 function Plan({ moments }: { moments: Moment[] }) {
@@ -226,10 +242,21 @@ function Card({
 
   const approved = offered.state === "approved";
 
+  // One line the parent can decide on without opening anything: how long, how much paper,
+  // and whether the scanner is wanted.
+  const shape = shapeOf(offered.experience.moments);
+  const summary = [
+    t("experiences.minutes", { minutes: offered.minutes }),
+    shape.sheets > 0 ? t("experiences.sheets", { sheets: shape.sheets }) : null,
+    shape.scanner ? t("experiences.usesScanner") : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <article className="mt-3.5 max-w-[42rem] rounded-control border border-edge bg-paper p-[18px] pb-4">
       <h3 className="text-[1.05rem] font-semibold">{offered.title}</h3>
-      <Quiet className="mb-2">{t("experiences.minutes", { minutes: offered.minutes })}</Quiet>
+      <Quiet className="mb-2">{summary}</Quiet>
       <p className="mb-2">{offered.overview}</p>
       <Button size="small" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}>
         {t(open ? "experiences.hide" : "experiences.read")}

@@ -17,12 +17,16 @@ import { renderPanel } from "@/test/render";
 describe("an afternoon offered to the parent", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("shows the overview and its length before anything is decided", async () => {
+  it("says enough to decide on without opening anything", async () => {
     renderPanel(fakeApi(), <Experiences />);
 
     expect(await screen.findByText("Sei passaggi di una trasformazione")).toBeInTheDocument();
     expect(screen.getByText(/Un oggetto della stanza/)).toBeInTheDocument();
-    expect(screen.getByText("Circa 90 minuti.")).toBeInTheDocument();
+    // The parent judges an idea. How long, how much paper and whether the scanner is
+    // wanted are what they decide on; the steps are behind a button they need not press.
+    const summary = screen.getByText(/Circa 90 minuti/);
+    expect(summary.textContent).toMatch(/fogli stampati/);
+    expect(summary.textContent).toMatch(/chiede lo scanner/);
   });
 
   it("opens every step, including the branch that is not written yet", async () => {
@@ -32,7 +36,7 @@ describe("an afternoon offered to the parent", () => {
     await screen.findByText("Sei passaggi di una trasformazione");
     // Nothing of the plan is on the page until it is asked for.
     expect(screen.queryByText("Sei riquadri")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Leggi ogni passaggio" }));
+    await user.click(screen.getByRole("button", { name: "Se vuoi vedere com'è fatta" }));
 
     expect(screen.getByText("Scegli un oggetto")).toBeInTheDocument();
     expect(screen.getByText("Sei riquadri")).toBeInTheDocument();
@@ -105,7 +109,7 @@ describe("an afternoon offered to the parent", () => {
     await screen.findByText("Sei passaggi di una trasformazione");
     const buttons = screen.getAllByRole("button").map((one) => one.textContent);
     expect(buttons).toEqual(
-      expect.arrayContaining(["Approva", "Rifiuta", "Leggi ogni passaggio"]),
+      expect.arrayContaining(["Approva", "Rifiuta", "Se vuoi vedere com'è fatta"]),
     );
     expect(buttons.filter((name) => /nuovo|chiedi|inventa|genera/i.test(name ?? ""))).toEqual([]);
   });

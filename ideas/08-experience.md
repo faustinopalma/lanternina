@@ -37,6 +37,8 @@ The experience, once, **from an overview at a general level** — not step by st
 
 What that costs is said plainly rather than discovered: inside an approved experience, what reaches the adolescent has not been seen by an adult. The content gate is then the only thing between a model and a person, and it is doing more work than it was designed to. This is the same trade a picture theme already makes — approve the subject, not each image — taken further.
 
+**What it looks like, since 25 August 2026.** The card carries the title, the overview, and one line counted off the document: how long, how many sheets it will print, whether it wants the scanner. That line was added because the three fields above it say nothing about what will happen in the room, and "two sheets and the scanner" is what a parent decides on. The steps are behind a button labelled *if you want to see how it is built* — being able to look and being expected to read are different things, and only the first is designed for. Nothing in the panel may assume the second.
+
 ### Whether the thing that ends is allowed to be satisfying
 
 Yes, and the general policy is below rather than a special case here.
