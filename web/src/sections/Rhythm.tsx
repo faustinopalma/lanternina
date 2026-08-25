@@ -239,7 +239,7 @@ function Form({ spacing }: { spacing: Spacing }) {
               <optgroup key={group.minutes} label={group.label}>
                 {group.zones.map((zone) => (
                   <option key={zone} value={zone}>
-                    {cityOf(zone)} — {group.label}
+                    {cityOf(zone)}
                   </option>
                 ))}
               </optgroup>

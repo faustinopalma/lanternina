@@ -141,7 +141,7 @@
   "rhythm.timeZone": "The house is in",
   "rhythm.timeZoneNone": "Whatever the machine says",
   "rhythm.timeZoneUnknown": "From here there is no telling what time it is in the house.",
-  "rhythm.timeZoneNote": "The clock beside it is the time the house will keep: check it against a clock in the room. It follows summer time by itself, and the cities are gathered by their distance from UTC, so Rome sits next to Paris.",
+  "rhythm.timeZoneNote": "The clock beside it is the time the house will keep: check it against a clock in the room. It follows summer time by itself. The cities are gathered by their distance from UTC — Rome sits next to Paris — and they keep the spelling the timezone database gives them.",
   "rhythm.beginNow": "Begin an activity",
   "rhythm.beginNote": "Overrides the day and the hour, not the evening pause. An activity already under way is not interrupted.",
   "rhythm.beginAsked": "Noted. The house finds it at its next look, within a minute.",
