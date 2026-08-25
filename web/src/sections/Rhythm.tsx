@@ -11,13 +11,87 @@ import { useLoad } from "@/lib/useLoad";
 /** What a zone is called on the screen: the city, not the identifier.
  *
  * `Europe/Rome` reads as a path and not as a place, and the last segment carries an
- * underscore where a space belongs. There is no way to ask the browser for "Roma" — of
- * the things `Intl.DisplayNames` translates, a timezone city is not one — so the city
- * keeps its own spelling and the offset beside it does the work of identifying it. */
+ * underscore where a space belongs. The city keeps the spelling the timezone database
+ * gives it, because there is no way to ask a browser for "Roma": of the things
+ * `Intl.DisplayNames` translates, a timezone city is not one — checked. The country
+ * beside it is translated, which is what makes the list searchable in Italian.
+ */
 export function cityOf(zone: string): string {
   const parts = zone.split("/");
   const city = parts.length > 1 ? parts.slice(1).join(" · ") : zone;
   return city.replace(/_/g, " ");
+}
+
+/** Which country each zone belongs to, as an ISO code that has a name.
+ *
+ * There is no zone-to-country call, but there is a country-to-zones one, so this walks
+ * the 676 two-letter codes and turns it round. Measured in a browser on 25 August 2026:
+ * 273 codes answer and all 418 zones come back with a country.
+ *
+ * A code is only taken if it can be named. Several withdrawn ISO codes still claim zones
+ * and sort earlier than the country everyone would look under — Riyadh came back as "NT",
+ * the Neutral Zone, instead of Saudi Arabia, and Kiritimati as "CT". Six zones were
+ * affected; requiring a name fixes all six and leaves none without a country.
+ */
+function regionOfZone(named: (code: string) => boolean): Map<string, string> {
+  const found = new Map<string, string>();
+  if (typeof new Intl.Locale("en").getTimeZones !== "function") return found;
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (const first of letters) {
+    for (const second of letters) {
+      const code = `${first}${second}`;
+      if (!named(code)) continue;
+      let zones: string[] | undefined;
+      try {
+        zones = new Intl.Locale(`und-${code}`).getTimeZones?.();
+      } catch {
+        continue;
+      }
+      for (const zone of zones ?? []) {
+        if (!found.has(zone)) found.set(zone, code);
+      }
+    }
+  }
+  return found;
+}
+
+export interface Place {
+  zone: string;
+  label: string;
+}
+
+/** Every zone the browser knows, as "City — Country", in alphabetical order.
+ *
+ * Sorted rather than gathered by offset, which is what this was until somebody pointed
+ * out the obvious: finding Rome under UTC+02:00 means already knowing Rome is on UTC+2
+ * today, and the offset is the thing being looked up. Italy is on +1 for five months of
+ * the year, so the grouping asked the parent for the answer to their own question.
+ *
+ * `Intl.supportedValuesOf` is not in every engine, so the fallback is the browser's own
+ * zone alone: one right answer beats an empty list, and the panel validates whatever
+ * arrives anyway.
+ */
+export function placesIn(language: string): Place[] {
+  const here = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const all =
+    typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("timeZone") : [here];
+  let countryName: Intl.DisplayNames | null = null;
+  try {
+    countryName = new Intl.DisplayNames([language], { type: "region" });
+  } catch {
+    countryName = null;
+  }
+  // A code with no name of its own comes back as the code, which is how the unnamed ones
+  // are told apart without a list of them here.
+  const nameOf = (code: string) => countryName?.of(code) ?? code;
+  const regions = regionOfZone((code) => nameOf(code) !== code);
+  return all
+    .map((zone) => {
+      const region = regions.get(zone);
+      const country = region ? nameOf(region) : "";
+      return { zone, label: country ? `${cityOf(zone)} — ${country}` : cityOf(zone) };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, language));
 }
 
 /** How far this zone is from UTC right now, in minutes.
@@ -36,41 +110,6 @@ export function offsetNow(zone: string, at: Date): number {
   if (!found) return 0;
   const minutes = Number(found[2]) * 60 + Number(found[3]);
   return found[1] === "-" ? -minutes : minutes;
-}
-
-function offsetLabel(minutes: number): string {
-  const sign = minutes < 0 ? "−" : "+";
-  const size = Math.abs(minutes);
-  return `UTC${sign}${String(Math.floor(size / 60)).padStart(2, "0")}:${String(size % 60).padStart(2, "0")}`;
-}
-
-/** Every zone the browser knows, gathered by what the clock says there right now.
- *
- * Grouped rather than listed because 418 identifiers in database order put Rome pages
- * away from Paris, which is where a parent looking for one of them starts. Cities that
- * agree on the hour sit together, which is also the check the parent is really making.
- *
- * `Intl.supportedValuesOf` is not in every engine, so the fallback is the browser's own
- * zone alone: one right answer beats an empty list, and the panel validates whatever
- * arrives anyway. */
-function zonesByOffset(at: Date): { minutes: number; label: string; zones: string[] }[] {
-  const here = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const all =
-    typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("timeZone") : [here];
-  const grouped = new Map<number, string[]>();
-  for (const zone of all) {
-    const minutes = offsetNow(zone, at);
-    const kept = grouped.get(minutes);
-    if (kept) kept.push(zone);
-    else grouped.set(minutes, [zone]);
-  }
-  return [...grouped.entries()]
-    .sort(([a], [b]) => a - b)
-    .map(([minutes, zones]) => ({
-      minutes,
-      label: offsetLabel(minutes),
-      zones: zones.sort((a, b) => cityOf(a).localeCompare(cityOf(b))),
-    }));
 }
 
 /** The time where the house is, ticking, so the parent can check it against a clock in
@@ -111,10 +150,21 @@ function Form({ spacing }: { spacing: Spacing }) {
   );
   const [asked, setAsked] = useState<MessageKey | null>(null);
 
-  /* The browser has the list already, so it is not shipped from the panel. Built once:
-   * it asks the date formatter for an offset 418 times, which is cheap enough to do and
-   * far too much to do on every keystroke elsewhere in this form. */
-  const groups = useMemo(() => zonesByOffset(new Date()), []);
+  /* The browser has the list already, so it is not shipped from the panel. Built once per
+   * language: it walks 676 country codes and sorts 418 places, which is cheap enough to
+   * do on opening the section and far too much to do on every keystroke in this form. */
+  const places = useMemo(() => placesIn(language), [language]);
+  const byZone = useMemo(
+    () => new Map(places.map((place) => [place.zone, place.label])),
+    [places],
+  );
+  const byLabel = useMemo(
+    () => new Map(places.map((place) => [place.label, place.zone])),
+    [places],
+  );
+  /* What is in the box, which is a label and not a zone. Kept apart from `timeZone` so a
+   * half-typed word is not a half-chosen setting: the zone only moves on a full match. */
+  const [typed, setTyped] = useState(() => byZone.get(spacing.timeZone) ?? "");
 
   /* Saving persists a choice and returns. The house reads it on its next run and decides
    * for itself, so nothing here reaches into the room. */
@@ -226,29 +276,33 @@ function Form({ spacing }: { spacing: Spacing }) {
         </span>
         <span className="flex w-full flex-wrap items-center gap-2">
           <Label htmlFor="time-zone">{t("rhythm.timeZone")}</Label>
-          <select
+          {/* A text box with a list rather than a dropdown of 418: alphabetical, and the
+              parent types the first letters of their city instead of scrolling to it. */}
+          <Input
             id="time-zone"
-            className="h-9 max-w-full rounded-control border border-edge bg-paper px-2"
-            value={timeZone}
-            onChange={(event) => setTimeZone(event.target.value)}
-          >
-            <option value="">{t("rhythm.timeZoneNone")}</option>
-            {/* Gathered by what the clock says there now, so the cities that agree on the
-                hour sit together — which is the comparison the parent is making. */}
-            {groups.map((group) => (
-              <optgroup key={group.minutes} label={group.label}>
-                {group.zones.map((zone) => (
-                  <option key={zone} value={zone}>
-                    {cityOf(zone)}
-                  </option>
-                ))}
-              </optgroup>
+            list="the-places"
+            className="w-64"
+            placeholder={t("rhythm.timeZonePlaceholder")}
+            value={typed}
+            onChange={(event) => {
+              const wrote = event.target.value;
+              setTyped(wrote);
+              if (wrote === "") setTimeZone("");
+              else {
+                const found = byLabel.get(wrote);
+                if (found) setTimeZone(found);
+              }
+            }}
+          />
+          <datalist id="the-places">
+            {places.map((place) => (
+              <option key={place.zone} value={place.label} />
             ))}
-          </select>
+          </datalist>
           {/* The confirmation. A timezone cannot be checked by reading it back, so the
               house's own clock is put next to it and left running. */}
           <span aria-live="off" className="text-quiet tabular-nums">
-            {timeZone ? (
+            {timeZone && byZone.get(timeZone) === typed ? (
               <ThereNow zone={timeZone} locale={language} />
             ) : (
               t("rhythm.timeZoneUnknown")

@@ -6,3 +6,11 @@ interface ImportMetaEnv {
   readonly VITE_ADMIN_CLIENT_ID?: string;
   readonly VITE_ADMIN_TENANT_ID?: string;
 }
+
+declare namespace Intl {
+  /* Shipped by browsers and not yet in TypeScript's lib. Declared optional and called
+   * behind a typeof check, because "the engine has it" is what the check is for. */
+  interface Locale {
+    getTimeZones?(): string[] | undefined;
+  }
+}
