@@ -46,6 +46,20 @@ PICTURE_PROMPT = (
     "No text, no letters, no numbers, no watermark, no border, no frame."
 )
 
+# A reminder's decoration, which is not a picture: it sits beside a few words in a strip
+# about a quarter of the screen wide, so it has to read at that size with two levels and
+# nothing else. One object, centred, and nothing behind it.
+#
+# "No text" matters more here than it does above, and for a second reason: the words on
+# this screen were screened as words, and anything a model wrote inside the image would
+# reach the room without having been.
+DECORATION_PROMPT = (
+    "A single small black and white line drawing of {subject}, centred on plain white. "
+    "One object only, thick even strokes, no shading, no grey, no background, no scene. "
+    "It must stay readable when shrunk to 220 pixels. "
+    "No text, no letters, no numbers, no watermark, no border, no frame, no people."
+)
+
 
 def choose_theme(labels: list[str]) -> str:
     return random.choice(labels or list(FALLBACK_THEMES))
@@ -122,3 +136,45 @@ async def paint(
             on_usage(router.last_usage)
         await gate.aclose()
     return new_id("pic"), payload.body, router.last_usage
+
+
+async def decorate(
+    subject: str, *, on_usage: Callable[[ModelUsage | None], None] | None = None
+) -> str:
+    """One small drawing to sit beside a reminder's words. Returns the base64 PNG.
+
+    The same gate and the same router as :func:`paint`, and no manner: a decoration is
+    asked to be one plain object, so the variety that keeps pictures from repeating would
+    only make this one harder to read at the size it is shown.
+
+    Raises whatever the router raises, including
+    :class:`~shared.errors.SafetyBlocked` when the gate refuses the result.
+    """
+    from orchestrator.router import FoundryConfig, FoundryRouter
+    from orchestrator.safety import AzureContentSafetyGate, ContentSafetyConfig
+
+    environment = dict(os.environ)
+    key = environment.get("LANTERNINA_SAFETY_KEY", "").encode() or secrets.token_bytes(32)
+    gate = AzureContentSafetyGate(
+        ContentSafetyConfig.from_env(environment),
+        Sealer(SealPurpose.CONTENT_SAFETY, key, "orchestrator.safety"),
+    )
+    router = FoundryRouter(FoundryConfig.from_env(environment), gate=gate)
+    try:
+        payload = await router.generate_for_user(
+            ModelRequest(
+                capability=Capability.IMAGE_GENERATION,
+                prompt=DECORATION_PROMPT.format(subject=subject),
+                request_id=new_id("rq"),  # type: ignore[arg-type]
+                purpose=f"decoration/{subject}",
+                content_kind=ContentKind.IMAGE_PNG,
+                # The smallest the backend offers: it is shown in a 220 px strip, and a
+                # larger one would cost more to say the same thing.
+                metadata={"size": "1024x1024"},
+            )
+        )
+    finally:
+        if on_usage is not None:
+            on_usage(router.last_usage)
+        await gate.aclose()
+    return str(payload.body)

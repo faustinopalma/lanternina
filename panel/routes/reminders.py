@@ -30,6 +30,7 @@ from ..reminders import (
 )
 from ..usage import (
     FAILED,
+    KIND_IMAGE,
     KIND_READ,
     KIND_TEXT,
     REFUSED,
@@ -225,6 +226,95 @@ async def _word(
         outcome = SERVED
         store.record_wording(household_id, sentence_id, words=clean_wordings(words))
     _count(counter, household_id, KIND_TEXT, outcome, spent)
+
+
+@router.post("/api/device/{household_id}/reminders/{sentence_id}/words")
+async def say_it_now(
+    household_id: str, sentence_id: str, _: DeviceKey, request: Request
+) -> Any:
+    """One way of saying this reminder, for the showing about to happen, and a drawing.
+
+    Asked for by the house at the moment a reminder comes due, and not before: this is
+    the only route here that generates because a moment arrived rather than because a
+    batch was read. The house asks once per occurrence, which is about once a day per
+    reminder — `panel/usage.py` adds that into the ordinary month.
+
+    Nothing about the showing is written down. Not that it happened, not which words went
+    up, not when: the wording is generated, handed over and forgotten, which is what keeps
+    this from becoming a record of how often somebody was reminded of something.
+
+    Never refuses for the cloud's sake. An empty answer means the house shows what it
+    already has — one of the wordings made when the sentence was read, or the parent's own
+    sentence — so a reminder still goes up when nothing here can be reached.
+    """
+    store: SentenceStore = request.app.state.reminders
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    known = {row.id: row for row in store.list(household_id)}.get(sentence_id)
+    if known is None or not known.at:
+        raise HTTPException(status_code=404, detail="unknown_reminder")
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        logging.getLogger(__name__).info("reminder not said: the monthly limit is reached")
+        return {"words": "", "decorationBase64": ""}
+
+    from ..wording import say_sentence_now
+
+    said = ""
+    subject = ""
+    spent: Any = None
+    outcome = FAILED
+    try:
+        said, subject, spent = await say_sentence_now(known.text, known.at, now=time.time())
+        outcome = SERVED
+    except SafetyBlocked as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("wording refused: %s", exc)
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        logging.getLogger(__name__).warning("reminder not said: %s", exc)
+    _count(counter, household_id, KIND_TEXT, outcome, spent)
+    words = next(iter(clean_wordings([said])), "")
+    return {
+        "words": words,
+        "decorationBase64": await _decoration(request, household_id, subject),
+    }
+
+
+async def _decoration(request: Request, household_id: str, subject: str) -> str:
+    """A small drawing of what the sentence is about, or nothing. Never raises.
+
+    Nothing is the ordinary answer for a sentence that names no drawable thing, and it is
+    also what a refusal or an unreachable cloud comes to: the words go up either way, and
+    a reminder that did not appear because its ornament could not be drawn would be the
+    wrong failure.
+    """
+    if not subject:
+        return ""
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        return ""
+
+    from ..painting import decorate
+
+    reported: list[Any] = []
+    outcome = FAILED
+    drawn = ""
+    try:
+        drawn = await decorate(subject, on_usage=reported.append)
+        outcome = SERVED
+    except SafetyBlocked as exc:
+        outcome = REFUSED
+        logging.getLogger(__name__).info("decoration refused: %s", exc)
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        logging.getLogger(__name__).warning("reminder not decorated: %s", exc)
+    _count(
+        counter,
+        household_id,
+        KIND_IMAGE,
+        outcome,
+        reported[0] if reported else None,
+    )
+    return drawn
 
 
 def _count(

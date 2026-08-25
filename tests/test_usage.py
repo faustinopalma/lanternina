@@ -174,20 +174,24 @@ def test_the_cap_counts_a_wording_as_well_as_a_picture() -> None:
 
 
 def test_the_cap_leaves_room_for_a_month_of_ordinary_use() -> None:
-    """The cap stops a fault; it does not decide how much a working house may do.
+    """The limit stops a fault; it does not decide how much a working house may do.
 
     Three paths pay, so the month is added up over all three: a picture at the spacing the
     parent gets by default with the night pause switched off, ten pages on the glass a
-    day, and one new reminder a day, which is read once and worded once in its life. The
-    figure this pins is the same one written above the constant.
+    day, and the reminders — one new sentence a day, read once and given a bank of
+    wordings once, plus every showing said afresh and drawn. The figure this pins is the
+    same one written above the constant.
     """
     days = 31
     pictures = days * (24 * 60 // DEFAULT_CADENCE_MINUTES)
     readings = days * 10
-    reminders = days * 2
-    ordinary = pictures + readings + reminders
+    # Read and banked, once in a sentence's life.
+    written = days * 2
+    # Three reminders standing, each shown once a day: a wording and a drawing each time.
+    shown = days * 3 * 2
+    ordinary = pictures + readings + written + shown
 
-    assert (pictures, readings, reminders, ordinary) == (744, 310, 62, 1116)
+    assert (pictures, readings, written, shown, ordinary) == (744, 310, 62, 186, 1302)
     assert DEFAULT_MONTHLY_LIMIT > ordinary
 
 

@@ -251,6 +251,48 @@ def render_notice_png(heading: str, lines: Sequence[str]) -> bytes:
     return _encode(_notice(heading, lines), "PNG")
 
 
+# How wide the strip beside a reminder's words is, and the gap before them. The words keep
+# the rest, which at this width is about twenty-six characters a line — a wording is
+# capped at ninety-six, so four lines.
+DECORATION_WIDTH: Final = 220
+DECORATION_GAP: Final = 24
+
+
+def render_reminder_bmp(
+    heading: str, lines: Sequence[str], decoration: bytes | None = None
+) -> bytes:
+    """A reminder: the hour, the words, and a small drawing of what they are about.
+
+    The drawing is drawn and the words are written, rather than the words being asked for
+    inside the drawing. Two reasons, and the second is the one that matters: at this size
+    with two levels a model's lettering comes out crooked and misspelt, and text inside an
+    image would reach the room without having been screened as text.
+
+    No decoration falls back to the plain notice, which is what a sentence naming no
+    drawable thing gets, and what a refused or unreachable drawing comes to.
+    """
+    if not decoration:
+        return render_notice_bmp(heading, lines)
+    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
+    draw = ImageDraw.Draw(canvas)
+    fonts = _fonts()
+    inner = WIDTH - 2 * MARGIN - DECORATION_WIDTH - DECORATION_GAP
+
+    y = MARGIN + 24
+    if heading:
+        y = _draw_block(draw, heading, fonts.title, y, inner, 52) + 18
+    for line in lines:
+        y = _draw_block(draw, line, fonts.body, y, inner, 42) + 10
+
+    try:
+        drawn = Image.open(BytesIO(decoration)).convert("L")
+    except Exception:  # noqa: BLE001 - an unreadable drawing must not lose the words
+        return render_notice_bmp(heading, lines)
+    drawn.thumbnail((DECORATION_WIDTH, HEIGHT - 2 * MARGIN), Image.LANCZOS)
+    canvas.paste(drawn, (WIDTH - MARGIN - drawn.width, (HEIGHT - drawn.height) // 2))
+    return _encode(canvas.point(lambda v: 255 if v > 127 else 0).convert("1"), "BMP")
+
+
 # Two paths draw this: the display server answers a press with it, and the scan writes it a
 # moment later. One definition, so the bytes are the same and the display has no reason to
 # redraw between the two.

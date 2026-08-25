@@ -46,17 +46,20 @@ FAILED = "failed"
 # What a working month costs, added up per path rather than guessed. Pictures: the parent
 # sets the spacing, default 60 minutes, and if they switch the night pause off that is 24
 # a day, 744 in a 31-day month. Readings: one call per page put on the glass, so a house
-# that scans ten a day pays 310. Reminders: a sentence is read once and worded once in its
-# life, so one new sentence a day is 62. Total 1116 in a month nobody would call unusual.
+# that scans ten a day pays 310. Reminders: a sentence is read once and given a bank of
+# wordings once in its life, so one new sentence a day is 62 — and since 25 August 2026
+# each showing is said afresh and given a drawing, which for three reminders standing and
+# shown once a day is another 186. Total 1302 in a month nobody would call unusual.
 #
 # The figure that stood here was 1000, chosen when a picture was the only thing counted.
 # It is now below an ordinary month, which makes the limit the thing that decides how much
 # a house may do rather than the thing that stops a fault.
 #
-# Twice the ordinary month. What that buys is that a house behaving as designed never
-# meets the limit; what it costs is that a loop which has lost its mind runs about a day
-# longer before it is stopped. The finest spacing a parent can set is one minute, which is
-# 900 pictures a day inside the default waking hours, so 2000 ends it on the third day.
+# Twice the ordinary month when that month was 1116. What that buys is that a house
+# behaving as designed never meets the limit; what it costs is that a loop which has lost
+# its mind runs about a day longer before it is stopped. The finest spacing a parent can
+# set is one minute, which is 900 pictures a day inside the default waking hours, so 2000
+# ends it on the third day.
 DEFAULT_MONTHLY_LIMIT = 2000
 
 # The highest a parent may set from the panel. A limit that can be set to anything stops

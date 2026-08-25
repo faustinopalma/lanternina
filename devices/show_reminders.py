@@ -23,6 +23,7 @@ own sentence is shown as written, which is what this did before there were any.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -155,13 +156,52 @@ def save_shown(path: Path, displays: dict[str, str]) -> None:
     temporary.replace(path)
 
 
+def said_now(panel: str, household: str, key: str, sentence_id: str) -> tuple[str, bytes]:
+    """Ask the panel to say this reminder for the showing about to happen.
+
+    One call per occurrence, made here because here is where a moment is known to have
+    come. Never raises: an empty answer means the caller falls back to what it already
+    has, which is one of the wordings made when the sentence was read, or the parent's own
+    sentence. A reminder that did not appear because the cloud was unreachable would be
+    the wrong failure.
+    """
+    asked = urllib.request.Request(
+        f"{panel}/api/device/{household}/reminders/{sentence_id}/words",
+        headers={"X-Device-Key": key},
+        method="POST",
+    )
+    try:
+        # Long, because a drawing comes back with the words and an image takes its time.
+        with urllib.request.urlopen(asked, timeout=180) as answer:
+            said = json.loads(answer.read())
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"could not have it said ({exc}); using what is already here")
+        return "", b""
+    words = str(said.get("words") or "")
+    drawn = str(said.get("decorationBase64") or "")
+    try:
+        return words, base64.b64decode(drawn) if drawn else b""
+    except (ValueError, TypeError):
+        return words, b""
+
+
+def says_the_hour(words: str, at: str) -> bool:
+    """Whether the wording carries the hour itself.
+
+    The model is free to write it in or leave it out, so the heading is what makes the
+    hour appear exactly once: it is dropped when the sentence already says it.
+    """
+    return bool(at) and (at in words or at.replace(":", ".") in words)
+
+
 def words_of(reminder: dict[str, Any], occurrence: str) -> str:
     """Which way of saying it this showing gets. The parent's own sentence when there is none.
 
-    Picked from the occurrence rather than from a counter, because a counter is a record
-    of how many times somebody has been reminded of something and this file must not be
-    able to hold one. The same showing therefore always chooses the same words, and
-    tomorrow's chooses differently.
+    This is the fallback, reached when the panel could not say it now. Picked from the
+    occurrence rather than from a counter, because a counter is a record of how many times
+    somebody has been reminded of something and this file must not be able to hold one.
+    The same showing therefore always chooses the same words, and tomorrow's chooses
+    differently.
 
     SHA-256 and not the built-in hash: that one is salted per process, and this runs in a
     new process every minute, so the wording would change under somebody's eyes.
@@ -173,11 +213,17 @@ def words_of(reminder: dict[str, Any], occurrence: str) -> str:
     return choices[int.from_bytes(digest, "big") % len(choices)]
 
 
-def draw(reminder: dict[str, Any], occurrence: str) -> bytes:
-    """The hour, and one way of saying the thing, on one screen."""
-    from devices.epaper import render_notice_bmp
+def draw(reminder: dict[str, Any], words: str, decoration: bytes = b"") -> bytes:
+    """The hour, one way of saying the thing, and whatever was drawn about it.
 
-    return render_notice_bmp(str(reminder.get("at", "")), [words_of(reminder, occurrence)])
+    The heading is left off when the wording carries the hour itself, so the screen says
+    it once rather than twice.
+    """
+    from devices.epaper import render_reminder_bmp
+
+    at = str(reminder.get("at", ""))
+    heading = "" if says_the_hour(words, at) else at
+    return render_reminder_bmp(heading, [words], decoration)
 
 
 def install(path: Path, image: bytes) -> None:
@@ -240,8 +286,16 @@ def main() -> int:
     occurrence = "" if due is None else occurrence_of(due, clock)
 
     shown = load_shown(shown_file)
+    stale = [name for name in wanted if shown.get(name, "") != occurrence]
+    # Asked for once for all the displays that need it, not once each: they show the same
+    # reminder, and two calls would pay twice to say the same thing two different ways.
+    words, decoration = ("", b"")
+    if stale and due is not None:
+        words, decoration = said_now(panel, household, key, str(due.get("id", "")))
+    if not words:
+        words = words_of(due, occurrence) if due is not None else ""
     for friendly_id in wanted:
-        if shown.get(friendly_id, "") == occurrence:
+        if friendly_id not in stale:
             # Already dealt with. Either it is still on the screen, or somebody pressed
             # the button and it went away — and putting it back would make the press mean
             # nothing, which is the one thing a dismissal must not mean.
@@ -251,8 +305,8 @@ def main() -> int:
             target.unlink(missing_ok=True)
             print(f"{friendly_id}: the moment has passed")
         else:
-            install(target, draw(due, occurrence))
-            print(f"{friendly_id}: {due.get('at', '')} {words_of(due, occurrence)}")
+            install(target, draw(due, words, decoration))
+            print(f"{friendly_id}: {due.get('at', '')} {words}")
         shown[friendly_id] = occurrence
     save_shown(shown_file, shown)
     return 0

@@ -61,3 +61,37 @@ async def word_sentence(
     finally:
         await gate.aclose()
     return wordings, router.last_usage
+
+
+async def say_sentence_now(
+    text: str, at: str, *, now: float
+) -> tuple[str, str, ModelUsage | None]:
+    """One way of saying a sentence for the showing about to happen, what it is about,
+    and what the call consumed.
+
+    The same gate as above and a different question: this is asked when a reminder comes
+    due rather than when its sentence is read, so the words are new each time instead of
+    being picked from four made once.
+
+    Raises whatever the router raises, including
+    :class:`~shared.errors.SafetyBlocked` when the gate refuses what came back.
+    """
+    from agents.reminder_wording import ReminderWording
+    from orchestrator.router import FoundryConfig, FoundryRouter
+    from orchestrator.safety import AzureContentSafetyGate, ContentSafetyConfig
+
+    environment = dict(os.environ)
+    key = environment.get("LANTERNINA_SAFETY_KEY", "").encode() or secrets.token_bytes(32)
+    gate = AzureContentSafetyGate(
+        ContentSafetyConfig.from_env(environment),
+        Sealer(SealPurpose.CONTENT_SAFETY, key, "orchestrator.safety"),
+    )
+    router = FoundryRouter(FoundryConfig.from_env(environment), gate=gate)
+    context = AgentContext(
+        router=router, learner_id=LearnerId(""), learner_hints={}, now=now
+    )
+    try:
+        said, subject = await ReminderWording().say_it_now(context, text=text, at=at)
+    finally:
+        await gate.aclose()
+    return said, subject, router.last_usage

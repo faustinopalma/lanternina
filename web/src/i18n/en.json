@@ -99,7 +99,7 @@
   "reminders.due": "At {at}, {days}.",
   "reminders.everyDay": "every day",
   "reminders.asks": "The house asks: {question}",
-  "reminders.words": "On the display you will read one of these:",
+  "reminders.words": "On the display the sentence is written again each time, with a small drawing of what it is about. When the house cannot ask for one, it reads one of these:",
   "reminders.noHour": "The house found no hour in this sentence. Write it again with one in it.",
   "reminders.loading": "Loading the reminders.",
   "reminders.unreadable": "I cannot read the reminders right now.",

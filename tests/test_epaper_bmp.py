@@ -38,3 +38,40 @@ def test_the_notice_is_still_the_geometry_the_firmware_expects(tmp_path) -> None
     path = tmp_path / "notice.bmp"
     path.write_bytes(render_notice_bmp("Fatto", ["Ho letto il foglio."]))
     assert len(validate_screen(path)) > 0
+
+
+def _a_drawing() -> bytes:
+    """A small PNG standing in for what the model sends back."""
+    from io import BytesIO
+
+    from PIL import Image, ImageDraw
+
+    canvas = Image.new("L", (1024, 1024), 255)
+    ImageDraw.Draw(canvas).ellipse((160, 160, 864, 864), outline=0, width=40)
+    kept = BytesIO()
+    canvas.save(kept, format="PNG")
+    return kept.getvalue()
+
+
+def test_a_decorated_reminder_is_a_screen_the_firmware_takes(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    """The decoration is composed here, at two levels, with the words in the real font —
+    the whole reason the words are not asked for inside the picture."""
+    from devices.epaper import render_reminder_bmp
+
+    path = tmp_path / "reminder.bmp"
+    path.write_bytes(render_reminder_bmp("13:30", ["Un minuto per i denti."], _a_drawing()))
+
+    assert len(validate_screen(path)) > 0
+    palette = _palette(path.read_bytes())
+    assert set(palette[3::4]) == {0}
+
+
+def test_the_drawing_changes_the_screen_and_losing_it_does_not_lose_the_words() -> None:
+    from devices.epaper import render_reminder_bmp
+
+    plain = render_reminder_bmp("13:30", ["Un minuto per i denti."], None)
+    decorated = render_reminder_bmp("13:30", ["Un minuto per i denti."], _a_drawing())
+
+    assert decorated != plain
+    # Anything unreadable comes back as the plain notice rather than as a blank wall.
+    assert render_reminder_bmp("13:30", ["Un minuto per i denti."], b"nonsense") == plain

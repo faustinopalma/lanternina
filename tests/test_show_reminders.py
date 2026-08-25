@@ -106,11 +106,25 @@ def house(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 
 def run_at(
-    monkeypatch: pytest.MonkeyPatch, wall: str, answer: list[dict[str, Any]] | None
+    monkeypatch: pytest.MonkeyPatch,
+    wall: str,
+    answer: list[dict[str, Any]] | None,
+    said: tuple[str, bytes] = ("", b""),
+    asked: list[str] | None = None,
 ) -> int:
     monkeypatch.setattr(show_reminders.time, "time", lambda: epoch_of(wall))
     monkeypatch.setattr(
         show_reminders, "ask_panel", lambda *_args, **_kwargs: answer
+    )
+    # Patched by default rather than left to fail against a fake host: what it does when
+    # it cannot be reached has a test of its own, below.
+    monkeypatch.setattr(
+        show_reminders,
+        "said_now",
+        lambda _panel, _house, _key, sentence_id: (
+            asked.append(sentence_id) if asked is not None else None,
+            said,
+        )[1],
     )
     return show_reminders.main()
 
@@ -281,3 +295,93 @@ def test_the_wordings_change_nothing_about_what_the_hub_writes_down(
     kept = json.loads(state.read_text(encoding="utf-8"))
     assert set(kept) == {"displays"}
     assert set(kept["displays"]) == {FRIENDLY}
+
+
+def test_the_words_are_asked_for_once_a_showing_and_not_once_a_display(
+    house: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Two displays showing the same reminder is one reminder. Asking twice would pay
+    twice to say the same thing two different ways in two rooms."""
+    save_jobs(
+        house.with_name("jobs.json"),
+        [
+            {"id": "a", "label": FRIENDLY, "jobs": ["remind"]},
+            {"id": "b", "label": OTHER, "jobs": ["remind"]},
+        ],
+    )
+    asked: list[str] = []
+
+    run_at(monkeypatch, "2026-08-20 13:35", [TEETH], ("I denti.", b""), asked)
+
+    assert asked == [TEETH["id"]]
+    assert reminder_for(house, FRIENDLY).exists()
+    assert reminder_for(house, OTHER).exists()
+
+
+def test_nothing_is_asked_for_when_no_moment_has_come(
+    house: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A call every minute for a reminder that is not due would spend the whole month's
+    allowance on saying nothing."""
+    asked: list[str] = []
+
+    run_at(monkeypatch, "2026-08-20 09:00", [TEETH], ("I denti.", b""), asked)
+
+    assert asked == []
+
+
+def test_the_words_that_came_back_are_the_ones_shown(
+    house: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The bank made when the sentence was read is the fallback, not the source: a
+    reminder said the same four ways for a year is what this replaced."""
+    fresh = "Un minuto per i denti, quando ti va."
+    asked: list[str] = []
+
+    run_at(monkeypatch, "2026-08-20 13:35", [WORDED], (fresh, b""), asked)
+
+    assert asked == [WORDED["id"]]
+    # Drawn from the fresh wording rather than from the three it already had.
+    assert show_reminders.draw(WORDED, fresh) == reminder_for(house, FRIENDLY).read_bytes()
+
+
+def test_a_panel_that_will_not_say_it_falls_back_to_what_is_already_here(
+    house: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Reduced capability, not a blank wall. And with no bank either, the parent's own
+    sentence — which is worse than a wording and much better than nothing."""
+    run_at(monkeypatch, "2026-08-20 13:35", [WORDED], ("", b""))
+    occurrence = show_reminders.occurrence_of(WORDED, clock("2026-08-20 13:35"))
+    assert reminder_for(house, FRIENDLY).read_bytes() == show_reminders.draw(
+        WORDED, show_reminders.words_of(WORDED, occurrence)
+    )
+
+    reminder_for(house, FRIENDLY).unlink()
+    run_at(monkeypatch, "2026-08-21 13:35", [TEETH], ("", b""))
+    tomorrow = show_reminders.occurrence_of(TEETH, clock("2026-08-21 13:35"))
+    assert reminder_for(house, FRIENDLY).read_bytes() == show_reminders.draw(
+        TEETH, show_reminders.words_of(TEETH, tomorrow)
+    )
+
+
+def test_the_hour_appears_once_whichever_half_says_it() -> None:
+    """The model may write the hour into the sentence or leave it out. The heading is
+    what makes it appear exactly once."""
+    assert show_reminders.says_the_hour("Alle 13:30, i denti.", "13:30") is True
+    assert show_reminders.says_the_hour("Alle 13.30, i denti.", "13:30") is True
+    assert show_reminders.says_the_hour("I denti, dopo pranzo.", "13:30") is False
+    # A reminder with no hour at all cannot be repeating one.
+    assert show_reminders.says_the_hour("I denti.", "") is False
+
+    with_it = show_reminders.draw(TEETH, "Alle 13:30, i denti.")
+    without = show_reminders.draw(TEETH, "I denti, dopo pranzo.")
+    assert with_it != without
+    assert with_it[:2] == b"BM" and without[:2] == b"BM"
+
+
+def test_a_drawing_that_cannot_be_read_still_leaves_the_words() -> None:
+    """The words are the reminder and the drawing is decoration. Losing the second must
+    never lose the first."""
+    plain = show_reminders.draw(TEETH, "I denti.")
+
+    assert show_reminders.draw(TEETH, "I denti.", b"not a picture") == plain

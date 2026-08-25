@@ -99,7 +99,7 @@
   "reminders.due": "Alle {at}, {days}.",
   "reminders.everyDay": "tutti i giorni",
   "reminders.asks": "La casa chiede: {question}",
-  "reminders.words": "Sul display leggerai una di queste:",
+  "reminders.words": "Sul display la frase è riscritta ogni volta, con un piccolo disegno di quello di cui parla. Se la casa non riesce a chiederla, legge una di queste:",
   "reminders.noHour": "La casa non ha trovato un'ora in questa frase. Riscrivila dicendogliela.",
   "reminders.loading": "Carico i promemoria.",
   "reminders.unreadable": "Adesso non riesco a leggere i promemoria.",
