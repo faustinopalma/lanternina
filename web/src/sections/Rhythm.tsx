@@ -6,17 +6,21 @@ import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
+import CITIES from "@/i18n/cities.json";
 import { useLoad } from "@/lib/useLoad";
 
-/** What a zone is called on the screen: the city, not the identifier.
+/** What a zone is called on the screen: the city, in the panel's language.
  *
- * `Europe/Rome` reads as a path and not as a place, and the last segment carries an
- * underscore where a space belongs. The city keeps the spelling the timezone database
- * gives it, because there is no way to ask a browser for "Roma": of the things
- * `Intl.DisplayNames` translates, a timezone city is not one — checked. The country
- * beside it is translated, which is what makes the list searchable in Italian.
+ * `Europe/Rome` reads as a path and not as a place, and its last segment is English.
+ * `Intl` will not translate it — of the things `Intl.DisplayNames` does, a timezone city
+ * is not one, checked in a browser — so the names come from CLDR, which is the same data
+ * the browsers are built on. `web/src/i18n/cities.json` holds only the ones that differ
+ * from English, which is 92 of them in Italian and 3 KB; everything else falls back to
+ * the database's own spelling, which is already English.
  */
-export function cityOf(zone: string): string {
+export function cityOf(zone: string, language = "en"): string {
+  const named = (CITIES as Record<string, Record<string, string>>)[language]?.[zone];
+  if (named) return named;
   const parts = zone.split("/");
   const city = parts.length > 1 ? parts.slice(1).join(" · ") : zone;
   return city.replace(/_/g, " ");
@@ -58,6 +62,9 @@ function regionOfZone(named: (code: string) => boolean): Map<string, string> {
 export interface Place {
   zone: string;
   label: string;
+  /** The English spelling, when the language has its own. A parent who knows the zone as
+   *  "Rome" must not fail to find it because the box now says "Roma". */
+  alsoKnownAs: string;
 }
 
 /** Every zone the browser knows, as "City — Country", in alphabetical order.
@@ -89,7 +96,13 @@ export function placesIn(language: string): Place[] {
     .map((zone) => {
       const region = regions.get(zone);
       const country = region ? nameOf(region) : "";
-      return { zone, label: country ? `${cityOf(zone)} — ${country}` : cityOf(zone) };
+      const here = cityOf(zone, language);
+      const english = cityOf(zone);
+      return {
+        zone,
+        label: country ? `${here} — ${country}` : here,
+        alsoKnownAs: english === here ? "" : english,
+      };
     })
     .sort((a, b) => a.label.localeCompare(b.label, language));
 }
@@ -295,8 +308,10 @@ function Form({ spacing }: { spacing: Spacing }) {
             }}
           />
           <datalist id="the-places">
+            {/* The English spelling goes in the label, which browsers search as well as
+                the value: somebody who knows the zone as "Rome" still finds Roma. */}
             {places.map((place) => (
-              <option key={place.zone} value={place.label} />
+              <option key={place.zone} value={place.label} label={place.alsoKnownAs} />
             ))}
           </datalist>
           {/* The confirmation. A timezone cannot be checked by reading it back, so the

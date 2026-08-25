@@ -26,6 +26,11 @@ TESTS = SRC / "test"
 
 USED = re.compile(r'\bt\(\s*"([\w.]+)"')
 
+# Which files in `i18n/` are catalogues of the panel's own words. Named rather than
+# globbed: `cities.json` lives there too and is CLDR place names keyed by IANA zone, so a
+# glob read it as a language whose every key was missing.
+CATALOG_NAMES = ("it", "en")
+
 
 def sources() -> list[Path]:
     """Every file the panel is built from, minus its own tests."""
@@ -38,8 +43,8 @@ def sources() -> list[Path]:
 
 def catalogs() -> dict[str, dict[str, str]]:
     found = {
-        path.stem: json.loads(path.read_text(encoding="utf-8"))
-        for path in CATALOGS.glob("*.json")
+        name: json.loads((CATALOGS / f"{name}.json").read_text(encoding="utf-8"))
+        for name in CATALOG_NAMES
     }
     assert found, f"no catalogs in {CATALOGS}"
     return found

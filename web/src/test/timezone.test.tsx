@@ -32,24 +32,38 @@ async function openRhythm(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("what a zone is called", () => {
-  it("shows the city, not the identifier", () => {
-    expect(cityOf("Europe/Rome")).toBe("Rome");
-    expect(cityOf("America/New_York")).toBe("New York");
-    expect(cityOf("America/Argentina/Ushuaia")).toBe("Argentina · Ushuaia");
-    expect(cityOf("UTC")).toBe("UTC");
+  it("shows the city in the panel's language, and falls back to the database", () => {
+    /* `Intl` has no city name, so the ones that differ come from CLDR. The rest fall back
+     * to the identifier's own segment, which is already English. */
+    expect(cityOf("Europe/Rome", "it")).toBe("Roma");
+    expect(cityOf("Europe/London", "it")).toBe("Londra");
+    expect(cityOf("Africa/Cairo", "it")).toBe("Il Cairo");
+    expect(cityOf("Europe/Rome", "en")).toBe("Rome");
+    // No Italian of its own, so the database's spelling stands — which is right.
+    expect(cityOf("America/New_York", "it")).toBe("New York");
+    expect(cityOf("America/Argentina/Ushuaia", "it")).toBe("Argentina · Ushuaia");
+    expect(cityOf("UTC", "it")).toBe("UTC");
   });
 
   it("names the country in the language the panel is in", () => {
-    /* The city cannot be translated — no browser has a name for "Roma" — but the country
-     * can, and it is what makes the list findable by somebody typing Italian. */
     const italian = placesIn("it");
     const english = placesIn("en");
 
-    expect(italian.find((p) => p.zone === "Europe/Rome")?.label).toBe("Rome — Italia");
+    expect(italian.find((p) => p.zone === "Europe/Rome")?.label).toBe("Roma — Italia");
     expect(english.find((p) => p.zone === "Europe/Rome")?.label).toBe("Rome — Italy");
     expect(italian.find((p) => p.zone === "Europe/London")?.label).toBe(
-      "London — Regno Unito",
+      "Londra — Regno Unito",
     );
+  });
+
+  it("keeps the English spelling beside a translated one, so both can be typed", () => {
+    /* A parent who has seen "Rome" before must not fail to find it now that it says
+     * Roma. Where the two agree there is nothing to keep. */
+    const italian = placesIn("it");
+
+    expect(italian.find((p) => p.zone === "Europe/Rome")?.alsoKnownAs).toBe("Rome");
+    expect(italian.find((p) => p.zone === "America/New_York")?.alsoKnownAs).toBe("");
+    expect(placesIn("en").every((p) => p.alsoKnownAs === "")).toBe(true);
   });
 
   it("gives every zone a country, leaving none unfindable", () => {
@@ -111,8 +125,8 @@ describe("choosing it on the page", () => {
     const list = document.getElementById(box.getAttribute("list") ?? "");
     const labels = [...(list?.children ?? [])].map((option) => option.getAttribute("value"));
 
-    expect(labels).toContain("Rome — Italia");
-    expect(labels).toContain("Paris — Francia");
+    expect(labels).toContain("Roma — Italia");
+    expect(labels).toContain("Parigi — Francia");
     expect(labels.length).toBeGreaterThan(300);
   });
 
@@ -121,7 +135,7 @@ describe("choosing it on the page", () => {
     renderPanel(fakeApi());
     await openRhythm(user);
 
-    expect(await screen.findByLabelText("Fuso orario di casa")).toHaveValue("Rome — Italia");
+    expect(await screen.findByLabelText("Fuso orario di casa")).toHaveValue("Roma — Italia");
   });
 
   it("shows the time the house will keep, so the choice can be checked", async () => {
@@ -163,7 +177,7 @@ describe("choosing it on the page", () => {
 
     const box = await screen.findByLabelText("Fuso orario di casa");
     await user.clear(box);
-    await user.type(box, "Paris — Francia");
+    await user.type(box, "Parigi — Francia");
 
     expect(
       screen.queryByText("Da qui non si vede che ora è in casa."),
