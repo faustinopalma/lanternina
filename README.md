@@ -1,16 +1,86 @@
 # Lanternina
 
-Lanternina invents an afternoon, gets a parent's agreement to it, and then runs it in a real
-room — on paper, on e-paper displays, and on the clock — for one adolescent, with nobody
-watching over their shoulder.
+**Lanternina invents an afternoon for an adolescent, has a parent approve it, and then runs
+it in a real room — across paper, e-paper displays, a screen, physical buttons and a camera
+the adolescent carries around — reading what comes back, deciding what happens next from
+that, and stopping at an hour the parent set.** The house holds the hardware and the clock.
+The models run in Azure.
 
-An afternoon is not a worksheet with a story on top. A model writes it as a whole document:
-four or five moments, each in three lengths so the plan can be shortened without being cut,
-a four-rung ladder of help that arrives whether or not anybody asked, and from every single
-point a written way out that reaches the same ending. That document is checked against six
-properties before a parent ever sees it, and a parent approves it once. Nothing in the cloud
-can start it, extend it or redirect it: the house asks, and the answer arrives inside the
-reply.
+## Four twenty on a Tuesday
+
+What follows is composed from an afternoon that ran, plus the handheld camera as it will
+work once it exists. The person is invented, and so is the name.
+
+Masha comes back from a walk with a rock in her pocket. She photographs it with the camera
+she carries — one button, no screen — and puts the rock and the camera down on the table.
+
+Twenty minutes later the printer produces a museum label. It carries a catalogue number, a
+provenance line reading *collected on the riverbank, 18 August*, and three sentences of
+curator's prose about a quartz vein. It is not a template with words dropped into it: an
+image model drew the whole thing at once, ruled line and all, with one question in bold at
+the bottom.
+
+She writes two things on the line and puts the sheet on the scanner glass. The system
+compares the blank it printed against what came back, reads her handwriting, and prints the
+floor plan of a museum that does not exist — with a mineral room in it, and her two answers
+in the mineral room.
+
+The e-paper display in her room has been showing one line this whole time. It changes when
+the second page comes out. Thirty minutes before the hour her mother agreed to that morning,
+the afternoon finds its way out: it reaches the same last page it would have reached from
+any other point, and nothing says it was shortened.
+
+Nobody made any of that. It cost about two minutes of compute and a few cents, and it will
+never be produced again.
+
+## The same afternoon, on everything else in the house
+
+Paper is one channel of five, and the only one that leaves something behind.
+
+- **Paper.** A page that can be written on, and that is still on the table when the
+  afternoon is over.
+- **The e-paper display.** One thing at a time. It does not refresh unless something
+  changed, and it sits in a room all day without asking for anything.
+- **A screen.** For what has to move, or has to be touched.
+- **Physical buttons.** How anything gets answered: confirm, ask for help, say done. No
+  keyboard, no login, nothing to dismiss. The morning sequence is exactly this — one step at
+  a time on the display, a button press to confirm each one.
+- **The handheld camera.** The one channel running the other way: a photograph goes from the
+  room into the system, instead of the system putting something into the room.
+
+Which channel a moment lands on is a decision the format has to survive. Every moment of an
+afternoon exists in three lengths and carries a four-rung ladder of help, and that is not
+housekeeping: it is what lets the same moment be shortened when the clock is tight, put on a
+display that holds forty words, or turned into a page — and reach the same ending whichever
+way it went.
+
+## Why it doesn't already exist
+
+Making that afternoon by hand takes longer than the afternoon. It needs a writer, an
+illustrator, somebody deciding the next page while the first one is still on the table, and
+a press — at home, on a Tuesday, for one rock.
+
+This is not about a parent's time or attention. A parent with a free afternoon and undivided
+attention still does not produce that museum label. What fills those hours instead is a
+screen built to hold attention, or a worksheet, and both are the same shape every day —
+because material made for one person once and then discarded has never been economic to
+produce.
+
+Generation changes that price, and the precise form of the change is what matters. Not that
+a model can write an exercise; that has been true for a while. That a whole afternoon — its
+objects, its vocabulary, its ending, and a form for each surface — costs ninety seconds and
+is cheap enough to throw away.
+
+Lanternina is what you build once that is true.
+
+## What an afternoon is
+
+Not a worksheet with a story on top. A model writes it as a whole document: four or five
+moments, each in three lengths so the plan can be shortened without being cut, a four-rung
+ladder of help that arrives whether or not anybody asked, and from every single point a
+written way out that reaches the same ending. That document is checked against six properties
+before a parent ever sees it, and a parent approves it once. Nothing in the cloud can start
+it, extend it or redirect it: the house asks, and the answer arrives inside the reply.
 
 Then it happens. The house prints a page — a map, a dossier, a museum label, a leaf from a
 field notebook, drawn whole by an image model from words that have already passed the safety
@@ -22,37 +92,46 @@ written while the page is still on the table.
 
 It ends. Thirty minutes before the hour the parent agreed to, whatever the afternoon has
 reached, the way out begins — and the ending it arrives at is the same ending, never
-announced as a shortened one.
+announced as a shortened one. Nobody watches it happen: there is no progress view, no help
+log, no per-step timing. The person who did it is the only account of how it went.
 
 It runs on a Linux mini-PC in a house, serving two e-paper displays, an inkjet and a flatbed
 scanner. Every language and vision call goes to Azure AI Foundry in the EU; no model runs on
-the device. Measured on the deployment: an afternoon is devised in **76–100 s**, a page is
-drawn in **19–33 s** and covers **0.5–2.7 %** of the sheet in ink, and a page that comes back
-is read in **4.4–5.5 s**.
+the device, and there is no offline mode. Photographs and the household memory live in the
+cloud, in the EU region, on the same terms as they would in the house. Measured on the
+deployment: an afternoon is devised in **76–100 s**, a page is drawn in **19–33 s** and
+covers **0.5–2.7 %** of the sheet in ink, and a page that comes back is read in
+**4.4–5.5 s**.
 
 ## Who it is for
 
 Any adolescent. What holds someone's interest differs, how much novelty they want differs,
-and how much text on a page is comfortable differs — across the whole range of cognitive
-ability, and at both ends of it. None of that requires a diagnosis, and Lanternina does not
-ask for one: it has no notion of a condition, a need or a level, and nowhere to record one.
+and how much text on a page is comfortable differs — across everybody, and at both ends of
+every range. Lanternina asks for none of that in advance and records none of it: it has no
+notion of a condition, a need or a level, and nowhere to put one.
 
 ## What it remembers, and what it refuses to conclude
 
-Lanternina keeps a memory and works from it, so nobody restates the same things every week.
-The memory starts as what the household chose — subjects to offer, subjects to avoid, the
-form of the material, how much variety, words per line, the content language — and grows
-with what happened: what a sheet came back with, what was left blank, what took a long time,
-what was picked again. The system may move within those settings and beyond them on that
-evidence. A system that cannot do that is a fixed system, and a fixed system is the failure
-this project is most likely to reach.
+There is one memory per household, it is persistent, it lives in the cloud, and the system
+adapts from it — so nobody restates the same things every week. It starts as what the
+household chose: subjects to offer, subjects to avoid, the form of the material, how much
+variety, words per line, the content language. It grows from what happened.
 
-The limit sits next to the claim, and it is about what may be concluded rather than what may
-be observed. What is kept is a record of what happened — this cell was empty, this took four
-minutes. It is not turned into a claim about who somebody is: no score, no grade, no rank,
-no ability estimate, no progress trend, in the types, the storage, the prompts, the logs or
-the screen, and shown to nobody. The difference is not cosmetic. A record can be checked
-against the paper it came from; a verdict cannot be checked against anything.
+What it is able to hold is a property of the material, never an attribute of a person. Six
+words per line. One instruction at a time. Help arrives at the second minute. History
+subjects come back chosen and numeric ones come back blank. Each of those is a statement
+about pages and about what to make next, and each can be checked against the paper it came
+from.
+
+The consequence is worth stating on its own: a report card is not forbidden here by a rule
+that somebody could delete. It is impossible to compile, because there is no field that
+describes the person — no score, no grade, no rank, no ability estimate, no progress trend,
+in the types, the storage, the prompts, the logs or the screen.
+
+Processing is remote, so locality is not what keeps this honest. What replaces it is
+legibility: the parent can read the entire memory, in plain language, in the panel. A store
+that is read as sentences by the person who steers cannot quietly become a dossier — the
+first line about who somebody is would be visible as a line about who somebody is.
 
 The tradeoff, stated plainly: adapting without concluding is slower than adapting with it,
 and it keeps the parent in the loop where a scoring system would not need them. Every piece
@@ -66,7 +145,7 @@ settings, reviews what was generated, refuses what does not fit, and decides wha
 should offer this week. No feature is built whose value is that the parent no longer has to
 think about something.
 
-## The dashboard is inert
+### The dashboard is inert
 
 Adding material or changing a setting only stores the new state. It does not generate
 content, enqueue work, notify a device or make anything happen immediately. The server in
@@ -74,15 +153,33 @@ the home decides when to ask for work, and it is free to look later or to declin
 request may stay open while the cloud scales from zero; nobody is waiting in front of a
 screen for it.
 
-## Two consequences that run through the code
+## The camera that gets carried around
 
-- It does not optimise for engagement. No streaks, no daily goals, no variable rewards, no
-  nudge triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy
-  to add here and would do harm, which is why it is a written rule rather than a matter of
-  judgement.
-- Nothing it produces is a verdict about a person. No scores, no grades, no ability
-  estimates, no progress trends, no inference adjacent to a diagnosis — and no camera,
-  radar or wearable pointed at anybody. What it learns from is the work, not the person.
+A handheld device: an ESP32 with a camera, a battery, one button and no screen. A press
+wakes it and sends one photograph to the house. Later, the system proposes something made
+out of it — a label, a map, a page. It is the only channel that runs from the room into the
+system, and it is the only one that puts the initiative with the person the afternoon is for.
+
+Faces will be in frame. Friends, rooms, whatever is behind the rock. Nothing about the
+framing prevents that, and pretending otherwise would be the kind of claim that quietly stops
+being true. What holds instead:
+
+- No capture can be triggered remotely, and the parent panel cannot take a photograph.
+- No stream, no timer, no motion trigger. One press, one frame.
+- Holding the button is the only path to the sensor having power, so "it is off" is a
+  property of the wiring rather than of the software.
+- The activity light is wired in series on the sensor's power rail, not driven from a GPIO
+  pin. A light that firmware can lie about is not evidence of anything.
+- No facial recognition, no emotion or attention inference, no age or identity inference —
+  load-bearing precisely because there are now faces in the frames, not despite it.
+- Content Safety runs on inbound photographs as well as on generated output.
+- What is kept lands in a gallery its owner can see, and delete from.
+- The device joins the home network only. It has a battery, and it will leave the house.
+
+It does not optimise for engagement, and neither does anything else here: no streaks, no
+daily goals, no variable rewards, no nudge triggered by inactivity, no "time spent" anywhere.
+Engagement optimisation is easy to add to a system like this and would do harm, which is why
+it is a written rule rather than a matter of judgement.
 
 [docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why. It is worth
 reading before contributing.
@@ -112,16 +209,20 @@ change rather than an omission.
 | Agents cannot approve their own output | `Proposal` has no status field; `AgentContext` holds no ledger | `test_boundaries.py` |
 | Generated output cannot skip Content Safety | `Proposal.payload` accepts only `ScreenedPayload`, which the gate signs | `test_delivery.py` |
 | Approved content cannot be swapped afterwards | The approval seal covers the safety seal | `test_delivery.py` |
+| A continuation cannot reach a display unscreened | The module that makes one calls the gate; the route cannot reach an agent to make its own | `test_boundaries.py` |
 | Only one component talks to a model | Import-level check across every package | `test_boundaries.py` |
+| No model runs in the house | Import-level check for on-device runtimes, in every package including the router | `test_boundaries.py` |
 | Agents never reach each other | Import-level check | `test_boundaries.py` |
-| Full camera frames are never persisted | `RawFrame` refuses to pickle, copy or serialise | `test_boundaries.py` |
-| The camera never analyses people | Identifier-level check across `vision/` | `test_boundaries.py` |
 | No engagement or assessment vocabulary exists | Identifier-level check across every package, and a text check across the panel | `test_boundaries.py` |
 | The content language is a setting, not a property of the data | Field names are English; two readers may name the old Italian keys, nothing else | `test_boundaries.py` |
 
 Each of those tests was mutation-checked: a deliberate violation was injected and the test
 was watched to fail. If you change the design so one no longer holds, please change the
 product rather than the test.
+
+The guarantees about the camera are not in that table, because nothing enforces them yet.
+They are in Status, with everything else that is intended and unbuilt. A table that
+overstates is worse than a short one.
 
 ## Layout
 
@@ -174,7 +275,6 @@ rather than inheriting state nobody can verify.
 Optional extras, installed only where needed:
 
 ```bash
-pip install -e ".[vision]"    # OpenCV with contrib (ArUco lives there), on the mini-PC
 pip install -e ".[cloud]"     # Azure AI Foundry + Content Safety, Entra ID only
 pip install -e ".[panel]"     # the parent panel
 pip install -e ".[devices]"   # serial link to the ESP32s
@@ -187,14 +287,38 @@ filled in, scanned, continued from what came back, and closed on its own hour. F
 surfaced that day and none of them had been found by a test — they were found by somebody
 standing next to the printer, and they are written up in [ideas/09](ideas/09-a-game-that-ends.md).
 
-What is solid: the afternoon format and its checks, the parent panel and its approval, the
-page drawn whole and read against its blank, the clock that guarantees an ending, and the
-boundaries in the table above. What is not: a second house has never been provisioned, the
-installer's `--install` has never been run, and the page format's ink budget is measured but
-not yet decided against a printer somebody was watching.
+Running: the cloud tier, the parent panel and its API, the content agent, the model router
+with real credentials, the safety gate, the hub services that serve the displays and pull an
+hourly picture, the picture archive, and usage accounting with a per-household cap. With
+them, the afternoon format and its checks, the approval, the page drawn whole and read
+against its blank, the clock that guarantees an ending, and the boundaries in the table
+above. The sheet renderer was checked on paper — a 50 mm ruler measures 50 mm. The paper
+loop runs from the button and was measured with a finger on 19 August: a press puts "sto
+leggendo" on the display in the same request, the scanner takes about twenty-six seconds,
+and the reading lands on the next wake, so thirty-five seconds from the press.
 
-The full table is at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and it is kept
-honest rather than encouraging.
+Not built, and not enforced:
+
+- **The handheld camera.** Nothing here takes a photograph. `vision/` is an empty package.
+  Every guarantee stated about the camera above is a design decision, and no test would
+  notice if one were dropped.
+- **The plain-language memory view.** The panel shows what it shows today; there is no
+  screen that renders the whole household memory as sentences. Until there is, the
+  enforcement that replaces locality does not exist.
+- The planner, and the scheduling and print agents.
+- A second house has never been provisioned, and the installer's `--install` has never been
+  run. The page format's ink budget is measured but not yet decided against a printer
+  somebody was watching.
+
+`firmware/` holds no sources: the displays run the vendor's firmware with two patches of
+ours, one for mDNS and one that takes the two credential-wiping presses off the button. Both
+units carry it as of 19 August 2026. What the house cannot yet be told is which display,
+printer or scanner is for what: those are three constants in the hub's environment rather
+than choices in the panel.
+
+Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
+pretends to work. The full table is at the end of [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md),
+and it is kept honest rather than encouraging.
 
 ## Running it without a house
 
@@ -213,35 +337,23 @@ failed are kept, because a run that failed is the only evidence of how it failed
 The switch is one word. `LANTERNINA_PRETEND=1` simulates; anything else, or nothing, is the
 real house.
 
-Running: the cloud tier, the parent panel and its API, the content agent, the model router
-with real credentials, the safety gate, the hub services that serve the displays and pull an
-hourly picture, the picture archive, and usage accounting with a per-household cap. The
-sheet renderer is written and was checked on paper — a 50 mm ruler measures 50 mm. The paper
-loop runs from the button and was measured with a finger on 19 August: a press puts "sto
-leggendo" on the display in the same request, the scanner takes about twenty-six seconds,
-and the reading lands on the next wake, so thirty-five seconds from the press.
-
-Not written: the planner, the vision, scheduling and print agents. `firmware/` holds no
-sources: the displays run the vendor's firmware with two patches of ours, one for mDNS and
-one that takes the two credential-wiping presses off the button. Both units carry it as of
-19 August 2026. What the house cannot yet be told is which display, printer or scanner is
-for what: those are three constants in the hub's environment rather than choices in the
-panel.
-
-Stubs raise `NotImplementedError` or return obviously fake data. Nothing in this repository
-pretends to work.
-
 ## Privacy
 
 No personal data is in this repository and none should ever be added — not in fixtures,
 tests, screenshots or example configuration. Demo material is synthetic. The repository is
 public and a git history cannot be recalled.
 
-Where the system processes what it holds is a separate question. The cloud tier runs in the
-EU and is treated as holding personal material on the same terms as the house, so a prompt
-may carry a name, a profile, or what came back before. One limit stays, and it is about the
-camera rather than the cloud: only the rectified page crop inside the four markers is kept
-or sent, never a full frame. See [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
+Where the system processes what it holds is a separate question, and the household memory is
+the most sensitive object in it — more than any single photograph, because it is the one
+thing that accumulates. It runs in the EU region, encrypted at rest, isolated per household,
+and it is never used to train anything. It can be deleted in full on request, and deleting
+it costs the household its adaptation and nothing else: the system starts again from the
+settings the parent wrote.
+
+Retention: kept for as long as the household exists. No shorter period has been decided, and
+saying that is more use than naming a number nobody enforces. A prompt may carry a name, a
+profile, or what came back before — the parent decides what is sent, and the EU tier holds it
+on the same terms as the house. See [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md).
 
 ## Licence
 
