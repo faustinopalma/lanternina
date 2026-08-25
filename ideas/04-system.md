@@ -504,13 +504,29 @@ doubting most is the ten pages a day — it is a habit, not a constant.
 table above, and the cap is moved again if the real month disagrees by more than the
 headroom.
 
-**The cap left the usage page, 25 August 2026.** It read as a budget a parent had been
-given, which it is not: it is a fuse against a runaway loop. `/api/usage` still returns
-`cap` and the routes still refuse above it; only the two rows on the page are gone
-(`usage.cap`, `usage.noCap`, both catalogues, and the row in `web/src/sections/Usage.tsx`).
-A ceiling a parent sets, with a figure they choose and a warning before it is met, is a
-feature nobody has designed yet — when it arrives it needs a name of its own, because
-reusing this one would put a fuse and a budget behind the same word.
+**The cap became a fuse a parent can move, 25 August 2026.** It first left the usage page
+altogether, because it read there as a budget somebody had been given. That was the wrong
+half of the problem: what a cap this shape can do is stop a house in silence, and until
+this change the only sign was that nothing happened.
+
+Three things now hold. It is reported: `/api/usage` returns `reached`, `spent`, `raisedAt`
+and `raisedBy`, so a house running on a moved fuse says so rather than looking like one
+that was always there. It is loud: `web/src/components/BlownFuse.tsx` sits above every
+section, so a parent who opens the panel to find out why nothing is happening reads it on
+the page they land on rather than in a section they would have to go looking for. And it
+can be moved: `POST /api/usage/fuse` writes a per-household figure that overrides the
+configured default, with `MAX_MONTHLY_CALL_CAP` at 20000 as the highest the panel may
+reach. Zero — no fuse at all — stays a deployment decision, reachable only through
+`LANTERNINA_MONTHLY_CALL_CAP`.
+
+The per-household figure is absent until somebody moves it, so raising the deployment's
+default still reaches every house that never touched its own. `tests/test_fuse.py` pins
+that, and pins the two ways this goes quietly wrong: a fuse set at or below what the month
+has already spent (the parent presses the button and nothing changes) and a raise reported
+as though it were the configured figure.
+
+A ceiling the parent chooses, with a figure they set in advance and a warning before it is
+met, is still a different feature and still not designed. It will need its own name.
 
 
 **Distributed, 20 August 2026.** Image `lanternina/panel:9052cf9` on revision `--0000040`,

@@ -30,13 +30,10 @@ from ..usage import (
     SERVED,
     UsageStore,
     event_from,
-    over_cap,
+    fuse_blown,
 )
 
 router = APIRouter()
-
-
-
 
 
 @router.post("/api/device/{household_id}/paint")
@@ -56,7 +53,7 @@ async def paint_picture(
 
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         # Reaching the cap is a decision, not a fault: the display keeps its picture.
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 

@@ -59,6 +59,14 @@ FAILED = "failed"
 # 900 pictures a day inside the default waking hours, so 2000 ends it on the third day.
 DEFAULT_MONTHLY_CALL_CAP = 2000
 
+# The highest a parent may raise the fuse from the panel. A fuse that can be set to
+# anything is not a fuse, and one that cannot be raised stops legitimate work: this is the
+# line between the two. At the finest spacing a parent may set — one minute, 900 calls a
+# day inside the default waking hours — a runaway loop reaches 20000 in about three weeks,
+# so the calendar month ends it either way. It bounds calls and not money: the unit price
+# is still not known, which is written up in ideas/04-system.md.
+MAX_MONTHLY_CALL_CAP = 20000
+
 
 def month_of(at: float) -> str:
     """The bucket a cap is measured over, in UTC so it does not move twice a year."""
@@ -180,6 +188,69 @@ def over_cap(store: UsageStore, household_id: str, cap: int, now: float | None =
     if cap <= 0:
         return False
     return store.summary(household_id, month_of(now or time.time())).total.billed_calls >= cap
+
+
+@dataclass(frozen=True, slots=True)
+class Fuse:
+    """Where a household's fuse has been set, and who last moved it.
+
+    Absent means nobody has moved it and the configured default applies, so changing
+    `LANTERNINA_MONTHLY_CALL_CAP` still reaches every household that never touched it.
+    """
+
+    household_id: str
+    calls: int
+    raised_at: float = 0.0
+    raised_by: str = ""
+
+
+@runtime_checkable
+class FuseStore(Protocol):
+    def get(self, household_id: str) -> Fuse | None: ...
+
+    def set(self, fuse: Fuse) -> Fuse: ...
+
+
+@dataclass
+class InMemoryFuseStore:
+    _rows: dict[str, Fuse] = field(default_factory=dict)
+    _lock: threading.Lock = field(default_factory=threading.Lock)
+
+    def get(self, household_id: str) -> Fuse | None:
+        with self._lock:
+            return self._rows.get(household_id)
+
+    def set(self, fuse: Fuse) -> Fuse:
+        with self._lock:
+            self._rows[fuse.household_id] = fuse
+        return fuse
+
+
+def cap_of(store: FuseStore, household_id: str, configured: int) -> int:
+    """Where this household's fuse sits: where it was moved to, or the configured default."""
+    moved = store.get(household_id)
+    return configured if moved is None else moved.calls
+
+
+def clean_cap(calls: int, spent: int) -> int:
+    """The fuse a parent may set. Raises ValueError with what is wrong and what is allowed.
+
+    Zero is not reachable from the panel. It means "no fuse at all" to :func:`over_cap`,
+    and switching the protection off is a deployment decision, not a click.
+    """
+    if calls < 1 or calls > MAX_MONTHLY_CALL_CAP:
+        raise ValueError(f"the fuse is between 1 and {MAX_MONTHLY_CALL_CAP} calls a month")
+    if calls <= spent:
+        # Otherwise the parent raises it, nothing starts, and the panel looks broken.
+        raise ValueError(f"this month has already spent {spent} calls; set it above that")
+    return calls
+
+
+def fuse_blown(
+    usage: UsageStore, fuses: FuseStore, household_id: str, configured: int
+) -> bool:
+    """Whether this household's fuse has gone, wherever it has been set."""
+    return over_cap(usage, household_id, cap_of(fuses, household_id, configured))
 
 
 def event_from(

@@ -258,6 +258,13 @@ export interface Usage {
 export interface UsageAnswer {
   usage: Usage;
   cap: number;
+  maxCap: number;
+  spent: number;
+  /** The house is being refused right now. */
+  reached: boolean;
+  /** Zero when nobody has moved the fuse, so a default never looks like a decision. */
+  raisedAt: number;
+  raisedBy: string;
 }
 
 /** Something the parent asked the house to do, still waiting to be collected. The panel
@@ -331,6 +338,7 @@ export interface Api {
   assignDevice(id: string, assignment: NewAssignment): Promise<Device>;
   removeDevice(id: string): Promise<void>;
   usage(): Promise<UsageAnswer>;
+  raiseFuse(calls: number): Promise<UsageAnswer>;
   askAgain(pictureId: string): Promise<HouseRequest>;
   /** Ask that an afternoon begin at the house's next look, whatever the hour says. */
   beginNow(): Promise<HouseRequest>;

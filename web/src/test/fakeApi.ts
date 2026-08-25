@@ -38,6 +38,7 @@ export interface Recorded {
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
   askedAgain: string[];
+  fuseRaisedTo: number[];
   begunNow: number;
   experienceDecisions: { id: string; state: Decision }[];
   said: NewSaid[];
@@ -288,6 +289,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     assignments: [],
     devicesRemoved: [],
     askedAgain: [],
+    fuseRaisedTo: [],
     begunNow: 0,
     experienceDecisions: [],
     said: [],
@@ -490,7 +492,17 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
         },
       },
       cap: 900,
+      maxCap: 20_000,
+      spent: 215,
+      reached: false,
+      raisedAt: 0,
+      raisedBy: "",
     }),
+    raiseFuse: async (calls) => {
+      recorded.fuseRaisedTo.push(calls);
+      const before = await base.usage();
+      return { ...before, cap: calls, reached: false, raisedAt: NOW, raisedBy: "acct-demo" };
+    },
     askAgain: async (pictureId) => {
       recorded.askedAgain.push(pictureId);
       standing = {

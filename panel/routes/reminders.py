@@ -36,7 +36,7 @@ from ..usage import (
     SERVED,
     UsageStore,
     event_from,
-    over_cap,
+    fuse_blown,
 )
 
 router = APIRouter()
@@ -129,7 +129,9 @@ async def device_reminders(household_id: str, _: DeviceKey, request: Request) ->
     unread = [(row.id, row.text) for row in rows if row.read_at <= 0.0]
 
     degraded = False
-    if unread and over_cap(counter, household_id, settings.monthly_call_cap):
+    if unread and fuse_blown(
+        counter, request.app.state.fuse, household_id, settings.monthly_call_cap
+    ):
         # Reaching the cap says the same thing to the house as a cloud that will not
         # answer: the sentences stay unread, and the reminders already placed still go
         # out. A 429 for the whole call would take those with it.
@@ -206,7 +208,7 @@ async def _word(
     settings: Settings = request.app.state.settings
     store: SentenceStore = request.app.state.reminders
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         logging.getLogger(__name__).info("reminder not worded: the monthly cap is reached")
         return
     spent: Any = None

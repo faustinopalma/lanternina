@@ -33,7 +33,7 @@ from ..usage import (
     SERVED,
     UsageStore,
     event_from,
-    over_cap,
+    fuse_blown,
 )
 
 router = APIRouter()
@@ -75,7 +75,7 @@ async def draw_a_page(
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     try:
@@ -114,7 +114,7 @@ async def read_a_page(
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     from ..paper import read_the_page

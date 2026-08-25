@@ -39,7 +39,7 @@ from ..experiences import (
 from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
-from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, over_cap
+from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, event_from, fuse_blown
 from . import Decision
 
 router = APIRouter()
@@ -72,7 +72,7 @@ async def continue_afternoon(
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     experience = _asked(what)
@@ -196,7 +196,7 @@ async def devise_afternoon(
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
-    if over_cap(counter, household_id, settings.monthly_call_cap):
+    if fuse_blown(counter, request.app.state.fuse, household_id, settings.monthly_call_cap):
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     try:

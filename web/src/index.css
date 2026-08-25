@@ -13,6 +13,10 @@
   --accent-ink: #ffffff;
   --accent-soft: #e7efeb;
   --focus: #b4551f;
+  /* The only red in the panel, and it is a dull one. It says a thing has stopped, which
+     is different from the focus ring and different from anything a person did. */
+  --alarm: #8a2f21;
+  --alarm-soft: #f8e9e5;
   /* Two shadows: one hairline to seat an edge, one wide and faint to lift the card off
      the page. A single strong shadow reads as a drop rather than as depth. */
   --card-shadow: 0 1px 1px rgb(29 26 22 / 0.04), 0 10px 30px rgb(29 26 22 / 0.06);
@@ -29,6 +33,8 @@
     --accent-ink: #14201c;
     --accent-soft: #232f2b;
     --focus: #f0a06a;
+    --alarm: #e5a294;
+    --alarm-soft: #2e211d;
     --card-shadow: 0 1px 1px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35);
   }
 }
@@ -43,6 +49,8 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-focus: var(--focus);
+  --color-alarm: var(--alarm);
+  --color-alarm-soft: var(--alarm-soft);
 
   --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
   --font-mono: "Cascadia Code", Consolas, monospace;

@@ -13,14 +13,14 @@ import { useLoad } from "@/lib/useLoad";
  *  Split by kind, because a picture, a wording and a reading consume different things: a
  *  single figure covering them would keep the name it had when it only counted pictures. */
 export function Usage() {
-  const { t } = useWords();
+  const { t, dateTime } = useWords();
   const api = useApi();
   const [state] = useLoad(() => api.usage());
 
   if (state.status === "loading") return <Quiet>{t("usage.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("usage.unreadable")}</Quiet>;
 
-  const { usage } = state.data;
+  const { usage, cap, reached, raisedAt, raisedBy } = state.data;
   const kinds = [
     { kind: "image", title: t("usage.kind.image") },
     { kind: "text", title: t("usage.kind.text") },
@@ -49,12 +49,29 @@ export function Usage() {
       })}
       <section className="mt-5">
         <Heading>{t("usage.total")}</Heading>
-        {/* The monthly call cap is not shown. It is a fuse against a runaway loop, not a
-            budget a parent sets, and on this page it read as the second. */}
         <Facts
           rows={[
             { label: t("usage.calls"), value: usage.total.calls },
             { label: t("usage.billed"), value: usage.total.billedCalls },
+          ]}
+        />
+      </section>
+      <section className="mt-5">
+        <Heading>{t("usage.fuse")}</Heading>
+        {/* Shown as a state and not as a budget: it is what stops a runaway loop, and a
+            fuse somebody moved must never look like one that was always there. */}
+        <Quiet className="mb-1.5">{t("usage.fuse.note")}</Quiet>
+        <Facts
+          rows={[
+            { label: t("usage.fuse.at"), value: cap },
+            {
+              label: t("usage.fuse.moved"),
+              value:
+                raisedAt > 0
+                  ? t("usage.fuse.movedOn", { when: dateTime(raisedAt), who: raisedBy })
+                  : t("usage.fuse.asConfigured"),
+            },
+            ...(reached ? [{ label: t("usage.fuse.state"), value: t("usage.fuse.gone") }] : []),
           ]}
         />
       </section>

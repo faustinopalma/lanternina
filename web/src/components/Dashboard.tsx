@@ -3,6 +3,7 @@ import { useEffect, useState, type ComponentType } from "react";
 
 import { ApiProvider } from "@/api/client";
 import type { Api } from "@/api/types";
+import { BlownFuse } from "@/components/BlownFuse";
 import { Boundary } from "@/components/Boundary";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
@@ -77,6 +78,9 @@ export function Dashboard({ api }: { api: Api }) {
 
   return (
     <ApiProvider api={api}>
+      {/* Above the sections rather than inside one: the fuse stops every one of them, and
+          the parent who needs to read this did not come looking for it. */}
+      <BlownFuse />
       <section className="rounded-panel border border-edge bg-card p-[26px] pb-7 shadow-card wide:p-7">
         <div className="wide:grid wide:grid-cols-[13rem_minmax(0,1fr)] wide:items-start wide:gap-8">
           {/* Icon only: the heading right below already names the section, and saying it

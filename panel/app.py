@@ -59,7 +59,7 @@ from .routes import usage as usage_routes
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
-from .usage import InMemoryUsageStore, UsageStore
+from .usage import FuseStore, InMemoryFuseStore, InMemoryUsageStore, UsageStore
 
 # Registered in the order they were written in when they shared one file. No two of them
 # claim the same path, so the order is a reading convenience and not a rule — but leaving
@@ -92,6 +92,7 @@ def create_app(
     devices: DeviceStatusStore | None = None,
     inventory: InventoryStore | None = None,
     usage: UsageStore | None = None,
+    fuse: FuseStore | None = None,
     rhythm: RhythmStore | None = None,
     preferences: PreferencesStore | None = None,
     reminders: SentenceStore | None = None,
@@ -115,6 +116,7 @@ def create_app(
         inventory if inventory is not None else _inventory_store(app.state.settings)
     )
     app.state.usage = usage if usage is not None else _usage_store(app.state.settings)
+    app.state.fuse = fuse if fuse is not None else _fuse_store(app.state.settings)
     app.state.rhythm = rhythm if rhythm is not None else _rhythm_store(app.state.settings)
     app.state.preferences = (
         preferences if preferences is not None else _preferences_store(app.state.settings)
@@ -242,6 +244,14 @@ def _usage_store(settings: Settings) -> UsageStore:
     from .cosmos_store import CosmosUsageStore
 
     return CosmosUsageStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _fuse_store(settings: Settings) -> FuseStore:
+    if not settings.cosmos_configured:
+        return InMemoryFuseStore()
+    from .cosmos_store import CosmosFuseStore
+
+    return CosmosFuseStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _rhythm_store(settings: Settings) -> RhythmStore:
