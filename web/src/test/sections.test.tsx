@@ -4,6 +4,7 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { fileName } from "@/sections/Pictures";
 import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
 
@@ -80,6 +81,55 @@ describe("the gallery", () => {
     expect(api.recorded.askedAgain).toEqual(["pic-1"]);
     // Pressing again would only replace the row, so the button stops offering it.
     expect(buttons[0]).toBeDisabled();
+  });
+
+  it("names a saved picture by its moment, and keeps two of the same minute apart", () => {
+    const name = fileName({
+      id: "pic-1",
+      theme: "gatti / cani",
+      createdAt: 1_755_500_000,
+      kind: "ok",
+    });
+    expect(name).toMatch(/^\d{4}-\d{2}-\d{2}-\d{4} gatti cani pic-1\.bmp$/);
+  });
+
+  it("opens one picture on its own, with a way to keep that one", async () => {
+    const api = fakeApi();
+    const saved = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    const tiles = await screen.findAllByRole("button", { name: "Ingrandisci" });
+    await user.click(tiles[0]!);
+
+    const enlarged = await screen.findByRole("dialog");
+    await user.click(within(enlarged).getByRole("button", { name: "Scarica questo" }));
+    expect(saved).toHaveBeenCalled();
+    saved.mockRestore();
+  });
+
+  it("packs the whole gallery into one file, walking every page", async () => {
+    const api = fakeApi();
+    const listed = vi.spyOn(api, "pictures");
+    const bytes = vi.spyOn(api, "pictureContent");
+    const saved = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    await user.click(await screen.findByRole("button", { name: "Scarica tutti" }));
+
+    await waitFor(() => expect(saved).toHaveBeenCalled());
+    // Every page, not only the one the parent is standing on.
+    expect(listed.mock.calls).toContainEqual([1, 100]);
+    expect(listed.mock.calls).toContainEqual([2, 100]);
+    expect(bytes.mock.calls.length).toBeGreaterThanOrEqual(12);
+    saved.mockRestore();
   });
 
   it("shows the request the house has not collected after a reload", async () => {

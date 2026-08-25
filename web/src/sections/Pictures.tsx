@@ -7,6 +7,7 @@
  * What is shown is the rendered two-level image, not the model's original: judging a
  * picture from a smooth PNG would be judging something that was never on the display.
  */
+import { zip } from "fflate";
 import { useEffect, useRef, useState } from "react";
 
 import { useApi } from "@/api/client";
@@ -20,11 +21,49 @@ import { useLoad } from "@/lib/useLoad";
 
 const PAGE_SIZE_KEY = "lanternina.picturesPerPage";
 
-function Tile({ picture, standing }: { picture: Picture; standing: string | null }) {
+/* A name that sorts by when the picture was shown. The id is kept on the end because two
+ * pictures can share a minute and a theme, and a zip cannot hold the same name twice. */
+export function fileName(picture: Picture): string {
+  const when = new Date(picture.createdAt * 1000);
+  const two = (value: number) => String(value).padStart(2, "0");
+  const stamp =
+    `${when.getFullYear()}-${two(when.getMonth() + 1)}-${two(when.getDate())}` +
+    `-${two(when.getHours())}${two(when.getMinutes())}`;
+  // Letters, digits, spaces and dashes survive; a run of anything a file system argues
+  // about becomes one space.
+  const theme = picture.theme
+    .replace(/[^\p{L}\p{N} _-]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 60);
+  return `${stamp}${theme === "" ? "" : ` ${theme}`} ${picture.id}.bmp`;
+}
+
+/* Hand the bytes to the browser's own download. The object URL is released later rather
+ * than at once: revoking it in the same tick cuts the save short in some browsers. */
+function save(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+}
+
+function Tile({
+  picture,
+  standing,
+  onOpen,
+}: {
+  picture: Picture;
+  standing: string | null;
+  onOpen: (picture: Picture, bytes: Blob) => void;
+}) {
   const { t, dateTime } = useWords();
   const api = useApi();
   const frame = useRef<HTMLElement>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const [bytes, setBytes] = useState<Blob | null>(null);
   const [failed, setFailed] = useState(false);
   const [asked, setAsked] = useState<boolean | null>(null);
 
@@ -35,7 +74,10 @@ function Tile({ picture, standing }: { picture: Picture; standing: string | null
     const fetchBytes = async () => {
       try {
         const blob = await api.pictureContent(picture.id);
-        if (live) setUrl(URL.createObjectURL(blob));
+        if (live) {
+          setBytes(blob);
+          setUrl(URL.createObjectURL(blob));
+        }
       } catch {
         if (live) setFailed(true);
       }
@@ -80,14 +122,22 @@ function Tile({ picture, standing }: { picture: Picture; standing: string | null
       {/* The tile holds the display's own proportions before the bytes arrive, so the
           grid does not jump as the pictures come in one by one. */}
       <div className="aspect-[5/3] border-b border-edge bg-white">
-        {url !== null ? (
-          <img
-            src={url}
-            alt={picture.theme || t("pictures.untitled")}
-            /* Two levels and no greys: smoothing would show the parent something softer
-               than the display does. */
-            className="h-full w-full object-contain [image-rendering:pixelated]"
-          />
+        {url !== null && bytes !== null ? (
+          <button
+            type="button"
+            className="block h-full w-full cursor-zoom-in border-0 bg-transparent p-0"
+            aria-label={t("pictures.enlarge")}
+            title={t("pictures.enlarge")}
+            onClick={() => onOpen(picture, bytes)}
+          >
+            <img
+              src={url}
+              alt={picture.theme || t("pictures.untitled")}
+              /* Two levels and no greys: smoothing would show the parent something softer
+                 than the display does. */
+              className="h-full w-full object-contain [image-rendering:pixelated]"
+            />
+          </button>
         ) : null}
       </div>
       <figcaption className="flex flex-col gap-0.5 px-3 pt-2.5 pb-3 text-[0.85rem]">
@@ -124,6 +174,77 @@ function Tile({ picture, standing }: { picture: Picture; standing: string | null
   );
 }
 
+/* The picture on its own, as large as the window allows. A native dialog is used so that
+ * Escape closes it and the rest of the page stops taking clicks, without writing either. */
+function Enlarged({
+  picture,
+  bytes,
+  onClose,
+}: {
+  picture: Picture;
+  bytes: Blob;
+  onClose: () => void;
+}) {
+  const { t, dateTime } = useWords();
+  const frame = useRef<HTMLDialogElement>(null);
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const made = URL.createObjectURL(bytes);
+    setUrl(made);
+    return () => URL.revokeObjectURL(made);
+  }, [bytes]);
+
+  useEffect(() => {
+    const node = frame.current;
+    if (node === null) return;
+    // Where the modal behaviour is missing (jsdom, older browsers) the picture still opens;
+    // what is lost is the backdrop and Escape, not the picture.
+    if (typeof node.showModal === "function") node.showModal();
+    else node.open = true;
+  }, []);
+
+  return (
+    <dialog
+      ref={frame}
+      onClose={onClose}
+      onClick={(event) => {
+        // Clicking the backdrop lands on the dialog itself, never on its children.
+        if (event.target === frame.current) frame.current?.close();
+      }}
+      className="max-h-[92vh] max-w-[96vw] rounded-control border border-edge bg-paper p-0 backdrop:bg-black/60"
+    >
+      <div className="flex max-h-[92vh] flex-col">
+        <div className="min-h-0 flex-1 bg-white p-2">
+          {url !== null ? (
+            <img
+              src={url}
+              alt={picture.theme || t("pictures.untitled")}
+              className="max-h-[74vh] w-auto max-w-full object-contain [image-rendering:pixelated]"
+            />
+          ) : null}
+        </div>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-edge px-3 py-2.5 text-[0.85rem]">
+          <span className="flex flex-col gap-0.5">
+            <strong className="font-semibold">
+              {picture.theme || t("pictures.untitled")}
+            </strong>
+            <span className="text-quiet">{dateTime(picture.createdAt)}</span>
+          </span>
+          <span className="ml-auto flex gap-2">
+            <Button size="small" onClick={() => save(bytes, fileName(picture))}>
+              {t("pictures.download")}
+            </Button>
+            <Button size="small" onClick={() => frame.current?.close()}>
+              {t("pictures.close")}
+            </Button>
+          </span>
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
 export function Pictures() {
   const { t } = useWords();
   const api = useApi();
@@ -135,6 +256,37 @@ export function Pictures() {
   const [request] = useLoad(() => api.standingRequest(), []);
   const standing =
     request.status === "ready" && request.data !== null ? request.data.subject : null;
+  const [open, setOpen] = useState<{ picture: Picture; bytes: Blob } | null>(null);
+  // null while nothing is being gathered; a count while it is; -1 once it went wrong.
+  const [gathered, setGathered] = useState<number | null>(null);
+
+  const downloadAll = async () => {
+    setGathered(0);
+    const files: Record<string, Uint8Array> = {};
+    try {
+      // The listing is paged, so the whole gallery is walked a page at a time rather than
+      // asked for at once. Bytes are fetched one by one: this runs in the background of a
+      // parent's evening, and a burst of parallel requests would buy nothing.
+      for (let wanted = 1; ; wanted += 1) {
+        const step = await api.pictures(wanted, 100);
+        for (const picture of step.pictures) {
+          const blob = await api.pictureContent(picture.id);
+          files[fileName(picture)] = new Uint8Array(await blob.arrayBuffer());
+          setGathered(Object.keys(files).length);
+        }
+        if (step.page >= step.pages) break;
+      }
+      const packed = await new Promise<Uint8Array>((resolve, reject) => {
+        // Level 0: a bitmap of two levels is already small, and packing costs more than
+        // it saves on a phone.
+        zip(files, { level: 0 }, (error, data) => (error ? reject(error) : resolve(data)));
+      });
+      save(new Blob([packed as BlobPart], { type: "application/zip" }), "quadri.zip");
+      setGathered(null);
+    } catch {
+      setGathered(-1);
+    }
+  };
 
   if (state.status === "loading") return <Quiet>{t("pictures.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("pictures.unreadable")}</Quiet>;
@@ -176,6 +328,13 @@ export function Pictures() {
         <span className="ml-auto flex gap-2">
           <Button
             size="small"
+            disabled={answer.total === 0 || gathered !== null}
+            onClick={() => void downloadAll()}
+          >
+            {t("pictures.downloadAll")}
+          </Button>
+          <Button
+            size="small"
             disabled={answer.page <= 1}
             onClick={() => setPage(Math.max(1, answer.page - 1))}
           >
@@ -189,6 +348,16 @@ export function Pictures() {
             {t("pictures.next")}
           </Button>
         </span>
+        {gathered !== null ? (
+          <span className="w-full text-quiet" aria-live="polite">
+            {gathered < 0
+              ? t("pictures.downloadAll.failed")
+              : t("pictures.downloadAll.gathering", {
+                  done: gathered,
+                  total: answer.total,
+                })}
+          </span>
+        ) : null}
       </div>
 
       {answer.pictures.length === 0 ? (
@@ -199,10 +368,23 @@ export function Pictures() {
           aria-live="polite"
         >
           {answer.pictures.map((picture) => (
-            <Tile key={picture.id} picture={picture} standing={standing} />
+            <Tile
+              key={picture.id}
+              picture={picture}
+              standing={standing}
+              onOpen={(shown, bytes) => setOpen({ picture: shown, bytes })}
+            />
           ))}
         </div>
       )}
+
+      {open !== null ? (
+        <Enlarged
+          picture={open.picture}
+          bytes={open.bytes}
+          onClose={() => setOpen(null)}
+        />
+      ) : null}
     </>
   );
 }
