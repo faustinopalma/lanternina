@@ -35,7 +35,11 @@ KIND_SHOW_AGAIN = "showAgain"
 # finds it when it next comes to look. What that costs is up to one turn of the hub's
 # timer, and the panel says so rather than implying the afternoon has started.
 KIND_BEGIN_NOW = "beginNow"
-KINDS = (KIND_SHOW_AGAIN, KIND_BEGIN_NOW)
+# Say which display you are, so a row in the panel can be matched to a box on a wall. The
+# display holds its own id card until somebody presses the button on it, which is the only
+# thing that can prove the right box was found.
+KIND_IDENTIFY = "identify"
+KINDS = (KIND_SHOW_AGAIN, KIND_BEGIN_NOW, KIND_IDENTIFY)
 
 # What a begin-now request is about when the parent did not name an afternoon, which is
 # every time so far: which one to run is the house's choice, because only the house knows

@@ -26,6 +26,7 @@ from ..devices import (
     merged,
 )
 from ..gate import CurrentAccount, DeviceKey
+from ..requests import KIND_IDENTIFY, RequestStore, clean_request
 
 router = APIRouter()
 
@@ -110,10 +111,16 @@ def report_devices(
         )
         recorded.append(item.id)
     # The whole inventory comes back, not only what was just reported: the hub caches
-    # it, and a printer that was switched off this minute still has a job.
+    # it, and a printer that was switched off this minute still has a job. What the parent
+    # took off the list is left out, so a forgotten display stops being served without the
+    # row -- and the job and the name on it -- having to be destroyed.
     return {
         "recorded": recorded,
-        "things": [row.to_public() for row in inventory.list(household_id)],
+        "things": [
+            row.to_public()
+            for row in inventory.list(household_id)
+            if row.forgotten_at == 0.0
+        ],
     }
 
 
@@ -134,8 +141,13 @@ def list_devices(account: CurrentAccount, request: Request) -> Any:
     store: DeviceStatusStore = request.app.state.devices
     inventory: InventoryStore = request.app.state.inventory
     household = str(account.household_id)
+    everything = inventory.list(household)
+    seen = store.list(household)
     return {
-        "devices": merged(inventory.list(household), store.list(household)),
+        "devices": merged([row for row in everything if row.forgotten_at == 0.0], seen),
+        # Kept apart rather than mixed in. What was taken off the list is not part of the
+        # house any more, and the only thing to do with it is put it back.
+        "forgotten": merged([row for row in everything if row.forgotten_at > 0.0], seen),
         # Stated while the parent types rather than enforced afterwards by truncation.
         "nameLimit": MAX_NAME_LENGTH,
     }
@@ -163,7 +175,41 @@ def assign_device(
 @router.post("/api/devices/{thing_id}/remove")
 def forget_device(thing_id: str, account: CurrentAccount, request: Request) -> Any:
     """Take a thing off the list. Nothing leaves on its own for going quiet, so this
-    is the only way out, and it is a decision somebody took."""
+    is the only way out, and it is a decision somebody took.
+
+    Marked rather than destroyed. The hub finds it on the network again within minutes and
+    reports it, and a report carries no job and no name -- so before 25 August 2026 a press
+    made by mistake put the row back stripped of both, which read as the panel losing a
+    setting rather than as the removal being undone.
+    """
     inventory: InventoryStore = request.app.state.inventory
     inventory.forget(str(account.household_id), thing_id)
     return {"removed": thing_id}
+
+
+@router.post("/api/devices/{thing_id}/recall")
+def recall_device(thing_id: str, account: CurrentAccount, request: Request) -> Any:
+    """Put a thing back on the list, with the job and the name it had."""
+    inventory: InventoryStore = request.app.state.inventory
+    try:
+        return inventory.recall(str(account.household_id), thing_id).to_public()
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="unknown_thing") from exc
+
+
+@router.post("/api/devices/{thing_id}/identify")
+def identify_device(thing_id: str, account: CurrentAccount, request: Request) -> Any:
+    """Ask one display to say which one it is, so a row can be matched to a box on a wall.
+
+    A row written and nothing else, like every other thing the parent asks for: the house
+    collects it when it next looks, and the display changes at its own next refresh. The
+    panel says both of those rather than implying the wall has already changed.
+    """
+    store: RequestStore = request.app.state.requests
+    asked = clean_request(
+        household_id=str(account.household_id),
+        kind=KIND_IDENTIFY,
+        subject=thing_id,
+        asked_by=str(account.id),
+    )
+    return store.put(asked).to_public()

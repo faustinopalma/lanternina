@@ -106,12 +106,13 @@ export function Devices() {
   const api = useApi();
   const [state, reload] = useLoad(() => api.devices());
   const [removing, setRemoving] = useState<string | null>(null);
+  const [asked, setAsked] = useState<string | null>(null);
 
   if (state.status === "loading") return <Quiet>{t("devices.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("devices.unreadable")}</Quiet>;
-  if (state.data.devices.length === 0) return <Quiet>{t("devices.empty")}</Quiet>;
 
-  const { devices, nameLimit } = state.data;
+  const { devices, forgotten, nameLimit } = state.data;
+  if (devices.length === 0 && forgotten.length === 0) return <Quiet>{t("devices.empty")}</Quiet>;
 
   return (
     <div aria-live="polite">
@@ -125,25 +126,69 @@ export function Devices() {
         >
           <div className="min-w-0 flex-auto">
             <Row device={device} nameLimit={nameLimit} />
+            {asked === device.id ? (
+              <p className="mt-0 mb-3 text-quiet">{t("devices.identify.asked")}</p>
+            ) : null}
           </div>
-          <Button
-            size="small"
-            className="mt-4 flex-none"
-            disabled={removing === device.id}
-            title={t("devices.removeTitle", { name: device.name || device.label || device.id })}
-            onClick={async () => {
-              // Nothing leaves the list for going quiet, so this is the only way out —
-              // and it is a decision somebody took, not something that happened.
-              setRemoving(device.id);
-              await api.removeDevice(device.id).catch(() => null);
-              setRemoving(null);
-              reload();
-            }}
-          >
-            {t("devices.remove")}
-          </Button>
+          <span className="mt-4 flex flex-none flex-col gap-1.5">
+            {/* Only a display can say which one it is: a printer has no screen to say it
+                on, and a button that did nothing would be worse than no button. */}
+            {device.kind === "display" ? (
+              <Button
+                size="small"
+                disabled={asked === device.id}
+                onClick={async () => {
+                  await api.identifyDevice(device.id).catch(() => null);
+                  setAsked(device.id);
+                }}
+              >
+                {t("devices.identify")}
+              </Button>
+            ) : null}
+            <Button
+              size="small"
+              disabled={removing === device.id}
+              title={t("devices.removeTitle", { name: device.name || device.label || device.id })}
+              onClick={async () => {
+                // Nothing leaves the list for going quiet, so this is the only way out —
+                // and it is a decision somebody took, not something that happened.
+                setRemoving(device.id);
+                await api.removeDevice(device.id).catch(() => null);
+                setRemoving(null);
+                reload();
+              }}
+            >
+              {t("devices.remove")}
+            </Button>
+          </span>
         </div>
       ))}
+
+      {forgotten.length === 0 ? null : (
+        <section className="mt-6">
+          <h3 className="mb-1.5 text-[1rem] font-semibold tracking-tight">
+            {t("devices.forgotten")}
+          </h3>
+          <Quiet className="mb-2">{t("devices.forgotten.note")}</Quiet>
+          {forgotten.map((device) => (
+            <div key={device.id} className="flex items-center gap-3 py-2">
+              <span className="min-w-0 flex-auto">
+                {device.name || device.label || device.id}
+              </span>
+              <Button
+                size="small"
+                className="flex-none"
+                onClick={async () => {
+                  await api.recallDevice(device.id).catch(() => null);
+                  reload();
+                }}
+              >
+                {t("devices.recall")}
+              </Button>
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

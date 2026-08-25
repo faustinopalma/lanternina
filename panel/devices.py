@@ -135,6 +135,11 @@ class Thing:
     name_refused: bool = False
     last_seen: float = 0.0
     first_seen: float = 0.0
+    # When the parent took it off the list. Non-zero keeps it off: the hub finds it on the
+    # network every few minutes and reports it again, and before 25 August 2026 that put
+    # the row straight back -- without its job and without its name, because a report
+    # carries neither. So a mistaken press silently unassigned a display.
+    forgotten_at: float = 0.0
 
     def silent_for(self, now: float | None = None) -> float:
         return max(0.0, (now or time.time()) - self.last_seen)
@@ -152,6 +157,7 @@ class Thing:
             "address": self.address,
             "nameRefused": self.name_refused,
             "lastSeen": self.last_seen,
+            "forgottenAt": self.forgotten_at,
             "silentSeconds": silent,
             # The panel is where a fault is allowed to appear. Nothing in the house says it.
             "silent": silent > SILENT_AFTER_SECONDS,
@@ -175,6 +181,8 @@ class InventoryStore(Protocol):
 
     def forget(self, household_id: str, thing_id: str) -> None: ...
 
+    def recall(self, household_id: str, thing_id: str) -> Thing: ...
+
 
 @dataclass
 class InMemoryInventoryStore:
@@ -197,6 +205,9 @@ class InMemoryInventoryStore:
                     address=thing.address or known.address,
                     name_refused=thing.name_refused,
                     last_seen=max(thing.last_seen, known.last_seen),
+                    # A report never un-forgets: the hub says what is on the network, and
+                    # what belongs on the list is the parent's to say.
+                    forgotten_at=known.forgotten_at,
                 )
             )
             if known is None:
@@ -231,7 +242,15 @@ class InMemoryInventoryStore:
 
     def forget(self, household_id: str, thing_id: str) -> None:
         with self._lock:
-            self._rows.pop((household_id, thing_id), None)
+            current = self._rows.get((household_id, thing_id))
+            if current is not None:
+                self._rows[(household_id, thing_id)] = replace(current, forgotten_at=time.time())
+
+    def recall(self, household_id: str, thing_id: str) -> Thing:
+        with self._lock:
+            current = replace(self._rows[(household_id, thing_id)], forgotten_at=0.0)
+            self._rows[(household_id, thing_id)] = current
+            return current
 
 
 def order_of(thing: Thing) -> tuple[int, str]:

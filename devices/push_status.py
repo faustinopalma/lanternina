@@ -35,7 +35,11 @@ from devices.inventory import (
     save_jobs,
     screen_names,
 )
-from devices.trmnl_byos import LEVEL_OK, last_state, load_devices, recorded_level
+from devices.trmnl_byos import LEVEL_OK, identify_for, last_state, load_devices, recorded_level
+
+# `panel/requests.py` says it. Anything else here is somebody else's request, and this
+# side leaves it standing rather than clearing something it did not act on.
+REQUEST_IDENTIFY = "identify"
 
 MAINS = "mains"
 
@@ -76,6 +80,54 @@ def _entry(status_file: Path, mac: str) -> dict[str, object]:
         return {}
     entry = document.get("devices", {}).get(mac)
     return entry if isinstance(entry, dict) else {}
+
+
+def label_of(things: object, thing_id: str) -> str:
+    """What the display calls itself, which is what its screen files are named after."""
+    for thing in things if isinstance(things, list) else ():
+        if isinstance(thing, dict) and thing.get("id") == thing_id:
+            return str(thing.get("label") or "")
+    return ""
+
+
+def say_which_one(panel: str, household: str, key: str, shared: Path, things: object) -> None:
+    """Put the id card up on the display the parent asked about, and clear the request.
+
+    Never raises. A panel that cannot be reached, or a request about something this house
+    does not have a screen for, leaves everything exactly as it was.
+    """
+    try:
+        asked_for = urllib.request.Request(
+            f"{panel}/api/device/{household}/request", headers={"X-Device-Key": key}
+        )
+        with urllib.request.urlopen(asked_for, timeout=30) as answer:
+            asked = json.loads(answer.read()).get("request")
+    except (urllib.error.URLError, OSError, ValueError, AttributeError) as exc:
+        print(f"cannot read what was asked for ({exc})")
+        return
+    if not isinstance(asked, dict) or asked.get("kind") != REQUEST_IDENTIFY:
+        return
+    label = label_of(things, str(asked.get("subject") or ""))
+    if not label:
+        print(f"asked to identify {asked.get('subject')!r}, which is not a display here")
+        return
+    try:
+        identify_for(shared, label).write_text("", encoding="utf-8")
+    except OSError as exc:
+        print(f"could not put the id card up on {label}: {exc}")
+        return
+    print(f"{label} will say which one it is until somebody presses its button")
+    done = urllib.request.Request(
+        f"{panel}/api/device/{household}/request/{asked.get('id')}/done",
+        headers={"X-Device-Key": key},
+        method="POST",
+    )
+    try:
+        urllib.request.urlopen(done, timeout=30).close()
+    except (urllib.error.URLError, OSError) as exc:
+        # The card is up, which is what was asked for. A request left standing only means
+        # it is written again next time.
+        print(f"could not clear the request ({exc})")
 
 
 def main() -> int:
@@ -130,6 +182,9 @@ def main() -> int:
         save_jobs(jobs_file, kept)
         for thing_id in refused:
             print(f"refused the name on {thing_id}: it carries a person's name")
+    shared = Path(os.environ.get("TRMNL_SCREEN_FILE", ""))
+    if shared.name:
+        say_which_one(panel, household, key, shared, things)
     print(f"reported {len(answer.get('recorded', []))} thing(s)")
     return 0
 

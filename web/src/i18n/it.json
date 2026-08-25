@@ -197,7 +197,12 @@
   "devices.jobNote": "Un dispositivo può avere più compiti, e lo stesso compito può stare su più dispositivi: quando ce n'è più di uno, la casa sceglie di volta in volta.",
   "devices.remove": "Togli",
   "devices.removeTitle": "Togli “{name}”",
-  "devices.removeNote": "Togliere non è definitivo: la casa guarda da sola ogni cinque minuti, e una stampante o uno scanner ancora accesi tornano nell'elenco. Quello che si perde sono i compiti che avevi dato, da riassegnare.",
+  "devices.removeNote": "Togliere non cancella niente: la cosa esce dall'elenco, la casa smette di usarla, e il compito e il nome che le avevi dato restano da parte. Se la togli per sbaglio la ritrovi qui sotto e la rimetti com'era.",
+  "devices.identify": "Qual è?",
+  "devices.identify.asked": "Ho scritto la richiesta. Il display mostra il suo codice entro qualche minuto e lo tiene finché non premi il pulsante sul display stesso: è l'unica cosa che dimostra di aver trovato quello giusto.",
+  "devices.forgotten": "Tolti dall'elenco",
+  "devices.forgotten.note": "La casa non li usa. Rimetterli restituisce anche il compito e il nome che avevano.",
+  "devices.recall": "Rimetti",
   "devices.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
   "devices.nameRefused": "La casa non ha preso questo nome: contiene il nome di una persona, e quello non entra mai in ciò che viene scritto per il display. Scrivi il nome dell'oggetto.",
 

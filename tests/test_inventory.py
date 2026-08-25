@@ -237,11 +237,11 @@ def test_removing_is_something_the_parent_does() -> None:
     assert listed(client) == []
 
 
-def test_something_removed_by_mistake_comes_back_on_the_next_report() -> None:
-    """What a parent needs to know before pressing Togli. The hub reports what it finds
-    every five minutes and the panel creates a row it does not have, so the thing returns
-    on its own — but without the jobs, which are the one part of the row nothing else can
-    reconstruct."""
+def test_something_removed_stays_removed_when_the_hub_reports_it_again() -> None:
+    """Until 25 August 2026 it came straight back, and stripped: the hub finds it on the
+    network every five minutes, the panel created the row it did not have, and a report
+    carries neither the jobs nor the name. So a press made by mistake read as the panel
+    losing a setting rather than as the removal being undone."""
     client = client_for()
     household = household_of(client)
     report(client, household, printer())
@@ -250,10 +250,29 @@ def test_something_removed_by_mistake_comes_back_on_the_next_report() -> None:
 
     report(client, household, printer())
 
+    assert listed(client) == []
+    # And the house is not told about it either, so nothing keeps printing to it.
+    answer = report(client, household, printer())
+    assert answer["things"] == []
+
+
+def test_what_was_removed_can_be_put_back_with_its_job_and_its_name() -> None:
+    """The reason for marking rather than destroying: the two fields nothing else can
+    reconstruct survive the mistake."""
+    client = client_for()
+    household = household_of(client)
+    report(client, household, printer())
+    assign(client, PRINTER, jobs=["print"], name="la stampante di sotto")
+    client.post(f"/api/devices/{PRINTER}/remove", headers=headers())
+
+    forgotten = client.get("/api/devices", headers=headers()).json()["forgotten"]
+    assert [row["id"] for row in forgotten] == [PRINTER]
+
+    assert client.post(f"/api/devices/{PRINTER}/recall", headers=headers()).status_code == 200
+
     row = by_id(client, PRINTER)
-    assert row["id"] == PRINTER
-    assert row["jobs"] == []
-    assert row["name"] == ""
+    assert row["jobs"] == ["print"]
+    assert row["name"] == "la stampante di sotto"
 
 
 def test_the_hub_is_told_the_whole_list_when_it_reports() -> None:

@@ -228,6 +228,9 @@ export interface Device {
 
 export interface Inventory {
   devices: Device[];
+  /** Taken off the list by the parent. Kept apart: the only thing to do with one is put
+   *  it back, with the job and the name it had. */
+  forgotten: Device[];
   nameLimit: number;
 }
 
@@ -337,6 +340,8 @@ export interface Api {
   devices(): Promise<Inventory>;
   assignDevice(id: string, assignment: NewAssignment): Promise<Device>;
   removeDevice(id: string): Promise<void>;
+  recallDevice(id: string): Promise<void>;
+  identifyDevice(id: string): Promise<void>;
   usage(): Promise<UsageAnswer>;
   setLimit(calls: number): Promise<UsageAnswer>;
   askAgain(pictureId: string): Promise<HouseRequest>;

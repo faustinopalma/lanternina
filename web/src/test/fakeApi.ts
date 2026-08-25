@@ -37,6 +37,7 @@ export interface Recorded {
   remindersRemoved: string[];
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
+  identified: string[];
   askedAgain: string[];
   limitSetTo: number[];
   begunNow: number;
@@ -288,6 +289,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     remindersRemoved: [],
     assignments: [],
     devicesRemoved: [],
+    identified: [],
     askedAgain: [],
     limitSetTo: [],
     begunNow: 0,
@@ -299,6 +301,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     { id: "theme-2", label: "vele in porto" },
   ];
   let devices: Device[] = SAMPLE_DEVICES;
+  let forgotten: Device[] = [];
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
   let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
@@ -440,7 +443,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       guidelines = { ...guidelines, lines };
       return guidelines;
     },
-    devices: async () => ({ devices, nameLimit: 40 }),
+    devices: async () => ({ devices, forgotten, nameLimit: 40 }),
     assignDevice: async (id, assignment) => {
       recorded.assignments.push({ id, assignment });
       const updated = devices.map((device) =>
@@ -451,7 +454,19 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
     removeDevice: async (id) => {
       recorded.devicesRemoved.push(id);
+      // Set aside rather than destroyed, as the panel does: what was removed keeps its
+      // job and its name so putting it back can give them.
+      const gone = devices.find((device) => device.id === id);
+      if (gone !== undefined) forgotten = [...forgotten, gone];
       devices = devices.filter((device) => device.id !== id);
+    },
+    recallDevice: async (id) => {
+      const back = forgotten.find((device) => device.id === id);
+      if (back !== undefined) devices = [...devices, back];
+      forgotten = forgotten.filter((device) => device.id !== id);
+    },
+    identifyDevice: async (id) => {
+      recorded.identified.push(id);
     },
     usage: async (): Promise<UsageAnswer> => ({
       usage: {

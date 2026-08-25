@@ -431,6 +431,16 @@ def picture_for(shared: Path, friendly_id: str) -> Path:
     return shared.with_name(f"{shared.stem}-{friendly_id}-picture{shared.suffix}")
 
 
+def identify_for(shared: Path, friendly_id: str) -> Path:
+    """Set while this display is saying which one it is.
+
+    Per display rather than per house, because the question is about one box. It ends the
+    only way it can end honestly: somebody presses the button on the box the card names,
+    which is the whole of what proves the right one was found.
+    """
+    return shared.with_name(f"{shared.stem}-{friendly_id}-identify")
+
+
 def sheet_layer_until(shared: Path) -> Path:
     """When the sheet layer stops being served, if anything has said so.
 
@@ -479,6 +489,12 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         )
         if farewell is not None:
             return farewell
+        # Asked for by name, so it comes before every job: the parent is standing at the
+        # wall trying to tell two identical boxes apart.
+        if identify_for(config.screen_file, device.friendly_id).exists():
+            card = _id_screen(device)
+            if card is not None:
+                return card
         unassigned = _unassigned_screen(device)
         if unassigned is not None:
             return unassigned
@@ -592,6 +608,13 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
     def showing_reminder(device: Device) -> bool:
         return _valid_or_none(reminder_for(config.screen_file, device.friendly_id)) is not None
 
+    def saying_which_one(device: Device) -> bool:
+        return identify_for(config.screen_file, device.friendly_id).exists()
+
+    def stop_saying_which_one(device: Device) -> None:
+        """The press that answers "this one". Nothing is written down about it."""
+        identify_for(config.screen_file, device.friendly_id).unlink(missing_ok=True)
+
     def dismiss_reminder(device: Device) -> None:
         """Take the reminder off this display. Nothing else, and nothing written down.
 
@@ -702,7 +725,14 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
 
             now = time.time()
             if pressed_button(self.headers):
-                if showing_reminder(device):
+                if saying_which_one(device):
+                    # The press the identify card asked for. It answers "this is the one"
+                    # and nothing else: no scan, and nothing written down.
+                    try:
+                        stop_saying_which_one(device)
+                    except OSError as exc:
+                        self.log_message("could not take the id card down: %s", exc)
+                elif showing_reminder(device):
                     # The same button, a different sentence. A press while a reminder is
                     # up means "seen": the reminder goes and what was underneath comes
                     # back in this same response. No scan is started — the scanner takes

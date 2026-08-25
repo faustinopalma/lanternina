@@ -188,7 +188,7 @@ export function httpApi(token: string): Api {
     saveGuidelines: (lines: string[]) =>
       json<Guidelines>("/api/guidelines", write({ lines }), GUIDELINES_FIELDS),
 
-    devices: () => json<Inventory>("/api/devices", {}, ["devices", "nameLimit"]),
+    devices: () => json<Inventory>("/api/devices", {}, ["devices", "forgotten", "nameLimit"]),
 
     // The whole effect of a choice: a row changes. Nothing is printed, nothing is
     // scanned, and the house finds out when it next reports.
@@ -197,6 +197,14 @@ export function httpApi(token: string): Api {
 
     async removeDevice(id: string): Promise<void> {
       await json(`/api/devices/${encodeURIComponent(id)}/remove`, { method: "POST" });
+    },
+
+    async recallDevice(id: string): Promise<void> {
+      await json(`/api/devices/${encodeURIComponent(id)}/recall`, { method: "POST" });
+    },
+
+    async identifyDevice(id: string): Promise<void> {
+      await json(`/api/devices/${encodeURIComponent(id)}/identify`, { method: "POST" });
     },
 
     usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "limit", "reached"]),

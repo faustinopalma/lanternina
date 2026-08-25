@@ -343,6 +343,42 @@ describe("the devices", () => {
       .map((box) => box.closest("label")?.textContent);
     expect(choices).toEqual(["stampa i fogli"]);
   });
+
+  it("takes a thing off the list and offers it back with what it had", async () => {
+    // Before 25 August 2026 the hub's next report put it straight back, stripped of its
+    // job and its name, so a press made by mistake read as the panel losing a setting.
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Dispositivi");
+    const removals = await screen.findAllByRole("button", { name: "Togli" });
+    await user.click(removals[0]!);
+
+    await screen.findByRole("heading", { name: "Tolti dall'elenco" });
+    await user.click(screen.getByRole("button", { name: "Rimetti" }));
+
+    await waitFor(() =>
+      expect(screen.queryByRole("heading", { name: "Tolti dall'elenco" })).toBeNull(),
+    );
+  });
+
+  it("asks a display which one it is, and says what ends it", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Dispositivi");
+    const asking = await screen.findAllByRole("button", { name: "Qual è?" });
+    // Only the displays: a printer has no screen to say it on.
+    expect(asking).toHaveLength(2);
+
+    await user.click(asking[0]!);
+
+    await waitFor(() => expect(api.recorded.identified).toEqual(["94:A9:90:CF:7D:04"]));
+    // The press on the box is the only thing that ends it, and the panel says so.
+    await screen.findByText(/finché non premi il pulsante sul display stesso/);
+  });
 });
 
 describe("the themes", () => {

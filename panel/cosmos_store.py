@@ -780,6 +780,8 @@ class CosmosInventoryStore:
                 address=thing.address or known.address,
                 name_refused=thing.name_refused,
                 last_seen=max(thing.last_seen, known.last_seen),
+                # A report never un-forgets: what belongs on the list is the parent's say.
+                forgotten_at=known.forgotten_at,
             )
         )
         if known is None:
@@ -815,15 +817,18 @@ class CosmosInventoryStore:
         return sorted((_to_thing(row) for row in rows), key=order_of)
 
     def forget(self, household_id: str, thing_id: str) -> None:
-        from azure.cosmos import exceptions
+        """Marked, not deleted: the hub reports it again within minutes and a deleted row
+        came back stripped of its job and its name."""
+        rows = {row.id: row for row in self.list(household_id)}
+        current = rows.get(thing_id)
+        if current is not None:
+            self._container.upsert_item(_from_thing(replace(current, forgotten_at=time.time())))
 
-        try:
-            self._container.delete_item(
-                item=_thing_document_id(thing_id), partition_key=household_id
-            )
-        except exceptions.CosmosResourceNotFoundError:
-            # Removing something already gone is what the parent asked for.
-            pass
+    def recall(self, household_id: str, thing_id: str) -> Thing:
+        rows = {row.id: row for row in self.list(household_id)}
+        current = replace(rows[thing_id], forgotten_at=0.0)
+        self._container.upsert_item(_from_thing(current))
+        return current
 
 
 def _thing_document_id(thing_id: str) -> str:
@@ -854,6 +859,7 @@ def _from_thing(thing: Thing) -> dict[str, Any]:
         "nameRefused": thing.name_refused,
         "lastSeen": thing.last_seen,
         "firstSeen": thing.first_seen,
+        "forgottenAt": thing.forgotten_at,
     }
 
 
@@ -872,6 +878,7 @@ def _to_thing(document: dict[str, Any]) -> Thing:
         name_refused=bool(document.get("nameRefused", False)),
         last_seen=float(document.get("lastSeen") or 0.0),
         first_seen=float(document.get("firstSeen") or 0.0),
+        forgotten_at=float(document.get("forgottenAt") or 0.0),
     )
 
 
