@@ -504,6 +504,14 @@ doubting most is the ten pages a day — it is a habit, not a constant.
 table above, and the cap is moved again if the real month disagrees by more than the
 headroom.
 
+**The cap left the usage page, 25 August 2026.** It read as a budget a parent had been
+given, which it is not: it is a fuse against a runaway loop. `/api/usage` still returns
+`cap` and the routes still refuse above it; only the two rows on the page are gone
+(`usage.cap`, `usage.noCap`, both catalogues, and the row in `web/src/sections/Usage.tsx`).
+A ceiling a parent sets, with a figure they choose and a warning before it is met, is a
+feature nobody has designed yet — when it arrives it needs a name of its own, because
+reusing this one would put a fuse and a budget behind the same word.
+
 
 **Distributed, 20 August 2026.** Image `lanternina/panel:9052cf9` on revision `--0000040`,
 shown to be the one answering rather than assumed: the served `/openapi.json` describes

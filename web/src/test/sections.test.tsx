@@ -1,6 +1,6 @@
 /* The gallery, the rhythm and the devices — the three sections whose behaviour is not
  * obvious from their markup. */
-import { screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -111,7 +111,7 @@ describe("the gallery", () => {
     saved.mockRestore();
   });
 
-  it("packs the whole gallery into one file, walking every page", async () => {
+  it("packs into one file every picture from the chosen day on, walking every page", async () => {
     const api = fakeApi();
     const listed = vi.spyOn(api, "pictures");
     const bytes = vi.spyOn(api, "pictureContent");
@@ -122,7 +122,11 @@ describe("the gallery", () => {
     renderPanel(api);
 
     await open(user, "Quadri");
-    await user.click(await screen.findByRole("button", { name: "Scarica tutti" }));
+    // Written rather than left at the default, so the test does not depend on today.
+    fireEvent.change(await screen.findByLabelText("Dal giorno"), {
+      target: { value: "2000-01-01" },
+    });
+    await user.click(screen.getByRole("button", { name: "Scarica" }));
 
     await waitFor(() => expect(saved).toHaveBeenCalled());
     // Every page, not only the one the parent is standing on, and at the largest step the
@@ -130,6 +134,29 @@ describe("the gallery", () => {
     expect(listed.mock.calls).toContainEqual([1, 50]);
     expect(listed.mock.calls).toContainEqual([2, 50]);
     expect(bytes.mock.calls.length).toBeGreaterThanOrEqual(12);
+    saved.mockRestore();
+  });
+
+  it("stops at the chosen day instead of reading the rest of the archive", async () => {
+    const api = fakeApi();
+    const listed = vi.spyOn(api, "pictures");
+    const saved = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Quadri");
+    // Later than every picture in the archive, so the walk ends on the first one it reads.
+    fireEvent.change(await screen.findByLabelText("Dal giorno"), {
+      target: { value: "2099-01-01" },
+    });
+    await user.click(screen.getByRole("button", { name: "Scarica" }));
+
+    await screen.findByText("Nessun quadro da quel giorno in poi.");
+    // The first page was read and no other: the listing comes newest first.
+    expect(listed.mock.calls.filter(([page]) => page === 2)).toHaveLength(0);
+    expect(saved).not.toHaveBeenCalled();
     saved.mockRestore();
   });
 

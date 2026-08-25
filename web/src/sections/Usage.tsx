@@ -20,7 +20,7 @@ export function Usage() {
   if (state.status === "loading") return <Quiet>{t("usage.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("usage.unreadable")}</Quiet>;
 
-  const { usage, cap } = state.data;
+  const { usage } = state.data;
   const kinds = [
     { kind: "image", title: t("usage.kind.image") },
     { kind: "text", title: t("usage.kind.text") },
@@ -49,11 +49,12 @@ export function Usage() {
       })}
       <section className="mt-5">
         <Heading>{t("usage.total")}</Heading>
+        {/* The monthly call cap is not shown. It is a fuse against a runaway loop, not a
+            budget a parent sets, and on this page it read as the second. */}
         <Facts
           rows={[
             { label: t("usage.calls"), value: usage.total.calls },
             { label: t("usage.billed"), value: usage.total.billedCalls },
-            { label: t("usage.cap"), value: cap > 0 ? cap : t("usage.noCap") },
           ]}
         />
       </section>

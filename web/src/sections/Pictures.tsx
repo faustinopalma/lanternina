@@ -14,7 +14,7 @@ import { useApi } from "@/api/client";
 import type { Picture } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
-import { Label, Select } from "@/components/ui/field";
+import { Input, Label, Select } from "@/components/ui/field";
 import { useWords } from "@/i18n";
 import { readStored, writeStored } from "@/lib/stored";
 import { useLoad } from "@/lib/useLoad";
@@ -49,6 +49,31 @@ function save(blob: Blob, name: string) {
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
+
+/* A day as the date field writes it, in the parent's own zone rather than in UTC. */
+function asDay(when: Date): string {
+  const two = (value: number) => String(value).padStart(2, "0");
+  return `${when.getFullYear()}-${two(when.getMonth() + 1)}-${two(when.getDate())}`;
+}
+
+function aWeekAgo(): string {
+  const when = new Date();
+  when.setDate(when.getDate() - 7);
+  return asDay(when);
+}
+
+/* Midnight of that day where the parent is, in seconds. An unreadable field reaches back
+ * to the beginning rather than forward, so a slip gathers too much and never too little. */
+function dayStart(day: string): number {
+  const at = new Date(`${day}T00:00:00`);
+  return Number.isNaN(at.getTime()) ? 0 : at.getTime() / 1000;
+}
+
+type Gathering =
+  | { at: "idle" }
+  | { at: "walking"; done: number }
+  | { at: "empty" }
+  | { at: "failed" };
 
 function Tile({
   picture,
@@ -257,34 +282,48 @@ export function Pictures() {
   const standing =
     request.status === "ready" && request.data !== null ? request.data.subject : null;
   const [open, setOpen] = useState<{ picture: Picture; bytes: Blob } | null>(null);
-  // null while nothing is being gathered; a count while it is; -1 once it went wrong.
-  const [gathered, setGathered] = useState<number | null>(null);
+  const [since, setSince] = useState(() => aWeekAgo());
+  const [gathering, setGathering] = useState<Gathering>({ at: "idle" });
 
-  const downloadAll = async (step: number) => {
-    setGathered(0);
+  const downloadSince = async (step: number) => {
+    const from = dayStart(since);
+    setGathering({ at: "walking", done: 0 });
     const files: Record<string, Uint8Array> = {};
     try {
-      // The listing is paged, so the whole gallery is walked a page at a time rather than
-      // asked for at once. Bytes are fetched one by one: this runs in the background of a
-      // parent's evening, and a burst of parallel requests would buy nothing.
-      for (let wanted = 1; ; wanted += 1) {
+      // The listing is paged and comes newest first, so the walk stops at the first
+      // picture older than the chosen day rather than reading the rest of the archive.
+      // Bytes are fetched one at a time: this runs in the background of a parent's
+      // evening, and a burst of parallel requests would buy nothing.
+      let reached = false;
+      for (let wanted = 1; !reached; wanted += 1) {
         const shown = await api.pictures(wanted, step);
         for (const picture of shown.pictures) {
+          if (picture.createdAt < from) {
+            reached = true;
+            break;
+          }
           const blob = await api.pictureContent(picture.id);
           files[fileName(picture)] = new Uint8Array(await blob.arrayBuffer());
-          setGathered(Object.keys(files).length);
+          setGathering({ at: "walking", done: Object.keys(files).length });
         }
-        if (shown.page >= shown.pages) break;
+        if (shown.page >= shown.pages) reached = true;
+      }
+      if (Object.keys(files).length === 0) {
+        setGathering({ at: "empty" });
+        return;
       }
       const packed = await new Promise<Uint8Array>((resolve, reject) => {
         // Level 0: a bitmap of two levels is already small, and packing costs more than
         // it saves on a phone.
         zip(files, { level: 0 }, (error, data) => (error ? reject(error) : resolve(data)));
       });
-      save(new Blob([packed as BlobPart], { type: "application/zip" }), "quadri.zip");
-      setGathered(null);
+      save(
+        new Blob([packed as BlobPart], { type: "application/zip" }),
+        t("pictures.zipName", { since }),
+      );
+      setGathering({ at: "idle" });
     } catch {
-      setGathered(-1);
+      setGathering({ at: "failed" });
     }
   };
 
@@ -325,16 +364,26 @@ export function Pictures() {
             total: answer.total,
           })}
         </span>
-        <span className="ml-auto flex gap-2">
+        <span className="ml-auto flex items-center gap-2">
+          <Label htmlFor="pictures-since">{t("pictures.since")}</Label>
+          <Input
+            id="pictures-since"
+            type="date"
+            value={since}
+            max={asDay(new Date())}
+            onChange={(event) => setSince(event.target.value)}
+          />
           <Button
             size="small"
-            disabled={answer.total === 0 || gathered !== null}
+            disabled={answer.total === 0 || gathering.at === "walking" || since === ""}
             /* The largest page the archive offers: a size it does not know falls back to
                the default, which would walk the gallery in more steps than needed. */
-            onClick={() => void downloadAll(Math.max(...answer.pageSizes))}
+            onClick={() => void downloadSince(Math.max(...answer.pageSizes))}
           >
-            {t("pictures.downloadAll")}
+            {t("pictures.downloadSince")}
           </Button>
+        </span>
+        <span className="flex gap-2">
           <Button
             size="small"
             disabled={answer.page <= 1}
@@ -350,16 +399,15 @@ export function Pictures() {
             {t("pictures.next")}
           </Button>
         </span>
-        {gathered !== null ? (
+        {gathering.at === "idle" ? null : (
           <span className="w-full text-quiet" aria-live="polite">
-            {gathered < 0
-              ? t("pictures.downloadAll.failed")
-              : t("pictures.downloadAll.gathering", {
-                  done: gathered,
-                  total: answer.total,
-                })}
+            {gathering.at === "failed" ? t("pictures.downloadSince.failed") : null}
+            {gathering.at === "empty" ? t("pictures.downloadSince.none") : null}
+            {gathering.at === "walking"
+              ? t("pictures.downloadSince.gathering", { done: gathering.done })
+              : null}
           </span>
-        ) : null}
+        )}
       </div>
 
       {answer.pictures.length === 0 ? (
