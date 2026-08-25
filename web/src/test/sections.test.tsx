@@ -125,9 +125,10 @@ describe("the gallery", () => {
     await user.click(await screen.findByRole("button", { name: "Scarica tutti" }));
 
     await waitFor(() => expect(saved).toHaveBeenCalled());
-    // Every page, not only the one the parent is standing on.
-    expect(listed.mock.calls).toContainEqual([1, 100]);
-    expect(listed.mock.calls).toContainEqual([2, 100]);
+    // Every page, not only the one the parent is standing on, and at the largest step the
+    // archive offers rather than a number it would quietly refuse.
+    expect(listed.mock.calls).toContainEqual([1, 50]);
+    expect(listed.mock.calls).toContainEqual([2, 50]);
     expect(bytes.mock.calls.length).toBeGreaterThanOrEqual(12);
     saved.mockRestore();
   });

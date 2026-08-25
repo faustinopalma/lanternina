@@ -260,7 +260,7 @@ export function Pictures() {
   // null while nothing is being gathered; a count while it is; -1 once it went wrong.
   const [gathered, setGathered] = useState<number | null>(null);
 
-  const downloadAll = async () => {
+  const downloadAll = async (step: number) => {
     setGathered(0);
     const files: Record<string, Uint8Array> = {};
     try {
@@ -268,13 +268,13 @@ export function Pictures() {
       // asked for at once. Bytes are fetched one by one: this runs in the background of a
       // parent's evening, and a burst of parallel requests would buy nothing.
       for (let wanted = 1; ; wanted += 1) {
-        const step = await api.pictures(wanted, 100);
-        for (const picture of step.pictures) {
+        const shown = await api.pictures(wanted, step);
+        for (const picture of shown.pictures) {
           const blob = await api.pictureContent(picture.id);
           files[fileName(picture)] = new Uint8Array(await blob.arrayBuffer());
           setGathered(Object.keys(files).length);
         }
-        if (step.page >= step.pages) break;
+        if (shown.page >= shown.pages) break;
       }
       const packed = await new Promise<Uint8Array>((resolve, reject) => {
         // Level 0: a bitmap of two levels is already small, and packing costs more than
@@ -329,7 +329,9 @@ export function Pictures() {
           <Button
             size="small"
             disabled={answer.total === 0 || gathered !== null}
-            onClick={() => void downloadAll()}
+            /* The largest page the archive offers: a size it does not know falls back to
+               the default, which would walk the gallery in more steps than needed. */
+            onClick={() => void downloadAll(Math.max(...answer.pageSizes))}
           >
             {t("pictures.downloadAll")}
           </Button>
