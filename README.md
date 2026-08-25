@@ -13,25 +13,28 @@ work once it exists. The person is invented, and so is the name.
 
 Masha comes back from a walk with a rock in her pocket. She photographs it with the camera
 she carries — one button, no screen — and puts the rock and the camera down on the table.
+The e-paper display in her room, blank since the morning, changes within a few seconds:
+something is being made about the rock.
 
-Twenty minutes later the printer produces a museum label. It carries a catalogue number, a
-provenance line reading *collected on the riverbank, 18 August*, and three sentences of
-curator's prose about a quartz vein. It is not a template with words dropped into it: an
-image model drew the whole thing at once, ruled line and all, with one question in bold at
-the bottom.
+Eight minutes later the printer produces a museum label. There is a catalogue number, her
+rock rendered as an engraving, and a paragraph of curator's prose about a quartz vein
+collected on the riverbank at Cesano. Beneath it, two lines of provenance: *collected 1911
+by the Boldrini expedition*, and *donated 1908 by the collector's widow*. At the bottom, in
+a different hand: **One thing on this label cannot be true. Circle it, and write what the
+label should say.**
 
-She writes two things on the line and puts the sheet on the scanner glass. The system
-compares the blank it printed against what came back, reads her handwriting, and prints the
-floor plan of a museum that does not exist — with a mineral room in it, and her two answers
-in the mineral room.
+She reads it twice, circles a date, and puts the sheet on the scanner.
 
-The e-paper display in her room has been showing one line this whole time. It changes when
-the second page comes out. Thirty minutes before the hour her mother agreed to that morning,
-the afternoon finds its way out: it reaches the same last page it would have reached from
-any other point, and nothing says it was shortened.
+The next page is a correction slip, on the museum's own stationery. It thanks "M. —
+external reviewer" for catching the error and revises the provenance to what she wrote.
+Then it adds something she did not ask for: the widow's donation of 1908 included four
+other specimens, and the catalogue entry for one of them is missing. Would she like to see
+the other three?
 
-Nobody made any of that. It cost about two minutes of compute and a few cents, and it will
-never be produced again.
+Thirty minutes before the seven o'clock her mother agreed to that morning, the afternoon
+begins finding its way out. The last page is the label as it should have been, printed
+properly, with her correction in it and her rock's real weight on it. It goes on the shelf
+next to the rock.
 
 ## The same afternoon, on everything else in the house
 
@@ -46,7 +49,9 @@ Paper is one channel of five, and the only one that leaves something behind.
   keyboard, no login, nothing to dismiss. The morning sequence is exactly this — one step at
   a time on the display, a button press to confirm each one.
 - **The handheld camera.** The one channel running the other way: a photograph goes from the
-  room into the system, instead of the system putting something into the room.
+  room into the system, instead of the system putting something into the room. A press is
+  acknowledged on the e-paper display within seconds; what gets built out of the photograph
+  arrives minutes later.
 
 Which channel a moment lands on is a decision the format has to survive. Every moment of an
 afternoon exists in three lengths and carries a four-rung ladder of help, and that is not
@@ -69,7 +74,7 @@ produce.
 Generation changes that price, and the precise form of the change is what matters. Not that
 a model can write an exercise; that has been true for a while. That a whole afternoon — its
 objects, its vocabulary, its ending, and a form for each surface — costs ninety seconds and
-is cheap enough to throw away.
+a few cents, and is cheap enough to throw away.
 
 Lanternina is what you build once that is true.
 
@@ -78,9 +83,15 @@ Lanternina is what you build once that is true.
 Not a worksheet with a story on top. A model writes it as a whole document: four or five
 moments, each in three lengths so the plan can be shortened without being cut, a four-rung
 ladder of help that arrives whether or not anybody asked, and from every single point a
-written way out that reaches the same ending. That document is checked against six properties
-before a parent ever sees it, and a parent approves it once. Nothing in the cloud can start
-it, extend it or redirect it: the house asks, and the answer arrives inside the reply.
+written way out that reaches the same ending. Six properties are checked before a parent
+ever sees it, and a parent approves it once. Nothing in the cloud can start it, extend it or
+redirect it: the house asks, and the answer arrives inside the reply.
+
+There is a seventh property, and it is the only one that is not about safety or shape: every
+moment has an answer that can be wrong, and the last moment produces something worth
+keeping. It is written down because the other six cannot tell a good afternoon from a
+harmless one. A plan can pass all of them and still be a worksheet: nothing at stake in any
+moment, and nothing on the table at the end.
 
 Then it happens. The house prints a page — a map, a dossier, a museum label, a leaf from a
 field notebook, drawn whole by an image model from words that have already passed the safety
@@ -156,9 +167,14 @@ screen for it.
 ## The camera that gets carried around
 
 A handheld device: an ESP32 with a camera, a battery, one button and no screen. A press
-wakes it and sends one photograph to the house. Later, the system proposes something made
-out of it — a label, a map, a page. It is the only channel that runs from the room into the
-system, and it is the only one that puts the initiative with the person the afternoon is for.
+wakes it and sends one photograph to the house, and is acknowledged on the e-paper display
+within seconds. What is built out of the photograph — a label, a map, a page — is proposed
+minutes later. The acknowledgment is not a courtesy: an answer that arrives minutes after a
+button press is not felt as an answer to it, so without the display changing straight away
+the channel does not work at all.
+
+It is the only channel that runs from the room into the system, and the only one where the
+initiative sits with the person the afternoon is for.
 
 Faces will be in frame. Friends, rooms, whatever is behind the rock. Nothing about the
 framing prevents that, and pretending otherwise would be the kind of claim that quietly stops
@@ -301,7 +317,11 @@ Not built, and not enforced:
 
 - **The handheld camera.** Nothing here takes a photograph. `vision/` is an empty package.
   Every guarantee stated about the camera above is a design decision, and no test would
-  notice if one were dropped.
+  notice if one were dropped. The acknowledgment on the display within seconds of a press is
+  part of the channel and is not built either.
+- **The seventh property.** That every moment has an answer that can be wrong, and that the
+  last moment produces something worth keeping, is specified but not checked. The six checks
+  in `shared/experience_checks.py` do not test for it, and a plan that fails it is saved.
 - **The plain-language memory view.** The panel shows what it shows today; there is no
   screen that renders the whole household memory as sentences. Until there is, the
   enforcement that replaces locality does not exist.
