@@ -1,17 +1,10 @@
 # Threat model
 
-This model puts one asset first: protecting the adolescent from the system built for
-them. Protecting the family's data from the outside comes second. The ordering is
-deliberate — the likeliest harm here is not a break-in, it is the software drifting into
-doing something nobody decided it should do.
+This model puts one asset first: protecting the adolescent from the system built for them. Protecting the family's data from the outside comes second. The ordering is deliberate — the likeliest harm here is not a break-in, it is the software drifting into doing something nobody decided it should do.
 
-Scope: the mini-PC, the ESP32 devices, the camera, the printed sheets, the parent panel,
-and the Azure services the router calls.
+Scope: the mini-PC, the ESP32 devices, the camera, the printed sheets, the parent panel, and the Azure services the router calls.
 
-Personal material may be processed in the cloud tier and not only in the house. The tier
-runs in the EU and is held to the confidentiality a bank owes the records it keeps — a
-standard this model assumes of it, not one it verifies. What follows is therefore about who
-can reach the data, not about which side of the boundary it sits on.
+Personal material may be processed in the cloud tier and not only in the house. The tier runs in the EU and is held to the confidentiality a bank owes the records it keeps — a standard this model assumes of it, not one it verifies. What follows is therefore about who can reach the data, not about which side of the boundary it sits on.
 
 ---
 
@@ -43,13 +36,11 @@ can reach the data, not about which side of the boundary it sits on.
 | An error message blames the reader | A stack trace on a display they can see | Errors surface on the parent panel; the adolescent's surfaces stay calm and non-blaming |
 | A misread is reported as fact | Low-confidence vision output taken as an answer | `needs_review` instead of guessing; degraded reads are flagged, never silently skipped |
 
-**Residual risk:** none of this stops a *deliberate* change. It is designed so that harm
-requires a decision, not an oversight.
+**Residual risk:** none of this stops a *deliberate* change. It is designed so that harm requires a decision, not an oversight.
 
 ## T2 — Prompt injection through a worksheet
 
-A worksheet is paper. Anyone who can write on paper — the adolescent, a classmate, a
-sibling — can put text in front of a vision model.
+A worksheet is paper. Anyone who can write on paper — the adolescent, a classmate, a sibling — can put text in front of a vision model.
 
 | Vector | Mitigation |
 | --- | --- |
@@ -58,14 +49,11 @@ sibling — can put text in front of a vision model.
 | A QR code held up to the glass | Nothing is printed on a page that is there for a machine, so there is no QR the reader is looking for; where one is still decoded, the `LNT1\|version\|sheet\|exercise` grammar is parsed strictly and unknown ids are rejected |
 | A sheet crafted to trigger a "safety" alert | Escalation covers system faults and blocked content, not conclusions about a person |
 
-**Residual risk:** a sufficiently clever injection could still influence generated content.
-The parent approval gate is the backstop — nothing generated is delivered unreviewed.
+**Residual risk:** a sufficiently clever injection could still influence generated content. The parent approval gate is the backstop — nothing generated is delivered unreviewed.
 
 ## T3 — The camera photographs a person
 
-It will. It is handheld and carried around, so friends, rooms and faces end up in frame.
-The threat is not that a person appears in a photograph; it is that something is inferred
-from them, or that a capture happens without the person holding the device choosing it.
+It will. It is handheld and carried around, so friends, rooms and faces end up in frame. The threat is not that a person appears in a photograph; it is that something is inferred from them, or that a capture happens without the person holding the device choosing it.
 
 | Vector | Mitigation |
 | --- | --- |
@@ -76,9 +64,7 @@ from them, or that a capture happens without the person holding the device choos
 | Face, age, identity or affect analysis | Forbidden including as an intermediate step |
 | A photograph nobody meant to keep | What is kept lands in a gallery its owner can see and delete from; Content Safety runs on inbound photographs as well as generated output |
 
-**Residual risk:** none of the above is enforced by a test, because `vision/` is empty and
-there is nothing yet to enforce it against. Until the intake exists, every row here is a
-design decision. The README says so in Status.
+**Residual risk:** none of the above is enforced by a test, because `vision/` is empty and there is nothing yet to enforce it against. Until the intake exists, every row here is a design decision. The README says so in Status.
 
 ## T4 — Key and credential compromise
 
@@ -90,8 +76,7 @@ design decision. The README says so in Status.
 | Wi-Fi PSK in firmware | `wifi_secrets.h` is gitignored; a template is committed |
 | Stale tokens left in the tree | The previous project left an MSAL cache in the workspace; removed, and `.azure/` is now ignored |
 
-**Rotation:** rotating a sealing key invalidates every existing approval. That is correct —
-the parent re-approves rather than inheriting state nobody can verify.
+**Rotation:** rotating a sealing key invalidates every existing approval. That is correct — the parent re-approves rather than inheriting state nobody can verify.
 
 ## T5 — Local network and devices
 
@@ -104,8 +89,7 @@ The mini-PC and the ESP32s share a home LAN with phones, TVs and guests.
 | A device spoofing a button press | Same channel; the mitigation is the same |
 | Physical access to the mini-PC | Out of scope. Disk encryption is the answer and it is the household's choice |
 
-This is the weakest area today, and the weakness matters: the device transport delivers
-text to a screen an adolescent reads.
+This is the weakest area today, and the weakness matters: the device transport delivers text to a screen an adolescent reads.
 
 ## T6 — Availability
 
@@ -121,18 +105,13 @@ Not a security threat, but a harm.
 
 ## Explicitly out of scope
 
-- A determined fork author removing the guarantees. The seals make removal deliberate, not
-  impossible, and that is the intended bar.
+- A determined fork author removing the guarantees. The seals make removal deliberate, not impossible, and that is the intended bar.
 - A compromised Azure tenant.
-- Malicious use by the parent. The system is theirs; the design assumes they act in the
-  adolescent's interest.
+- Malicious use by the parent. The system is theirs; the design assumes they act in the adolescent's interest.
 - Attacks requiring physical access to the devices.
 
 ## Open questions blocking parts of this model
 
-1. What counts as a "safety signal" that escalates to the guardian? If it includes
-   conclusions about the person drawn from their work, that contradicts T1 and needs a
-   separate decision.
-2. Does the device transport get authentication before the demo, or is the LAN treated as
-   trusted?
+1. What counts as a "safety signal" that escalates to the guardian? If it includes conclusions about the person drawn from their work, that contradicts T1 and needs a separate decision.
+2. Does the device transport get authentication before the demo, or is the LAN treated as trusted?
 3. How long are scanned pages retained, and who can delete them?

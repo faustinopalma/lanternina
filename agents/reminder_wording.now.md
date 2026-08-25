@@ -1,11 +1,7 @@
 <!--
-What is asked for at the moment the reminder goes up, which is the path the display
-actually reads from. One, because it is wanted now and will not be wanted again: the next
-showing asks again and gets something else.
+What is asked for at the moment the reminder goes up, which is the path the display actually reads from. One, because it is wanted now and will not be wanted again: the next showing asks again and gets something else.
 
-The hour is offered rather than forbidden — a sentence that carries its own hour reads
-better than a heading above it, and `devices/show_reminders.py::says_the_hour` leaves the
-heading off when the words already say it.
+The hour is offered rather than forbidden — a sentence that carries its own hour reads better than a heading above it, and `devices/show_reminders.py::says_the_hour` leaves the heading off when the words already say it.
 -->
 A parent wrote this sentence about their household's routine, to be shown to their own adolescent on a small screen, now.
 Write one way of saying that same thing.

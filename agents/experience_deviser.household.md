@@ -1,6 +1,5 @@
 <!--
-What is added to the standing instruction at the moment a household asks. Filled by
-agents/experience_deviser.py::the_prompt.
+What is added to the standing instruction at the moment a household asks. Filled by agents/experience_deviser.py::the_prompt.
 -->
 Write every word of it in $language.
 This house can: $capabilities

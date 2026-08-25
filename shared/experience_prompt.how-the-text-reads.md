@@ -1,7 +1,5 @@
 <!--
-`ideas/09 §16`. Six properties, and they are the ones that get lost first: they describe
-how a sentence is built rather than what it is about, so a model that is concentrating on
-the story drops them without noticing.
+`ideas/09 §16`. Six properties, and they are the ones that get lost first: they describe how a sentence is built rather than what it is about, so a model that is concentrating on the story drops them without noticing.
 -->
 How every sentence you write has to read:
   One instruction at a time, saying what to do, with what, and where.

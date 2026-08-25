@@ -1,8 +1,5 @@
 <!--
-Placing what a parent typed in the day. This is a measurement, not generation: it comes
-back with an hour, and `panel/reminders.py::clean_reading` is what decides whether an hour
-is an hour. An honest question is asked for by name, because a guessed hour is worse than
-saying the sentence did not carry one.
+Placing what a parent typed in the day. This is a measurement, not generation: it comes back with an hour, and `panel/reminders.py::clean_reading` is what decides whether an hour is an hour. An honest question is asked for by name, because a guessed hour is worse than saying the sentence did not carry one.
 
 The parent's sentences are appended after the last line, one per line, each with its id.
 -->

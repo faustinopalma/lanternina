@@ -1,18 +1,10 @@
 # Ideas for Lanternina
 
-Project notes, not decisions. Every entry says four things: **what it is**, **why**,
-**how it would be done**, **what it costs**. If one of those is missing, the idea is not
-ready to be discussed yet.
+Project notes, not decisions. Every entry says four things: **what it is**, **why**, **how it would be done**, **what it costs**. If one of those is missing, the idea is not ready to be discussed yet.
 
-Entries written from 18 August 2026 carry two more lines, so that any one of them can be
-picked up on its own, in a session that starts from nothing: **where it starts**, the files
-involved, and **done when**, a check somebody else can run. Older entries do not have them
-yet, and gain them when they are next touched.
+Entries written from 18 August 2026 carry two more lines, so that any one of them can be picked up on its own, in a session that starts from nothing: **where it starts**, the files involved, and **done when**, a check somebody else can run. Older entries do not have them yet, and gain them when they are next touched.
 
-The order inside each file runs from most useful to least, by one criterion only: how much
-the thing helps the person who will use it — the adolescent or the parent — divided by how
-much work it asks for. It is not a ranking by elegance. Entries added later are appended and ranked
-among themselves; no file has been re-ranked as a whole since.
+The order inside each file runs from most useful to least, by one criterion only: how much the thing helps the person who will use it — the adolescent or the parent — divided by how much work it asks for. It is not a ranking by elegance. Entries added later are appended and ranked among themselves; no file has been re-ranked as a whole since.
 
 ## The files
 
@@ -30,31 +22,17 @@ among themselves; no file has been re-ranked as a whole since.
 
 ## Where to start
 
-The order inside each file answers "which of these is worth most for the work". This table
-answers a different question, and is ranked by a different rule: **what does the rest stand
-on, and what is currently dangerous**. A thing that unblocks four others comes before a
-thing that is merely useful, even when the useful one is cheaper.
+The order inside each file answers "which of these is worth most for the work". This table answers a different question, and is ranked by a different rule: **what does the rest stand on, and what is currently dangerous**. A thing that unblocks four others comes before a thing that is merely useful, even when the useful one is cheaper.
 
-The two are allowed to disagree. When they do, this table wins for choosing what to do next,
-and the file wins for judging whether the thing is worth doing at all.
+The two are allowed to disagree. When they do, this table wins for choosing what to do next, and the file wins for judging whether the thing is worth doing at all.
 
 ### Before the table: where this is going, decided 21 August 2026
 
-The paper loop is being replaced rather than extended. Not "here is a task, do it, I will
-look at it" but an experience devised fresh each time, run across an afternoon, landing
-partly on a display and partly on paper, followed through what comes back, and finished.
-[08-experience.md](08-experience.md) holds the design, what dies with it — the corner
-markers, the QR, the 50 mm ruler and the cell geometry — and the three decisions that have
-to be made before any of it is written.
+The paper loop is being replaced rather than extended. Not "here is a task, do it, I will look at it" but an experience devised fresh each time, run across an afternoon, landing partly on a display and partly on paper, followed through what comes back, and finished. [08-experience.md](08-experience.md) holds the design, what dies with it — the corner markers, the QR, the 50 mm ruler and the cell geometry — and the three decisions that have to be made before any of it is written.
 
-Most of the table below still stands, because it is about the house those experiences run
-in. The paper entries are the ones to read against 08 rather than on their own.
+Most of the table below still stands, because it is about the house those experiences run in. The paper entries are the ones to read against 08 rather than on their own.
 
-The first three steps were taken on 21 August 2026 and are written up in
-[08-experience.md §4](08-experience.md): the retired template and the ink arithmetic are in
-`attic/`, `shared/experience.py` is the contract, and
-`experiences/un-pomeriggio-di-nuvole.json` is one afternoon written by hand in it. Nothing
-runs yet.
+The first three steps were taken on 21 August 2026 and are written up in [08-experience.md §4](08-experience.md): the retired template and the ink arithmetic are in `attic/`, `shared/experience.py` is the contract, and `experiences/un-pomeriggio-di-nuvole.json` is one afternoon written by hand in it. Nothing runs yet.
 
 ### First: the two that are dangerous today
 | # | What | Where | Why here |
@@ -111,10 +89,7 @@ runs yet.
 
 ## Waiting for one pass in front of the panel
 
-Not blocked, not hard, and not code. Each of these is built, distributed and checked by
-tests, and none has been used by a person once. Doing them is the cheapest way to find out
-whether any of it is wrong, and it is the first thing worth doing on a day when the house is
-awake.
+Not blocked, not hard, and not code. Each of these is built, distributed and checked by tests, and none has been used by a person once. Doing them is the cheapest way to find out whether any of it is wrong, and it is the first thing worth doing on a day when the house is awake.
 
 | What | Where | The check, in order |
 | --- | --- | --- |
@@ -126,62 +101,32 @@ awake.
 
 Because an idea is judged against what exists, not against nothing:
 
-- The parent signs in to the panel, sees the proposals, approves or refuses. The decisions
-  live in Cosmos and survive a restart.
-- The panel is a React application built with Vite and published to the Static Web App by a
-  workflow. Its words are two JSON catalogs; the identity library comes from npm, so the
-  page loads scripts from its own origin and nothing else.
+- The parent signs in to the panel, sees the proposals, approves or refuses. The decisions live in Cosmos and survive a restart.
+- The panel is a React application built with Vite and published to the Static Web App by a workflow. Its words are two JSON catalogs; the identity library comes from npm, so the page loads scripts from its own origin and nothing else.
 - The parent writes the picture themes. The home server asks the panel for them.
 - The cloud paints when the house asks. The house holds no Azure credential.
 - Every picture shown ends up in a storage account and can be restored byte for byte.
-- Below 20% and below 10% charge the display shows two different images, generated in
-  advance, and sleeps for longer.
+- Below 20% and below 10% charge the display shows two different images, generated in advance, and sleeps for longer.
 - Generated text passes through Content Safety; so do the images, through image analysis.
 - The panel shows the state of each display: charge, signal, when it was last heard from.
-- A timer on the hub asks for a new picture once a minute, installs one when the spacing
-  the parent chose has passed, and asks for nothing inside the pause.
-- The pause and the spacing between pictures are chosen by the parent in the panel, in
-  minutes. The hub reads them on its next run and decides for itself; saving them starts
-  nothing.
-- Interests, things to avoid, difficulty, variety, words per line and the content language
-  are the parent's too, and travel the same way. The adolescent's name is not among them: it
-  stays on the hub, and the panel has no field for it.
-- Every model call is counted per household, with the tokens, the cache reads and the
-  provider's request id, apart by kind as well as together, and a monthly cap refuses calmly
-  once it is reached. Three kinds pay: a picture, a wording, and a reading — a page put on
-  the glass and the parent's sentences being placed in the day.
-- The parent can ask for a picture already seen to go back on the display. The panel writes
-  one row and cannot deliver it; the hub finds it when it next paints and serves it instead
-  of generating.
-- An approval can be taken back. The house stops being offered the item on its next
-  request, and the panel says plainly that a sheet already printed is beyond that.
-- A press on the display is answered in the request it caused: the screen says the sheet is
-  being read, and the reading comes back about twenty-six seconds later instead of at the
-  next ordinary poll.
+- A timer on the hub asks for a new picture once a minute, installs one when the spacing the parent chose has passed, and asks for nothing inside the pause.
+- The pause and the spacing between pictures are chosen by the parent in the panel, in minutes. The hub reads them on its next run and decides for itself; saving them starts nothing.
+- Interests, things to avoid, difficulty, variety, words per line and the content language are the parent's too, and travel the same way. The adolescent's name is not among them: it stays on the hub, and the panel has no field for it.
+- Every model call is counted per household, with the tokens, the cache reads and the provider's request id, apart by kind as well as together, and a monthly cap refuses calmly once it is reached. Three kinds pay: a picture, a wording, and a reading — a page put on the glass and the parent's sentences being placed in the day.
+- The parent can ask for a picture already seen to go back on the display. The panel writes one row and cannot deliver it; the hub finds it when it next paints and serves it instead of generating.
+- An approval can be taken back. The house stops being offered the item on its next request, and the panel says plainly that a sheet already printed is beyond that.
+- A press on the display is answered in the request it caused: the screen says the sheet is being read, and the reading comes back about twenty-six seconds later instead of at the next ordinary poll.
 
 ## What is not true, and is worth remembering
 
-- The battery percentage is **derived from volts**: the kit has no fuel gauge. It is an
-  estimate from a standard LiPo curve, not measured on this cell.
-- Picture approval is **per theme**, not per image: the pictures on the display have not
-  been seen by an adult first.
-- The name and the id live only on the hub, in the environment it reads at start. The
-  invented profile is left in `tools/generate_batch.py`, which generates without a panel.
-- The approval ledger in the cloud does not mint the delivery seal: that stays on the
-  device. Losing the database costs the memory of the decisions, not the safety.
-- The approval seal is minted and checked inside one process run, so `approval_key` can be
-  replaced with a fresh random value at no cost. The safety seal is the one that outlives a
-  process: `safety_key` is what already-screened content depends on.
-- The cap's figures are **computed, not measured**. `/api/usage` for the real household has
-  never been read: Cosmos is private-endpoint only and the route needs a parent token from
-  the CIAM tenant, which no command-line credential can mint. 04 §12 has the arithmetic and
-  says which row to doubt first.
-- Three things are **distributed but never exercised by a person**: putting a picture back,
-  taking an approval back, and the line saying how much is in reserve. Each one's check is
-  written out under "waiting for one pass in front of the panel" above.
+- The battery percentage is **derived from volts**: the kit has no fuel gauge. It is an estimate from a standard LiPo curve, not measured on this cell.
+- Picture approval is **per theme**, not per image: the pictures on the display have not been seen by an adult first.
+- The name and the id live only on the hub, in the environment it reads at start. The invented profile is left in `tools/generate_batch.py`, which generates without a panel.
+- The approval ledger in the cloud does not mint the delivery seal: that stays on the device. Losing the database costs the memory of the decisions, not the safety.
+- The approval seal is minted and checked inside one process run, so `approval_key` can be replaced with a fresh random value at no cost. The safety seal is the one that outlives a process: `safety_key` is what already-screened content depends on.
+- The cap's figures are **computed, not measured**. `/api/usage` for the real household has never been read: Cosmos is private-endpoint only and the route needs a parent token from the CIAM tenant, which no command-line credential can mint. 04 §12 has the arithmetic and says which row to doubt first.
+- Three things are **distributed but never exercised by a person**: putting a picture back, taking an approval back, and the line saying how much is in reserve. Each one's check is written out under "waiting for one pass in front of the panel" above.
 
 ## The timer
 
-`timer.json` records when the working session started and every time it resumed. It exists
-so that time can be reported as **measured** rather than estimated. It is not a stopwatch
-that runs by itself: it moves only when the session resumes.
+`timer.json` records when the working session started and every time it resumed. It exists so that time can be reported as **measured** rather than estimated. It is not a stopwatch that runs by itself: it moves only when the session resumes.

@@ -1,10 +1,7 @@
 <!--
-Reading a page against its blank. Two images go with this: the sheet as it was printed and
-the sheet as it came back, in that order, and the instruction names them in that order.
+Reading a page against its blank. Two images go with this: the sheet as it was printed and the sheet as it came back, in that order, and the instruction names them in that order.
 
-The last two sentences are the ones this whole file exists for. Vision output describes ink
-on paper — "cell 3 is empty" — and never what that means about the person. There is nothing
-here that can be got wrong, so there is nothing to be correct about.
+The last two sentences are the ones this whole file exists for. Vision output describes ink on paper — "cell 3 is empty" — and never what that means about the person. There is nothing here that can be got wrong, so there is nothing to be correct about.
 
 What the moment asked for is appended when there is one, marked "for context only".
 -->

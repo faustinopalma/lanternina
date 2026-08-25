@@ -1,11 +1,7 @@
 <!--
-Added 24 August 2026, from the parent: the afternoons have to be worth doing, and until
-then this prompt was almost entirely prohibitions. A model told only what it may not write
-writes the safest thing it can think of, which is a worksheet with a story on top.
+Added 24 August 2026, from the parent: the afternoons have to be worth doing, and until then this prompt was almost entirely prohibitions. A model told only what it may not write writes the safest thing it can think of, which is a worksheet with a story on top.
 
-What is asked for here is craft and not retention. The difference is not a nicety — this
-system may not be built to be hard to stop, and the last line says so, because "engaging"
-is the word under which that gets built by accident.
+What is asked for here is craft and not retention. The difference is not a nicety — this system may not be built to be hard to stop, and the last line says so, because "engaging" is the word under which that gets built by accident.
 -->
 What makes an afternoon worth doing, and this matters as much as the rules above:
   It begins in the middle of something. The first thing a display says puts a situation in front of somebody — something that is true right now, in this house — rather than announcing what they are about to do. Never open with what the afternoon is called or what it is for.

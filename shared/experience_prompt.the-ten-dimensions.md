@@ -1,7 +1,5 @@
 <!--
-`ideas/09 §10`. The dimensions are written down for one reason: variety drawn from a seed
-cannot be checked, and variety recorded as ten phrases can. The list of names comes from
-shared/experience.DIMENSIONS, so the shape and the prose cannot disagree.
+`ideas/09 §10`. The dimensions are written down for one reason: variety drawn from a seed cannot be checked, and variety recorded as ten phrases can. The list of names comes from shared/experience.DIMENSIONS, so the shape and the prose cannot disagree.
 -->
 Draw this afternoon along ten dimensions, and write down what you drew:
   "drawn": {$drawn_shape}

@@ -1,54 +1,26 @@
 # What gets printed
 
-**Read [08-experience.md](08-experience.md) first, from 21 August 2026.** The paper loop is
-being replaced rather than extended, and most of this file is about the loop that is going
-away: the corner markers, the QR, the 50 mm ruler and the cell geometry all exist to answer
-*is there a mark inside this rectangle*, and that question is going away with them. What
-survives out of §6 is the part that has nothing to do with geometry — a vocabulary with no
-way to fill an area, and an ink budget measured in square millimetres.
+**Read [08-experience.md](08-experience.md) first, from 21 August 2026.** The paper loop is being replaced rather than extended, and most of this file is about the loop that is going away: the corner markers, the QR, the 50 mm ruler and the cell geometry all exist to answer *is there a mark inside this rectangle*, and that question is going away with them. What survives out of §6 is the part that has nothing to do with geometry — a vocabulary with no way to fill an area, and an ink budget measured in square millimetres.
 
-The printer is an Epson ET-2870 reached over IPP Everywhere, with no driver. The
-print → scan → detect chain has already been proven end to end: the ruler on the sheet
-measures exactly 50 mm, and the markers land between 176 and 178 px against 177.2 expected.
-So the geometry is no longer a risk: the ideas below are about the content.
+The printer is an Epson ET-2870 reached over IPP Everywhere, with no driver. The print → scan → detect chain has already been proven end to end: the ruler on the sheet measures exactly 50 mm, and the markers land between 176 and 178 px against 177.2 expected. So the geometry is no longer a risk: the ideas below are about the content.
 
 ---
 
 ## 1. Closed: multiple-choice sheets for the offline path
 
-**What it was.** A family of sheets made only of boxes to tick. The sheet contract declares
-five cell kinds, but only two can be read without the network: `CHECKBOX` and `CHOICE_BOX`.
-If the link drops, choice sheets keep closing the loop and the others do not.
+**What it was.** A family of sheets made only of boxes to tick. The sheet contract declares five cell kinds, but only two can be read without the network: `CHECKBOX` and `CHOICE_BOX`. If the link drops, choice sheets keep closing the loop and the others do not.
 
-**How it was closed, 19 August 2026 — and retired on 21 August.** `printing/layout.py`
-turned an exercise body into a
-`SheetSpec`: one `CHOICE_BOX` per choice, grouped per question so a mark can be attributed
-to the question it answers, positioned in the marker frame. It refuses rather than
-squeezing — more than four questions, or a question with fewer than two choices, raises
-`SheetTooFull` instead of reaching for a smaller font.
+**How it was closed, 19 August 2026 — and retired on 21 August.** `printing/layout.py` turned an exercise body into a `SheetSpec`: one `CHOICE_BOX` per choice, grouped per question so a mark can be attributed to the question it answers, positioned in the marker frame. It refuses rather than squeezing — more than four questions, or a question with fewer than two choices, raises `SheetTooFull` instead of reaching for a smaller font.
 
-The module is `attic/layout.py` now, and so is the offline reading it existed for. §6 below
-holds the order it went in, and `ideas/08 §1` holds why. This section is left standing
-because the two things it added underneath — headings, and the distinction between a cell
-and a printed word — are still the contract.
+The module is `attic/layout.py` now, and so is the offline reading it existed for. §6 below holds the order it went in, and `ideas/08 §1` holds why. This section is left standing because the two things it added underneath — headings, and the distinction between a cell and a printed word — are still the contract.
 
-Two things had to be added underneath. A sheet needs printed words, and a cell is a place
-an answer can be, which a question is not: `SheetSpec` gained `headings`, text drawn on the
-page that the reader never looks at. And the sheet had to reach paper: `drawing_to_pdf`
-writes the PDF by hand in millimetres, because the printer does not accept PDF and CUPS
-rasterises it at 360 dpi — about 35 pixels to an ArUco module — while every converter in
-the path is another chance for "fit to page".
+Two things had to be added underneath. A sheet needs printed words, and a cell is a place an answer can be, which a question is not: `SheetSpec` gained `headings`, text drawn on the page that the reader never looks at. And the sheet had to reach paper: `drawing_to_pdf` writes the PDF by hand in millimetres, because the printer does not accept PDF and CUPS rasterises it at 360 dpi — about 35 pixels to an ArUco module — while every converter in the path is another chance for "fit to page".
 
-**What it cost.** The first layout ran the title straight through both upper markers. The
-renderer refused it, which is why the refusal exists; the second put the choice word on top
-of the question, which no test could catch and only looking at the sheet did.
+**What it cost.** The first layout ran the title straight through both upper markers. The renderer refused it, which is why the refusal exists; the second put the choice word on top of the question, which no test could catch and only looking at the sheet did.
 
-**How it was checked.** A three-question sheet was laid out, drawn, printed at 100% on the
-ET-2870, and the boxes are where the spec says. The tests hold the part the renderer cannot
-see: no two boxes overlap, since a mark inside an overlap answers two questions at once.
+**How it was checked.** A three-question sheet was laid out, drawn, printed at 100% on the ET-2870, and the boxes are where the spec says. The tests hold the part the renderer cannot see: no two boxes overlap, since a mark inside an overlap answers two questions at once.
 
-**What is still open.** Reading it back. `tools/check_scan.py` has done it once from a
-scanned file; nothing yet does it on its own.
+**What is still open.** Reading it back. `tools/check_scan.py` has done it once from a scanned file; nothing yet does it on its own.
 
 ---
 
@@ -56,56 +28,35 @@ scanned file; nothing yet does it on its own.
 
 **What it is.** One large pictogram and one word, to cut out and stick where it is needed.
 
-**Why.** The display shows one step at a time; a card goes where the step happens — on the
-wardrobe, in the bathroom, on the school bag. This is the case where paper beats a screen,
-because it is in the right place rather than in one place.
+**Why.** The display shows one step at a time; a card goes where the step happens — on the wardrobe, in the bathroom, on the school bag. This is the case where paper beats a screen, because it is in the right place rather than in one place.
 
-**How.** ARASAAC has a public API with Italian, and an endpoint that turns a sentence into a
-sequence of pictograms without calling any model. The whole set can be downloaded and kept
-locally, so it works offline too.
+**How.** ARASAAC has a public API with Italian, and an endpoint that turns a sentence into a sequence of pictograms without calling any model. The whole set can be downloaded and kept locally, so it works offline too.
 
-**What it costs.** The licence is CC BY-NC-SA: attribution required, non-commercial use
-only. For a personal project that is fine, and it belongs in the README now rather than
-being discovered later. It is also worth checking with the parent **which** pictogram system
-is already known: if a different one is used at school, ours would be a second language to
-learn rather than a continuation.
+**What it costs.** The licence is CC BY-NC-SA: attribution required, non-commercial use only. For a personal project that is fine, and it belongs in the README now rather than being discovered later. It is also worth checking with the parent **which** pictogram system is already known: if a different one is used at school, ours would be a second language to learn rather than a continuation.
 
 ---
 
 ## 3. The sheet that asks, instead of assigning
 
-**What it is.** A sheet with three or four boxes: "what would you like to do?". A box is
-ticked, the camera reads it, and the chosen thing arrives.
+**What it is.** A sheet with three or four boxes: "what would you like to do?". A box is ticked, the camera reads it, and the chosen thing arrives.
 
-**Why.** Everything else in the system proposes, and the adolescent accepts or walks away.
-This is the one point where the initiative passes to them, using the mechanism that already
-works — a ticked box, the only thing readable offline. Nothing new is needed: what is needed
-is reversing the direction of a sheet we already know how to print and read.
+**Why.** Everything else in the system proposes, and the adolescent accepts or walks away. This is the one point where the initiative passes to them, using the mechanism that already works — a ticked box, the only thing readable offline. Nothing new is needed: what is needed is reversing the direction of a sheet we already know how to print and read.
 
-**How.** The same `SheetSpec` as the multiple-choice sheets, with a different meaning for
-the cells: not answers but requests.
+**How.** The same `SheetSpec` as the multiple-choice sheets, with a different meaning for the cells: not answers but requests.
 
-**What it costs.** It has to be decided what happens if nothing is ticked, or everything
-is. The right answer is: nothing special, and no insisting.
+**What it costs.** It has to be decided what happens if nothing is ticked, or everything is. The right answer is: nothing special, and no insisting.
 
 ---
 
 ## 4. Printing in batches, while the printer is on
 
-**What it is.** Approved sheets pile up; they are all printed together when somebody turns
-the printer on.
+**What it is.** Approved sheets pile up; they are all printed together when somebody turns the printer on.
 
-**Why.** The printer is off almost always — it is off right now. A system that assumes a
-printer is on fails every day. A 250-sheet tray turns paper from a per-use chore into a
-monthly one, and takes the parent out of the critical path without taking them out of the
-decision.
+**Why.** The printer is off almost always — it is off right now. A system that assumes a printer is on fails every day. A 250-sheet tray turns paper from a per-use chore into a monthly one, and takes the parent out of the critical path without taking them out of the decision.
 
-**How.** A local queue on the hub and an IPP check: when the printer answers, whatever is
-waiting gets printed. No new service; `lp` does the rest.
+**How.** A local queue on the hub and an IPP check: when the printer answers, whatever is waiting gets printed. No new service; `lp` does the rest.
 
-**What it costs.** Automatic duplex is a trap: a sheet printed on both sides would be read
-from one side only. Simplex has to be forced in the print path, and written into the code
-rather than remembered.
+**What it costs.** Automatic duplex is a trap: a sheet printed on both sides would be read from one side only. Simplex has to be forced in the print path, and written into the code rather than remembered.
 
 ---
 
@@ -113,64 +64,36 @@ rather than remembered.
 
 **What it is.** Two boxes at the foot of a sheet, to tick once it is finished.
 
-**Why.** Everything the system offers is chosen by somebody else. These two boxes are the
-cheapest way for the person doing the work to say what comes next. The system may also work
-this out on its own from what came back — that is allowed now — but a stated request does
-not have to be right about anybody: it is not a guess that can be wrong, it is an answer.
+**Why.** Everything the system offers is chosen by somebody else. These two boxes are the cheapest way for the person doing the work to say what comes next. The system may also work this out on its own from what came back — that is allowed now — but a stated request does not have to be right about anybody: it is not a guess that can be wrong, it is an answer.
 
-**How.** Two more cells in the same `SheetSpec` as the multiple-choice sheets. The reader
-already knows how to tell a ticked box from an empty one, offline. What the tick does is
-pick the next sheet from content the parent has already approved; it changes no setting.
+**How.** Two more cells in the same `SheetSpec` as the multiple-choice sheets. The reader already knows how to tell a ticked box from an empty one, offline. What the tick does is pick the next sheet from content the parent has already approved; it changes no setting.
 
-**What it costs.** It has to be decided what happens when both boxes are ticked, or
-neither: nothing special, and no asking again. And what is kept has to stay a record of a
-request made on a day, not a standing property of the person — "asked for another like this"
-rather than "prefers this".
+**What it costs.** It has to be decided what happens when both boxes are ticked, or neither: nothing special, and no asking again. And what is kept has to stay a record of a request made on a day, not a standing property of the person — "asked for another like this" rather than "prefers this".
 
-**Where it starts.** `shared/sheet.py` for the cells, the layout agent that does not exist
-yet (see item 1), `vision/` for the reading side.
+**Where it starts.** `shared/sheet.py` for the cells, the layout agent that does not exist yet (see item 1), `vision/` for the reading side.
 
-**Done when.** A printed sheet with a ticked box is read back, and the next sheet offered
-is of the kind that was asked for, chosen from already-approved content.
+**Done when.** A printed sheet with a ticked box is read back, and the next sheet offered is of the kind that was asked for, chosen from already-approved content.
 
 ---
 
 ## 6. A sheet a model designs, instead of a template it fills — half built, 20 August 2026
 
-**What it is.** The sheet the house prints is the kind of short piece of practice an
-adolescent is given now and then. Until now its shape was decided by arithmetic: four
-questions, four boxes each, always in the same places. Now a model designs the page — where
-things go, what is drawn on it, where there is room to write.
+**What it is.** The sheet the house prints is the kind of short piece of practice an adolescent is given now and then. Until now its shape was decided by arithmetic: four questions, four boxes each, always in the same places. Now a model designs the page — where things go, what is drawn on it, where there is room to write.
 
-**Why.** Two reasons, and the second is the one that matters. A page laid out by arithmetic
-is a form, and nothing about it is ever a pleasure to receive. And the format it was laid
-out in could only express one kind of exercise, so every idea that was not four
-multiple-choice questions had nowhere to go.
+**Why.** Two reasons, and the second is the one that matters. A page laid out by arithmetic is a form, and nothing about it is ever a pleasure to receive. And the format it was laid out in could only express one kind of exercise, so every idea that was not four multiple-choice questions had nowhere to go.
 
-**How it stays frugal, which is the whole engineering problem.** A model that can draw will
-spend ink, and ink on a home inkjet is slow, wet and expensive. So the vocabulary it draws
-in — `shared/pagedesign.py` — **has no mark that fills an area**. Not a discouraged fill: no
-fill. A drawing is strokes, so a heavy page is unreachable rather than merely asked against,
-and the only remaining way to spend ink is a great many strokes, which is measured and
-refused above a budget.
+**How it stays frugal, which is the whole engineering problem.** A model that can draw will spend ink, and ink on a home inkjet is slow, wet and expensive. So the vocabulary it draws in — `shared/pagedesign.py` — **has no mark that fills an area**. Not a discouraged fill: no fill. A drawing is strokes, so a heavy page is unreachable rather than merely asked against, and the only remaining way to spend ink is a great many strokes, which is measured and refused above a budget.
 
-Six marks, and an administrator can read a design to the end: `stroke`, `circle`, `words`,
-`tick_box`, `write_line`, `draw_area`. Coordinates are normalised over the marker
-quadrilateral exactly as `shared/sheet.py` is, so a design carries no paper size, and
-`PageDesign.to_sheet_spec()` produces the same `SheetSpec` the vision pipeline already
-reads. That seam is what made this cheap: the page got more interesting and the reading
-contract did not move.
+Six marks, and an administrator can read a design to the end: `stroke`, `circle`, `words`, `tick_box`, `write_line`, `draw_area`. Coordinates are normalised over the marker quadrilateral exactly as `shared/sheet.py` is, so a design carries no paper size, and `PageDesign.to_sheet_spec()` produces the same `SheetSpec` the vision pipeline already reads. That seam is what made this cheap: the page got more interesting and the reading contract did not move.
 
-**The numbers, measured on 20 August 2026.** Everything below is measured, not estimated.
-The baseline is the sheet this replaces, rasterised at 150 dpi on A4:
+**The numbers, measured on 20 August 2026.** Everything below is measured, not estimated. The baseline is the sheet this replaces, rasterised at 150 dpi on A4:
 
 | | ink | of the page |
 | --- | --- | --- |
 | the scaffold every sheet pays — four markers, QR, ruler | 940 mm² | 1.51% |
 | the sheet this replaces: scaffold + 16 tick boxes | 1734 mm² | 2.78% |
 
-Three sheets the deployed model designed, `gpt-5.6-sol-2026-07-09`, third run — the one
-with every fix below in it:
+Three sheets the deployed model designed, `gpt-5.6-sol-2026-07-09`, third run — the one with every fix below in it:
 
 | topic | marks | stroke ink | measured | seconds | out tokens |
 | --- | --- | --- | --- | --- | --- |
@@ -178,73 +101,34 @@ with every fix below in it:
 | i nomi delle nuvole | 24 | 76 mm² | 2.611% | 60.5 | 4567 (3317 reasoning) |
 | mettere in ordine i fatti di una giornata | 29 | 55 mm² | 1.933% | 38.4 | 2877 (1536 reasoning) |
 
-All three are **lighter than the form they replace**, with a drawing on them. Input was
-about 930 tokens each. The budget is 800 mm² of stroke ink and the heaviest sheet across
-three runs spent 204, so the budget is not currently what shapes these pages — it is there
-for the run that decides to hatch a sky.
+All three are **lighter than the form they replace**, with a drawing on them. Input was about 930 tokens each. The budget is 800 mm² of stroke ink and the heaviest sheet across three runs spent 204, so the budget is not currently what shapes these pages — it is there for the run that decides to hatch a sky.
 
-Nine sheets were asked for in total, across three runs. One was refused, for a reason that
-turned out to be ours rather than the model's — see below.
+Nine sheets were asked for in total, across three runs. One was refused, for a reason that turned out to be ours rather than the model's — see below.
 
-**Two ink figures, and they do not agree.** `stroke_ink_mm2` is length times width — the
-area a pen would wet, and the figure the budget is applied to. `ink_coverage` rasterises
-and counts dark pixels. Measured on a single line across the frame, the raster reads
-**0.85 to 1.70 times** the arithmetic, because a stroke width is rounded to whole pixels:
-0.3 mm at 150 dpi is 1.77 pixels drawn as 2. Neither is wrong and they are not
-interchangeable, so the budget uses the first and the second is only reported.
+**Two ink figures, and they do not agree.** `stroke_ink_mm2` is length times width — the area a pen would wet, and the figure the budget is applied to. `ink_coverage` rasterises and counts dark pixels. Measured on a single line across the frame, the raster reads **0.85 to 1.70 times** the arithmetic, because a stroke width is rounded to whole pixels: 0.3 mm at 150 dpi is 1.77 pixels drawn as 2. Neither is wrong and they are not interchangeable, so the budget uses the first and the second is only reported.
 
-**What it cost, and what it caught.** Four defects, three of them found by looking at a
-rendered page rather than by a test:
+**What it cost, and what it caught.** Four defects, three of them found by looking at a rendered page rather than by a test:
 
-- Labels were drawn above their cell, which is where the question is. On a page a model
-  laid out there is nothing keeping the two apart, and `La mia:` landed on top of `Inventa
-  una moltiplicazione`. Labels now go beside a tick box, under a writing line, above a
-  drawing area.
-- A drawing area's label ran off the right-hand edge of the paper, because a drawing area
-  is most of the page's width and the label was placed beside it.
-- `MAX_LABEL` was 24 characters and refused a whole sheet for `Scrivi qui il nome della
-  nuvola`, which is 31. Now 48, and chosen rather than measured — what a label may safely
-  be is a width in millimetres and nothing checks that yet.
-- `tests/test_boundaries.py` refused the word `points` for a polyline's vertices, because
-  it is gamification vocabulary. It was right to; the field is `vertices`.
+- Labels were drawn above their cell, which is where the question is. On a page a model laid out there is nothing keeping the two apart, and `La mia:` landed on top of `Inventa una moltiplicazione`. Labels now go beside a tick box, under a writing line, above a drawing area.
+- A drawing area's label ran off the right-hand edge of the paper, because a drawing area is most of the page's width and the label was placed beside it.
+- `MAX_LABEL` was 24 characters and refused a whole sheet for `Scrivi qui il nome della nuvola`, which is 31. Now 48, and chosen rather than measured — what a label may safely be is a width in millimetres and nothing checks that yet.
+- `tests/test_boundaries.py` refused the word `points` for a polyline's vertices, because it is gamification vocabulary. It was right to; the field is `vertices`.
 
 **The limits, next to the claims.**
 
-- ~~**The old path is still the one that runs.**~~ Closed 21 August 2026: the `print_sheet`
-  step carries a design and `printing/layout.py` is in `attic/`.
-- **No model has yet used a `tick_box`.** All the sheets across four runs chose writing
-  lines. Tick boxes used to be the only cells readable without the cloud, so this was also
-  a warning that the degraded path got worse as the pages got better. That half of it went
-  away on 21 August with the degraded path itself — there is no offline reader to be worse
-  than the model. What is left is the plain observation, and the prompt still points at
-  tick boxes; whether it changes anything is measured below.
-- **Text is not in the ink figure.** `drawing_to_array` draws words only when a caller asks
-  for a preview, so a page of long sentences costs more than it reports.
+- ~~**The old path is still the one that runs.**~~ Closed 21 August 2026: the `print_sheet` step carries a design and `printing/layout.py` is in `attic/`.
+- **No model has yet used a `tick_box`.** All the sheets across four runs chose writing lines. Tick boxes used to be the only cells readable without the cloud, so this was also a warning that the degraded path got worse as the pages got better. That half of it went away on 21 August with the degraded path itself — there is no offline reader to be worse than the model. What is left is the plain observation, and the prompt still points at tick boxes; whether it changes anything is measured below.
+- **Text is not in the ink figure.** `drawing_to_array` draws words only when a caller asks for a preview, so a page of long sentences costs more than it reports.
 
 ### On paper, 20 August 2026
 
-`sh_48a85f58`, "Sei e sette in rotta", printed on the Epson ET-2870 through
-`devices/print_sheet.py:compose_and_print` — the hub's own path, not a laptop. The ruler
-measured **exactly 50 mm** against a real ruler, so the geometry the reader depends on
-survived CUPS at 360 dpi. The page was then scanned back at 300 dpi to look at it.
+`sh_48a85f58`, "Sei e sette in rotta", printed on the Epson ET-2870 through `devices/print_sheet.py:compose_and_print` — the hub's own path, not a laptop. The ruler measured **exactly 50 mm** against a real ruler, so the geometry the reader depends on survived CUPS at 360 dpi. The page was then scanned back at 300 dpi to look at it.
 
 Three things the raster had not shown, and only paper did:
 
-- **Every accent and every times sign printed as `?`.** `6 × 2 =` came out `6 ? 2 =` and
-  `attività` as `attivit?`. Not the font: `drawing_to_pdf` encoded the content stream as
-  ASCII with `"replace"`, undoing the cp1252 filtering `_pdf_text` had already done, while
-  the font is declared `/WinAnsiEncoding` — which is cp1252. One word changed. It had been
-  wrong for as long as the PDF writer has existed and no test had ever looked.
-- **A writing line's label printed as a caption under an empty rule.** `6 × 2 = ______` is
-  one line and it printed as two unrelated things. The label now sits on the rule's own
-  baseline and the rule starts after it, using Helvetica's real advance widths so the gap
-  is known rather than guessed. This is the third placement this label has had in one day:
-  above the cell collided with the question, under it read as a caption.
-- **The page was still a form.** Two columns of identical ruled lines with a label in
-  front of each. The model designed it freely — nothing computed that layout — so this is
-  a fault in what it was asked for, not in what it can do. The prompt now says plainly
-  that a grid of ruled lines is a form, asks the drawing to carry part of the work rather
-  than decorate a corner, and points at tick boxes.
+- **Every accent and every times sign printed as `?`.** `6 × 2 =` came out `6 ? 2 =` and `attività` as `attivit?`. Not the font: `drawing_to_pdf` encoded the content stream as ASCII with `"replace"`, undoing the cp1252 filtering `_pdf_text` had already done, while the font is declared `/WinAnsiEncoding` — which is cp1252. One word changed. It had been wrong for as long as the PDF writer has existed and no test had ever looked.
+- **A writing line's label printed as a caption under an empty rule.** `6 × 2 = ______` is one line and it printed as two unrelated things. The label now sits on the rule's own baseline and the rule starts after it, using Helvetica's real advance widths so the gap is known rather than guessed. This is the third placement this label has had in one day: above the cell collided with the question, under it read as a caption.
+- **The page was still a form.** Two columns of identical ruled lines with a label in front of each. The model designed it freely — nothing computed that layout — so this is a fault in what it was asked for, not in what it can do. The prompt now says plainly that a grid of ruled lines is a form, asks the drawing to carry part of the work rather than decorate a corner, and points at tick boxes.
 
 ### What the anti-form instructions changed, and what they cost
 
@@ -259,73 +143,38 @@ Same three topics, same deployment, immediately after:
 | measured coverage | 2.290%, 2.611%, 1.933% | 2.695%, **2.963%**, 2.495% |
 | seconds | 52, 61, 38 | 74, 58, 77 |
 
-The pages became what was wanted: a boat with three sails of circles to count, three boxes
-to choose which multiplication describes them, and a cat to add six whiskers to — a drawing
-that *is* the exercise rather than decoration beside it.
+The pages became what was wanted: a boat with three sails of circles to count, three boxes to choose which multiplication describes them, and a cat to add six whiskers to — a drawing that *is* the exercise rather than decoration beside it.
 
-**It costs ink, and it corrects a claim made above.** "Lighter than the form it replaces"
-held for pages that were forms. The cloud sheet measures 2.963% against the old sheet's
-2.78%. Drawing more means more strokes. The stroke budget is nowhere near binding — 306 mm²
-of 800 — so nothing refuses these; the sentence about them being lighter simply stops being
-true and is left standing here so the correction has something to point at.
+**It costs ink, and it corrects a claim made above.** "Lighter than the form it replaces" held for pages that were forms. The cloud sheet measures 2.963% against the old sheet's 2.78%. Drawing more means more strokes. The stroke budget is nowhere near binding — 306 mm² of 800 — so nothing refuses these; the sentence about them being lighter simply stops being true and is left standing here so the correction has something to point at.
 
 ### A sheet can be beautiful and unreadable
 
-The third page is the important failure. "Una giornata in ordine" carries fifty marks and
-**four answerable places**. Each fact has a small empty circle beside it to mark, and a
-`circle` is ink: only `tick_box`, `write_line` and `draw_area` become regions the reader is
-asked about. Whatever somebody writes in those circles is lost, and nothing about the page
-says so — it looks answerable.
+The third page is the important failure. "Una giornata in ordine" carries fifty marks and **four answerable places**. Each fact has a small empty circle beside it to mark, and a `circle` is ink: only `tick_box`, `write_line` and `draw_area` become regions the reader is asked about. Whatever somebody writes in those circles is lost, and nothing about the page says so — it looks answerable.
 
-The model was reaching for something the vocabulary does not offer: a round thing to mark.
-It was given squares, so it drew its own circles. The prompt now says which marks can be
-read and which are only ink. Whether a `tick_spot` — a readable region drawn as a circle —
-is worth adding is the open question, and the argument for it is that a model asked twice
-for the same missing thing is describing a gap rather than making a mistake.
+The model was reaching for something the vocabulary does not offer: a round thing to mark. It was given squares, so it drew its own circles. The prompt now says which marks can be read and which are only ink. Whether a `tick_spot` — a readable region drawn as a circle — is worth adding is the open question, and the argument for it is that a model asked twice for the same missing thing is describing a gap rather than making a mistake.
 
-Two placement defects came off the same page and are fixed: a wide tick box's label ran off
-the right edge, and a drawing area's caption collided with the heading a model had put above
-it. Labels now fall below their box when they would leave the paper, and a drawing area's
-caption sits just inside its own frame, which is the one place nothing else can be.
+Two placement defects came off the same page and are fixed: a wide tick box's label ran off the right edge, and a drawing area's caption collided with the heading a model had put above it. Labels now fall below their box when they would leave the paper, and a drawing area's caption sits just inside its own frame, which is the one place nothing else can be.
 
-**Where it starts.** `shared/pagedesign.py` for the vocabulary, `printing/compose.py` for
-millimetres and the budget, `agents/sheet_designer.py` for the prompt,
-`panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it,
-`tools/print_design.py` to send one to the printer from the hub.
+**Where it starts.** `shared/pagedesign.py` for the vocabulary, `printing/compose.py` for millimetres and the budget, `agents/sheet_designer.py` for the prompt, `panel/designing.py` for the cloud call, `tools/probe_sheet_design.py` to try it, `tools/print_design.py` to send one to the printer from the hub.
 
 **Done when — the order for retiring the old path.** Each step leaves the loop working:
 
-1. ~~The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions
-   and choices, and the two catalogue experiences are rewritten in it~~ — done, 21 August
+1. ~~The `print_sheet` verb in `shared/blueprint.py` carries a design instead of questions and choices, and the two catalogue experiences are rewritten in it~~ — done, 21 August
    2026. The step carries a `PageDesign`; `SheetContent` and `Question` are gone.
-2. ~~`devices/print_sheet.py` composes a design instead of calling `sheet_for`~~ — done,
-   20 August 2026: `compose_and_print` sits beside `lay_out_and_print` and what it
-   remembers is a `SheetSpec` either way. `lay_out_and_print` was deleted on 21 August.
-3. ~~`printing/layout.py` and `tests/test_layout.py` move to `attic/`~~ — done, 21 August
-   2026, with `attic/README.md` saying what replaced them. The arithmetic that read ink
-   out of a rectangle went with them, and so did the two instruments that measured its
-   thresholds.
-4. A designed sheet is printed, filled in by hand, and read back. **Half done**: printed
-   and scanned, but nothing has been written on one and put on the glass.
+2. ~~`devices/print_sheet.py` composes a design instead of calling `sheet_for`~~ — done, 20 August 2026: `compose_and_print` sits beside `lay_out_and_print` and what it remembers is a `SheetSpec` either way. `lay_out_and_print` was deleted on 21 August.
+3. ~~`printing/layout.py` and `tests/test_layout.py` move to `attic/`~~ — done, 21 August 2026, with `attic/README.md` saying what replaced them. The arithmetic that read ink out of a rectangle went with them, and so did the two instruments that measured its thresholds.
+4. A designed sheet is printed, filled in by hand, and read back. **Half done**: printed and scanned, but nothing has been written on one and put on the glass.
 
 ### How the two catalogue sheets were converted, 21 August 2026
 
-The two hand-written blueprints carried questions and choices, and the module that turned
-those into rectangles was the one being retired. So it was run once more and what came out
-was frozen into the files as designs: headings became `words`, choice cells became
-`tick_box`. That is the honest description — the sheets are no longer hand-written all the
-way down, and the files say so in their `author` line.
+The two hand-written blueprints carried questions and choices, and the module that turned those into rectangles was the one being retired. So it was run once more and what came out was frozen into the files as designs: headings became `words`, choice cells became `tick_box`. That is the honest description — the sheets are no longer hand-written all the way down, and the files say so in their `author` line.
 
-Checked rather than assumed, both sheets: the cells the template produced and the cells the
-frozen design produces are **identical**, ids, kinds, rectangles, labels and groups, and so
-are the headings. Composed through `printing/compose.py` at 150 dpi:
+Checked rather than assumed, both sheets: the cells the template produced and the cells the frozen design produces are **identical**, ids, kinds, rectangles, labels and groups, and so are the headings. Composed through `printing/compose.py` at 150 dpi:
 
 | | answerable places | raster coverage |
 | --- | --- | --- |
 | `four-things-about-today` | 16 | 2.752% |
 | `three-words` | 12 | 2.434% |
 
-The sheet this format replaced measured 2.78% on 20 August. The small difference is the
-same page drawn by the same renderer from the same rectangles, so it is measurement noise
-in the rasteriser rather than a change to the page.
+The sheet this format replaced measured 2.78% on 20 August. The small difference is the same page drawn by the same renderer from the same rectangles, so it is measurement noise in the rasteriser rather than a change to the page.
 

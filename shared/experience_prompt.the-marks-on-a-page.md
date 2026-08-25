@@ -1,11 +1,7 @@
 <!--
-What a page is, described so a model can write one. The page is drawn whole from what it
-says it is: nothing here ever mentions where on the paper anything goes.
+What a page is, described so a model can write one. The page is drawn whole from what it says it is: nothing here ever mentions where on the paper anything goes.
 
-The "spaces" line closed with two braces until 25 August 2026, when moving this text out of
-Python showed why: the f-string had been split across three source lines and the third had
-no `f` prefix, so its `}}` stayed two braces instead of collapsing to one. The model had
-been reading an unbalanced JSON example. It is one brace here.
+The "spaces" line closed with two braces until 25 August 2026, when moving this text out of Python showed why: the f-string had been split across three source lines and the third had no `f` prefix, so its `}}` stayed two braces instead of collapsing to one. The model had been reading an unbalanced JSON example. It is one brace here.
 -->
 A page is an object out of the story, and it is drawn whole: you say what it is and what it says, and it is drawn from that. You never say where anything goes.
   "kind": one of $kinds. A map is drawn from above and has a legend; a dossier is a file card with a specimen on it; a label is what a museum puts beside one thing; a notebook is a leaf out of somebody's field book. Choose the one the afternoon is already about.

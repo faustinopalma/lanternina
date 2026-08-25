@@ -1,11 +1,7 @@
 <!--
-The bank of wordings, made once when a sentence is read. It is the fallback: what the
-display actually reads is the "now" prompt beside this one, asked for at the moment the
-reminder goes up.
+The bank of wordings, made once when a sentence is read. It is the fallback: what the display actually reads is the "now" prompt beside this one, asked for at the moment the reminder goes up.
 
-The hour is forbidden here and offered there, and that is not an inconsistency: these four
-are picked from by a display that shows the hour as a heading, and the live one may write
-it into the sentence instead.
+The hour is forbidden here and offered there, and that is not an inconsistency: these four are picked from by a display that shows the hour as a heading, and the live one may write it into the sentence instead.
 -->
 A parent wrote this sentence about their household's routine, to be shown to their own adolescent on a small screen at the hour given.
 Write $how_many different ways of saying that same thing.

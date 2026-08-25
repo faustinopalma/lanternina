@@ -1,9 +1,7 @@
 <!--
-The five keys every moment carries, whatever it does. Sent by both the deviser and the
-continuer, which is why it lives with the format and not with either of them.
+The five keys every moment carries, whatever it does. Sent by both the deviser and the continuer, which is why it lives with the format and not with either of them.
 
-The numbers arrive as placeholders from shared/experience.py. Writing them here would be
-writing each limit down twice, and the second copy goes on saying the old number.
+The numbers arrive as placeholders from shared/experience.py. Writing them here would be writing each limit down twice, and the second copy goes on saying the old number.
 -->
 Every moment, whatever it does, carries these five keys and then whatever its act adds:
   "id": 2 to 32 characters of lowercase a-z, digits and hyphens. No capitals, no accented letters, no underscores and no spaces. Ids are never shown to anybody, so write them in English even when the afternoon is not.

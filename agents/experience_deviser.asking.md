@@ -1,12 +1,7 @@
 <!--
-Asking for a branch to be left unwritten, and what that costs. Both devised afternoons of
-21 August 2026 used no `ask` at all: the format allows a branch to be left open, the prompt
-did not press for one, and a model that can see the whole afternoon writes the whole
-afternoon. So the branch that makes an experience devised rather than precomputed was the
-one the deviser never reached for.
+Asking for a branch to be left unwritten, and what that costs. Both devised afternoons of 21 August 2026 used no `ask` at all: the format allows a branch to be left open, the prompt did not press for one, and a model that can see the whole afternoon writes the whole afternoon. So the branch that makes an experience devised rather than precomputed was the one the deviser never reached for.
 
-What is asked for now is one `ask`, on the outcome for a page that came back with marks.
-Three reasons, and the price of each is in `ideas/08 §7`:
+What is asked for now is one `ask`, on the outcome for a page that came back with marks. Three reasons, and the price of each is in `ideas/08 §7`:
 
 * A page with marks on it is the only branch with anything to write from. A blank page
   carries nothing, so continuing from one buys a paragraph out of no information.
