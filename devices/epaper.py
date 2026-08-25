@@ -273,24 +273,50 @@ def render_reminder_bmp(
     """
     if not decoration:
         return render_notice_bmp(heading, lines)
+    try:
+        drawn = _trimmed(Image.open(BytesIO(decoration)).convert("L"))
+    except Exception:  # noqa: BLE001 - an unreadable drawing must not lose the words
+        return render_notice_bmp(heading, lines)
+
     canvas = Image.new("L", (WIDTH, HEIGHT), 255)
     draw = ImageDraw.Draw(canvas)
     fonts = _fonts()
     inner = WIDTH - 2 * MARGIN - DECORATION_WIDTH - DECORATION_GAP
 
-    y = MARGIN + 24
+    # Measured before anything is drawn, so the block sits in the middle of the screen
+    # rather than at the top of it with two thirds of the paper empty underneath.
+    blocks: list[tuple[list[str], object, int]] = []
     if heading:
-        y = _draw_block(draw, heading, fonts.title, y, inner, 52) + 18
+        blocks.append((_wrap(draw, heading, fonts.title, inner), fonts.title, 52))
     for line in lines:
-        y = _draw_block(draw, line, fonts.body, y, inner, 42) + 10
+        blocks.append((_wrap(draw, line, fonts.body, inner), fonts.body, 42))
+    tall = sum(len(rows) * step for rows, _font, step in blocks) + 18 * (len(blocks) - 1)
 
-    try:
-        drawn = Image.open(BytesIO(decoration)).convert("L")
-    except Exception:  # noqa: BLE001 - an unreadable drawing must not lose the words
-        return render_notice_bmp(heading, lines)
+    y = max(MARGIN, (HEIGHT - tall) // 2)
+    for rows, font, step in blocks:
+        for row in rows:
+            draw.text((MARGIN, y), row, font=font, fill=0)  # type: ignore[arg-type]
+            y += step
+        y += 18
+
     drawn.thumbnail((DECORATION_WIDTH, HEIGHT - 2 * MARGIN), Image.LANCZOS)
     canvas.paste(drawn, (WIDTH - MARGIN - drawn.width, (HEIGHT - drawn.height) // 2))
     return _encode(canvas.point(lambda v: 255 if v > 127 else 0).convert("1"), "BMP")
+
+
+def _trimmed(drawing: Image.Image) -> Image.Image:
+    """The ink and none of the paper around it.
+
+    A model returns its object centred in a square of white. Scaling that square to the
+    strip scales the white with it, and a tall thin object arrives a third of the size it
+    could be — measured on a toothbrush, 25 August 2026.
+
+    The threshold makes the ink the non-zero pixels, because that is what `getbbox` finds.
+    Inverting first finds the paper and returns the whole square, which is the same as not
+    trimming at all and looks exactly like it.
+    """
+    ink = drawing.point(lambda v: 0 if v > 200 else 255).getbbox()
+    return drawing if ink is None else drawing.crop(ink)
 
 
 # Two paths draw this: the display server answers a press with it, and the scan writes it a
