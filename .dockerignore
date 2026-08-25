@@ -29,6 +29,9 @@ quota-requests.local.yaml
 # What a house with no person in it wrote: the screens, the sheets, and the transcript of
 # an afternoon. The transcript is the reason this line exists.
 pretend
+# The same, kept: what each experiment run produced, its screens and its notes. 13.8 MiB
+# on 25 August 2026, and gitignored for the same reason this line exists.
+experiments
 hack_plan
 microsoftinfo
 _reference
@@ -42,6 +45,7 @@ scripts
 tests
 tools
 firmware
+attic
 # The browser tier is built by its own workflow and served by Static Web Apps. The
 # Dockerfile copies none of it, and its node_modules alone is 166 MB of context to upload.
 web

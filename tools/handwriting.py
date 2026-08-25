@@ -23,13 +23,8 @@ the printed page underneath untouched.
 
 from __future__ import annotations
 
-import base64
 import os
-import re
-import time
 from typing import Final
-
-import httpx
 
 # What a hand is told to be. Deliberately not "neat": a page a model writes beautifully is a
 # page the reader has an easy time with, and the point of this is that it should not.
@@ -90,39 +85,37 @@ def written_on(
 
     Waits out a busy model rather than giving up. The deployment is capacity 2 and the region
     is at its ceiling, so an unattended run of several afternoons meets 429 every time —
-    measured 24 August 2026, one soak of three where only one reached an ending.
+    measured 24 August 2026, one soak of three where only one reached an ending. The waiting
+    is the client's own, so it reads `Retry-After` rather than the sentence in the body.
     """
-    from azure.identity import DefaultAzureCredential
+    import base64
+    import io
 
-    endpoint = os.environ["LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT"].rstrip("/")
-    deployment = os.environ["LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT"]
-    version = os.environ.get("LANTERNINA_FOUNDRY_IMAGE_API_VERSION", "2025-04-01-preview")
-    token = (
-        DefaultAzureCredential()
-        .get_token("https://cognitiveservices.azure.com/.default")
-        .token
+    from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+    from openai import AzureOpenAI
+
+    client = AzureOpenAI(
+        azure_endpoint=os.environ["LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT"],
+        api_version=os.environ.get(
+            "LANTERNINA_FOUNDRY_IMAGE_API_VERSION", "2025-04-01-preview"
+        ),
+        azure_ad_token_provider=get_bearer_token_provider(
+            DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+        ),
+        timeout=TIMEOUT_SECONDS,
+        max_retries=tries,
     )
-    for attempt in range(1, tries + 1):
-        answer = httpx.post(
-            f"{endpoint}/openai/deployments/{deployment}/images/edits?api-version={version}",
-            headers={"Authorization": f"Bearer {token}"},
-            files={"image": ("page.png", blank, "image/png")},
-            data={"prompt": asked_of(hand), "n": "1", "size": size},
-            timeout=TIMEOUT_SECONDS,
-        )
-        if answer.status_code == 200:
-            return base64.b64decode(answer.json()["data"][0]["b64_json"])
-        if answer.status_code == 429 and attempt < tries:
-            time.sleep(retry_after(answer.text))
-            continue
-        # The body says which of the reasons it was; a status alone leaves the next person
-        # guessing between a quota, a key and a refusal.
-        raise RuntimeError(f"the hand did not write: {answer.status_code} {answer.text[:300]}")
-    raise RuntimeError("the hand did not write: the model stayed busy")
+    page = io.BytesIO(blank)
+    # Named, because the service reads the format off the filename rather than the bytes.
+    page.name = "page.png"
+    answer = client.images.edit(
+        model=os.environ["LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT"],
+        image=page,
+        prompt=asked_of(hand),
+        n=1,
+        size=size,
+    )
+    if not answer.data or not answer.data[0].b64_json:
+        raise RuntimeError("the hand did not write: the model answered without a page")
+    return base64.b64decode(answer.data[0].b64_json)
 
-
-def retry_after(said: str, floor: float = 20.0) -> float:
-    """How long the service asked to be left alone, plus a little. Its own number when it
-    gives one, because guessing shorter is how a retry becomes a second refusal."""
-    found = re.search(r"retry after (\d+) second", said, re.IGNORECASE)
-    return max(floor, float(found.group(1)) + 5.0 if found else floor)

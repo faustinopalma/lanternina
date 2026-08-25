@@ -104,7 +104,12 @@ async def continue_afternoon(
     except RefusedByTheChecks as exc:
         outcome = REFUSED
         logging.getLogger(__name__).info("continuation refused by the checks: %s", exc)
-        raise HTTPException(status_code=422, detail="refused_by_the_checks") from exc
+        # Which check, and not only that one refused. The house is the only caller and it
+        # holds a device key; the neighbour below has always answered this way, and an
+        # afternoon that stops with no recoverable reason makes the next run undiagnosable.
+        raise HTTPException(
+            status_code=422, detail=f"refused_by_the_checks: {exc}"
+        ) from exc
     except ExperienceError as exc:
         logging.getLogger(__name__).warning("not a continuation: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_a_continuation: {exc}") from exc
@@ -233,7 +238,9 @@ async def devise_afternoon(
     except RefusedByTheChecks as exc:
         outcome = REFUSED
         logging.getLogger(__name__).info("afternoon refused by the checks: %s", exc)
-        raise HTTPException(status_code=422, detail="refused_by_the_checks") from exc
+        raise HTTPException(
+            status_code=422, detail=f"refused_by_the_checks: {exc}"
+        ) from exc
     except ExperienceError as exc:
         logging.getLogger(__name__).warning("not an experience: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_an_experience: {exc}") from exc
