@@ -235,18 +235,19 @@ def limit_of(store: LimitStore, household_id: str, configured: int) -> int:
     return configured if chosen is None else chosen.calls
 
 
-def clean_limit(calls: int, spent: int) -> int:
+def clean_limit(calls: int) -> int:
     """The limit a parent may set. Raises ValueError with what is wrong and what is allowed.
+
+    A plain number between one and the ceiling, and nothing else. It was refused below
+    what the month had already spent until 25 August 2026, which made the field explain
+    itself instead of taking a figure: a limit is a limit, and one set under the month's
+    own total simply means the house stops now. The page says that where it happens.
 
     Zero is not reachable from the panel. It means "no limit at all" to :func:`over_limit`,
     and switching the protection off is a deployment decision, not a click.
     """
     if calls < 1 or calls > MAX_MONTHLY_LIMIT:
         raise ValueError(f"the limit is between 1 and {MAX_MONTHLY_LIMIT} calls a month")
-    if calls <= spent:
-        # Below what the month has already paid for, the house stops the moment it is
-        # saved. That is a way to halt the house by accident, not a limit.
-        raise ValueError(f"this month has already spent {spent} calls; set it above that")
     return calls
 
 

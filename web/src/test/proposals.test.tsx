@@ -10,13 +10,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import type { Proposal } from "@/api/types";
 import { fakeApi, SAMPLE_PROPOSALS } from "@/test/fakeApi";
+import { Proposals } from "@/sections/Proposals";
 import { renderPanel } from "@/test/render";
 
 describe("to approve", () => {
   beforeEach(() => window.localStorage.clear());
 
   it("shows the content of a proposal before asking for a decision", async () => {
-    renderPanel(fakeApi());
+    renderPanel(fakeApi(), <Proposals />);
 
     expect(await screen.findByText("Le stagioni")).toBeInTheDocument();
     expect(screen.getByText("In che stagione cadono le foglie?")).toBeInTheDocument();
@@ -28,7 +29,7 @@ describe("to approve", () => {
   it("records the decision and takes the proposal off the list", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Le stagioni");
     await user.click(screen.getAllByRole("button", { name: "Approva" })[0]!);
@@ -42,7 +43,7 @@ describe("to approve", () => {
   it("records a refusal the same way", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Le stagioni");
     await user.click(screen.getAllByRole("button", { name: "Rifiuta" })[0]!);
@@ -60,7 +61,7 @@ describe("to approve", () => {
         }),
     });
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Le stagioni");
     const approve = screen.getAllByRole("button", { name: "Approva" })[0]!;
@@ -77,7 +78,7 @@ describe("to approve", () => {
       decide: () => Promise.reject(new Error("no")),
     });
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Le stagioni");
     const approve = screen.getAllByRole("button", { name: "Approva" })[0]!;
@@ -91,9 +92,14 @@ describe("to approve", () => {
     expect(screen.getByText("Le stagioni")).toBeInTheDocument();
   });
 
-  it("says nothing is waiting rather than showing an empty page", async () => {
-    renderPanel(fakeApi({ proposals: async () => [] }));
-    expect(await screen.findByText("Nessuna proposta in attesa.")).toBeInTheDocument();
+  it("says nothing at all rather than taking up the page it no longer owns", async () => {
+    // Nothing on the hub submits a proposal, so this is the ordinary state. It shares a
+    // page with the activities now, and an empty notice under a full list would read as
+    // the panel contradicting itself.
+    const { container } = renderPanel(fakeApi({ proposals: async () => [] }), <Proposals />);
+
+    await waitFor(() => expect(container.textContent).not.toContain("Da approvare"));
+    expect(screen.queryByText(/proposta/i)).toBeNull();
   });
 
   it("shows a sheet written before the field names changed", async () => {
@@ -109,18 +115,21 @@ describe("to approve", () => {
         ],
       }),
     };
-    renderPanel(fakeApi({ proposals: async () => [stored] }));
+    renderPanel(fakeApi({ proposals: async () => [stored] }), <Proposals />);
 
     expect(await screen.findByText("Le stagioni")).toBeInTheDocument();
     expect(screen.getByText("In che stagione cadono le foglie?")).toBeInTheDocument();
     expect(screen.getByText("estate · autunno")).toBeInTheDocument();
   });
 
-  it("stays calm when the list cannot be read, with no code and no stack", async () => {
-    renderPanel(fakeApi({ proposals: () => Promise.reject(new Error("boom")) }));
-    const said = await screen.findByText("Non riesco a leggere le proposte adesso.");
-    expect(said).toBeInTheDocument();
-    expect(document.body.textContent).not.toContain("boom");
+  it("stays quiet when the list cannot be read, with no code and no stack", async () => {
+    renderPanel(
+      fakeApi({ proposals: () => Promise.reject(new Error("boom")) }),
+      <Proposals />,
+    );
+
+    await waitFor(() => expect(document.body.textContent).not.toContain("boom"));
+    expect(screen.queryByRole("button", { name: "Approva" })).toBeNull();
     expect(document.body.textContent).not.toMatch(/HTTP|\b[45]\d\d\b/);
   });
 });
@@ -129,7 +138,7 @@ describe("what is already approved", () => {
   beforeEach(() => window.localStorage.clear());
 
   it("says how much is in reserve, as a fact rather than a task", async () => {
-    renderPanel(fakeApi());
+    renderPanel(fakeApi(), <Proposals />);
 
     expect(
       await screen.findByText("Da parte — attività approvate: 2; temi: 2."),
@@ -141,7 +150,7 @@ describe("what is already approved", () => {
   it("withdraws one, shortens the count, and says what withdrawal cannot reach", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Da parte — attività approvate: 2; temi: 2.");
     await user.click(screen.getAllByRole("button", { name: "Non più" })[0]!);
@@ -158,7 +167,7 @@ describe("what is already approved", () => {
   it("says so when the withdrawal does not get through, and keeps the item", async () => {
     const api = fakeApi({ decide: () => Promise.reject(new Error("no")) });
     const user = userEvent.setup();
-    renderPanel(api);
+    renderPanel(api, <Proposals />);
 
     await screen.findByText("Da parte — attività approvate: 2; temi: 2.");
     await user.click(screen.getAllByRole("button", { name: "Non più" })[0]!);

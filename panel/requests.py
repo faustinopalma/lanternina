@@ -39,7 +39,11 @@ KIND_BEGIN_NOW = "beginNow"
 # display holds its own id card until somebody presses the button on it, which is the only
 # thing that can prove the right box was found.
 KIND_IDENTIFY = "identify"
-KINDS = (KIND_SHOW_AGAIN, KIND_BEGIN_NOW, KIND_IDENTIFY)
+# Look at the network now. The house looks on its own every minute anyway; this exists
+# because a parent who has just plugged a printer in is standing there, and "it will
+# appear shortly" is only believable if there is something to press.
+KIND_LOOK_NOW = "lookNow"
+KINDS = (KIND_SHOW_AGAIN, KIND_BEGIN_NOW, KIND_IDENTIFY, KIND_LOOK_NOW)
 
 # What a begin-now request is about when the parent did not name an afternoon, which is
 # every time so far: which one to run is the house's choice, because only the house knows

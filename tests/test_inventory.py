@@ -275,6 +275,21 @@ def test_what_was_removed_can_be_put_back_with_its_job_and_its_name() -> None:
     assert row["name"] == "la stampante di sotto"
 
 
+def test_nothing_appears_as_removed_that_nobody_removed() -> None:
+    """A display that reports has no inventory row until one is made for it, and the list
+    of what was taken off the list is built by handing `merged` no things — so handed every
+    status it invented a row for each, and the panel said things had been removed that
+    nobody had touched. Seen in the house on 25 August 2026."""
+    client = client_for()
+    household = household_of(client)
+    report(client, household, printer(), display(PICTURE_MAC, "CF7D04"))
+
+    answer = client.get("/api/devices", headers=headers()).json()
+
+    assert answer["forgotten"] == []
+    assert {row["id"] for row in answer["devices"]} == {PRINTER, PICTURE_MAC}
+
+
 def test_the_hub_is_told_the_whole_list_when_it_reports() -> None:
     """The answer to the push is how the jobs reach the house: no second timer, and a
     printer that was switched off this minute still has one."""

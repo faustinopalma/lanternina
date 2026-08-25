@@ -207,6 +207,10 @@ export function httpApi(token: string): Api {
       await json(`/api/devices/${encodeURIComponent(id)}/identify`, { method: "POST" });
     },
 
+    async lookForDevices(): Promise<void> {
+      await json("/api/devices/look", { method: "POST" });
+    },
+
     usage: () => json<UsageAnswer>("/api/usage", {}, ["usage", "limit", "reached"]),
 
     setLimit: (calls: number) =>

@@ -38,6 +38,7 @@ export interface Recorded {
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
   identified: string[];
+  looked: string[];
   askedAgain: string[];
   limitSetTo: number[];
   begunNow: number;
@@ -290,6 +291,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     assignments: [],
     devicesRemoved: [],
     identified: [],
+    looked: [],
     askedAgain: [],
     limitSetTo: [],
     begunNow: 0,
@@ -467,6 +469,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
     identifyDevice: async (id) => {
       recorded.identified.push(id);
+    },
+    lookForDevices: async () => {
+      recorded.looked.push("asked");
     },
     usage: async (): Promise<UsageAnswer> => ({
       usage: {

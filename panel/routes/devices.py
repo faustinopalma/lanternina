@@ -26,7 +26,7 @@ from ..devices import (
     merged,
 )
 from ..gate import CurrentAccount, DeviceKey
-from ..requests import KIND_IDENTIFY, RequestStore, clean_request
+from ..requests import KIND_IDENTIFY, KIND_LOOK_NOW, RequestStore, clean_request
 
 router = APIRouter()
 
@@ -143,11 +143,18 @@ def list_devices(account: CurrentAccount, request: Request) -> Any:
     household = str(account.household_id)
     everything = inventory.list(household)
     seen = store.list(household)
+    here = [row for row in everything if row.forgotten_at == 0.0]
+    gone = [row for row in everything if row.forgotten_at > 0.0]
+    # Only the statuses of the things being listed. `merged` invents a row for a status it
+    # has no thing for — which is right for the house and wrong here: handed every status,
+    # the second list grew a row for every display that reports, and the panel said things
+    # had been taken off the list that nobody had touched.
+    forgotten_ids = {row.id for row in gone}
     return {
-        "devices": merged([row for row in everything if row.forgotten_at == 0.0], seen),
+        "devices": merged(here, seen),
         # Kept apart rather than mixed in. What was taken off the list is not part of the
         # house any more, and the only thing to do with it is put it back.
-        "forgotten": merged([row for row in everything if row.forgotten_at > 0.0], seen),
+        "forgotten": merged(gone, [row for row in seen if row.id in forgotten_ids]),
         # Stated while the parent types rather than enforced afterwards by truncation.
         "nameLimit": MAX_NAME_LENGTH,
     }
@@ -185,6 +192,26 @@ def forget_device(thing_id: str, account: CurrentAccount, request: Request) -> A
     inventory: InventoryStore = request.app.state.inventory
     inventory.forget(str(account.household_id), thing_id)
     return {"removed": thing_id}
+
+
+@router.post("/api/devices/look")
+def look_now(account: CurrentAccount, request: Request) -> Any:
+    """Ask the house to look at the network for printers and scanners now.
+
+    A row written and nothing else, like everything else the parent asks for. The house
+    looks on its own every minute; this exists because somebody who has just plugged a
+    printer in is standing there, and what it buys them is the difference between waiting
+    and knowing they have been heard.
+    """
+    store: RequestStore = request.app.state.requests
+    asked = clean_request(
+        household_id=str(account.household_id),
+        kind=KIND_LOOK_NOW,
+        # Nothing to name: the question is about the network, not about a thing.
+        subject=KIND_LOOK_NOW,
+        asked_by=str(account.id),
+    )
+    return store.put(asked).to_public()
 
 
 @router.post("/api/devices/{thing_id}/recall")

@@ -62,7 +62,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from devices.house import CannotRun, House, screen_in
+from devices.house import CannotRun, House, printer_in, scanner_in, screen_in
 from devices.run_experience import (
     begin,
     conclude_what_is_over,
@@ -388,8 +388,8 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     house = House(
-        printer=os.environ.get("LANTERNINA_PRINTER", ""),
-        scanner=os.environ.get("LANTERNINA_SCANNER", ""),
+        printer=printer_in(os.environ),
+        scanner=scanner_in(os.environ),
         screen=screen_in(os.environ),
         sheets_dir=sheets_dir,
         panel=panel,

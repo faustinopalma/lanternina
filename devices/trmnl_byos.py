@@ -467,6 +467,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
 
     # One id card per display, drawn on first use. The text never changes.
     id_screens: dict[str, bytes] = {}
+    asked_screens: dict[str, bytes] = {}
     # Keyed by the words on it, so renaming a display in the panel changes what it says.
     name_screens: dict[str, bytes] = {}
 
@@ -492,7 +493,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
         # Asked for by name, so it comes before every job: the parent is standing at the
         # wall trying to tell two identical boxes apart.
         if identify_for(config.screen_file, device.friendly_id).exists():
-            card = _id_screen(device)
+            card = _asked_which_screen(device)
             if card is not None:
                 return card
         unassigned = _unassigned_screen(device)
@@ -549,6 +550,20 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
                 return None
             id_screens[device.friendly_id] = drawn
+        return drawn
+
+    def _asked_which_screen(device: Device) -> bytes | None:
+        """The same code and a different sentence: this display has a job and was asked
+        which one it is, so the card that says it has none would be untrue."""
+        drawn = asked_screens.get(device.friendly_id)
+        if drawn is None:
+            try:
+                from devices.epaper import render_asked_which_bmp
+
+                drawn = render_asked_which_bmp(device.friendly_id)
+            except Exception:  # noqa: BLE001 - a missing renderer must not blank a display
+                return None
+            asked_screens[device.friendly_id] = drawn
         return drawn
 
     def _name_screen(device: Device) -> bytes | None:

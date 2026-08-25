@@ -342,6 +342,7 @@ export interface Api {
   removeDevice(id: string): Promise<void>;
   recallDevice(id: string): Promise<void>;
   identifyDevice(id: string): Promise<void>;
+  lookForDevices(): Promise<void>;
   usage(): Promise<UsageAnswer>;
   setLimit(calls: number): Promise<UsageAnswer>;
   askAgain(pictureId: string): Promise<HouseRequest>;

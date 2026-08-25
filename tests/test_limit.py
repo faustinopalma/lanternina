@@ -88,20 +88,33 @@ def test_an_untouched_fuse_is_the_configured_one() -> None:
     assert limit_of(limits, "house-2", 2000) == 2000
 
 
-def test_the_fuse_cannot_be_set_below_what_is_already_spent() -> None:
-    """A raise that changes nothing would look like a panel that does not work."""
-    with pytest.raises(ValueError, match="already spent 40"):
-        clean_limit(40, spent=40)
-    assert clean_limit(41, spent=40) == 41
+def test_the_limit_is_a_plain_number_and_may_stop_the_house(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """It was refused below what the month had spent, which made the field explain itself
+    instead of taking a figure. A limit is a limit: set under the month's own total it
+    means the house stops now, and the page says so where it happens."""
+    assert clean_limit(40) == 40
+
+    usage = InMemoryUsageStore()
+    client = a_client(usage, InMemoryLimitStore(), configured=2000)
+    household = household_of(client)
+    usage.record(an_event("use-1", household))
+    usage.record(an_event("use-2", household))
+
+    said = client.post("/api/usage/limit", json={"calls": 1}, headers=headers()).json()
+
+    assert said["limit"] == 1
+    assert said["reached"] is True
 
 
-def test_the_panel_cannot_switch_the_fuse_off() -> None:
-    """Zero means "no Limit at all" to over_limit. That is a deployment decision, not a click."""
+def test_the_panel_cannot_switch_the_limit_off() -> None:
+    """Zero means "no limit at all" to over_limit. That is a deployment decision, not a click."""
     with pytest.raises(ValueError, match="between 1 and"):
-        clean_limit(0, spent=0)
+        clean_limit(0)
     with pytest.raises(ValueError, match="between 1 and"):
-        clean_limit(MAX_MONTHLY_LIMIT + 1, spent=0)
-    assert clean_limit(MAX_MONTHLY_LIMIT, spent=0) == MAX_MONTHLY_LIMIT
+        clean_limit(MAX_MONTHLY_LIMIT + 1)
+    assert clean_limit(MAX_MONTHLY_LIMIT) == MAX_MONTHLY_LIMIT
 
 
 def test_the_panel_is_told_the_fuse_went_and_not_only_how_high_it_is() -> None:
@@ -171,14 +184,12 @@ def test_raising_the_fuse_lets_the_refused_work_carry_on(
     assert reached, "the call must reach the model once the limit has been raised"
 
 
-def test_a_fuse_below_what_is_spent_is_refused_with_the_reason() -> None:
+def test_a_limit_outside_what_the_panel_may_set_is_refused_with_the_reason() -> None:
     usage = InMemoryUsageStore()
     client = a_client(usage, InMemoryLimitStore(), configured=2)
-    household = household_of(client)
-    usage.record(an_event("use-1", household))
-    usage.record(an_event("use-2", household))
+    household_of(client)
 
-    answer = client.post("/api/usage/limit", json={"calls": 2}, headers=headers())
+    answer = client.post("/api/usage/limit", json={"calls": 0}, headers=headers())
 
     assert answer.status_code == 400
-    assert "already spent 2" in answer.json()["detail"]
+    assert "between 1 and" in answer.json()["detail"]

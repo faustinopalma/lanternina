@@ -32,7 +32,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from shared.capabilities import KIND_PRINTER, KIND_SCANNER
+from shared.capabilities import JOB_PRINT, JOB_SCAN, KIND_PRINTER, KIND_SCANNER
 
 # What each kind answers to. Both were read off the machine in the house on 4 August 2026:
 # the Epson ET-2870 advertises `_ipp._tcp` for printing and `_uscan._tcp` for scanning.
@@ -279,6 +279,63 @@ def holders(things: list[dict[str, Any]] | None, job: str) -> list[dict[str, Any
     """
     found = [thing for thing in things or () if isinstance(thing, dict) and job in _jobs(thing)]
     return sorted(found, key=lambda thing: str(thing.get("id") or ""))
+
+
+def queue_for(host: str) -> str:
+    """The CUPS queue whose device URI names this host, or empty.
+
+    A discovered printer is not a queue. In this house the queue is called `Lanternina`
+    and the printer calls itself `EPSON ET-2870 Series`, so the label the parent sees can
+    never be handed to `lp` — the hostname inside the queue's device URI is what ties the
+    two together.
+
+    Never raises: no CUPS, no answer, or nothing matching all come back empty, and the
+    caller falls back to what it was configured with.
+    """
+    if not host:
+        return ""
+    try:
+        listed = subprocess.run(
+            ["lpstat", "-v"], capture_output=True, text=True, timeout=10, check=False
+        ).stdout
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    for line in listed.splitlines():
+        # "device for Lanternina: ipp://EPSOND59029.local:631/ipp/print"
+        head, _, uri = line.partition(":")
+        if head.startswith("device for ") and host.casefold() in uri.casefold():
+            return head[len("device for ") :].strip()
+    return ""
+
+
+def chosen_printer(jobs_file: Path, configured: str = "") -> str:
+    """The CUPS queue this house prints to, from the job the parent handed out.
+
+    The first holder by id rather than a random one: several printers may hold the job,
+    and spreading one afternoon's pages over two of them would be worse than always using
+    the same. Taking the job away from that one moves everything to the next.
+
+    Falls back to what was configured, which is what every house did before the panel
+    could say anything about a printer.
+    """
+    for thing in holders(load_jobs(jobs_file), JOB_PRINT):
+        queue = queue_for(str(thing.get("id") or "").partition(":")[2])
+        if queue:
+            return queue
+    return configured
+
+
+def chosen_scanner(jobs_file: Path, configured: str = "") -> str:
+    """The scanner model this house reads from, from the job the parent handed out.
+
+    A model and not a device: `devices/scan_sheet.find_scanner` asks SANE for the device
+    by model at the moment it scans, because a USB scanner's device name moves.
+    """
+    for thing in holders(load_jobs(jobs_file), JOB_SCAN):
+        model = str(thing.get("model") or thing.get("label") or "")
+        if model:
+            return model
+    return configured
 
 
 def jobs_of(things: list[dict[str, Any]] | None, thing_id: str) -> tuple[str, ...] | None:

@@ -33,9 +33,24 @@ interface Group {
   sections: Section[];
 }
 
+/* One page for everything waiting on a decision. They were two, and a parent could not
+ * tell them apart because the difference is not in what they ask of the reader: an
+ * activity is a whole afternoon devised in the cloud, a proposal is one piece of content
+ * sealed on the device, and nothing on the hub has submitted one of the second kind since
+ * the afternoons arrived. So the live one is the page, and the older one appears inside it
+ * if it ever has anything. */
+function WaitingForYou() {
+  return (
+    <>
+      <Experiences />
+      <Proposals />
+    </>
+  );
+}
+
 export function Dashboard({ api }: { api: Api }) {
   const { t } = useWords();
-  const [current, setCurrent] = useState("proposals");
+  const [current, setCurrent] = useState("experiences");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Written out one by one rather than built from the name: a key that only exists at
@@ -48,16 +63,10 @@ export function Dashboard({ api }: { api: Api }) {
       title: t("menu.group.decide"),
       sections: [
         {
-          name: "proposals",
-          title: t("proposals.title"),
-          note: t("proposals.note"),
-          Body: Proposals,
-        },
-        {
           name: "experiences",
           title: t("experiences.title"),
           note: t("experiences.note"),
-          Body: Experiences,
+          Body: WaitingForYou,
         },
       ],
     },

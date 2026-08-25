@@ -29,7 +29,7 @@ export function Usage() {
   if (state.status === "failed") return <Quiet>{t("usage.unreadable")}</Quiet>;
 
   const answer = moved ?? state.data;
-  const { usage, limit, reached, changedAt, changedBy, spent, maxLimit } = answer;
+  const { usage, limit, reached, changedAt, maxLimit } = answer;
   const kinds = [
     { kind: "image", title: t("usage.kind.image") },
     { kind: "text", title: t("usage.kind.text") },
@@ -67,30 +67,17 @@ export function Usage() {
       </section>
       <section className="mt-5">
         <Heading>{t("usage.limit")}</Heading>
-        {/* Shown as a state and not as a budget: it stops a runaway loop, and a limit
-            somebody moved must never look like one that was always there. */}
         <Quiet className="mb-1.5">{t("usage.limit.note")}</Quiet>
-        <Facts
-          rows={[
-            {
-              label: t("usage.limit.moved"),
-              value:
-                changedAt > 0
-                  ? t("usage.limit.movedOn", { when: dateTime(changedAt), who: changedBy })
-                  : t("usage.limit.asConfigured"),
-            },
-            ...(reached
-              ? [{ label: t("usage.limit.state"), value: t("usage.limit.gone") }]
-              : []),
-          ]}
-        />
+        {reached ? (
+          <Facts rows={[{ label: t("usage.limit.state"), value: t("usage.limit.gone") }]} />
+        ) : null}
         <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
           <Label htmlFor="usage-limit">{t("usage.limit.at")}</Label>
           <Input
             id="usage-limit"
             type="number"
             className="w-28"
-            min={spent + 1}
+            min={1}
             max={maxLimit}
             value={wanted ?? String(limit)}
             onChange={(event) => {
@@ -106,9 +93,15 @@ export function Usage() {
                 const now = await api.setLimit(Number(wanted));
                 setMoved(now);
                 setWanted(null);
-                setSaid(t("usage.limit.saved", { calls: now.limit }));
+                // Setting it under the month's own total is allowed and stops the house.
+                // Said here, where it happens, rather than guarded against in the field.
+                setSaid(
+                  now.reached
+                    ? t("usage.limit.savedStopped", { calls: now.limit, spent: now.spent })
+                    : t("usage.limit.saved", { calls: now.limit }),
+                );
               } catch {
-                setSaid(t("usage.limit.refused", { spent, max: maxLimit }));
+                setSaid(t("usage.limit.refused", { max: maxLimit }));
               }
             }}
           >
@@ -116,6 +109,11 @@ export function Usage() {
           </Button>
           <span className="text-quiet">{t("usage.limit.bounds", { max: maxLimit })}</span>
         </div>
+        {changedAt > 0 ? (
+          <p className="mt-2 mb-0 text-quiet">
+            {t("usage.limit.movedOn", { when: dateTime(changedAt) })}
+          </p>
+        ) : null}
         {said === "" ? null : (
           <p className="mt-2 mb-0 text-quiet" aria-live="polite">
             {said}

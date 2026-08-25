@@ -156,30 +156,35 @@ function summary(proposal: Proposal): string {
   }
 }
 
+/* The older half of approving, kept because the store and the route are still here and a
+ * proposal that arrived would have to be decidable. Nothing on the hub submits one — no
+ * timer, no service, only `tools/home_server.py propose` run by hand — so in a working
+ * house this is empty, and empty it says nothing at all rather than occupying a page of
+ * its own next to the one that is live. */
 export function Proposals() {
   const { t } = useWords();
   const api = useApi();
   const [state] = useLoad(() => api.proposals());
   const [decided, setDecided] = useState<string[]>([]);
 
-  if (state.status === "loading") return <Quiet>{t("proposals.loading")}</Quiet>;
-  if (state.status === "failed") return <Quiet>{t("proposals.unreadable")}</Quiet>;
+  if (state.status !== "ready") return null;
 
   const waiting = state.data.filter((proposal) => !decided.includes(proposal.id));
+  if (waiting.length === 0) return null;
 
   return (
-    <div aria-live="polite">
-      {waiting.length === 0 ? (
-        <Quiet>{t("proposals.empty")}</Quiet>
-      ) : (
-        waiting.map((proposal) => (
-          <Card
-            key={proposal.id}
-            proposal={proposal}
-            onDecided={() => setDecided((seen) => [...seen, proposal.id])}
-          />
-        ))
-      )}
+    <div aria-live="polite" className="mt-6">
+      <h3 className="mb-1.5 text-[1rem] font-semibold tracking-tight">
+        {t("proposals.title")}
+      </h3>
+      <Quiet className="mb-2">{t("proposals.note")}</Quiet>
+      {waiting.map((proposal) => (
+        <Card
+          key={proposal.id}
+          proposal={proposal}
+          onDecided={() => setDecided((seen) => [...seen, proposal.id])}
+        />
+      ))}
       <Approved />
     </div>
   );

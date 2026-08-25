@@ -37,9 +37,10 @@ from devices.inventory import (
 )
 from devices.trmnl_byos import LEVEL_OK, identify_for, last_state, load_devices, recorded_level
 
-# `panel/requests.py` says it. Anything else here is somebody else's request, and this
+# `panel/requests.py` says them. Anything else here is somebody else's request, and this
 # side leaves it standing rather than clearing something it did not act on.
 REQUEST_IDENTIFY = "identify"
+REQUEST_LOOK_NOW = "lookNow"
 
 MAINS = "mains"
 
@@ -91,7 +92,11 @@ def label_of(things: object, thing_id: str) -> str:
 
 
 def say_which_one(panel: str, household: str, key: str, shared: Path, things: object) -> None:
-    """Put the id card up on the display the parent asked about, and clear the request.
+    """Act on what the parent asked the house to do about its devices, and clear it.
+
+    Two kinds reach here. One puts an id card up on a display. The other asks the house to
+    look at the network now, which is what this run has already done by the time it gets
+    here — so acting on it is nothing but saying so and taking the row away.
 
     Never raises. A panel that cannot be reached, or a request about something this house
     does not have a screen for, leaves everything exactly as it was.
@@ -105,18 +110,24 @@ def say_which_one(panel: str, household: str, key: str, shared: Path, things: ob
     except (urllib.error.URLError, OSError, ValueError, AttributeError) as exc:
         print(f"cannot read what was asked for ({exc})")
         return
-    if not isinstance(asked, dict) or asked.get("kind") != REQUEST_IDENTIFY:
+    if not isinstance(asked, dict):
         return
-    label = label_of(things, str(asked.get("subject") or ""))
-    if not label:
-        print(f"asked to identify {asked.get('subject')!r}, which is not a display here")
+    kind = asked.get("kind")
+    if kind == REQUEST_LOOK_NOW:
+        print("asked to look at the network: this run has just done it")
+    elif kind == REQUEST_IDENTIFY:
+        label = label_of(things, str(asked.get("subject") or ""))
+        if not label:
+            print(f"asked to identify {asked.get('subject')!r}, which is not a display here")
+            return
+        try:
+            identify_for(shared, label).write_text("", encoding="utf-8")
+        except OSError as exc:
+            print(f"could not put the id card up on {label}: {exc}")
+            return
+        print(f"{label} will say which one it is until somebody presses its button")
+    else:
         return
-    try:
-        identify_for(shared, label).write_text("", encoding="utf-8")
-    except OSError as exc:
-        print(f"could not put the id card up on {label}: {exc}")
-        return
-    print(f"{label} will say which one it is until somebody presses its button")
     done = urllib.request.Request(
         f"{panel}/api/device/{household}/request/{asked.get('id')}/done",
         headers={"X-Device-Key": key},
@@ -125,8 +136,8 @@ def say_which_one(panel: str, household: str, key: str, shared: Path, things: ob
     try:
         urllib.request.urlopen(done, timeout=30).close()
     except (urllib.error.URLError, OSError) as exc:
-        # The card is up, which is what was asked for. A request left standing only means
-        # it is written again next time.
+        # What was asked for has happened. A request left standing only means it is acted
+        # on again next time, which for both of these kinds costs nothing.
         print(f"could not clear the request ({exc})")
 
 

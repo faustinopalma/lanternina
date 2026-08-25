@@ -44,7 +44,7 @@ from numpy.typing import NDArray
 
 from devices.ask_panel import PanelUnreachable, read_page
 from devices.epaper import render_notice_bmp, render_waiting_bmp
-from devices.house import House
+from devices.house import House, printer_in, scanner_in
 from devices.print_page import recall, waiting
 from devices.trmnl_byos import screen_for
 from shared.ids import SheetId
@@ -142,7 +142,7 @@ def _to_the_afternoon(
     from devices.run_experience import carry_on
 
     house = House(
-        printer=os.environ.get("LANTERNINA_PRINTER", ""),
+        printer=printer_in(os.environ),
         scanner=scanner,
         screen=target,
         sheets_dir=sheets_dir,
@@ -165,7 +165,9 @@ def main() -> int:
     button_file = Path(sys.argv[1] if len(sys.argv) > 1 else "")
     sheets_dir = Path(sys.argv[2] if len(sys.argv) > 2 else "")
     screen_file = Path(sys.argv[3] if len(sys.argv) > 3 else "")
-    scanner = sys.argv[4] if len(sys.argv) > 4 else ""
+    # The parent's choice first: the argument is what the unit file was written with, and
+    # a scanner handed the job in the panel is the newer statement of the same thing.
+    scanner = scanner_in(os.environ) or (sys.argv[4] if len(sys.argv) > 4 else "")
     if not (str(button_file) and str(sheets_dir) and str(screen_file) and scanner):
         print("usage: scan_sheet <button-file> <sheets-dir> <screen-file> <scanner-model>")
         return 1

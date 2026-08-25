@@ -363,6 +363,19 @@ describe("the devices", () => {
     );
   });
 
+  it("asks the house to look at the network, and says when the answer arrives", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Dispositivi");
+    await user.click(await screen.findByRole("button", { name: "Cerca stampanti e scanner" }));
+
+    await waitFor(() => expect(api.recorded.looked).toEqual(["asked"]));
+    // What was written down, how long it takes, and what to do next.
+    await screen.findByText(/compare in questo elenco entro un minuto/);
+  });
+
   it("asks a display which one it is, and says what ends it", async () => {
     const api = fakeApi();
     const user = userEvent.setup();

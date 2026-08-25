@@ -340,6 +340,20 @@ def render_id_bmp(friendly_id: str) -> bytes:
     return render_notice_bmp(friendly_id, UNASSIGNED_LINES)
 
 
+# What a display shows when the panel asked which one it is. The same code, and a
+# different sentence: the card above says the display has no job, which is untrue of a
+# display that has one and was merely asked to identify itself — read on the wall as
+# "FB9F18 has no job yet" on 25 August 2026, about a display with two.
+ASKED_WHICH_LINES: Final = (
+    "Hai chiesto qual è questo schermo.",
+    "Premi il pulsante qui sopra per togliere la scritta.",
+)
+
+
+def render_asked_which_bmp(friendly_id: str) -> bytes:
+    return render_notice_bmp(friendly_id, ASKED_WHICH_LINES)
+
+
 def render_name_bmp(title: str) -> bytes:
     """What a display shows when it has work but nothing to show at this minute.
 

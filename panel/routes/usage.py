@@ -79,11 +79,9 @@ def set_limit(chosen: ChosenLimit, account: CurrentAccount, request: Request) ->
     """
     household_id = str(account.household_id)
     period = month_of(time.time())
-    counter: UsageStore = request.app.state.usage
     limits: LimitStore = request.app.state.limit
-    spent = counter.summary(household_id, period).total.billed_calls
     try:
-        calls = clean_limit(chosen.calls, spent)
+        calls = clean_limit(chosen.calls)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     limits.set(

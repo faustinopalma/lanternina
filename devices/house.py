@@ -119,6 +119,42 @@ def screen_in(env: Mapping[str, str]) -> Path | None:
     return sheet_file(path, Path(jobs))
 
 
+def _jobs_file(env: Mapping[str, str]) -> Path | None:
+    named = env.get("LANTERNINA_JOBS_FILE", "")
+    if named:
+        return Path(named)
+    shared = env.get("TRMNL_SCREEN_FILE", "")
+    return Path(shared).with_name("jobs.json") if shared else None
+
+
+def printer_in(env: Mapping[str, str]) -> str:
+    """The queue this house prints to: the printer the parent gave the job to.
+
+    Until 25 August 2026 this was `LANTERNINA_PRINTER` and nothing else, so handing the
+    print job to a second printer in the panel changed the row and not where the paper
+    came out. That variable is now the fallback: a house whose panel has said nothing, or
+    whose chosen printer has no CUPS queue, prints exactly where it printed before.
+    """
+    configured = env.get("LANTERNINA_PRINTER", "")
+    jobs = _jobs_file(env)
+    if jobs is None:
+        return configured
+    from devices.inventory import chosen_printer
+
+    return chosen_printer(jobs, configured)
+
+
+def scanner_in(env: Mapping[str, str]) -> str:
+    """The scanner model this house reads from, chosen the same way as the printer."""
+    configured = env.get("LANTERNINA_SCANNER", "")
+    jobs = _jobs_file(env)
+    if jobs is None:
+        return configured
+    from devices.inventory import chosen_scanner
+
+    return chosen_scanner(jobs, configured)
+
+
 def show(house: House, heading: str, lines: list[str]) -> None:
     pretending = house.pretending
     if pretending is not None:

@@ -107,6 +107,7 @@ export function Devices() {
   const [state, reload] = useLoad(() => api.devices());
   const [removing, setRemoving] = useState<string | null>(null);
   const [asked, setAsked] = useState<string | null>(null);
+  const [looked, setLooked] = useState(false);
 
   if (state.status === "loading") return <Quiet>{t("devices.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("devices.unreadable")}</Quiet>;
@@ -119,6 +120,21 @@ export function Devices() {
       <Quiet>{t("devices.nameNote", { limit: nameLimit })}</Quiet>
       <Quiet>{t("devices.jobNote")}</Quiet>
       <Quiet>{t("devices.removeNote")}</Quiet>
+      <div className="mt-3.5 mb-1">
+        <Button
+          size="small"
+          disabled={looked}
+          onClick={async () => {
+            await api.lookForDevices().catch(() => null);
+            setLooked(true);
+          }}
+        >
+          {t("devices.look")}
+        </Button>
+        <Quiet className="mt-1.5">
+          {looked ? t("devices.look.asked") : t("devices.look.note")}
+        </Quiet>
+      </div>
       {devices.map((device) => (
         <div
           key={device.id}
