@@ -35,14 +35,26 @@ from ..experiences import (
     WITHDRAWABLE_FROM,
     ExperienceStore,
     OfferedExperience,
+    backlog_of,
 )
 from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
+from ..rhythm import RhythmStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
 from . import Decision
 
 router = APIRouter()
+
+
+class SeveralDecisions(BaseModel):
+    """The same decision, given to a handful of afternoons in one sitting."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    ids: list[str]
+    state: str
+    note: str = ""
 
 
 class WhatCameBack(BaseModel):
@@ -331,9 +343,59 @@ def afternoon_begun(
 
 @router.get("/api/experiences")
 def list_afternoons(account: CurrentAccount, request: Request, state: str = "pending") -> Any:
+    """What is waiting for a decision, and how far what is already approved carries.
+
+    Both in one answer, because they are read together: a parent deciding whether to spend
+    ten minutes on this now wants to know whether the house is about to run dry.
+    """
     store: ExperienceStore = request.app.state.experiences
-    rows = store.list(str(account.household_id), state or None)
-    return {"experiences": [row.to_public() for row in rows]}
+    household_id = str(account.household_id)
+    rows = store.list(household_id, state or None)
+    rhythm: RhythmStore = request.app.state.rhythm
+    days = len(rhythm.get(household_id).afternoon_days)
+    return {
+        "experiences": [row.to_public() for row in rows],
+        "backlog": backlog_of(store.list(household_id), days_a_week=days).to_public(),
+    }
+
+
+@router.post("/api/experiences/decisions")
+def decide_several(
+    decisions: SeveralDecisions, account: CurrentAccount, request: Request
+) -> Any:
+    """One sitting, several afternoons.
+
+    A parent who opens the panel once a week is deciding about a handful at a time, and
+    one request per card turns a sitting into a sequence of things that can each fail
+    halfway. Every id is answered for: the reply says what each one became, so a card that
+    could not be decided is visible rather than silently unchanged.
+    """
+    if decisions.state not in {s.value for s in DECIDABLE}:
+        raise HTTPException(status_code=400, detail="unsupported_state")
+    if not decisions.ids:
+        raise HTTPException(status_code=400, detail="no_experiences")
+    store: ExperienceStore = request.app.state.experiences
+    household_id = str(account.household_id)
+    decided: list[dict[str, Any]] = []
+    for experience_id in decisions.ids:
+        try:
+            row = store.decide(
+                household_id,
+                experience_id,
+                decisions.state,
+                decided_by=str(account.id),
+                note=decisions.note,
+            )
+        except KeyError:
+            decided.append({"id": experience_id, "state": "unknown"})
+            continue
+        decided.append(row.to_public())
+    rhythm: RhythmStore = request.app.state.rhythm
+    days = len(rhythm.get(household_id).afternoon_days)
+    return {
+        "decided": decided,
+        "backlog": backlog_of(store.list(household_id), days_a_week=days).to_public(),
+    }
 
 
 @router.post("/api/experiences/{experience_id}/decision")

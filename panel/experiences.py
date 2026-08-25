@@ -84,6 +84,55 @@ class OfferedExperience:
         return {"id": self.id, "experience": self.experience}
 
 
+@dataclass(frozen=True, slots=True)
+class Backlog:
+    """How much is approved and not yet begun, and how far it carries.
+
+    A parent sits down once and approves several, then may not open the panel for a week.
+    What they need before closing it is not a list — it is one number that says whether the
+    house has enough. ``days`` is that number: the stock divided by the days an afternoon
+    may begin on, rounded down, so it is a floor and never a promise.
+
+    It counts afternoons and minutes and nothing else. How many were run, how often, how
+    long anybody spent: none of that is here, and none of it is anywhere.
+    """
+
+    approved: int
+    minutes: int
+    # Afternoons a week the rhythm allows. Zero when no day is chosen, and then `days` is
+    # zero too — a stock that carries nowhere, which is the truth about a house that has
+    # not said when anything may happen.
+    per_week: int
+
+    @property
+    def days(self) -> int:
+        if self.per_week <= 0 or self.approved <= 0:
+            return 0
+        return int(self.approved * 7 / self.per_week)
+
+    def to_public(self) -> dict[str, Any]:
+        return {
+            "approved": self.approved,
+            "minutes": self.minutes,
+            "perWeek": self.per_week,
+            "days": self.days,
+        }
+
+
+def backlog_of(rows: list[OfferedExperience], *, days_a_week: int) -> Backlog:
+    """The stock a house is sitting on. Begun ones are spent and do not count."""
+    waiting = [
+        row
+        for row in rows
+        if row.state == ApprovalState.APPROVED.value and not row.begun_at
+    ]
+    return Backlog(
+        approved=len(waiting),
+        minutes=sum(int(row.experience.get("minutes", 0) or 0) for row in waiting),
+        per_week=days_a_week,
+    )
+
+
 @runtime_checkable
 class ExperienceStore(Protocol):
     def offer(self, record: OfferedExperience) -> OfferedExperience: ...

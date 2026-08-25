@@ -100,21 +100,20 @@ def test_the_stamp_holds_a_date_and_not_a_tally(tmp_path: Path) -> None:
     assert stamp.read_text(encoding="utf-8").strip() == "2026-08-19"
 
 
-def test_a_run_that_found_nothing_to_do_does_not_use_up_the_day(
+def test_a_run_that_found_nothing_to_do_still_begins_one_approved_later(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """An afternoon approved at four o'clock begins at ten past, not tomorrow. Nothing was
-    spent on a run that only found the parent had not decided yet."""
+    """An afternoon approved at four o'clock begins at ten past, not tomorrow."""
     offered: list[dict[str, Any]] = []
     calls = a_panel(monkeypatch, offered=offered, waiting=1)
 
     a_turn(monkeypatch, house, WHEN)
-    assert not (house.sheets_dir / "afternoon-looked.stamp").exists()
 
     offered.append(offered_row())
     a_turn(monkeypatch, house, WHEN + 600)
 
     assert calls["looked"] == 2
+    assert calls["begun"] == ["aftn-1"]
     assert calls["begun"] == ["aftn-1"]
 
 
@@ -324,15 +323,40 @@ def test_it_asks_for_one_when_there_is_nothing_approved_and_nothing_with_the_par
     assert waiting_runs(house.sheets_dir) == []
 
 
-def test_it_does_not_ask_while_one_is_still_with_the_parent(
+def test_it_keeps_a_stock_rather_than_one_at_a_time(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """A parent who has not read the first one is not handed a second to refuse."""
+    """One unread afternoon used to stop the house devising anything at all, so a parent
+    away for a week came back to a single card. It tops up to `STOCK` instead, one a day."""
     calls = a_panel(monkeypatch, offered=[], waiting=1)
 
     assert a_turn(monkeypatch, house, WHEN) == 0
 
+    assert calls["devised"] == 1
+
+
+def test_a_full_stock_is_not_topped_up(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """The stock is a ceiling, not a target to keep hitting."""
+    calls = a_panel(monkeypatch, offered=[], waiting=clock.STOCK)
+
+    assert a_turn(monkeypatch, house, WHEN) == 0
+
     assert calls["devised"] == 0
+
+
+def test_it_asks_for_one_more_only_once_a_day(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """The timer fires sixty times an hour and devising is a model writing a dozen moments."""
+    calls = a_panel(monkeypatch, offered=[], waiting=0)
+
+    a_turn(monkeypatch, house, WHEN)
+    a_turn(monkeypatch, house, WHEN + 600)
+    a_turn(monkeypatch, house, WHEN + 1200)
+
+    assert calls["devised"] == 1
 
 
 def test_an_afternoon_that_would_run_past_the_band_does_not_begin(

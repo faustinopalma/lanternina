@@ -90,6 +90,17 @@ LOOK_TIMEOUT_SECONDS = 30
 # 21 August 2026: 29.1 s for the one that succeeded.
 DEVISE_TIMEOUT_SECONDS = 180
 
+# How many afternoons the house tries to have in hand — approved and not yet begun, plus
+# whatever is still with the parent unread. Until 25 August 2026 this was effectively one:
+# nothing was devised while anything at all was waiting, so a parent who did not open the
+# panel for a week came back to a single afternoon and a house that had done nothing.
+#
+# Six, and one new one a day at most. That is a fortnight of twice-weekly afternoons if the
+# parent approves them all, and it is what lets somebody sit down once, approve several, and
+# close the panel knowing the house will not run dry. It is a stock, not a queue of work:
+# nothing here counts what was run, and nothing hurries anybody to approve.
+STOCK = 6
+
 MINUTES_IN_A_DAY = 24 * 60
 
 
@@ -359,6 +370,40 @@ def choose(offered: list[Any], house: House) -> tuple[str, Experience] | None:
     return None
 
 
+def top_up(
+    panel: str,
+    household: str,
+    key: str,
+    house: House,
+    stamp: Path,
+    now: float,
+    zone: str,
+    *,
+    in_hand: int,
+) -> None:
+    """Ask for one more afternoon when the stock is low. Never raises.
+
+    Once a day and one at a time, whatever the shortfall. A house four short does not ask
+    for four: devising is a model writing a dozen moments, and four of those in one minute
+    is a bill nobody agreed to. It catches up over four days, which is the pace a stock of
+    six is sized for.
+
+    Stamped before the asking and not after, so a panel that refuses is not asked again in
+    a minute — the timer fires sixty times an hour.
+    """
+    if in_hand >= STOCK:
+        return
+    if looked_today(stamp, now, zone):
+        return
+    mark_looked(stamp, now, zone)
+    try:
+        title = ask_for_one(panel, household, key, house)
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"no afternoon was devised ({exc})")
+        return
+    print(f"{in_hand} in hand, wanted {STOCK}; asked for one more: {title}")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Begin an afternoon, if it is time.")
     parser.add_argument(
@@ -453,34 +498,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"the panel did not say what this house may run ({exc})")
         return 0
 
+    # Topping the stock up is its own decision and it happens either way: whether one is
+    # about to begin says nothing about whether the parent has enough to look at.
+    top_up(panel, household, key, house, stamp, now, zone, in_hand=len(offered) + waiting)
+
     chosen = choose(offered, house)
     if chosen is None:
-        if waiting:
-            # Nothing was spent and nothing was decided, so the day is not stamped: a
-            # parent who approves one of these in the next ten minutes is honoured today
-            # rather than tomorrow. What it costs is one small request every ten minutes
-            # for as long as an afternoon sits unread.
-            print(f"{waiting} waiting for the parent; nothing to begin")
-            return 0
-        if not asked and looked_today(stamp, now, zone):
-            print(f"nothing approved, and one was already devised today ({date_there(now, zone)})")
-            return 0
-        # Stamped before the asking, not after: a panel refusing to devise would otherwise
-        # be asked again every ten minutes, which is 42 model calls in an afternoon.
-        mark_looked(stamp, now, zone)
-        try:
-            title = ask_for_one(panel, household, key, house)
-        except (urllib.error.URLError, OSError, ValueError) as exc:
-            print(f"no afternoon was devised ({exc})")
-            return 0
-        print(f"asked for one, and it is waiting for the parent: {title}")
+        print(f"nothing approved that this house can run; {waiting} waiting for the parent")
         return 0
 
     offered_id, experience = chosen
     minutes_now = there.tm_hour * 60 + there.tm_min
-    # Stamped so that nothing is devised for the rest of today: what a parent approved is
-    # begun as long as the band is open, and what a model has not written yet can wait.
-    mark_looked(stamp, now, zone)
     if not fits_inside_the_band(
         minutes_now,
         experience.minutes,

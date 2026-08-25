@@ -553,9 +553,10 @@ def test_the_hub_cannot_ask_without_the_device_key() -> None:
 def test_nothing_in_the_panel_can_start_or_change_an_afternoon() -> None:
     """The rule that was not smoothed, pinned by naming every route this feature has.
 
-    Three of these are the house calling; the two a browser can call are a list and a
-    decision. There is no path a browser could use to put moments into a house, and this
-    test fails the moment somebody adds one — which is the only way that stays true.
+    Three of these are the house calling; the three a browser can call are a list and two
+    ways of recording a decision — one card, or a handful in a sitting. There is no path a
+    browser could use to put moments into a house, and this test fails the moment somebody
+    adds one, which is the only way that stays true.
     """
     client = client_for()
     published = client.get("/openapi.json").json()["paths"]
@@ -566,5 +567,6 @@ def test_nothing_in_the_panel_can_start_or_change_an_afternoon() -> None:
         "/api/device/{household_id}/experiences": ["get", "post"],
         "/api/device/{household_id}/experiences/{experience_id}/begun": ["post"],
         "/api/experiences": ["get"],
+        "/api/experiences/decisions": ["post"],
         "/api/experiences/{experience_id}/decision": ["post"],
     }
