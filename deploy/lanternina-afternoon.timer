@@ -1,17 +1,19 @@
 [Unit]
-Description=Look, once on each day the parent chose, for an afternoon to begin
+Description=Look for an afternoon to begin, and for a parent asking for one now
 
 [Timer]
-# Every ten minutes. Each run asks the panel for the days and the hours the parent chose —
-# one small request, 0.33 s measured on 21 August 2026 — and almost every run stops there,
-# because today is not a chosen day or the hour has not come. The expensive look, at what
-# this house may actually run, happens once on a chosen day.
+# Every minute. It was ten until 25 August 2026, and ten is still the right spacing for
+# the scheduled look: the hour an afternoon may begin is a threshold, not an appointment.
+# What changed is that the parent can press "begin one now" in the panel, and the panel
+# has no way to reach the house — so the wait after a press is exactly this interval, and
+# ten minutes of it is a button that feels broken.
 #
-# Ten minutes rather than one because nothing here is due to the minute: the hour an
-# afternoon may begin is a threshold, not an appointment. It is also what a parent waits
-# after switching afternoons on before anything can happen.
-OnCalendar=*:0/10:00
-AccuracySec=30s
+# What it costs, measured on this hub: 1.2 s of CPU per run, so about 2% of one core, and
+# two small requests to the panel. Neither is new work for the cloud: `pull_picture` was
+# already asking the same panel for the same standing request once a minute, so nothing
+# was scaling to zero between these runs anyway.
+OnCalendar=*:0/1:00
+AccuracySec=15s
 Persistent=true
 
 [Install]
