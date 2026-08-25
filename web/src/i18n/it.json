@@ -140,6 +140,8 @@
   "rhythm.afternoonFrom": "non prima delle",
   "rhythm.timeZone": "Fuso orario di casa",
   "rhythm.timeZoneNone": "Quello dell'apparecchio",
+  "rhythm.timeZoneUnknown": "Da qui non si vede che ora è in casa.",
+  "rhythm.timeZoneNote": "L'orologio qui accanto è l'ora che avrà la casa: confrontala con un orologio nella stanza. Tiene conto dell'ora legale da sé, e le città sono raggruppate per scarto da UTC, quindi accanto a Parigi trovi Roma.",
   "rhythm.beginNow": "Comincia un'attività",
   "rhythm.beginNote": "Scavalca il giorno e l'ora, non la pausa della sera. Se un'attività è già in corso non la interrompe.",
   "rhythm.beginAsked": "Segnato. La casa lo trova al prossimo giro, entro un minuto.",
