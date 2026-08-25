@@ -401,12 +401,16 @@ def main(argv: list[str] | None = None) -> int:
     stamp = sheets_dir / "afternoon-looked.stamp"
     now = time.time()
 
-    # Help first, and on its own unit every minute, because a rung due at three minutes is
-    # not honoured by a timer that runs every ten. It touches no network: the ladder is in
-    # the run file and the rung goes to a display.
-    for given in offer_help(house, now, send=not args.no_paper):
-        print(f"help: {given}")
+    # Help has one owner, and it is `--only-help` on its own unit. It was offered here too
+    # until 25 August 2026, which was harmless while this ran every ten minutes and the
+    # help unit every one; when this went to a minute the two collided and offered the same
+    # rung twice in the same second, racing to write the same run file — measured at
+    # 13:38:04 on `aft_78a067a8`. It stays on the separate unit rather than moving here,
+    # because it touches no network: a rung is in the run file and goes to a display, so it
+    # keeps arriving on a run that cannot reach the panel at all.
     if args.only_help:
+        for given in offer_help(house, now, send=not args.no_paper):
+            print(f"help: {given}")
         return 0
 
     # Before the ending is decided, not after: an end hour that moved would otherwise wait
