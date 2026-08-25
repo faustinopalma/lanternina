@@ -27,6 +27,9 @@ class NewRhythm(BaseModel):
     # panel that has not been rebuilt cannot switch afternoons on by omission.
     afternoonDays: list[str] = []
     afternoonFrom: str = ""
+    # Where the house is. Absent leaves whatever was saved before untouched by a panel
+    # that has not been rebuilt, which is not the same as choosing to have none.
+    timeZone: str | None = None
 
 
 @router.get("/api/rhythm")
@@ -40,6 +43,7 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
     """Record when the display may change. It persists and returns: the hub reads it
     on its next run, and nothing here reaches into the house."""
     store: RhythmStore = request.app.state.rhythm
+    kept = store.get(str(account.household_id))
     try:
         chosen = clean_rhythm(
             str(account.household_id),
@@ -48,6 +52,9 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
             cadence_minutes=new.cadenceMinutes,
             afternoon_days=new.afternoonDays,
             afternoon_from=new.afternoonFrom or None,
+            # A panel that does not send the field leaves the zone as it was, so an older
+            # browser cannot quietly move the house back onto the machine's own clock.
+            time_zone=kept.time_zone if new.timeZone is None else new.timeZone,
             updated_by=str(account.id),
         )
     except ValueError as exc:

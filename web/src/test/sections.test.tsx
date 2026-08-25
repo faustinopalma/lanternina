@@ -125,9 +125,11 @@ describe("the rhythm", () => {
       quietUntil: "07:00",
       cadenceMinutes: 90,
       // Sent back untouched: one form saves five settings, and changing the spacing must
-      // not quietly clear the days an afternoon may begin on.
+      // not quietly clear the days an afternoon may begin on, nor move the house back
+      // onto whatever clock the hub's own machine happens to be set to.
       afternoonDays: ["wed", "sat"],
       afternoonFrom: "15:00",
+      timeZone: "Europe/Rome",
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
   });
@@ -144,6 +146,29 @@ describe("the rhythm", () => {
 
     await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
     expect(api.recorded.rhythm[0]!.afternoonDays).toEqual([]);
+  });
+
+  it("asks for an afternoon now, and says it was asked rather than started", async () => {
+    /* The wording is the test. The panel cannot reach the house, so a button that said
+     * "started" would be claiming something it has no way to know. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    await user.click(await screen.findByRole("button", { name: "Comincia un pomeriggio" }));
+
+    await waitFor(() => expect(api.recorded.begunNow).toBe(1));
+    expect(await screen.findByText(/La casa lo trova al prossimo giro/)).toBeInTheDocument();
+    // Pressing must not save the form: the hours are a separate decision.
+    expect(api.recorded.rhythm).toHaveLength(0);
+  });
+
+  it("says what beginning now does not override", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+    await open(user, "Ritmo");
+    expect(await screen.findByText(/non la pausa della sera/)).toBeInTheDocument();
   });
 
   it("keeps the note about the display waking about every ten minutes", async () => {

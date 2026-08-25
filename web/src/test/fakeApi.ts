@@ -38,6 +38,7 @@ export interface Recorded {
   assignments: { id: string; assignment: NewAssignment }[];
   devicesRemoved: string[];
   askedAgain: string[];
+  begunNow: number;
   experienceDecisions: { id: string; state: Decision }[];
   said: NewSaid[];
 }
@@ -287,6 +288,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     assignments: [],
     devicesRemoved: [],
     askedAgain: [],
+    begunNow: 0,
     experienceDecisions: [],
     said: [],
   };
@@ -333,6 +335,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     maxCadenceMinutes: 1440,
     afternoonDays: ["wed", "sat"],
     afternoonFrom: "15:00",
+    timeZone: "Europe/Rome",
     dayChoices: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
   };
   let preferences: Preferences = {
@@ -494,6 +497,16 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
         id: `ask-${recorded.askedAgain.length}`,
         kind: "showAgain",
         subject: pictureId,
+        askedAt: NOW,
+      };
+      return standing;
+    },
+    beginNow: async () => {
+      recorded.begunNow += 1;
+      standing = {
+        id: `ask-begin-${recorded.begunNow}`,
+        kind: "beginNow",
+        subject: "any",
         askedAt: NOW,
       };
       return standing;

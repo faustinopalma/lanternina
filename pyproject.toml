@@ -49,11 +49,16 @@ panel = [
     "azure-ai-contentsafety>=1.0",
     # The async Content Safety client needs an async transport, and does not declare it.
     "aiohttp>=3.9",
+    # `zoneinfo` ships no database of its own. Verified 25 August 2026: on Windows and in
+    # python:3.13-slim every `ZoneInfo("Europe/Rome")` raises without this, so the panel
+    # would refuse every timezone a parent picked. The hub does not need it — Raspberry Pi
+    # OS has /usr/share/zoneinfo — and everything here is stdlib on purpose.
+    "tzdata>=2024.1",
     "Pillow>=10.0",
 ]
 # Serial link to the ESP32 devices.
 devices = ["pyserial>=3.5"]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "httpx>=0.27"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10", "httpx>=0.27", "tzdata>=2024.1"]
 
 [tool.setuptools.packages.find]
 where = ["."]

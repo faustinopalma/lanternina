@@ -551,6 +551,7 @@ class CosmosRhythmStore:
                 "cadenceMinutes": rhythm.cadence_minutes,
                 "afternoonDays": list(rhythm.afternoon_days),
                 "afternoonFromMinutes": rhythm.afternoon_from_minutes,
+                "timeZone": rhythm.time_zone,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
             }
@@ -570,6 +571,9 @@ def _to_rhythm(document: dict[str, Any]) -> Rhythm:
         afternoon_from_minutes=int(
             document.get("afternoonFromMinutes") or DEFAULT_AFTERNOON_FROM_MINUTES
         ),
+        # A document written before the zone existed has none, and the hub falls back to
+        # its own machine — which is what it was already doing.
+        time_zone=str(document.get("timeZone") or ""),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )

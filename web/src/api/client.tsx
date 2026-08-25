@@ -45,6 +45,7 @@ const RHYTHM_FIELDS = [
   "maxCadenceMinutes",
   "afternoonDays",
   "afternoonFrom",
+  "timeZone",
   "dayChoices",
 ] as const;
 
@@ -207,6 +208,12 @@ export function httpApi(token: string): Api {
         "id",
         "kind",
       ]),
+
+    // The same inert write, for the afternoon. It overrides the day and the hour and
+    // nothing else: the evening pause still holds and an afternoon under way is not
+    // interrupted. The house acts on it at its next look, so the wording says "asked".
+    beginNow: () =>
+      json<HouseRequest>("/api/afternoons/begin-now", { method: "POST" }, ["id", "kind"]),
 
     async standingRequest(): Promise<HouseRequest | null> {
       const answer = await json<{ request: HouseRequest | null }>("/api/request", {}, [

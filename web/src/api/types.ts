@@ -162,6 +162,10 @@ export interface Rhythm {
    * where every household starts: nothing happens until the parent picks a day. */
   afternoonDays: string[];
   afternoonFrom: string;
+  /* Where the house is, as an IANA name. Empty means the hub falls back to whatever zone
+   * its own machine is set to, which is how one house honoured every chosen hour an hour
+   * late for a week without anything being able to say so. */
+  timeZone: string;
   dayChoices: string[];
 }
 
@@ -171,6 +175,7 @@ export interface NewRhythm {
   cadenceMinutes: number;
   afternoonDays: string[];
   afternoonFrom: string;
+  timeZone: string;
 }
 
 /** Exactly the fields `prompt_hints()` returns. There is no field for a name, here or on
@@ -327,6 +332,8 @@ export interface Api {
   removeDevice(id: string): Promise<void>;
   usage(): Promise<UsageAnswer>;
   askAgain(pictureId: string): Promise<HouseRequest>;
+  /** Ask that an afternoon begin at the house's next look, whatever the hour says. */
+  beginNow(): Promise<HouseRequest>;
   standingRequest(): Promise<HouseRequest | null>;
   experiences(state: string): Promise<OfferedExperience[]>;
   decideExperience(id: string, state: Decision): Promise<void>;

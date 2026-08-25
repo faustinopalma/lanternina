@@ -70,6 +70,7 @@ from devices.run_experience import (
     offer_help,
     waiting_runs,
 )
+from shared.clock import date_there, wall_clock
 from shared.experience import Experience, ExperienceError
 from shared.message import Message, MessageError
 
@@ -125,28 +126,26 @@ def fits_before_the_pause(minutes_now: int, length: int, start: int, end: int) -
     return length <= (start - minutes_now) % MINUTES_IN_A_DAY
 
 
-def _day(now: float) -> str:
-    then = time.localtime(now)
-    return f"{then.tm_year:04d}-{then.tm_mon:02d}-{then.tm_mday:02d}"
-
-
-def looked_today(stamp: Path, now: float) -> bool:
+def looked_today(stamp: Path, now: float, zone: str = "") -> bool:
     """Whether the house has already done its one thing for today.
 
     The file holds a date, deliberately, and not a count. What it stops is a second
     afternoon on the same day and a devise request every ten minutes at a panel that is
     answering 503; what it does not do is keep a tally of anything, because there is
     nothing here that a tally would be about.
+
+    The date turns over at midnight where the house is, which is why the zone is a
+    parameter: on a hub set to the wrong country the day rolled at the wrong hour.
     """
     try:
-        return stamp.read_text(encoding="utf-8").strip() == _day(now)
+        return stamp.read_text(encoding="utf-8").strip() == date_there(now, zone)
     except OSError:
         return False
 
 
-def mark_looked(stamp: Path, now: float) -> None:
+def mark_looked(stamp: Path, now: float, zone: str = "") -> None:
     stamp.parent.mkdir(parents=True, exist_ok=True)
-    stamp.write_text(_day(now) + "\n", encoding="utf-8")
+    stamp.write_text(date_there(now, zone) + "\n", encoding="utf-8")
 
 
 def _get(url: str, key: str, timeout: int) -> Any:
@@ -174,6 +173,7 @@ def read_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
         "afternoonFrom": str(answer.get("afternoonFrom") or DEFAULT_AFTERNOON_FROM),
         "quietFrom": str(answer.get("quietFrom") or DEFAULT_QUIET_FROM),
         "quietUntil": str(answer.get("quietUntil") or DEFAULT_QUIET_UNTIL),
+        "timeZone": str(answer.get("timeZone") or ""),
     }
 
 
@@ -199,6 +199,7 @@ def the_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
             "afternoonFrom": DEFAULT_AFTERNOON_FROM,
             "quietFrom": DEFAULT_QUIET_FROM,
             "quietUntil": DEFAULT_QUIET_UNTIL,
+            "timeZone": "",
         }
 
 
@@ -207,6 +208,50 @@ def its_moment(rhythm: dict[str, Any], now: time.struct_time) -> bool:
     if DAYS[now.tm_wday] not in rhythm["afternoonDays"]:
         return False
     return now.tm_hour * 60 + now.tm_min >= minutes_of(rhythm["afternoonFrom"])
+
+
+# What the parent asked for, if it is the kind this runner acts on. Named here rather than
+# imported from `panel` because the hub does not import the panel: the word is the wire.
+BEGIN_NOW = "beginNow"
+
+
+def the_standing_request(panel: str, household: str, key: str) -> str:
+    """The id of a waiting "begin one now", or empty.
+
+    A press is the only thing that can start an afternoon outside the hours the parent
+    chose, and it still does not reach into the house: the panel wrote a row and this is
+    the house coming to look. A panel that cannot be reached means no press, which is the
+    same as no press at all — the afternoon simply waits for its hour.
+    """
+    try:
+        answer = _get(f"{panel}/api/device/{household}/request", key, LOOK_TIMEOUT_SECONDS)
+    except (urllib.error.URLError, OSError, ValueError):
+        return ""
+    standing = answer.get("request")
+    if not isinstance(standing, dict) or standing.get("kind") != BEGIN_NOW:
+        return ""
+    return str(standing.get("id") or "")
+
+
+def _clock_of(request_id: str) -> str:
+    return request_id[-6:]
+
+
+def the_request_is_done(panel: str, household: str, key: str, request_id: str) -> None:
+    """Clear it by id, so a second press that landed meanwhile survives.
+
+    Swallowed on failure: the afternoon has begun either way, and a request left standing
+    costs one extra afternoon rather than a broken one. It expires on its own after a day.
+    """
+    try:
+        _post(
+            f"{panel}/api/device/{household}/request/{request_id}/done",
+            key,
+            {},
+            LOOK_TIMEOUT_SECONDS,
+        )
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the request was acted on but not cleared ({exc})")
 
 
 def what_the_house_may_run(panel: str, household: str, key: str) -> tuple[list[Any], int]:
@@ -377,14 +422,31 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     rhythm = the_rhythm(panel, household, key)
+    zone = str(rhythm.get("timeZone") or "")
+    there = wall_clock(now, zone)
+    asked = the_standing_request(panel, household, key)
+    if asked:
+        print(f"the parent asked for one at {_clock_of(asked)}; the hour does not decide")
     try:
-        if not its_moment(rhythm, time.localtime(now)):
+        if not asked and not its_moment(rhythm, there):
+            # Said out loud, because it was not. Two silent returns meant a house that did
+            # nothing for a reason nobody could recover: on 25 August 2026 the answer was
+            # that the hub's own clock was an hour behind the house it stood in.
+            print(
+                f"not the moment: {time.strftime('%a %H:%M', there)}"
+                f"{f' in {zone}' if zone else ' by this machine'}"
+                f", and the parent chose {', '.join(rhythm['afternoonDays']) or 'no day'}"
+                f" from {rhythm['afternoonFrom']}"
+            )
             return 0
     except ValueError as exc:
         print(f"the rhythm cannot be read as a clock ({exc}); no afternoon begins")
         return 0
 
-    if looked_today(stamp, now):
+    # A press is the parent saying "today, again", so the day's stamp does not stop it.
+    # What it does not override is below: the pause, and an afternoon already under way.
+    if not asked and looked_today(stamp, now, zone):
+        print(f"already looked today ({date_there(now, zone)}); nothing more begins today")
         return 0
 
     try:
@@ -404,7 +466,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         # Stamped before the asking, not after: a panel refusing to devise would otherwise
         # be asked again every ten minutes, which is 42 model calls in an afternoon.
-        mark_looked(stamp, now)
+        mark_looked(stamp, now, zone)
         try:
             title = ask_for_one(panel, household, key, house)
         except (urllib.error.URLError, OSError, ValueError) as exc:
@@ -414,10 +476,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     offered_id, experience = chosen
-    minutes_now = time.localtime(now).tm_hour * 60 + time.localtime(now).tm_min
+    minutes_now = there.tm_hour * 60 + there.tm_min
     # Stamped either way: an afternoon that does not fit now fits less as the pause gets
     # nearer, and one that is about to begin must not begin twice if the printer refuses.
-    mark_looked(stamp, now)
+    mark_looked(stamp, now, zone)
     if not fits_before_the_pause(
         minutes_now,
         experience.minutes,
@@ -433,6 +495,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{experience.title} did not begin ({exc})")
         return 1
     say_it_began(panel, household, key, offered_id)
+    if asked:
+        the_request_is_done(panel, household, key, asked)
     print(f"{experience.title}: {run_id or 'closed without asking for paper'}")
     return 0
 

@@ -32,6 +32,8 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
+from shared.clock import known_zone
+
 from .reminders import DAYS
 
 # The hub's timer fires once a minute, so a minute is the finest spacing it can honour.
@@ -75,6 +77,10 @@ class Rhythm:
     # is where every household starts.
     afternoon_days: tuple[str, ...] = ()
     afternoon_from_minutes: int = DEFAULT_AFTERNOON_FROM_MINUTES
+    # Where the house is, as an IANA name. Empty means the hub uses whatever zone its own
+    # operating system is set to, which is what every house did before 25 August 2026 and
+    # is why one of them honoured every chosen hour an hour late.
+    time_zone: str = ""
     updated_at: float = 0.0
     updated_by: str = ""
 
@@ -85,6 +91,7 @@ class Rhythm:
             "cadenceMinutes": self.cadence_minutes,
             "afternoonDays": list(self.afternoon_days),
             "afternoonFrom": clock(self.afternoon_from_minutes),
+            "timeZone": self.time_zone,
             "dayChoices": list(DAYS),
             "updatedAt": self.updated_at,
             "minCadenceMinutes": MIN_CADENCE_MINUTES,
@@ -129,6 +136,24 @@ def days_of(value: Any) -> tuple[str, ...]:
     return tuple(day for day in DAYS if day in chosen)
 
 
+def zone_of(value: Any) -> str:
+    """An IANA timezone name this machine can resolve, or empty for the hub's own.
+
+    Refused rather than dropped when it is not a zone: a name the parent believes they
+    chose, silently ignored, is an hour of error nobody can see. The list is not sent to
+    the browser — it has `Intl.supportedValuesOf('timeZone')` of its own — so this is where
+    the two sides are kept honest.
+    """
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        raise ValueError("the timezone is a name like Europe/Rome")
+    name = value.strip()
+    if not known_zone(name):
+        raise ValueError(f"not a timezone this system knows: {name}")
+    return name
+
+
 def clean_rhythm(
     household_id: str,
     *,
@@ -137,6 +162,7 @@ def clean_rhythm(
     cadence_minutes: Any,
     afternoon_days: Any = (),
     afternoon_from: Any = None,
+    time_zone: Any = None,
     updated_by: str = "",
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
@@ -158,6 +184,7 @@ def clean_rhythm(
             if afternoon_from is None
             else minutes_of(afternoon_from, "the hour an afternoon may begin")
         ),
+        time_zone=zone_of(time_zone),
         updated_at=time.time(),
         updated_by=updated_by,
     )

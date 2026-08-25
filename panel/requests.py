@@ -27,10 +27,20 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
-# Put this picture back on the display. The only kind so far, and named rather than
-# implied, so the second kind does not have to change the shape of the first.
+# Put this picture back on the display.
 KIND_SHOW_AGAIN = "showAgain"
-KINDS = (KIND_SHOW_AGAIN,)
+# Begin an afternoon at the next look, whatever the hour says. The second kind, and the
+# shape of the first did not have to change to take it — which is what that sentence was
+# written for. It is still not a push: the parent presses, a row is written, and the house
+# finds it when it next comes to look. What that costs is up to one turn of the hub's
+# timer, and the panel says so rather than implying the afternoon has started.
+KIND_BEGIN_NOW = "beginNow"
+KINDS = (KIND_SHOW_AGAIN, KIND_BEGIN_NOW)
+
+# What a begin-now request is about when the parent did not name an afternoon, which is
+# every time so far: which one to run is the house's choice, because only the house knows
+# what equipment it has.
+ANY_AFTERNOON = "any"
 
 # See the module docstring: one day, because the widest spacing a parent may choose is one
 # day. Kept as seconds because that is what the comparison is in.

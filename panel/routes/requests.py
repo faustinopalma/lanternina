@@ -14,7 +14,13 @@ from fastapi import APIRouter, HTTPException, Request
 
 from ..gate import CurrentAccount, DeviceKey
 from ..pictures import PictureArchive
-from ..requests import KIND_SHOW_AGAIN, RequestStore, clean_request
+from ..requests import (
+    ANY_AFTERNOON,
+    KIND_BEGIN_NOW,
+    KIND_SHOW_AGAIN,
+    RequestStore,
+    clean_request,
+)
 
 router = APIRouter()
 
@@ -49,6 +55,30 @@ def read_own_request(account: CurrentAccount, request: Request) -> Any:
     store: RequestStore = request.app.state.requests
     standing = store.get(str(account.household_id))
     return {"request": standing.to_public() if standing else None}
+
+
+@router.post("/api/afternoons/begin-now")
+def ask_for_an_afternoon_now(account: CurrentAccount, request: Request) -> Any:
+    """Ask that an afternoon begin at the next look, whatever the hour says.
+
+    It records and returns. Nothing is started here and nothing can be: the panel has no
+    way to reach the house and is not given one, so this is the same inert write as every
+    other. The house finds it on its next look and decides.
+
+    ``ANY`` rather than a particular afternoon, because which one to run is the house's
+    choice already — it knows what equipment it has, and the parent approved the whole
+    list. What this overrides is the hour and the day, and nothing else: an afternoon that
+    would not be over before the pause is still not begun, and one already under way is
+    still not interrupted.
+    """
+    store: RequestStore = request.app.state.requests
+    asked = clean_request(
+        str(account.household_id),
+        kind=KIND_BEGIN_NOW,
+        subject=ANY_AFTERNOON,
+        asked_by=str(account.id),
+    )
+    return store.put(asked).to_public()
 
 
 @router.get("/api/device/{household_id}/request")
