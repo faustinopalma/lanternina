@@ -253,3 +253,29 @@ That is the failure mode named in the working rules and in `docs/NON-GOALS.md`: 
 **The reorganisation to study.** Language and time zone in one card — *La casa*, or *Lingua e orologio* — leaving *Interessi* to be about what an afternoon is about and nothing else. That also fixes §10.3's first section, since the clock would already have a home. Worth checking what else is in the wrong card before moving anything: this is a change to where a parent looks, and doing it twice is worse than doing it late.
 
 **Done when.** No control in the panel is inert, and language and time zone are found in the same place.
+
+## 11. The reminder becomes one drawn notice, words and all — decided 25 August 2026, not built
+
+**What was seen.** The tooth-brushing reminder went up at 20:00 on FB9F18. The drawing was right. The words were *Lavati i denti dopo cena, verso le 20:00* against the parent's *lavarsi i denti dopo cena, circa alle 20:00* — a rewording so close it reads as a copy, because it is one.
+
+**Two causes, and only the first is fixed.**
+
+The wording prompt asked for the hour back and told the model to leave nothing out, so it carried the parent's whole note including the scheduling. But the parent's sentence is not a notice: it is a line they wrote to themselves, the thing and its when together, and `agents/reminder_reader.py` has already taken the hour into its own field. The prompt now says the hour is handled elsewhere and asks only for the thing. It was also a pure function of the sentence, so one sentence gave one wording for ever; a way of saying it is now drawn from `agents/reminder_wording.sayings.md`. Both fixed, shipped.
+
+The second is the shape of the screen, and it is this section.
+
+**What to build.** One generated image that *is* the notice, lettered words included, instead of a small drawing composed beside text the hub renders. The parent's point: if the model is being asked for a picture and the words are then typeset next to it, asking for the picture with the notice in it is the same work with one seam fewer, and the result is an object rather than a layout.
+
+**The rule this changes, and why it is allowed to change.** `devices/epaper.py::render_reminder_bmp` carries the old reason in its docstring: lettering at this size comes out crooked, and text inside an image reaches the room without having been screened as text. The first half is out of date — `agents/page_maker.py` has been asking a model to letter whole A4 pages since 24 August, in Italian, accents and apostrophes correct, and the words come out right because they are *given, quoted, already screened* rather than invented. The second half is answered two ways: the gate screens images too, through `analyze_image`, and the provider runs its own filtering on what it generates before we ever see it. The parent's decision is that those are enough.
+
+The honest residual: measured on 24 August, a map came back with **N/W/E/S** on its compass rose against a line forbidding exactly those letters. A model can put a word on the paper that nobody screened as a word. That cost is already carried for pages; this extends it to reminders. It is stated, not eliminated.
+
+**Where to start.**
+
+1. `panel/painting.decoration.md` — from *one object, no text* to the whole notice with the given words lettered exactly, following `agents/page_maker.only-these-words.md` word for word: quote the sentence, say letter this and nothing else, forbid inventing any other word.
+2. `panel/painting.py::decorate` — take the words as well as the subject, and give it a manner, since a notice drawn the same way every evening is the fault this section began with.
+3. `panel/routes/reminders.py` — the words are already made and screened before `_decoration` is called, so they are there to pass.
+4. `devices/epaper.py` — a full-screen image path beside the composed one. Keep the composed one: it is what a refused or unreachable drawing falls back to, and the words must still arrive when nothing was drawn.
+5. Size: the drawing is asked for at 220 px today because it sits in a strip. A whole notice wants the display's own shape, 800×480, and the dithering already in `panel/painting.py`.
+
+**Done when.** A reminder on a real display is one drawn object with its words in it, read from across the room; a refused or unreachable drawing still puts the words up as plain text; and somebody has stood in front of both.

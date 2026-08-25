@@ -30,6 +30,7 @@ way to put arbitrary words on a display in the house.
 from __future__ import annotations
 
 import json
+import random
 from collections.abc import Mapping, Sequence
 from typing import Any, Final
 
@@ -57,9 +58,20 @@ _VARIETY: Final = SAYS.text("variety", how_many=WORDINGS_PER_SENTENCE)
 
 _INSTRUCTION: Final = _BASE + _VARIETY
 
-_NOW: Final = SAYS.text("now", max_chars=MAX_WORDING_CHARS)
+# One per line, and the file says why they exist.
+SAYINGS: Final[tuple[str, ...]] = tuple(
+    line.strip() for line in SAYS.text("sayings").splitlines() if line.strip()
+)
 
 _SUBJECT: Final = SAYS.text("subject")
+
+
+def _now(saying: str) -> str:
+    return SAYS.text("now", max_chars=MAX_WORDING_CHARS, saying=saying)
+
+
+# What the standing part of it looks like, for `tools/prompts.py` and for a test.
+_NOW: Final = _now(SAYINGS[0])
 
 
 class ReminderWording:
@@ -111,7 +123,7 @@ class ReminderWording:
         payload = await ctx.router.generate_for_user(
             ModelRequest(
                 capability=Capability.TEXT_GENERATION,
-                prompt=f"{_NOW}{_SUBJECT}The hour: {at}\nThe sentence: {text}",
+                prompt=f"{_now(random.choice(SAYINGS))}{_SUBJECT}The sentence: {text}",
                 request_id=new_request_id(),
                 max_output_chars=140 + MAX_WORDING_CHARS,
                 purpose=f"reminder wording at {at}",
