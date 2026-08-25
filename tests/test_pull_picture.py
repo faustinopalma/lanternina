@@ -19,7 +19,7 @@ from devices import pull_picture
 from devices.pull_picture import (
     CADENCE_GRACE_SECONDS,
     due,
-    in_quiet_window,
+    inside_band,
     load_rhythm,
     minutes_of,
     save_rhythm,
@@ -69,7 +69,7 @@ def test_a_damaged_or_missing_copy_reads_as_nothing_known(tmp_path: Path) -> Non
     path.write_text("{ not json", encoding="utf-8")
     assert load_rhythm(path) is None
 
-    path.write_text(json.dumps({"quietFrom": 0}), encoding="utf-8")
+    path.write_text(json.dumps({"picturesFrom": 0}), encoding="utf-8")
     assert load_rhythm(path) is None
 
     assert load_rhythm(tmp_path / "absent.json") is None
@@ -77,9 +77,9 @@ def test_a_damaged_or_missing_copy_reads_as_nothing_known(tmp_path: Path) -> Non
 
 def test_the_pause_wraps_around_midnight() -> None:
     start, end = minutes_of("22:00"), minutes_of("07:00")
-    assert in_quiet_window(time.struct_time((2026, 8, 19, 23, 30, 0, 0, 0, 0)), start, end)
-    assert in_quiet_window(time.struct_time((2026, 8, 19, 3, 0, 0, 0, 0, 0)), start, end)
-    assert not in_quiet_window(time.struct_time((2026, 8, 19, 12, 0, 0, 0, 0, 0)), start, end)
+    assert inside_band(time.struct_time((2026, 8, 19, 23, 30, 0, 0, 0, 0)), start, end)
+    assert inside_band(time.struct_time((2026, 8, 19, 3, 0, 0, 0, 0, 0)), start, end)
+    assert not inside_band(time.struct_time((2026, 8, 19, 12, 0, 0, 0, 0, 0)), start, end)
 
 
 def test_a_run_that_is_not_due_never_touches_the_panel(

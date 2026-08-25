@@ -153,15 +153,16 @@ export interface OfferedExperience {
 }
 
 export interface Rhythm {
-  quietFrom: string;
-  quietUntil: string;
+  picturesFrom: string;
+  picturesUntil: string;
   cadenceMinutes: number;
   minCadenceMinutes: number;
   maxCadenceMinutes: number;
-  /* Which days an afternoon may begin on, and from what hour. Empty means none, which is
-   * where every household starts: nothing happens until the parent picks a day. */
+  /* Which days an afternoon may begin on, and between which hours. Empty days mean none,
+   * which is where every household starts: nothing happens until the parent picks one. */
   afternoonDays: string[];
   afternoonFrom: string;
+  afternoonUntil: string;
   /* Where the house is, as an IANA name. Empty means the hub falls back to whatever zone
    * its own machine is set to, which is how one house honoured every chosen hour an hour
    * late for a week without anything being able to say so. */
@@ -170,11 +171,12 @@ export interface Rhythm {
 }
 
 export interface NewRhythm {
-  quietFrom: string;
-  quietUntil: string;
+  picturesFrom: string;
+  picturesUntil: string;
   cadenceMinutes: number;
   afternoonDays: string[];
   afternoonFrom: string;
+  afternoonUntil: string;
   timeZone: string;
 }
 

@@ -152,14 +152,15 @@ function ThereNow({ zone, locale }: { zone: string; locale: string }) {
 function Form({ spacing }: { spacing: Spacing }) {
   const { t, weekday, language } = useWords();
   const api = useApi();
-  const [quietFrom, setQuietFrom] = useState(spacing.quietFrom);
-  const [quietUntil, setQuietUntil] = useState(spacing.quietUntil);
+  const [picturesFrom, setPicturesFrom] = useState(spacing.picturesFrom);
+  const [picturesUntil, setPicturesUntil] = useState(spacing.picturesUntil);
   const [cadence, setCadence] = useState(String(spacing.cadenceMinutes));
   const [days, setDays] = useState<string[]>(spacing.afternoonDays);
   const [afternoonFrom, setAfternoonFrom] = useState(spacing.afternoonFrom);
+  const [afternoonUntil, setAfternoonUntil] = useState(spacing.afternoonUntil);
   const [timeZone, setTimeZone] = useState(spacing.timeZone);
   const [status, setStatus] = useState<MessageKey | null>(
-    spacing.quietFrom === spacing.quietUntil ? "rhythm.quietOff" : null,
+    spacing.picturesFrom === spacing.picturesUntil ? "rhythm.picturesAllDay" : null,
   );
   const [asked, setAsked] = useState<MessageKey | null>(null);
 
@@ -185,11 +186,12 @@ function Form({ spacing }: { spacing: Spacing }) {
     event.preventDefault();
     try {
       await api.saveRhythm({
-        quietFrom,
-        quietUntil,
+        picturesFrom,
+        picturesUntil,
         cadenceMinutes: Number(cadence),
         afternoonDays: days,
         afternoonFrom,
+        afternoonUntil,
         timeZone,
       });
       setStatus("rhythm.saved");
@@ -214,116 +216,150 @@ function Form({ spacing }: { spacing: Spacing }) {
     <>
       <form
         onSubmit={save}
-        className="my-3.5 flex max-w-[42rem] flex-wrap items-center gap-x-4 gap-y-3 rounded-control border border-edge bg-paper p-4"
+        className="my-3.5 flex max-w-[42rem] flex-col gap-5 rounded-control border border-edge bg-paper p-4"
       >
-        <span className="flex items-center gap-2">
-          <Label htmlFor="quiet-from">{t("rhythm.quietFrom")}</Label>
-          <Input
-            id="quiet-from"
-            type="time"
-            required
-            className="w-34"
-            value={quietFrom}
-            onChange={(event) => setQuietFrom(event.target.value)}
-          />
-        </span>
-        <span className="flex items-center gap-2">
-          <Label htmlFor="quiet-until">{t("rhythm.quietUntil")}</Label>
-          <Input
-            id="quiet-until"
-            type="time"
-            required
-            className="w-34"
-            value={quietUntil}
-            onChange={(event) => setQuietUntil(event.target.value)}
-          />
-        </span>
-        <span className="flex items-center gap-2">
-          <Label htmlFor="cadence">{t("rhythm.cadence")}</Label>
-          <Input
-            id="cadence"
-            type="number"
-            required
-            step={1}
-            min={spacing.minCadenceMinutes}
-            max={spacing.maxCadenceMinutes}
-            className="w-26"
-            value={cadence}
-            onChange={(event) => setCadence(event.target.value)}
-          />
-          <span className="text-quiet">{t("rhythm.minutes")}</span>
-        </span>
-        {/* No day chosen means no afternoon, which is where every house starts. There is
-            no count beside this and there will not be one: the days say when one may
-            happen, and nothing keeps track of the ones that did. */}
-        <fieldset className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 border-0 p-0">
-          <legend className="sr-only">{t("rhythm.afternoonDays")}</legend>
-          <span className="text-quiet">{t("rhythm.afternoonDays")}</span>
-          {spacing.dayChoices.map((day) => (
-            <label key={day} className="flex items-center gap-1.5">
-              <input
-                type="checkbox"
-                checked={days.includes(day)}
-                onChange={(event) =>
-                  setDays((chosen) =>
-                    event.target.checked
-                      ? [...chosen, day]
-                      : chosen.filter((one) => one !== day),
-                  )
+        {/* The clock first: everything below is an hour, and an hour means nothing until
+            the house knows which clock it is on. */}
+        <fieldset className="flex flex-col gap-2 border-0 p-0">
+          <legend className="mb-1 font-medium">{t("rhythm.clockSection")}</legend>
+          <span className="flex flex-wrap items-center gap-2">
+            <Label htmlFor="time-zone">{t("rhythm.timeZone")}</Label>
+            {/* A text box with a list rather than a dropdown of 418: alphabetical, and the
+                parent types the first letters of their city instead of scrolling to it. */}
+            <Input
+              id="time-zone"
+              list="the-places"
+              className="w-64"
+              placeholder={t("rhythm.timeZonePlaceholder")}
+              value={typed}
+              onChange={(event) => {
+                const wrote = event.target.value;
+                setTyped(wrote);
+                if (wrote === "") setTimeZone("");
+                else {
+                  const found = byLabel.get(wrote);
+                  if (found) setTimeZone(found);
                 }
-              />
-              {weekday(day)}
-            </label>
-          ))}
-        </fieldset>
-        <span className="flex items-center gap-2">
-          <Label htmlFor="afternoon-from">{t("rhythm.afternoonFrom")}</Label>
-          <Input
-            id="afternoon-from"
-            type="time"
-            required
-            className="w-34"
-            value={afternoonFrom}
-            onChange={(event) => setAfternoonFrom(event.target.value)}
-          />
-        </span>
-        <span className="flex w-full flex-wrap items-center gap-2">
-          <Label htmlFor="time-zone">{t("rhythm.timeZone")}</Label>
-          {/* A text box with a list rather than a dropdown of 418: alphabetical, and the
-              parent types the first letters of their city instead of scrolling to it. */}
-          <Input
-            id="time-zone"
-            list="the-places"
-            className="w-64"
-            placeholder={t("rhythm.timeZonePlaceholder")}
-            value={typed}
-            onChange={(event) => {
-              const wrote = event.target.value;
-              setTyped(wrote);
-              if (wrote === "") setTimeZone("");
-              else {
-                const found = byLabel.get(wrote);
-                if (found) setTimeZone(found);
-              }
-            }}
-          />
-          <datalist id="the-places">
-            {/* The English spelling goes in the label, which browsers search as well as
-                the value: somebody who knows the zone as "Rome" still finds Roma. */}
-            {places.map((place) => (
-              <option key={place.zone} value={place.label} label={place.alsoKnownAs} />
-            ))}
-          </datalist>
-          {/* The confirmation. A timezone cannot be checked by reading it back, so the
-              house's own clock is put next to it and left running. */}
-          <span aria-live="off" className="text-quiet tabular-nums">
-            {timeZone && byZone.get(timeZone) === typed ? (
-              <ThereNow zone={timeZone} locale={language} />
-            ) : (
-              t("rhythm.timeZoneUnknown")
-            )}
+              }}
+            />
+            <datalist id="the-places">
+              {/* The English spelling goes in the label, which browsers search as well as
+                  the value: somebody who knows the zone as "Rome" still finds Roma. */}
+              {places.map((place) => (
+                <option key={place.zone} value={place.label} label={place.alsoKnownAs} />
+              ))}
+            </datalist>
+            {/* The confirmation. A timezone cannot be checked by reading it back, so the
+                house's own clock is put next to it and left running. */}
+            <span aria-live="off" className="text-quiet tabular-nums">
+              {timeZone && byZone.get(timeZone) === typed ? (
+                <ThereNow zone={timeZone} locale={language} />
+              ) : (
+                t("rhythm.timeZoneUnknown")
+              )}
+            </span>
           </span>
-        </span>
+          <Quiet>{t("rhythm.timeZoneNote")}</Quiet>
+        </fieldset>
+
+        {/* The hours a picture may change, said as hours it may — not as a pause. Until
+            25 August 2026 this was a "pause" sitting above the afternoon controls, and a
+            parent could not tell which of the two it bounded. */}
+        <fieldset className="flex flex-col gap-2 border-0 p-0">
+          <legend className="mb-1 font-medium">{t("rhythm.picturesSection")}</legend>
+          <span className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <span className="flex items-center gap-2">
+              <Label htmlFor="pictures-from">{t("rhythm.picturesFrom")}</Label>
+              <Input
+                id="pictures-from"
+                type="time"
+                required
+                className="w-34"
+                value={picturesFrom}
+                onChange={(event) => setPicturesFrom(event.target.value)}
+              />
+            </span>
+            <span className="flex items-center gap-2">
+              <Label htmlFor="pictures-until">{t("rhythm.picturesUntil")}</Label>
+              <Input
+                id="pictures-until"
+                type="time"
+                required
+                className="w-34"
+                value={picturesUntil}
+                onChange={(event) => setPicturesUntil(event.target.value)}
+              />
+            </span>
+            <span className="flex items-center gap-2">
+              <Label htmlFor="cadence">{t("rhythm.cadence")}</Label>
+              <Input
+                id="cadence"
+                type="number"
+                required
+                step={1}
+                min={spacing.minCadenceMinutes}
+                max={spacing.maxCadenceMinutes}
+                className="w-26"
+                value={cadence}
+                onChange={(event) => setCadence(event.target.value)}
+              />
+              <span className="text-quiet">{t("rhythm.minutes")}</span>
+            </span>
+          </span>
+          <Quiet>{t("rhythm.wakeNote")}</Quiet>
+        </fieldset>
+
+        {/* No day chosen means no afternoon, which is where every house starts. There is
+            no count beside this and there will not be one: the days and the hours say when
+            one may happen, and nothing keeps track of the ones that did. */}
+        <fieldset className="flex flex-col gap-2 border-0 p-0">
+          <legend className="mb-1 font-medium">{t("rhythm.afternoonSection")}</legend>
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="text-quiet">{t("rhythm.afternoonDays")}</span>
+            {spacing.dayChoices.map((day) => (
+              <label key={day} className="flex items-center gap-1.5">
+                <input
+                  type="checkbox"
+                  checked={days.includes(day)}
+                  onChange={(event) =>
+                    setDays((chosen) =>
+                      event.target.checked
+                        ? [...chosen, day]
+                        : chosen.filter((one) => one !== day),
+                    )
+                  }
+                />
+                {weekday(day)}
+              </label>
+            ))}
+          </span>
+          <span className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <span className="flex items-center gap-2">
+              <Label htmlFor="afternoon-from">{t("rhythm.afternoonFrom")}</Label>
+              <Input
+                id="afternoon-from"
+                type="time"
+                required
+                className="w-34"
+                value={afternoonFrom}
+                onChange={(event) => setAfternoonFrom(event.target.value)}
+              />
+            </span>
+            <span className="flex items-center gap-2">
+              <Label htmlFor="afternoon-until">{t("rhythm.afternoonUntil")}</Label>
+              <Input
+                id="afternoon-until"
+                type="time"
+                required
+                className="w-34"
+                value={afternoonUntil}
+                onChange={(event) => setAfternoonUntil(event.target.value)}
+              />
+            </span>
+          </span>
+          <Quiet>{t("rhythm.afternoonNote")}</Quiet>
+        </fieldset>
+
         <Button type="submit" variant="primary" className="ml-auto flex-none">
           {t("rhythm.save")}
         </Button>
@@ -334,9 +370,6 @@ function Form({ spacing }: { spacing: Spacing }) {
         </Button>
         <Quiet aria-live="polite">{asked === null ? t("rhythm.beginNote") : t(asked)}</Quiet>
       </div>
-      <Quiet>{t("rhythm.timeZoneNote")}</Quiet>
-      <Quiet>{t("rhythm.wakeNote")}</Quiet>
-      <Quiet>{t("rhythm.afternoonNote")}</Quiet>
       <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );

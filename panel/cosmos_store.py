@@ -41,7 +41,13 @@ from .preferences import (
 from .proposals import ProposalRecord
 from .reminders import Sentence
 from .requests import HouseRequest
-from .rhythm import DEFAULT_AFTERNOON_FROM_MINUTES, Rhythm
+from .rhythm import (
+    DEFAULT_AFTERNOON_FROM_MINUTES,
+    DEFAULT_AFTERNOON_UNTIL_MINUTES,
+    DEFAULT_PICTURES_FROM_MINUTES,
+    DEFAULT_PICTURES_UNTIL_MINUTES,
+    Rhythm,
+)
 from .themes import Theme
 from .usage import Limit, UsageEvent, UsageSummary, summarise
 
@@ -547,11 +553,12 @@ class CosmosRhythmStore:
                 "id": f"rhythm-{rhythm.household_id}",
                 "familyId": rhythm.household_id,
                 "type": "rhythm",
-                "quietFromMinutes": rhythm.quiet_from_minutes,
-                "quietUntilMinutes": rhythm.quiet_until_minutes,
+                "picturesFromMinutes": rhythm.pictures_from_minutes,
+                "picturesUntilMinutes": rhythm.pictures_until_minutes,
                 "cadenceMinutes": rhythm.cadence_minutes,
                 "afternoonDays": list(rhythm.afternoon_days),
                 "afternoonFromMinutes": rhythm.afternoon_from_minutes,
+                "afternoonUntilMinutes": rhythm.afternoon_until_minutes,
                 "timeZone": rhythm.time_zone,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
@@ -561,16 +568,27 @@ class CosmosRhythmStore:
 
 
 def _to_rhythm(document: dict[str, Any]) -> Rhythm:
+    # A document written before 25 August 2026 holds a quiet window, which was the same
+    # hours said inside out. It is not converted: the two bands now mean different things
+    # to different parts of the house, and a guessed conversion would be a setting nobody
+    # chose. Such a document reads as the defaults and the parent chooses once.
     return Rhythm(
         household_id=str(document["familyId"]),
-        quiet_from_minutes=_minutes(document, "quietFromMinutes", "quietFromHour", 22 * 60),
-        quiet_until_minutes=_minutes(document, "quietUntilMinutes", "quietUntilHour", 7 * 60),
+        pictures_from_minutes=int(
+            document.get("picturesFromMinutes") or DEFAULT_PICTURES_FROM_MINUTES
+        ),
+        pictures_until_minutes=int(
+            document.get("picturesUntilMinutes") or DEFAULT_PICTURES_UNTIL_MINUTES
+        ),
         cadence_minutes=_minutes(document, "cadenceMinutes", "cadenceHours", 60),
         # A document written before afternoons existed has no days, which is the same
         # thing as a household that has not chosen any: the house begins none.
         afternoon_days=tuple(str(day) for day in (document.get("afternoonDays") or ())),
         afternoon_from_minutes=int(
             document.get("afternoonFromMinutes") or DEFAULT_AFTERNOON_FROM_MINUTES
+        ),
+        afternoon_until_minutes=int(
+            document.get("afternoonUntilMinutes") or DEFAULT_AFTERNOON_UNTIL_MINUTES
         ),
         # A document written before the zone existed has none, and the hub falls back to
         # its own machine — which is what it was already doing.

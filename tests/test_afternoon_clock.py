@@ -17,7 +17,7 @@ import pytest
 from devices import afternoon as clock
 from devices.afternoon import (
     DAYS,
-    fits_before_the_pause,
+    fits_inside_the_band,
     its_moment,
     looked_today,
     mark_looked,
@@ -56,8 +56,7 @@ def a_rhythm(**changes: Any) -> dict[str, Any]:
     rhythm: dict[str, Any] = {
         "afternoonDays": [THAT_DAY],
         "afternoonFrom": "15:00",
-        "quietFrom": "22:00",
-        "quietUntil": "07:00",
+        "afternoonUntil": "22:00",
     }
     rhythm.update(changes)
     return rhythm
@@ -78,16 +77,17 @@ def test_it_is_the_day_and_the_hour_or_it_is_neither() -> None:
     assert not its_moment(a_rhythm(afternoonFrom="16:00"), time.localtime(WHEN))
 
 
-def test_an_afternoon_may_begin_only_if_the_whole_of_it_is_over_before_the_pause() -> None:
-    """This is why there is no second hour to set. The pause the parent already chose is
-    the end, and the afternoon's own length says whether it fits."""
-    pause, until = 22 * 60, 7 * 60
-    assert fits_before_the_pause(15 * 60, 180, pause, until)
-    assert not fits_before_the_pause(20 * 60 + 30, 180, pause, until)
-    # Inside the pause already: nothing begins, whatever the day says.
-    assert not fits_before_the_pause(23 * 60, 30, pause, until)
-    # Equal ends mean the parent turned the pause off, so nothing is in the way.
-    assert fits_before_the_pause(23 * 60, 300, 60, 60)
+def test_an_afternoon_may_begin_only_if_the_whole_of_it_is_over_before_the_band_closes() -> None:
+    """The band the parent chose is the end, and the afternoon's own length says whether
+    it fits. A shorter one may still fit when a longer one does not."""
+    opens, closes = 15 * 60, 19 * 60
+    assert fits_inside_the_band(15 * 60, 180, opens, closes)
+    assert not fits_inside_the_band(17 * 60, 180, opens, closes)
+    # A short one still fits in the same gap the long one did not.
+    assert fits_inside_the_band(17 * 60, 90, opens, closes)
+    # Before it opens and after it closes, nothing begins.
+    assert not fits_inside_the_band(14 * 60, 30, opens, closes)
+    assert not fits_inside_the_band(19 * 60, 30, opens, closes)
 
 
 def test_the_stamp_holds_a_date_and_not_a_tally(tmp_path: Path) -> None:
@@ -217,6 +217,10 @@ def a_panel(
 
     def _begun(panel: str, household: str, key: str, offered_id: str) -> None:
         calls["begun"].append(offered_id)
+        # The real panel stops offering what has begun, and the runner leans on that to
+        # move on to the next one. A fake that kept offering it would show a house
+        # beginning the same afternoon twice and call it a pass.
+        offered[:] = [row for row in offered if row.get("id") != offered_id]
 
     monkeypatch.setattr(clock, "read_rhythm", _rhythm)
     monkeypatch.setattr(clock, "what_the_house_may_run", _look)
@@ -241,8 +245,8 @@ def a_turn(monkeypatch: pytest.MonkeyPatch, house: House, when: float) -> int:
     return clock.main(["--no-paper"])
 
 
-def offered_row() -> dict[str, Any]:
-    return {"id": "aftn-1", "experience": an_experience().to_dict()}
+def offered_row(offered_id: str = "aftn-1") -> dict[str, Any]:
+    return {"id": offered_id, "experience": an_experience().to_dict()}
 
 
 def test_it_begins_the_approved_afternoon_and_tells_the_panel_it_did(
@@ -269,10 +273,10 @@ def test_nothing_happens_on_a_day_nobody_chose(
     assert waiting_runs(house.sheets_dir) == []
 
 
-def test_it_looks_once_a_day_and_begins_one_afternoon(
+def test_it_does_not_begin_a_second_while_the_first_is_still_going(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """The next run of the timer must not print a second sheet."""
+    """The next run of the timer must not print a second sheet on top of the first."""
     calls = a_panel(monkeypatch, offered=[offered_row()])
 
     a_turn(monkeypatch, house, WHEN)
@@ -281,6 +285,31 @@ def test_it_looks_once_a_day_and_begins_one_afternoon(
 
     assert calls["looked"] == 1
     assert waiting_runs(house.sheets_dir) == running
+
+
+def test_a_second_approved_afternoon_begins_when_the_first_has_finished(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """Two approved, the first over by half past four, three hours of band left.
+
+    Until 25 August 2026 the day's stamp meant one afternoon a day whatever else was true,
+    so the second waited until tomorrow. A parent watching that happen is the reason this
+    test exists; the stamp now gates only the expensive half, asking a model for a new one.
+    """
+    calls = a_panel(monkeypatch, offered=[offered_row("aftn-1"), offered_row("aftn-2")])
+
+    a_turn(monkeypatch, house, WHEN)
+    assert calls["begun"] == ["aftn-1"]
+
+    # The first is over: nothing is waiting on paper any more.
+    for left in house.sheets_dir.rglob("*"):
+        if left.is_file():
+            left.unlink()
+    assert waiting_runs(house.sheets_dir) == []
+
+    a_turn(monkeypatch, house, WHEN + 3600)
+
+    assert calls["begun"] == ["aftn-1", "aftn-2"]
 
 
 def test_it_asks_for_one_when_there_is_nothing_approved_and_nothing_with_the_parent(
@@ -306,10 +335,12 @@ def test_it_does_not_ask_while_one_is_still_with_the_parent(
     assert calls["devised"] == 0
 
 
-def test_an_afternoon_that_would_run_past_the_pause_does_not_begin(
+def test_an_afternoon_that_would_run_past_the_band_does_not_begin(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    calls = a_panel(monkeypatch, offered=[offered_row()], rhythm=a_rhythm(quietFrom="16:00"))
+    calls = a_panel(
+        monkeypatch, offered=[offered_row()], rhythm=a_rhythm(afternoonUntil="16:00")
+    )
 
     assert a_turn(monkeypatch, house, WHEN) == 0
 

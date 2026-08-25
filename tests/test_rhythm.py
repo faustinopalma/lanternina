@@ -26,7 +26,7 @@ from panel.rhythm import (
     MIN_CADENCE_MINUTES,
     InMemoryRhythmStore,
     clean_rhythm,
-    in_quiet_window,
+    inside_band,
 )
 from panel.store import InMemoryAccountStore
 
@@ -54,8 +54,8 @@ def test_a_household_that_never_chose_still_has_a_rhythm() -> None:
     """The hub has to be able to run before anyone has opened the panel."""
     client = client_for()
     answer = client.get("/api/rhythm", headers=headers()).json()
-    assert answer["quietFrom"] == "22:00"
-    assert answer["quietUntil"] == "07:00"
+    assert answer["picturesFrom"] == "07:00"
+    assert answer["picturesUntil"] == "22:00"
     assert answer["cadenceMinutes"] == 60
 
 
@@ -67,7 +67,7 @@ def test_what_the_parent_chose_is_what_the_hub_is_told() -> None:
 
     written = client.post(
         "/api/rhythm",
-        json={"quietFrom": "21:30", "quietUntil": "07:45", "cadenceMinutes": 13},
+        json={"picturesFrom": "21:30", "picturesUntil": "07:45", "cadenceMinutes": 13},
         headers=headers(),
     )
     assert written.status_code == 200
@@ -75,7 +75,7 @@ def test_what_the_parent_chose_is_what_the_hub_is_told() -> None:
     device = client.get(
         f"/api/device/{household}/rhythm", headers={"X-Device-Key": DEVICE_KEY}
     ).json()
-    assert (device["quietFrom"], device["quietUntil"], device["cadenceMinutes"]) == (
+    assert (device["picturesFrom"], device["picturesUntil"], device["cadenceMinutes"]) == (
         "21:30",
         "07:45",
         13,
@@ -91,13 +91,13 @@ def test_the_hub_cannot_read_the_rhythm_without_the_device_key() -> None:
 @pytest.mark.parametrize(
     "body",
     [
-        {"quietFrom": "24:00", "quietUntil": "07:00", "cadenceMinutes": 60},
-        {"quietFrom": "22:60", "quietUntil": "07:00", "cadenceMinutes": 60},
-        {"quietFrom": "22", "quietUntil": "07:00", "cadenceMinutes": 60},
-        {"quietFrom": "", "quietUntil": "07:00", "cadenceMinutes": 60},
-        {"quietFrom": "22:00", "quietUntil": "sera", "cadenceMinutes": 60},
-        {"quietFrom": "22:00", "quietUntil": "07:00", "cadenceMinutes": 0},
-        {"quietFrom": "22:00", "quietUntil": "07:00", "cadenceMinutes": 1441},
+        {"picturesFrom": "24:00", "picturesUntil": "07:00", "cadenceMinutes": 60},
+        {"picturesFrom": "22:60", "picturesUntil": "07:00", "cadenceMinutes": 60},
+        {"picturesFrom": "22", "picturesUntil": "07:00", "cadenceMinutes": 60},
+        {"picturesFrom": "", "picturesUntil": "07:00", "cadenceMinutes": 60},
+        {"picturesFrom": "22:00", "picturesUntil": "sera", "cadenceMinutes": 60},
+        {"picturesFrom": "22:00", "picturesUntil": "07:00", "cadenceMinutes": 0},
+        {"picturesFrom": "22:00", "picturesUntil": "07:00", "cadenceMinutes": 1441},
     ],
 )
 def test_a_rhythm_that_cannot_be_honoured_is_refused(body: dict[str, object]) -> None:
@@ -116,7 +116,7 @@ def test_the_timer_asks_often_enough_for_the_finest_spacing_offered() -> None:
 
 def test_a_spacing_of_no_minutes_is_refused() -> None:
     with pytest.raises(ValueError):
-        clean_rhythm("h1", quiet_from="22:00", quiet_until="07:00", cadence_minutes=0)
+        clean_rhythm("h1", pictures_from="22:00", pictures_until="07:00", cadence_minutes=0)
 
 
 # ── The two settings that say when an afternoon may begin ────────────────────────────
@@ -139,8 +139,8 @@ def test_the_days_reach_the_hub_in_week_order_and_without_repeats() -> None:
     client.post(
         "/api/rhythm",
         json={
-            "quietFrom": "22:00",
-            "quietUntil": "07:00",
+            "picturesFrom": "22:00",
+            "picturesUntil": "07:00",
             "cadenceMinutes": 60,
             "afternoonDays": ["sat", "wed", "wed"],
             "afternoonFrom": "16:20",
@@ -161,8 +161,8 @@ def test_a_day_that_is_not_a_day_is_refused_rather_than_dropped() -> None:
     refused = client.post(
         "/api/rhythm",
         json={
-            "quietFrom": "22:00",
-            "quietUntil": "07:00",
+            "picturesFrom": "22:00",
+            "picturesUntil": "07:00",
             "cadenceMinutes": 60,
             "afternoonDays": ["mercoledi"],
             "afternoonFrom": "15:00",
@@ -185,18 +185,18 @@ def test_a_day_that_is_not_a_day_is_refused_rather_than_dropped() -> None:
     ],
 )
 def test_the_quiet_window_wraps_past_midnight(minutes: int, quiet: bool) -> None:
-    assert in_quiet_window(minutes, 21 * 60 + 30, 7 * 60 + 45) is quiet
+    assert inside_band(minutes, 21 * 60 + 30, 7 * 60 + 45) is quiet
 
 
-def test_equal_ends_turn_the_quiet_window_off() -> None:
+def test_equal_ends_open_the_band_all_day() -> None:
     """A parent who wants pictures at any hour has to be able to say so."""
     start = 9 * 60 + 15
-    assert [in_quiet_window(m, start, start) for m in (0, 200, 555, 1400)] == [False] * 4
+    assert [inside_band(m, start, start) for m in (0, 200, 555, 1400)] == [True] * 4
 
 
 def test_a_daytime_window_does_not_wrap() -> None:
-    assert in_quiet_window(10 * 60, 9 * 60 + 30, 17 * 60) is True
-    assert in_quiet_window(9 * 60, 9 * 60 + 30, 17 * 60) is False
+    assert inside_band(10 * 60, 9 * 60 + 30, 17 * 60) is True
+    assert inside_band(9 * 60, 9 * 60 + 30, 17 * 60) is False
 
 
 def test_a_picture_is_not_replaced_before_the_chosen_spacing(tmp_path: Path) -> None:

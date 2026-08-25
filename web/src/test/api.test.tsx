@@ -47,8 +47,8 @@ describe("an answer that is not the shape the panel needs", () => {
   });
 
   it("is refused when the rhythm comes back in the old shape", async () => {
-    vi.stubGlobal("fetch", answering({ quietFromHour: 21, quietUntilHour: 7, cadenceHours: 1 }));
-    await expect(httpApi("t").rhythm()).rejects.toThrow(/quietFrom/);
+    vi.stubGlobal("fetch", answering({ picturesFromHour: 21, picturesUntilHour: 7, cadenceHours: 1 }));
+    await expect(httpApi("t").rhythm()).rejects.toThrow(/picturesFrom/);
   });
 
   it("is refused when the settings route is not there at all", async () => {

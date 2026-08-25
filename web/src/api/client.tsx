@@ -38,8 +38,8 @@ export function warmUp(): void {
 }
 
 const RHYTHM_FIELDS = [
-  "quietFrom",
-  "quietUntil",
+  "picturesFrom",
+  "picturesUntil",
   "cadenceMinutes",
   "minCadenceMinutes",
   "maxCadenceMinutes",

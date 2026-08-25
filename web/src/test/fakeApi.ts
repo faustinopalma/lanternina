@@ -335,13 +335,14 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
   ];
   let rhythm: Rhythm = {
-    quietFrom: "21:30",
-    quietUntil: "07:00",
+    picturesFrom: "07:00",
+    picturesUntil: "21:30",
     cadenceMinutes: 60,
     minCadenceMinutes: 1,
     maxCadenceMinutes: 1440,
     afternoonDays: ["wed", "sat"],
     afternoonFrom: "15:00",
+    afternoonUntil: "19:00",
     timeZone: "Europe/Rome",
     dayChoices: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
   };

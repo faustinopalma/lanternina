@@ -6,7 +6,7 @@ into the house — which is why "now" means "at the next look" and the panel is 
 say so rather than to imply the afternoon has started.
 
 What a press overrides is the day and the hour, and that is the whole list. These tests
-exist mostly for the rest of the list: the evening pause still holds, an afternoon already
+exist mostly for the rest of the list: the end of the band still holds, an afternoon already
 under way is still not interrupted, and a house with nothing approved still has nothing to
 begin. Each of those is a way a "start now" button turns into a system that surprises
 somebody in their own house.
@@ -71,24 +71,24 @@ def test_a_panel_that_will_not_answer_is_the_same_as_no_press(
     assert the_standing_request("https://panel.invalid", "hh_1", "k") == ""
 
 
-def test_a_press_does_not_reach_past_the_evening_pause() -> None:
-    """The hour is overridden; the pause is not.
+def test_a_press_does_not_reach_past_the_end_of_the_band() -> None:
+    """The hour an afternoon may begin is overridden; the hour it must be over by is not.
 
-    `fits_before_the_pause` is what the runner asks after a press as well as before one,
-    so an afternoon of ninety minutes at half past nine is still not begun.
+    `fits_inside_the_band` is what the runner asks after a press as well as before one,
+    so an afternoon of ninety minutes half an hour before the band closes is not begun.
     """
+    opens, closes = 15 * 60, 22 * 60
     at_2130 = 21 * 60 + 30
-    quiet_from, quiet_until = 22 * 60, 7 * 60
 
-    assert clock.fits_before_the_pause(at_2130, 20, quiet_from, quiet_until) is True
-    assert clock.fits_before_the_pause(at_2130, 90, quiet_from, quiet_until) is False
+    assert clock.fits_inside_the_band(at_2130, 20, opens, closes) is True
+    assert clock.fits_inside_the_band(at_2130, 90, opens, closes) is False
 
 
-def test_a_press_inside_the_pause_begins_nothing() -> None:
+def test_a_press_outside_the_band_begins_nothing() -> None:
     """Half past eleven at night is not a time to start printing."""
     at_2330 = 23 * 60 + 30
 
-    assert clock.fits_before_the_pause(at_2330, 5, 22 * 60, 7 * 60) is False
+    assert clock.fits_inside_the_band(at_2330, 5, 15 * 60, 22 * 60) is False
 
 
 def test_the_press_is_cleared_by_its_own_id(monkeypatch: pytest.MonkeyPatch) -> None:

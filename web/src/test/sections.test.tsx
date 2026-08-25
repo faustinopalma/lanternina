@@ -199,14 +199,15 @@ describe("the rhythm", () => {
 
     await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
     expect(api.recorded.rhythm[0]).toEqual({
-      quietFrom: "21:30",
-      quietUntil: "07:00",
+      picturesFrom: "07:00",
+      picturesUntil: "21:30",
       cadenceMinutes: 90,
-      // Sent back untouched: one form saves five settings, and changing the spacing must
+      // Sent back untouched: one form saves three sections, and changing the spacing must
       // not quietly clear the days an afternoon may begin on, nor move the house back
       // onto whatever clock the hub's own machine happens to be set to.
       afternoonDays: ["wed", "sat"],
       afternoonFrom: "15:00",
+      afternoonUntil: "19:00",
       timeZone: "Europe/Rome",
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();

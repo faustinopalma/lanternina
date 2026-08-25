@@ -31,8 +31,7 @@ def a_rhythm(**changed: object) -> dict[str, object]:
     rhythm: dict[str, object] = {
         "afternoonDays": ["tue"],
         "afternoonFrom": "15:00",
-        "quietFrom": "22:00",
-        "quietUntil": "07:00",
+        "afternoonUntil": "22:00",
         "timeZone": ROME,
     }
     rhythm.update(changed)

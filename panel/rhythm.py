@@ -15,12 +15,16 @@ never begins one, which is the right default for something that prints paper and
 words on a display — and it means the feature arrives switched off rather than arriving.
 
 There is no setting for how many, and there will not be one. The days say when it may
-happen and nothing counts what did.
+happen, the band says until when, and nothing counts what did.
 
-Everything is minutes past midnight, in one unit: the two ends of the pause, the spacing
-between pictures and the hour an afternoon may start are all clock arithmetic, and a
-second unit is the usual way that goes wrong. What crosses the API is "HH:MM" for the
-hours and a count of minutes for the spacing.
+Everything is minutes past midnight, in one unit: the two ends of each band, the spacing
+between pictures and the hours an afternoon may begin and stop beginning are all clock
+arithmetic, and a second unit is the usual way that goes wrong. What crosses the API is
+"HH:MM" for the hours and a count of minutes for the spacing.
+
+Both bands are said the way round a parent thinks — the hours a thing may happen, not the
+hours it may not. It was a "pause" until 25 August 2026, and a parent could not tell what
+it bounded: it sat above the afternoon controls and bounded only the pictures.
 """
 
 from __future__ import annotations
@@ -41,13 +45,18 @@ from .reminders import DAYS
 MIN_CADENCE_MINUTES = 1
 MAX_CADENCE_MINUTES = 24 * 60
 
-DEFAULT_QUIET_FROM_MINUTES = 22 * 60
-DEFAULT_QUIET_UNTIL_MINUTES = 7 * 60
+# When the display may change its picture. A band, said the way round a parent thinks: the
+# hours it may happen, not the hours it may not. It was a "pause" until 25 August 2026, and
+# a parent reading the page could not tell what the pause bounded — it sat above the
+# afternoon controls and bounded only the pictures.
+DEFAULT_PICTURES_FROM_MINUTES = 7 * 60
+DEFAULT_PICTURES_UNTIL_MINUTES = 22 * 60
 DEFAULT_CADENCE_MINUTES = 60
 
-# Mid-afternoon, which is what the word means. It is only the default hour: no day is
+# Mid-afternoon to before dinner, which is what the words mean. Only the default: no day is
 # chosen by default, so this decides nothing until a parent picks one.
 DEFAULT_AFTERNOON_FROM_MINUTES = 15 * 60
+DEFAULT_AFTERNOON_UNTIL_MINUTES = 19 * 60
 
 _CLOCK = re.compile(r"^(\d{1,2}):(\d{2})$")
 
@@ -70,13 +79,14 @@ def minutes_of(value: Any, name: str) -> int:
 @dataclass(frozen=True, slots=True)
 class Rhythm:
     household_id: str
-    quiet_from_minutes: int = DEFAULT_QUIET_FROM_MINUTES
-    quiet_until_minutes: int = DEFAULT_QUIET_UNTIL_MINUTES
+    pictures_from_minutes: int = DEFAULT_PICTURES_FROM_MINUTES
+    pictures_until_minutes: int = DEFAULT_PICTURES_UNTIL_MINUTES
     cadence_minutes: int = DEFAULT_CADENCE_MINUTES
-    # Which days an afternoon may begin on, and from what hour. Empty means none, which
-    # is where every household starts.
+    # Which days an afternoon may begin on, and between which hours. Empty days mean none,
+    # which is where every household starts.
     afternoon_days: tuple[str, ...] = ()
     afternoon_from_minutes: int = DEFAULT_AFTERNOON_FROM_MINUTES
+    afternoon_until_minutes: int = DEFAULT_AFTERNOON_UNTIL_MINUTES
     # Where the house is, as an IANA name. Empty means the hub uses whatever zone its own
     # operating system is set to, which is what every house did before 25 August 2026 and
     # is why one of them honoured every chosen hour an hour late.
@@ -86,11 +96,12 @@ class Rhythm:
 
     def to_public(self) -> dict[str, Any]:
         return {
-            "quietFrom": clock(self.quiet_from_minutes),
-            "quietUntil": clock(self.quiet_until_minutes),
+            "picturesFrom": clock(self.pictures_from_minutes),
+            "picturesUntil": clock(self.pictures_until_minutes),
             "cadenceMinutes": self.cadence_minutes,
             "afternoonDays": list(self.afternoon_days),
             "afternoonFrom": clock(self.afternoon_from_minutes),
+            "afternoonUntil": clock(self.afternoon_until_minutes),
             "timeZone": self.time_zone,
             "dayChoices": list(DAYS),
             "updatedAt": self.updated_at,
@@ -157,11 +168,12 @@ def zone_of(value: Any) -> str:
 def clean_rhythm(
     household_id: str,
     *,
-    quiet_from: Any,
-    quiet_until: Any,
+    pictures_from: Any,
+    pictures_until: Any,
     cadence_minutes: Any,
     afternoon_days: Any = (),
     afternoon_from: Any = None,
+    afternoon_until: Any = None,
     time_zone: Any = None,
     updated_by: str = "",
 ) -> Rhythm:
@@ -173,27 +185,43 @@ def clean_rhythm(
             f"the spacing must be between {MIN_CADENCE_MINUTES} and "
             f"{MAX_CADENCE_MINUTES} minutes"
         )
+    begins = (
+        DEFAULT_AFTERNOON_FROM_MINUTES
+        if afternoon_from is None
+        else minutes_of(afternoon_from, "the hour an afternoon may begin")
+    )
+    ends = (
+        DEFAULT_AFTERNOON_UNTIL_MINUTES
+        if afternoon_until is None
+        else minutes_of(afternoon_until, "the hour after which no afternoon begins")
+    )
+    # Refused rather than swapped or wrapped: an afternoon prints paper and takes an hour,
+    # so a band that runs through the middle of the night is a typing mistake, not a wish.
+    if ends <= begins:
+        raise ValueError("an afternoon must stop being allowed after it starts being allowed")
     return Rhythm(
         household_id=household_id,
-        quiet_from_minutes=minutes_of(quiet_from, "the start of the pause"),
-        quiet_until_minutes=minutes_of(quiet_until, "the end of the pause"),
+        pictures_from_minutes=minutes_of(pictures_from, "the start of the picture hours"),
+        pictures_until_minutes=minutes_of(pictures_until, "the end of the picture hours"),
         cadence_minutes=cadence_minutes,
         afternoon_days=days_of(afternoon_days),
-        afternoon_from_minutes=(
-            DEFAULT_AFTERNOON_FROM_MINUTES
-            if afternoon_from is None
-            else minutes_of(afternoon_from, "the hour an afternoon may begin")
-        ),
+        afternoon_from_minutes=begins,
+        afternoon_until_minutes=ends,
         time_zone=zone_of(time_zone),
         updated_at=time.time(),
         updated_by=updated_by,
     )
 
 
-def in_quiet_window(now_minutes: int, start: int, end: int) -> bool:
-    """Equal ends mean no pause at all, so a parent can turn the window off."""
+def inside_band(now_minutes: int, start: int, end: int) -> bool:
+    """Whether the clock is inside an open band. Equal ends mean all day.
+
+    A band may wrap past midnight — pictures from 07:00 until 22:00 does not, a house that
+    chose 20:00 until 08:00 does — so the two cases are separate and neither is the other's
+    negation.
+    """
     if start == end:
-        return False
+        return True
     if start < end:
         return start <= now_minutes < end
     return now_minutes >= start or now_minutes < end

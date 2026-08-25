@@ -83,8 +83,7 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 # panel that will not answer means there is nothing to begin whatever the rhythm says.
 NO_DAYS: tuple[str, ...] = ()
 DEFAULT_AFTERNOON_FROM = "15:00"
-DEFAULT_QUIET_FROM = "22:00"
-DEFAULT_QUIET_UNTIL = "07:00"
+DEFAULT_AFTERNOON_UNTIL = "19:00"
 
 LOOK_TIMEOUT_SECONDS = 30
 # Devising a whole afternoon is a model writing a dozen moments. Measured from the hub on
@@ -103,27 +102,17 @@ def minutes_of(value: str) -> int:
     return hours * 60 + minutes
 
 
-def in_quiet_window(minutes: int, start: int, end: int) -> bool:
-    """Equal ends mean no pause at all, so a parent can turn the window off."""
-    if start == end:
-        return False
-    if start < end:
-        return start <= minutes < end
-    return minutes >= start or minutes < end
+def fits_inside_the_band(minutes_now: int, length: int, start: int, end: int) -> bool:
+    """Whether a whole afternoon of ``length`` minutes is over before the band closes.
 
-
-def fits_before_the_pause(minutes_now: int, length: int, start: int, end: int) -> bool:
-    """Whether a whole afternoon of ``length`` minutes is over before the house goes quiet.
-
-    This is the reason there is no end-hour setting. An afternoon that would still be
-    running at the hour the parent picked for quiet is one that ends on a display nobody
-    is meant to be looking at, and the length is written on the afternoon itself.
+    The length is written on the afternoon itself. An afternoon that would still be running
+    after the hour the parent chose is one that ends on a display nobody is meant to be
+    looking at, so it is not begun — a shorter one may still fit, and the next run looks
+    again.
     """
-    if start == end:
-        return True
-    if in_quiet_window(minutes_now, start, end):
+    if minutes_now < start or minutes_now >= end:
         return False
-    return length <= (start - minutes_now) % MINUTES_IN_A_DAY
+    return length <= end - minutes_now
 
 
 def looked_today(stamp: Path, now: float, zone: str = "") -> bool:
@@ -171,8 +160,7 @@ def read_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
     return {
         "afternoonDays": [str(day) for day in (answer.get("afternoonDays") or [])],
         "afternoonFrom": str(answer.get("afternoonFrom") or DEFAULT_AFTERNOON_FROM),
-        "quietFrom": str(answer.get("quietFrom") or DEFAULT_QUIET_FROM),
-        "quietUntil": str(answer.get("quietUntil") or DEFAULT_QUIET_UNTIL),
+        "afternoonUntil": str(answer.get("afternoonUntil") or DEFAULT_AFTERNOON_UNTIL),
         "timeZone": str(answer.get("timeZone") or ""),
     }
 
@@ -197,8 +185,7 @@ def the_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
         return {
             "afternoonDays": list(NO_DAYS),
             "afternoonFrom": DEFAULT_AFTERNOON_FROM,
-            "quietFrom": DEFAULT_QUIET_FROM,
-            "quietUntil": DEFAULT_QUIET_UNTIL,
+            "afternoonUntil": DEFAULT_AFTERNOON_UNTIL,
             "timeZone": "",
         }
 
@@ -207,7 +194,12 @@ def its_moment(rhythm: dict[str, Any], now: time.struct_time) -> bool:
     """Whether this is a day and an hour the parent said an afternoon may begin on."""
     if DAYS[now.tm_wday] not in rhythm["afternoonDays"]:
         return False
-    return now.tm_hour * 60 + now.tm_min >= minutes_of(rhythm["afternoonFrom"])
+    minutes = now.tm_hour * 60 + now.tm_min
+    return (
+        minutes_of(rhythm["afternoonFrom"])
+        <= minutes
+        < minutes_of(rhythm["afternoonUntil"])
+    )
 
 
 # What the parent asked for, if it is the kind this runner acts on. Named here rather than
@@ -440,7 +432,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"not the moment: {time.strftime('%a %H:%M', there)}"
                 f"{f' in {zone}' if zone else ' by this machine'}"
                 f", and the parent chose {', '.join(rhythm['afternoonDays']) or 'no day'}"
-                f" from {rhythm['afternoonFrom']}"
+                f" from {rhythm['afternoonFrom']} to {rhythm['afternoonUntil']}"
             )
             return 0
     except ValueError as exc:
@@ -448,11 +440,13 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     # A press is the parent saying "today, again", so the day's stamp does not stop it.
-    # What it does not override is below: the pause, and an afternoon already under way.
-    if not asked and looked_today(stamp, now, zone):
-        print(f"already looked today ({date_there(now, zone)}); nothing more begins today")
-        return 0
-
+    # What it does not override is below: the band, and an afternoon already under way.
+    #
+    # The stamp is not consulted here. It was until 25 August 2026, and it meant one
+    # afternoon a day whatever else was true: two approved, the first finished at half
+    # past four, and the second waited until tomorrow with three hours of band left. What
+    # the stamp is for is the expensive half — asking a model to devise a new one — and
+    # that is the only place it is now read.
     try:
         offered, waiting = what_the_house_may_run(panel, household, key)
     except (urllib.error.URLError, OSError, ValueError) as exc:
@@ -468,6 +462,9 @@ def main(argv: list[str] | None = None) -> int:
             # for as long as an afternoon sits unread.
             print(f"{waiting} waiting for the parent; nothing to begin")
             return 0
+        if not asked and looked_today(stamp, now, zone):
+            print(f"nothing approved, and one was already devised today ({date_there(now, zone)})")
+            return 0
         # Stamped before the asking, not after: a panel refusing to devise would otherwise
         # be asked again every ten minutes, which is 42 model calls in an afternoon.
         mark_looked(stamp, now, zone)
@@ -481,16 +478,19 @@ def main(argv: list[str] | None = None) -> int:
 
     offered_id, experience = chosen
     minutes_now = there.tm_hour * 60 + there.tm_min
-    # Stamped either way: an afternoon that does not fit now fits less as the pause gets
-    # nearer, and one that is about to begin must not begin twice if the printer refuses.
+    # Stamped so that nothing is devised for the rest of today: what a parent approved is
+    # begun as long as the band is open, and what a model has not written yet can wait.
     mark_looked(stamp, now, zone)
-    if not fits_before_the_pause(
+    if not fits_inside_the_band(
         minutes_now,
         experience.minutes,
-        minutes_of(rhythm["quietFrom"]),
-        minutes_of(rhythm["quietUntil"]),
+        minutes_of(rhythm["afternoonFrom"]),
+        minutes_of(rhythm["afternoonUntil"]),
     ):
-        print(f"{experience.title} would not be over before the pause; not beginning it")
+        print(
+            f"{experience.title} would not be over by {rhythm['afternoonUntil']}; "
+            "not beginning it"
+        )
         return 0
 
     try:
