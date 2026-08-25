@@ -72,15 +72,21 @@ describe("the gallery", () => {
     renderPanel(api);
 
     await open(user, "Quadri");
-    const buttons = await screen.findAllByRole("button", { name: "Rimetti su questo" });
-    await user.click(buttons[0]!);
+    // Only on the enlarged picture: the grid is for finding one, not for acting on it.
+    const tiles = await screen.findAllByRole("button", { name: "Ingrandisci" });
+    expect(screen.queryByRole("button", { name: "Rimetti su questo" })).toBeNull();
 
-    await screen.findByText(
+    await user.click(tiles[0]!);
+    const enlarged = await screen.findByRole("dialog");
+    const again = within(enlarged).getByRole("button", { name: "Rimetti su questo" });
+    await user.click(again);
+
+    await within(enlarged).findByText(
       "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
     );
     expect(api.recorded.askedAgain).toEqual(["pic-1"]);
     // Pressing again would only replace the row, so the button stops offering it.
-    expect(buttons[0]).toBeDisabled();
+    expect(again).toBeDisabled();
   });
 
   it("names a saved picture by its moment, and keeps two of the same minute apart", () => {
@@ -173,11 +179,17 @@ describe("the gallery", () => {
     renderPanel(api);
 
     await open(user, "Quadri");
+    const tiles = await screen.findAllByRole("button", { name: "Ingrandisci" });
 
-    const asked = await screen.findAllByText(
+    // Carried by the picture it was asked for, and by no other. Before this moved into
+    // the enlarged view it was shown on the grid, where it had to be counted to be sure
+    // it appeared once; opening the right picture says the same thing without counting.
+    await user.click(tiles[2]!);
+    const enlarged = await screen.findByRole("dialog");
+    await within(enlarged).findByText(
       "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
     );
-    expect(asked).toHaveLength(1);
+    expect(within(enlarged).getByRole("button", { name: "Rimetti su questo" })).toBeDisabled();
   });
 });
 

@@ -77,11 +77,9 @@ type Gathering =
 
 function Tile({
   picture,
-  standing,
   onOpen,
 }: {
   picture: Picture;
-  standing: string | null;
   onOpen: (picture: Picture, bytes: Blob) => void;
 }) {
   const { t, dateTime } = useWords();
@@ -90,7 +88,6 @@ function Tile({
   const [url, setUrl] = useState<string | null>(null);
   const [bytes, setBytes] = useState<Blob | null>(null);
   const [failed, setFailed] = useState(false);
-  const [asked, setAsked] = useState<boolean | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -169,31 +166,6 @@ function Tile({
         <strong className="font-semibold">{title}</strong>
         <span className="text-quiet">{dateTime(picture.createdAt)}</span>
         {failed ? <span className="text-quiet">{t("pictures.unavailable")}</span> : null}
-        {/* The button writes a row and stops. What it says afterwards is what actually
-            happens: the house puts the picture up when it next changes it, which the
-            panel cannot hurry. */}
-        <span className="mt-1.5 flex flex-col gap-1">
-          <Button
-            size="small"
-            disabled={asked === true || standing === picture.id}
-            onClick={async () => {
-              try {
-                await api.askAgain(picture.id);
-                setAsked(true);
-              } catch {
-                setAsked(false);
-              }
-            }}
-          >
-            {t("pictures.again")}
-          </Button>
-          {asked === true || standing === picture.id ? (
-            <span className="text-quiet">{t("pictures.again.asked")}</span>
-          ) : null}
-          {asked === false ? (
-            <span className="text-quiet">{t("pictures.again.failed")}</span>
-          ) : null}
-        </span>
       </figcaption>
     </figure>
   );
@@ -204,15 +176,19 @@ function Tile({
 function Enlarged({
   picture,
   bytes,
+  standing,
   onClose,
 }: {
   picture: Picture;
   bytes: Blob;
+  standing: string | null;
   onClose: () => void;
 }) {
   const { t, dateTime } = useWords();
+  const api = useApi();
   const frame = useRef<HTMLDialogElement>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const [asked, setAsked] = useState<boolean | null>(null);
 
   useEffect(() => {
     const made = URL.createObjectURL(bytes);
@@ -237,7 +213,9 @@ function Enlarged({
         // Clicking the backdrop lands on the dialog itself, never on its children.
         if (event.target === frame.current) frame.current?.close();
       }}
-      className="max-h-[92vh] max-w-[96vw] rounded-control border border-edge bg-paper p-0 backdrop:bg-black/60"
+      // `m-auto` is what centres it: the browser centres a modal dialog with `margin:auto`,
+      // and Tailwind's preflight sets `margin:0` on everything, which lands it top left.
+      className="m-auto max-h-[92vh] max-w-[96vw] rounded-control border border-edge bg-paper p-0 backdrop:bg-black/60"
     >
       <div className="flex max-h-[92vh] flex-col">
         <div className="min-h-0 flex-1 bg-white p-2">
@@ -255,8 +233,31 @@ function Enlarged({
               {picture.theme || t("pictures.untitled")}
             </strong>
             <span className="text-quiet">{dateTime(picture.createdAt)}</span>
+            {asked === true || standing === picture.id ? (
+              <span className="text-quiet">{t("pictures.again.asked")}</span>
+            ) : null}
+            {asked === false ? (
+              <span className="text-quiet">{t("pictures.again.failed")}</span>
+            ) : null}
           </span>
           <span className="ml-auto flex gap-2">
+            {/* Writes a row and stops. What it says afterwards is what actually happens:
+                the house puts the picture up when it next changes it, and the panel
+                cannot hurry that. */}
+            <Button
+              size="small"
+              disabled={asked === true || standing === picture.id}
+              onClick={async () => {
+                try {
+                  await api.askAgain(picture.id);
+                  setAsked(true);
+                } catch {
+                  setAsked(false);
+                }
+              }}
+            >
+              {t("pictures.again")}
+            </Button>
             <Button size="small" onClick={() => save(bytes, fileName(picture))}>
               {t("pictures.download")}
             </Button>
@@ -425,7 +426,6 @@ export function Pictures() {
             <Tile
               key={picture.id}
               picture={picture}
-              standing={standing}
               onOpen={(shown, bytes) => setOpen({ picture: shown, bytes })}
             />
           ))}
@@ -436,6 +436,7 @@ export function Pictures() {
         <Enlarged
           picture={open.picture}
           bytes={open.bytes}
+          standing={standing}
           onClose={() => setOpen(null)}
         />
       ) : null}
