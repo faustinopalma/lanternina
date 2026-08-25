@@ -1,0 +1,5 @@
+decoration  —  panel/painting.py :: DECORATION_PROMPT
+295 characters, 1 lines
+invented for this rendering: what a reminder might be about
+==============================================================================
+A single small black and white line drawing of a toothbrush, centred on plain white. One object only, thick even strokes, no shading, no grey, no background, no scene. It must stay readable when shrunk to 220 pixels. No text, no letters, no numbers, no watermark, no border, no frame, no people.

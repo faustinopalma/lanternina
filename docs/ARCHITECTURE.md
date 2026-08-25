@@ -62,6 +62,12 @@ Concentrating it buys three things that are hard to get otherwise:
 - **What a prompt carries is decided once.** Whatever a prompt may include is decided in
   one place rather than at each call site.
 
+What a prompt *says* is not in Python. Each block lives in a Markdown file beside the module
+that sends it — `agents/experience_deviser.task.md` next to `agents/experience_deviser.py` —
+read by `shared/prompts.py`, with the numbers filled in from the format's own constants. The
+assembled result of every one of them is rendered into [docs/prompts/](prompts/README.md) and
+a test refuses a change that has not been rendered.
+
 The router exposes two methods with deliberately different return types:
 
 | Method | Returns | For |

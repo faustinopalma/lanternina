@@ -36,6 +36,7 @@ from typing import Any, Final
 
 from shared.agents import AgentContext
 from shared.ids import new_request_id
+from shared.prompts import beside
 from shared.routing import Capability, ModelRequest, PageImage
 from shared.vision_contracts import (
     MAX_DESCRIPTION_CHARS,
@@ -43,25 +44,11 @@ from shared.vision_contracts import (
     WhatCameBack,
 )
 
-_INSTRUCTION: Final = (
-    "Two images of the same kind of sheet of paper. The first is the sheet as it was "
-    "printed, with nothing written on it. The second is the sheet after somebody had it.\n"
-    "Say what is on the second that is not on the first.\n"
-    "Answer with JSON and nothing else, in this exact shape:\n"
-    '{"written": true, "same_sheet": true, "describes": ["...", "..."]}\n'
-    '"written" is true if anything at all was added: a line, a word, a drawing, a tick, a '
-    "scribble. False if the second sheet carries nothing the first did not.\n"
-    '"same_sheet" is true if the second image is the first sheet, written on. False if it '
-    "is a different sheet altogether. Say false plainly; it is not a complaint.\n"
-    '"describes" is what was added, one short phrase each, at most '
-    f"{MAX_DESCRIPTIONS} of them and at most {MAX_DESCRIPTION_CHARS} characters each. "
-    "Describe the ink on the paper and where it sits: 'a house drawn in the box on the "
-    "left', 'three words on the first line', 'the second box left untouched'.\n"
-    "Two things you must not do. Do not say anything about the person: not how well it was "
-    "done, not how much effort it took, not what it suggests about them. And do not say "
-    "whether anything is correct, because there is nothing here that can be got wrong.\n"
-    "If nothing was added, say so with an empty list. That is a good answer."
-)
+_INSTRUCTION: Final = beside(__file__).text(
+    "instruction",
+    max_descriptions=MAX_DESCRIPTIONS,
+    max_description_chars=MAX_DESCRIPTION_CHARS,
+).rstrip("\n")  # what the sheet asked for is appended with its own leading newline
 
 # The wrapper plus the room the descriptions are allowed. Generous by half, so a model that
 # pretty-prints its JSON is not cut off in the middle of a sentence and thrown away.

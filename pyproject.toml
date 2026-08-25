@@ -67,7 +67,12 @@ where = ["."]
 include = ["shared*", "orchestrator*", "agents*", "vision*", "panel*", "printing*", "devices*"]
 
 [tool.setuptools.package-data]
-shared = ["py.typed"]
+shared = ["py.typed", "*.md"]
+# What a model is told lives in Markdown beside the module that sends it. An installed
+# package without these files imports and then raises FileNotFoundError on the first call,
+# so they are data and not documentation.
+agents = ["*.md"]
+panel = ["*.md"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

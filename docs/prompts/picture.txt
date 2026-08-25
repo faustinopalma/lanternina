@@ -1,0 +1,5 @@
+picture  —  panel/painting.py :: PICTURE_PROMPT
+357 characters, 1 lines
+invented for this rendering: a theme a parent might have approved, and one manner
+==============================================================================
+Black and white ink illustration of nuvole. Bold clean outlines, large simple shapes, strong contrast, generous white space, calm and friendly. No text, no letters, no numbers, no watermark, no border, no frame. Drawn with a fine dip pen, seen from a little way off, with room around it, in flat daylight with no shadow. The line is confident and unhurried.

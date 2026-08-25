@@ -1,0 +1,1 @@
+The page is a leaf out of a field notebook: a margin rule down the left and a quick sketch in one corner. Rule lines only where the page asks for something to be written, and leave the paper plain everywhere else.

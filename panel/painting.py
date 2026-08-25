@@ -21,6 +21,7 @@ from collections.abc import Callable
 
 from shared.ids import new_id
 from shared.manner import a_manner
+from shared.prompts import beside
 from shared.routing import Capability, ModelRequest, ModelUsage
 from shared.safety import ContentKind
 from shared.seal import Sealer, SealPurpose
@@ -34,31 +35,13 @@ FALLBACK_THEMES = (
     "montagne e nuvole",
 )
 
-# Written for a screen with two levels and no backlight: fine detail and text both vanish
-# once the picture is dithered, so neither is asked for.
-#
-# The manner is appended per call and never stored in this string. Without it the prompt was
-# a pure function of the theme, so a household with three themes saw the same three pictures
-# for as long as it kept them — noticed by the parent, 24 August 2026.
-PICTURE_PROMPT = (
-    "Black and white ink illustration of {theme}. Bold clean outlines, large simple "
-    "shapes, strong contrast, generous white space, calm and friendly. "
-    "No text, no letters, no numbers, no watermark, no border, no frame."
-)
+SAYS = beside(__file__)
 
-# A reminder's decoration, which is not a picture: it sits beside a few words in a strip
-# about a quarter of the screen wide, so it has to read at that size with two levels and
-# nothing else. One object, centred, and nothing behind it.
-#
-# "No text" matters more here than it does above, and for a second reason: the words on
-# this screen were screened as words, and anything a model wrote inside the image would
-# reach the room without having been.
-DECORATION_PROMPT = (
-    "A single small black and white line drawing of {subject}, centred on plain white. "
-    "One object only, thick even strokes, no shading, no grey, no background, no scene. "
-    "It must stay readable when shrunk to 220 pixels. "
-    "No text, no letters, no numbers, no watermark, no border, no frame, no people."
-)
+# Both carry a `{...}` the caller fills, because theme and subject change with every call
+# while the file is read once. What they say, and why, is in the files themselves.
+PICTURE_PROMPT = SAYS.text("picture").rstrip("\n")
+
+DECORATION_PROMPT = SAYS.text("decoration").rstrip("\n")
 
 
 def choose_theme(labels: list[str]) -> str:

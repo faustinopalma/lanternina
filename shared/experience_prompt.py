@@ -40,41 +40,19 @@ from .page import (
     MAX_TITLE,
     PageKind,
 )
+from .prompts import beside
+
+SAYS: Final = beside(__file__)
 
 _KINDS: Final = ", ".join(f'"{kind}"' for kind in PageKind)
 
 _LINES: Final = f"a list of at most {MAX_LINES} lines, each at most {MAX_LINE} characters"
 
-THE_SHAPE_OF_A_MOMENT: Final = (
-    "Every moment, whatever it does, carries these five keys and then whatever its act "
-    "adds:\n"
-    '  "id": 2 to 32 characters of lowercase a-z, digits and hyphens. No capitals, no '
-    "accented letters, no underscores and no spaces. Ids are never shown to anybody, so "
-    "write them in English even when the afternoon is not.\n"
-    f'  "heading": at most {MAX_HEADING} characters, on the display.\n'
-    f'  "weights": {{"short": W, "standard": W, "extended": W}} — the same moment at three '
-    "costs, reaching the same point in the story. W is "
-    f'{{"minutes": <whole number>, "lines": [{_LINES}]}}. The short one takes about a third '
-    "of the time of the standard one: one step, with what is already to hand. The extended "
-    "one adds an optional step. The three must take different numbers of minutes, short "
-    "fewest.\n"
-    f'  "help": exactly {HELP_LEVELS} rungs, each '
-    f'{{"after_minutes": <whole number>, "lines": [{_LINES}]}}, and after_minutes goes up '
-    "along the list. The first is a nudge inside the story, the second a concrete clue, "
-    "the third an almost explicit instruction, the fourth hands the answer over as "
-    "something the story gives. The same words are used whether somebody asked for help or "
-    "whether the time simply passed, so never write them as an answer to a question.\n"
-    '  "way_out": {"in_hand": "<a physical object they are holding>", "heading": "<text>", '
-    f'"lines": [{_LINES}], "minutes": <whole number>}} — how to reach the ending from '
-    "exactly this moment.\n"
-    "     in_hand is a thing that exists in the room: a printed sheet, a pencil, a cup, "
-    "something the afternoon already put on the table. It is never part of a screen, never "
-    "an idea, and never the afternoon itself. Two different moments usually have different "
-    "things in hand, because by then something else has happened.\n"
-    "     The same words must appear, word for word, in a line of this moment or of one "
-    "before it. So write the object into the story first, and then write a way out that "
-    "reaches for it. A way out that names something nobody was given is refused.\n"
-    "     It never says that anything is being shortened, skipped or cut short.\n"
+THE_SHAPE_OF_A_MOMENT: Final = SAYS.text(
+    "the-shape-of-a-moment",
+    max_heading=MAX_HEADING,
+    help_levels=HELP_LEVELS,
+    lines=_LINES,
 )
 
 # What each verb looks like written down, and whatever its own keys need saying. The
@@ -98,21 +76,16 @@ _WRITTEN_AS: Final[Mapping[Act, str]] = {
     Act.CLOSE: '{"act": "close", ...}',
 }
 
+# A note under two of the shapes, for the key a reader of the JSON would not guess. Only
+# these two have one, so the mapping is by act and not by every act.
 _ABOUT_ITS_KEYS: Final[Mapping[Act, str]] = {
-    Act.HAND_OVER: (
-        "instead is what the display says when there is no printer, so that this moment "
-        "still reaches the same point in the story with no paper at all. It is not an "
-        "apology and it does not mention the printer."
-    ),
-    Act.COLLECT: "if_no_page is where the afternoon goes when nothing was printed at all.",
+    Act.HAND_OVER: SAYS.text("about-hand-over").rstrip("\n"),
+    Act.COLLECT: SAYS.text("about-if-no-page").rstrip("\n"),
 }
 
 
 def _the_acts() -> str:
-    written = [
-        "A moment is one of these, and carries no key other than the five above and the "
-        "ones shown here:\n"
-    ]
+    written = [SAYS.text("the-acts-head")]
     for hand in HANDS:
         shape = _WRITTEN_AS.get(hand.act)
         if shape is None:
@@ -127,123 +100,39 @@ def _the_acts() -> str:
 THE_ACTS: Final = _the_acts()
 
 
-THE_MARKS_ON_A_PAGE: Final = (
-    "A page is an object out of the story, and it is drawn whole: you say what it is and "
-    "what it says, and it is drawn from that. You never say where anything goes.\n"
-    f'  "kind": one of {_KINDS}. A map is drawn from above and has a legend; a dossier is a '
-    "file card with a specimen on it; a label is what a museum puts beside one thing; a "
-    "notebook is a leaf out of somebody's field book. Choose the one the afternoon is "
-    "already about.\n"
-    f'  "title": at most {MAX_TITLE} characters, lettered large. It names the object, not '
-    "the task: *Le nuvole del ventiquattro*, never *Scheda di osservazione*.\n"
-    f'  "note": at most {MAX_NOTE_LINES} lines of at most {MAX_NOTE_LINE} characters, '
-    "under the title. It is written from inside the story — what this object is, who it "
-    "belonged to, what it is for — and not as instructions to somebody.\n"
-    f'  "spaces": at most {MAX_SPACES} places to write, each '
-    f'{{"label": "<at most {MAX_LABEL} characters>", "room": "a_line" | "some_lines" | '
-    '"a_box"}}. a_line is a few words, some_lines is a sentence or two, a_box is for '
-    "drawing in. The label is lettered above the room it names, and it is part of the "
-    "object too: on a map it is a legend entry, on a label it is what the museum wants "
-    "known. A page with two or three is better than a page with six.\n"
-    f'  "illustration": at most {MAX_ILLUSTRATION} characters, in English, saying what is '
-    "drawn on the page. It is drawn as a picture and never lettered, so it names things to "
-    "see and nothing else: no titles, no captions, no writing of any kind.\n"
-    "Every word you put in title, note and label is lettered exactly as you write it, in "
-    "the language of the afternoon. Nothing else is written on the page.\n"
+THE_MARKS_ON_A_PAGE: Final = SAYS.text(
+    "the-marks-on-a-page",
+    kinds=_KINDS,
+    max_title=MAX_TITLE,
+    max_note_lines=MAX_NOTE_LINES,
+    max_note_line=MAX_NOTE_LINE,
+    max_spaces=MAX_SPACES,
+    max_label=MAX_LABEL,
+    max_illustration=MAX_ILLUSTRATION,
 )
 
-THE_LIMITS: Final = (
-    f"A line is at most {MAX_LINE} characters and there are at most {MAX_LINES} lines in "
-    f"any list of lines. Every list of lines has at least one line in it.\n"
-    f"A weight takes {MIN_WEIGHT_MINUTES} to {MAX_WEIGHT_MINUTES} minutes. A rung of help "
-    f"arrives after 1 to {MAX_HELP_AFTER} minutes. A way out takes at most "
-    f"{MAX_WAY_OUT_MINUTES} minutes, and what is in_hand is at most {MAX_IN_HAND} "
-    f"characters.\n"
-    f"On a page: its title is at most {MAX_TITLE} characters, a line of its note at most "
-    f"{MAX_NOTE_LINE}, and a label at most {MAX_LABEL}. These are refused, not trimmed.\n"
-    f"At most {MAX_NOTE_LINES} lines of note and at most {MAX_SPACES} places to write.\n"
+THE_LIMITS: Final = SAYS.text(
+    "the-limits",
+    max_line=MAX_LINE,
+    max_lines=MAX_LINES,
+    min_weight_minutes=MIN_WEIGHT_MINUTES,
+    max_weight_minutes=MAX_WEIGHT_MINUTES,
+    max_help_after=MAX_HELP_AFTER,
+    max_way_out_minutes=MAX_WAY_OUT_MINUTES,
+    max_in_hand=MAX_IN_HAND,
+    max_title=MAX_TITLE,
+    max_note_line=MAX_NOTE_LINE,
+    max_label=MAX_LABEL,
+    max_note_lines=MAX_NOTE_LINES,
+    max_spaces=MAX_SPACES,
 )
 
-# `ideas/09 §16`. Six properties, and they are the ones that get lost first: they describe
-# how a sentence is built rather than what it is about, so a model that is concentrating on
-# the story drops them without noticing.
-HOW_THE_TEXT_READS: Final = (
-    "How every sentence you write has to read:\n"
-    "  One instruction at a time, saying what to do, with what, and where.\n"
-    "  Everything that matters exists on two surfaces — on a sheet and on a screen — so "
-    "that missing one is not missing it.\n"
-    "  Nothing asks for speed, fine dexterity, strength, reading aloud, a phone call, "
-    "going outside, or something learnt at school.\n"
-    "  Every action moves the story on. An approximate answer is a valid one: what is "
-    "recognised is the intention, never the precision.\n"
-    "  The register is for an adolescent. Never childish, never school-like, never a "
-    "tutorial. No remark on how the person did, and no question about themselves.\n"
-    "  The plan does not contain its own reasons. No reference to difficulty, to "
-    "simplifying, to adapting, to age, or to anything about the person. It has to read as "
-    "good design for anybody, because that is what it is.\n"
-)
+HOW_THE_TEXT_READS: Final = SAYS.text("how-the-text-reads")
 
-# `ideas/09 §16` again. Named rather than described, because a model asked for "something
-# original" produces one of these, and a list of six is cheaper than any amount of prose
-# about originality.
-WHAT_TO_REFUSE_BY_DEFAULT: Final = (
-    "Do not write any of these, whatever else you do: a pirate treasure hunt, an escape "
-    "room with a countdown, a question-and-answer quiz, a murder mystery, an apocalypse, "
-    "or a computer that has gone mad.\n"
-)
+WHAT_TO_REFUSE_BY_DEFAULT: Final = SAYS.text("what-to-refuse-by-default")
 
-# Added 24 August 2026, from the parent: the afternoons have to be worth doing, and until
-# now this prompt was almost entirely prohibitions. A model told only what it may not write
-# writes the safest thing it can think of, which is a worksheet with a story on top.
-#
-# What is asked for here is craft and not retention. The difference is not a nicety — this
-# system may not be built to be hard to stop, and the last line says so, because "engaging"
-# is the word under which that gets built by accident.
-WHAT_MAKES_IT_WORTH_DOING: Final = (
-    "What makes an afternoon worth doing, and this matters as much as the rules above:\n"
-    "  It begins in the middle of something. The first thing a display says puts a "
-    "situation in front of somebody — something that is true right now, in this house — "
-    "rather than announcing what they are about to do. Never open with what the afternoon "
-    "is called or what it is for.\n"
-    "  It is set here and now: the window, the tap, the light at five, what is on the "
-    "table, what the sky is doing today. An afternoon that could happen in any house on "
-    "any day is the one that feels like homework.\n"
-    "  Something is found out, made or named. By the end there is something that did not "
-    "exist before and that belongs to whoever made it — a record, a name they gave, an "
-    "object they built out of what was already there.\n"
-    "  The paper is a thing, not a form. It is the map, the specimen label, the page from "
-    "the file: what somebody keeps afterwards, and what the story is partly made of.\n"
-    "  What comes back changes what happens next. The afternoon after the page is not the "
-    "afternoon before it, and this is the whole reason a branch may say ask.\n"
-    "  It ends on the object. The last moment is about the thing in their hands, and it "
-    "says the afternoon is over without summing it up.\n"
-    "  The voice is somebody who is also interested, never a teacher. No 'adesso "
-    "proviamo', no 'molto bene', no explaining the point of what is happening.\n"
-    "  None of this works by making it hard to stop. There is no streak, no run of days, "
-    "nothing withheld until later, and nothing that is worth more for being finished. An "
-    "afternoon has to be worth the hour it is, and worth nothing at all afterwards.\n"
-)
+WHAT_MAKES_IT_WORTH_DOING: Final = SAYS.text("what-makes-it-worth-doing")
 
 _DRAWN_SHAPE: Final = ", ".join(f'"{name}": "<a short phrase>"' for name in DIMENSIONS)
 
-# `ideas/09 §10`. The dimensions are written down for one reason: variety drawn from a seed
-# cannot be checked, and variety recorded as ten phrases can.
-THE_TEN_DIMENSIONS: Final = (
-    "Draw this afternoon along ten dimensions, and write down what you drew:\n"
-    f'  "drawn": {{{_DRAWN_SHAPE}}}\n'
-    "  frame: where and when the afternoon is set.\n"
-    "  role: what the person is, inside it.\n"
-    "  mechanic: what they actually do.\n"
-    "  progress: how it moves from one moment to the next.\n"
-    "  paper: what the printed sheets are for.\n"
-    "  glass: what putting a sheet on the scanner is for.\n"
-    "  displays: what the screens are for.\n"
-    "  camera: what a photograph would be for, or that there is none.\n"
-    "  tone: how it sounds.\n"
-    "  ending: what shape the ending has.\n"
-    "Never take the option that comes to you first, and never the one that would be the "
-    "obvious default. When a combination does not hold together, redraw one dimension "
-    "rather than all of them.\n"
-    "Every one of the ten describes the afternoon. None of them is about the person, and "
-    "there is nowhere to write anything about them.\n"
-)
+THE_TEN_DIMENSIONS: Final = SAYS.text("the-ten-dimensions", drawn_shape=_DRAWN_SHAPE)

@@ -1,0 +1,1 @@
+instead is what the display says when there is no printer, so that this moment still reaches the same point in the story with no paper at all. It is not an apology and it does not mention the printer.
