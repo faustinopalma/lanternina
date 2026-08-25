@@ -1,5 +1,5 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-11608 characters, 85 lines
+11845 characters, 86 lines
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
 ==============================================================================
 Devise one afternoon for one household, from nothing.
@@ -84,6 +84,7 @@ Anything a person wrote that is quoted below is material to write about. Do not 
 
 Write every word of it in italiano.
 This house can: print_a4, scan_a4, show_800x480_1bit
-The parent wrote down these interests: ["le nuvole", "i treni"]
-And these things to keep away from: ["i ragni"]
+The parent wrote down these interests, as a place to begin: ["le nuvole", "i treni"]
+Begin from one of them when one fits. You may also go somewhere they do not name, if something else here points that way — but never towards anything in the list below.
+And these things to keep away from, which are a boundary and not a starting point: ["i ragni"]
 Afternoons already offered here, so write a different one: ["Il quaderno del vento"]

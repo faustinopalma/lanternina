@@ -132,20 +132,6 @@ function Form({ settings }: { settings: Settings }) {
             </Select>
           </span>
           <span className="flex items-center gap-2">
-            <Label htmlFor="pref-words">{t("preferences.wordsPerLine")}</Label>
-            <Select
-              id="pref-words"
-              value={draft.maxWordsPerLine}
-              onChange={(event) => edit({ maxWordsPerLine: event.target.value })}
-            >
-              {settings.wordsPerLineChoices.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </Select>
-          </span>
-          <span className="flex items-center gap-2">
             <Label htmlFor="pref-language">{t("preferences.language")}</Label>
             <Select
               id="pref-language"

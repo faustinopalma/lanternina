@@ -190,7 +190,7 @@ The hub reads a cache written either way — a single `job` or a list of `jobs` 
 
 ## 10. The rhythm page: what it says, and the shape it holds — raised 25 August 2026
 
-Five things, from a parent reading the page. Nothing here is built.
+Five things, from a parent reading the page. **§10.1, §10.4 and half of §10.5 are done, 25 August 2026; §10.2 and §10.3 are not, and they are the two that change stored shapes.**
 
 ### 10.1 Text that should have been a chat answer, not a published string
 

@@ -250,3 +250,25 @@ A ceiling the parent chooses, with a figure they set in advance and a warning be
 
 
 **Distributed, 20 August 2026.** Image `lanternina/panel:9052cf9` on revision `--0000040`, shown to be the one answering rather than assumed: the served `/openapi.json` describes `/read-sheet` as refusing "as many calls as it is allowed", a phrase only this build has. The first read after the update still came from `--0000039`, and the second, twenty seconds later, from the new one. The image went first and the push after, because the workflow ships the page on any push touching `web/`. The page then served `/assets/src-BPUFPyvk.js`, carrying both new labels, Italian and English.
+
+## 21. No moderation of our own — decided 25 August 2026, not carried out
+
+**The decision.** The models we call moderate their own output, and Foundry moderates it again on the way out. We do not build a second system beside them, and we do not tune one. `orchestrator/safety.py` and its Azure Content Safety gate are ours, and they are the thing this removes.
+
+**What is not removed, because a provider cannot know it.**
+
+- The parent approves. Nothing reaches the room without a person in the house having said yes.
+- `shared/blocklist.py` — the words *this house* asked never to see. A provider has no way to hold that; it is a household's own list, checked before saving and again at runtime.
+- The format refuses a document it cannot read: `shared/experience_checks.py`, the line lengths, the ids, the way out that reaches for an object nobody was given. That is correctness, not moderation, and it does work no filter does.
+- The age-appropriateness and tone rules in the prompts themselves. Those shape what is asked for, which is cheaper and better than judging what came back.
+
+**What this costs, said plainly.** Provider moderation is not tuned to a particular adolescent in a particular house, and it does not know what this family finds unkind. The blocklist and the parent's approval are what stand in for that, and they are narrower. This is a judgement that the second filter was not earning its place, not a claim that nothing is lost.
+
+**Where to start.** `orchestrator/router.py` holds the chokepoint; `generate_for_user` screens and seals, `analyze()` does not. The seal is the hard part and it is not cosmetic: `ScreenedPayload` is a *type* the rest of the system requires, `panel/` stores `payloadSeal`, and `tools/home_server.py show` verifies it days later on the device with a key the cloud does not have. Taking the gate out without deciding what the seal means would leave a signature over nothing.
+
+Two ways, and the first is probably right:
+
+1. Keep `ScreenedPayload` and the seal, and let the gate become a pass-through that seals what the provider already moderated plus what `shared/blocklist.py` refuses. Small change, no type churn, and the device-side verification keeps meaning "this text is the text the panel approved".
+2. Remove the type. Larger, touches everything, and gives up the tamper-evidence between panel and house, which was never about moderation.
+
+**Done when.** No Azure Content Safety call is made, the blocklist still refuses, an afternoon still cannot be delivered without a parent's approval and a verifiable seal, and `docs/THREAT-MODEL.md` T1 says what now answers it.

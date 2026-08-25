@@ -12,7 +12,7 @@
   "signout": "Sign out",
   "account.aria": "The account you signed in with",
 
-  "connecting.note": "You can leave this page open. The service may be starting from zero while the panel is already visible.",
+  "connecting.note": "You can leave this page open.",
 
   "pending.title": "Account waiting",
   "pending.body": "Signing in worked. The account is not enabled yet: a person has to approve it.",
@@ -108,7 +108,7 @@
   "reminders.addFailed": "It did not work.",
 
   "guidelines.title": "What it may change",
-  "guidelines.note": "An activity is written beforehand, when nobody yet knows how it will go. Then the sheet comes back blank, the printer is out of paper, the thing has ended up somewhere else: the house has to decide on the spot. Here you tell it what it may do without asking you.",
+  "guidelines.note": "An activity is written beforehand, when nobody yet knows how it will go: the sheet comes back blank, the printer is out of paper, the thing ends up somewhere else. Here you tell it what it may do without asking you.",
   "guidelines.laterNote": "One line at a time, the way you would say it out loud. What you do not write, the house does not take: with no lines it stays at its narrowest. Writing here starts nothing — it reads them when it has to decide, inside an activity that has already begun.",
   "guidelines.placeholder": "for example: going out into the garden is fine",
   "guidelines.aria": "What the house may change",
@@ -131,7 +131,7 @@
   "guidelines.saveFailed": "I could not save it. Try again later.",
 
   "rhythm.title": "Rhythm",
-  "rhythm.note": "When the display may change its picture, how often, and on which days an activity may begin. The house reads the choice on its next run: saving here starts nothing and wakes no device.",
+  "rhythm.note": "When the display may change its picture, how often, and on which days an activity may begin.",
   "rhythm.quietFrom": "Pause from",
   "rhythm.quietUntil": "until",
   "rhythm.cadence": "A new picture every",
@@ -142,7 +142,7 @@
   "rhythm.timeZoneNone": "Whatever the machine says",
   "rhythm.timeZonePlaceholder": "type a city or a country",
   "rhythm.timeZoneUnknown": "From here there is no telling what time it is in the house.",
-  "rhythm.timeZoneNote": "Type the first letters of the city or the country and pick from the list. The clock beside it is the time the house will keep: check it against a clock in the room, and it follows summer time by itself. The country is in your language; the city keeps the English spelling the timezone database gives it, because the browser has no other. Leave it empty and the house uses its own machine's clock.",
+  "rhythm.timeZoneNote": "Type the first letters of the city or the country and pick from the list. The clock beside it is the time the house will keep: check it against a clock in the room.",
   "rhythm.beginNow": "Begin an activity",
   "rhythm.beginNote": "Overrides the day and the hour, not the evening pause. An activity already under way is not interrupted.",
   "rhythm.beginAsked": "Noted. The house finds it at its next look, within a minute.",
@@ -156,9 +156,9 @@
   "rhythm.unreadable": "I cannot read the rhythm right now.",
   "rhythm.quietOff": "No pause: the picture may change at any hour.",
 
-  "preferences.title": "Interests and difficulty",
-  "preferences.note": "What the content is about and how demanding it is. The difficulty is a property of the material, not of whoever receives it. The house reads these choices on its next run: saving here starts no generation.",
-  "preferences.interests": "Subjects to offer",
+  "preferences.title": "Where to start",
+  "preferences.note": "Where the house starts, not where it has to stay: it begins here and may go further on what it sees coming back on the sheets. The form is a property of the material, not of whoever receives it.",
+  "preferences.interests": "Subjects to start from",
   "preferences.avoid": "To avoid",
   "preferences.oneEach": "one per line",
   "preferences.difficulty": "Form",
@@ -181,7 +181,7 @@
   "preferences.unreadable": "I cannot read the settings right now.",
 
   "devices.title": "Devices",
-  "devices.note": "Everything the house can use, with a job you choose and a name you write. Faults appear here: nothing of the kind ever appears on the displays in the house.",
+  "devices.note": "Everything the house can use, with a job you choose and a name you write. Faults appear here and not on the displays in the house.",
   "devices.loading": "Loading the devices.",
   "devices.unreadable": "I cannot read the devices right now.",
   "devices.empty": "Nothing has turned up yet.",
@@ -259,7 +259,7 @@
   "pictures.again.failed": "I could not write down the request.",
 
   "usage.title": "Usage",
-  "usage.note": "What the models consumed this month. These are numbers about machines, not about a person, and not a target to reach.",
+  "usage.note": "What the models consumed this month.",
   "usage.loading": "Reading the usage.",
   "usage.unreadable": "I cannot read the usage right now.",
   "usage.kind.image": "Pictures",

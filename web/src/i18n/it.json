@@ -12,7 +12,7 @@
   "signout": "Esci",
   "account.aria": "Account con cui sei entrato",
 
-  "connecting.note": "Puoi lasciare aperta questa pagina. Il servizio può avviarsi da zero mentre il pannello è già visibile.",
+  "connecting.note": "Puoi lasciare aperta questa pagina.",
 
   "pending.title": "Account in attesa",
   "pending.body": "L'accesso è riuscito. L'account però non è ancora abilitato: serve che una persona lo approvi.",
@@ -108,7 +108,7 @@
   "reminders.addFailed": "Non riuscito.",
 
   "guidelines.title": "Cosa può cambiare",
-  "guidelines.note": "Un'attività viene scritta prima, quando ancora non si sa come andrà. Poi il foglio torna bianco, la stampante è senza carta, la cosa è finita da un'altra parte: la casa deve decidere sul momento. Qui le dici che cosa può fare senza chiedere niente a te.",
+  "guidelines.note": "Un'attività è scritta prima, quando ancora non si sa come andrà: il foglio torna bianco, la stampante è senza carta, la cosa finisce da un'altra parte. Qui le dici che cosa può fare senza chiedere niente a te.",
   "guidelines.laterNote": "Una riga per volta, come la diresti a voce. Quello che non scrivi la casa non se lo prende: senza righe resta al minimo. Scrivere qui non fa partire niente — le legge quando deve decidere, dentro un'attività già cominciata.",
   "guidelines.placeholder": "per esempio: va bene uscire in giardino",
   "guidelines.aria": "Cosa la casa può cambiare",
@@ -131,7 +131,7 @@
   "guidelines.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
 
   "rhythm.title": "Ritmo",
-  "rhythm.note": "Quando il display può cambiare quadro, e ogni quanto, e in che giorni può cominciare un'attività. La casa legge la scelta al giro successivo: salvare qui non avvia niente e non sveglia nessun apparecchio.",
+  "rhythm.note": "Quando il display può cambiare quadro, e ogni quanto, e in che giorni può cominciare un'attività.",
   "rhythm.quietFrom": "Pausa dalle",
   "rhythm.quietUntil": "fino alle",
   "rhythm.cadence": "Quadro nuovo ogni",
@@ -142,7 +142,7 @@
   "rhythm.timeZoneNone": "Quello dell'apparecchio",
   "rhythm.timeZonePlaceholder": "scrivi una città o un paese",
   "rhythm.timeZoneUnknown": "Da qui non si vede che ora è in casa.",
-  "rhythm.timeZoneNote": "Scrivi le prime lettere della città o del paese e scegli dall'elenco. L'orologio qui accanto è l'ora che avrà la casa: confrontala con un orologio nella stanza, e tiene conto dell'ora legale da sé. Il paese è nella tua lingua; il nome della città resta quello inglese del database dei fusi, perché il browser non ne ha un altro. Lasciando il campo vuoto la casa usa l'orologio del suo apparecchio.",
+  "rhythm.timeZoneNote": "Scrivi le prime lettere della città o del paese e scegli dall'elenco. L'orologio qui accanto è l'ora che avrà la casa: confrontala con un orologio nella stanza.",
   "rhythm.beginNow": "Comincia un'attività",
   "rhythm.beginNote": "Scavalca il giorno e l'ora, non la pausa della sera. Se un'attività è già in corso non la interrompe.",
   "rhythm.beginAsked": "Segnato. La casa lo trova al prossimo giro, entro un minuto.",
@@ -156,9 +156,9 @@
   "rhythm.unreadable": "Non riesco a leggere il ritmo adesso.",
   "rhythm.quietOff": "Nessuna pausa: il quadro può cambiare a qualsiasi ora.",
 
-  "preferences.title": "Interessi e difficoltà",
-  "preferences.note": "Di cosa parlano i contenuti e quanto sono impegnativi. La difficoltà riguarda il materiale, non chi lo riceve. La casa legge queste scelte al giro successivo: salvare qui non avvia nessuna generazione.",
-  "preferences.interests": "Temi da proporre",
+  "preferences.title": "Da dove partire",
+  "preferences.note": "Il punto di partenza, non il perimetro: la casa comincia da qui e può andare oltre su quello che vede tornare dai fogli. La forma riguarda il materiale, non chi lo riceve.",
+  "preferences.interests": "Temi da cui partire",
   "preferences.avoid": "Da evitare",
   "preferences.oneEach": "uno per riga",
   "preferences.difficulty": "Forma",
@@ -181,7 +181,7 @@
   "preferences.unreadable": "Non riesco a leggere le impostazioni adesso.",
 
   "devices.title": "Dispositivi",
-  "devices.note": "Tutto quello che la casa può usare, con un compito che scegli tu e un nome che scrivi tu. Qui compaiono i guasti: sui display in casa non compare mai niente del genere.",
+  "devices.note": "Tutto quello che la casa può usare, con un compito che scegli tu e un nome che scrivi tu. I guasti compaiono qui e non sui display in casa.",
   "devices.loading": "Sto caricando i dispositivi.",
   "devices.unreadable": "Non riesco a leggere i dispositivi adesso.",
   "devices.empty": "Non si è ancora presentato niente.",
@@ -259,7 +259,7 @@
   "pictures.again.failed": "Non sono riuscito a registrare la richiesta.",
 
   "usage.title": "Consumo",
-  "usage.note": "Quanto hanno consumato i modelli questo mese. Sono numeri sulle macchine, non su una persona, e non sono un obiettivo da raggiungere.",
+  "usage.note": "Quanto hanno consumato i modelli questo mese.",
   "usage.loading": "Sto leggendo il consumo.",
   "usage.unreadable": "Non riesco a leggere il consumo adesso.",
   "usage.kind.image": "Immagini",

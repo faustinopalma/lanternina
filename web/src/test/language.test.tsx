@@ -10,10 +10,11 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
+import italian from "@/i18n/it.json";
 
 async function openSettings(user: ReturnType<typeof userEvent.setup>) {
   const menu = screen.getByRole("navigation");
-  await user.click(within(menu).getByRole("button", { name: "Interessi e difficoltà" }));
+  await user.click(within(menu).getByRole("button", { name: "Da dove partire" }));
 }
 
 describe("the language of the page", () => {
@@ -78,12 +79,9 @@ describe("what a saved setting carries", () => {
   });
 
   it("says the writing is inert, in the words the parent reads", async () => {
-    const user = userEvent.setup();
-    renderPanel(fakeApi());
-
-    await openSettings(user);
-    expect(
-      await screen.findByText(/salvare qui non avvia nessuna generazione/i),
-    ).toBeInTheDocument();
+    // Said by the save confirmation and not by a note above the controls: a parent needs
+    // to know when it takes effect, not that our writes queue nothing.
+    expect(italian["preferences.saved"]).toMatch(/al prossimo giro/i);
+    expect(italian["rhythm.saved"]).toMatch(/al prossimo giro/i);
   });
 });

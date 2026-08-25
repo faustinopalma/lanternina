@@ -37,7 +37,7 @@ Build the shortest thing that works, mark the gap with `TODO(poc)`, move on:
 - Agents propose; the parent approves. Approval is not something an agent can set.
 - What a model devises is checked against properties before it is saved, not only parsed.
 - One module talks to a model backend. **No model runs on the device** — inference is remote.
-- One content-safety chokepoint before anything reaches the adolescent.
+- **Moderation is the provider's, not ours.** The models we call moderate their own output, and Foundry moderates it again; we do not build a second system beside them and we do not tune one. What stays ours is what a provider cannot know: the parent approves, `shared/blocklist.py` holds the words this house asked to never see, and the format refuses a document it cannot read. Decided 25 August 2026.
 - Cloud unavailable means reduced capability, not a stopped system.
 
 ## 4. How to work in this repo
