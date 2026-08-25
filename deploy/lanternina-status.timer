@@ -1,12 +1,15 @@
 [Unit]
-Description=Report display status to the panel every few minutes
+Description=Report display status to the panel, and look at the network
 
 [Timer]
-# Five minutes is far more often than a fault needs to surface, and far less often than
-# the displays poll. It costs one request.
+# A minute, since 25 August 2026. Five was far more often than a fault needs to surface,
+# and it was also how long a parent waited after plugging a printer in — and how long an
+# id card took to appear on a wall they were standing in front of. It costs one request to
+# the panel and one mDNS sweep of the local network; neither reaches a model, so the
+# monthly limit does not see it.
 OnBootSec=2min
-OnUnitActiveSec=5min
-AccuracySec=30s
+OnUnitActiveSec=1min
+AccuracySec=10s
 
 [Install]
 WantedBy=timers.target
