@@ -50,9 +50,19 @@ function WaitingForYou() {
   );
 }
 
+/* Which section is open lives in the address bar, not only in state.
+ *
+ * Reloading is something a parent does — the API scales to zero and a cold start can leave a
+ * section saying it cannot read anything — and until this was here, reloading also threw them
+ * back to the first page. Losing your place is a worse fault than the one that made you
+ * reload. It also makes the back button do what it looks like it does. */
+function opened(): string {
+  return window.location.hash.replace(/^#/, "");
+}
+
 export function Dashboard({ api }: { api: Api }) {
   const { t } = useWords();
-  const [current, setCurrent] = useState("experiences");
+  const [current, setCurrent] = useState(() => opened() || "experiences");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Written out one by one rather than built from the name: a key that only exists at
@@ -131,6 +141,12 @@ export function Dashboard({ api }: { api: Api }) {
   const section = sections.find((entry) => entry.name === current) ?? sections[0]!;
 
   useEffect(() => {
+    const moved = () => setCurrent(opened() || "experiences");
+    window.addEventListener("hashchange", moved);
+    return () => window.removeEventListener("hashchange", moved);
+  }, []);
+
+  useEffect(() => {
     if (!drawerOpen) return;
     const close = (event: KeyboardEvent) => event.key === "Escape" && setDrawerOpen(false);
     document.addEventListener("keydown", close);
@@ -191,15 +207,16 @@ export function Dashboard({ api }: { api: Api }) {
                     <button
                       key={entry.name}
                       type="button"
-                      aria-current={entry.name === current ? "true" : undefined}
+                      aria-current={entry.name === section.name ? "true" : undefined}
                       onClick={() => {
                         setCurrent(entry.name);
+                        window.location.hash = entry.name;
                         setDrawerOpen(false);
                       }}
                       className={cn(
                         "w-full cursor-pointer rounded-r-control border-0 border-l-[3px]",
                         "border-transparent px-3 py-2.5 pl-3.5 text-left font-sans text-base",
-                        entry.name === current
+                        entry.name === section.name
                           ? "border-l-accent bg-accent-soft font-semibold text-ink"
                           : "bg-transparent text-quiet hover:bg-paper hover:text-ink",
                       )}
