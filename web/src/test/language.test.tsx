@@ -64,7 +64,9 @@ describe("what a saved setting carries", () => {
     renderPanel(api);
 
     await openSettings(user);
-    await screen.findByLabelText("Lingua dei contenuti");
+    // Something has to change before there is anything to save. The button is the
+    // confirmation, so it is grey until the screen and the house differ.
+    await user.selectOptions(await screen.findByLabelText("Lingua dei contenuti"), "en");
     await user.click(screen.getByRole("button", { name: "Salva" }));
 
     await waitFor(() => expect(api.recorded.preferences).toHaveLength(1));

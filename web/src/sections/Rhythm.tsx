@@ -8,6 +8,7 @@ import { Input, Label } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import CITIES from "@/i18n/cities.json";
 import { useLoad } from "@/lib/useLoad";
+import { useUnsaved } from "@/lib/useUnsaved";
 
 /** What a zone is called on the screen: the city, in the panel's language.
  *
@@ -181,6 +182,17 @@ function Form({ spacing }: { spacing: Spacing }) {
    * half-typed word is not a half-chosen setting: the zone only moves on a full match. */
   const [typed, setTyped] = useState(() => byZone.get(spacing.timeZone) ?? "");
 
+  const { changed, saved } = useUnsaved({
+    picturesFrom,
+    picturesUntil,
+    cadence,
+    days,
+    afternoonFrom,
+    afternoonUntil,
+    timeZone,
+    wanted,
+  });
+
   /* Saving persists a choice and returns. The house reads it on its next run and decides
    * for itself, so nothing here reaches into the room. */
   async function save(event: FormEvent) {
@@ -196,6 +208,7 @@ function Form({ spacing }: { spacing: Spacing }) {
         timeZone,
         scriptsWanted: Number(wanted),
       });
+      saved();
       setStatus("rhythm.saved");
     } catch {
       setStatus("rhythm.saveFailed");
@@ -376,9 +389,18 @@ function Form({ spacing }: { spacing: Spacing }) {
           <Quiet>{t("rhythm.wantedNote")}</Quiet>
         </fieldset>
 
-        <Button type="submit" variant="primary" className="ml-auto flex-none">
-          {t("rhythm.save")}
-        </Button>
+        {/* The button is the confirmation. Grey means the house has what is on the screen;
+            the sentence beside it says what the house will do with it. A confirmation is
+            about the values that were saved, so editing again takes it away — a refusal
+            stays, because nothing was saved and the parent still has to know. */}
+        <span className="flex flex-wrap items-center justify-end gap-3">
+          <Quiet aria-live="polite" className="text-right">
+            {status === null || (changed && status !== "rhythm.saveFailed") ? "" : t(status)}
+          </Quiet>
+          <Button type="submit" variant="primary" disabled={!changed} className="flex-none">
+            {t("rhythm.save")}
+          </Button>
+        </span>
       </form>
       <div className="my-3.5 flex max-w-[42rem] flex-wrap items-center gap-3">
         <Button type="button" onClick={beginNow} className="flex-none">
@@ -386,7 +408,6 @@ function Form({ spacing }: { spacing: Spacing }) {
         </Button>
         <Quiet aria-live="polite">{asked === null ? t("rhythm.beginNote") : t(asked)}</Quiet>
       </div>
-      <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );
 }

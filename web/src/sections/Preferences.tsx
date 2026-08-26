@@ -7,6 +7,7 @@ import { Quiet } from "@/components/ui/card";
 import { Label, Select, Textarea } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
+import { useUnsaved } from "@/lib/useUnsaved";
 
 /* One entry per line, which is how the parent reads them back. The server flattens what is
  * left of a line break, so a pasted paragraph cannot become a second instruction. */
@@ -40,6 +41,7 @@ function Form({ settings }: { settings: Settings }) {
   }));
 
   const edit = (change: Partial<Draft>) => setDraft({ ...draft, ...change });
+  const { changed, saved } = useUnsaved(draft);
 
   /* The words for each choice, written out rather than built from the value: a key that
    * only exists at runtime is a key no test can find missing. */
@@ -69,6 +71,7 @@ function Form({ settings }: { settings: Settings }) {
         maxWordsPerLine: Number(draft.maxWordsPerLine),
         language: draft.language,
       });
+      saved();
       setStatus("preferences.saved");
     } catch {
       setStatus("preferences.saveFailed");
@@ -148,11 +151,16 @@ function Form({ settings }: { settings: Settings }) {
         </div>
 
         <Quiet className="m-0">{t("preferences.languageNote")}</Quiet>
-        <Button type="submit" variant="primary" className="self-start">
-          {t("preferences.save")}
-        </Button>
+        {/* Grey means the house has what is on the screen. See `lib/useUnsaved.ts`. */}
+        <span className="flex flex-wrap items-center gap-3">
+          <Button type="submit" variant="primary" disabled={!changed} className="flex-none">
+            {t("preferences.save")}
+          </Button>
+          <Quiet aria-live="polite" className="m-0">
+            {status === null || (changed && status !== "preferences.saveFailed") ? "" : t(status)}
+          </Quiet>
+        </span>
       </form>
-      <Quiet aria-live="polite">{status === null ? "" : t(status)}</Quiet>
     </>
   );
 }

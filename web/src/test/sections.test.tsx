@@ -196,6 +196,66 @@ describe("the gallery", () => {
 describe("the rhythm", () => {
   beforeEach(() => window.localStorage.clear());
 
+  it("keeps the save button grey until something differs, and greys it again after", async () => {
+    /* The confirmation is the button, not a sentence. A parent needs to know two things —
+       did it go through, and have I already saved this — and one control answers both
+       without anything appearing or asking to be dismissed. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    const cadence = await screen.findByLabelText("Quadro nuovo ogni");
+    const save = screen.getByRole("button", { name: "Salva" });
+    expect(save).toBeDisabled();
+
+    await user.clear(cadence);
+    await user.type(cadence, "90");
+    expect(save).toBeEnabled();
+
+    await user.click(save);
+    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
+    await waitFor(() => expect(save).toBeDisabled());
+  });
+
+  it("puts the same value back and asks the house for nothing", async () => {
+    /* Typing a value back to what it was leaves the button grey, which is right: there is
+       nothing to tell the house. A flag set by each field would have said otherwise. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    const cadence = await screen.findByLabelText("Quadro nuovo ogni");
+    await user.clear(cadence);
+    await user.type(cadence, "90");
+    await user.clear(cadence);
+    await user.type(cadence, "60");
+
+    expect(screen.getByRole("button", { name: "Salva" })).toBeDisabled();
+    expect(api.recorded.rhythm).toHaveLength(0);
+  });
+
+  it("takes the confirmation away as soon as the parent edits again", async () => {
+    /* It is about the values that were saved. Left standing over newer ones it says the
+       house has something it does not have. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await open(user, "Ritmo");
+    const cadence = await screen.findByLabelText("Quadro nuovo ogni");
+    await user.clear(cadence);
+    await user.type(cadence, "90");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+    await screen.findByText(/La casa lo applica al prossimo giro/);
+
+    await user.clear(cadence);
+    await user.type(cadence, "45");
+
+    expect(screen.queryByText(/La casa lo applica al prossimo giro/)).not.toBeInTheDocument();
+  });
+
   it("saves the hours and the spacing, and says the house applies them later", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
