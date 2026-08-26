@@ -35,10 +35,13 @@ DEFAULT_LEVEL = "INFO"
 # Azure SDKs log every HTTP request at INFO, which is thousands of lines an hour saying a
 # token was fetched. Held at WARNING so the daily ingestion cap buys our own account of
 # ourselves rather than the transport's.
+#
+# The whole `azure` tree rather than the loggers by name. Naming them looked tidier and was
+# wrong within the hour: `azure.core.pipeline.policies.http_logging_policy` was silenced and
+# `azure.cosmos._cosmos_http_logging_policy` was not, so every Cosmos response still printed
+# its headers. A parent logger catches the one the next SDK version invents.
 NOISY = (
-    "azure.core.pipeline.policies.http_logging_policy",
-    "azure.identity",
-    "azure.monitor.opentelemetry.exporter",
+    "azure",
     "urllib3",
     "httpx",
     "openai",

@@ -272,3 +272,38 @@ Two ways, and the first is probably right:
 2. Remove the type. Larger, touches everything, and gives up the tamper-evidence between panel and house, which was never about moderation.
 
 **Done when.** No Azure Content Safety call is made, the blocklist still refuses, an afternoon still cannot be delivered without a parent's approval and a verifiable seal, and `docs/THREAT-MODEL.md` T1 says what now answers it.
+
+## 22. Logging e Application Insights
+
+Fatto il 26 agosto 2026. `panel/observability.py`, `tests/test_observability.py`, `infra/modules/core.bicep`.
+
+### 22.1 Il difetto che c'era prima di qualsiasi telemetria
+
+**Nessuno configurava il logging.** Ogni `logger.info` nelle rotte finiva nel vuoto — comprese le righe che spiegano un rifiuto del gate o dei controlli, cioè esattamente quelle che servono quando un pomeriggio non parte. Si vedeva solo quello che `print` scriveva. Una libreria di logging senza `basicConfig` non è silenziosa per scelta: è silenziosa per dimenticanza.
+
+### 22.2 Che cosa aggiunge Application Insights che stdout non dà
+
+Container Apps porta già stdout al workspace Log Analytics. Quello che non dà è la metà che nessuno scrive: quanto è durata una richiesta, quale chiamata a un modello era lenta dentro, quale query Cosmos, e quali fallimenti stanno insieme. Il distro OpenTelemetry strumenta FastAPI, httpx e gli SDK Azure senza che nessuno annoti niente, quindi la mappa resta vera mentre le rotte crescono.
+
+Misurato subito dopo l'accensione: `POST /api/device/{household_id}/devices` mediana 301 ms, p95 585 ms; `GET .../experiences` 126/345; `GET .../messages` 29/95. I nomi sono template di rotta, quindi nessun id finisce in una metrica.
+
+### 22.3 Le scelte
+
+- **Componente workspace-based**, nello stesso workspace dei log del container: una query sola unisce la richiesta fallita e la riga che il codice ha scritto su di essa. Prima sarebbero stati due posti.
+- **`DisableLocalAuth: true`** e ruolo *Monitoring Metrics Publisher* all'identità gestita: nessuna chiave di ingestione in una variabile d'ambiente.
+- **Opzionale a runtime.** Senza stringa di connessione configura il logging, lo dice in una riga, e prosegue. Il pannello deve girare su un portatile.
+- **`NOISY` è l'albero `azure` intero, non i logger per nome.** Nominarli sembrava più ordinato ed è durato un'ora: `azure.core.pipeline.policies.http_logging_policy` era zittito e `azure.cosmos._cosmos_http_logging_policy` no, quindi ogni risposta Cosmos stampava le sue intestazioni contro un workspace tappato a un giga al giorno.
+
+### 22.4 Due righe che non dovevano esistere
+
+Prima di spedire un journal da qualche parte: `devices/scan_sheet.py` stampava quali celle erano tornate scritte, `devices/show_reminders.py` stampava che cosa una casa aveva chiesto di ricordare. Tutte e due sembrano innocue e tutte e due sono esattamente la metà che non si conserva. `tests/test_observability.py` adesso le cerca con un grep.
+
+### 22.5 L'hub: deciso di non spedire il journal
+
+Il journal dell'hub **non** va ad Application Insights, e non è pigrizia. Spedirlo significherebbe una credenziale su una macchina in casa e un canale che porta fuori righe scritte a mano libera — e le due righe di §22.4 dimostrano che righe così si scrivono senza accorgersene. Quello che serve dell'hub arriva già al pannello per rotte tipizzate; se domani servisse telemetria dell'hub in Azure, va mandata come **eventi tipizzati attraverso il pannello**, mai come testo di log.
+
+### 22.6 Il template non è più riapplicabile, e non per colpa nostra
+
+`scripts/deploy.ps1` fallisce su un conflitto preesistente: la zona `privatelink.blob.core.windows.net` è collegata alla VNet con un collegamento chiamato `link-blob`, mentre il template ne crea uno chiamato `link-vnet-lanternina-dev-ssveb`. Azure rifiuta un secondo collegamento alla stessa VNet. Le altre due zone hanno il nome giusto, quindi è deriva manuale su una sola.
+
+Application Insights è stato quindi creato fuori banda con `az`, con lo stesso nome e la stessa forma del template, così un deploy futuro lo adotterà invece di crearne un altro. **Da fare:** cancellare `link-blob` e rilanciare il deploy, che ricrea il collegamento col nome del template. Sono pochi secondi senza risoluzione DNS privata per il blob.

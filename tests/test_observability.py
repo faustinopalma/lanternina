@@ -28,12 +28,22 @@ def test_logging_is_configured_so_a_written_line_is_not_dropped() -> None:
 
 def test_the_transport_is_held_quiet() -> None:
     """The Azure SDKs log every request at INFO. Left alone that is thousands of lines an
-    hour saying a token was fetched, against a workspace capped at a gigabyte a day."""
+    hour saying a token was fetched, against a workspace capped at a gigabyte a day.
+
+    The named children are the ones that were seen doing it in production: silencing
+    `azure.core`'s policy by name left Cosmos, which has a policy logger of its own.
+    """
     watching._started = False
     try:
         watching.watch()
         for name in watching.NOISY:
             assert not logging.getLogger(name).isEnabledFor(logging.INFO), name
+        for child in (
+            "azure.cosmos._cosmos_http_logging_policy",
+            "azure.core.pipeline.policies.http_logging_policy",
+            "azure.identity",
+        ):
+            assert not logging.getLogger(child).isEnabledFor(logging.INFO), child
     finally:
         watching._started = False
 
