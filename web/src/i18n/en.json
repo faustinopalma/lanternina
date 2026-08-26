@@ -35,7 +35,7 @@
   "action.moveTheHour": "Move the hour",
   "action.closeNow": "End it now",
 
-  "experiences.title": "Activities",
+  "experiences.title": "Waiting for a decision",
   "experiences.note": "A whole activity, devised for this house: something on the display, a sheet on the table, and what comes back off the scanner decides how it goes on. You approve the activity, not each step.",
   "experiences.laterNote": "There is no way to ask for one from here: the house asks, when it is its moment. Approving writes a row and nothing else — the house finds it at its next request, and decides for itself when to begin.",
   "experiences.loading": "Loading the activities.",
@@ -245,7 +245,7 @@
   "menu.aria": "Panel sections",
   "menu.open": "Open the panel sections",
   "menu.close": "Close the panel sections",
-  "menu.group.decide": "To decide",
+  "menu.group.decide": "Activities",
   "menu.group.content": "Content",
   "menu.group.settings": "Settings",
   "menu.group.house": "The house",

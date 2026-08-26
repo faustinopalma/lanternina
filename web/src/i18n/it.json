@@ -35,7 +35,7 @@
   "action.moveTheHour": "Sposta l'ora",
   "action.closeNow": "Falla finire adesso",
 
-  "experiences.title": "Attività",
+  "experiences.title": "In attesa di una decisione",
   "experiences.note": "Un'attività intera, pensata per questa casa: qualcosa sul display, un foglio sul tavolo, e quello che torna dallo scanner decide come va avanti. Approvi l'attività, non i singoli passaggi.",
   "experiences.laterNote": "Da qui non si può chiederne una: è la casa a chiedere, quando è il suo momento. Approvare scrive una riga e basta — la casa la trova alla richiesta successiva, e decide lei quando cominciarla.",
   "experiences.loading": "Sto caricando le attività.",
@@ -245,7 +245,7 @@
   "menu.aria": "Sezioni del pannello",
   "menu.open": "Apri le sezioni del pannello",
   "menu.close": "Chiudi le sezioni del pannello",
-  "menu.group.decide": "Da decidere",
+  "menu.group.decide": "Attività",
   "menu.group.content": "Contenuti",
   "menu.group.settings": "Impostazioni",
   "menu.group.house": "La casa",
