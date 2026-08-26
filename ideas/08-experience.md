@@ -422,3 +422,35 @@ Era in `Preferences`, e `Preferences` è definita da un test come *esattamente* 
 ### 13.6 Verificato in casa
 
 26 agosto 2026, 09:29: pressione onorata, `Le consegne della Stanza 17: aft_f573c895`, 105 minuti, fine alle 11:14, `lpstat` «now printing Lanternina-12», e il giro successivo «an afternoon is already under way».
+
+## 14. L'idea la scrive il genitore
+
+Fatto. `panel/drafts.py`, `panel/routes/draft.py`, `panel/editing.py`, `agents/idea_editor.py` e i suoi tre prompt, `web/src/sections/Drafts.tsx`. Ventuno test Python, dieci nel pannello.
+
+### 14.1 Che cosa modifica il genitore, e perché non il piano
+
+Un `Experience` ha due metà: **l'idea** (titolo, sintesi, temi, copione) e **il piano** (i momenti, con tre pesi ciascuno, la scala di aiuto, la via d'uscita, e una dozzina di controlli che rifiutano un documento non eseguibile). Testo libero non può diventare la seconda. Un campo per il piano inviterebbe il genitore a modificarlo e a scoprire che è rifiutato *dopo* aver finito.
+
+Quindi la bozza tiene l'idea, e approvare consegna il copione al deviser come **brief**. Quello che torna passa formato, controlli, riparazione e gate come un pomeriggio che nessuno ha guidato. Un rifiuto torna **con la sua ragione**, perché il genitore ha il testo e può correggerlo — che è tutto il punto di dargli il testo.
+
+### 14.2 Due regole spostate, non piegate
+
+**«I write del pannello sono inerti»** adesso dice che cosa proteggeva davvero: la casa. Niente qui avvia un pomeriggio, sveglia l'hub, avvisa nessuno o mette qualcosa in una stanza. Spende però soldi, quindi il limite mensile lo governa come ogni altra chiamata, e c'è un test che lo dice.
+
+**«Quello che il genitore scrive è materiale, mai istruzione»** adesso ritaglia l'unico posto in cui sta guidando in modo visibile. Ovunque il suo testo sia conservato e riusato dopo — interessi, cose da evitare, guide di casa — raggiunge prompt che fanno altro e continua ad arrivare citato come JSON. Una bozza è diversa: l'ha scritta come la cosa da costruire, sta guardando la risposta, e può scriverci sopra. Modella quella bozza e non raggiunge nessun altro prompt.
+
+### 14.3 Scrivere a mano non costa niente
+
+Chiedere a un modello di cambiare una parola è più lento che cambiarla, e la cambia peggio. Il riquadro di destra è un form e salvarlo è lo stesso write inerte di ogni altra pagina. C'è un test che verifica che non parta nessuna chiamata.
+
+### 14.4 La prima risposta è lenta e il riquadro lo dice
+
+L'API scala a zero. `cooldownPeriod` è un parametro Bicep a **600 secondi**, nostro, senza controllo nel pannello. Uno spinner non avrebbe spiegato un avvio a freddo, e un genitore che non viene avvisato pensa che sia rotto. Applicato in produzione con una patch ARM mirata, perché il deploy del template resta bloccato da §22.6 di `ideas/04`.
+
+### 14.5 Trovato provando
+
+`jsdom` non ha `scrollIntoView` e l'intero riquadro cadeva al montaggio — il test trovava il campo di testo e poi nessun bottone. Ora è difensivo: lo scorrimento è una comodità e perderla non deve portarsi via il componente.
+
+### 14.6 Che cosa manca
+
+La conversazione è portata al modello a dodici turni e conservata fino a ottanta. Nessuno ha ancora misurato se dodici bastano per una sessione vera. E l'`ASSUMED` in `panel/routes/draft.py` \u00e8 il minimo di questo progetto: una casa con altro non lo dice a questa rotta, perch\u00e9 qui nessuno sta chiedendo.
