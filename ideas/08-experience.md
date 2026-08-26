@@ -454,3 +454,59 @@ L'API scala a zero. `cooldownPeriod` è un parametro Bicep a **600 secondi**, no
 ### 14.6 Che cosa manca
 
 La conversazione è portata al modello a dodici turni e conservata fino a ottanta. Nessuno ha ancora misurato se dodici bastano per una sessione vera. E l'`ASSUMED` in `panel/routes/draft.py` \u00e8 il minimo di questo progetto: una casa con altro non lo dice a questa rotta, perch\u00e9 qui nessuno sta chiedendo.
+
+## 15. Perché i pomeriggi non si riuscivano a fare
+
+Letti con `tools/as_it_arrives.py`, che stampa **solo quello che arriva a una persona** — non il copione, non le dimensioni, non il ragionamento. Leggere il copione invece è il modo in cui un documento che nessuno potrebbe seguire continua a sembrare a posto.
+
+### 15.1 I numeri di prima, su dieci pomeriggi
+
+| | |
+|---|---|
+| pagine stampate | 1–1 |
+| scansioni | 1–1 |
+| parole in tutto | 83–155, mediana **131** |
+| riga più lunga | 7–8 parole |
+| durata | 75–138 minuti |
+
+**Circa una parola al minuto.** `MAX_LINE=44` e `MAX_LINES=4` sono misurati e giusti — è la larghezza a cui una riga resta una riga su 728 px — ma il modello applicava quella laconicità anche alla carta, che è l'unico posto dove un mondo può stare. Un A4 tiene una lettera; ne riceveva tre righe.
+
+### 15.2 Che cosa c'era sotto
+
+Lo scheletro del copione era fedele: mondo, domanda con risposta vera e falsa, otto battute con svolta e arrivo segnati. E sotto, tre difetti.
+
+**Nessuna porta.** «La cucina presente coincide con un sopralluogo del 1931» — coincide come? Niente di trovato, niente arrivato, niente da prendere in mano. La stranezza era dichiarata.
+
+**La risposta non la voleva nessuno.** «Che cosa indicavano i tre colpi?» → «una prova d'ascolto delle tubature». Un fatto su un meccanismo, in un pomeriggio il cui stesso *COSA LO ROVINEREBBE* avvertiva di non farne una lezione d'idraulica.
+
+**Trattenuto a orologeria.** «La parola «acqua» viene data alla battuta 5» — data, non trovata. Quindi il display la annunciava.
+
+### 15.3 E il difetto che il genitore ha nominato: non si riescono a fare
+
+«Tieni una tazza vicino al lavello. Ascolta il bordo e poi il fianco. Nota quale suono resta più a lungo.» Non è impossibile: è che **nessuno può dire di averlo fatto**. Non c'è esito osservabile, quindi non si può sapere se si sta facendo la cosa giusta — che è esattamente la sensazione che tutto il progetto esiste per evitare. Più due cose accanto: discriminazioni percettive che nessuno fa in modo affidabile, e oggetti da specialista (un disco d'ottone per ascoltare) che in casa non ci sono.
+
+### 15.4 Che cosa dice adesso il prompt
+
+Una porta che è una cosa. Una risposta che riguarda una persona o una decisione, mai un meccanismo. Ogni cosa trattenuta pagata con un'azione e non con i minuti. Mai dire quello che la persona deve capire, nemmeno nell'ultimo gradino d'aiuto. **Ogni cosa chiesta lascia un segno** — percepire è come comincia una battuta, quello che la chiude è un segno. **Solo ciò che in una casa c'è di sicuro.** E la carta è dove vive il mondo.
+
+### 15.5 Misurato
+
+`tools/try_prompt.py` fa il ciclo corto: una chiamata diretta, nessun hub, nessun pannello, con `--swap` per provare un frammento senza committarlo. Un documento passato:
+
+| | prima (10) | dopo |
+|---|---|---|
+| pagine | 1–1 | **3** |
+| parole | 83–155 | **595** |
+| righe sulla carta | ~3 | **12** |
+| azioni non verificabili | molte | **0** |
+| azioni con un segno | poche | **22** |
+
+E si legge diverso: Ada Valli, una decisione presa comunque, un indirizzo, due documenti che si contraddicono. Gli aiuti dicono che cosa fare, non la risposta.
+
+### 15.6 Il prossimo difetto, misurato e non risolto
+
+**Due chiamate su tre sono state rifiutate dal formato**: una riga di 45 caratteri su 44, e un atto vuoto. `devise_experience` ha un ciclo di riparazione che in produzione ne recupera la maggior parte, quindi il tasso reale è più alto — ma un prompt che sfora di un carattere una volta su tre è un prompt da stringere, non un modello da cambiare. `gpt-5.6-sol` è il migliore deployabile in swedencentral e non è lui il problema.
+
+### 15.7 Da provare, non fatto
+
+Il pattern della review: una seconda chiamata che critica il documento contro questi criteri e una terza che corregge, al massimo un giro. Deciso di misurare prima il prompt da solo, che è quello che §15.5 ha fatto.
