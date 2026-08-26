@@ -55,10 +55,12 @@ from .routes import reminders as reminder_routes
 from .routes import requests as request_routes
 from .routes import rhythm as rhythm_routes
 from .routes import themes as theme_routes
+from .routes import trail as trail_routes
 from .routes import usage as usage_routes
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
+from .trail import InMemoryTrailStore, TrailStore
 from .usage import InMemoryLimitStore, InMemoryUsageStore, LimitStore, UsageStore
 
 # Registered in the order they were written in when they shared one file. No two of them
@@ -80,6 +82,7 @@ SECTIONS = (
     message_routes,
     guideline_routes,
     paper_routes,
+    trail_routes,
 )
 
 
@@ -100,6 +103,7 @@ def create_app(
     experiences: ExperienceStore | None = None,
     messages: MessageStore | None = None,
     guidelines: GuidelineStore | None = None,
+    trail: TrailStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     app.state.settings = settings if settings is not None else Settings.from_env()
@@ -136,6 +140,7 @@ def create_app(
     app.state.guidelines = (
         guidelines if guidelines is not None else _guideline_store(app.state.settings)
     )
+    app.state.trail = trail if trail is not None else _trail_store(app.state.settings)
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
     # keep the container from starting at all, so the slots begin empty.
@@ -204,6 +209,14 @@ def _experience_store(settings: Settings) -> ExperienceStore:
     from .cosmos_store import CosmosExperienceStore
 
     return CosmosExperienceStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _trail_store(settings: Settings) -> TrailStore:
+    if not settings.cosmos_configured:
+        return InMemoryTrailStore()
+    from .cosmos_store import CosmosTrailStore
+
+    return CosmosTrailStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _picture_archive(settings: Settings) -> PictureArchive:

@@ -17,6 +17,7 @@ before an adolescent's.
 
 from __future__ import annotations
 
+import json
 import logging
 import time
 from typing import Any
@@ -41,8 +42,10 @@ from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..rhythm import RhythmStore
+from ..trail import WHAT_COMES_AFTER, TrailStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
 from . import Decision
+from .trail import filed, opened
 
 router = APIRouter()
 
@@ -66,6 +69,10 @@ class WhatCameBack(BaseModel):
     after: str
     came: str
     reading: dict[str, Any]
+    # Which run this belongs to, so what gets written can be filed against the afternoon it
+    # was written for. Absent means the generation happens and goes unrecorded, which is what
+    # a house that predates the trail does.
+    runId: str = ""
 
 
 @router.post("/api/device/{household_id}/experience")
@@ -130,6 +137,7 @@ async def continue_afternoon(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_TEXT, outcome, spent)
+    _write_down(request, household_id, what.runId, what.experience, _the_rest(carrying_on))
     return carrying_on.to_dict()
 
 
@@ -141,6 +149,7 @@ class WhereItIs(BaseModel):
     experience: dict[str, Any]
     happened: list[dict[str, Any]] = []
     minutesLeft: int
+    runId: str = ""
 
 
 @router.post("/api/device/{household_id}/next-move")
@@ -186,7 +195,57 @@ async def next_move(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_TEXT, outcome, spent)
+    _write_down(
+        request,
+        household_id,
+        where.runId,
+        where.experience,
+        (str(move.act), move.heading, _said(move), move.why),
+    )
     return move.to_dict()
+
+
+def _said(move: Any) -> str:
+    """A move as text: the words, and the page under them if it made one.
+
+    The page goes in as the JSON the model wrote rather than as a rendering of it. This is a
+    record of what was generated, and the generated thing is the document — a rendering would
+    be our reading of it, which is the part a parent does not need us for.
+    """
+    lines = "\n".join(move.lines)
+    if move.page is None:
+        return lines
+    page = json.dumps(move.page, ensure_ascii=False, indent=2)
+    return f"{lines}\n\n{page}" if lines else page
+
+
+def _the_rest(carrying_on: Any) -> tuple[str, str, str, str]:
+    """A continuation as one entry: the moments it wrote, whole."""
+    return (
+        WHAT_COMES_AFTER,
+        "",
+        json.dumps(
+            [one.to_dict() for one in carrying_on.moments], ensure_ascii=False, indent=2
+        ),
+        "",
+    )
+
+
+def _write_down(
+    request: Request,
+    household_id: str,
+    run_id: str,
+    document: dict[str, Any],
+    what: tuple[str, str, str, str],
+) -> None:
+    """File a generation against its afternoon, if the house said which one this is."""
+    if not run_id:
+        return
+    store: TrailStore = request.app.state.trail
+    now = time.time()
+    opened(store, household_id, run_id, document, now)
+    kind, heading, body, why = what
+    filed(store, household_id, run_id, kind=kind, at=now, heading=heading, body=body, why=why)
 
 
 def _asked(what: WhatCameBack) -> Experience:

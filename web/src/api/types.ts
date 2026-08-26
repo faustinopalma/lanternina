@@ -171,6 +171,34 @@ export interface OfferedList {
   backlog: Backlog;
 }
 
+/* One thing the system wrote during an afternoon. `kind` is the act it performed — say,
+ * hand_over, collect, close — or "continuation" for the rest of an afternoon written in
+ * one go. `why` is the reasoning, which reached nobody in the house. */
+export interface Made {
+  id: string;
+  at: number;
+  kind: string;
+  heading: string;
+  body: string;
+  why: string;
+  pictureId: string;
+}
+
+/* An afternoon that ran, and everything the system generated for it. `script` and `made`
+ * are empty in the list of cards and arrive when one is opened.
+ *
+ * There is nothing here about the person it ran for, and there is no field one would fit
+ * in. That is the trade: no veto on each generated piece, every piece readable after. */
+export interface Trail {
+  runId: string;
+  experienceId: string;
+  title: string;
+  overview: string;
+  beganAt: number;
+  script?: string;
+  made?: Made[];
+}
+
 export interface Rhythm {
   picturesFrom: string;
   picturesUntil: string;
@@ -375,4 +403,6 @@ export interface Api {
   decideSeveral(ids: string[], state: Decision): Promise<Backlog>;
   say(said: NewSaid): Promise<Said>;
   messages(): Promise<Said[]>;
+  trails(): Promise<Trail[]>;
+  trail(runId: string): Promise<Trail>;
 }

@@ -68,11 +68,17 @@ Every activity that starts carries a written way to reach its ending from wherev
 
 The person who did the thing is the only source on how it went. This is a product choice and not a missing feature: if the parent already knows, the question at dinner becomes a check, and the account loses its worth.
 
-- **No progress view.** Not step by step, not which help was given, not what came back off the glass, not how long each part took.
+- **No progress view while it runs.** Not step by step, not which help was given, not what came back off the glass, not how long a person took over any part of it.
 - **No list of questions to ask afterwards.** That is the same monitor written as prose, and the person would work out that the parent had been told.
 - **No judgement on the live channel.** What a parent sends while something is running is a fact or a constraint — a new end hour, a pause, a broken printer, a missing material — as a typed message rather than free text. A sentence about how somebody is doing would enter the tone of everything written after it.
 
-What the parent does see: whether it is running, how long is left, the controls, and any device that has failed. Before it starts, an overview of what was devised, with the ending behind an explicit click. Afterwards, one line about what was made.
+Afterwards is a different question and the answer is the opposite one. The parent approves an idea; everything after that is written as the afternoon goes, by an agent nobody vetted move by move, because there is no way to stand between a generated page and the room without stopping the afternoon. So the trade is made in the open: no veto on each piece, and every piece readable in full once it is over — the script, and every page and line the system wrote, in the order it wrote them.
+
+Only that half is kept. Nothing about what the adolescent did is stored anywhere, so nothing about it can be shown: not the pages that came back, not what was on them, not whether anything was finished. The record has no field one would fit in, and `tests/test_trail.py` names the fields it does have.
+
+The timestamps on the system's own calls are the one place this is not clean. They are there because a runaway agent is visible in nothing else, and a determined reader can subtract two of them and learn how long fell between two moves. That is the cost, stated here rather than left to be found.
+
+What the parent sees while it runs: whether it is running, how long is left, the controls, and any device that has failed. Before it starts, an overview of what was devised, with the ending behind an explicit click. Afterwards, one line about what was made.
 
 ## The system does not replace the parent
 

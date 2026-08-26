@@ -28,6 +28,7 @@ import {
   type Said,
   type NewSaid,
   type Theme,
+  type Trail,
   type UsageAnswer,
 } from "./types";
 
@@ -271,6 +272,21 @@ export function httpApi(token: string): Api {
       const answer = await json<{ messages: Said[] }>("/api/messages", {}, ["messages"]);
       return answer.messages;
     },
+
+    // What the system wrote, in two sizes. The cards carry no scripts, because a list of
+    // twenty afternoons would otherwise be sixty thousand characters nobody asked to read.
+    async trails(): Promise<Trail[]> {
+      const answer = await json<{ trails: Trail[] }>("/api/trail", {}, ["trails"]);
+      return answer.trails;
+    },
+
+    trail: (runId: string) =>
+      json<Trail>(`/api/trail/${encodeURIComponent(runId)}`, {}, [
+        "runId",
+        "title",
+        "script",
+        "made",
+      ]),
   };
 }
 

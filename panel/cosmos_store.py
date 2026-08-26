@@ -50,6 +50,7 @@ from .rhythm import (
     Rhythm,
 )
 from .themes import Theme
+from .trail import Made, Trail
 from .usage import Limit, UsageEvent, UsageSummary, summarise
 
 ACCOUNTS_CONTAINER = "families"
@@ -64,6 +65,7 @@ REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
 EXPERIENCES_CONTAINER = "sources"
+TRAILS_CONTAINER = "sources"
 LIMIT_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
@@ -519,6 +521,154 @@ def _to_offered(document: dict[str, Any]) -> OfferedExperience:
         decided_by=str(document.get("decidedBy") or ""),
         note=str(document.get("note") or ""),
         begun_at=float(document.get("begunAt") or 0.0),
+    )
+
+
+class CosmosTrailStore:
+    """Conforms to :class:`~panel.trail.TrailStore`.
+
+    Two document types in one container, both partitioned on the household: the trail, which
+    is written once when an afternoon begins, and each thing made, which is appended and never
+    read back by anything but the parent's page. Nothing here is ever updated after it is
+    written, which is what makes it a record rather than a state.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(TRAILS_CONTAINER)
+        )
+
+    def began(self, trail: Trail) -> Trail:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.create_item(_from_trail(trail))
+        except exceptions.CosmosResourceExistsError:
+            # Idempotent on the run: a house that retries its first move must not open a
+            # second trail for one afternoon.
+            existing = self._container.read_item(
+                item=_trail_id(trail.run_id), partition_key=trail.household_id
+            )
+            return _to_trail(existing)
+        return trail
+
+    def wrote(self, record: Made) -> Made:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.create_item(_from_made(record))
+        except exceptions.CosmosResourceExistsError:
+            pass
+        return record
+
+    def list(self, household_id: str) -> list[Trail]:
+        # The script is left out on purpose. A card needs a title and a date; carrying a
+        # few thousand characters of script per card would make the page pay for something
+        # nobody has clicked on yet.
+        rows = self._container.query_items(
+            query=(
+                "SELECT c.id, c.familyId, c.runId, c.experienceId, c.title, c.overview,"
+                " c.beganAt FROM c WHERE c.familyId = @family AND c.type = 'trail'"
+            ),
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        return sorted(
+            (_to_trail(row) for row in rows), key=lambda row: row.began_at, reverse=True
+        )
+
+    def get(self, household_id: str, run_id: str) -> Trail | None:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(
+                item=_trail_id(run_id), partition_key=household_id
+            )
+        except exceptions.CosmosResourceNotFoundError:
+            return None
+        made = self._container.query_items(
+            query=(
+                "SELECT * FROM c WHERE c.familyId = @family AND c.type = 'made'"
+                " AND c.runId = @run"
+            ),
+            parameters=[
+                {"name": "@family", "value": household_id},
+                {"name": "@run", "value": run_id},
+            ],
+            partition_key=household_id,
+        )
+        found = _to_trail(document)
+        return Trail(
+            run_id=found.run_id,
+            household_id=found.household_id,
+            experience_id=found.experience_id,
+            title=found.title,
+            overview=found.overview,
+            began_at=found.began_at,
+            script=found.script,
+            made=tuple(sorted((_to_made(row) for row in made), key=lambda one: one.at)),
+        )
+
+
+def _trail_id(run_id: str) -> str:
+    """The run is the key. Prefixed because things made share the container with it."""
+    return f"trail_{run_id}"
+
+
+def _from_trail(trail: Trail) -> dict[str, Any]:
+    return {
+        "id": _trail_id(trail.run_id),
+        "familyId": trail.household_id,
+        "type": "trail",
+        "runId": trail.run_id,
+        "experienceId": trail.experience_id,
+        "title": trail.title,
+        "overview": trail.overview,
+        "beganAt": trail.began_at,
+        "script": trail.script,
+    }
+
+
+def _to_trail(document: dict[str, Any]) -> Trail:
+    return Trail(
+        run_id=str(document.get("runId") or ""),
+        household_id=str(document.get("familyId") or ""),
+        experience_id=str(document.get("experienceId") or ""),
+        title=str(document.get("title") or ""),
+        overview=str(document.get("overview") or ""),
+        began_at=float(document.get("beganAt") or 0.0),
+        script=str(document.get("script") or ""),
+    )
+
+
+def _from_made(record: Made) -> dict[str, Any]:
+    return {
+        "id": record.id,
+        "familyId": record.household_id,
+        "type": "made",
+        "runId": record.run_id,
+        "at": record.at,
+        "kind": record.kind,
+        "heading": record.heading,
+        "body": record.body,
+        "why": record.why,
+        "pictureId": record.picture_id,
+    }
+
+
+def _to_made(document: dict[str, Any]) -> Made:
+    return Made(
+        id=str(document["id"]),
+        household_id=str(document.get("familyId") or ""),
+        run_id=str(document.get("runId") or ""),
+        at=float(document.get("at") or 0.0),
+        kind=str(document.get("kind") or ""),
+        heading=str(document.get("heading") or ""),
+        body=str(document.get("body") or ""),
+        why=str(document.get("why") or ""),
+        picture_id=str(document.get("pictureId") or ""),
     )
 
 

@@ -21,6 +21,7 @@ import type {
   Said,
   NewSaid,
   Theme,
+  Trail,
   UsageAnswer,
   HouseRequest,
 } from "@/api/types";
@@ -310,6 +311,38 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
   let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
+  // One afternoon that ran, and what the system wrote while it was going. Nothing about
+  // what came back off the glass, because nothing about that is ever stored.
+  const trails: Trail[] = [
+    {
+      runId: "aft_1",
+      experienceId: "un-pomeriggio-di-nuvole",
+      title: "Un pomeriggio di nuvole",
+      overview: "Si guarda il cielo e si scrive quello che sembra.",
+      beganAt: NOW - 86_400,
+      script: "THE WORLD\nUna finestra e un quaderno.",
+      made: [
+        {
+          id: "made_1",
+          at: NOW - 86_300,
+          kind: "say",
+          heading: "",
+          body: "Guarda fuori e dimmi che forma ha.",
+          why: "il foglio era tornato vuoto",
+          pictureId: "",
+        },
+        {
+          id: "made_2",
+          at: NOW - 86_100,
+          kind: "hand_over",
+          heading: "Le nuvole",
+          body: '{\n  "title": "Le nuvole"\n}',
+          why: "il copione chiedeva un foglio",
+          pictureId: "",
+        },
+      ],
+    },
+  ];
   // What the parent has said to a running afternoon and the house has not yet come for.
   let waiting: Said[] = [];
   // One the house has placed, and one it has not been asked about yet.
@@ -591,6 +624,13 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       return one;
     },
     messages: async () => waiting,
+
+    trails: async () => trails.map(({ script: _script, made: _made, ...card }) => card),
+    trail: async (runId) => {
+      const found = trails.find((row) => row.runId === runId);
+      if (!found) throw new Error("unknown run");
+      return found;
+    },
   };
 
   return { ...base, ...overrides, recorded };

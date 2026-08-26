@@ -362,3 +362,35 @@ And one in the probe rather than the system: it passed the titles already offere
 Three refusals across thirty. A moment whose threshold said `punti` — a score, caught by
 `shared/blocklist.py`. And twice a way out reaching for a file or a card that nothing had put
 in anybody's hands, which is the check `ideas/09 §20` was written for.
+
+## 12. Il registro di quello che il sistema ha scritto
+
+Fatto. panel/trail.py, panel/routes/trail.py, web/src/sections/Trail.tsx, tredici test in `tests/test_trail.py` e tre in `web/src/test/trail.test.tsx`. Nel pannello sta sotto «La casa», accanto a Consumo.
+
+### 12.1 Perché esiste
+
+Il genitore approva un'idea. Tutto il resto lo scrive un agente mentre il pomeriggio va, e nessuno lo approva pezzo per pezzo — non c'è un momento in cui un genitore possa mettersi fra un foglio generato e la stanza senza fermare il pomeriggio per farlo. Lo scambio è dichiarato: niente veto su ogni pezzo, e ogni pezzo leggibile dopo, per intero, accanto al copione da cui è venuto.
+
+### 12.2 L'asimmetria, che è la cosa da non perdere
+
+Si tiene solo una metà. Quello che il sistema ha scritto resta intero e per sempre; quello che l'adolescente ha fatto non è tenuto affatto — non i fogli tornati, non che cosa c'era sopra, non se qualcosa è stato finito. Il record non ha un campo dove ci starebbe, e `test_nothing_in_the_record_can_be_about_a_person` elenca i campi che ha, uno per uno, invece di enunciare un principio. Un principio non fallisce quando qualcuno aggiunge `howFar` a una dataclass in buona fede.
+
+Un test parallelo, `test_what_came_back_off_the_glass_is_not_in_the_trail`, manda una lettura vera di un foglio («un cavallo») sulla rotta che genera il seguito, e verifica che il seguito sia registrato e la parola no.
+
+### 12.3 Dove si registra, e perché lì
+
+Nel pannello, non nella casa. La casa che riferisse il proprio lavoro riferirebbe quello che è riuscita a fare, e le due cose divergono esattamente quando vale la pena saperlo: una stampante che non ha preso il foglio, un display addormentato. Quello che è uscito da questo container è quello che questo container scrive.
+
+Registrare non solleva mai: la generazione era già fatta e già pagata, quindi una traccia che potesse far fallire una richiesta sarebbe un record con una presa sul pomeriggio.
+
+La traccia si apre da sola alla prima generazione di una corsa, dal documento che la casa stava usando — `began` è idempotente sul `runId`. Il copione viene copiato e non puntato: un'esperienza si può ritirare dopo, e la traccia deve continuare a mostrare le parole su cui il pomeriggio è andato davvero.
+
+### 12.4 Il costo, dichiarato
+
+I timestamp sulle chiamate del sistema sono l'unico punto non pulito. Ci sono perché un agente impazzito non è visibile in nient'altro, e chi vuole può sottrarne due e sapere quanto è passato fra due mosse. docs/NON-GOALS.md lo dice, e la regola «il genitore non guarda mentre succede» è stata riscritta per distinguere il guardare una persona mentre lavora dal leggere la macchina dopo.
+
+### 12.5 Che cosa manca
+
+La rotta `next-move` registra le mosse dell'agente; `devices/run_experience.py` non la chiama ancora, quindi oggi si riempie solo la via del seguito (`runId` aggiunto al POST). Le immagini finite su un display non sono ancora registrate contro una corsa: `Made.picture_id` esiste e nessuno lo scrive, perché una mossa non ha un campo display. Va aggiunto quando l'agente potrà mettere un quadro.
+
+E l'agente che valida conformità e sicurezza di quello che l'agente d'esperienza sta facendo — durante o a cose fatte — è deciso e non fatto, per scelta.

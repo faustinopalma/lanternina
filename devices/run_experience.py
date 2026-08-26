@@ -755,6 +755,10 @@ def _ask(
             "after": at.id,
             "came": str(came),
             "reading": reading.to_dict(),
+            # Which afternoon this belongs to, so the panel can file what it writes against
+            # the run it was written for. It records its own output; nothing about the page
+            # that prompted it travels into that record.
+            "runId": run.run_id,
         }
     ).encode()
     request = urllib.request.Request(
