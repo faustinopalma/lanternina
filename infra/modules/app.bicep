@@ -15,6 +15,8 @@ param tags object
 param infrastructureSubnetId string
 param logAnalyticsCustomerId string
 param logAnalyticsId string
+@description('Where traces and logs go. Empty leaves the app logging to stdout only, which Container Apps still carries to the workspace.')
+param insightsConnectionString string = ''
 param registryLoginServer string
 param runtimeIdentityId string
 param runtimeIdentityClientId string
@@ -171,6 +173,16 @@ var commonEnv = [
   {
     name: 'LANTERNINA_CONTENT_SAFETY_ENDPOINT'
     value: aiAccountEndpoint
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: insightsConnectionString
+  }
+  {
+    // Named after the revision, so two revisions serving at once are told apart in a
+    // query rather than by guessing from timestamps.
+    name: 'OTEL_SERVICE_NAME'
+    value: 'lanternina-panel'
   }
 ]
 

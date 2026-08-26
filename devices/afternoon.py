@@ -72,6 +72,7 @@ from devices.run_experience import (
 )
 from shared.clock import date_there, wall_clock
 from shared.experience import Experience, ExperienceError
+from shared.ids import new_id
 from shared.message import Message, MessageError
 
 # Monday first, and these exact three letters: `panel/reminders.py` writes them and
@@ -293,17 +294,20 @@ def ask_for_one(panel: str, household: str, key: str, house: House) -> str:
     return str(answer.get("title") or answer.get("id") or "")
 
 
-def say_it_began(panel: str, household: str, key: str, offered_id: str) -> None:
+def say_it_began(
+    panel: str, household: str, key: str, offered_id: str, run_id: str = ""
+) -> None:
     """Tell the panel this one has happened, so it is not offered again tomorrow.
 
-    Failing here costs one repeated afternoon and nothing else, so it does not stop the
-    one that has already started.
+    The run id goes with it so the panel can open the trail under the same name the house
+    files its acts under. Failing here costs one repeated afternoon and nothing else, so it
+    does not stop the one that has already started.
     """
     try:
         _post(
             f"{panel}/api/device/{household}/experiences/{offered_id}/begun",
             key,
-            {},
+            {"runId": run_id},
             LOOK_TIMEOUT_SECONDS,
         )
     except (urllib.error.URLError, OSError, ValueError) as exc:
@@ -493,6 +497,20 @@ def main(argv: list[str] | None = None) -> int:
 
     for run_id in conclude_what_is_over(house, now, send=not args.no_paper):
         print(f"{run_id} reached its ending and is over")
+
+    # Above the hour and above whether a room is busy, and both for the same reason:
+    # writing a script puts nothing in the room. It fills the list the parent decides from,
+    # and a parent may open the panel at eight in the morning or while an afternoon is
+    # running. Both were found the hard way, on 26 August 2026 — first the queue wrote
+    # nothing outside 12:00–19:30, then it stopped at four of five because an afternoon was
+    # under way and the runner returned before it ever got here.
+    try:
+        offered, waiting, wanted = what_the_house_may_run(panel, household, key)
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the panel did not say what this house may run ({exc})")
+        return 0
+    top_up(panel, household, key, house, waiting=waiting, wanted=wanted)
+
     still_going = waiting_runs(sheets_dir)
     if still_going:
         print(f"an afternoon is already under way: {', '.join(still_going)}")
@@ -501,19 +519,6 @@ def main(argv: list[str] | None = None) -> int:
     rhythm = the_rhythm(panel, household, key)
     zone = str(rhythm.get("timeZone") or "")
     there = wall_clock(now, zone)
-
-    # Before the hour is consulted, and this is the whole point of it being here rather
-    # than further down. Writing a script puts nothing in the room: it fills the list the
-    # parent decides from, and a parent may open the panel at eight in the morning. Until
-    # 26 August 2026 the top-up sat below the band check, so a house whose afternoons run
-    # 12:00–19:30 devised nothing for the other eighteen hours and the queue was empty
-    # whenever anybody looked.
-    try:
-        offered, waiting, wanted = what_the_house_may_run(panel, household, key)
-    except (urllib.error.URLError, OSError, ValueError) as exc:
-        print(f"the panel did not say what this house may run ({exc})")
-        return 0
-    top_up(panel, household, key, house, waiting=waiting, wanted=wanted)
 
     asked = the_standing_request(panel, household, key)
     if asked:
@@ -554,12 +559,15 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     offered_id, experience = chosen
+    # Named here rather than inside `begin`, so the panel can be told which run to keep the
+    # record under before the first moment has finished playing.
+    run_name = new_id("aft")
     try:
-        run_id = begin(house, experience, now=now, send=not args.no_paper)
+        run_id = begin(house, experience, run_id=run_name, now=now, send=not args.no_paper)
     except (CannotRun, ExperienceError, OSError) as exc:
         print(f"{experience.title} did not begin ({exc})")
         return 1
-    say_it_began(panel, household, key, offered_id)
+    say_it_began(panel, household, key, offered_id, run_name)
     if asked:
         the_request_is_done(panel, household, key, asked)
     print(f"{experience.title}: {run_id or 'closed without asking for paper'}")

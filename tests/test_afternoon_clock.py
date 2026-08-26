@@ -231,7 +231,7 @@ def a_panel(
         calls["devised"] += 1
         return "something new"
 
-    def _begun(panel: str, household: str, key: str, offered_id: str) -> None:
+    def _begun(panel: str, household: str, key: str, offered_id: str, run_id: str = "") -> None:
         calls["begun"].append(offered_id)
         # The real panel stops offering what has begun, and the runner leans on that to
         # move on to the next one. A fake that kept offering it would show a house
@@ -369,13 +369,12 @@ def test_it_does_not_begin_a_second_while_the_first_is_still_going(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
     """The next run of the timer must not print a second sheet on top of the first."""
-    calls = a_panel(monkeypatch, offered=[offered_row()])
+    a_panel(monkeypatch, offered=[offered_row()])
 
     a_turn(monkeypatch, house, WHEN)
     running = waiting_runs(house.sheets_dir)
     a_turn(monkeypatch, house, WHEN + 600)
 
-    assert calls["looked"] == 1
     assert waiting_runs(house.sheets_dir) == running
 
 
@@ -483,8 +482,29 @@ def test_no_second_afternoon_begins_while_one_is_under_way(
 
     a_turn(monkeypatch, house, WHEN + 600)
 
-    # The second run returns before it asks anything: a run under way is the first check.
-    assert calls["looked"] == 1
+    assert len(waiting_runs(house.sheets_dir)) == 1
+    assert calls["begun"] == ["aftn-1"]
+
+
+def test_the_queue_fills_while_an_afternoon_is_under_way(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """Writing a script puts nothing in the room, so a busy room does not stop it.
+
+    It did until 26 August 2026: the runner returned on `waiting_runs` before it ever
+    reached the top-up, and a parent watching an afternoon run saw their queue sit at four
+    of five for two hours.
+    """
+    calls = a_panel(monkeypatch, offered=[offered_row()], waiting=0, wanted=5)
+
+    a_turn(monkeypatch, house, WHEN)
+    assert len(waiting_runs(house.sheets_dir)) == 1
+    devised = calls["devised"]
+
+    a_turn(monkeypatch, house, WHEN + 600)
+
+    assert calls["devised"] == devised + 1
+    # And still only the one afternoon in the room.
     assert len(waiting_runs(house.sheets_dir)) == 1
 
 

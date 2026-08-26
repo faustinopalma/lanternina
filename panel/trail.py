@@ -24,11 +24,20 @@ import threading
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
+from shared.capabilities import Act
+
 # What one generated thing is filed under. A move is filed under the act it performs —
 # `shared.capabilities.Act`, so the vocabulary stays the house's own and nothing can be filed
 # under something the house cannot do. A continuation is not an act: it is the rest of an
 # afternoon, written in one go when a page came back and the plan said to ask.
 WHAT_COMES_AFTER = "continuation"
+# The moments as the deviser wrote them, filed when the afternoon begins. Beside it the house
+# files what it actually performed, and the two differ whenever the clock made it run a
+# shorter version or reach for the way out.
+THE_PLAN = "plan"
+# Which of those a house may report having done. It performs acts and nothing else: a house
+# filing a `plan` or a `continuation` would be claiming to have written one.
+DONE = frozenset({str(one) for one in Act})
 
 # How much of one generated thing is kept. A move is capped at 3000 characters upstream and a
 # script at 6000; this is the backstop for a caller that is neither, and it truncates rather

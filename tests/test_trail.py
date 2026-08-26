@@ -270,6 +270,115 @@ def test_an_afternoon_nobody_ran_is_not_there() -> None:
     assert client.get("/api/trail/aft_9", headers=headers()).status_code == 404
 
 
+# ── An afternoon that ran the whole way on its own plan ──────────────────────────────
+
+
+def offer_and_begin(client: TestClient, household: str) -> Any:
+    """Have one devised and then have the house say it began, which is what a real run does."""
+    devised = client.post(
+        f"/api/device/{household}/experiences",
+        json={"capabilities": ["print_a4", "scan_a4", "show_800x480_1bit"]},
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+    offered_id = devised.json()["id"]
+    return client.post(
+        f"/api/device/{household}/experiences/{offered_id}/begun",
+        json={"runId": "aft_1"},
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+
+def test_the_trail_opens_when_the_house_says_it_began(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """It opened on the first generation, and an afternoon that never needed one left no
+    record at all. Measured in a real house on 26 August 2026: it ran start to finish and
+    the parent's page was empty."""
+    client = client_for()
+
+    async def _devise(**_: Any) -> Any:
+        from shared.experience import Experience
+
+        return Experience.from_dict(THE_AFTERNOON | {"script": "il copione"}), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", _devise)
+    household = household_of(client)
+
+    assert offer_and_begin(client, household).status_code == 200
+
+    cards = client.get("/api/trail", headers=headers()).json()["trails"]
+    assert [row["runId"] for row in cards] == ["aft_1"]
+    whole = client.get("/api/trail/aft_1", headers=headers()).json()
+    assert whole["script"] == "il copione"
+    # The plan as written, so that what the house then did can be read against it.
+    assert whole["made"][0]["kind"] == "plan"
+    assert "l-ultimo-foglio" in whole["made"][0]["body"]
+
+
+def test_the_house_files_what_it_put_in_the_room(monkeypatch: pytest.MonkeyPatch) -> None:
+    """What the panel generated and what reached the room are different facts.
+
+    A page a printer never took is a generation that happened and an act that did not, so
+    the parent is shown both under one afternoon.
+    """
+    client = client_for()
+
+    async def _devise(**_: Any) -> Any:
+        from shared.experience import Experience
+
+        return Experience.from_dict(THE_AFTERNOON), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", _devise)
+    household = household_of(client)
+    offer_and_begin(client, household)
+
+    answer = client.post(
+        f"/api/device/{household}/trail/aft_1",
+        json={
+            "kind": "say",
+            "heading": "Guarda fuori",
+            "lines": ["Che forma ha?"],
+            "why": "standard",
+        },
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+    assert answer.status_code == 200
+    made = client.get("/api/trail/aft_1", headers=headers()).json()["made"]
+    assert [one["kind"] for one in made] == ["plan", "say"]
+    assert made[1]["heading"] == "Guarda fuori"
+    assert made[1]["body"] == "Che forma ha?"
+
+
+def test_a_house_cannot_claim_to_have_written_the_plan() -> None:
+    """It performs acts and nothing else. Filing a `plan` would be claiming to have
+    written one, and the record would stop saying who did what."""
+    client = client_for()
+    household = household_of(client)
+
+    for kind in ("plan", "continuation", "invented"):
+        answer = client.post(
+            f"/api/device/{household}/trail/aft_1",
+            json={"kind": kind},
+            headers={"X-Device-Key": DEVICE_KEY},
+        )
+        assert answer.status_code == 400, kind
+
+
+def test_filing_what_was_done_carries_no_field_for_a_reading() -> None:
+    """The shape is closed, so a house that tried would be refused rather than stored."""
+    client = client_for()
+    household = household_of(client)
+
+    answer = client.post(
+        f"/api/device/{household}/trail/aft_1",
+        json={"kind": "collect", "reading": {"cells": [{"value": "un cavallo"}]}},
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+    assert answer.status_code == 422
+
+
 def test_the_trail_is_read_by_a_parent_and_not_by_a_device() -> None:
     """A device key opens the recording routes and none of the reading ones."""
     client = client_for()

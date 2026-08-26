@@ -41,6 +41,6 @@ describe("what the system wrote", () => {
   it("says so plainly when nothing has run", async () => {
     renderPanel(fakeApi({ trails: async () => [] }), <TheTrail />);
 
-    expect(await screen.findByText("Nessun pomeriggio ancora.")).toBeInTheDocument();
+    expect(await screen.findByText("Nessuna attività ancora.")).toBeInTheDocument();
   });
 });

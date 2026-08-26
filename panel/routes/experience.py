@@ -42,7 +42,7 @@ from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..rhythm import RhythmStore
-from ..trail import WHAT_COMES_AFTER, TrailStore
+from ..trail import DONE, THE_PLAN, WHAT_COMES_AFTER, TrailStore
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
 from . import Decision
 from .trail import filed, opened
@@ -459,9 +459,21 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     }
 
 
+class ItBegan(BaseModel):
+    """The house saying it started one, and under which run."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    runId: str = ""
+
+
 @router.post("/api/device/{household_id}/experiences/{experience_id}/begun")
 def afternoon_begun(
-    household_id: str, experience_id: str, _: DeviceKey, request: Request
+    household_id: str,
+    experience_id: str,
+    _: DeviceKey,
+    request: Request,
+    began: ItBegan | None = None,
 ) -> Any:
     """The house says it started this one, so it is not handed the same one tomorrow.
 
@@ -469,12 +481,73 @@ def afternoon_begun(
     become one: the parent's word stays in ``state``, and nothing here records who did the
     afternoon, how far it got or whether it finished. The first moment stands, so a hub
     that retries does not move it.
+
+    This is also where the trail opens, and it is the right place because it is the only
+    call the house always makes. It opened on the first generation instead, and an afternoon
+    that ran the whole way on its written plan - nothing came back off the glass, so nothing
+    was ever generated - left no record at all. Measured on 26 August 2026: an afternoon ran
+    start to finish and the parent's page was empty.
     """
     store: ExperienceStore = request.app.state.experiences
-    if store.get(household_id, experience_id) is None:
+    offered = store.get(household_id, experience_id)
+    if offered is None:
         raise HTTPException(status_code=404, detail="unknown_experience")
     row = store.begun(household_id, experience_id, time.time())
+    run_id = (began.runId if began else "") or experience_id
+    trail: TrailStore = request.app.state.trail
+    now = time.time()
+    opened(trail, household_id, run_id, offered.experience, now)
+    # The plan as it was written, beside what the house then did with it. The two differ
+    # whenever the clock made it choose a shorter version or reach for the way out, and
+    # that difference is most of what a record of an afternoon is for.
+    filed(
+        trail,
+        household_id,
+        run_id,
+        kind=THE_PLAN,
+        at=now,
+        body=json.dumps(
+            offered.experience.get("moments") or [], ensure_ascii=False, indent=2
+        ),
+    )
     return {"id": row.id, "begunAt": row.begun_at}
+
+
+class ItDid(BaseModel):
+    """One thing the house put in the room, as the house reports having done it."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: str
+    heading: str = ""
+    lines: list[str] = Field(default_factory=list)
+    why: str = ""
+
+
+@router.post("/api/device/{household_id}/trail/{run_id}")
+def it_did(
+    household_id: str, run_id: str, what: ItDid, _: DeviceKey, request: Request
+) -> Any:
+    """File what the house performed. Nothing here has a field a reading would fit in.
+
+    The panel records what it generated; this records what reached the room. They are
+    different facts and the second is the one a parent asked for - a page that the printer
+    never took is a generation that happened and an act that did not.
+    """
+    if what.kind not in DONE:
+        raise HTTPException(status_code=400, detail=f"a house does not do {what.kind!r}")
+    trail: TrailStore = request.app.state.trail
+    filed(
+        trail,
+        household_id,
+        run_id,
+        kind=what.kind,
+        at=time.time(),
+        heading=what.heading,
+        body="\n".join(what.lines),
+        why=what.why,
+    )
+    return {"filed": True}
 
 
 @router.get("/api/experiences")

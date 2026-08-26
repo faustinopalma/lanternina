@@ -284,8 +284,11 @@ def test_an_ask_is_answered_inside_the_reply_and_then_played(
     asked: dict[str, Any] = {}
 
     def _post(request: Any, timeout: int = 0) -> _Answer:
-        asked["url"] = request.full_url
-        asked["body"] = json.loads(request.data)
+        # The house also files what it played, on a route of its own. This test is about
+        # the ask, so the filing is answered and not looked at.
+        if request.full_url.endswith("/experience"):
+            asked["url"] = request.full_url
+            asked["body"] = json.loads(request.data)
         return _Answer(a_continuation())
 
     monkeypatch.setattr(run_experience.urllib.request, "urlopen", _post)

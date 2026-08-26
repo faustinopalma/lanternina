@@ -36,6 +36,7 @@ from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
 from .guidelines import GuidelineStore, InMemoryGuidelineStore
 from .messages import InMemoryMessageStore, MessageStore
+from .observability import watch
 from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
 from .proposals import InMemoryProposalStore, ProposalStore
@@ -106,6 +107,9 @@ def create_app(
     trail: TrailStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
+    # Before anything else builds: a store that cannot reach Cosmos says so through a
+    # logger, and until this ran there was no handler for it to say it through.
+    watch(app)
     app.state.settings = settings if settings is not None else Settings.from_env()
     app.state.store = store if store is not None else _account_store(app.state.settings)
     app.state.proposals = (

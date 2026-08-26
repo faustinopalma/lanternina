@@ -306,7 +306,8 @@ def main() -> int:
             print(f"{friendly_id}: the moment has passed")
         else:
             install(target, draw(due, words, decoration))
-            print(f"{friendly_id}: {due.get('at', '')} {words}")
+            # The hour, not the sentence: what this house asked to be reminded of is theirs.
+            print(f"{friendly_id}: {due.get('at', '')}")
         shown[friendly_id] = occurrence
     save_shown(shown_file, shown)
     return 0

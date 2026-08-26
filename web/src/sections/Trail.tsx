@@ -30,17 +30,19 @@ function Written({ made }: { made: Made }) {
   /* Written out rather than built from `made.kind`: a key that only exists at runtime is a
      key no test can find missing. A kind we have no word for is shown as it arrived. */
   const kind =
-    made.kind === "say"
-      ? t("trail.kind.say")
-      : made.kind === "hand_over"
-        ? t("trail.kind.hand_over")
-        : made.kind === "collect"
-          ? t("trail.kind.collect")
-          : made.kind === "close"
-            ? t("trail.kind.close")
-            : made.kind === "continuation"
-              ? t("trail.kind.continuation")
-              : made.kind;
+    made.kind === "plan"
+      ? t("trail.kind.plan")
+      : made.kind === "say"
+        ? t("trail.kind.say")
+        : made.kind === "hand_over"
+          ? t("trail.kind.hand_over")
+          : made.kind === "collect"
+            ? t("trail.kind.collect")
+            : made.kind === "close"
+              ? t("trail.kind.close")
+              : made.kind === "continuation"
+                ? t("trail.kind.continuation")
+                : made.kind;
 
   return (
     <li className="border-l-2 border-edge pl-3">

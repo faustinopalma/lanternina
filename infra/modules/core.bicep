@@ -107,6 +107,31 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   }
 }
 
+// Workspace-based, so the traces land in the same workspace as the container logs and one
+// query can join them: a request that failed and the line the code wrote about it are the
+// two halves of the same story, and they used to be in different places.
+//
+// What this buys that stdout does not is the part nobody writes down - how long a request
+// took, which model call was slow inside it, which Cosmos query, and which of them failed
+// together. Retention and the daily cap are the workspace's, already set above, so this
+// adds a surface and not a second bill.
+resource insights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'appi-${namePrefix}-${suffix}'
+  location: location
+  tags: tags
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalytics.id
+    // No key in a URL and no anonymous write: the container proves who it is with the
+    // same managed identity it uses for everything else.
+    DisableLocalAuth: true
+    IngestionMode: 'LogAnalytics'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
+}
+
 // Basic and public on purpose: a private-linked registry needs Premium, and the registry
 // holds no personal data. Access is by RBAC, never by the admin user.
 resource registry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
@@ -139,6 +164,10 @@ resource deployIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-1
 
 var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
+// Monitoring Metrics Publisher. The component refuses local auth, so telemetry is written
+// with the same managed identity everything else here proves itself with, and there is no
+// ingestion key anywhere for a leaked environment variable to carry.
+var metricsPublisherRoleId = '3913510d-42f4-4e42-8a64-420c390055eb'
 
 resource acrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: registry
@@ -160,6 +189,19 @@ resource acrPush 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+resource metricsPublisher 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: insights
+  name: guid(insights.id, runtimeIdentity.id, metricsPublisherRoleId)
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      metricsPublisherRoleId
+    )
+    principalId: runtimeIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 output acaSubnetId string = vnet.properties.subnets[0].id
 output privateEndpointSubnetId string = vnet.properties.subnets[1].id
 output cosmosDnsZoneId string = privateDnsZones[0].id
@@ -167,6 +209,8 @@ output queueDnsZoneId string = privateDnsZones[1].id
 output blobDnsZoneId string = privateDnsZones[2].id
 output logAnalyticsId string = logAnalytics.id
 output logAnalyticsCustomerId string = logAnalytics.properties.customerId
+output insightsConnectionString string = insights.properties.ConnectionString
+output insightsId string = insights.id
 output registryName string = registry.name
 output registryLoginServer string = registry.properties.loginServer
 output runtimeIdentityId string = runtimeIdentity.id

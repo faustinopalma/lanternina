@@ -79,6 +79,10 @@ from shared.vision_contracts import WhatCameBack
 # front of. Chosen, not measured.
 ASK_TIMEOUT_SECONDS = 120
 
+# Filing what was done is bookkeeping and somebody may be reading the display it just wrote.
+# Short on purpose: a panel that has gone away must not hold up the next moment.
+FILE_TIMEOUT_SECONDS = 5
+
 # How long before the end hour the ending begins, whatever the afternoon had reached. The
 # design's number. What it has to cover is the longest way out a document may carry —
 # twenty minutes, refused above that by the format — plus the ten minutes the house's own
@@ -564,6 +568,40 @@ def _do(
     return hands.play(house, moment, weight, out or Outgoing(), send)
 
 
+def _it_did(house: House, run_id: str, moment: Moment, weight: Weight) -> None:
+    """Tell the panel what went into the room. Never raises, and never blocks the room.
+
+    What the panel writes down on its own is what it generated; this is what was performed,
+    and the two differ exactly when it is worth knowing — a page a printer never took, a
+    display asleep, a version the clock made shorter. A parent reads both under one
+    afternoon.
+
+    Nothing here can carry a reading. It sends the act, the heading and the lines that went
+    up, all of which the system wrote itself.
+    """
+    if not (house.panel and house.household and house.device_key):
+        return
+    body = json.dumps(
+        {
+            "kind": str(moment.act),
+            "heading": moment.heading,
+            "lines": list(moment.at(weight).lines),
+            "why": str(weight),
+        }
+    ).encode()
+    request = urllib.request.Request(
+        f"{house.panel.rstrip('/')}/api/device/{house.household}/trail/{run_id}",
+        data=body,
+        headers={"X-Device-Key": house.device_key, "Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=FILE_TIMEOUT_SECONDS):
+            pass
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the panel was not told what was done ({exc})")
+
+
 def _weight_for(moments: tuple[Moment, ...], start: int, minutes_left: float) -> Weight:
     """Which of the three versions to run from here, so that the ending still fits.
 
@@ -602,6 +640,7 @@ def _play(
         if isinstance(moment, Collect):
             return moment, printed, weight
         sheet_id = _do(house, moment, weight, send=send, out=out)
+        _it_did(house, run.run_id, moment, weight)
         if sheet_id is not None:
             printed.append(sheet_id)
         if isinstance(moment, Close):
@@ -641,17 +680,24 @@ def _pause(
 
 
 def begin(
-    house: House, experience: Experience, *, now: float | None = None, send: bool = True
+    house: House,
+    experience: Experience,
+    *,
+    run_id: str | None = None,
+    now: float | None = None,
+    send: bool = True,
 ) -> str | None:
     """Play an afternoon up to its first page. Returns the run id, if it is waiting for one.
 
-    None means it closed without ever needing paper back, and nothing was written down.
+    None means it closed without ever needing paper back, and nothing was written down. The
+    caller may name the run, so that it can tell the panel under which name to keep the
+    record before this returns.
     """
     if not experience.runnable_in(house.capabilities):
         raise CannotRun(f"this house cannot run {experience.title}")
     moment = time.time() if now is None else now
     run = Afternoon(
-        run_id=new_id("aft"),
+        run_id=run_id or new_id("aft"),
         experience=experience,
         started_at=moment,
         waiting_at="",

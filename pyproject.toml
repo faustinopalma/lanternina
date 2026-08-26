@@ -57,6 +57,11 @@ panel = [
     # OS has /usr/share/zoneinfo — and everything here is stdlib on purpose.
     "tzdata>=2024.1",
     "Pillow>=10.0",
+    # What the panel says about itself, and the half nobody writes: request timings, which
+    # model call was slow inside one, which Cosmos query. The distro instruments FastAPI,
+    # httpx and the Azure SDKs without anything being annotated. Optional at runtime —
+    # `panel/observability.py` starts without it and says so.
+    "azure-monitor-opentelemetry>=1.6",
 ]
 # Serial link to the ESP32 devices.
 devices = ["pyserial>=3.5"]

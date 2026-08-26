@@ -227,7 +227,10 @@ def main() -> int:
 
     heading, lines = describe(came)
     say(heading, lines)
-    print(f"read {sheet_id}: written={came.written} same_sheet={came.same_sheet}")
+    # The id and nothing else. Whether cells were written on is a fact about what somebody
+    # did, and a journal is read by whoever can reach the machine — and, once a hub ships
+    # its journal anywhere, by whoever can reach that.
+    print(f"read {sheet_id}")
     button_file.unlink(missing_ok=True)
     return 0
 

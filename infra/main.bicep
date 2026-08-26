@@ -215,6 +215,7 @@ module app 'modules/app.bicep' = {
     infrastructureSubnetId: core.outputs.acaSubnetId
     logAnalyticsCustomerId: core.outputs.logAnalyticsCustomerId
     logAnalyticsId: core.outputs.logAnalyticsId
+    insightsConnectionString: core.outputs.insightsConnectionString
     registryLoginServer: core.outputs.registryLoginServer
     runtimeIdentityId: core.outputs.runtimeIdentityId
     runtimeIdentityClientId: core.outputs.runtimeIdentityClientId
