@@ -137,7 +137,17 @@ def test_a_house_with_nothing_approved_has_nothing_to_begin(
     from devices.house import House
 
     empty: list[Any] = []
-    assert clock.choose(empty, House(printer="p", scanner="s", screen=Path("x"))) is None
+    assert (
+        clock.choose(
+            empty,
+            House(printer="p", scanner="s", screen=Path("x")),
+            minutes_now=15 * 60,
+            band_from=15 * 60,
+            band_until=22 * 60,
+            the_hour_decides=False,
+        )
+        is None
+    )
 
 
 def test_the_wire_word_matches_what_the_panel_writes() -> None:

@@ -119,7 +119,14 @@ describe("an afternoon offered to the parent", () => {
  * control is not: there is no box to type a sentence in, and neither button stops
  * anything. Both write a row and leave the house to come for it. */
 describe("an afternoon the house has begun", () => {
-  const begun = { ...SAMPLE_AFTERNOON, state: "approved", begunAt: 1_755_500_000 };
+  /* Ten minutes ago, so its own length has not run out. That is what the panel has instead
+   * of asking the house whether it is still going: the afternoon's nominal length is an
+   * upper bound on when it can still be running. */
+  const begun = {
+    ...SAMPLE_AFTERNOON,
+    state: "approved",
+    begunAt: Date.now() / 1000 - 600,
+  };
   const running = () =>
     fakeApi({
       experiences: async (state) => ({
@@ -185,5 +192,40 @@ describe("an afternoon the house has begun", () => {
     expect(
       await screen.findByText("Non sono riuscito a registrarlo. Riprova più tardi."),
     ).toBeInTheDocument();
+  });
+
+  it("stops calling it waiting to begin once the house has taken it", async () => {
+    /* One list said "approved" and held both, so an afternoon that had gone kept sitting
+       under a heading that said it was still to come. */
+    renderPanel(running(), <Experiences />);
+
+    expect(await screen.findByText("In corso adesso")).toBeInTheDocument();
+    expect(
+      screen.getByText("Nessuna approvata. Finché non ce n'è, la casa non ha niente da cominciare."),
+    ).toBeInTheDocument();
+  });
+
+  it("drops one whose own length has run out from both lists", async () => {
+    /* The panel cannot ask the house whether it is still going, so the afternoon's nominal
+       length is the upper bound it uses. What it wrote is on the trail either way. */
+    const over = {
+      ...SAMPLE_AFTERNOON,
+      state: "approved",
+      begunAt: Date.now() / 1000 - (SAMPLE_AFTERNOON.minutes + 10) * 60,
+    };
+    renderPanel(
+      fakeApi({
+        experiences: async (state) => ({
+          experiences: state === "approved" ? [over] : [],
+          backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
+        }),
+      }),
+      <Experiences />,
+    );
+
+    expect(
+      await screen.findByText("Nessuna approvata. Finché non ce n'è, la casa non ha niente da cominciare."),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("In corso adesso")).not.toBeInTheDocument();
   });
 });

@@ -215,6 +215,12 @@ export interface Rhythm {
    * late for a week without anything being able to say so. */
   timeZone: string;
   dayChoices: string[];
+  /* How many devised afternoons to keep waiting for a decision. Not a count of anything
+   * that happened: it is the depth of the list the parent decides from. Zero stops the
+   * house writing them. */
+  scriptsWanted: number;
+  minScriptsWanted: number;
+  maxScriptsWanted: number;
 }
 
 export interface NewRhythm {
@@ -225,6 +231,7 @@ export interface NewRhythm {
   afternoonFrom: string;
   afternoonUntil: string;
   timeZone: string;
+  scriptsWanted: number;
 }
 
 /** Exactly the fields `prompt_hints()` returns. There is no field for a name, here or on

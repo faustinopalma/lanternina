@@ -90,6 +90,22 @@ def test_an_afternoon_may_begin_only_if_the_whole_of_it_is_over_before_the_band_
     assert not fits_inside_the_band(19 * 60, 30, opens, closes)
 
 
+def test_a_press_steps_over_the_start_of_the_band_and_never_the_end() -> None:
+    """What the button itself promises: it steps over the day and the hour, not the evening.
+
+    A press at nine in the morning was refused by the same band it had just been allowed to
+    ignore, and the refusal said the afternoon would not be over by seven, with ten hours
+    left. Measured in a real house on 26 August 2026.
+    """
+    opens, closes = 12 * 60, 19 * 60 + 30
+
+    assert not fits_inside_the_band(9 * 60, 120, opens, closes)
+    assert fits_inside_the_band(9 * 60, 120, opens, closes, the_hour_decides=False)
+    # The end still holds. Past it, and too near it, a press begins nothing.
+    assert not fits_inside_the_band(20 * 60, 30, opens, closes, the_hour_decides=False)
+    assert not fits_inside_the_band(19 * 60, 120, opens, closes, the_hour_decides=False)
+
+
 def test_the_stamp_holds_a_date_and_not_a_tally(tmp_path: Path) -> None:
     stamp = tmp_path / "looked.stamp"
     assert not looked_today(stamp, WHEN)
@@ -277,6 +293,76 @@ def test_the_queue_is_filled_on_a_day_nobody_chose(
     assert calls["looked"] == 1
     assert calls["devised"] == 1
     assert waiting_runs(house.sheets_dir) == []
+
+
+def a_press(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    """The parent pressed the button. Returns the ids the house said it had honoured."""
+    done: list[str] = []
+    monkeypatch.setattr(clock, "the_standing_request", lambda *_: "rq_53456e")
+    monkeypatch.setattr(
+        clock, "the_request_is_done", lambda *args: done.append(str(args[-1]))
+    )
+    return done
+
+
+def test_a_press_hours_before_the_band_opens_begins_one(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """The whole point of the button, and it did nothing for a while.
+
+    The press was let past the day and the hour and then refused by the same band, because
+    the fit check asked whether the clock was inside it. Measured in a real house at 09:06
+    with the band at 12:00–19:30: ten hours to spare, and the log said the afternoon would
+    not be over by half past seven.
+    """
+    calls = a_panel(monkeypatch, offered=[offered_row()], rhythm=a_rhythm(afternoonFrom="12:00"))
+    done = a_press(monkeypatch)
+    nine = time.mktime((2026, 8, 19, 9, 6, 0, 0, 0, -1))
+
+    assert a_turn(monkeypatch, house, nine) == 0
+
+    assert calls["begun"] == ["aftn-1"]
+    # And the request is cleared, so the next run does not begin a second one.
+    assert done == ["rq_53456e"]
+
+
+def test_a_press_after_the_band_has_closed_begins_nothing(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """It steps over the day and the hour, not the evening. That is what the button says."""
+    calls = a_panel(monkeypatch, offered=[offered_row()])
+    a_press(monkeypatch)
+    late = time.mktime((2026, 8, 19, 23, 40, 0, 0, 0, -1))
+
+    assert a_turn(monkeypatch, house, late) == 0
+
+    assert calls["begun"] == []
+
+
+def test_a_long_one_that_does_not_fit_does_not_hide_a_short_one_that_does(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """The oldest first, but the clock is asked about each of them.
+
+    It was asked about the first only, so a house holding a long afternoon and a short one
+    late in the band ran neither.
+    """
+    long_one = an_experience().to_dict() | {"minutes": 180}
+    short_one = an_experience().to_dict() | {"minutes": 40, "experience_id": "corto"}
+    calls = a_panel(
+        monkeypatch,
+        offered=[
+            {"id": "aftn-lunga", "experience": long_one},
+            {"id": "aftn-corta", "experience": short_one},
+        ],
+        rhythm=a_rhythm(afternoonUntil="19:00"),
+    )
+    # Half past five: an hour and a half left, so the three-hour one cannot start.
+    half_five = time.mktime((2026, 8, 19, 17, 30, 0, 0, 0, -1))
+
+    assert a_turn(monkeypatch, house, half_five) == 0
+
+    assert calls["begun"] == ["aftn-corta"]
 
 
 def test_it_does_not_begin_a_second_while_the_first_is_still_going(

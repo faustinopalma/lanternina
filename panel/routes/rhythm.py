@@ -31,6 +31,9 @@ class NewRhythm(BaseModel):
     # Where the house is. Absent leaves whatever was saved before untouched by a panel
     # that has not been rebuilt, which is not the same as choosing to have none.
     timeZone: str | None = None
+    # How many devised afternoons to keep waiting for a decision. Absent leaves what was
+    # saved, for the same reason.
+    scriptsWanted: int | None = None
 
 
 @router.get("/api/rhythm")
@@ -57,6 +60,9 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
             # A panel that does not send the field leaves the zone as it was, so an older
             # browser cannot quietly move the house back onto the machine's own clock.
             time_zone=kept.time_zone if new.timeZone is None else new.timeZone,
+            scripts_wanted=(
+                kept.scripts_wanted if new.scriptsWanted is None else new.scriptsWanted
+            ),
             updated_by=str(account.id),
         )
     except ValueError as exc:

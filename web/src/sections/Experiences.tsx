@@ -335,8 +335,16 @@ function Card({
   );
 }
 
-/* What the house may still be handed. Kept visible so that withdrawing is possible after
- * the fact — and so that a parent can see there is one waiting rather than none. */
+/* What the house may still be handed, and what it has already taken.
+ *
+ * Two lists rather than one, because the difference is what the parent can do about it. An
+ * afternoon still waiting can be withdrawn; one the house has begun cannot be withdrawn,
+ * stopped or watched from here — all that can be given it is an hour. They were one list
+ * and it was read as one thing, so an afternoon that had gone kept sitting under a heading
+ * that said it was still to come.
+ *
+ * An afternoon whose own length has run out drops off both. It is over as far as this page
+ * knows, and what it wrote is on the trail. */
 function Approved({ again }: { again: number }) {
   const { t } = useWords();
   const api = useApi();
@@ -345,20 +353,39 @@ function Approved({ again }: { again: number }) {
 
   if (state.status !== "ready") return null;
   const left = state.data.experiences.filter((offered) => !withdrawn.includes(offered.id));
+  const waiting = left.filter((offered) => offered.begunAt === 0);
+  /* Begun and its minutes not yet spent. The panel cannot ask the house whether it is
+     still going, so the afternoon's own length is what stands in for that. */
+  const now = Date.now() / 1000;
+  const running = left.filter(
+    (offered) => offered.begunAt > 0 && offered.begunAt + offered.minutes * 60 > now,
+  );
 
   return (
-    <section className="mt-7 border-t border-edge pt-5">
-      <h2 className="mb-2 text-[1.05rem] font-semibold">{t("experiences.approved")}</h2>
-      {left.length === 0 ? <Quiet>{t("experiences.noneApproved")}</Quiet> : null}
-      {left.map((offered) => (
-        <Card
-          key={offered.id}
-          offered={offered}
-          onDecided={() => setWithdrawn((gone) => [...gone, offered.id])}
-        />
-      ))}
-      {withdrawn.length > 0 ? <Quiet className="mt-2.5">{t("experiences.withdrawn")}</Quiet> : null}
-    </section>
+    <>
+      <section className="mt-7 border-t border-edge pt-5">
+        <h2 className="mb-2 text-[1.05rem] font-semibold">{t("experiences.approved")}</h2>
+        {waiting.length === 0 ? <Quiet>{t("experiences.noneApproved")}</Quiet> : null}
+        {waiting.map((offered) => (
+          <Card
+            key={offered.id}
+            offered={offered}
+            onDecided={() => setWithdrawn((gone) => [...gone, offered.id])}
+          />
+        ))}
+        {withdrawn.length > 0 ? (
+          <Quiet className="mt-2.5">{t("experiences.withdrawn")}</Quiet>
+        ) : null}
+      </section>
+      {running.length > 0 ? (
+        <section className="mt-7 border-t border-edge pt-5">
+          <h2 className="mb-2 text-[1.05rem] font-semibold">{t("experiences.running")}</h2>
+          {running.map((offered) => (
+            <Card key={offered.id} offered={offered} onDecided={() => undefined} />
+          ))}
+        </section>
+      ) : null}
+    </>
   );
 }
 

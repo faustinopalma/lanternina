@@ -108,15 +108,25 @@ def minutes_of(value: str) -> int:
     return hours * 60 + minutes
 
 
-def fits_inside_the_band(minutes_now: int, length: int, start: int, end: int) -> bool:
+def fits_inside_the_band(
+    minutes_now: int, length: int, start: int, end: int, *, the_hour_decides: bool = True
+) -> bool:
     """Whether a whole afternoon of ``length`` minutes is over before the band closes.
 
     The length is written on the afternoon itself. An afternoon that would still be running
     after the hour the parent chose is one that ends on a display nobody is meant to be
-    looking at, so it is not begun — a shorter one may still fit, and the next run looks
-    again.
+    looking at, so it is not begun — a shorter one may still fit, which is why `choose` asks
+    this about each of them rather than about the first.
+
+    ``the_hour_decides`` is false when the parent pressed the button. A press overrides the
+    start and never the end, which is what the button itself promises: it steps over the day
+    and the hour, not the evening. Before this was a parameter a press at nine in the morning
+    was refused by the same band it had just been allowed to ignore, and the refusal said the
+    afternoon would not be over by half past seven, with ten hours to go.
     """
-    if minutes_now < start or minutes_now >= end:
+    if the_hour_decides and minutes_now < start:
+        return False
+    if minutes_now >= end:
         return False
     return length <= end - minutes_now
 
@@ -231,7 +241,8 @@ def the_standing_request(panel: str, household: str, key: str) -> str:
     return str(standing.get("id") or "")
 
 
-def _clock_of(request_id: str) -> str:
+def _tail(request_id: str) -> str:
+    """Enough of an id to match two log lines. Not a clock, though it has read like one."""
     return request_id[-6:]
 
 
@@ -358,11 +369,24 @@ def listen(house: House, now: float) -> list[str]:
     return changed
 
 
-def choose(offered: list[Any], house: House) -> tuple[str, Experience] | None:
-    """The oldest approved afternoon this house can actually run, or nothing.
+def choose(
+    offered: list[Any],
+    house: House,
+    *,
+    minutes_now: int,
+    band_from: int,
+    band_until: int,
+    the_hour_decides: bool = True,
+) -> tuple[str, Experience] | None:
+    """The oldest approved afternoon this house can run and still finish in time, or nothing.
 
     The panel sorts by when it was devised, so this is first-in-first-out: an afternoon
     that has been waiting is not passed over for a newer one.
+
+    The clock is asked about each of them rather than about whichever came first. A house
+    holding a two-hour afternoon and a one-hour one at six o'clock can run the second, and
+    for a while it ran neither: the first was picked, found not to fit, and that was the end
+    of the run.
     """
     for row in offered:
         try:
@@ -370,9 +394,22 @@ def choose(offered: list[Any], house: House) -> tuple[str, Experience] | None:
         except (ExperienceError, KeyError, TypeError) as exc:
             print(f"an offered afternoon could not be read ({exc}); skipping it")
             continue
-        if experience.runnable_in(house.capabilities):
-            return str(row.get("id") or experience.experience_id), experience
-        print(f"this house cannot run {experience.title}; skipping it")
+        if not experience.runnable_in(house.capabilities):
+            print(f"this house cannot run {experience.title}; skipping it")
+            continue
+        if not fits_inside_the_band(
+            minutes_now,
+            experience.minutes,
+            band_from,
+            band_until,
+            the_hour_decides=the_hour_decides,
+        ):
+            print(
+                f"{experience.title} takes {experience.minutes} minutes and there are "
+                f"{max(0, band_until - minutes_now)} left; skipping it"
+            )
+            continue
+        return str(row.get("id") or experience.experience_id), experience
     return None
 
 
@@ -480,7 +517,10 @@ def main(argv: list[str] | None = None) -> int:
 
     asked = the_standing_request(panel, household, key)
     if asked:
-        print(f"the parent asked for one at {_clock_of(asked)}; the hour does not decide")
+        print(
+            f"the parent asked for one (request {_tail(asked)}); "
+            "the day and the hour do not decide"
+        )
     try:
         if not asked and not its_moment(rhythm, there):
             # Said out loud, because it was not. Two silent returns meant a house that did
@@ -497,25 +537,23 @@ def main(argv: list[str] | None = None) -> int:
         print(f"the rhythm cannot be read as a clock ({exc}); no afternoon begins")
         return 0
 
-    chosen = choose(offered, house)
-    if chosen is None:
-        print(f"nothing approved that this house can run; {waiting} waiting for the parent")
-        return 0
-
-    offered_id, experience = chosen
     minutes_now = there.tm_hour * 60 + there.tm_min
-    if not fits_inside_the_band(
-        minutes_now,
-        experience.minutes,
-        minutes_of(rhythm["afternoonFrom"]),
-        minutes_of(rhythm["afternoonUntil"]),
-    ):
+    chosen = choose(
+        offered,
+        house,
+        minutes_now=minutes_now,
+        band_from=minutes_of(rhythm["afternoonFrom"]),
+        band_until=minutes_of(rhythm["afternoonUntil"]),
+        the_hour_decides=not asked,
+    )
+    if chosen is None:
         print(
-            f"{experience.title} would not be over by {rhythm['afternoonUntil']}; "
-            "not beginning it"
+            f"nothing approved that fits before {rhythm['afternoonUntil']}; "
+            f"{waiting} waiting for the parent"
         )
         return 0
 
+    offered_id, experience = chosen
     try:
         run_id = begin(house, experience, now=now, send=not args.no_paper)
     except (CannotRun, ExperienceError, OSError) as exc:

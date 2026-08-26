@@ -14,8 +14,13 @@ default is no day at all. A house that has never been told when an afternoon may
 never begins one, which is the right default for something that prints paper and puts
 words on a display — and it means the feature arrives switched off rather than arriving.
 
-There is no setting for how many, and there will not be one. The days say when it may
-happen, the band says until when, and nothing counts what did.
+There is no setting for how many afternoons happen, and there will not be one. The days say
+when it may happen, the band says until when, and nothing counts what did.
+
+There is one for how many ideas wait, and it is a different thing: it bounds the parent's
+queue, not the adolescent's week. It is here rather than with the content settings because
+those are exactly the fields that may reach a model and this one never does, and because the
+days above are what it divides into when the panel says how far the stock carries.
 
 Everything is minutes past midnight, in one unit: the two ends of each band, the spacing
 between pictures and the hours an afternoon may begin and stop beginning are all clock
@@ -58,6 +63,14 @@ DEFAULT_CADENCE_MINUTES = 60
 DEFAULT_AFTERNOON_FROM_MINUTES = 15 * 60
 DEFAULT_AFTERNOON_UNTIL_MINUTES = 19 * 60
 
+# How many devised afternoons the house keeps waiting for a decision. Ten is a sitting: enough
+# that a parent who approves four still leaves a stock behind, few enough that the list is
+# read rather than scrolled. Zero is allowed and means the house stops writing them, which is
+# the off switch for a household that wants to think about it.
+DEFAULT_SCRIPTS_WANTED = 10
+MIN_SCRIPTS_WANTED = 0
+MAX_SCRIPTS_WANTED = 30
+
 _CLOCK = re.compile(r"^(\d{1,2}):(\d{2})$")
 
 
@@ -87,6 +100,9 @@ class Rhythm:
     afternoon_days: tuple[str, ...] = ()
     afternoon_from_minutes: int = DEFAULT_AFTERNOON_FROM_MINUTES
     afternoon_until_minutes: int = DEFAULT_AFTERNOON_UNTIL_MINUTES
+    # How many devised afternoons to keep waiting for the parent. Not a count of anything
+    # that happened: it is the depth of the list the parent decides from.
+    scripts_wanted: int = DEFAULT_SCRIPTS_WANTED
     # Where the house is, as an IANA name. Empty means the hub uses whatever zone its own
     # operating system is set to, which is what every house did before 25 August 2026 and
     # is why one of them honoured every chosen hour an hour late.
@@ -107,6 +123,9 @@ class Rhythm:
             "updatedAt": self.updated_at,
             "minCadenceMinutes": MIN_CADENCE_MINUTES,
             "maxCadenceMinutes": MAX_CADENCE_MINUTES,
+            "scriptsWanted": self.scripts_wanted,
+            "minScriptsWanted": MIN_SCRIPTS_WANTED,
+            "maxScriptsWanted": MAX_SCRIPTS_WANTED,
         }
 
 
@@ -175,6 +194,7 @@ def clean_rhythm(
     afternoon_from: Any = None,
     afternoon_until: Any = None,
     time_zone: Any = None,
+    scripts_wanted: Any = None,
     updated_by: str = "",
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
@@ -199,6 +219,14 @@ def clean_rhythm(
     # so a band that runs through the middle of the night is a typing mistake, not a wish.
     if ends <= begins:
         raise ValueError("an afternoon must stop being allowed after it starts being allowed")
+    wanted = DEFAULT_SCRIPTS_WANTED if scripts_wanted is None else scripts_wanted
+    if isinstance(wanted, bool) or not isinstance(wanted, int):
+        raise ValueError("how many to keep waiting is a whole number")
+    if not MIN_SCRIPTS_WANTED <= wanted <= MAX_SCRIPTS_WANTED:
+        raise ValueError(
+            f"how many to keep waiting must be between {MIN_SCRIPTS_WANTED} "
+            f"and {MAX_SCRIPTS_WANTED}"
+        )
     return Rhythm(
         household_id=household_id,
         pictures_from_minutes=minutes_of(pictures_from, "the start of the picture hours"),
@@ -208,6 +236,7 @@ def clean_rhythm(
         afternoon_from_minutes=begins,
         afternoon_until_minutes=ends,
         time_zone=zone_of(time_zone),
+        scripts_wanted=int(wanted),
         updated_at=time.time(),
         updated_by=updated_by,
     )

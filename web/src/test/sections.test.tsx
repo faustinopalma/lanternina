@@ -221,6 +221,7 @@ describe("the rhythm", () => {
       afternoonFrom: "15:00",
       afternoonUntil: "19:00",
       timeZone: "Europe/Rome",
+      scriptsWanted: 10,
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
   });
@@ -247,7 +248,9 @@ describe("the rhythm", () => {
     renderPanel(api);
 
     await open(user, "Ritmo");
-    await user.click(await screen.findByRole("button", { name: "Comincia un'attività" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Fai cominciare un'attività adesso" }),
+    );
 
     await waitFor(() => expect(api.recorded.begunNow).toBe(1));
     expect(await screen.findByText(/La casa lo trova al prossimo giro/)).toBeInTheDocument();
@@ -256,10 +259,37 @@ describe("the rhythm", () => {
   });
 
   it("says what beginning now does not override", async () => {
+    /* The end hour is the part it never steps over, and saying so is the difference
+       between a button that looks broken and one whose limit was stated. */
     const user = userEvent.setup();
     renderPanel(fakeApi());
     await open(user, "Ritmo");
-    expect(await screen.findByText(/non la pausa della sera/)).toBeInTheDocument();
+    expect(await screen.findByText(/non l'ora di fine/)).toBeInTheDocument();
+  });
+
+  it("sets how many ideas the house keeps waiting for a decision", async () => {
+    /* It is here and not with the content settings because it never reaches a model: those
+       are exactly the fields that may, and this one bounds the parent's own queue. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Ritmo");
+
+    const wanted = await screen.findByLabelText("Idee da tenere pronte");
+    expect(wanted).toHaveValue(10);
+    await user.clear(wanted);
+    await user.type(wanted, "4");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
+    expect(api.recorded.rhythm[0]!.scriptsWanted).toBe(4);
+  });
+
+  it("says that zero stops them, so the number is not only a size", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+    await open(user, "Ritmo");
+    expect(await screen.findByText(/Zero le ferma/)).toBeInTheDocument();
   });
 
   it("keeps the note about the display waking about every ten minutes", async () => {

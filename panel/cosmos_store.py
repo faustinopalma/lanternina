@@ -34,7 +34,6 @@ from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
-    DEFAULT_SCRIPTS_WANTED,
     DEFAULT_VARIETY,
     DEFAULT_WORDS_PER_LINE,
     Preferences,
@@ -47,6 +46,7 @@ from .rhythm import (
     DEFAULT_AFTERNOON_UNTIL_MINUTES,
     DEFAULT_PICTURES_FROM_MINUTES,
     DEFAULT_PICTURES_UNTIL_MINUTES,
+    DEFAULT_SCRIPTS_WANTED,
     Rhythm,
 )
 from .themes import Theme
@@ -711,6 +711,7 @@ class CosmosRhythmStore:
                 "afternoonFromMinutes": rhythm.afternoon_from_minutes,
                 "afternoonUntilMinutes": rhythm.afternoon_until_minutes,
                 "timeZone": rhythm.time_zone,
+                "scriptsWanted": rhythm.scripts_wanted,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
             }
@@ -744,6 +745,7 @@ def _to_rhythm(document: dict[str, Any]) -> Rhythm:
         # A document written before the zone existed has none, and the hub falls back to
         # its own machine — which is what it was already doing.
         time_zone=str(document.get("timeZone") or ""),
+        scripts_wanted=int(document.get("scriptsWanted") or DEFAULT_SCRIPTS_WANTED),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )
@@ -795,7 +797,6 @@ class CosmosPreferencesStore:
                 "difficulty": preferences.difficulty,
                 "variety": preferences.variety,
                 "maxWordsPerLine": preferences.max_words_per_line,
-                "scriptsWanted": preferences.scripts_wanted,
                 "language": preferences.language,
                 "updatedAt": preferences.updated_at,
                 "updatedBy": preferences.updated_by,
@@ -812,7 +813,6 @@ def _to_preferences(document: dict[str, Any]) -> Preferences:
         difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
         variety=str(document.get("variety") or DEFAULT_VARIETY),
         max_words_per_line=int(document.get("maxWordsPerLine") or DEFAULT_WORDS_PER_LINE),
-        scripts_wanted=int(document.get("scriptsWanted") or DEFAULT_SCRIPTS_WANTED),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),

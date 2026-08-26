@@ -159,6 +159,7 @@ function Form({ spacing }: { spacing: Spacing }) {
   const [afternoonFrom, setAfternoonFrom] = useState(spacing.afternoonFrom);
   const [afternoonUntil, setAfternoonUntil] = useState(spacing.afternoonUntil);
   const [timeZone, setTimeZone] = useState(spacing.timeZone);
+  const [wanted, setWanted] = useState(String(spacing.scriptsWanted));
   const [status, setStatus] = useState<MessageKey | null>(
     spacing.picturesFrom === spacing.picturesUntil ? "rhythm.picturesAllDay" : null,
   );
@@ -193,6 +194,7 @@ function Form({ spacing }: { spacing: Spacing }) {
         afternoonFrom,
         afternoonUntil,
         timeZone,
+        scriptsWanted: Number(wanted),
       });
       setStatus("rhythm.saved");
     } catch {
@@ -358,6 +360,20 @@ function Form({ spacing }: { spacing: Spacing }) {
             </span>
           </span>
           <Quiet>{t("rhythm.afternoonNote")}</Quiet>
+          <span className="flex items-center gap-2">
+            <Label htmlFor="scripts-wanted">{t("rhythm.wanted")}</Label>
+            <Input
+              id="scripts-wanted"
+              type="number"
+              required
+              className="w-24"
+              min={spacing.minScriptsWanted}
+              max={spacing.maxScriptsWanted}
+              value={wanted}
+              onChange={(event) => setWanted(event.target.value)}
+            />
+          </span>
+          <Quiet>{t("rhythm.wantedNote")}</Quiet>
         </fieldset>
 
         <Button type="submit" variant="primary" className="ml-auto flex-none">

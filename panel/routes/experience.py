@@ -446,7 +446,7 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     fills during the afternoon band is empty whenever anybody opens the panel.
     """
     store: ExperienceStore = request.app.state.experiences
-    preferences: PreferencesStore = request.app.state.preferences
+    rhythm: RhythmStore = request.app.state.rhythm
     runnable = [
         row
         for row in store.list(household_id, ApprovalState.APPROVED.value)
@@ -455,7 +455,7 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     return {
         "experiences": [row.to_device() for row in runnable],
         "waiting": len(store.list(household_id, ApprovalState.PENDING.value)),
-        "wanted": preferences.get(household_id).scripts_wanted,
+        "wanted": rhythm.get(household_id).scripts_wanted,
     }
 
 

@@ -381,6 +381,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     afternoonUntil: "19:00",
     timeZone: "Europe/Rome",
     dayChoices: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+    scriptsWanted: 10,
+    minScriptsWanted: 0,
+    maxScriptsWanted: 30,
   };
   let preferences: Preferences = {
     interests: ["gatti", "vele"],
