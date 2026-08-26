@@ -33,6 +33,9 @@ class NewPreferences(BaseModel):
     variety: str
     maxWordsPerLine: int
     language: str
+    # Absent leaves whatever was saved before untouched, so a panel that has not been
+    # rebuilt cannot quietly set a household back to the default.
+    scriptsWanted: int | None = None
 
 
 @router.get("/api/preferences")
@@ -46,6 +49,7 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
     """Record what the content is made of. It persists and returns: the hub reads it
     on its next run, and nothing here starts a generation."""
     store: PreferencesStore = request.app.state.preferences
+    kept = store.get(str(account.household_id))
     try:
         chosen = clean_preferences(
             str(account.household_id),
@@ -55,6 +59,9 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
             variety=new.variety,
             max_words_per_line=new.maxWordsPerLine,
             language=new.language,
+            scripts_wanted=(
+                kept.scripts_wanted if new.scriptsWanted is None else new.scriptsWanted
+            ),
             updated_by=str(account.id),
         )
     except ValueError as exc:

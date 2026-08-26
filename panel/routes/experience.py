@@ -381,11 +381,13 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     this whole feature rests on would be held up by the hub's own code rather than by the
     panel. It pulls; nothing is ever pushed to a house.
 
-    ``waiting`` is how many are with the parent, undecided. The house needs it so that it
-    does not ask for a second afternoon while the first is still unread — it is the depth
-    of somebody's inbox, and it says nothing about anybody's afternoon.
+    ``waiting`` is how many are with the parent, undecided, and ``wanted`` is how many
+    they asked to have waiting. The house writes one more whenever the first is under the
+    second, at any hour — writing a script puts nothing in a room, and a queue that only
+    fills during the afternoon band is empty whenever anybody opens the panel.
     """
     store: ExperienceStore = request.app.state.experiences
+    preferences: PreferencesStore = request.app.state.preferences
     runnable = [
         row
         for row in store.list(household_id, ApprovalState.APPROVED.value)
@@ -394,6 +396,7 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     return {
         "experiences": [row.to_device() for row in runnable],
         "waiting": len(store.list(household_id, ApprovalState.PENDING.value)),
+        "wanted": preferences.get(household_id).scripts_wanted,
     }
 
 

@@ -90,16 +90,11 @@ LOOK_TIMEOUT_SECONDS = 30
 # 21 August 2026: 29.1 s for the one that succeeded.
 DEVISE_TIMEOUT_SECONDS = 180
 
-# How many afternoons the house tries to have in hand — approved and not yet begun, plus
-# whatever is still with the parent unread. Until 25 August 2026 this was effectively one:
-# nothing was devised while anything at all was waiting, so a parent who did not open the
-# panel for a week came back to a single afternoon and a house that had done nothing.
-#
-# Six, and one new one a day at most. That is a fortnight of twice-weekly afternoons if the
-# parent approves them all, and it is what lets somebody sit down once, approve several, and
-# close the panel knowing the house will not run dry. It is a stock, not a queue of work:
-# nothing here counts what was run, and nothing hurries anybody to approve.
-STOCK = 6
+# How many scripts the parent should have waiting to decide about. The panel is where it is
+# chosen; this is what the house falls back on when the panel does not say. Ten is enough
+# for a sitting: somebody opens the panel, reads a few, approves what they like and closes
+# it knowing the house is not about to run dry.
+WANTED = 10
 
 MINUTES_IN_A_DAY = 24 * 60
 
@@ -257,12 +252,23 @@ def the_request_is_done(panel: str, household: str, key: str, request_id: str) -
         print(f"the request was acted on but not cleared ({exc})")
 
 
-def what_the_house_may_run(panel: str, household: str, key: str) -> tuple[list[Any], int]:
-    """The approved afternoons and how many are still with the parent."""
+def what_the_house_may_run(
+    panel: str, household: str, key: str
+) -> tuple[list[Any], int, int]:
+    """The approved afternoons, how many are with the parent, and how many they want.
+
+    The third is the panel's setting rather than the hub's constant: how full the list a
+    parent decides from should be is a decision about them, and it is made where they are.
+    A panel that does not send it leaves the house on its own default.
+    """
     answer = _get(
         f"{panel}/api/device/{household}/experiences", key, LOOK_TIMEOUT_SECONDS
     )
-    return list(answer.get("experiences") or []), int(answer.get("waiting") or 0)
+    return (
+        list(answer.get("experiences") or []),
+        int(answer.get("waiting") or 0),
+        int(answer.get("wanted") or WANTED),
+    )
 
 
 def ask_for_one(panel: str, household: str, key: str, house: House) -> str:
@@ -375,33 +381,29 @@ def top_up(
     household: str,
     key: str,
     house: House,
-    stamp: Path,
-    now: float,
-    zone: str,
     *,
-    in_hand: int,
+    waiting: int,
+    wanted: int,
 ) -> None:
-    """Ask for one more afternoon when the stock is low. Never raises.
+    """Ask for one more script when the parent has fewer than they want. Never raises.
 
-    Once a day and one at a time, whatever the shortfall. A house four short does not ask
-    for four: devising is a model writing a dozen moments, and four of those in one minute
-    is a bill nobody agreed to. It catches up over four days, which is the pace a stock of
-    six is sized for.
+    One per run of the timer, and the timer is every minute, so a parent who approves four
+    has four more within the quarter hour. Not the whole shortfall at once: devising is a
+    model writing a script and a dozen moments, and four of those in one second is a bill
+    nobody agreed to and four afternoons drawn without seeing each other.
 
-    Stamped before the asking and not after, so a panel that refuses is not asked again in
-    a minute — the timer fires sixty times an hour.
+    It counts what is *waiting to be decided*, not what is approved. Those are different
+    questions — how much the house has to run, and how much the parent has to read — and
+    `panel/experiences.Backlog` answers the first.
     """
-    if in_hand >= STOCK:
+    if wanted <= 0 or waiting >= wanted:
         return
-    if looked_today(stamp, now, zone):
-        return
-    mark_looked(stamp, now, zone)
     try:
         title = ask_for_one(panel, household, key, house)
     except (urllib.error.URLError, OSError, ValueError) as exc:
-        print(f"no afternoon was devised ({exc})")
+        print(f"no script was written ({exc})")
         return
-    print(f"{in_hand} in hand, wanted {STOCK}; asked for one more: {title}")
+    print(f"{waiting} waiting for the parent, wanted {wanted}; wrote one more: {title}")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -433,9 +435,6 @@ def main(argv: list[str] | None = None) -> int:
         household=household,
         device_key=key,
     )
-    # Beside the runs rather than among them: `waiting_runs` reads every .json in
-    # `afternoons/` as an afternoon.
-    stamp = sheets_dir / "afternoon-looked.stamp"
     now = time.time()
 
     # Help has one owner, and it is `--only-help` on its own unit. It was offered here too
@@ -465,6 +464,20 @@ def main(argv: list[str] | None = None) -> int:
     rhythm = the_rhythm(panel, household, key)
     zone = str(rhythm.get("timeZone") or "")
     there = wall_clock(now, zone)
+
+    # Before the hour is consulted, and this is the whole point of it being here rather
+    # than further down. Writing a script puts nothing in the room: it fills the list the
+    # parent decides from, and a parent may open the panel at eight in the morning. Until
+    # 26 August 2026 the top-up sat below the band check, so a house whose afternoons run
+    # 12:00–19:30 devised nothing for the other eighteen hours and the queue was empty
+    # whenever anybody looked.
+    try:
+        offered, waiting, wanted = what_the_house_may_run(panel, household, key)
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the panel did not say what this house may run ({exc})")
+        return 0
+    top_up(panel, household, key, house, waiting=waiting, wanted=wanted)
+
     asked = the_standing_request(panel, household, key)
     if asked:
         print(f"the parent asked for one at {_clock_of(asked)}; the hour does not decide")
@@ -483,24 +496,6 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         print(f"the rhythm cannot be read as a clock ({exc}); no afternoon begins")
         return 0
-
-    # A press is the parent saying "today, again", so the day's stamp does not stop it.
-    # What it does not override is below: the band, and an afternoon already under way.
-    #
-    # The stamp is not consulted here. It was until 25 August 2026, and it meant one
-    # afternoon a day whatever else was true: two approved, the first finished at half
-    # past four, and the second waited until tomorrow with three hours of band left. What
-    # the stamp is for is the expensive half — asking a model to devise a new one — and
-    # that is the only place it is now read.
-    try:
-        offered, waiting = what_the_house_may_run(panel, household, key)
-    except (urllib.error.URLError, OSError, ValueError) as exc:
-        print(f"the panel did not say what this house may run ({exc})")
-        return 0
-
-    # Topping the stock up is its own decision and it happens either way: whether one is
-    # about to begin says nothing about whether the parent has enough to look at.
-    top_up(panel, household, key, house, stamp, now, zone, in_hand=len(offered) + waiting)
 
     chosen = choose(offered, house)
     if chosen is None:

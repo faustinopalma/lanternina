@@ -198,6 +198,7 @@ def a_panel(
     *,
     offered: list[dict[str, Any]],
     waiting: int = 0,
+    wanted: int = clock.WANTED,
     rhythm: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Stand in for the cloud, and write down every call the house made."""
@@ -206,9 +207,9 @@ def a_panel(
     def _rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
         return a_rhythm() if rhythm is None else rhythm
 
-    def _look(panel: str, household: str, key: str) -> tuple[list[Any], int]:
+    def _look(panel: str, household: str, key: str) -> tuple[list[Any], int, int]:
         calls["looked"] += 1
-        return offered, waiting
+        return offered, waiting, wanted
 
     def _devise(panel: str, household: str, key: str, house: House) -> str:
         calls["devised"] += 1
@@ -260,15 +261,21 @@ def test_it_begins_the_approved_afternoon_and_tells_the_panel_it_did(
     assert house.screen.exists()
 
 
-def test_nothing_happens_on_a_day_nobody_chose(
+def test_the_queue_is_filled_on_a_day_nobody_chose(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """Not even the look. A house with no day chosen never touches the network."""
+    """Writing a script puts nothing in a room, so the hour does not govern it.
+
+    It did until 26 August 2026, and the queue was empty whenever anybody opened the panel:
+    a house whose afternoons run 12:00–19:30 wrote nothing for the other eighteen hours.
+    Nothing *begins* here — that is the assertion below the look.
+    """
     calls = a_panel(monkeypatch, offered=[offered_row()], rhythm=a_rhythm(afternoonDays=[]))
 
     assert a_turn(monkeypatch, house, WHEN) == 0
 
-    assert calls["looked"] == 0
+    assert calls["looked"] == 1
+    assert calls["devised"] == 1
     assert waiting_runs(house.sheets_dir) == []
 
 
@@ -335,28 +342,38 @@ def test_it_keeps_a_stock_rather_than_one_at_a_time(
     assert calls["devised"] == 1
 
 
-def test_a_full_stock_is_not_topped_up(
+def test_a_full_queue_is_not_topped_up(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """The stock is a ceiling, not a target to keep hitting."""
-    calls = a_panel(monkeypatch, offered=[], waiting=clock.STOCK)
+    """What the parent asked to have waiting is a ceiling, not a target to keep hitting."""
+    calls = a_panel(monkeypatch, offered=[], waiting=4, wanted=4)
 
     assert a_turn(monkeypatch, house, WHEN) == 0
 
     assert calls["devised"] == 0
 
 
-def test_it_asks_for_one_more_only_once_a_day(
+def test_a_parent_who_wants_none_waiting_is_written_none(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """The timer fires sixty times an hour and devising is a model writing a dozen moments."""
-    calls = a_panel(monkeypatch, offered=[], waiting=0)
+    calls = a_panel(monkeypatch, offered=[], waiting=0, wanted=0)
+
+    assert a_turn(monkeypatch, house, WHEN) == 0
+
+    assert calls["devised"] == 0
+
+
+def test_it_writes_one_more_per_run_until_the_queue_is_full(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """One at a time, not the whole shortfall: four in one second is four afternoons drawn
+    without seeing each other, and a bill nobody agreed to."""
+    calls = a_panel(monkeypatch, offered=[], waiting=0, wanted=3)
 
     a_turn(monkeypatch, house, WHEN)
-    a_turn(monkeypatch, house, WHEN + 600)
-    a_turn(monkeypatch, house, WHEN + 1200)
+    a_turn(monkeypatch, house, WHEN + 60)
 
-    assert calls["devised"] == 1
+    assert calls["devised"] == 2
 
 
 def test_an_afternoon_that_would_run_past_the_band_does_not_begin(
@@ -375,13 +392,12 @@ def test_an_afternoon_that_would_run_past_the_band_does_not_begin(
 def test_no_second_afternoon_begins_while_one_is_under_way(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
-    """Even with the day's stamp gone, which is the only other thing holding it back."""
     calls = a_panel(monkeypatch, offered=[offered_row()])
     a_turn(monkeypatch, house, WHEN)
-    (house.sheets_dir / "afternoon-looked.stamp").unlink()
 
     a_turn(monkeypatch, house, WHEN + 600)
 
+    # The second run returns before it asks anything: a run under way is the first check.
     assert calls["looked"] == 1
     assert len(waiting_runs(house.sheets_dir)) == 1
 

@@ -34,6 +34,7 @@ from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
+    DEFAULT_SCRIPTS_WANTED,
     DEFAULT_VARIETY,
     DEFAULT_WORDS_PER_LINE,
     Preferences,
@@ -644,6 +645,7 @@ class CosmosPreferencesStore:
                 "difficulty": preferences.difficulty,
                 "variety": preferences.variety,
                 "maxWordsPerLine": preferences.max_words_per_line,
+                "scriptsWanted": preferences.scripts_wanted,
                 "language": preferences.language,
                 "updatedAt": preferences.updated_at,
                 "updatedBy": preferences.updated_by,
@@ -660,6 +662,7 @@ def _to_preferences(document: dict[str, Any]) -> Preferences:
         difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
         variety=str(document.get("variety") or DEFAULT_VARIETY),
         max_words_per_line=int(document.get("maxWordsPerLine") or DEFAULT_WORDS_PER_LINE),
+        scripts_wanted=int(document.get("scriptsWanted") or DEFAULT_SCRIPTS_WANTED),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),

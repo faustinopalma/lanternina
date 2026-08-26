@@ -5,7 +5,7 @@ whole devising path — prompt, model, parse, checks, one repair — as many tim
 puts each answer in `experiments/NN-name/` where it can be read.
 
     $env:PYTHONPATH="."
-    .\.venv\Scripts\python.exe -m tools.devise_many "strategy-length" --times 10
+    .\.venv\Scripts\python.exe -m tools.devise_many "material-that-varies" --times 10
 
 It reads the panel's own environment so the numbers are the ones production pays. Nothing
 about a household goes in: the interests and the language below are invented, because
@@ -90,7 +90,7 @@ async def run(name: str, times: int) -> int:
             )
             print(
                 f"{turn:2d}  {got['seconds']:6.1f}s  {document.get('minutes')} min  "
-                f"strategy {len(document.get('strategy') or '')}  "
+                f"script {len(document.get('script') or '')}  "
                 f"{len(document.get('moments') or [])} moments  {document.get('title')}"
             )
         else:
@@ -107,7 +107,7 @@ def _summarise(rows: list[dict[str, Any]], folder: Path) -> None:
     if not made:
         print(f"\nnothing came back; {len(rows)} attempts")
         return
-    strategies = [len(one.get("strategy") or "") for one in made]
+    scripts = [len(one.get("script") or "") for one in made]
     minutes = [int(one.get("minutes") or 0) for one in made]
     moments = [len(one.get("moments") or []) for one in made]
     seconds = [row["seconds"] for row in rows if row.get("experience")]
@@ -115,8 +115,8 @@ def _summarise(rows: list[dict[str, Any]], folder: Path) -> None:
         f"\n{len(made)}/{len(rows)} came back\n"
         f"  seconds   {min(seconds):.1f}–{max(seconds):.1f}, "
         f"median {statistics.median(seconds):.1f}\n"
-        f"  strategy  {min(strategies)}–{max(strategies)} chars, median "
-        f"{int(statistics.median(strategies))}\n"
+        f"  script  {min(scripts)}–{max(scripts)} chars, median "
+        f"{int(statistics.median(scripts))}\n"
         f"  minutes   {sorted(set(minutes))}\n"
         f"  moments   {min(moments)}–{max(moments)}\n"
         f"  written to {folder}"

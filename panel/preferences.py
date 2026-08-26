@@ -47,6 +47,13 @@ DEFAULT_VARIETY = str(ContentVariety.BALANCED)
 DEFAULT_LANGUAGE = "it"
 DEFAULT_WORDS_PER_LINE = 6
 
+# How many scripts should be waiting for the parent to decide about. The house writes one
+# more whenever there are fewer, at any hour — writing one puts nothing in a room. Ten is
+# enough for a sitting; the bounds keep a typing mistake from becoming a bill.
+DEFAULT_SCRIPTS_WANTED = 10
+MIN_SCRIPTS_WANTED = 0
+MAX_SCRIPTS_WANTED = 30
+
 
 @dataclass(frozen=True, slots=True)
 class Preferences:
@@ -58,6 +65,7 @@ class Preferences:
     difficulty: str = DEFAULT_DIFFICULTY
     variety: str = DEFAULT_VARIETY
     max_words_per_line: int = DEFAULT_WORDS_PER_LINE
+    scripts_wanted: int = DEFAULT_SCRIPTS_WANTED
     language: str = DEFAULT_LANGUAGE
     updated_at: float = 0.0
     updated_by: str = ""
@@ -69,12 +77,15 @@ class Preferences:
             "difficulty": self.difficulty,
             "variety": self.variety,
             "maxWordsPerLine": self.max_words_per_line,
+            "scriptsWanted": self.scripts_wanted,
             "language": self.language,
             "updatedAt": self.updated_at,
             "difficultyChoices": list(DIFFICULTY_CHOICES),
             "varietyChoices": list(VARIETY_CHOICES),
             "languageChoices": list(LANGUAGE_CHOICES),
             "wordsPerLineChoices": list(WORDS_PER_LINE_CHOICES),
+            "minScriptsWanted": MIN_SCRIPTS_WANTED,
+            "maxScriptsWanted": MAX_SCRIPTS_WANTED,
         }
 
 
@@ -131,6 +142,7 @@ def clean_preferences(
     variety: Any,
     max_words_per_line: Any,
     language: Any,
+    scripts_wanted: Any = None,
     updated_by: str = "",
 ) -> Preferences:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
@@ -142,6 +154,14 @@ def clean_preferences(
         raise ValueError(f"the language must be one of {list(LANGUAGE_CHOICES)}")
     if isinstance(max_words_per_line, bool) or max_words_per_line not in WORDS_PER_LINE_CHOICES:
         raise ValueError(f"the words per line must be one of {list(WORDS_PER_LINE_CHOICES)}")
+    wanted = DEFAULT_SCRIPTS_WANTED if scripts_wanted is None else scripts_wanted
+    if isinstance(wanted, bool) or not isinstance(wanted, int):
+        raise ValueError("how many to keep waiting is a whole number")
+    if not MIN_SCRIPTS_WANTED <= wanted <= MAX_SCRIPTS_WANTED:
+        raise ValueError(
+            f"how many to keep waiting must be between {MIN_SCRIPTS_WANTED} "
+            f"and {MAX_SCRIPTS_WANTED}"
+        )
     return Preferences(
         household_id=household_id,
         interests=_clean_list(interests, "the interests"),
@@ -149,6 +169,7 @@ def clean_preferences(
         difficulty=str(difficulty),
         variety=str(variety),
         max_words_per_line=int(max_words_per_line),
+        scripts_wanted=int(wanted),
         language=str(language),
         updated_at=time.time(),
         updated_by=updated_by,

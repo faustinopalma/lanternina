@@ -141,8 +141,16 @@ def test_the_panel_holds_exactly_the_fields_a_prompt_may_carry() -> None:
     no way to reach a model; a hint the panel does not hold cannot be set by anybody. If
     the hints grow, this fails until the panel grows with them."""
     bookkeeping = {"household_id", "updated_at", "updated_by"}
+    # How many scripts the parent wants waiting is about the panel's own queue, not about
+    # what an afternoon is made of, so it is deliberately not a hint and never reaches a
+    # model. It lives here because this is where a parent's settings are.
+    not_a_hint = {"scripts_wanted"}
     renamed = {"variety": "content_variety"}
-    held = {renamed.get(row.name, row.name) for row in fields(Preferences)} - bookkeeping
+    held = (
+        {renamed.get(row.name, row.name) for row in fields(Preferences)}
+        - bookkeeping
+        - not_a_hint
+    )
     allowed = set(LearnerProfile(id=LearnerId("lr_local"), display_name="local").prompt_hints())
     assert held == allowed
 
