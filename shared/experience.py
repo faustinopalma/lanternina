@@ -151,7 +151,7 @@ MAX_THEMES: Final = 5
 #
 # The number is large on purpose. At 1400 what came back was a paragraph of intentions, and
 # a paragraph of intentions is what produces an afternoon that could be any afternoon.
-MAX_STRATEGY: Final = 6000
+MAX_SCRIPT: Final = 6000
 
 # An afternoon, bounded at both ends, and the length is the game's to choose: an hour, two,
 # three. They are not all the same size and a format that treated them as one would be
@@ -853,7 +853,7 @@ class Experience:
     # is what whatever runs the afternoon reads. Empty is allowed: the moments are a whole
     # plan on their own.
     themes: tuple[str, ...] = ()
-    strategy: str = ""
+    script: str = ""
     format_version: int = EXPERIENCE_FORMAT_VERSION
 
     def __post_init__(self) -> None:
@@ -912,7 +912,7 @@ class Experience:
             "title": self.title,
             "overview": self.overview,
             "themes": list(self.themes),
-            "strategy": self.strategy,
+            "script": self.script,
             "minutes": self.minutes,
             "requires": sorted(str(c) for c in self.requires),
             "drawn": self.drawn.to_dict(),
@@ -931,7 +931,7 @@ class Experience:
                 "title",
                 "overview",
                 "themes",
-                "strategy",
+                "script",
                 "minutes",
                 "requires",
                 "drawn",
@@ -947,7 +947,7 @@ class Experience:
             title=plain(values.get("title", ""), MAX_TITLE, "a title"),
             overview=plain(values.get("overview", ""), MAX_OVERVIEW, "an overview"),
             themes=_themes(values.get("themes", [])),
-            strategy=plain(values.get("strategy", ""), MAX_STRATEGY, "a strategy"),
+            script=plain(values.get("script", ""), MAX_SCRIPT, "a script"),
             minutes=_whole(values.get("minutes"), "minutes"),
             moments=tuple(moment_from_dict(m) for m in raw),
             requires=_capabilities(values.get("requires", [])),

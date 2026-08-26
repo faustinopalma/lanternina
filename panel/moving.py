@@ -2,7 +2,7 @@
 
 The twin of `panel/continuing.py`, and the difference between them is what they are given.
 The continuer is handed a branch the plan wrote and asked to write the moments after it;
-this is handed the strategy and what has happened and asked for one act. One is filling in
+this is handed the script and what has happened and asked for one act. One is filling in
 a blank the plan left; the other is answering a room the plan did not foresee.
 
 Screened on the way out like everything else, through the router's own gate. There is no
@@ -48,10 +48,10 @@ async def decide_a_move(
     try:
         move = await ExperienceAgent().next_move(
             context,
-            strategy=afternoon.strategy,
+            script=afternoon.script,
             themes=afternoon.themes,
             # The plan goes as it was approved, for reference. An agent that could not see
-            # it would be improvising against a strategy alone, and the strategy is a page.
+            # it would be improvising against a script alone, and the script is a page.
             plan=afternoon.to_dict(),
             tools=afternoon.requires,
             happened=happened,

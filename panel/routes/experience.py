@@ -277,10 +277,12 @@ async def devise_afternoon(
     store: ExperienceStore = request.app.state.experiences
     preferences: PreferencesStore = request.app.state.preferences
     settings_of_the_house = preferences.get(household_id)
-    # Titles only. What is kept about earlier afternoons is what they were called, so that
-    # the next one differs — never who did them, how far they got or what came back.
+    # Titles and subjects. What is kept about earlier afternoons is what they were called
+    # and what they were about, so that the next one differs — never who did them, how far
+    # they got or what came back.
     already = tuple(row.title for row in store.list(household_id) if row.title)
     recent = _drawn_before(store, household_id)
+    subjects = _subjects_before(store, household_id)
 
     from ..devising import RefusedByTheChecks, devise_experience
 
@@ -296,6 +298,7 @@ async def devise_afternoon(
             avoid=settings_of_the_house.avoid,
             already=already,
             recent=recent,
+            subjects=subjects,
             now=time.time(),
         )
         outcome = SERVED
@@ -333,6 +336,21 @@ async def devise_afternoon(
 # afternoons; more than that and a model is being asked to avoid so much that the honest
 # answer is a shrug. Chosen, not measured.
 DRAWN_BEFORE = 5
+
+
+def _subjects_before(store: ExperienceStore, household_id: str) -> tuple[str, ...]:
+    """What the last few afternoons were about, without repeats and in order.
+
+    The nouns, which is the half the ten dimensions cannot see: ten afternoons drawn along
+    ten different sets of dimensions came back as one afternoon about light on a table.
+    `ideas/08 §11.2` has the measurement.
+    """
+    said: list[str] = []
+    for row in store.list(household_id)[-DRAWN_BEFORE:]:
+        for theme in row.experience.get("themes") or ():
+            if str(theme) and str(theme) not in said:
+                said.append(str(theme))
+    return tuple(said)
 
 
 def _drawn_before(store: ExperienceStore, household_id: str) -> tuple[Drawn, ...]:

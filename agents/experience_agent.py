@@ -1,11 +1,11 @@
-"""One move at a time, from a strategy a parent approved.
+"""One move at a time, from a script a parent approved.
 
 The deviser writes a whole afternoon in advance and `devices/run_experience.py` walks it.
 That works and it is what runs today. What it cannot do is answer the room: a page came back
 blank, twenty minutes went quiet, the object somebody picked up turned out to be more
 interesting than the one the plan was pointing at.
 
-This is the other half. It is handed the strategy — the thing the parent read and approved —
+This is the other half. It is handed the script — the thing the parent read and approved —
 the plan for reference, what the house can do, and what has happened so far, and it answers
 with **one move**. Then the house does that move and comes back. A turn is a model call, so
 this is not free: `ideas/09` has the numbers, and the reason a move is one act rather than a
@@ -13,7 +13,7 @@ list is that a list would be a plan again, decided before the thing it is answer
 
 **What bounds it.** Not a second screening system — the words go out through
 `generate_for_user` like everything else, and the provider moderates its own output. What
-bounds it is the strategy, which is narrow and specific and was approved; the clock, which
+bounds it is the script, which is narrow and specific and was approved; the clock, which
 is enforced here and not asked for; and the acts, which are the four the house can perform
 and nothing else. An act it invents is refused by the parser rather than attempted.
 
@@ -98,7 +98,7 @@ _REMEMBERABLE: Final[frozenset[str]] = frozenset(
 
 def the_prompt(
     *,
-    strategy: str,
+    script: str,
     themes: Sequence[str],
     plan: Mapping[str, Any],
     tools: frozenset[HouseCapability],
@@ -108,7 +108,7 @@ def the_prompt(
     """The whole thing the model is sent, standing instruction and afternoon both."""
     return f"{_INSTRUCTION}\n" + SAYS.text(
         "household",
-        strategy=strategy or "(none written; follow the plan)",
+        script=script or "(none written; follow the plan)",
         themes=json.dumps(list(themes), ensure_ascii=False),
         plan=json.dumps(plan, ensure_ascii=False),
         tools=", ".join(sorted(str(one) for one in tools)),
@@ -126,7 +126,7 @@ class ExperienceAgent:
         self,
         ctx: AgentContext,
         *,
-        strategy: str,
+        script: str,
         themes: Sequence[str],
         plan: Mapping[str, Any],
         tools: frozenset[HouseCapability],
@@ -143,7 +143,7 @@ class ExperienceAgent:
             ModelRequest(
                 capability=Capability.PLANNING,
                 prompt=the_prompt(
-                    strategy=strategy,
+                    script=script,
                     themes=themes,
                     plan=plan,
                     tools=tools,

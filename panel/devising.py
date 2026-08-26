@@ -57,6 +57,7 @@ async def devise_experience(
     avoid: tuple[str, ...],
     already: tuple[str, ...],
     recent: Sequence[Drawn] = (),
+    subjects: Sequence[str] = (),
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
@@ -98,6 +99,7 @@ async def devise_experience(
             avoid=avoid,
             already=already,
             recent=recent,
+            subjects=subjects,
         )
         try:
             experience = experience_in(answer)

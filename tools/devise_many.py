@@ -32,7 +32,9 @@ INTERESTS = ("le mappe", "gli oggetti trovati", "il tempo che cambia")
 AVOID = ("i ragni",)
 
 
-async def once(already: tuple[str, ...], recent: tuple[Any, ...]) -> dict[str, Any]:
+async def once(
+    already: tuple[str, ...], recent: tuple[Any, ...], subjects: tuple[str, ...]
+) -> dict[str, Any]:
     from panel.devising import devise_experience
     from shared.capabilities import HouseCapability
 
@@ -73,9 +75,11 @@ async def run(name: str, times: int) -> int:
     # first nine of these were run without it and came back as one afternoon with nine
     # titles: light, a map, an object on a table. `DRAWN_BEFORE` is what the panel uses.
     drawn: list[Any] = []
+    # And what they were about, which is what the dimensions cannot see.
+    subjects: list[str] = []
     rows: list[dict[str, Any]] = []
     for turn in range(1, times + 1):
-        got = await once(tuple(already), tuple(drawn[-5:]))
+        got = await once(tuple(already), tuple(drawn[-5:]), tuple(subjects[-25:]))
         rows.append(got)
         document = got.get("experience")
         if document:

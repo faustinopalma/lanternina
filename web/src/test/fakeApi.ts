@@ -135,7 +135,7 @@ export const SAMPLE_AFTERNOON: OfferedExperience = {
   overview:
     "Un oggetto della stanza, disegnato sei volte mentre cambia. Il foglio torna dallo scanner e il pomeriggio va avanti da lì.",
   themes: ["un oggetto della stanza", "trasformazioni"],
-  strategy:
+  script:
     "Non dire che è lo stesso oggetto finché non lo dice il quarto disegno. Se si ferma, torna sul dettaglio più piccolo. Alla fine il foglio con i sei disegni resta a lei.",
   minutes: 90,
   createdAt: NOW - 1800,

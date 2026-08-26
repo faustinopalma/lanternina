@@ -65,9 +65,9 @@ def test_the_memory_is_bounded() -> None:
     assert said[0] == {"what": "40"}
 
 
-def test_the_prompt_carries_the_strategy_the_clock_and_the_tools() -> None:
+def test_the_prompt_carries_the_script_the_clock_and_the_tools() -> None:
     prompt = the_prompt(
-        strategy="find out who left the ledger",
+        script="find out who left the ledger",
         themes=["un registro", "pesi impossibili"],
         plan={"moments": []},
         tools=frozenset({HouseCapability.PRINT_A4, HouseCapability.SCAN_A4}),

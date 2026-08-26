@@ -47,7 +47,7 @@
   "experiences.pick": "Choose {title}",
   "action.approveThese": "Approve those chosen",
   "action.refuseThese": "Refuse those chosen",
-  "experiences.strategy": "How it should go",
+  "experiences.script": "The script, whole",
   "experiences.minutes": "About {minutes} minutes",
   "experiences.sheets": "{sheets} sheets printed",
   "experiences.usesScanner": "wants the scanner",

@@ -291,12 +291,12 @@ function Card({
         </p>
       ) : null}
       <p className="mb-2">{offered.overview}</p>
-      {offered.strategy ? (
+      {offered.script ? (
         <details className="mb-2">
           <summary className="cursor-pointer text-[0.88rem] text-quiet">
-            {t("experiences.strategy")}
+            {t("experiences.script")}
           </summary>
-          <p className="mt-1.5 text-[0.9rem]">{offered.strategy}</p>
+          <p className="mt-1.5 text-[0.9rem]">{offered.script}</p>
         </details>
       ) : null}
       <Button size="small" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}>

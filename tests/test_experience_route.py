@@ -410,11 +410,12 @@ def test_a_browser_cannot_say_an_afternoon_began(monkeypatch: pytest.MonkeyPatch
     assert refused.status_code == 403
 
 
-def test_only_the_titles_of_earlier_afternoons_are_handed_to_the_model(
+def test_only_what_the_afternoons_were_is_handed_to_the_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """So that the next one is different, and nothing else: not who did them, not how far
-    anybody got, not what came back."""
+    """What they were called, how they worked and what they were about — so that the next
+    one is different, and nothing else: not who did them, not how far anybody got, not what
+    came back."""
     client = client_for()
     asked = devising(monkeypatch, THE_AFTERNOON)
     household = household_of(client)
@@ -431,6 +432,7 @@ def test_only_the_titles_of_earlier_afternoons_are_handed_to_the_model(
         "avoid",
         "already",
         "recent",
+        "subjects",
         "now",
     }
 

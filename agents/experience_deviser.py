@@ -51,8 +51,8 @@ from shared.experience import (
     MAX_MINUTES,
     MAX_MOMENTS,
     MAX_OVERVIEW,
+    MAX_SCRIPT,
     MAX_SHARED_DIMENSIONS,
-    MAX_STRATEGY,
     MAX_THEME,
     MAX_THEMES,
     MAX_TITLE,
@@ -96,7 +96,7 @@ _FORMAT: Final = (
         max_overview=MAX_OVERVIEW,
         max_themes=MAX_THEMES,
         max_theme=MAX_THEME,
-        max_strategy=MAX_STRATEGY,
+        MAX_SCRIPT=MAX_SCRIPT,
     )
     + THE_SHAPE_OF_A_MOMENT
     + THE_ACTS
@@ -141,6 +141,7 @@ def the_prompt(
     avoid: tuple[str, ...] = (),
     already: tuple[str, ...] = (),
     recent: Sequence[Drawn] = (),
+    subjects: Sequence[str] = (),
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
@@ -159,7 +160,7 @@ def the_prompt(
             avoid=json.dumps(list(avoid), ensure_ascii=False),
             already=json.dumps(list(already), ensure_ascii=False),
         )
-        + _not_again(recent)
+        + _not_again(recent, subjects)
     )
 
 
@@ -178,6 +179,7 @@ class ExperienceDeviser:
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
+        subjects: Sequence[str] = (),
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
         return experience_in(
@@ -189,6 +191,7 @@ class ExperienceDeviser:
                 avoid=avoid,
                 already=already,
                 recent=recent,
+                subjects=subjects,
             )
         )
 
@@ -202,6 +205,7 @@ class ExperienceDeviser:
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
+        subjects: Sequence[str] = (),
     ) -> str:
         """The answer as it came back, before anything tries to read it.
 
@@ -217,7 +221,9 @@ class ExperienceDeviser:
         is a different afternoon — titles of documents, and nothing about who did them or
         how it went. ``recent`` is what those afternoons were drawn along, which is the
         constraint that can actually be checked afterwards: a title can be changed without
-        changing anything.
+        changing anything. ``subjects`` is what they were *about*, which is the half
+        neither of the other two can see — thirty measured runs came back as one afternoon
+        with thirty titles and thirty different sets of dimensions.
         """
         payload = await ctx.router.analyze(
             ModelRequest(
@@ -229,6 +235,7 @@ class ExperienceDeviser:
                     avoid=avoid,
                     already=already,
                     recent=recent,
+                    subjects=subjects,
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_EXPERIENCE_CHARS,
@@ -314,18 +321,26 @@ class ExperienceDeviser:
         return experience_in(payload.text, experience_id=experience_id)
 
 
-def _not_again(recent: Sequence[Drawn]) -> str:
-    """The last few combinations, as something the next one may not be.
+def _not_again(recent: Sequence[Drawn], subjects: Sequence[str] = ()) -> str:
+    """The last few afternoons, as something the next one may not be again.
+
+    Two things, and the second was missing until thirty runs showed what that costs. The
+    ten dimensions say how an afternoon *works*, and ten afternoons whose dimensions all
+    differed came back as one afternoon: an object on a table, a moving edge of light, a
+    printed card, something to name. Nothing looked at the material, so nothing refused it.
+
+    ``subjects`` is the material — the themes, which are nouns. `ideas/08 §11.2`.
 
     An empty list says nothing at all rather than saying "avoid nothing", which is a
     sentence a model will find a way to be about.
     """
-    if not recent:
+    if not recent and not subjects:
         return ""
     drawn = [before.to_dict() for before in recent]
     return SAYS.text(
         "not-again",
         drawn=json.dumps(drawn, ensure_ascii=False),
+        subjects=json.dumps(list(subjects), ensure_ascii=False),
         max_shared=MAX_SHARED_DIMENSIONS,
     )
 
@@ -367,7 +382,7 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
             "title": parsed.get("title", ""),
             "overview": parsed.get("overview", ""),
             "themes": parsed.get("themes", []),
-            "strategy": parsed.get("strategy", ""),
+            "script": parsed.get("script", ""),
             "minutes": parsed.get("minutes", 0),
             "requires": needs,
             "drawn": parsed.get("drawn"),

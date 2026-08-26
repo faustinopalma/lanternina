@@ -61,7 +61,7 @@ class OfferedExperience:
     def to_public(self) -> dict[str, Any]:
         """What the parent is shown: the idea they judge it by, and the whole plan.
 
-        The idea is the overview, the themes and the strategy — what it is about and how it
+        The idea is the overview, the themes and the script — what it is about and how it
         should go. That is what approval is given to, and `ideas/08 §2` settled it. The plan
         goes too, for a parent who wants to look; nothing may assume they did.
         """
@@ -70,7 +70,7 @@ class OfferedExperience:
             "title": self.title,
             "overview": self.experience.get("overview", ""),
             "themes": list(self.experience.get("themes") or ()),
-            "strategy": self.experience.get("strategy", ""),
+            "script": self.experience.get("script", ""),
             "minutes": self.experience.get("minutes", 0),
             "createdAt": self.created_at,
             "state": self.state,

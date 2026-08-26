@@ -146,7 +146,7 @@ export interface OfferedExperience {
   /* What it is about, a few words each, and how it should go. Approved together with the
    * overview: this is the idea, and the moments are only how it was written down. */
   themes: string[];
-  strategy: string;
+  script: string;
   minutes: number;
   createdAt: number;
   state: string;
