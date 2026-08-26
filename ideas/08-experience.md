@@ -293,7 +293,72 @@ The browser tier followed, published by `.github/workflows/panel.yml` on the pus
 3. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a day in the panel, and picking one is the first thing the page of this section exists for. Everything below `§7` is otherwise tested with the panel stood in for.
 4. **No devised afternoon has used `ask` yet.** The prompt asks for one as of this commit, and both afternoons in the store predate it. Whether the model takes the branch is the next thing the real service is asked.
 
+## 11. Thirty afternoons devised against the real service — measured 26 August 2026
 
+`tools/devise_many.py` runs the whole devising path as many times as asked and writes each
+answer into `experiments/`. Three rounds of ten. What follows is what they showed, including
+the two things that were wrong with the first two rounds.
 
+### 11.1 What works now, with numbers
 
+Ten out of ten came back on the last round. Strategies **2663–3513 characters**, median 3095,
+with the named parts all present — IL MONDO, LA DOMANDA (with its answer *and* its false
+answer written down), I PASSAGGI, CIÒ CHE RESTA NASCOSTO with the beat each thing is given
+at, CIÒ CHE VIENE CREATO, DOVE PUÒ CAMBIARE DIREZIONE, CIÒ CHE LO ROVINEREBBE. The headings
+come back in Italian because the prompt says to write every word in the household's language,
+which means they are not machine-checkable across languages and no test should try.
 
+Durations vary, which was the point of making the length a choice: **75, 84, 86, 92, 94, 96,
+100, 112 minutes** across ten. Moments 4–7. Devising takes 102–185 s, median 133 s — up from
+76–91 s before the strategy, which is the strategy being written.
+
+The ten dimensions vary properly once the history is carried: *seguire una corrente*, *far
+migrare un confine*, *rinominare un reperto*, *far ascoltare due superfici*, *trasportare un
+riflesso*, *spostare una vista muovendo solo lo sguardo*. Ten different mechanics, no repeats.
+
+### 11.2 The material collapses even when the machinery does not — open
+
+All thirty are the same afternoon underneath. An object on a table, light or a shadow with a
+moving edge, a printed map or card, something to name. Titles from the last round: *Il catasto
+dell'ombra migrante*, *Il portolano sotto la tazza*, *La Linea 17 del Cielo Basso*, *L'oggetto
+che attraversava senza muoversi*.
+
+The check counts dimensions and there is nothing that looks at material, so this passes every
+refusal we have. Two causes, and neither is a bug:
+
+The interests given were *le mappe*, *gli oggetti trovati*, *il tempo che cambia* — and the
+prompt now says they are a place to begin rather than a fence, which is evidently not strong
+enough against three nouns repeated in every prompt. And `what-makes-it-worth-doing` says *it
+is set here and now: the window, the tap, the light at five, what is on the table* — which is
+a good line that, read together with those interests, leaves one room and one hour.
+
+**Where to start.** Probably not another rule. Try: give the deviser the *material* of the
+last few afternoons alongside their dimensions — the nouns, not the abstractions — and say
+that a house that has had three afternoons about light has had enough light. That is one more
+field in `_not_again` and no new check. Worth measuring against ten runs before believing it.
+
+**Done when.** Ten consecutive afternoons cannot be summarised in one sentence.
+
+### 11.3 Two faults the runs found, both fixed
+
+The gate was handed the raw JSON by `generate_for_user`, and then the document was screened a
+second time with the right shape. Azure Content Safety refuses over **10 000 characters** and
+a document with a real strategy is 10 600–11 400. Eight of ten refused — and the two that came
+back had an empty strategy, because those were the only ones short enough to pass. A filter
+that discards the good results and keeps the empty ones; read as a success rate it says the
+prompt does not work. Devising asks through `analyze()` now and `screen_experience` is the one
+door.
+
+`experience_in` builds the document field by field and silently dropped `themes` and
+`strategy` because nobody added them there. Ten runs came back with `strategy 0` and nothing
+said why. `tests/test_deviser_parse.py` now walks the format and asserts each field survives.
+
+And one in the probe rather than the system: it passed the titles already offered but not
+`recent`, so nine afternoons were each devised by a house with no history. That is what
+`_not_again` exists for, and leaving it out measures the same first afternoon nine times.
+
+### 11.4 What the checks refused, which is them working
+
+Three refusals across thirty. A moment whose threshold said `punti` — a score, caught by
+`shared/blocklist.py`. And twice a way out reaching for a file or a card that nothing had put
+in anybody's hands, which is the check `ideas/09 §20` was written for.

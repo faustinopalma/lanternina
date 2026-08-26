@@ -32,7 +32,7 @@ INTERESTS = ("le mappe", "gli oggetti trovati", "il tempo che cambia")
 AVOID = ("i ragni",)
 
 
-async def once(already: tuple[str, ...]) -> dict[str, Any]:
+async def once(already: tuple[str, ...], recent: tuple[Any, ...]) -> dict[str, Any]:
     from panel.devising import devise_experience
     from shared.capabilities import HouseCapability
 
@@ -50,7 +50,7 @@ async def once(already: tuple[str, ...]) -> dict[str, Any]:
             interests=INTERESTS,
             avoid=AVOID,
             already=already,
-            recent=(),
+            recent=recent,
             now=began,
         )
     except Exception as exc:  # noqa: BLE001 - a failed run is a result worth recording
