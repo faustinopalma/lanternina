@@ -32,6 +32,7 @@ from .devices import (
     InMemoryInventoryStore,
     InventoryStore,
 )
+from .drafts import DraftStore, InMemoryDraftStore
 from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
 from .guidelines import GuidelineStore, InMemoryGuidelineStore
@@ -45,6 +46,7 @@ from .requests import InMemoryRequestStore, RequestStore
 from .rhythm import InMemoryRhythmStore, RhythmStore
 from .routes import admin, painting
 from .routes import devices as device_routes
+from .routes import draft as draft_routes
 from .routes import experience as experience_routes
 from .routes import guidelines as guideline_routes
 from .routes import messages as message_routes
@@ -84,6 +86,7 @@ SECTIONS = (
     guideline_routes,
     paper_routes,
     trail_routes,
+    draft_routes,
 )
 
 
@@ -105,6 +108,7 @@ def create_app(
     messages: MessageStore | None = None,
     guidelines: GuidelineStore | None = None,
     trail: TrailStore | None = None,
+    drafts: DraftStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     # Before anything else builds: a store that cannot reach Cosmos says so through a
@@ -145,6 +149,7 @@ def create_app(
         guidelines if guidelines is not None else _guideline_store(app.state.settings)
     )
     app.state.trail = trail if trail is not None else _trail_store(app.state.settings)
+    app.state.drafts = drafts if drafts is not None else _draft_store(app.state.settings)
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
     # keep the container from starting at all, so the slots begin empty.
@@ -213,6 +218,14 @@ def _experience_store(settings: Settings) -> ExperienceStore:
     from .cosmos_store import CosmosExperienceStore
 
     return CosmosExperienceStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _draft_store(settings: Settings) -> DraftStore:
+    if not settings.cosmos_configured:
+        return InMemoryDraftStore()
+    from .cosmos_store import CosmosDraftStore
+
+    return CosmosDraftStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _trail_store(settings: Settings) -> TrailStore:

@@ -10,6 +10,7 @@ import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Devices } from "@/sections/Devices";
+import { Drafts } from "@/sections/Drafts";
 import { Experiences } from "@/sections/Experiences";
 import { Guidelines } from "@/sections/Guidelines";
 import { Pictures } from "@/sections/Pictures";
@@ -68,6 +69,12 @@ export function Dashboard({ api }: { api: Api }) {
           title: t("experiences.title"),
           note: t("experiences.note"),
           Body: WaitingForYou,
+        },
+        {
+          name: "drafts",
+          title: t("drafts.title"),
+          note: t("drafts.note"),
+          Body: Drafts,
         },
       ],
     },

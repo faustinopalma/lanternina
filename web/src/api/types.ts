@@ -199,6 +199,50 @@ export interface Trail {
   made?: Made[];
 }
 
+/* One turn of a parent working on an idea. `who` is "parent" or "system" and there is no
+ * third: a draft is a parent and the model they are working with. */
+export interface Turn {
+  who: string;
+  words: string;
+  at: number;
+}
+
+/* An idea a parent is shaping. Title, overview, themes and script — the four things an
+ * afternoon is approved by. Never the plan: the moments have a format with a dozen checks,
+ * and free text cannot become one. Approving hands the script to the deviser as a brief. */
+export interface Draft {
+  id: string;
+  title: string;
+  overview: string;
+  themes: string[];
+  script: string;
+  said: Turn[];
+  state: string;
+  createdAt: number;
+  updatedAt: number;
+  startedFrom: string;
+  became: string;
+}
+
+/* The card. No conversation and no script: a list of drafts is not a read. */
+export interface DraftCard {
+  id: string;
+  title: string;
+  overview: string;
+  state: string;
+  createdAt: number;
+  updatedAt: number;
+  turns: number;
+}
+
+/* What the parent typed straight into the text. Absent fields keep what was there. */
+export interface TypedText {
+  title?: string;
+  overview?: string;
+  themes?: string[];
+  script?: string;
+}
+
 export interface Rhythm {
   picturesFrom: string;
   picturesUntil: string;
@@ -412,4 +456,11 @@ export interface Api {
   messages(): Promise<Said[]>;
   trails(): Promise<Trail[]>;
   trail(runId: string): Promise<Trail>;
+  drafts(): Promise<DraftCard[]>;
+  startDraft(fromExperience: string): Promise<Draft>;
+  draft(id: string): Promise<Draft>;
+  sayToDraft(id: string, words: string): Promise<Draft>;
+  typeIntoDraft(id: string, text: TypedText): Promise<Draft>;
+  approveDraft(id: string): Promise<{ id: string; title: string; state: string }>;
+  closeDraft(id: string): Promise<Draft>;
 }

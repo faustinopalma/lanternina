@@ -86,7 +86,11 @@ What the parent sees while it runs: whether it is running, how long is left, the
 - **No agent self-approval.** Nothing an agent generates is delivered without the parent greenlighting it.
 - **No adaptation the parent cannot see.** The system may change what it offers on its own, but what it offers arrives as a proposal in words the parent can read and refuse. The settings remain the starting point and remain the parent's to change.
 - **No memory the parent cannot read.** The household memory lives in the cloud, so locality is not what keeps it honest. The parent can read all of it, in plain language, in the panel — a store read as sentences by the person who steers cannot quietly become a dossier.
-- **No dashboard-triggered work.** A parent write persists state and returns. It does not call a model, enqueue generation, notify or wake the home server, or schedule work for later. Only the home server can initiate processing, when it chooses to make a request.
+- **No dashboard-triggered work in the house.** A parent write persists state and returns. It does not enqueue generation, notify, wake the home server, or put anything in a room, and nothing in the panel can start an afternoon — only the home server can, when it chooses to come and ask.
+
+There is one place a parent's own action calls a model, and it is stated here rather than left to be found. A parent can open an idea, or a blank page, and work on it in a conversation: they suggest, a model rewrites the text, and they can type into the text themselves. That spends money, so the monthly limit governs it like every other call. What it does not do is any of the things the rule above is actually about — it reaches no room, wakes nothing, and what it produces is an idea that still has to be approved and still waits for the house to come for it.
+
+It is also the one place a parent's words are instructions rather than material. Everywhere text a parent typed is stored and reused later — their interests, the things to avoid, the house guidelines — it reaches prompts doing other work and arrives quoted as JSON, because a sentence that reads like a command should not become one. A draft is different: the parent wrote it as the thing to build, they are looking at the answer, and they can type over it. Their words shape that draft and reach no other prompt, and what comes out of it goes through the same format, the same checks and the same gate as an afternoon nobody steered.
 
 ## Open, deliberately
 

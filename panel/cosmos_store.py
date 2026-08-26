@@ -28,6 +28,8 @@ from shared.ids import AccountId, new_account_id, new_household_id
 from shared.message import Message, Says
 
 from .devices import DeviceStatus, Thing, order_of
+from .drafts import OPEN as DRAFT_OPEN
+from .drafts import Draft, Said
 from .experiences import OfferedExperience
 from .guidelines import Guidelines
 from .messages import PendingMessage
@@ -66,6 +68,7 @@ MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
 EXPERIENCES_CONTAINER = "sources"
 TRAILS_CONTAINER = "sources"
+DRAFTS_CONTAINER = "sources"
 LIMIT_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
 
@@ -669,6 +672,119 @@ def _to_made(document: dict[str, Any]) -> Made:
         body=str(document.get("body") or ""),
         why=str(document.get("why") or ""),
         picture_id=str(document.get("pictureId") or ""),
+    )
+
+
+class CosmosDraftStore:
+    """Conforms to :class:`~panel.drafts.DraftStore`.
+
+    One document per draft, overwritten as the parent works. The conversation is kept whole
+    inside it rather than as rows of its own: it is read all at once or not at all, and a
+    draft is small — the script is bounded at six thousand characters and the turns at
+    eighty.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(DRAFTS_CONTAINER)
+        )
+
+    def start(self, draft: Draft) -> Draft:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.create_item(_from_draft(draft))
+        except exceptions.CosmosResourceExistsError:
+            existing = self._container.read_item(
+                item=_draft_id(draft.id), partition_key=draft.household_id
+            )
+            return _to_draft(existing)
+        return draft
+
+    def get(self, household_id: str, draft_id: str) -> Draft | None:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(
+                item=_draft_id(draft_id), partition_key=household_id
+            )
+        except exceptions.CosmosResourceNotFoundError:
+            return None
+        return _to_draft(document)
+
+    def list(self, household_id: str) -> list[Draft]:
+        # Without the conversation and without the script: a list of drafts is a list of
+        # cards, and a parent with a dozen of them would otherwise pull down a novel.
+        rows = self._container.query_items(
+            query=(
+                "SELECT c.id, c.familyId, c.draftId, c.title, c.overview, c.state,"
+                " c.createdAt, c.updatedAt, c.turns FROM c"
+                " WHERE c.familyId = @family AND c.type = 'draft'"
+            ),
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        return sorted(
+            (_to_draft(row) for row in rows),
+            key=lambda row: row.updated_at or row.created_at,
+            reverse=True,
+        )
+
+    def save(self, draft: Draft) -> Draft:
+        kept = replace(draft, updated_at=time.time())
+        self._container.upsert_item(_from_draft(kept))
+        return kept
+
+
+def _draft_id(draft_id: str) -> str:
+    """Prefixed because drafts share a container with everything else this household has."""
+    return f"draft_{draft_id}"
+
+
+def _from_draft(draft: Draft) -> dict[str, Any]:
+    return {
+        "id": _draft_id(draft.id),
+        "familyId": draft.household_id,
+        "type": "draft",
+        "draftId": draft.id,
+        "title": draft.title,
+        "overview": draft.overview,
+        "themes": list(draft.themes),
+        "script": draft.script,
+        "said": [one.to_public() for one in draft.said],
+        "state": draft.state,
+        "createdAt": draft.created_at,
+        "updatedAt": draft.updated_at,
+        "startedFrom": draft.started_from,
+        "became": draft.became,
+        # Written so the card query can show it without pulling the conversation down.
+        "turns": len(draft.said),
+    }
+
+
+def _to_draft(document: dict[str, Any]) -> Draft:
+    return Draft(
+        id=str(document.get("draftId") or ""),
+        household_id=str(document.get("familyId") or ""),
+        created_at=float(document.get("createdAt") or 0.0),
+        updated_at=float(document.get("updatedAt") or 0.0),
+        title=str(document.get("title") or ""),
+        overview=str(document.get("overview") or ""),
+        themes=tuple(str(one) for one in (document.get("themes") or ())),
+        script=str(document.get("script") or ""),
+        said=tuple(
+            Said(
+                who=str(one.get("who") or ""),
+                words=str(one.get("words") or ""),
+                at=float(one.get("at") or 0.0),
+            )
+            for one in (document.get("said") or ())
+        ),
+        state=str(document.get("state") or DRAFT_OPEN),
+        started_from=str(document.get("startedFrom") or ""),
+        became=str(document.get("became") or ""),
     )
 
 

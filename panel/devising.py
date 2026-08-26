@@ -58,9 +58,15 @@ async def devise_experience(
     already: tuple[str, ...],
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
+    brief: str = "",
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
+
+    ``brief`` is a parent's own idea, worked on in the panel and approved. It replaces the
+    invitation to invent rather than sitting beside it, and nothing else is relaxed: the
+    format, the checks and the gate all run unchanged, so a script asking for a scoreboard
+    is refused the same way whoever wrote it.
 
     Raises whatever the router raises when the cloud will not serve it,
     :class:`~shared.errors.SafetyBlocked` when the gate refuses it,
@@ -100,6 +106,7 @@ async def devise_experience(
             already=already,
             recent=recent,
             subjects=subjects,
+            brief=brief,
         )
         try:
             experience = experience_in(answer)

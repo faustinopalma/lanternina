@@ -7,6 +7,7 @@ import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
+import { WorkOn } from "@/sections/Drafts";
 
 /* An afternoon a model devised, shown to the one person who decides whether it may happen
  * in this house.
@@ -221,11 +222,13 @@ function Card({
   picked,
   onPick,
   onDecided,
+  onWorkOn,
 }: {
   offered: OfferedExperience;
   picked?: boolean;
   onPick?: (on: boolean) => void;
   onDecided: (state: Decision) => void;
+  onWorkOn?: (id: string) => void;
 }) {
   const { t } = useWords();
   const api = useApi();
@@ -238,6 +241,18 @@ function Card({
     try {
       await api.decideExperience(offered.id, state);
       onDecided(state);
+    } catch {
+      setFailed(true);
+      setDeciding(false);
+    }
+  }
+
+  async function work() {
+    if (!onWorkOn) return;
+    setDeciding(true);
+    setFailed(false);
+    try {
+      onWorkOn((await api.startDraft(offered.id)).id);
     } catch {
       setFailed(true);
       setDeciding(false);
@@ -327,6 +342,13 @@ function Card({
             <Button size="small" disabled={deciding} onClick={() => decide("rejected")}>
               {t("action.refuse")}
             </Button>
+            {/* Neither approve nor refuse: take it away and work on it. What opens is a
+                copy, so an afternoon taken apart is not an afternoon lost. */}
+            {onWorkOn ? (
+              <Button size="small" variant="ghost" disabled={deciding} onClick={work}>
+                {t("action.workOnIt")}
+              </Button>
+            ) : null}
           </>
         )}
       </div>
@@ -400,6 +422,11 @@ export function Experiences() {
   const [picked, setPicked] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
   const [stock, setStock] = useState<Backlog | null>(null);
+  // A draft the parent opened from one of these. Shown in place: sending them to another
+  // section and asking them to find it there is two steps for something they just asked for.
+  const [working, setWorking] = useState<string | null>(null);
+
+  if (working !== null) return <WorkOn id={working} onDone={() => setWorking(null)} />;
 
   if (state.status === "loading") return <Quiet>{t("experiences.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("experiences.unreadable")}</Quiet>;
@@ -443,6 +470,7 @@ export function Experiences() {
                 setDecided((seen) => [...seen, offered.id]);
                 if (state === "approved") setApprovals((n) => n + 1);
               }}
+              onWorkOn={setWorking}
             />
           ))}
           {picked.length > 0 ? (

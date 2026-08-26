@@ -142,6 +142,7 @@ def the_prompt(
     already: tuple[str, ...] = (),
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
+    brief: str = "",
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
@@ -149,6 +150,11 @@ def the_prompt(
     `tools/prompts.py` renders it into `docs/prompts/`, and a test refuses a change here
     that has not been rendered. What a parent typed in the panel arrives quoted as JSON,
     which is what keeps it material rather than instruction.
+
+    ``brief`` is the one exception, and it is a deliberate one: a parent who worked on an
+    idea in `panel/drafts.py` and approved it is asking for that afternoon and no other, so
+    it replaces the invitation to invent rather than sitting beside it. `docs/NON-GOALS.md`
+    says what stays true — it shapes this afternoon and reaches no other prompt.
     """
     return (
         f"{_INSTRUCTION}\n"
@@ -160,7 +166,7 @@ def the_prompt(
             avoid=json.dumps(list(avoid), ensure_ascii=False),
             already=json.dumps(list(already), ensure_ascii=False),
         )
-        + _not_again(recent, subjects)
+        + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
     )
 
 
@@ -180,6 +186,7 @@ class ExperienceDeviser:
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
+        brief: str = "",
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
         return experience_in(
@@ -192,6 +199,7 @@ class ExperienceDeviser:
                 already=already,
                 recent=recent,
                 subjects=subjects,
+                brief=brief,
             )
         )
 
@@ -206,6 +214,7 @@ class ExperienceDeviser:
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
+        brief: str = "",
     ) -> str:
         """The answer as it came back, before anything tries to read it.
 
@@ -236,6 +245,7 @@ class ExperienceDeviser:
                     already=already,
                     recent=recent,
                     subjects=subjects,
+                    brief=brief,
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_EXPERIENCE_CHARS,

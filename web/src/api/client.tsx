@@ -12,6 +12,8 @@ import {
   type Backlog,
   type Decision,
   type Device,
+  type Draft,
+  type DraftCard,
   type Guidelines,
   type HouseRequest,
   type Inventory,
@@ -29,6 +31,7 @@ import {
   type NewSaid,
   type Theme,
   type Trail,
+  type TypedText,
   type UsageAnswer,
 } from "./types";
 
@@ -38,6 +41,8 @@ import {
 export function warmUp(): void {
   void fetch(`${config.apiBase}/health`, { cache: "no-store" }).catch(() => null);
 }
+
+const DRAFT_FIELDS = ["id", "title", "overview", "themes", "script", "said", "state"] as const;
 
 const RHYTHM_FIELDS = [
   "picturesFrom",
@@ -290,6 +295,36 @@ export function httpApi(token: string): Api {
         "script",
         "made",
       ]),
+
+    // An idea the parent is working on. Starting one and typing into one are inert writes
+    // like every other; `sayToDraft` is the one call in this file that spends money, and
+    // the monthly limit governs it.
+    async drafts(): Promise<DraftCard[]> {
+      const answer = await json<{ drafts: DraftCard[] }>("/api/drafts", {}, ["drafts"]);
+      return answer.drafts;
+    },
+
+    startDraft: (fromExperience: string) =>
+      json<Draft>("/api/drafts", write({ fromExperience }), DRAFT_FIELDS),
+
+    draft: (id: string) =>
+      json<Draft>(`/api/drafts/${encodeURIComponent(id)}`, {}, DRAFT_FIELDS),
+
+    sayToDraft: (id: string, words: string) =>
+      json<Draft>(`/api/drafts/${encodeURIComponent(id)}/say`, write({ words }), DRAFT_FIELDS),
+
+    typeIntoDraft: (id: string, text: TypedText) =>
+      json<Draft>(`/api/drafts/${encodeURIComponent(id)}/text`, write(text), DRAFT_FIELDS),
+
+    approveDraft: (id: string) =>
+      json<{ id: string; title: string; state: string }>(
+        `/api/drafts/${encodeURIComponent(id)}/approve`,
+        { method: "POST" },
+        ["id", "state"],
+      ),
+
+    closeDraft: (id: string) =>
+      json<Draft>(`/api/drafts/${encodeURIComponent(id)}/close`, { method: "POST" }, DRAFT_FIELDS),
   };
 }
 

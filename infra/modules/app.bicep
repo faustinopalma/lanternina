@@ -44,6 +44,10 @@ param workerImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 // scripts/build-and-deploy-images.ps1 passes both, which is what keeps them in step.
 param apiTargetPort int = 80
 param apiMaxReplicas int = 5
+@description('How long the API stays up after the last request before it scales back to zero. A parent working on an idea leaves gaps while they read what came back, and each gap that outlives this is another cold start. Ten minutes covers a sitting. Ours to set: it is a cost decision, and there is no control for it in the panel.')
+@minValue(60)
+@maxValue(3600)
+param apiCooldownSeconds int = 600
 param workerMaxReplicas int = 3
 
 @description('Trust the caller identity from a plain request header. Development only.')
@@ -273,6 +277,9 @@ resource api 'Microsoft.App/containerApps@2025-01-01' = {
       scale: {
         minReplicas: 0
         maxReplicas: apiMaxReplicas
+        // Zero when nobody is asking. The first request after that pays a cold start, which
+        // is why the draft page says so in words rather than showing a spinner.
+        cooldownPeriod: apiCooldownSeconds
         rules: [
           {
             name: 'http'

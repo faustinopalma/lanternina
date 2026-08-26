@@ -8,6 +8,7 @@ import type {
   Api,
   Decision,
   Device,
+  Draft,
   Guidelines,
   NewAssignment,
   NewPreferences,
@@ -22,6 +23,7 @@ import type {
   NewSaid,
   Theme,
   Trail,
+  TypedText,
   UsageAnswer,
   HouseRequest,
 } from "@/api/types";
@@ -45,6 +47,9 @@ export interface Recorded {
   begunNow: number;
   experienceDecisions: { id: string; state: Decision }[];
   said: NewSaid[];
+  saidToDraft: { id: string; words: string }[];
+  typedIntoDraft: { id: string; text: TypedText }[];
+  approvedDrafts: string[];
 }
 
 export interface FakeApi extends Api {
@@ -301,6 +306,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     begunNow: 0,
     experienceDecisions: [],
     said: [],
+    saidToDraft: [],
+    typedIntoDraft: [],
+    approvedDrafts: [],
   };
   let themes: Theme[] = [
     { id: "theme-1", label: "gatti che dormono" },
@@ -311,6 +319,17 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
   let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
+  let drafts: Draft[] = [];
+
+  /* One draft, changed, with `updatedAt` moved. The text pane follows the draft only when
+     that moves, so a fake that left it alone would never show a rewrite. */
+  function bump(id: string, change: (one: Draft) => Draft): Draft {
+    const found = drafts.find((one) => one.id === id);
+    if (!found) throw new Error("unknown draft");
+    const kept = { ...change(found), updatedAt: found.updatedAt + 1 };
+    drafts = drafts.map((one) => (one.id === id ? kept : one));
+    return kept;
+  }
   // One afternoon that ran, and what the system wrote while it was going. Nothing about
   // what came back off the glass, because nothing about that is ever stored.
   const trails: Trail[] = [
@@ -634,6 +653,68 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       if (!found) throw new Error("unknown run");
       return found;
     },
+
+    drafts: async () =>
+      drafts.map((one) => ({
+        id: one.id,
+        title: one.title,
+        overview: one.overview,
+        state: one.state,
+        createdAt: one.createdAt,
+        updatedAt: one.updatedAt,
+        turns: one.said.length,
+      })),
+
+    startDraft: async (fromExperience) => {
+      const one: Draft = {
+        id: `dft_${drafts.length + 1}`,
+        title: fromExperience ? SAMPLE_AFTERNOON.title : "",
+        overview: fromExperience ? SAMPLE_AFTERNOON.overview : "",
+        themes: fromExperience ? SAMPLE_AFTERNOON.themes : [],
+        script: fromExperience ? SAMPLE_AFTERNOON.script : "",
+        said: [],
+        state: "open",
+        createdAt: NOW,
+        updatedAt: NOW,
+        startedFrom: fromExperience,
+        became: "",
+      };
+      drafts = [...drafts, one];
+      return one;
+    },
+
+    draft: async (id) => {
+      const found = drafts.find((one) => one.id === id);
+      if (!found) throw new Error("unknown draft");
+      return found;
+    },
+
+    sayToDraft: async (id, words) => {
+      recorded.saidToDraft.push({ id, words });
+      return bump(id, (one) => ({
+        ...one,
+        title: "Le ventitré tacche del pensile",
+        script: `${one.script}\n\nTHE WORLD\n${words}`,
+        said: [
+          ...one.said,
+          { who: "parent", words, at: NOW },
+          { who: "system", words: "Ho spostato il finale.", at: NOW },
+        ],
+      }));
+    },
+
+    typeIntoDraft: async (id, text) => {
+      recorded.typedIntoDraft.push({ id, text });
+      return bump(id, (one) => ({ ...one, ...text }));
+    },
+
+    approveDraft: async (id) => {
+      recorded.approvedDrafts.push(id);
+      bump(id, (one) => ({ ...one, state: "approved", became: "aftn-9" }));
+      return { id: "aftn-9", title: "Le ventitré tacche del pensile", state: "approved" };
+    },
+
+    closeDraft: async (id) => bump(id, (one) => ({ ...one, state: "closed" })),
   };
 
   return { ...base, ...overrides, recorded };
