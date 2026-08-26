@@ -394,3 +394,31 @@ I timestamp sulle chiamate del sistema sono l'unico punto non pulito. Ci sono pe
 La rotta `next-move` registra le mosse dell'agente; `devices/run_experience.py` non la chiama ancora, quindi oggi si riempie solo la via del seguito (`runId` aggiunto al POST). Le immagini finite su un display non sono ancora registrate contro una corsa: `Made.picture_id` esiste e nessuno lo scrive, perché una mossa non ha un campo display. Va aggiunto quando l'agente potrà mettere un quadro.
 
 E l'agente che valida conformità e sicurezza di quello che l'agente d'esperienza sta facendo — durante o a cose fatte — è deciso e non fatto, per scelta.
+
+## 13. Quattro difetti trovati usandolo, non leggendolo
+
+Nessuno dei quattro era visibile da un test, e tre erano in codice che *diceva* la cosa giusta nel proprio commento.
+
+### 13.1 La pressione non faceva partire niente
+
+«Fai cominciare adesso» alle 09:06, fascia 12:00–19:30, e l'hub rispondeva «Le consegne della Stanza 17 would not be over by 19:30» con dieci ore davanti. La pressione veniva lasciata passare oltre il giorno e l'ora d'inizio, e poi `fits_inside_the_band` ricontrollava **la stessa fascia** e rifiutava perché l'orologio non era ancora dentro. Ora prende `the_hour_decides`, falso su una pressione: scavalca l'inizio e mai la fine, che è esattamente quello che il bottone promette.
+
+### 13.2 `choose` ne guardava una sola
+
+Il suo docstring diceva già «a shorter one may still fit» e il codice restituiva la prima eseguibile, che `main` misurava poi contro l'orologio per poi arrendersi. Una casa con un pomeriggio da due ore e uno da una, alle sei, non ne faceva partire nessuno. L'orologio ora è chiesto su ciascuna, dentro `choose`, e il log dice quanto dura e quanto ne resta invece di nominare un'ora che non era il problema.
+
+### 13.3 `_clock_of` non era un orologio
+
+Restituiva le ultime sei lettere dell'id della richiesta, e il log leggeva «the parent asked for one at 53456e». Sembrava un'ora. Ora è `_tail` e la riga dice che cos'è.
+
+### 13.4 Quante idee tenere pronte stava nel posto sbagliato
+
+Era in `Preferences`, e `Preferences` è definita da un test come *esattamente* i campi che `prompt_hints()` porta a un modello. Per farcela stare avevo aggiunto un'eccezione al test. L'eccezione era l'argomento: questo numero non raggiunge mai un modello, delimita la coda del genitore, e i giorni per cui si divide per dire quanto dura la scorta stanno già nel ritmo. Spostato in `Rhythm`; il test è di nuovo senza clausole.
+
+### 13.5 E una lista che diceva il falso
+
+«Già approvate» teneva sia quelle da partire sia quelle che la casa aveva già preso, e si leggeva come una cosa sola. Sono due: «Approvate, in attesa di partire» e «In corso adesso», perché quello che il genitore può farci è diverso — la prima si ritira, alla seconda si può solo dare un'ora. Quando la sua durata è passata esce da entrambe: il pannello non può chiedere alla casa se sta ancora andando, quindi la durata nominale è il limite superiore che usa, e quello che ha scritto sta comunque sulla traccia.
+
+### 13.6 Verificato in casa
+
+26 agosto 2026, 09:29: pressione onorata, `Le consegne della Stanza 17: aft_f573c895`, 105 minuti, fine alle 11:14, `lpstat` «now printing Lanternina-12», e il giro successivo «an afternoon is already under way».
