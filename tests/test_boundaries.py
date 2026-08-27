@@ -328,7 +328,41 @@ def test_raw_frames_cannot_be_serialised() -> None:
             attempt()
 
 
-# ── Nothing is stated as a verdict about a person ───────────────────────────────────────────
+# ── What a returned page said is read, and not kept ──────────────────────────────────
+
+
+def test_what_a_page_said_cannot_be_pickled_copied_or_cached() -> None:
+    """The reading lasts as long as the afternoon needs it.
+
+    The one door left open is `to_dict`, which is the body of the request that carries the
+    reading to the panel writing the continuation. Everything else is closed, because none
+    of it is how somebody would decide to keep a reading — it is how one ends up kept
+    anyway, in a cache, on a queue, in a session, in a background job's payload.
+
+    That a reading is never written down is enforced elsewhere and by absence:
+    `tests/test_trail.py` names the fields the record has, and none of them would hold one.
+    """
+    import copy
+    import pickle
+
+    from shared.errors import RetentionViolation
+    from shared.vision_contracts import WhatCameBack
+
+    reading = WhatCameBack(
+        written=True, same_sheet=True, describes=("three lines at the top",), read_at=1.0
+    )
+    for attempt in (
+        lambda: pickle.dumps(reading),
+        lambda: copy.copy(reading),
+        lambda: copy.deepcopy(reading),
+        reading.__getstate__,
+    ):
+        with pytest.raises(RetentionViolation):
+            attempt()
+    assert reading.to_dict()["describes"] == ["three lines at the top"]
+
+
+# ── Where a verdict would do damage: the schema, the panel, the prompts ──────────────
 
 ENGAGEMENT_AND_ASSESSMENT = {
     "streak",
@@ -359,24 +393,47 @@ ENGAGEMENT_AND_ASSESSMENT = {
     "diagnosis",
 }
 
+# `shared` is the document format and `panel` is what a parent reads, so a name that
+# appears here is a name that gets written down or shown. `shared/blocklist.py` is the one
+# file that has to spell the words, because listing them is what it is for.
+SCHEMA_AND_PANEL = ("shared", "panel")
+NAMES_THE_WORDS_ON_PURPOSE = "shared/blocklist.py"
 
-def test_no_engagement_or_assessment_vocabulary_anywhere() -> None:
-    """These names must not exist. The absence is the feature.
 
-    Two different things are held here. Engagement optimisation is the easy failure mode
-    for a system like this, and is forbidden outright. The assessment half is narrower than
-    it was: since 19 August 2026 the system may adapt to what it observes, so a stored
-    record of what happened is fine. What is not fine is the vocabulary of a verdict —
-    score, grade, ability, mastery — because a field with one of these names is a claim
-    about a person rather than a note about a sheet, and the name is what makes it one.
+def _stored_or_shown_names(path: Path) -> set[str]:
+    """Names that survive the process: keys in a document, and fields of a type."""
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            names.add(node.value)
+        elif isinstance(node, ast.ClassDef):
+            for statement in node.body:
+                if isinstance(statement, ast.AnnAssign) and isinstance(statement.target, ast.Name):
+                    names.add(statement.target.id)
+    return names
+
+
+def test_no_verdict_vocabulary_in_the_stored_shape_or_the_panel() -> None:
+    """Narrowed on 27 August 2026, from every identifier in every package to the three
+    places the word does damage: the stored shape, the panel, and the prompts.
+
+    The wide version was a lint on words standing in for a ban on behaviour. It ruled out
+    calling a content setting `difficulty`, a puzzle's in-fiction tally `score`, or a job's
+    advancement `progress` — none of which is a claim about anybody. A local variable is
+    harmless; a persisted field is not, because a field called `mastery` is a claim about a
+    person however carefully the code around it is written.
     """
     offences: list[str] = []
-    for package in PACKAGES:
+    for package in SCHEMA_AND_PANEL:
         for path in _python_files(package):
-            leaked = _identifiers(path) & ENGAGEMENT_AND_ASSESSMENT
+            where = path.relative_to(REPO).as_posix()
+            if where == NAMES_THE_WORDS_ON_PURPOSE:
+                continue
+            leaked = _stored_or_shown_names(path) & ENGAGEMENT_AND_ASSESSMENT
             if leaked:
-                offences.append(f"{path.relative_to(REPO)}: {sorted(leaked)}")
-    assert not offences, "engagement/assessment vocabulary found:\n" + "\n".join(offences)
+                offences.append(f"{where}: {sorted(leaked)}")
+    assert not offences, "verdict vocabulary in the stored shape:\n" + "\n".join(offences)
 
 
 def test_the_panel_in_the_browser_uses_none_of_that_vocabulary_either() -> None:
@@ -398,6 +455,29 @@ def test_the_panel_in_the_browser_uses_none_of_that_vocabulary_either() -> None:
     assert not offences, "engagement/assessment vocabulary in the panel:\n" + "\n".join(
         offences
     )
+
+
+def test_no_prompt_asks_a_model_for_a_verdict() -> None:
+    """A prompt may forbid a score — several do, and that is the sentence working.
+
+    What it may not do is ask for one, so the check is on the field names a prompt declares
+    rather than on the word: `"score":` in a shape the model is told to fill in, never `no
+    score` in a sentence telling it not to.
+    """
+    words = "|".join(sorted(ENGAGEMENT_AND_ASSESSMENT))
+    asked_for = re.compile(rf"""["']({words})["']\s*:""")
+
+    offences: list[str] = []
+    prompts = [
+        *(REPO / "agents").rglob("*.md"),
+        *(REPO / "shared").rglob("*.md"),
+        *(REPO / "docs" / "prompts").rglob("*.md"),
+    ]
+    for path in prompts:
+        found = sorted({m.group(1) for m in asked_for.finditer(path.read_text("utf-8"))})
+        if found:
+            offences.append(f"{path.relative_to(REPO)}: {found}")
+    assert not offences, "a prompt asks a model for a verdict:\n" + "\n".join(offences)
 
 
 # ── The content language is a setting, not a property of the data ────────────────────

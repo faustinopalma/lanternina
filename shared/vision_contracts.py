@@ -1,15 +1,15 @@
-"""Vision contracts, left over from the marker-and-QR pipeline.
+"""What a camera and a scanner hand over, and what may be done with it.
 
-**Nothing in the running system constructs any of these.** A page is read by handing a
-model the blank and what came back off the glass, and the rule these types were built to
-enforce — only the rectified region inside the ArUco quadrilateral is ever retained — no
-longer describes the product. The camera is handheld now, faces will be in frame, and what
-protects somebody is what may be inferred and what can be deleted, not what was cropped.
+:class:`WhatCameBack` is live: it is what a model says about a sheet that came back off the
+glass, and the continuation is written from it. It is sealed against every implicit route
+into storage, because the reading is meant to last as long as the afternoon needs it and no
+longer.
 
-:class:`RawFrame` is kept because the sealing technique is worth having on hand: a type
-that refuses to be pickled, copied or serialised, exposing no encoder, releasing its buffer
-on exit. If a retention rule is ever wanted again, it is written here already. Read it as a
-technique, not as a guarantee the system currently makes.
+:class:`RawFrame` is left over from the marker-and-QR pipeline and nothing constructs one.
+The rule it enforced — only the rectified region inside the ArUco quadrilateral is ever
+retained — no longer describes the product: the camera is handheld, faces will be in frame,
+and what protects somebody is what may be inferred and what can be deleted, not what was
+cropped. It is kept because the sealing technique is worth having written down.
 """
 
 from __future__ import annotations
@@ -122,6 +122,15 @@ class WhatCameBack:
     insisting on the right sheet before looking is a machine's anxiety. A page that is not the
     one handed over is still a page somebody worked on, and what the afternoon does about that
     is the afternoon's business.
+
+    **It is read, and it is not kept.** The afternoon is written from this and then it is
+    gone: the only account of how the afternoon went is the paper, which is on a table in the
+    room it was filled in. So every implicit route out of memory is closed — pickle, copy,
+    deepcopy, the state protocol — and one explicit door is left. :meth:`to_dict` exists for
+    the single hop this reading has to make, from the house to the panel that writes the
+    continuation and back again; it is a request body, not a document. What keeps that hop
+    from becoming a record is the record itself, which has no field a reading would fit in
+    (`tests/test_trail.py`).
     """
 
     written: bool
@@ -133,6 +142,7 @@ class WhatCameBack:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
+        """The one door: the body of the request that carries this reading to the panel."""
         return {
             "written": self.written,
             "same_sheet": self.same_sheet,
@@ -152,3 +162,20 @@ class WhatCameBack:
             degraded=bool(values.get("degraded", False)),
             metadata=dict(values.get("metadata", {})),
         )
+
+    # -- the implicit routes out of memory, closed -------------------------------------
+    #
+    # None of these is how somebody would decide to keep a reading. They are how one ends up
+    # kept anyway: in a cache, on a queue, in a session, in the payload of a background job.
+
+    def __getstate__(self) -> Any:
+        raise RetentionViolation("what a page said is read and not kept; see to_dict")
+
+    def __reduce__(self) -> Any:
+        raise RetentionViolation("what a page said must never be pickled")
+
+    def __copy__(self) -> Any:
+        raise RetentionViolation("what a page said must never be copied")
+
+    def __deepcopy__(self, memo: dict) -> Any:
+        raise RetentionViolation("what a page said must never be copied")

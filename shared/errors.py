@@ -33,8 +33,8 @@ class UnscreenedContentError(BoundaryViolation):
 class RetentionViolation(BoundaryViolation):
     """An attempt to persist or serialise data the retention policy forbids.
 
-    Raised by :class:`shared.vision_contracts.RawFrame`, which nothing constructs. The
-    retention rule it belonged to no longer describes the system — see that module.
+    Raised by :class:`shared.vision_contracts.WhatCameBack`, which is read and not kept, and
+    by :class:`shared.vision_contracts.RawFrame`, which nothing constructs.
     """
 
 
