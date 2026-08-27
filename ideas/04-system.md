@@ -307,3 +307,21 @@ Il journal dell'hub **non** va ad Application Insights, e non è pigrizia. Spedi
 `scripts/deploy.ps1` fallisce su un conflitto preesistente: la zona `privatelink.blob.core.windows.net` è collegata alla VNet con un collegamento chiamato `link-blob`, mentre il template ne crea uno chiamato `link-vnet-lanternina-dev-ssveb`. Azure rifiuta un secondo collegamento alla stessa VNet. Le altre due zone hanno il nome giusto, quindi è deriva manuale su una sola.
 
 Application Insights è stato quindi creato fuori banda con `az`, con lo stesso nome e la stessa forma del template, così un deploy futuro lo adotterà invece di crearne un altro. **Da fare:** cancellare `link-blob` e rilanciare il deploy, che ricrea il collegamento col nome del template. Sono pochi secondi senza risoluzione DNS privata per il blob.
+
+## 23. Il container non scala a zero, e non lo farà
+
+Misurato il 27 agosto 2026 su Application Insights, trenta minuti di traffico: `POST /device/{h}/devices` 29 chiamate, `GET /messages` 29, `GET /experiences` 27, `GET /request` 24, `GET /rhythm` 19. Tutte dall'hub, **circa una al minuto su cinque rotte**. Repliche attive: 1, sana, ininterrotta.
+
+`cooldownPeriod` è a 600 secondi e **non viene mai raggiunto**, perché il conteggio riparte a ogni richiesta e le richieste arrivano ogni sessanta secondi.
+
+### 23.1 Che cosa vuol dire
+
+**Per il genitore: meglio del promesso.** La riga «la prima risposta è lenta perché il sistema si sta accendendo» in `web/src/sections/Drafts.tsx` è onesta come descrizione di che cosa *farebbe* un container spento, ma in pratica non comparirà quasi mai. Non è un difetto: è una promessa mantenuta al ribasso.
+
+**Per il conto: lo scalare a zero non sta pagando niente.** Una replica da 0,5 vCPU e 1 GiB accesa sempre è il costo che l'architettura scale-to-zero doveva evitare, e non lo evita.
+
+### 23.2 La leva, e il suo prezzo
+
+Diradare l'interrogazione dell'hub. Il prezzo è la reattività, e va detto per intero: «fai cominciare un'attività adesso» viene onorato entro un minuto **proprio perché** l'hub chiede ogni minuto, e lo stesso vale per un'ora di fine spostata e per un «chiudi adesso». Un hub che chiede ogni dieci minuti fa risparmiare il container e trasforma «adesso» in «entro dieci minuti».
+
+Non deciso. Le due cose che si potrebbero separare senza toccare la reattività: `rhythm` e `devices` non cambiano da un minuto all'altro e sono 48 chiamate su 128.
