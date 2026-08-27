@@ -433,6 +433,10 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         "already",
         "recent",
         "subjects",
+        # How many things an afternoon holds together at once, and how long a line runs.
+        # Both are properties of the material; neither says anything about a person.
+        "difficulty",
+        "words_per_line",
         "now",
     }
 
@@ -461,6 +465,48 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
     assert asked["language"] == "English", "the code is a pronoun in an English sentence"
     assert asked["interests"] == ("le nuvole",)
     assert asked["avoid"] == ("i ragni",)
+
+
+def test_the_shape_the_parent_chose_reaches_the_prompt_as_a_sentence_about_the_material(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Chosen in the panel since the first version and read by nothing until 27 August 2026:
+    it was stored, shown back, and dropped on the way to the model. A parent moving it saw
+    no change in what arrived, which is worse than not offering the choice."""
+    from agents.experience_deviser import SHAPES, the_prompt
+
+    client = client_for()
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    household = household_of(client)
+    client.post(
+        "/api/preferences",
+        json={
+            "interests": [],
+            "avoid": [],
+            "difficulty": "stretch",
+            "variety": "balanced",
+            "maxWordsPerLine": 8,
+            "language": "it",
+        },
+        headers=headers(),
+    )
+
+    ask_for_one(client, household)
+
+    assert asked["difficulty"] == "stretch"
+    assert asked["words_per_line"] == 8
+    written = the_prompt(
+        language="Italian",
+        capabilities=frozenset(),
+        shape=SHAPES["stretch"],
+        words_per_line=8,
+    )
+    assert SHAPES["stretch"] in written
+    assert "about 8 words" in written
+    assert "gentle" not in written and "stretch" not in written, (
+        "the word a parent picked is a setting; what the model reads is a property of "
+        "the material, and nothing in the prompt may name the choice itself"
+    )
 
 
 def test_the_language_reaches_the_model_by_name_and_not_by_code(

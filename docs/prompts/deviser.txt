@@ -1,5 +1,5 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-18948 characters, 115 lines
+19253 characters, 118 lines
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
 ==============================================================================
 Devise one afternoon for one household, from nothing.
@@ -117,3 +117,6 @@ The parent wrote down these interests, as a place to begin: ["le nuvole", "i tre
 Begin from one of them when one fits. You may also go somewhere they do not name, if something else here points that way — but never towards anything in the list below.
 And these things to keep away from, which are a boundary and not a starting point: ["i ragni"]
 Afternoons already offered here, so write a different one: ["Il quaderno del vento"]
+The shape this house asked for: one thing that is wrong and one thing to find out, told plainly; nothing that has to be matched against something from an hour ago
+That is about the material and not about whoever receives it. Write nothing anywhere that refers to it.
+Keep a line of text to about 6 words.

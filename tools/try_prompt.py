@@ -102,7 +102,13 @@ def counted(document: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-async def once(*, language: str, capabilities: frozenset[HouseCapability]) -> dict[str, Any]:
+async def once(
+    *,
+    language: str,
+    capabilities: frozenset[HouseCapability],
+    shape: str = "",
+    words_per_line: int = deviser.DEFAULT_WORDS_PER_LINE,
+) -> dict[str, Any]:
     """One call, parsed, with nothing screened and nothing checked. Raises what it raises."""
     import os
     import secrets
@@ -125,7 +131,11 @@ async def once(*, language: str, capabilities: frozenset[HouseCapability]) -> di
     )
     try:
         answer = await deviser.ExperienceDeviser().ask(
-            context, capabilities=capabilities, language=language
+            context,
+            capabilities=capabilities,
+            language=language,
+            shape=shape,
+            words_per_line=words_per_line,
         )
     finally:
         await gate.aclose()
@@ -162,6 +172,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--language", default="italiano")
     parser.add_argument("--swap", action="append", default=[], help="worth=path/to/file.md")
     parser.add_argument("--keep", default="", help="write the documents under experiments/<name>")
+    parser.add_argument(
+        "--shape",
+        default=deviser.DEFAULT_DIFFICULTY,
+        choices=sorted(deviser.SHAPES),
+        help="what the parent chose under how it should be made",
+    )
+    parser.add_argument("--words-per-line", type=int, default=deviser.DEFAULT_WORDS_PER_LINE)
     args = parser.parse_args(argv)
 
     if args.swap:
@@ -185,7 +202,12 @@ def main(argv: list[str] | None = None) -> int:
         began = time.time()
         try:
             experience: Experience = asyncio.run(
-                once(language=args.language, capabilities=capabilities)
+                once(
+                    language=args.language,
+                    capabilities=capabilities,
+                    shape=deviser.SHAPES[args.shape],
+                    words_per_line=args.words_per_line,
+                )
             )
         except Exception as exc:  # noqa: BLE001 - a probe reports and carries on
             print(f"{n:02d} rifiutato: {type(exc).__name__}: {exc}")

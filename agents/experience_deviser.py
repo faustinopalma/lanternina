@@ -132,6 +132,27 @@ _INSTRUCTION: Final = (
 # repair is written against the same shape the first attempt was.
 _REPAIR: Final = SAYS.text("repair")
 
+# What the parent's three choices mean for an afternoon, said as a property of the material.
+# The old printed-exercise path glossed them as sentence length; an afternoon's difficulty is
+# not how long a sentence is, it is how many things have to be held together at once — which
+# is the axis the afternoons were failing on before anything read this at all.
+DEFAULT_DIFFICULTY: Final = "gentle"
+DEFAULT_WORDS_PER_LINE: Final = 6
+SHAPES: Final[dict[str, str]] = {
+    "gentle": (
+        "one thing that is wrong and one thing to find out, told plainly; nothing that has "
+        "to be matched against something from an hour ago"
+    ),
+    "steady": (
+        "two things that have to be put side by side before either makes sense, and one "
+        "turn where what looked true stops being true"
+    ),
+    "stretch": (
+        "three things to relate, and something that only resolves once all three are in "
+        "hand — still one question, and every step still clear on its own"
+    ),
+}
+
 
 def the_prompt(
     *,
@@ -143,6 +164,8 @@ def the_prompt(
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
     brief: str = "",
+    shape: str = "",
+    words_per_line: int = DEFAULT_WORDS_PER_LINE,
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
@@ -151,10 +174,17 @@ def the_prompt(
     that has not been rendered. What a parent typed in the panel arrives quoted as JSON,
     which is what keeps it material rather than instruction.
 
-    ``brief`` is the one exception, and it is a deliberate one: a parent who worked on an
-    idea in `panel/drafts.py` and approved it is asking for that afternoon and no other, so
-    it replaces the invitation to invent rather than sitting beside it. `docs/NON-GOALS.md`
-    says what stays true — it shapes this afternoon and reaches no other prompt.
+    ``shape`` is what the parent chose under "how it should be made" — how many things
+    connect and how long a chain of them runs. It is about the material and never about
+    whoever receives it, which is why it goes into the prompt and not into the document:
+    `tests/test_experience.py` refuses a field named `difficulty` on an afternoon, and that
+    stays true.
+
+    ``brief`` is the one exception to text arriving as material, and it is a deliberate one:
+    a parent who worked on an idea in `panel/drafts.py` and approved it is asking for that
+    afternoon and no other, so it replaces the invitation to invent rather than sitting
+    beside it. `docs/NON-GOALS.md` says what stays true — it shapes this afternoon and
+    reaches no other prompt.
     """
     return (
         f"{_INSTRUCTION}\n"
@@ -165,6 +195,8 @@ def the_prompt(
             interests=json.dumps(list(interests), ensure_ascii=False),
             avoid=json.dumps(list(avoid), ensure_ascii=False),
             already=json.dumps(list(already), ensure_ascii=False),
+            shape=shape or SHAPES[DEFAULT_DIFFICULTY],
+            words_per_line=words_per_line,
         )
         + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
     )
@@ -187,6 +219,8 @@ class ExperienceDeviser:
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
         brief: str = "",
+        shape: str = "",
+        words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
         return experience_in(
@@ -200,6 +234,8 @@ class ExperienceDeviser:
                 recent=recent,
                 subjects=subjects,
                 brief=brief,
+                shape=shape,
+                words_per_line=words_per_line,
             )
         )
 
@@ -215,6 +251,8 @@ class ExperienceDeviser:
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
         brief: str = "",
+        shape: str = "",
+        words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> str:
         """The answer as it came back, before anything tries to read it.
 
@@ -246,6 +284,8 @@ class ExperienceDeviser:
                     recent=recent,
                     subjects=subjects,
                     brief=brief,
+                    shape=shape,
+                    words_per_line=words_per_line,
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_EXPERIENCE_CHARS,

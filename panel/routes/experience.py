@@ -355,6 +355,10 @@ async def devise_afternoon(
             ),
             interests=settings_of_the_house.interests,
             avoid=settings_of_the_house.avoid,
+            # Chosen in the panel and read by nothing until 27 August 2026. It is about the
+            # material, so it goes to the prompt and never onto the document.
+            difficulty=settings_of_the_house.difficulty,
+            words_per_line=settings_of_the_house.max_words_per_line,
             already=already,
             recent=recent,
             subjects=subjects,

@@ -29,6 +29,7 @@ import os
 import secrets
 from collections.abc import Sequence
 
+from panel.preferences import DEFAULT_DIFFICULTY, DEFAULT_WORDS_PER_LINE
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
@@ -59,9 +60,17 @@ async def devise_experience(
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
     brief: str = "",
+    difficulty: str = DEFAULT_DIFFICULTY,
+    words_per_line: int = DEFAULT_WORDS_PER_LINE,
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
+
+    ``difficulty`` is the shape the parent chose in the panel, and it arrives as a word
+    rather than as a sentence so that the sentence sent to the model lives beside the rest
+    of the prompt. It says how many things an afternoon holds together at once. It reaches
+    the prompt and nothing else: no afternoon carries a field for it, and
+    `tests/test_experience.py` refuses one that does.
 
     ``brief`` is a parent's own idea, worked on in the panel and approved. It replaces the
     invitation to invent rather than sitting beside it, and nothing else is relaxed: the
@@ -73,7 +82,7 @@ async def devise_experience(
     :class:`~shared.experience.ExperienceError` when it is not an experience at all, and
     :class:`RefusedByTheChecks` when it is one that cannot be run well.
     """
-    from agents.experience_deviser import ExperienceDeviser, experience_in
+    from agents.experience_deviser import SHAPES, ExperienceDeviser, experience_in
     from orchestrator.router import FoundryConfig, FoundryRouter
     from orchestrator.safety import (
         AzureContentSafetyGate,
@@ -107,6 +116,8 @@ async def devise_experience(
             recent=recent,
             subjects=subjects,
             brief=brief,
+            shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
+            words_per_line=words_per_line,
         )
         try:
             experience = experience_in(answer)

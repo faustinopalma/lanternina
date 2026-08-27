@@ -510,3 +510,38 @@ E si legge diverso: Ada Valli, una decisione presa comunque, un indirizzo, due d
 ### 15.7 Da provare, non fatto
 
 Il pattern della review: una seconda chiamata che critica il documento contro questi criteri e una terza che corregge, al massimo un giro. Deciso di misurare prima il prompt da solo, che è quello che §15.5 ha fatto.
+
+## 16. La forma che il genitore sceglieva e nessuno leggeva — 27 agosto 2026
+
+Il pannello offre da sempre **Forma**: *semplice / media / più impegnativa*. Si sceglieva, si salvava, si rileggeva tornando sulla pagina. Non arrivava da nessuna parte. Le uniche due cose che leggevano `difficulty` erano `agents/content.py`, il percorso degli esercizi stampati che non si usa più, e `tools/home_server.py`, uno strumento da sviluppo. `devise_afternoon` passava `language`, `interests`, `avoid`, `already`, `recent`, `subjects` — e basta. Lo stesso valeva per `maxWordsPerLine`: sei parole per riga erano una preferenza scritta su un documento che nessun prompt vedeva.
+
+È il difetto peggiore di questa categoria, perché non fa rumore. Un genitore che sposta la forma su *più impegnativa* e non vede cambiare niente non conclude che il comando è scollegato: conclude che il sistema ha deciso lui, e smette di provare.
+
+### 16.1 Come è collegata
+
+La scelta resta una parola nel pannello (`gentle` / `steady` / `stretch`) e diventa una frase sul materiale dentro `agents/experience_deviser.py::SHAPES`, non prima. La traduzione sta dietro il cancello — `panel/devising.py` — perché `tests/test_boundaries.py` vieta a una rotta di importare un agente, e il primo tentativo l'aveva messa in `panel/routes/experience.py` (fallito, giustamente).
+
+Le tre frasi non parlano di lunghezza delle frasi, che era la glossa del vecchio percorso stampato. Parlano di **quante cose vanno tenute insieme in una volta**, che è l'asse su cui i pomeriggi stavano fallendo davvero:
+
+- *semplice*: una cosa che non torna e una da scoprire, dette in chiaro; niente da confrontare con qualcosa di un'ora prima.
+- *media*: due cose da mettere una accanto all'altra prima che una delle due abbia senso, e una svolta.
+- *più impegnativa*: tre cose da mettere in relazione, e qualcosa che si scioglie solo quando ci sono tutte e tre.
+
+Niente di tutto questo tocca il documento. `tests/test_experience.py` continua a rifiutare un campo `difficulty` su un pomeriggio, e deve continuare: la forma è una proprietà del materiale, e un pomeriggio che se la porta dietro diventa un giudizio su chi lo riceve.
+
+### 16.2 Misurato, non supposto
+
+Quattro chiamate al servizio vero, `gpt-5.6-sol-2026-07-09`, tutto uguale tranne la forma.
+
+| forma | titolo | come si scioglie |
+|---|---|---|
+| semplice | Il giro che torna alla finestra | una mappa, una piega, un rovesciamento |
+| più impegnativa | Le tre promesse di Irene | chiave, tazza e finestra, che si leggono solo insieme |
+
+I conteggi non le distinguono — 6 momenti contro 5, 280 parole contro 259, due fogli entrambe — ed è quello che ci si aspetta: quei numeri misurano il budget del mezzo di §15, non la difficoltà. La differenza si vede leggendo, ed è esattamente dove la si voleva.
+
+### 16.3 Quello che resta aperto
+
+Due delle quattro chiamate grezze rifiutate dal formato: un'illustrazione di 201 caratteri su un massimo di 200, e una via d'uscita che non nominava niente in mano alla persona. In produzione `devise_experience` le ripara, quindi non si perde un pomeriggio. Resta che una su due sfora, ed è più di quell'una su tre di §15.6.
+
+`variety` — *quanto si cambia argomento* — è ancora scollegata esattamente come lo era `difficulty`. Non è stata collegata qui perché non so ancora che cosa dovrebbe dire a un prompt che già riceve `already`, cioè l'elenco dei pomeriggi da non ripetere. Va o collegata o tolta dal pannello: lasciarla lì è la stessa bugia silenziosa.

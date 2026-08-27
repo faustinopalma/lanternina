@@ -265,6 +265,8 @@ async def approve(draft_id: str, account: CurrentAccount, request: Request) -> A
             language=LANGUAGE_NAMES.get(chosen.language, chosen.language),
             interests=chosen.interests,
             avoid=chosen.avoid,
+            difficulty=chosen.difficulty,
+            words_per_line=chosen.max_words_per_line,
             now=time.time(),
         )
         outcome = SERVED
