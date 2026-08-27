@@ -23,6 +23,8 @@ Before any device is interesting, it has to survive these. They come from `.gith
 
 **It must not watch a person.** Not with radar, not with a microphone, not with a wearable. The camera in this system is handheld, and faces will be in frame — so the rule cannot be about where the lens points. It is about two other things: a capture happens only because the person holding the device pressed the button, and nothing infers anything about a person from what comes back. Anything that senses *a person* without either of those — including the entire category of devices marketed as "privacy-friendly presence detection" — is out.
 
+**It may capture anywhere; it may upload only at home.** Superseding "the device joins the home network only", which was containment written as a ban on the object. Capture and transmission are separate concerns: the device takes the photograph wherever it is and holds it, and sends it when it next sees the home network. Credentials and content still never cross a network nobody vetted, which is all the old rule bought. What it costs in hardware is real and belongs here: enough flash to hold a few frames, and a wake path that checks for the known SSID without a radio that is always on.
+
 **It must not judge a person.** No device whose output is a score, a level, a streak, a percentage, a trend, or a comparison. No device whose appeal depends on somebody wanting to keep it happy.
 
 **It must not pull.** Nothing that notifies on inactivity. Nothing that gets brighter, louder or more insistent the longer it is ignored. Stopping is a legitimate outcome, so every device must be ignorable without consequence.

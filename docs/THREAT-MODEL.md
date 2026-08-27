@@ -6,6 +6,8 @@ Scope: the mini-PC, the ESP32 devices, the camera, the printed sheets, the paren
 
 Personal material may be processed in the cloud tier and not only in the house. The tier runs in the EU and is held to the confidentiality a bank owes the records it keeps — a standard this model assumes of it, not one it verifies. What follows is therefore about who can reach the data, not about which side of the boundary it sits on.
 
+**"We do not persist it" is not "it never existed anywhere".** The rectified page crop and the prompt around it go to a model provider, and that provider may keep its own copies: request logs, abuse-monitoring buffers, retention windows set by contract or by law. None of that is under this project's control, and no seal, type or test here reaches it. Said in the same register as the line below about physical access: the promise this project can make is about its own stores, and beyond them the promise is somebody else's to make.
+
 ---
 
 ## Assets, in priority order
@@ -28,8 +30,8 @@ Personal material may be processed in the cloud tier and not only in the house. 
 | Failure | How it happens | Mitigation |
 | --- | --- | --- |
 | Engagement optimisation creeps in | A streak "to help motivation"; a nudge after two quiet days | Forbidden by [NON-GOALS.md](NON-GOALS.md); `tests/test_boundaries.py` fails on the vocabulary; no metric is stored to optimise against |
-| The system starts stating verdicts | Adaptation needs a model of what happened, and a model is one rename away from a claim about the person | Adaptation is allowed and expected; what may be stored is what was observed, not a score, ability or progress field. `tests/test_boundaries.py` fails on that vocabulary |
-| A verdict surfaces | An adaptation signal is shown to be helpful: "this got easier", a trend line in the panel | Nothing about how somebody is doing is rendered, on paper, on a display or in the panel. The parent sees proposals, not assessments |
+| The system starts stating verdicts | Adaptation needs a model of what happened, and a model is one rename away from a claim about the person | A reading is read and not kept: `WhatCameBack` closes the implicit routes out of memory, and the record has no field one would fit in. What is durable is what was made and what was configured |
+| A verdict surfaces | An adaptation signal is shown to be helpful: "this got easier", a trend line in the panel | Nothing about how somebody is doing is rendered, on paper, on a display or in the panel. The parent sees proposals, not assessments. `tests/test_boundaries.py` fails on that vocabulary in the stored shape, the panel and the prompts |
 | A dashboard change starts work in the house | A configuration route also enqueues generation or signals the device | Dashboard mutations persist only; processing begins only on an authenticated request initiated by the home server |
 | Content is delivered unreviewed | An agent renders directly; a "fast path" for the demo | `Proposal` has no approval field; delivery verifies two seals; agents never hold the ledger |
 | Something unkind or infantilising is said | Model drift, a bad prompt, a tone setting | Content Safety chokepoint, parent approval, age-appropriateness rules in `.github/instructions/agent-boundaries.instructions.md` |
@@ -114,4 +116,4 @@ Not a security threat, but a harm.
 
 1. What counts as a "safety signal" that escalates to the guardian? If it includes conclusions about the person drawn from their work, that contradicts T1 and needs a separate decision.
 2. Does the device transport get authentication before the demo, or is the LAN treated as trusted?
-3. How long are scanned pages retained, and who can delete them?
+3. How long are scanned pages retained, and who can delete them? The reading is not kept; the image handed to the provider is a separate question, and it is the provider's answer.

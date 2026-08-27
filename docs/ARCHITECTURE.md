@@ -27,7 +27,7 @@ Read [NON-GOALS.md](NON-GOALS.md) first. This document describes how the code ma
        │ a page put on the glass                                ▼
    the scanner                                    e-paper / LCD / printer
                                                                  
-       └──────────────── prompts and page pairs ──────────▶ Azure AI Foundry
+       └──────────────── prompts and page pairs ──────────▶ Microsoft Foundry
 ```
 
 `shared/` holds types and protocols and nothing else. Everything else depends on it; it depends on nothing. No agent imports another agent.
@@ -67,7 +67,7 @@ CLOUD_FOUNDRY  ──unreachable──▶  CACHED_FALLBACK
    full                            cached only
 ```
 
-No model runs on the device. Every LLM and vision call goes to Azure AI Foundry; the mini-PC runs conventional code only — OpenCV, the panel, the serial link. That is a deliberate choice: one inference path instead of two, no model weights to ship or update, no second set of failure modes, and a device small enough to be powered over Ethernet.
+No model runs on the device. Every LLM and vision call goes to Microsoft Foundry; the mini-PC runs conventional code only — OpenCV, the panel, the serial link. That is a deliberate choice: one inference path instead of two, no model weights to ship or update, no second set of failure modes, and a device small enough to be powered over Ethernet.
 
 `DegradationLevel` has no "unavailable" member. Going dark is not a state the type system can express, because for this user an unexplained dead device is worse than a simpler activity. The router never raises because the cloud is down; it reports which tier served the request and whether capability is reduced, and the parent panel shows it.
 
@@ -117,8 +117,9 @@ A guarantee about framing would have had to be withdrawn the first time somebody
 - No facial recognition, no emotion or attention inference, no age or identity inference, at any step including an intermediate one. This carries more weight now, not less.
 - Content Safety runs on inbound photographs as it does on generated output.
 - What is kept lands in a gallery its owner can see and delete from. Deletion is the guarantee; not keeping anything stopped being one when the camera left the desk.
+- It captures anywhere and uploads only at home. The frame waits on the device until it sees the home network, so credentials and content never cross a network nobody vetted — and the object stays one that can be carried.
 
-None of this is enforced by a test. `vision/` is an empty package and there is nothing to enforce it against, which is where the README's Status section puts it. `RawFrame` and `RectifiedPage` survive in `shared/vision_contracts.py` as a technique for sealing a type, not as a rule the system still keeps.
+None of this is enforced by a test. `vision/` is an empty package and there is nothing to enforce it against, which is where the README's Status section puts it. `RawFrame` survives in `shared/vision_contracts.py` as a technique for sealing a type, not as a rule the system still keeps; the same technique is load-bearing one class down, on `WhatCameBack`.
 
 ## 7. Why nothing on the page is there for a machine
 
@@ -127,6 +128,12 @@ A page is read by handing a model two images — the blank as it was printed, an
 The design this replaced is in `attic/`: cells in page coordinates normalised over the quadrilateral of four ArUco markers, a QR carrying the spec version, and a sheet whose version the reader did not understand refused rather than guessed at. It solved a real problem — print and read drifting apart, so answers get attributed to the wrong questions — by making the paper carry its own description. The cost was that every page had to be laid out by something that could also describe itself, which is why the pages all looked like forms.
 
 Reading is a model's job. Until 21 August 2026 there was a second reader underneath — arithmetic over `LOCALLY_READABLE` cell kinds, used with no cloud and flagged `PageReading.degraded` — and it is in `attic/` now: **no cloud, no reading**, and a page that comes back while the panel is unreachable waits. What survives is the preference that put it there in the first place: anything the model did not answer for, or answered for with something outside what was asked, is marked `needs_review`. "The parent should look at this" beats a confident wrong answer.
+
+### The reading is transient, and the type says so
+
+What the model says about a returned page is `shared/vision_contracts.WhatCameBack`. The continuation is written from it and then it is gone. That is not a comment on a field: the type raises `RetentionViolation` on pickle, on copy, on deepcopy and on the state protocol, so the ways a reading ends up kept *without anyone deciding to keep it* — a cache, a queue, a session, a background job's payload — are closed rather than discouraged. `tests/test_boundaries.py` holds it, mutation-checked.
+
+One door is left open on purpose. `to_dict()` is the body of the request that carries the reading from the house to the panel writing the continuation, and back; the reading has to make that hop, and a type that could not travel could not be used. What stops the hop becoming a record is the record's own shape — the trail has no field a reading would fit in, and `tests/test_trail.py` names the fields it does have. Stated as a limit rather than a guarantee: nothing prevents either end of that request writing the body down, and closing that would mean changing both callers.
 
 ## 8. Trust boundaries
 
