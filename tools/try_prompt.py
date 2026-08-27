@@ -56,6 +56,21 @@ LEAVES_A_MARK = re.compile(
 )
 
 
+# There is no count of how much a person has to hold in their head, and there was one for an
+# hour. It matched every capitalised word, which in Italian means every imperative opening a
+# line — Prendi, Metti, Scrivi — and reported eighteen proper nouns in an afternoon that had
+# one. Corrected to skip sentence openings it reported nought to six, across afternoons that
+# read as wildly different to follow, so it was measuring nothing either way. What makes
+# 'Il verbale del quarto colpo' unfollowable is a 1931 survey, a register, an abbreviation,
+# a bell code, a pressure test and a covered word — concepts to relate, not names to recall,
+# and a regular expression does not see those. Somebody reading it is still the measure.
+
+
+def _things_to_remember(lines: list[str]) -> set[str]:
+    """Gone. See the note above: it measured Italian grammar, not difficulty."""
+    raise NotImplementedError("there is no honest count of this yet")
+
+
 def _lines_of(document: dict[str, Any]) -> list[str]:
     """Every line that reaches a display or a page, at the standard weight."""
     said: list[str] = []
@@ -71,7 +86,7 @@ def _lines_of(document: dict[str, Any]) -> list[str]:
 
 
 def counted(document: dict[str, Any]) -> dict[str, Any]:
-    """The shape, and how much of it somebody could actually do."""
+    """The shape, how much of it somebody could do, and how much they must hold."""
     moments = document.get("moments") or []
     lines = _lines_of(document)
     pages = [m.get("page") for m in moments if m.get("page")]
