@@ -107,6 +107,8 @@ async def once(
     language: str,
     capabilities: frozenset[HouseCapability],
     shape: str = "",
+    distance: str = "",
+    note: str = "",
     words_per_line: int = deviser.DEFAULT_WORDS_PER_LINE,
 ) -> dict[str, Any]:
     """One call, parsed, with nothing screened and nothing checked. Raises what it raises."""
@@ -135,6 +137,8 @@ async def once(
             capabilities=capabilities,
             language=language,
             shape=shape,
+            distance=distance,
+            note=note,
             words_per_line=words_per_line,
         )
     finally:
@@ -179,6 +183,13 @@ def main(argv: list[str] | None = None) -> int:
         help="what the parent chose under how it should be made",
     )
     parser.add_argument("--words-per-line", type=int, default=deviser.DEFAULT_WORDS_PER_LINE)
+    parser.add_argument(
+        "--variety",
+        default=deviser.DEFAULT_VARIETY,
+        choices=sorted(deviser.DISTANCES),
+        help="how far to go from the afternoons already offered",
+    )
+    parser.add_argument("--note", default="", help="what is true in the house at the moment")
     args = parser.parse_args(argv)
 
     if args.swap:
@@ -206,6 +217,8 @@ def main(argv: list[str] | None = None) -> int:
                     language=args.language,
                     capabilities=capabilities,
                     shape=deviser.SHAPES[args.shape],
+                    distance=deviser.DISTANCES[args.variety],
+                    note=args.note,
                     words_per_line=args.words_per_line,
                 )
             )

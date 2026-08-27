@@ -1,21 +1,33 @@
-"""What the content is made of: interests, things to avoid, difficulty, variety, language.
+"""What the content is made of: where to start, what to keep away from, how much it asks.
 
 These were a `LearnerProfile` written into the hub's code, so every piece of content
 generated so far was tuned to a person who does not exist. They live here for the same
 reason the rhythm does: the parent writes them, the hub reads them on its next run and
 decides for itself, and saving them starts nothing.
 
-What is stored is exactly the field list `LearnerProfile.prompt_hints()` returns. There is
-no field here for a name or an id, and no route that carries one — not because the panel
-may not hold one, but because nothing has needed it yet. Keeping the two lists identical is
-what keeps household settings and person from dissolving into one text field.
+Until 27 August 2026 the field list here was kept identical to the one
+`LearnerProfile.prompt_hints()` returns, and that mirror was the reason this page could not
+hold the thing a parent most wants to say. A person's profile has no clock. A household's
+steering is almost always about *now*: a month full of school, a death in the family, a
+week when nothing long will land. Shredded into keywords with no lifetime, those become
+permanent, and a permanent statement about what somebody can take is the verdict this
+project refuses to keep.
+
+So the mirror is gone and what replaced it is narrower and truer: **there is no field for a
+name or an id, and no route that carries one.** What is added instead is a note in the
+parent's own words with an expiry, and the expiry is enforced by deleting it rather than by
+flagging it — see :func:`still_standing`. A note that cannot outlive four weeks cannot
+become a record of anybody.
+
+The words per line left this page on the same day. How wide a line is on an 800×480 display
+is a fact about the hardware, and asking a parent to know it was us handing them our job.
 """
 
 from __future__ import annotations
 
 import threading
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Protocol, runtime_checkable
 
 from shared.domain import ContentVariety, Difficulty
@@ -33,19 +45,30 @@ LANGUAGE_CHOICES = ("it", "en")
 # a household set to Italian — an instruction the model could only ignore.
 LANGUAGE_NAMES = {"it": "Italian", "en": "English"}
 
-# A line on the e-paper display is about eight words wide at the size it is read at, so
-# anything above that would be a setting the hardware cannot honour.
-WORDS_PER_LINE_CHOICES = (3, 4, 5, 6, 7, 8)
+# A line on the e-paper display is about eight words wide at the size it is read at. It is
+# a constant of the hardware and no longer a question for a parent.
+WORDS_PER_LINE = 6
 
-# Free text a person reads back and edits. The bound is what keeps one entry from becoming
-# a paragraph of instructions inside a prompt.
-MAX_ENTRY_LENGTH = 80
+# Free text a person reads back and edits. Eighty characters used to be the bound, which
+# fitted "i ragni" and not "i ragni, e nemmeno disegnati" — so what was stored was a tag and
+# the reason for it was lost. Two hundred fits the reason, and the reason is the part that
+# steers.
+MAX_ENTRY_LENGTH = 200
 MAX_ENTRIES = 12
+
+# The note is one paragraph, not a page: it goes into a prompt beside everything else, and a
+# standing instruction that outweighs the rest of the prompt is a different kind of thing.
+MAX_NOTE_LENGTH = 600
+
+# How long a note stands before it is deleted. Renewable, and short enough that a parent who
+# forgets it exists is not still steering with something they wrote in another season. Four
+# weeks is roughly the horizon of the things this is for — a school term's worst month, a
+# convalescence, a house being packed up.
+NOTE_LASTS_SECONDS = 28 * 24 * 60 * 60
 
 DEFAULT_DIFFICULTY = str(Difficulty.GENTLE)
 DEFAULT_VARIETY = str(ContentVariety.BALANCED)
 DEFAULT_LANGUAGE = "it"
-DEFAULT_WORDS_PER_LINE = 6
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,24 +80,48 @@ class Preferences:
     avoid: tuple[str, ...] = ()
     difficulty: str = DEFAULT_DIFFICULTY
     variety: str = DEFAULT_VARIETY
-    max_words_per_line: int = DEFAULT_WORDS_PER_LINE
     language: str = DEFAULT_LANGUAGE
+    # What is true in this house at the moment, in the parent's own words, and the instant
+    # it stops being true. Empty is the ordinary state.
+    note: str = ""
+    note_until: float = 0.0
     updated_at: float = 0.0
     updated_by: str = ""
 
-    def to_public(self) -> dict[str, Any]:
+    def standing(self, now: float) -> str:
+        """The note if it is still true, and an empty string once it is not.
+
+        Every reader goes through here rather than through the field, so an expired note
+        cannot reach a prompt by somebody forgetting to check the date.
+        """
+        return self.note if self.note and now < self.note_until else ""
+
+    def forgetting_what_expired(self, now: float) -> Preferences:
+        """The same settings with a lapsed note removed rather than kept and ignored.
+
+        Kept-and-ignored would leave a sentence about a hard month sitting in the store for
+        as long as the household exists. Deleting it is what makes "this cannot become a
+        record of anybody" a property of the data and not of the code that reads it.
+        """
+        if not self.note or now < self.note_until:
+            return self
+        return replace(self, note="", note_until=0.0)
+
+    def to_public(self, now: float | None = None) -> dict[str, Any]:
+        moment = time.time() if now is None else now
         return {
             "interests": list(self.interests),
             "avoid": list(self.avoid),
             "difficulty": self.difficulty,
             "variety": self.variety,
-            "maxWordsPerLine": self.max_words_per_line,
             "language": self.language,
+            "note": self.standing(moment),
+            "noteUntil": self.note_until if self.standing(moment) else 0.0,
             "updatedAt": self.updated_at,
             "difficultyChoices": list(DIFFICULTY_CHOICES),
             "varietyChoices": list(VARIETY_CHOICES),
             "languageChoices": list(LANGUAGE_CHOICES),
-            "wordsPerLineChoices": list(WORDS_PER_LINE_CHOICES),
+            "noteLastsDays": NOTE_LASTS_SECONDS // (24 * 60 * 60),
         }
 
 
@@ -94,7 +141,11 @@ class InMemoryPreferencesStore:
         with self._lock:
             # A household that has never chosen gets the defaults, not an error: the hub
             # has to be able to generate before anyone has opened the panel.
-            return self._rows.get(household_id, Preferences(household_id=household_id))
+            stored = self._rows.get(household_id, Preferences(household_id=household_id))
+            standing = stored.forgetting_what_expired(time.time())
+            if standing is not stored:
+                self._rows[household_id] = standing
+            return standing
 
     def set(self, preferences: Preferences) -> Preferences:
         with self._lock:
@@ -122,6 +173,23 @@ def _clean_list(raw: Any, name: str) -> tuple[str, ...]:
     return entries
 
 
+def _clean_note(raw: Any) -> str:
+    """The one place a parent writes more than a line. Paragraph breaks survive as spaces.
+
+    Same treatment as an entry and for the same reason: this reaches a prompt as material,
+    quoted as JSON, and a newline is the cheapest way to make one line of it look like a new
+    instruction.
+    """
+    if raw is None:
+        return ""
+    if not isinstance(raw, str):
+        raise ValueError("the note is written in words")
+    note = " ".join(raw.split())
+    if len(note) > MAX_NOTE_LENGTH:
+        raise ValueError(f"the note must be at most {MAX_NOTE_LENGTH} characters")
+    return note
+
+
 def clean_preferences(
     household_id: str,
     *,
@@ -129,27 +197,31 @@ def clean_preferences(
     avoid: Any,
     difficulty: Any,
     variety: Any,
-    max_words_per_line: Any,
     language: Any,
+    note: Any = "",
+    now: float | None = None,
     updated_by: str = "",
 ) -> Preferences:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
+    moment = time.time() if now is None else now
     if difficulty not in DIFFICULTY_CHOICES:
         raise ValueError(f"the difficulty must be one of {list(DIFFICULTY_CHOICES)}")
     if variety not in VARIETY_CHOICES:
         raise ValueError(f"the variety must be one of {list(VARIETY_CHOICES)}")
     if language not in LANGUAGE_CHOICES:
         raise ValueError(f"the language must be one of {list(LANGUAGE_CHOICES)}")
-    if isinstance(max_words_per_line, bool) or max_words_per_line not in WORDS_PER_LINE_CHOICES:
-        raise ValueError(f"the words per line must be one of {list(WORDS_PER_LINE_CHOICES)}")
+    standing = _clean_note(note)
     return Preferences(
         household_id=household_id,
         interests=_clean_list(interests, "the interests"),
         avoid=_clean_list(avoid, "the things to avoid"),
         difficulty=str(difficulty),
         variety=str(variety),
-        max_words_per_line=int(max_words_per_line),
         language=str(language),
-        updated_at=time.time(),
+        note=standing,
+        # Saving the note again is how it is renewed: there is no separate button, because
+        # a parent editing what is true now has already said it is still true.
+        note_until=moment + NOTE_LASTS_SECONDS if standing else 0.0,
+        updated_at=moment,
         updated_by=updated_by,
     )

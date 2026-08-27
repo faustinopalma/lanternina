@@ -37,7 +37,6 @@ from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
     DEFAULT_VARIETY,
-    DEFAULT_WORDS_PER_LINE,
     Preferences,
 )
 from .proposals import ProposalRecord
@@ -900,7 +899,13 @@ class CosmosPreferencesStore:
         )
         if not rows:
             return Preferences(household_id=household_id)
-        return _to_preferences(rows[0])
+        stored = _to_preferences(rows[0])
+        standing = stored.forgetting_what_expired(time.time())
+        if standing is not stored:
+            # Written back, not merely filtered on the way out: an expired note is deleted
+            # so that nothing about a hard month outlives the month. See panel/preferences.py.
+            self.set(standing)
+        return standing
 
     def set(self, preferences: Preferences) -> Preferences:
         self._container.upsert_item(
@@ -912,8 +917,9 @@ class CosmosPreferencesStore:
                 "avoid": list(preferences.avoid),
                 "difficulty": preferences.difficulty,
                 "variety": preferences.variety,
-                "maxWordsPerLine": preferences.max_words_per_line,
                 "language": preferences.language,
+                "note": preferences.note,
+                "noteUntil": preferences.note_until,
                 "updatedAt": preferences.updated_at,
                 "updatedBy": preferences.updated_by,
             }
@@ -928,8 +934,9 @@ def _to_preferences(document: dict[str, Any]) -> Preferences:
         avoid=tuple(str(item) for item in document.get("avoid") or ()),
         difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
         variety=str(document.get("variety") or DEFAULT_VARIETY),
-        max_words_per_line=int(document.get("maxWordsPerLine") or DEFAULT_WORDS_PER_LINE),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
+        note=str(document.get("note") or ""),
+        note_until=float(document.get("noteUntil") or 0.0),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )

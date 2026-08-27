@@ -23,12 +23,21 @@ interface Draft {
   avoid: string;
   difficulty: string;
   variety: string;
-  maxWordsPerLine: string;
   language: string;
+  note: string;
+}
+
+/* The day the note stops being true, for the parent to read. Not a countdown: how many days
+ * are left is not something anybody needs to watch. */
+function until(at: number, locale: string) {
+  return new Date(at * 1000).toLocaleDateString(locale, {
+    day: "numeric",
+    month: "long",
+  });
 }
 
 function Form({ settings }: { settings: Settings }) {
-  const { t } = useWords();
+  const { t, language } = useWords();
   const api = useApi();
   const [status, setStatus] = useState<MessageKey | null>(null);
   const [draft, setDraft] = useState<Draft>(() => ({
@@ -36,8 +45,8 @@ function Form({ settings }: { settings: Settings }) {
     avoid: asLines(settings.avoid),
     difficulty: settings.difficulty,
     variety: settings.variety,
-    maxWordsPerLine: String(settings.maxWordsPerLine),
     language: settings.language,
+    note: settings.note,
   }));
 
   const edit = (change: Partial<Draft>) => setDraft({ ...draft, ...change });
@@ -68,8 +77,8 @@ function Form({ settings }: { settings: Settings }) {
         avoid: fromLines(draft.avoid),
         difficulty: draft.difficulty,
         variety: draft.variety,
-        maxWordsPerLine: Number(draft.maxWordsPerLine),
         language: draft.language,
+        note: draft.note.trim(),
       });
       saved();
       setStatus("preferences.saved");
@@ -151,6 +160,26 @@ function Form({ settings }: { settings: Settings }) {
         </div>
 
         <Quiet className="m-0">{t("preferences.languageNote")}</Quiet>
+
+        {/* The one place the parent writes rather than chooses, and the only setting that
+         * expires. The label asks what is true of the house, not of the person: the grammar
+         * of the question is most of what keeps the answer out of verdict territory. */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="pref-note">{t("preferences.note.label")}</Label>
+          <Textarea
+            id="pref-note"
+            rows={3}
+            placeholder={t("preferences.note.example")}
+            value={draft.note}
+            onChange={(event) => edit({ note: event.target.value })}
+          />
+          <Quiet className="m-0">
+            {settings.noteUntil > 0 && draft.note.trim() === settings.note
+              ? t("preferences.note.until", { day: until(settings.noteUntil, language) })
+              : t("preferences.note.lasts", { days: String(settings.noteLastsDays) })}
+          </Quiet>
+        </div>
+
         {/* Grey means the house has what is on the screen. See `lib/useUnsaved.ts`. */}
         <span className="flex flex-wrap items-center gap-3">
           <Button type="submit" variant="primary" disabled={!changed} className="flex-none">

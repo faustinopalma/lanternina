@@ -278,22 +278,24 @@ export interface NewRhythm {
   scriptsWanted: number;
 }
 
-/** Exactly the fields `prompt_hints()` returns. There is no field for a name, here or on
- *  the route, because nothing has needed one yet. */
+/** What a household steers with. There is no field for a name, here or on the route.
+ *  `note` is the one free paragraph, and the only setting with a lifetime: the panel sends
+ *  it, the server stamps `noteUntil`, and the server deletes it once that passes. */
 export interface NewPreferences {
   interests: string[];
   avoid: string[];
   difficulty: string;
   variety: string;
-  maxWordsPerLine: number;
   language: string;
+  note: string;
 }
 
 export interface Preferences extends NewPreferences {
+  noteUntil: number;
+  noteLastsDays: number;
   difficultyChoices: string[];
   varietyChoices: string[];
   languageChoices: string[];
-  wordsPerLineChoices: number[];
 }
 
 /** How far the house may improvise when an afternoon did not go the way it was planned.

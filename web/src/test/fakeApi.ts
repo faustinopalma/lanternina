@@ -409,12 +409,13 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     avoid: ["tempeste"],
     difficulty: "gentle",
     variety: "balanced",
-    maxWordsPerLine: 6,
     language: "it",
+    note: "",
+    noteUntil: 0,
+    noteLastsDays: 28,
     difficultyChoices: ["gentle", "steady", "stretch"],
     varietyChoices: ["familiar", "balanced", "frequent"],
     languageChoices: ["it", "en"],
-    wordsPerLineChoices: [3, 4, 5, 6, 7, 8],
   };
   /* One line written, so the page shows both halves: what this house allowed and what
    * holds everywhere. The fixed ones are the API's own words, in the model's language. */

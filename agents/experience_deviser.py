@@ -153,6 +153,23 @@ SHAPES: Final[dict[str, str]] = {
     ),
 }
 
+# How far an afternoon should travel from the ones already offered. The list of those is
+# already in the prompt saying "write a different one"; this says how different, which is
+# the only thing the choice can honestly mean. It was stored and read by nothing until
+# 27 August 2026, the same fault as the shape and found the same way.
+DEFAULT_VARIETY: Final = "balanced"
+DISTANCES: Final[dict[str, str]] = {
+    "familiar": (
+        "stay in the same world and the same register as the recent ones; what changes is "
+        "the question, not the furniture"
+    ),
+    "balanced": "keep the register and bring in one element that has not appeared before",
+    "frequent": (
+        "go somewhere else — another place, another century, another kind of object — and "
+        "keep only the way it is made"
+    ),
+}
+
 
 def the_prompt(
     *,
@@ -165,6 +182,8 @@ def the_prompt(
     subjects: Sequence[str] = (),
     brief: str = "",
     shape: str = "",
+    distance: str = "",
+    note: str = "",
     words_per_line: int = DEFAULT_WORDS_PER_LINE,
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
@@ -179,6 +198,11 @@ def the_prompt(
     whoever receives it, which is why it goes into the prompt and not into the document:
     `tests/test_experience.py` refuses a field named `difficulty` on an afternoon, and that
     stays true.
+
+    ``note`` is what the parent wrote about this house at this moment, and it is the only
+    part of the household's settings with a lifetime. It arrives quoted, as material, and
+    the panel deletes it rather than keeping it once it lapses — see `panel/preferences.py`
+    for why a standing sentence about a household must not be able to outlive its season.
 
     ``brief`` is the one exception to text arriving as material, and it is a deliberate one:
     a parent who worked on an idea in `panel/drafts.py` and approved it is asking for that
@@ -196,6 +220,8 @@ def the_prompt(
             avoid=json.dumps(list(avoid), ensure_ascii=False),
             already=json.dumps(list(already), ensure_ascii=False),
             shape=shape or SHAPES[DEFAULT_DIFFICULTY],
+            variety=distance or DISTANCES[DEFAULT_VARIETY],
+            note=json.dumps(note, ensure_ascii=False),
             words_per_line=words_per_line,
         )
         + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
@@ -220,6 +246,8 @@ class ExperienceDeviser:
         subjects: Sequence[str] = (),
         brief: str = "",
         shape: str = "",
+        distance: str = "",
+        note: str = "",
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
@@ -235,6 +263,8 @@ class ExperienceDeviser:
                 subjects=subjects,
                 brief=brief,
                 shape=shape,
+                distance=distance,
+                note=note,
                 words_per_line=words_per_line,
             )
         )
@@ -252,6 +282,8 @@ class ExperienceDeviser:
         subjects: Sequence[str] = (),
         brief: str = "",
         shape: str = "",
+        distance: str = "",
+        note: str = "",
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> str:
         """The answer as it came back, before anything tries to read it.
@@ -285,6 +317,8 @@ class ExperienceDeviser:
                     subjects=subjects,
                     brief=brief,
                     shape=shape,
+                    distance=distance,
+                    note=note,
                     words_per_line=words_per_line,
                 ),
                 request_id=new_request_id(),

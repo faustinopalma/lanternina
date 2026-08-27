@@ -3,21 +3,16 @@
   "lede.signedout": "Il pannello del genitore.",
   "lede.pending": "L'accesso è riuscito, l'account non è ancora abilitato.",
   "lede.failed": "Qualcosa non ha funzionato.",
-
   "section.broken": "Questa sezione non si è aperta. Puoi passare a un'altra dal menu e tornare qui più tardi.",
-
   "signin.title": "Accesso",
   "signin.body": "Per usare il pannello serve un account. Puoi crearlo al primo accesso.",
   "signin.button": "Entra",
   "signout": "Esci",
   "account.aria": "Account con cui sei entrato",
-
   "connecting.note": "Puoi lasciare aperta questa pagina.",
-
   "pending.title": "Account in attesa",
   "pending.body": "L'accesso è riuscito. L'account però non è ancora abilitato: serve che una persona lo approvi.",
   "pending.note": "Non c'è niente da fare da qui. Questa pagina non cambierà da sola: ricaricala quando l'approvazione è avvenuta.",
-
   "proposals.title": "Da approvare",
   "proposals.note": "Approvare non mostra niente subito: quello che approvi resta da parte. La casa lo prende al giro successivo, e lo stampa o lo mette sul display.",
   "proposals.loading": "Sto caricando le proposte.",
@@ -34,7 +29,6 @@
   "action.withdraw": "Non più",
   "action.moveTheHour": "Sposta l'ora",
   "action.closeNow": "Falla finire adesso",
-
   "experiences.title": "In attesa di una decisione",
   "experiences.note": "Un'attività intera, pensata per questa casa: qualcosa sul display, un foglio sul tavolo, e quello che torna dallo scanner decide come va avanti. Approvi l'attività, non i singoli passaggi.",
   "experiences.laterNote": "Da qui non si può chiederne una: è la casa a chiedere, quando è il suo momento. Approvare scrive una riga e basta — la casa la trova alla richiesta successiva, e decide lei quando cominciarla.",
@@ -75,13 +69,11 @@
   "experiences.sayingNote": "Da qui si può spostare l'ora in cui finisce, o portarla a adesso. Non è un modo per fermarla: l'attività arriva comunque alla sua fine, dal punto in cui è. Sul display non compare niente.",
   "experiences.saidWaiting": "Scritto. La casa lo trova alla prossima richiesta, entro un minuto.",
   "experiences.sayFailed": "Non sono riuscito a registrarlo. Riprova più tardi.",
-
   "kind.exercise": "Foglio da stampare",
   "kind.routine_prompt": "Promemoria sul display",
   "kind.feedback": "Risposta dopo un foglio",
   "kind.schedule": "Piano della giornata",
   "kind.print_layout": "Impaginazione",
-
   "themes.title": "Temi dei quadri",
   "themes.note": "Il display disegna un quadro nuovo su uno di questi temi. Approvi il tema, non la singola immagine: quello che togli non viene più usato.",
   "themes.placeholder": "per esempio: gatti che dormono",
@@ -95,7 +87,6 @@
   "themes.empty": "Nessun tema. Finché la lista è vuota il display usa i temi di partenza.",
   "themes.badLabel": "Questo tema non va bene.",
   "themes.addFailed": "Non riuscito.",
-
   "reminders.title": "Promemoria",
   "reminders.note": "Quello che va ricordato, scritto come lo diresti. Una cosa per riga, con il giorno e l'ora se ce l'ha: «lavarsi i denti dopo cena», «mercoledì porta fuori il bidone».",
   "reminders.laterNote": "Scriverlo qui non fa partire niente: il pannello non può chiedere cosa vuol dire una frase nel momento in cui la scrivi. È la casa a chiedere, alla sua richiesta successiva.",
@@ -118,7 +109,6 @@
   "reminders.empty": "Non c'è ancora niente scritto.",
   "reminders.badText": "Questa frase non va bene.",
   "reminders.addFailed": "Non riuscito.",
-
   "guidelines.title": "Cosa può cambiare",
   "guidelines.note": "Un'attività è scritta prima, quando ancora non si sa come andrà: il foglio torna bianco, la stampante è senza carta, la cosa finisce da un'altra parte. Qui le dici che cosa può fare senza chiedere niente a te.",
   "guidelines.laterNote": "Una riga per volta, come la diresti a voce. Quello che non scrivi la casa non se lo prende: senza righe resta al minimo. Scrivere qui non fa partire niente — le legge quando deve decidere, dentro un'attività già cominciata.",
@@ -141,7 +131,6 @@
   "guidelines.unreadable": "Adesso non riesco a leggerlo.",
   "guidelines.badLine": "Questa riga non va bene.",
   "guidelines.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
-
   "rhythm.title": "Ritmo",
   "rhythm.note": "Quando il display può cambiare quadro, e ogni quanto, e in che giorni può cominciare un'attività.",
   "rhythm.clockSection": "L'orologio di casa",
@@ -173,12 +162,15 @@
   "rhythm.loading": "Sto leggendo il ritmo.",
   "rhythm.unreadable": "Non riesco a leggere il ritmo adesso.",
   "rhythm.picturesAllDay": "Stessa ora ai due capi: il quadro può cambiare a qualsiasi ora.",
-
   "preferences.title": "Da dove partire",
   "preferences.note": "Il punto di partenza, non il perimetro: la casa comincia da qui e può andare oltre su quello che vede tornare dai fogli. La forma riguarda il materiale, non chi lo riceve.",
+  "preferences.note.label": "In questo periodo",
+  "preferences.note.example": "che cosa sta succedendo in casa — un mese pieno di scuola, un trasloco, un lutto",
+  "preferences.note.lasts": "Vale {days} giorni, poi si cancella. Per rinnovarla basta risalvarla.",
+  "preferences.note.until": "Vale fino al {day}, poi si cancella.",
   "preferences.interests": "Temi da cui partire",
   "preferences.avoid": "Da evitare",
-  "preferences.oneEach": "uno per riga",
+  "preferences.oneEach": "uno per riga, e se serve il perché",
   "preferences.difficulty": "Forma",
   "preferences.gentle": "semplice",
   "preferences.steady": "media",
@@ -187,7 +179,6 @@
   "preferences.familiar": "sempre la stessa",
   "preferences.balanced": "un dettaglio nuovo",
   "preferences.frequent": "cambia spesso",
-  "preferences.wordsPerLine": "Parole per riga",
   "preferences.language": "Lingua dei contenuti",
   "preferences.italian": "italiano",
   "preferences.english": "inglese",
@@ -197,7 +188,6 @@
   "preferences.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
   "preferences.loading": "Sto leggendo le impostazioni.",
   "preferences.unreadable": "Non riesco a leggere le impostazioni adesso.",
-
   "devices.title": "Dispositivi",
   "devices.note": "Tutto quello che la casa può usare, con un compito che scegli tu e un nome che scrivi tu. I guasti compaiono qui e non sui display in casa.",
   "devices.loading": "Sto caricando i dispositivi.",
@@ -226,22 +216,18 @@
   "devices.recall": "Rimetti",
   "devices.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",
   "devices.nameRefused": "La casa non ha preso questo nome: contiene il nome di una persona, e quello non entra mai in ciò che viene scritto per il display. Scrivi il nome dell'oggetto.",
-
   "kind.display": "display",
   "kind.printer": "stampante",
   "kind.scanner": "scanner",
-
   "job.picture": "mostra i quadri",
   "job.sheet": "mostra le azioni da compiere",
   "job.remind": "mostra i promemoria quando è la loro ora",
   "job.print": "stampa i fogli",
   "job.scan": "legge i fogli",
-
   "level.mains": "collegato alla corrente",
   "level.ok": "batteria carica",
   "level.low": "da ricaricare presto",
   "level.critical": "da ricaricare",
-
   "menu.aria": "Sezioni del pannello",
   "menu.open": "Apri le sezioni del pannello",
   "menu.close": "Chiudi le sezioni del pannello",
@@ -249,7 +235,6 @@
   "menu.group.content": "Contenuti",
   "menu.group.settings": "Impostazioni",
   "menu.group.house": "La casa",
-
   "pictures.title": "Quadri",
   "pictures.note": "Tutti i quadri già comparsi sul display, dal più recente. Sono mostrati come li mostra il display: due soli livelli, senza grigi.",
   "pictures.loading": "Sto caricando i quadri.",
@@ -275,7 +260,6 @@
   "pictures.again": "Rimetti su questo",
   "pictures.again.asked": "Richiesta registrata. La casa lo rimette la prossima volta che cambia il quadro.",
   "pictures.again.failed": "Non sono riuscito a registrare la richiesta.",
-
   "drafts.title": "Le tue idee",
   "drafts.note": "Un'idea la scrivi tu, parlando con il sistema o scrivendo direttamente nel testo. Quando è come la vuoi, l'approvi e diventa un'attività pronta per la casa.",
   "drafts.blank": "Comincia da una pagina bianca",
@@ -302,7 +286,6 @@
   "drafts.approveFailed": "Non è diventata un'attività.",
   "drafts.close": "Chiudi senza approvare",
   "drafts.reread": "Rileggi",
-
   "trail.title": "Registro delle attività",
   "trail.note": "Ogni attività che è andata in scena: l'idea, il copione, il piano e quello che la casa ha davvero messo nella stanza. Non c'è niente di quello che ha fatto chi era lì.",
   "trail.loading": "Sto leggendo.",
@@ -320,7 +303,6 @@
   "trail.kind.collect": "Foglio ripreso",
   "trail.kind.close": "Chiusura",
   "trail.kind.continuation": "Il seguito, scritto quando è tornato un foglio",
-
   "usage.title": "Consumo",
   "usage.note": "Quanto hanno consumato i modelli questo mese.",
   "usage.loading": "Sto leggendo il consumo.",
@@ -346,7 +328,6 @@
   "usage.limit.movedOn": "Scelto da te il {when}.",
   "usage.limit.state": "stato",
   "usage.limit.gone": "raggiunto: la casa è ferma",
-
   "limit.title": "La casa ha raggiunto il limite",
   "limit.what": "Questo mese la casa ha fatto {spent} chiamate ai modelli e il limite è {limit}. Da adesso ogni richiesta viene rifiutata: niente quadri nuovi, niente pagine lette, nessuna attività.",
   "limit.why": "Non è un budget di spesa che hai scelto: serve a fermare un ciclo che si è perso. Un mese ordinario consuma circa 1116 chiamate, quindi o la casa ha fatto molto più del solito, o qualcosa si è inceppato.",
@@ -356,13 +337,11 @@
   "limit.failed": "Non sono riuscito ad alzarlo. Deve stare fra le chiamate già fatte e {max}.",
   "limit.done.title": "Limite alzato",
   "limit.done": "Adesso è {limit} chiamate al mese. La casa riprende alla prossima cosa che chiede: il pannello non la sveglia.",
-
   "error.title": "Non è riuscito",
   "error.retry": "Riprova",
   "error.noAuth": "Il pannello non ha ancora una configurazione di accesso.",
   "error.refused": "Il pannello ha rifiutato la richiesta.",
   "error.signin": "L'accesso non è andato a buon fine. Ricarica la pagina e riprova.",
-
   "admin.lede": "Amministrazione.",
   "admin.signin.title": "Accesso",
   "admin.signin.body": "Questa pagina usa l'identità aziendale, non quella con cui entra un genitore. Sono due account distinti anche quando dietro c'è la stessa persona.",
@@ -378,6 +357,5 @@
   "admin.waiting.empty": "Nessuna registrazione in attesa.",
   "admin.admit": "Ammetti",
   "admin.refuse": "Rifiuta",
-
   "language.label": "Lingua"
 }

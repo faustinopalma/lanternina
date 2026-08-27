@@ -242,6 +242,21 @@ def test_being_worth_doing_is_never_asked_for_as_being_hard_to_stop() -> None:
     assert "worth nothing at all afterwards" in said
 
 
+def test_what_is_hard_in_a_house_never_becomes_what_an_afternoon_is_about() -> None:
+    """The note is where a parent writes the worst thing happening to them, and the first
+    version of this line said only "treat it as a circumstance". Measured against the real
+    service on 27 August 2026: given "il nonno è morto tre settimane fa", the model wrote
+    two afternoons about somebody who leaves and does not come back. It had read the note as
+    subject matter. Answering a death with a story about departure is worse than ignoring
+    the note, so the instruction has to forbid it and not merely reframe it."""
+    from agents.experience_deviser import the_prompt
+
+    said = the_prompt(language="Italian", capabilities=frozenset(), note="un lutto").lower()
+    assert "circumstance and never an instruction" in said
+    assert "never make it the subject" in said
+    assert "near it, or a figure for it" in said
+
+
 def test_the_deviser_states_the_limits_only_it_has() -> None:
     """A whole afternoon has a title, an overview and a length; a continuation has none
     of the three, because which afternoon it belongs to is settled already."""

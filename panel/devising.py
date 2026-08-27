@@ -29,7 +29,7 @@ import os
 import secrets
 from collections.abc import Sequence
 
-from panel.preferences import DEFAULT_DIFFICULTY, DEFAULT_WORDS_PER_LINE
+from panel.preferences import DEFAULT_DIFFICULTY, DEFAULT_VARIETY, WORDS_PER_LINE
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
@@ -61,7 +61,9 @@ async def devise_experience(
     subjects: Sequence[str] = (),
     brief: str = "",
     difficulty: str = DEFAULT_DIFFICULTY,
-    words_per_line: int = DEFAULT_WORDS_PER_LINE,
+    variety: str = DEFAULT_VARIETY,
+    note: str = "",
+    words_per_line: int = WORDS_PER_LINE,
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
@@ -82,7 +84,12 @@ async def devise_experience(
     :class:`~shared.experience.ExperienceError` when it is not an experience at all, and
     :class:`RefusedByTheChecks` when it is one that cannot be run well.
     """
-    from agents.experience_deviser import SHAPES, ExperienceDeviser, experience_in
+    from agents.experience_deviser import (
+        DISTANCES,
+        SHAPES,
+        ExperienceDeviser,
+        experience_in,
+    )
     from orchestrator.router import FoundryConfig, FoundryRouter
     from orchestrator.safety import (
         AzureContentSafetyGate,
@@ -117,6 +124,8 @@ async def devise_experience(
             subjects=subjects,
             brief=brief,
             shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
+            distance=DISTANCES.get(variety, DISTANCES[DEFAULT_VARIETY]),
+            note=note,
             words_per_line=words_per_line,
         )
         try:

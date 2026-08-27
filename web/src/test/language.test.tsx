@@ -75,7 +75,7 @@ describe("what a saved setting carries", () => {
       "difficulty",
       "interests",
       "language",
-      "maxWordsPerLine",
+      "note",
       "variety",
     ]);
   });
@@ -85,5 +85,26 @@ describe("what a saved setting carries", () => {
     // to know when it takes effect, not that our writes queue nothing.
     expect(italian["preferences.saved"]).toMatch(/al prossimo giro/i);
     expect(italian["rhythm.saved"]).toMatch(/al prossimo giro/i);
+  });
+
+  it("says when the note stops standing, because that is what makes it safe to write", async () => {
+    // The note is the one free paragraph on the page, so it is the one place a sentence
+    // about a person can get in. It is bounded by being deleted, and a parent who cannot
+    // see that has been given a permanent field that merely looks temporary.
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await openSettings(user);
+
+    const note = await screen.findByLabelText("In questo periodo");
+    expect(note).toHaveValue("");
+    expect(screen.getByText(/28 giorni, poi si cancella/i)).toBeInTheDocument();
+
+    await user.type(note, "mese pieno di scuola");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.preferences).toHaveLength(1));
+    expect(api.recorded.preferences[0]?.note).toBe("mese pieno di scuola");
   });
 });

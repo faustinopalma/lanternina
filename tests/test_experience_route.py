@@ -433,10 +433,11 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         "already",
         "recent",
         "subjects",
-        # How many things an afternoon holds together at once, and how long a line runs.
-        # Both are properties of the material; neither says anything about a person.
+        # How many things an afternoon holds together at once, and how far it goes from the
+        # last ones. Both are properties of the material, not claims about a person.
         "difficulty",
-        "words_per_line",
+        "variety",
+        "note",
         "now",
     }
 
@@ -454,7 +455,6 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
             "avoid": ["i ragni"],
             "difficulty": "gentle",
             "variety": "balanced",
-            "maxWordsPerLine": 6,
             "language": "en",
         },
         headers=headers(),
@@ -473,7 +473,7 @@ def test_the_shape_the_parent_chose_reaches_the_prompt_as_a_sentence_about_the_m
     """Chosen in the panel since the first version and read by nothing until 27 August 2026:
     it was stored, shown back, and dropped on the way to the model. A parent moving it saw
     no change in what arrived, which is worse than not offering the choice."""
-    from agents.experience_deviser import SHAPES, the_prompt
+    from agents.experience_deviser import DISTANCES, SHAPES, the_prompt
 
     client = client_for()
     asked = devising(monkeypatch, THE_AFTERNOON)
@@ -484,8 +484,7 @@ def test_the_shape_the_parent_chose_reaches_the_prompt_as_a_sentence_about_the_m
             "interests": [],
             "avoid": [],
             "difficulty": "stretch",
-            "variety": "balanced",
-            "maxWordsPerLine": 8,
+            "variety": "frequent",
             "language": "it",
         },
         headers=headers(),
@@ -494,19 +493,20 @@ def test_the_shape_the_parent_chose_reaches_the_prompt_as_a_sentence_about_the_m
     ask_for_one(client, household)
 
     assert asked["difficulty"] == "stretch"
-    assert asked["words_per_line"] == 8
+    assert asked["variety"] == "frequent"
     written = the_prompt(
         language="Italian",
         capabilities=frozenset(),
         shape=SHAPES["stretch"],
-        words_per_line=8,
+        distance=DISTANCES["frequent"],
     )
     assert SHAPES["stretch"] in written
-    assert "about 8 words" in written
-    assert "gentle" not in written and "stretch" not in written, (
-        "the word a parent picked is a setting; what the model reads is a property of "
-        "the material, and nothing in the prompt may name the choice itself"
-    )
+    assert DISTANCES["frequent"] in written
+    for word in ("gentle", "stretch", "familiar", "frequent"):
+        assert word not in written, (
+            "the word a parent picked is a setting; what the model reads is a property of "
+            "the material, and nothing in the prompt may name the choice itself"
+        )
 
 
 def test_the_language_reaches_the_model_by_name_and_not_by_code(
@@ -527,7 +527,6 @@ def test_the_language_reaches_the_model_by_name_and_not_by_code(
                 "avoid": [],
                 "difficulty": "gentle",
                 "variety": "balanced",
-                "maxWordsPerLine": 6,
                 "language": code,
             },
             headers=headers(),

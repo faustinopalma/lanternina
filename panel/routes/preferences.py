@@ -31,8 +31,10 @@ class NewPreferences(BaseModel):
     avoid: list[str] = Field(default_factory=list)
     difficulty: str
     variety: str
-    maxWordsPerLine: int
     language: str
+    # What is true in this house at the moment. Saving it is what renews it; sending it
+    # empty is what ends it early.
+    note: str = ""
 
 
 @router.get("/api/preferences")
@@ -53,8 +55,8 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
             avoid=new.avoid,
             difficulty=new.difficulty,
             variety=new.variety,
-            max_words_per_line=new.maxWordsPerLine,
             language=new.language,
+            note=new.note,
             updated_by=str(account.id),
         )
     except ValueError as exc:

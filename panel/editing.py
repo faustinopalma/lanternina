@@ -78,7 +78,8 @@ async def afternoon_from(
     interests: tuple[str, ...],
     avoid: tuple[str, ...],
     difficulty: str,
-    words_per_line: int,
+    variety: str,
+    note: str,
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """Turn a parent's finished idea into an afternoon a house can run.
@@ -102,7 +103,8 @@ async def afternoon_from(
         interests=interests,
         avoid=avoid,
         difficulty=difficulty,
-        words_per_line=words_per_line,
+        variety=variety,
+        note=note,
         already=(),
         now=now,
     )

@@ -3,21 +3,16 @@
   "lede.signedout": "The parent's panel.",
   "lede.pending": "Signing in worked; the account is not enabled yet.",
   "lede.failed": "Something did not work.",
-
   "section.broken": "This section did not open. You can move to another one from the menu and come back later.",
-
   "signin.title": "Sign in",
   "signin.body": "The panel needs an account. You can create one the first time you sign in.",
   "signin.button": "Sign in",
   "signout": "Sign out",
   "account.aria": "The account you signed in with",
-
   "connecting.note": "You can leave this page open.",
-
   "pending.title": "Account waiting",
   "pending.body": "Signing in worked. The account is not enabled yet: a person has to approve it.",
   "pending.note": "There is nothing to do from here. This page will not change on its own: reload it once the approval has happened.",
-
   "proposals.title": "To approve",
   "proposals.note": "Approving shows nothing straight away: what you approve is set aside. The house takes it on its next run, and prints it or puts it on the display.",
   "proposals.loading": "Loading the proposals.",
@@ -34,7 +29,6 @@
   "action.withdraw": "Not any more",
   "action.moveTheHour": "Move the hour",
   "action.closeNow": "End it now",
-
   "experiences.title": "Waiting for a decision",
   "experiences.note": "A whole activity, devised for this house: something on the display, a sheet on the table, and what comes back off the scanner decides how it goes on. You approve the activity, not each step.",
   "experiences.laterNote": "There is no way to ask for one from here: the house asks, when it is its moment. Approving writes a row and nothing else — the house finds it at its next request, and decides for itself when to begin.",
@@ -75,13 +69,11 @@
   "experiences.sayingNote": "From here you can move the hour it is over by, or bring that hour to now. It is not a way to stop it: the activity still reaches its ending, from wherever it got to. Nothing appears on any display.",
   "experiences.saidWaiting": "Written down. The house finds it at its next request, within a minute.",
   "experiences.sayFailed": "I could not record it. Try again later.",
-
   "kind.exercise": "Sheet to print",
   "kind.routine_prompt": "Reminder on the display",
   "kind.feedback": "Reply after a sheet",
   "kind.schedule": "Plan for the day",
   "kind.print_layout": "Page layout",
-
   "themes.title": "Picture themes",
   "themes.note": "The display draws a new picture on one of these themes. You approve the theme, not each image: what you remove is no longer used.",
   "themes.placeholder": "for example: sleeping cats",
@@ -95,7 +87,6 @@
   "themes.empty": "No themes. While the list is empty the display uses the starting ones.",
   "themes.badLabel": "This theme will not do.",
   "themes.addFailed": "It did not work.",
-
   "reminders.title": "Reminders",
   "reminders.note": "What should be remembered, written the way you would say it. One thing per line, with the day and the hour if it has one: “brush teeth after dinner”, “Wednesday take the bin out”.",
   "reminders.laterNote": "Writing one down starts nothing: the panel cannot ask what a sentence means at the moment you write it. The house is the side that asks, on its next request.",
@@ -118,7 +109,6 @@
   "reminders.empty": "Nothing written down yet.",
   "reminders.badText": "This sentence will not do.",
   "reminders.addFailed": "It did not work.",
-
   "guidelines.title": "What it may change",
   "guidelines.note": "An activity is written beforehand, when nobody yet knows how it will go: the sheet comes back blank, the printer is out of paper, the thing ends up somewhere else. Here you tell it what it may do without asking you.",
   "guidelines.laterNote": "One line at a time, the way you would say it out loud. What you do not write, the house does not take: with no lines it stays at its narrowest. Writing here starts nothing — it reads them when it has to decide, inside an activity that has already begun.",
@@ -141,7 +131,6 @@
   "guidelines.unreadable": "I cannot read it right now.",
   "guidelines.badLine": "This line will not do.",
   "guidelines.saveFailed": "I could not save it. Try again later.",
-
   "rhythm.title": "Rhythm",
   "rhythm.note": "When the display may change its picture, how often, and on which days an activity may begin.",
   "rhythm.clockSection": "The house's clock",
@@ -173,12 +162,15 @@
   "rhythm.loading": "Reading the rhythm.",
   "rhythm.unreadable": "I cannot read the rhythm right now.",
   "rhythm.picturesAllDay": "Same hour both ends: the picture may change at any time.",
-
   "preferences.title": "Where to start",
   "preferences.note": "Where the house starts, not where it has to stay: it begins here and may go further on what it sees coming back on the sheets. The form is a property of the material, not of whoever receives it.",
+  "preferences.note.label": "At the moment",
+  "preferences.note.example": "what is going on in the house — a month full of school, a move, a death",
+  "preferences.note.lasts": "It stands for {days} days, then it is deleted. Saving it again renews it.",
+  "preferences.note.until": "It stands until {day}, then it is deleted.",
   "preferences.interests": "Subjects to start from",
   "preferences.avoid": "To avoid",
-  "preferences.oneEach": "one per line",
+  "preferences.oneEach": "one per line, with the reason if it matters",
   "preferences.difficulty": "Form",
   "preferences.gentle": "plain",
   "preferences.steady": "middling",
@@ -187,7 +179,6 @@
   "preferences.familiar": "always the same",
   "preferences.balanced": "one new detail",
   "preferences.frequent": "changes often",
-  "preferences.wordsPerLine": "Words per line",
   "preferences.language": "Content language",
   "preferences.italian": "Italian",
   "preferences.english": "English",
@@ -197,7 +188,6 @@
   "preferences.saveFailed": "I could not save it. Try again later.",
   "preferences.loading": "Reading the settings.",
   "preferences.unreadable": "I cannot read the settings right now.",
-
   "devices.title": "Devices",
   "devices.note": "Everything the house can use, with a job you choose and a name you write. Faults appear here and not on the displays in the house.",
   "devices.loading": "Loading the devices.",
@@ -226,22 +216,18 @@
   "devices.recall": "Put back",
   "devices.saveFailed": "I could not save that. Try again later.",
   "devices.nameRefused": "The house did not take this name: it carries the name of a person, and that never goes into what is written for the display. Write a name for the object instead.",
-
   "kind.display": "display",
   "kind.printer": "printer",
   "kind.scanner": "scanner",
-
   "job.picture": "shows the pictures",
   "job.sheet": "shows what to do next",
   "job.remind": "shows reminders when they are due",
   "job.print": "prints the sheets",
   "job.scan": "reads the sheets",
-
   "level.mains": "on mains power",
   "level.ok": "battery full",
   "level.low": "recharge it soon",
   "level.critical": "recharge it",
-
   "menu.aria": "Panel sections",
   "menu.open": "Open the panel sections",
   "menu.close": "Close the panel sections",
@@ -249,7 +235,6 @@
   "menu.group.content": "Content",
   "menu.group.settings": "Settings",
   "menu.group.house": "The house",
-
   "pictures.title": "Pictures",
   "pictures.note": "Every picture that has appeared on the display, newest first. They are shown as the display shows them: two levels only, no greys.",
   "pictures.loading": "Loading the pictures.",
@@ -275,7 +260,6 @@
   "pictures.again": "Put this back",
   "pictures.again.asked": "Asked for. The house puts it up the next time it changes the picture.",
   "pictures.again.failed": "I could not write down the request.",
-
   "drafts.title": "Your ideas",
   "drafts.note": "An idea you write yourself, by talking to the system or by typing straight into the text. When it is how you want it, approve it and it becomes an activity the house can run.",
   "drafts.blank": "Start from a blank page",
@@ -302,7 +286,6 @@
   "drafts.approveFailed": "It did not become an activity.",
   "drafts.close": "Close without approving",
   "drafts.reread": "Read it again",
-
   "trail.title": "Activity log",
   "trail.note": "Every activity that ran: the idea, the script, the plan, and what the house actually put in the room. Nothing here is about what the person there did.",
   "trail.loading": "Reading.",
@@ -320,7 +303,6 @@
   "trail.kind.collect": "Page taken back",
   "trail.kind.close": "Ending",
   "trail.kind.continuation": "The rest, written when a page came back",
-
   "usage.title": "Usage",
   "usage.note": "What the models consumed this month.",
   "usage.loading": "Reading the usage.",
@@ -346,7 +328,6 @@
   "usage.limit.movedOn": "You chose it on {when}.",
   "usage.limit.state": "state",
   "usage.limit.gone": "reached: the house is stopped",
-
   "limit.title": "The house has reached its limit",
   "limit.what": "This month the house made {spent} model calls and the limit is {limit}. From now every request is refused: no new pictures, no pages read, no activity.",
   "limit.why": "This is not a spending budget you chose: it is there to stop a loop that has lost its mind. An ordinary month spends about 1116 calls, so either the house did far more than usual, or something jammed.",
@@ -356,13 +337,11 @@
   "limit.failed": "I could not raise it. It must be between the calls already made and {max}.",
   "limit.done.title": "Limit raised",
   "limit.done": "It is now {limit} calls a month. The house carries on at the next thing it asks for: the panel does not wake it.",
-
   "error.title": "It did not work",
   "error.retry": "Try again",
   "error.noAuth": "The panel has no sign-in configuration yet.",
   "error.refused": "The panel refused the request.",
   "error.signin": "Signing in did not complete. Reload the page and try again.",
-
   "admin.lede": "Administration.",
   "admin.signin.title": "Sign in",
   "admin.signin.body": "This page uses the workforce identity, not the one a parent signs in with. They are separate accounts even when the same person holds both.",
@@ -378,6 +357,5 @@
   "admin.waiting.empty": "Nothing waiting.",
   "admin.admit": "Admit",
   "admin.refuse": "Refuse",
-
   "language.label": "Language"
 }

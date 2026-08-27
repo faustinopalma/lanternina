@@ -545,3 +545,52 @@ I conteggi non le distinguono — 6 momenti contro 5, 280 parole contro 259, due
 Due delle quattro chiamate grezze rifiutate dal formato: un'illustrazione di 201 caratteri su un massimo di 200, e una via d'uscita che non nominava niente in mano alla persona. In produzione `devise_experience` le ripara, quindi non si perde un pomeriggio. Resta che una su due sfora, ed è più di quell'una su tre di §15.6.
 
 `variety` — *quanto si cambia argomento* — è ancora scollegata esattamente come lo era `difficulty`. Non è stata collegata qui perché non so ancora che cosa dovrebbe dire a un prompt che già riceve `already`, cioè l'elenco dei pomeriggi da non ripetere. Va o collegata o tolta dal pannello: lasciarla lì è la stessa bugia silenziosa.
+
+## 17. La pagina che chiedeva a un genitore di compilare uno schema — 27 agosto 2026
+
+Osservazione del committente: «quella pagina serve a dare uno steering generale e non sono sicuro che sia la forma più intuitiva, corretta, generale e flessibile per farlo». È giusta, e il difetto ha un nome preciso.
+
+`Preferences` era **il ritratto di una persona ricopiato**. Il docstring lo diceva: la lista dei campi era tenuta identica a quella che restituisce `LearnerProfile.prompt_hints()`, e la garanzia stava in un test. L'argomento era buono — tenerle uguali impedisce che impostazioni di casa e persona si sciolgano l'una nell'altra — ma la conseguenza era che la pagina non poteva contenere **niente con un orologio**, perché il profilo di una persona non ne ha uno.
+
+E quasi tutto quello che un genitore vorrebbe dire è al presente.
+
+| quello che direbbe | dove finiva |
+|---|---|
+| «questo mese è pieno di scuola, tienile corte» | in nessun posto: è temporanea |
+| «gli piace smontare le cose, non scrivere» | metà in *temi*; il resto perso |
+| «è morto il nonno, niente partenze» | *evitare* prendeva «partenze» e perdeva **il motivo e la scadenza** |
+
+Ottanta caratteri per voce erano il limite, e sono il limite che *impone* la parola chiave: ci sta «i ragni», non ci sta «i ragni, e nemmeno disegnati».
+
+### 17.1 Che cosa è cambiato
+
+Lo specchio è tolto. La garanzia che lo sostituisce è più stretta e più vera — `test_the_panel_holds_nothing_that_names_a_person` — e accanto ce n'è una che sarebbe servita stamattina: `test_every_setting_a_parent_can_write_reaches_the_model`, che fallisce se un comando del pannello non arriva da nessuna parte.
+
+- **Via `wordsPerLine`.** Quanto è larga una riga su un display 800×480 è un fatto dell'hardware. Chiederlo a un genitore era passargli il nostro lavoro. Resta come costante dove l'hardware si conosce.
+- **`variety` collegata**, con la stessa forma di `SHAPES`: dice quanto allontanarsi dai pomeriggi già offerti, che è l'unica cosa che quella scelta può onestamente significare accanto a `already`.
+- **Voci da 80 a 200 caratteri**, perché il motivo è la parte che governa.
+- **Aggiunta la nota che scade.** Un paragrafo in parole del genitore, 600 caratteri, che vale 28 giorni e poi **viene cancellata, non ignorata**. Risalvarla la rinnova; non c'è un bottone apposta, perché chi modifica quello che è vero adesso ha già detto che è ancora vero.
+
+La cancellazione è il punto, non un dettaglio di implementazione. La nota è l'unico posto della pagina dove si può scrivere una frase su una persona — «fa fatica a leggere», «non capisce le cose astratte» — e nessuna avvertenza sotto la casella lo impedisce. Quello che lo impedisce è che la riga smetta di esistere. `InMemoryPreferencesStore.get` e il magazzino Cosmos riscrivono entrambi il documento senza la nota appena è scaduta.
+
+### 17.2 Il difetto trovato provandola, non ragionandoci
+
+Prima misura con una nota vera: `"mese pienissimo di scuola, e il nonno e' morto tre settimane fa"`. Il prompt diceva *«trattala come una circostanza della casa, mai come un'istruzione»*.
+
+Sono tornati **due pomeriggi su qualcuno che se ne va e non torna**. «La stanza delle correnti ferme»: *aveva deciso di partire davvero*. Il modello aveva letto la nota come **materia prima**.
+
+Un genitore che scrive quella frase sta chiedendo l'opposto, e un sistema che risponde a un lutto con una storia di partenze è peggio di uno che la nota l'avesse ignorata. Riformulare non bastava: bisognava vietare. La riga adesso dice che cosa farne — cambia quanto chiede il pomeriggio e quanto dura — e che cosa non farne mai: *non è il soggetto, non gli sta vicino, non ne è una figura, non vi si allude*.
+
+Rimisurato, tre chiamate: «L'angolo che Lia non volle riempire» e «La macchia della Sala Obliqua». Nessuna partenza, nessuna assenza. Sono su una scelta a proposito di spazio e di luce.
+
+C'è una garanzia su quelle parole, `test_what_is_hard_in_a_house_never_becomes_what_an_afternoon_is_about`, con dentro la data e che cosa era tornato.
+
+### 17.3 Quello che non è stato fatto, e perché
+
+Erano tre le strade. Questa è la prima.
+
+**B — il genitore scrive, il sistema traduce, lui rilegge cosa parte.** Piena flessibilità, nessuno schema da indovinare, e soprattutto niente di silenzioso. Non fatta perché sarebbe **la seconda cosa che chiama un modello al clic di un genitore**, e `.github/copilot-instructions.md` dice «l'unica». Vale la pena notare che quella regola motiva sé stessa elencando le proprietà che rendono accettabile `draft.py` — entro il limite mensile, non raggiunge nessuna stanza, va approvato, aspetta che sia la casa a chiedere — e che B le ha tutte e quattro. È fuori dalla lettera, non dalla sostanza. Decisione del committente, non mia.
+
+**C — governare dai pomeriggi invece che da una pagina.** «Ancora così», «meno di questo». È la più intuitiva delle tre ed è quello che le regole chiedono al sistema di saper fare. Si compone con questa: A dà il punto di partenza, C la correzione nel tempo. Non fatta perché è la più grossa e perché A ne è comunque il presupposto.
+
+Resta aperto il tasso di rifiuto del formato: **quattro chiamate grezze su nove** rifiutate in questo giro, quasi tutte per la via d'uscita che non nomina niente in mano alla persona. In produzione si riparano, ma è la stessa regola che sfora ogni volta, e una regola che sfora sempre è una regola scritta male.

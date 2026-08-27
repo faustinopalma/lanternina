@@ -358,7 +358,9 @@ async def devise_afternoon(
             # Chosen in the panel and read by nothing until 27 August 2026. It is about the
             # material, so it goes to the prompt and never onto the document.
             difficulty=settings_of_the_house.difficulty,
-            words_per_line=settings_of_the_house.max_words_per_line,
+            variety=settings_of_the_house.variety,
+            # Empty once it has lapsed, and by then the store has deleted it.
+            note=settings_of_the_house.standing(time.time()),
             already=already,
             recent=recent,
             subjects=subjects,
