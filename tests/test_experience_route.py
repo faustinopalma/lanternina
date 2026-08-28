@@ -413,9 +413,8 @@ def test_a_browser_cannot_say_an_afternoon_began(monkeypatch: pytest.MonkeyPatch
 def test_only_what_the_afternoons_were_is_handed_to_the_model(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """What they were called, how they worked and what they were about — so that the next
-    one is different, and nothing else: not who did them, not how far anybody got, not what
-    came back."""
+    """What the afternoons were, and what they came to. The list is written out so that a
+    field about a person cannot be added to the prompt without this failing first."""
     client = client_for()
     asked = devising(monkeypatch, THE_AFTERNOON)
     household = household_of(client)
@@ -433,6 +432,10 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         "already",
         "recent",
         "subjects",
+        # How the afternoons went, and every subject offered so far. Facts about runs:
+        # `panel/what_happened.py` has no field a judgement would fit in.
+        "happened",
+        "ever",
         # How many things an afternoon holds together at once, and how far it goes from the
         # last ones. Both are properties of the material, not claims about a person.
         "difficulty",

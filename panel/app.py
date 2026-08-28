@@ -66,6 +66,7 @@ from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
 from .trail import InMemoryTrailStore, TrailStore
 from .usage import InMemoryLimitStore, InMemoryUsageStore, LimitStore, UsageStore
+from .what_happened import InMemoryWhatHappenedStore, WhatHappenedStore
 
 # Registered in the order they were written in when they shared one file. No two of them
 # claim the same path, so the order is a reading convenience and not a rule — but leaving
@@ -110,6 +111,7 @@ def create_app(
     guidelines: GuidelineStore | None = None,
     trail: TrailStore | None = None,
     keeping: KeepingStore | None = None,
+    what_happened: WhatHappenedStore | None = None,
     drafts: DraftStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
@@ -153,6 +155,11 @@ def create_app(
     app.state.trail = trail if trail is not None else _trail_store(app.state.settings)
     app.state.keeping = (
         keeping if keeping is not None else _keeping_store(app.state.settings)
+    )
+    app.state.what_happened = (
+        what_happened
+        if what_happened is not None
+        else _what_happened_store(app.state.settings)
     )
     app.state.drafts = drafts if drafts is not None else _draft_store(app.state.settings)
     # Both identity providers are built on first use, by `panel/gate.py` and
@@ -247,6 +254,14 @@ def _keeping_store(settings: Settings) -> KeepingStore:
     from .cosmos_store import CosmosKeepingStore
 
     return CosmosKeepingStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _what_happened_store(settings: Settings) -> WhatHappenedStore:
+    if not settings.cosmos_configured:
+        return InMemoryWhatHappenedStore()
+    from .cosmos_store import CosmosWhatHappenedStore
+
+    return CosmosWhatHappenedStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _picture_archive(settings: Settings) -> PictureArchive:

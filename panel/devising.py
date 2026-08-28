@@ -64,6 +64,8 @@ async def devise_experience(
     already: tuple[str, ...],
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
+    happened: str = "",
+    ever: Sequence[str] = (),
     brief: str = "",
     difficulty: str = DEFAULT_DIFFICULTY,
     variety: str = DEFAULT_VARIETY,
@@ -113,8 +115,8 @@ async def devise_experience(
         Sealer(SealPurpose.CONTENT_SAFETY, key, "orchestrator.safety"),
     )
     router = FoundryRouter(FoundryConfig.from_env(environment), gate=gate)
-    # An empty learner and empty hints: an experience carries nothing about a person, and
-    # handing the agent nothing is the cheapest way to keep that true as the prompt grows.
+    # No learner and no hints: what an afternoon is written from is the household's
+    # settings and what its afternoons came to, both of which are arguments above.
     context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=now)
     deviser = ExperienceDeviser()
     log = logging.getLogger(__name__)
@@ -128,6 +130,8 @@ async def devise_experience(
             already=already,
             recent=recent,
             subjects=subjects,
+            happened=happened,
+            ever=ever,
             brief=brief,
             shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
             distance=DISTANCES.get(variety, DISTANCES[DEFAULT_VARIETY]),

@@ -1,4 +1,4 @@
-"""Everything the system wrote for one afternoon, and nothing about who it was written for.
+"""Everything the system wrote for one afternoon, kept whole.
 
 The parent approves an idea. What happens after that is written by an agent as the afternoon
 goes, one move at a time, and none of it is approved by anybody — there is no moment where a
@@ -6,23 +6,9 @@ parent could stand between a move and the room without stopping the afternoon to
 the trade is made in the open: the parent does not get a veto on each move, and in exchange
 they get to read every one of them afterwards, in full, beside the script the move came from.
 
-**The asymmetry is the point.** What the system generated is kept whole and forever. What the
-adolescent did with it is not kept at all — not the pages that came back, not what was written
-on them, not how long anything took, not whether it was finished. A trail with both halves in
-it would be a record of a person; a trail with only this half is a record of a machine, which
-is the thing that needs watching. `docs/NON-GOALS.md` says the same in prose.
-
-**There is one exception and it is written as one.** While this is being built, a household
-an administrator names keeps the other half too, so that an afternoon that went wrong can be
-read against what it was answering. It is off unless somebody turned it on, it is turned on
-from the administrator's own surface and not the parent's, it lapses on a date rather than
-waiting to be turned off, and the rows it allowed carry that date and are deleted the first
-time the record is read after it. `panel/keeping.py` is the whole of it.
-
-That also decides what a trail cannot become. There is no field here that could hold a
-judgement, a total or a comparison, because there is no row here about a person to attach one
-to. Counting trails would count afternoons, which is a fact about the house; nothing counts
-them, because nobody asked and a number on a page invites being made to go up.
+What the afternoon *came to* is not here. It is in `panel/what_happened.py`, kept separately
+because it is read by something else — the next afternoon is written from it. This file is a
+record of a machine, and nothing here has a field a judgement would fit in.
 """
 
 from __future__ import annotations

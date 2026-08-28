@@ -53,6 +53,15 @@ from ..trail import (
     TrailStore,
 )
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
+from ..what_happened import (
+    ENDINGS,
+    Answered,
+    WhatHappenedStore,
+    as_material,
+    clean_reading,
+    remembered,
+    themes_ever,
+)
 from . import Decision
 from .trail import filed, opened
 
@@ -429,12 +438,14 @@ async def devise_afternoon(
     store: ExperienceStore = request.app.state.experiences
     preferences: PreferencesStore = request.app.state.preferences
     settings_of_the_house = preferences.get(household_id)
-    # Titles and subjects. What is kept about earlier afternoons is what they were called
-    # and what they were about, so that the next one differs — never who did them, how far
-    # they got or what came back.
+    # Titles, dimensions and subjects come out of the documents that were offered. What
+    # happened to them comes out of `panel/what_happened.py`, which the house writes when
+    # an afternoon ends.
     already = tuple(row.title for row in store.list(household_id) if row.title)
     recent = _drawn_before(store, household_id)
     subjects = _subjects_before(store, household_id)
+    memory: WhatHappenedStore = request.app.state.what_happened
+    ran = memory.list(household_id)
 
     from ..devising import RefusedByTheChecks, devise_experience
 
@@ -458,6 +469,8 @@ async def devise_afternoon(
             already=already,
             recent=recent,
             subjects=subjects,
+            happened=as_material(ran),
+            ever=themes_ever(ran),
             now=time.time(),
         )
         outcome = SERVED
@@ -652,6 +665,75 @@ def it_did(
         paper=_printed(what.page),
     )
     return {"filed": True}
+
+
+class HowItWent(BaseModel):
+    """What one afternoon came to, filed by the house when it is over."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    experience: dict[str, Any]
+    ending: str
+    weight: str = ""
+    minutes: int = 0
+    reached: str = ""
+    sheets: list[dict[str, Any]] = []
+
+
+@router.post("/api/device/{household_id}/what-happened/{run_id}")
+def how_it_went(
+    household_id: str, run_id: str, what: HowItWent, _: DeviceKey, request: Request
+) -> Any:
+    """File how an afternoon went, so the next one can be written from it.
+
+    Facts about the run: how far it got, how it ended, and for each sheet whether it came
+    back marked or blank and what the reader said was on it. The shape has no field for a
+    score, a level or anything about the person, which is what bounds this.
+    """
+    if what.ending not in ENDINGS:
+        raise HTTPException(status_code=400, detail=f"no afternoon ends {what.ending!r}")
+    memory: WhatHappenedStore = request.app.state.what_happened
+    memory.remember(
+        remembered(
+            household_id=household_id,
+            run_id=run_id,
+            experience=what.experience,
+            at=time.time(),
+            weight=str(what.weight),
+            minutes=int(what.minutes),
+            reached=str(what.reached),
+            ending=what.ending,
+            answered=tuple(
+                Answered(
+                    moment_id=str(one.get("momentId", "")),
+                    came=str(one.get("came", "")),
+                    reading=clean_reading(one.get("reading")),
+                )
+                for one in what.sheets
+            ),
+        )
+    )
+    return {"remembered": True}
+
+
+@router.get("/api/what-happened")
+def what_happened_here(account: CurrentAccount, request: Request) -> Any:
+    """Everything kept about how this household's afternoons went, in plain language.
+
+    TODO(poc): the panel has no section for this yet, so the guarantee is a route and not
+    something a parent can reach without one.
+    """
+    memory: WhatHappenedStore = request.app.state.what_happened
+    return {"afternoons": [one.to_public() for one in memory.list(account.household_id)]}
+
+
+@router.delete("/api/what-happened")
+def forget_all_of_it(account: CurrentAccount, request: Request) -> Any:
+    """All of it, at once. There is no forgetting one afternoon: choosing which parts of a
+    history to keep is the beginning of curating a person."""
+    memory: WhatHappenedStore = request.app.state.what_happened
+    memory.forget(account.household_id)
+    return {"forgotten": True}
 
 
 @router.get("/api/experiences")

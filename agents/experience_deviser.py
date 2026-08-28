@@ -186,6 +186,8 @@ def the_prompt(
     already: tuple[str, ...] = (),
     recent: Sequence[Drawn] = (),
     subjects: Sequence[str] = (),
+    happened: str = "",
+    ever: Sequence[str] = (),
     brief: str = "",
     shape: str = "",
     distance: str = "",
@@ -205,6 +207,12 @@ def the_prompt(
     whoever receives it, which is why it goes into the prompt and not into the document:
     `tests/test_experience.py` refuses a field named `difficulty` on an afternoon, and that
     stays true.
+
+    ``happened`` is what the last afternoons here came to — how far each got, whether the
+    paper came back marked or blank, what was on it — as JSON from
+    `panel/what_happened.py`. It arrives quoted, as observation, and the block it lands in
+    says what may not be done with it. ``ever`` is every subject this house has been
+    offered, so that the next one is not one of them.
 
     ``note`` is what the parent wrote about this house at this moment, and it is the only
     part of the household's settings with a lifetime. It arrives quoted, as material, and
@@ -232,7 +240,19 @@ def the_prompt(
             sheets=sheets,
             words_per_line=words_per_line,
         )
+        + _what_happened(happened, ever)
         + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
+    )
+
+
+def _what_happened(happened: str, ever: Sequence[str]) -> str:
+    """Left out entirely when nothing has run here, rather than said as an empty list."""
+    if not happened:
+        return ""
+    return SAYS.text(
+        "what-happened",
+        happened=happened,
+        ever=json.dumps(list(ever), ensure_ascii=False),
     )
 
 
@@ -252,6 +272,8 @@ class ExperienceDeviser:
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
+        happened: str = "",
+        ever: Sequence[str] = (),
         brief: str = "",
         shape: str = "",
         distance: str = "",
@@ -270,6 +292,8 @@ class ExperienceDeviser:
                 already=already,
                 recent=recent,
                 subjects=subjects,
+                happened=happened,
+                ever=ever,
                 brief=brief,
                 shape=shape,
                 distance=distance,
@@ -290,6 +314,8 @@ class ExperienceDeviser:
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
         subjects: Sequence[str] = (),
+        happened: str = "",
+        ever: Sequence[str] = (),
         brief: str = "",
         shape: str = "",
         distance: str = "",
@@ -326,6 +352,8 @@ class ExperienceDeviser:
                     already=already,
                     recent=recent,
                     subjects=subjects,
+                    happened=happened,
+                    ever=ever,
                     brief=brief,
                     shape=shape,
                     distance=distance,

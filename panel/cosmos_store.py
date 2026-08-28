@@ -55,6 +55,7 @@ from .rhythm import (
 from .themes import Theme
 from .trail import Made, Trail, lapsed
 from .usage import Limit, UsageEvent, UsageSummary, summarise
+from .what_happened import Afternoon, Answered
 
 ACCOUNTS_CONTAINER = "families"
 PROPOSALS_CONTAINER = "proposals"
@@ -65,6 +66,7 @@ RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 GUIDELINES_CONTAINER = "sources"
 KEEPING_CONTAINER = "sources"
+WHAT_HAPPENED_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
@@ -1087,6 +1089,83 @@ class CosmosKeepingStore:
 
 def _keeping_id(household_id: str) -> str:
     return f"keeping-{household_id}"
+
+
+class CosmosWhatHappenedStore:
+    """Conforms to :class:`~panel.what_happened.WhatHappenedStore`.
+
+    One document per run, so a house reporting the same afternoon twice overwrites rather
+    than doubling it.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(WHAT_HAPPENED_CONTAINER)
+        )
+
+    def remember(self, afternoon: Afternoon) -> Afternoon:
+        self._container.upsert_item(
+            {
+                "id": f"happened-{afternoon.run_id}",
+                "familyId": afternoon.household_id,
+                "type": "happened",
+                "runId": afternoon.run_id,
+                "experienceId": afternoon.experience_id,
+                "title": afternoon.title,
+                "at": afternoon.at,
+                "themes": list(afternoon.themes),
+                "weight": afternoon.weight,
+                "minutes": afternoon.minutes,
+                "reached": afternoon.reached,
+                "ending": afternoon.ending,
+                "answered": [one.to_dict() for one in afternoon.answered],
+            }
+        )
+        return afternoon
+
+    def list(self, household_id: str) -> list[Afternoon]:
+        rows = self._container.query_items(
+            query=(
+                "SELECT * FROM c WHERE c.familyId = @family AND c.type = 'happened' "
+                "ORDER BY c.at ASC"
+            ),
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        return [_to_afternoon(document) for document in rows]
+
+    def forget(self, household_id: str) -> None:
+        for document in self._container.query_items(
+            query="SELECT c.id FROM c WHERE c.familyId = @family AND c.type = 'happened'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        ):
+            self._container.delete_item(item=document["id"], partition_key=household_id)
+
+
+def _to_afternoon(document: dict[str, Any]) -> Afternoon:
+    return Afternoon(
+        household_id=str(document.get("familyId") or ""),
+        run_id=str(document.get("runId") or ""),
+        experience_id=str(document.get("experienceId") or ""),
+        title=str(document.get("title") or ""),
+        at=float(document.get("at") or 0.0),
+        themes=tuple(str(one) for one in (document.get("themes") or ())),
+        weight=str(document.get("weight") or ""),
+        minutes=int(document.get("minutes") or 0),
+        reached=str(document.get("reached") or ""),
+        ending=str(document.get("ending") or ""),
+        answered=tuple(
+            Answered(
+                moment_id=str(one.get("momentId") or ""),
+                came=str(one.get("came") or ""),
+                reading=str(one.get("reading") or ""),
+            )
+            for one in (document.get("answered") or ())
+        ),
+    )
 
 
 class CosmosDeviceStatusStore:
