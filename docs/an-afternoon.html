@@ -162,7 +162,7 @@ flowchart LR
   subgraph CLOUD["The cloud — Container App in Sweden"]
     A["panel/routes/*<br/>FastAPI"]
     G["orchestrator/router.py<br/>the one door to a model"]
-    M["Azure AI Foundry"]
+    M["Microsoft Foundry"]
   end
   PARENT["the parent's browser"] -- "writes a decision, inertly" --> A
   T -- "asks: what may I run?" --> A
@@ -415,7 +415,7 @@ flowchart LR
 <section id="parent">
   <h2><span class="num">8</span> The parent while it is running</h2>
 
-  <p>There is no progress view. No per-step timing, no help log, no list of what was answered. The person who did it is the only source, and that is a decision rather than an omission.</p>
+  <p>There is no progress view. No help log, no list of what was answered, and no timing of how long the person took over anything. How long the <em>models</em> took is measured — a page is read in 4.4–5.5 s — because a runaway agent and a cost that has lost its mind are visible in nothing else. The two are different data about different subjects. The person who did it is the only source on how it went, and that is a decision rather than an omission.</p>
 
   <p>What the parent <em>can</em> do is send a typed fact. Not free text — free text would reach a model and colour what it writes. Exactly two things, both about the clock:</p>
 
@@ -464,8 +464,8 @@ flowchart LR
       <p>The reader can describe eight things about the ink, and the plan is allowed to use exactly one bit of it: was there any. Everything the reader saw is passed to the continuer and then only when the plan happened to say <code>ask</code>. The richest signal in the system is mostly discarded.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-no">3</span> Nothing survives the afternoon</h3>
-      <p>The run file and its pages are deleted at the end. That is right for privacy and wrong for learning: the working rules say the system <em>should</em> move beyond what was chosen on what it observes, and today there is nothing left to observe from. What a system may remember about what happened, without holding a record about a person, is the open question this project has not answered.</p>
+      <h3 style="margin-top:0"><span class="badge b-no">3</span> Nothing about the afternoon survives it</h3>
+      <p>The run file and its pages are deleted at the end, and the reading of what came back is never written down at all. Since 27 August 2026 that is a decision rather than an unanswered question: the durable memory holds what was <em>made</em> and what the household <em>configured</em>, never what was done with it, and the bound is where the parent's judgement enters — they see the sheets, they change the settings. It is still a real cost, and it is the cost the design accepts knowingly: nothing here can notice from one week to the next that a subject keeps being avoided, or that a form keeps being abandoned.</p>
     </div>
     <div class="card">
       <h3 style="margin-top:0"><span class="badge b-no">4</span> One shot, and then it is fixed</h3>

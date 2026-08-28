@@ -53,6 +53,13 @@ class Act(StrEnum):
     CLOSE = "close"
 
 
+# Not an act, and here for the same reason the acts are: it is a word both sides of the
+# wire have to spell the same way. A house files it when something it was told to do did
+# not happen — the printer took no page, the panel was not there — and `panel/trail.py`
+# keeps it beside the acts so a parent reading an afternoon sees where it diverged.
+WENT_WRONG: Final = "fault"
+
+
 
 # The kinds and the jobs, written once. `shared` is what every other package imports and
 # it imports none of them back, so this is the only direction the vocabulary can live in:

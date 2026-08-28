@@ -20,6 +20,10 @@ import { useLoad } from "@/lib/useLoad";
  * took, not whether it was finished. None of it is stored, so none of it can be shown. What
  * is watched here is the machine.
  *
+ * The exception is written where it is made: a household an administrator has turned on
+ * while this is being built keeps the other half too, and those entries say on the page how
+ * long they last. Nothing here can turn that on.
+ *
  * A card carries a title and a date and nothing else, because that is what recognising an
  * afternoon needs. The script arrives when one is opened.
  */
@@ -42,7 +46,11 @@ function Written({ made }: { made: Made }) {
               ? t("trail.kind.close")
               : made.kind === "continuation"
                 ? t("trail.kind.continuation")
-                : made.kind;
+                : made.kind === "fault"
+                  ? t("trail.kind.fault")
+                  : made.kind === "came"
+                    ? t("trail.kind.came")
+                    : made.kind;
 
   return (
     <li className="border-l-2 border-edge pl-3">
@@ -51,7 +59,16 @@ function Written({ made }: { made: Made }) {
       {made.body ? (
         <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.body}</p>
       ) : null}
+      {made.paper ? (
+        <div className="mt-2 rounded-control border border-edge px-3 py-2">
+          <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
+            {t("trail.paper")}
+          </p>
+          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.paper}</p>
+        </div>
+      ) : null}
       {made.why ? <Quiet className="mt-1">{t("trail.why", { why: made.why })}</Quiet> : null}
+      {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
       <Quiet className="mt-1">{dateTime(made.at)}</Quiet>
     </li>
   );

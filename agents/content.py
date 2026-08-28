@@ -9,8 +9,9 @@ It never sees unscreened text: ``router.generate_for_user`` screens and seals be
 returning, so the payload this agent wraps has already passed the gate.
 
 The prompts describe what to make, not who it is for. The system may work out what to ask
-for from what came back before — that decision is the planner's — but what reaches the
-model is a description of the material, never a claim about a person.
+for from the page in front of it — that decision is the planner's — but what reaches the
+model is a description of the material, never a claim about a person, and nothing about a
+previous afternoon is carried, because nothing about one was kept.
 """
 
 from __future__ import annotations

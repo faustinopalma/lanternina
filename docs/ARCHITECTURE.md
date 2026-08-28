@@ -73,7 +73,7 @@ No model runs on the device. Every LLM and vision call goes to Microsoft Foundry
 
 One consequence follows from it: `CACHED_FALLBACK` serves previously approved content, and it is the only offline path. If the parent has approved nothing in reserve, "never dark" is a promise with nothing behind it. Keeping a reserve stocked is a product requirement, not an implementation detail.
 
-Reading degrades the same way. Without the cloud, only the cell kinds in `sheet.LOCALLY_READABLE` — filled checkboxes and choice boxes, which are ink-coverage measurements OpenCV can do on its own — are attempted. Handwriting is marked `needs_review` rather than guessed.
+Reading does not degrade, it waits. There was a second reader underneath until 21 August 2026 — arithmetic over a few cell kinds, usable with no cloud — and it is retired: **no cloud, no reading**, and a page that comes back while the panel is unreachable stays unread until it is reachable. See section 7 for why.
 
 ## 3. Why content safety is a type, not a call
 

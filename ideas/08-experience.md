@@ -229,7 +229,7 @@ One thing neither devised afternoon did: use `ask`. The format allows a branch t
 
 1. **The parent has no page.** The two routes exist and are tested; there is nothing in `web/` that lists an offered afternoon or records a decision on it. Until there is, a parent approves an afternoon with an HTTP request, which is not approval by anybody who has not been told about this file.
 2. **The hub cannot begin an approved one.** `devices/run_experience.begin` takes a file. Nothing yet pulls `GET /api/device/{h}/experiences` and starts what came back, and nothing asks for one to be devised in the first place — the rhythm on which a house asks is not written.
-3. **Nothing is learnt from an afternoon that happened.** The working rules say the system may move on what it observes, and this devises from settings and titles only. What an afternoon left behind is deleted when it closes, on purpose (`§5`), so the thing to decide first is what may survive an ending — and that decision is the one where a record of what happened turns into a verdict about a person if it is taken carelessly.
+3. **Nothing is learnt from an afternoon that happened.** The working rules say the system may move on what it observes, and this devises from settings and titles only. What an afternoon left behind is deleted when it closes, on purpose (`§5`), so the thing to decide first is what may survive an ending — and that decision is the one where a record of what happened turns into a verdict about a person if it is taken carelessly. Decided since, 27 August 2026: nothing about what was done survives an ending. What survives is what was *made* and what was *configured*, the reading is transient by design, and the bound is where the parent's judgement enters. See `docs/NON-GOALS.md` and the README.
 
 ---
 
@@ -288,7 +288,7 @@ The browser tier followed, published by `.github/workflows/panel.yml` on the pus
 
 ### What is not built, and is next
 
-1. **Nothing is learnt from an afternoon that happened**, which is `§6`'s last item and is untouched. `begun_at` is now kept, which is the first thing that survives an ending; the question of what else may is the one where a record of what happened turns into a verdict about a person if it is taken carelessly.
+1. **Nothing is learnt from an afternoon that happened**, which is `§6`'s last item and is untouched. `begun_at` is now kept, which is the first thing that survives an ending; the question of what else may is the one where a record of what happened turns into a verdict about a person if it is taken carelessly. Decided since, 27 August 2026: nothing else may. The reading of a page is read, acted on and dropped — `shared/vision_contracts.WhatCameBack` refuses to be pickled, copied or cached — and the durable memory grows only from what was made and what was configured. Being too fixed is the cost, and it is accepted knowingly.
 2. **A parent cannot see an afternoon that is running.** The panel shows offered, approved and begun; where a run has got to lives only on the hub, and there is no route in that direction on purpose. Whether there should be is a decision, not an omission. Decided since: there is none, and the reason is in [09 §8](09-a-game-that-ends.md) and now in `docs/NON-GOALS.md`. The person who did the thing is the only source on how it went.
 3. **The clock has not begun an afternoon on the house.** It cannot until a parent picks a day in the panel, and picking one is the first thing the page of this section exists for. Everything below `§7` is otherwise tested with the panel stood in for.
 4. **No devised afternoon has used `ask` yet.** The prompt asks for one as of this commit, and both afternoons in the store predate it. Whether the model takes the branch is the next thing the real service is asked.
@@ -594,3 +594,38 @@ Erano tre le strade. Questa è la prima.
 **C — governare dai pomeriggi invece che da una pagina.** «Ancora così», «meno di questo». È la più intuitiva delle tre ed è quello che le regole chiedono al sistema di saper fare. Si compone con questa: A dà il punto di partenza, C la correzione nel tempo. Non fatta perché è la più grossa e perché A ne è comunque il presupposto.
 
 Resta aperto il tasso di rifiuto del formato: **quattro chiamate grezze su nove** rifiutate in questo giro, quasi tutte per la via d'uscita che non nomina niente in mano alla persona. In produzione si riparano, ma è la stessa regola che sfora ogni volta, e una regola che sfora sempre è una regola scritta male.
+
+## 18. Metà di una conversazione — 28 agosto 2026
+
+Il registro delle attività teneva quello che il sistema aveva scritto e niente di quello che era tornato. Era il progetto, ed è ancora il progetto. Ma due cose non tornavano, e sono diverse fra loro.
+
+### 18.1 Le pagine c'erano e non si leggevano
+
+Il committente ha detto che nel registro non vedeva le pagine generate dall'AI. Erano lì: il piano viene depositato all'inizio del pomeriggio come JSON di tutti i momenti, e dentro quel JSON ci sono le pagine. Solo che una pagina dentro seimila caratteri di JSON è una pagina che nessuno legge. E la casa, quando raccontava di aver stampato un foglio, mandava titolo e righe del display — non il foglio.
+
+Ora `Made` ha un campo `paper`, la casa manda `moment.page.to_dict()` quando un foglio è davvero uscito dalla stampante, e il pannello lo mostra come **le parole che stanno sul foglio**, nell'ordine in cui ci stanno: titolo, note, etichette degli spazi, e fra parentesi cosa doveva mostrare il disegno. Non il JSON. Il JSON resta solo per una pagina che questo container non riesce a leggere, perché un registro che butta via quello che non ha saputo interpretare è il peggiore dei due fallimenti.
+
+### 18.2 Quello che non ha funzionato non arrivava a nessuno
+
+Un pomeriggio in cui la stampante non prende il foglio, o in cui il seguito viene rifiutato dai controlli, dal pannello del genitore era indistinguibile da un pomeriggio andato come scritto. Quelle righe esistevano solo nel journal della casa, dove nessun genitore guarda. Adesso c'è `fault`: la casa ne deposita uno quando nessun foglio è arrivato sul tavolo, e il pannello ne deposita uno quando il gate, i controlli o il cloud hanno rifiutato. La parola sta in `shared/capabilities.py` perché la scrivono in due.
+
+### 18.3 Il flag di sviluppo, e cosa costa
+
+Il committente ha chiesto un flag, per famiglia, dell'amministratore, che durante lo sviluppo tenga anche quello che ha fatto l'adolescente, e che si spenga in produzione. Va detto in chiaro dov'è il costo, perché non è dove sembra.
+
+Prima, «quello che è tornato non si tiene» era una **proprietà del codice**: non esisteva un campo in cui infilarlo. Adesso è una **proprietà della configurazione**: il campo c'è sempre, e quello che protegge qualcuno è che un amministratore si ricordi di lasciarlo spento. Sono due promesse diverse e la seconda è più debole anche quando il flag è a zero. Questo è il prezzo, ed è pagato con gli occhi aperti: l'alternativa era diagnosticare il sistema leggendo metà di una conversazione.
+
+Quattro cose lo tengono stretto, e nessuna è decorativa.
+
+1. **Spento se nessuno l'ha acceso.** Una casa senza riga non tiene niente, ed è ogni casa su cui nessuno sta lavorando.
+2. **Non è del genitore.** Si accende da `panel/routes/admin.py`, contro la directory e l'app role dell'amministratore. Nessun difetto nel percorso di scrittura del genitore può concederlo, e nessuna pagina che il genitore vede lo nomina.
+3. **Scade invece di aspettare di essere spento.** Quattordici giorni dall'ultima volta che qualcuno l'ha detto. Non c'è uno stato che qualcuno debba ricordarsi di disfare: lasciarlo acceso per un anno richiede di dirlo ventisei volte.
+4. **Quello che ha lasciato passare se ne va con lui.** Ogni riga porta lo stesso istante, e il registro la **cancella** la prima volta che viene letto dopo. Cancella, non filtra: una riga che viene solo lasciata fuori da una risposta è una riga che c'è ancora. È la stessa forma della nota del genitore in `panel/preferences.py`.
+
+Il posto dove si tiene è uno solo, ed è quello dove la lettura **già** attraversa il filo: `POST /api/device/{casa}/experience`, dove la casa manda cosa è tornato perché il seguito venga scritto da lì. La forma con cui la casa deposita quello che ha fatto resta chiusa — `extra="forbid"`, e un test verifica ancora che una lettura infilata lì prenda 422. Se un domani serve tenere altro, va aggiunta una seconda eccezione esplicita, non allargata questa.
+
+### 18.4 Dove si parte per toglierlo
+
+Quando lo sviluppo è finito: spegnere dalla pagina dell'amministratore ogni casa accesa, poi togliere `panel/keeping.py`, il campo `until` da `Made`, il ramo in `_kept_while_being_worked_on`, le due rotte admin e la card `WorkingOn`. I test che cadono sono in `tests/test_trail.py` sotto «una casa su cui si sta lavorando», e devono cadere. Quello che **non** va tolto è §18.1 e §18.2: le pagine e i guasti sono il sistema che si racconta, e valgono in produzione quanto qui.
+
+**Fatto quando:** `panel/keeping.py` non esiste più e `tests/test_trail.py` non nomina `WHAT_CAME_BACK`.

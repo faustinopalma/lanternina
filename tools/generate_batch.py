@@ -7,7 +7,7 @@ Run it with the venv active::
 
     python -m tools.generate_batch --exercises 2 --prompts 2 --render build/display.png
 
-Everything it prints comes back from Azure AI Foundry and has passed the content-safety
+Everything it prints comes back from Microsoft Foundry and has passed the content-safety
 gate. Nothing here approves anything on the parent's behalf except the ``--approve-all``
 flag, which exists so the display render has something to draw and says so when used.
 """

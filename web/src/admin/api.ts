@@ -18,6 +18,19 @@ export interface Waiting {
 /** What an administrator may set. The API refuses anything else with 400. */
 export type Admission = "active" | "rejected";
 
+/** Whether one household is one somebody is building against, and until when.
+ *
+ * `until` is zero when nothing is standing. `setBy` is the administrator who last said
+ * so, which is here because a permission nobody is accountable for is the kind that stays
+ * on. See `panel/keeping.py`. */
+export interface Keeping {
+  householdId: string;
+  keeping: boolean;
+  until: number;
+  daysAtATime: number;
+  setBy: string;
+}
+
 /** Told apart because the remedies differ: sign in again, ask for the role, or fix the
  *  deployment. */
 export type Standing = "in" | "notAdmin" | "notConfigured" | "failed";
@@ -26,6 +39,8 @@ export interface AdminApi {
   standing: () => Promise<Standing>;
   waiting: () => Promise<Waiting[]>;
   decide: (id: string, state: Admission) => Promise<void>;
+  keeping: (householdId: string) => Promise<Keeping>;
+  keep: (householdId: string, keeping: boolean) => Promise<Keeping>;
 }
 
 export function httpAdminApi(token: string): AdminApi {
@@ -65,6 +80,23 @@ export function httpAdminApi(token: string): AdminApi {
         body: JSON.stringify({ state, note: "" }),
       });
       if (!response.ok) throw new Error("decision");
+    },
+
+    async keeping(householdId: string): Promise<Keeping> {
+      const response = await call(
+        `/api/admin/households/${encodeURIComponent(householdId)}/keeping`,
+      );
+      if (!response.ok) throw new Error("keeping");
+      return (await response.json()) as Keeping;
+    },
+
+    async keep(householdId: string, keeping: boolean): Promise<Keeping> {
+      const response = await call(
+        `/api/admin/households/${encodeURIComponent(householdId)}/keeping`,
+        { method: "POST", body: JSON.stringify({ keeping }) },
+      );
+      if (!response.ok) throw new Error("keeping");
+      return (await response.json()) as Keeping;
     },
   };
 }

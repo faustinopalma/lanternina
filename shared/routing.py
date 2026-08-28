@@ -4,7 +4,7 @@ Exactly one implementation exists (``orchestrator/router.py``) and it is the **o
 module in the repo permitted to import an Azure SDK. Agents receive a
 :class:`ModelRouter` and nothing lower-level.
 
-**No model runs on the device.** Every LLM and vision call goes to Azure AI Foundry; the
+**No model runs on the device.** Every LLM and vision call goes to Microsoft Foundry; the
 mini-PC runs conventional code only. That is a deliberate simplification, and it has a
 consequence: the offline path serves *previously approved* content and nothing else.
 

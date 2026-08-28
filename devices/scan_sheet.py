@@ -5,9 +5,10 @@ the press and this acts on it, because a scan takes tens of seconds and the disp
 holding the other end of an HTTP socket while it waits for its picture.
 
 A flatbed with the lid down cannot see anything but the sheet, so the guarantee that no
-person is in frame stops depending on this code. What still depends on it is the rest: the
-full scan is rectified to the marker quadrilateral before anything is kept, and the page is
-refused outright if the four markers are not all there rather than read at a guess.
+person is in frame stops depending on this code. What still depends on it is the other
+half: the whole sheet goes to the reader together with the blank it was printed from —
+nothing is cropped to markers, because there are none — and what the reader says back is
+used and not kept.
 
 What it says back describes ink. Which boxes carry a mark, which are empty, and which the
 parent should look at. Nothing here decides whether a mark is the right one.

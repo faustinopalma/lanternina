@@ -1,19 +1,25 @@
-"""The administration surface: who is waiting to be let in, and the decision.
+"""The administration surface: who is waiting to be let in, the decision, and the one
+permission that is not a parent's to give.
 
-Three routes and nothing else. Deliberately not a search over every account — a route that
-answers questions about one address is a way to find out who is registered.
+Deliberately not a search over every account — a route that answers questions about one
+address is a way to find out who is registered. The keeping routes take a household id
+rather than offering a list, for the same reason and with the same cost: an administrator
+has to already know which household they are working on.
 """
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, ConfigDict
 
 from shared.accounts import AccountStatus, AccountStore
 from shared.ids import AccountId
 
 from ..admin import ADMISSIONS, CurrentAdmin, waiting_view
+from ..keeping import KeepingStore, granted, withdrawn
 from . import Decision
 
 router = APIRouter()
@@ -57,3 +63,35 @@ def admit_account(
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="unknown_account") from exc
     return waiting_view(row)
+
+
+class BeingWorkedOn(BaseModel):
+    """Whether this household is one somebody is building against."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    keeping: bool
+
+
+@router.get("/api/admin/households/{household_id}/keeping")
+def is_being_worked_on(household_id: str, _: CurrentAdmin, request: Request) -> Any:
+    store: KeepingStore = request.app.state.keeping
+    return store.get(household_id).to_public(time.time())
+
+
+@router.post("/api/admin/households/{household_id}/keeping")
+def work_on(
+    household_id: str, what: BeingWorkedOn, admin: CurrentAdmin, request: Request
+) -> Any:
+    """Turn on, or renew, the one exception in `panel/keeping.py`.
+
+    On is not a state that stays on. Every call sets a fresh instant a fortnight out, so a
+    household is being worked on for as long as somebody keeps saying so and no longer.
+    Turning it off stops what is kept from now; it does not delete what a standing
+    permission already allowed, because those rows lapse on their own date and a route that
+    erased a record would be a different and worse thing than one that stops adding to it.
+    """
+    store: KeepingStore = request.app.state.keeping
+    now = time.time()
+    make = granted if what.keeping else withdrawn
+    return store.set(make(household_id, by=admin.subject, now=now)).to_public(now)

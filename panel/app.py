@@ -36,6 +36,7 @@ from .drafts import DraftStore, InMemoryDraftStore
 from .experiences import ExperienceStore, InMemoryExperienceStore
 from .gate import CurrentAccount
 from .guidelines import GuidelineStore, InMemoryGuidelineStore
+from .keeping import InMemoryKeepingStore, KeepingStore
 from .messages import InMemoryMessageStore, MessageStore
 from .observability import watch
 from .pictures import InMemoryPictureArchive, PictureArchive
@@ -108,6 +109,7 @@ def create_app(
     messages: MessageStore | None = None,
     guidelines: GuidelineStore | None = None,
     trail: TrailStore | None = None,
+    keeping: KeepingStore | None = None,
     drafts: DraftStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
@@ -149,6 +151,9 @@ def create_app(
         guidelines if guidelines is not None else _guideline_store(app.state.settings)
     )
     app.state.trail = trail if trail is not None else _trail_store(app.state.settings)
+    app.state.keeping = (
+        keeping if keeping is not None else _keeping_store(app.state.settings)
+    )
     app.state.drafts = drafts if drafts is not None else _draft_store(app.state.settings)
     # Both identity providers are built on first use, by `panel/gate.py` and
     # `panel/admin.py`: one that is unreachable at startup must answer 503 rather than
@@ -234,6 +239,14 @@ def _trail_store(settings: Settings) -> TrailStore:
     from .cosmos_store import CosmosTrailStore
 
     return CosmosTrailStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _keeping_store(settings: Settings) -> KeepingStore:
+    if not settings.cosmos_configured:
+        return InMemoryKeepingStore()
+    from .cosmos_store import CosmosKeepingStore
+
+    return CosmosKeepingStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _picture_archive(settings: Settings) -> PictureArchive:

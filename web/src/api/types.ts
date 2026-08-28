@@ -173,7 +173,11 @@ export interface OfferedList {
 
 /* One thing the system wrote during an afternoon. `kind` is the act it performed — say,
  * hand_over, collect, close — or "continuation" for the rest of an afternoon written in
- * one go. `why` is the reasoning, which reached nobody in the house. */
+ * one go, or "fault" for something it was told to do and could not. `why` is the
+ * reasoning, which reached nobody in the house. `paper` is the sheet as it was designed.
+ *
+ * `until` is zero on everything the system wrote, which is kept. It is set only on the
+ * kind an administrator turned on while building, and those rows delete themselves. */
 export interface Made {
   id: string;
   at: number;
@@ -182,6 +186,8 @@ export interface Made {
   body: string;
   why: string;
   pictureId: string;
+  paper: string;
+  until: number;
 }
 
 /* An afternoon that ran, and everything the system generated for it. `script` and `made`

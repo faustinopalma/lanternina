@@ -259,7 +259,7 @@ class _FoundryBackend:
 
 
 class FoundryRouter:
-    """A :class:`~shared.routing.ModelRouter` backed by Azure AI Foundry.
+    """A :class:`~shared.routing.ModelRouter` backed by Microsoft Foundry.
 
     The backend is built lazily so that constructing a router never reaches the network:
     the parent panel can ask about health without paying for a connection.
@@ -338,7 +338,7 @@ class FoundryRouter:
             routing=RoutingDecision(
                 tier=ModelTier.CLOUD_FOUNDRY,
                 degradation=DegradationLevel.FULL,
-                reason="served by Azure AI Foundry",
+                reason="served by Microsoft Foundry",
             ),
             latency_s=time.perf_counter() - started,
             truncated=truncated,

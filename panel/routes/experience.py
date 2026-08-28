@@ -29,6 +29,7 @@ from shared.approval import ApprovalState
 from shared.capabilities import HouseCapability
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 from shared.experience import ASK, Came, Collect, Drawn, Experience, ExperienceError
+from shared.page import Page, PageError
 
 from ..config import Settings
 from ..experiences import (
@@ -40,9 +41,17 @@ from ..experiences import (
 )
 from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
+from ..keeping import KeepingStore, kept_for
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..rhythm import RhythmStore
-from ..trail import DONE, THE_PLAN, WHAT_COMES_AFTER, TrailStore
+from ..trail import (
+    HOUSE_MAY_FILE,
+    THE_PLAN,
+    WENT_WRONG,
+    WHAT_CAME_BACK,
+    WHAT_COMES_AFTER,
+    TrailStore,
+)
 from ..usage import FAILED, KIND_TEXT, REFUSED, SERVED, UsageStore, at_the_limit, event_from
 from . import Decision
 from .trail import filed, opened
@@ -102,8 +111,10 @@ async def continue_afternoon(
     from ..continuing import continue_experience
     from ..devising import RefusedByTheChecks
 
+    _kept_while_being_worked_on(request, household_id, what)
     spent: Any = None
     outcome = FAILED
+    went_wrong = ""
     try:
         carrying_on, spent = await continue_experience(
             experience=experience.to_dict(),
@@ -118,10 +129,12 @@ async def continue_afternoon(
         # A refused continuation is a normal outcome, and the only honest one: there is
         # nothing to fall back on, because nobody wrote what comes after this branch.
         outcome = REFUSED
+        went_wrong = f"the gate refused the rest of this afternoon: {exc}"
         logging.getLogger(__name__).info("continuation refused: %s", exc)
         raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
     except RefusedByTheChecks as exc:
         outcome = REFUSED
+        went_wrong = f"the checks refused the rest of this afternoon: {exc}"
         logging.getLogger(__name__).info("continuation refused by the checks: %s", exc)
         # Which check, and not only that one refused. The house is the only caller and it
         # holds a device key; the neighbour below has always answered this way, and an
@@ -130,14 +143,34 @@ async def continue_afternoon(
             status_code=422, detail=f"refused_by_the_checks: {exc}"
         ) from exc
     except ExperienceError as exc:
+        went_wrong = f"what came back was not a continuation: {exc}"
         logging.getLogger(__name__).warning("not a continuation: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_a_continuation: {exc}") from exc
     except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        went_wrong = f"the rest of this afternoon could not be written: {exc}"
         logging.getLogger(__name__).warning("afternoon not continued: %s", exc)
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_TEXT, outcome, spent)
-    _write_down(request, household_id, what.runId, what.experience, _the_rest(carrying_on))
+        if went_wrong:
+            _write_down(
+                request,
+                household_id,
+                what.runId,
+                what.experience,
+                kind=WENT_WRONG,
+                body=went_wrong,
+            )
+    _write_down(
+        request,
+        household_id,
+        what.runId,
+        what.experience,
+        kind=WHAT_COMES_AFTER,
+        body=json.dumps(
+            [one.to_dict() for one in carrying_on.moments], ensure_ascii=False, indent=2
+        ),
+    )
     return carrying_on.to_dict()
 
 
@@ -176,6 +209,7 @@ async def next_move(
 
     spent: Any = None
     outcome = FAILED
+    went_wrong = ""
     try:
         move, spent = await decide_a_move(
             afternoon=afternoon,
@@ -185,49 +219,92 @@ async def next_move(
         outcome = SERVED
     except SafetyBlocked as exc:
         outcome = REFUSED
+        went_wrong = f"the gate refused the next move: {exc}"
         logging.getLogger(__name__).info("move refused: %s", exc)
         raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
     except ExperienceError as exc:
+        went_wrong = f"what came back was not a move: {exc}"
         logging.getLogger(__name__).warning("not a move: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_a_move: {exc}") from exc
     except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        went_wrong = f"no move was decided: {exc}"
         logging.getLogger(__name__).warning("no move decided: %s", exc)
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_TEXT, outcome, spent)
+        if went_wrong:
+            _write_down(
+                request,
+                household_id,
+                where.runId,
+                where.experience,
+                kind=WENT_WRONG,
+                body=went_wrong,
+            )
     _write_down(
         request,
         household_id,
         where.runId,
         where.experience,
-        (str(move.act), move.heading, _said(move), move.why),
+        kind=str(move.act),
+        heading=move.heading,
+        body="\n".join(move.lines),
+        why=move.why,
+        paper=_printed(move.page),
     )
     return move.to_dict()
 
 
-def _said(move: Any) -> str:
-    """A move as text: the words, and the page under them if it made one.
+def _printed(page: Any) -> str:
+    """A page as the words that are on it, in the order they are on it.
 
-    The page goes in as the JSON the model wrote rather than as a rendering of it. This is a
-    record of what was generated, and the generated thing is the document — a rendering would
-    be our reading of it, which is the part a parent does not need us for.
+    Not the JSON it arrived as. This is a record of a generated thing and the generated
+    thing is a document, but braces around a title are our storage showing through, and a
+    parent opening the record wants the sheet. The illustration is the last line and in
+    brackets: it is the one string on a page that is never lettered onto the paper.
+
+    A page this container cannot read falls back to the JSON rather than to nothing, because
+    a record that quietly drops what it could not parse is the worse of the two failures.
     """
-    lines = "\n".join(move.lines)
-    if move.page is None:
-        return lines
-    page = json.dumps(move.page, ensure_ascii=False, indent=2)
-    return f"{lines}\n\n{page}" if lines else page
+    if not page:
+        return ""
+    try:
+        drawn = Page.from_dict(page)
+    except (PageError, TypeError):
+        return json.dumps(page, ensure_ascii=False, indent=2)
+    lines = [drawn.title, *drawn.note, *(f"— {one.label}" for one in drawn.spaces)]
+    return "\n".join([one for one in lines if one] + [f"({drawn.illustration})"])
 
 
-def _the_rest(carrying_on: Any) -> tuple[str, str, str, str]:
-    """A continuation as one entry: the moments it wrote, whole."""
-    return (
-        WHAT_COMES_AFTER,
-        "",
-        json.dumps(
-            [one.to_dict() for one in carrying_on.moments], ensure_ascii=False, indent=2
-        ),
-        "",
+def _kept_while_being_worked_on(
+    request: Request, household_id: str, what: WhatCameBack
+) -> None:
+    """The other half, and only where `panel/keeping.py` says a household is being built on.
+
+    Here rather than anywhere else because here is the one place the reading already crosses
+    the wire: the house posts what came back so that the rest of the afternoon can be
+    written from it. Every other route stays closed, and the shape a house files what it
+    performed with still has no field a reading would fit in.
+
+    The row carries the instant the permission lapses, so it deletes itself even if nobody
+    remembers this was ever turned on.
+    """
+    if not what.runId:
+        return
+    store: KeepingStore = request.app.state.keeping
+    until = kept_for(store, household_id, time.time())
+    if not until:
+        return
+    _write_down(
+        request,
+        household_id,
+        what.runId,
+        what.experience,
+        kind=WHAT_CAME_BACK,
+        heading=what.after,
+        body=json.dumps(what.reading, ensure_ascii=False, indent=2),
+        why=what.came,
+        until=until,
     )
 
 
@@ -236,7 +313,13 @@ def _write_down(
     household_id: str,
     run_id: str,
     document: dict[str, Any],
-    what: tuple[str, str, str, str],
+    *,
+    kind: str,
+    heading: str = "",
+    body: str = "",
+    why: str = "",
+    paper: str = "",
+    until: float = 0.0,
 ) -> None:
     """File a generation against its afternoon, if the house said which one this is."""
     if not run_id:
@@ -244,8 +327,18 @@ def _write_down(
     store: TrailStore = request.app.state.trail
     now = time.time()
     opened(store, household_id, run_id, document, now)
-    kind, heading, body, why = what
-    filed(store, household_id, run_id, kind=kind, at=now, heading=heading, body=body, why=why)
+    filed(
+        store,
+        household_id,
+        run_id,
+        kind=kind,
+        at=now,
+        heading=heading,
+        body=body,
+        why=why,
+        paper=paper,
+        until=until,
+    )
 
 
 def _asked(what: WhatCameBack) -> Experience:
@@ -528,6 +621,9 @@ class ItDid(BaseModel):
     heading: str = ""
     lines: list[str] = Field(default_factory=list)
     why: str = ""
+    # The sheet that came out of the printer, when one did. Words the system wrote, like
+    # everything else here: it is the page as it was designed, not as it came back.
+    page: dict[str, Any] | None = None
 
 
 @router.post("/api/device/{household_id}/trail/{run_id}")
@@ -540,7 +636,7 @@ def it_did(
     different facts and the second is the one a parent asked for - a page that the printer
     never took is a generation that happened and an act that did not.
     """
-    if what.kind not in DONE:
+    if what.kind not in HOUSE_MAY_FILE:
         raise HTTPException(status_code=400, detail=f"a house does not do {what.kind!r}")
     trail: TrailStore = request.app.state.trail
     filed(
@@ -552,6 +648,7 @@ def it_did(
         heading=what.heading,
         body="\n".join(what.lines),
         why=what.why,
+        paper=_printed(what.page),
     )
     return {"filed": True}
 

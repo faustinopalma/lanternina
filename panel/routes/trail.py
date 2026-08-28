@@ -83,6 +83,8 @@ def filed(
     heading: str = "",
     body: str = "",
     why: str = "",
+    paper: str = "",
+    until: float = 0.0,
 ) -> None:
     """Write down one thing the system wrote."""
     _quietly(
@@ -96,6 +98,8 @@ def filed(
             heading=heading,
             body=clipped(body),
             why=why,
+            paper=clipped(paper),
+            until=until,
         ),
     )
 

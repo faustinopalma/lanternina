@@ -55,6 +55,7 @@ from devices.house import CannotRun, House, screen_in, the_sheet_layer_is_done
 from devices.print_page import recall
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
+from shared.capabilities import WENT_WRONG
 from shared.experience import (
     ASK,
     HELP_LEVELS,
@@ -64,6 +65,7 @@ from shared.experience import (
     Continuation,
     Experience,
     ExperienceError,
+    HandOver,
     Help,
     Moment,
     Weight,
@@ -568,7 +570,7 @@ def _do(
     return hands.play(house, moment, weight, out or Outgoing(), send)
 
 
-def _it_did(house: House, run_id: str, moment: Moment, weight: Weight) -> None:
+def _it_did(house: House, run_id: str, moment: Moment, weight: Weight, sheet: str | None) -> None:
     """Tell the panel what went into the room. Never raises, and never blocks the room.
 
     What the panel writes down on its own is what it generated; this is what was performed,
@@ -576,22 +578,38 @@ def _it_did(house: House, run_id: str, moment: Moment, weight: Weight) -> None:
     display asleep, a version the clock made shorter. A parent reads both under one
     afternoon.
 
-    Nothing here can carry a reading. It sends the act, the heading and the lines that went
-    up, all of which the system wrote itself.
+    Nothing here can carry a reading. It sends the act, the heading, the lines that went up
+    and the page that came out of the printer, all of which the system wrote itself.
     """
     if not (house.panel and house.household and house.device_key):
         return
-    body = json.dumps(
-        {
-            "kind": str(moment.act),
-            "heading": moment.heading,
-            "lines": list(moment.at(weight).lines),
-            "why": str(weight),
-        }
-    ).encode()
+    what: dict[str, Any] = {
+        "kind": str(moment.act),
+        "heading": moment.heading,
+        "lines": list(moment.at(weight).lines),
+        "why": str(weight),
+    }
+    if isinstance(moment, HandOver):
+        if sheet is None:
+            # The one divergence a parent cannot otherwise see: the afternoon carried on
+            # with the words written for this, and the record used to show the page instead.
+            what = {
+                "kind": WENT_WRONG,
+                "heading": moment.heading,
+                "lines": [
+                    "no page reached the table, so what the afternoon says instead was shown"
+                ],
+                "why": str(weight),
+            }
+        else:
+            what["page"] = moment.page.to_dict()
+    _tell_the_panel(house, run_id, what)
+
+
+def _tell_the_panel(house: House, run_id: str, what: dict[str, Any]) -> None:
     request = urllib.request.Request(
         f"{house.panel.rstrip('/')}/api/device/{house.household}/trail/{run_id}",
-        data=body,
+        data=json.dumps(what).encode(),
         headers={"X-Device-Key": house.device_key, "Content-Type": "application/json"},
         method="POST",
     )
@@ -640,7 +658,7 @@ def _play(
         if isinstance(moment, Collect):
             return moment, printed, weight
         sheet_id = _do(house, moment, weight, send=send, out=out)
-        _it_did(house, run.run_id, moment, weight)
+        _it_did(house, run.run_id, moment, weight, sheet_id)
         if sheet_id is not None:
             printed.append(sheet_id)
         if isinstance(moment, Close):

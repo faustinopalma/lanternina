@@ -32,6 +32,7 @@ from .drafts import OPEN as DRAFT_OPEN
 from .drafts import Draft, Said
 from .experiences import OfferedExperience
 from .guidelines import Guidelines
+from .keeping import Keeping
 from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
@@ -51,7 +52,7 @@ from .rhythm import (
     Rhythm,
 )
 from .themes import Theme
-from .trail import Made, Trail
+from .trail import Made, Trail, lapsed
 from .usage import Limit, UsageEvent, UsageSummary, summarise
 
 ACCOUNTS_CONTAINER = "families"
@@ -62,6 +63,7 @@ INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 GUIDELINES_CONTAINER = "sources"
+KEEPING_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
@@ -610,8 +612,32 @@ class CosmosTrailStore:
             overview=found.overview,
             began_at=found.began_at,
             script=found.script,
-            made=tuple(sorted((_to_made(row) for row in made), key=lambda one: one.at)),
+            made=tuple(sorted(self._still_kept(made), key=lambda one: one.at)),
         )
+
+    def _still_kept(self, rows: Any) -> list[Made]:
+        """Everything the system wrote, and whatever else has not lapsed yet.
+
+        A lapsed row is deleted here rather than left out of the answer: `panel/keeping.py`
+        promises the other half goes away on a date, and a row that is merely unread is a
+        row that is still there.
+        """
+        from azure.cosmos import exceptions
+
+        now = time.time()
+        kept: list[Made] = []
+        for row in rows:
+            record = _to_made(row)
+            if not lapsed(record, now):
+                kept.append(record)
+                continue
+            try:
+                self._container.delete_item(
+                    item=record.id, partition_key=record.household_id
+                )
+            except exceptions.CosmosResourceNotFoundError:
+                pass
+        return kept
 
 
 def _trail_id(run_id: str) -> str:
@@ -657,6 +683,8 @@ def _from_made(record: Made) -> dict[str, Any]:
         "body": record.body,
         "why": record.why,
         "pictureId": record.picture_id,
+        "paper": record.paper,
+        "until": record.until,
     }
 
 
@@ -671,6 +699,8 @@ def _to_made(document: dict[str, Any]) -> Made:
         body=str(document.get("body") or ""),
         why=str(document.get("why") or ""),
         picture_id=str(document.get("pictureId") or ""),
+        paper=str(document.get("paper") or ""),
+        until=float(document.get("until") or 0.0),
     )
 
 
@@ -990,6 +1020,70 @@ def _to_guidelines(document: dict[str, Any]) -> Guidelines:
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )
+
+
+class CosmosKeepingStore:
+    """Conforms to :class:`~panel.keeping.KeepingStore`.
+
+    One document per household, and only while there is one: turning the permission off
+    deletes the row rather than writing ``false`` into it, so the ordinary state of a
+    household is having no document here at all.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(KEEPING_CONTAINER)
+        )
+
+    def get(self, household_id: str) -> Keeping:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(
+                item=_keeping_id(household_id), partition_key=household_id
+            )
+        except exceptions.CosmosResourceNotFoundError:
+            return Keeping(household_id=household_id)
+        found = Keeping(
+            household_id=household_id,
+            until=float(document.get("until") or 0.0),
+            set_by=str(document.get("setBy") or ""),
+            set_at=float(document.get("setAt") or 0.0),
+        )
+        if found.standing(time.time()):
+            return found
+        self.set(Keeping(household_id=household_id))
+        return Keeping(household_id=household_id)
+
+    def set(self, keeping: Keeping) -> Keeping:
+        from azure.cosmos import exceptions
+
+        if not keeping.until:
+            try:
+                self._container.delete_item(
+                    item=_keeping_id(keeping.household_id),
+                    partition_key=keeping.household_id,
+                )
+            except exceptions.CosmosResourceNotFoundError:
+                pass
+            return keeping
+        self._container.upsert_item(
+            {
+                "id": _keeping_id(keeping.household_id),
+                "familyId": keeping.household_id,
+                "type": "keeping",
+                "until": keeping.until,
+                "setBy": keeping.set_by,
+                "setAt": keeping.set_at,
+            }
+        )
+        return keeping
+
+
+def _keeping_id(household_id: str) -> str:
+    return f"keeping-{household_id}"
 
 
 class CosmosDeviceStatusStore:

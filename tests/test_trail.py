@@ -9,6 +9,7 @@ not in the trail even though the generation it caused is.
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import fields
 from pathlib import Path
 from typing import Any
@@ -20,10 +21,18 @@ from fastapi.testclient import TestClient
 from agents.experience_agent import Move
 from panel.app import create_app
 from panel.config import Settings
+from panel.keeping import KEPT_FOR_SECONDS, InMemoryKeepingStore, granted
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
-from panel.trail import WHAT_COMES_AFTER, InMemoryTrailStore, Made, Trail, clipped
-from shared.capabilities import Act
+from panel.trail import (
+    WHAT_CAME_BACK,
+    WHAT_COMES_AFTER,
+    InMemoryTrailStore,
+    Made,
+    Trail,
+    clipped,
+)
+from shared.capabilities import WENT_WRONG, Act
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -75,11 +84,20 @@ def test_nothing_in_the_record_can_be_about_a_person() -> None:
 
     This is the guarantee, and it is a list rather than a principle because a principle does
     not fail when somebody adds `howFar` to a dataclass in good faith.
+
+    `until` is the one field that exists for the exception in `panel/keeping.py`, and it is
+    about a clock: it says when a row stops being kept, not anything about whom it concerns.
     """
     about_the_run = {"id", "household_id", "run_id", "at", "experience_id", "began_at"}
-    about_what_was_written = {"kind", "heading", "body", "why", "picture_id"}
+    about_what_was_written = {"kind", "heading", "body", "why", "picture_id", "paper"}
+    about_how_long_it_is_kept = {"until"}
     about_the_afternoon = {"title", "overview", "script", "made"}
-    allowed = about_the_run | about_what_was_written | about_the_afternoon
+    allowed = (
+        about_the_run
+        | about_what_was_written
+        | about_how_long_it_is_kept
+        | about_the_afternoon
+    )
 
     held = {row.name for row in fields(Made)} | {row.name for row in fields(Trail)}
 
@@ -159,10 +177,15 @@ def test_a_move_is_filed_under_the_afternoon_it_was_written_for(
     assert whole["made"][0]["why"] == "the page came back blank"
 
 
-def test_a_page_is_kept_as_the_document_that_was_written(
+def test_a_page_is_kept_as_the_words_that_are_on_it(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Not a rendering of it. A rendering is our reading, and that is the part nobody needs."""
+    """The sheet, readable, and not the JSON it arrived as.
+
+    It used to go into the body as the document a model wrote, which was a record nobody
+    could read: a parent opening an afternoon wants the page, and braces round a title are
+    our storage showing through.
+    """
     client = client_for()
     moving(
         monkeypatch,
@@ -170,7 +193,14 @@ def test_a_page_is_kept_as_the_document_that_was_written(
             act=Act.HAND_OVER,
             why="the plan asked for one",
             heading="Le nuvole",
-            page={"title": "Le nuvole", "cells": [{"label": "Disegnala qui"}]},
+            lines=("Prendi il foglio.",),
+            page={
+                "kind": "notebook",
+                "title": "Le nuvole",
+                "illustration": "una finestra su un cielo bianco",
+                "note": ["Guarda il cielo e scrivi quello che sembra."],
+                "spaces": [{"label": "La prima nuvola", "room": "a_box"}],
+            },
         ),
     )
     household = household_of(client)
@@ -179,7 +209,34 @@ def test_a_page_is_kept_as_the_document_that_was_written(
 
     made = client.get("/api/trail/aft_1", headers=headers()).json()["made"][0]
     assert made["heading"] == "Le nuvole"
-    assert json.loads(made["body"])["cells"] == [{"label": "Disegnala qui"}]
+    assert made["body"] == "Prendi il foglio."
+    assert made["paper"].splitlines() == [
+        "Le nuvole",
+        "Guarda il cielo e scrivi quello che sembra.",
+        "— La prima nuvola",
+        "(una finestra su un cielo bianco)",
+    ]
+
+
+def test_a_page_this_container_cannot_read_is_kept_anyway(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A record that drops what it could not parse is the worse of the two failures."""
+    client = client_for()
+    moving(
+        monkeypatch,
+        Move(
+            act=Act.HAND_OVER,
+            why="the plan asked for one",
+            page={"title": "Le nuvole", "cells": [{"label": "Disegnala qui"}]},
+        ),
+    )
+    household = household_of(client)
+
+    ask_for_a_move(client, household)
+
+    made = client.get("/api/trail/aft_1", headers=headers()).json()["made"][0]
+    assert json.loads(made["paper"])["cells"] == [{"label": "Disegnala qui"}]
 
 
 def test_several_moves_stack_up_under_one_afternoon(
@@ -356,13 +413,227 @@ def test_a_house_cannot_claim_to_have_written_the_plan() -> None:
     client = client_for()
     household = household_of(client)
 
-    for kind in ("plan", "continuation", "invented"):
+    for kind in ("plan", "continuation", "invented", "came"):
         answer = client.post(
             f"/api/device/{household}/trail/aft_1",
             json={"kind": kind},
             headers={"X-Device-Key": DEVICE_KEY},
         )
         assert answer.status_code == 400, kind
+
+
+def test_a_house_may_say_what_it_could_not_do() -> None:
+    """Not an act and not a person: an afternoon that quietly did less than its plan used
+    to be visible only in the journal on the house, where no parent is reading."""
+    client = client_for()
+    household = household_of(client)
+
+    answer = client.post(
+        f"/api/device/{household}/trail/aft_1",
+        json={
+            "kind": WENT_WRONG,
+            "heading": "Le nuvole",
+            "lines": ["no page reached the table"],
+        },
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+    assert answer.status_code == 200
+
+
+def test_the_house_files_the_sheet_that_came_out_of_the_printer(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A page is generated like everything else, and until now the only place it survived
+    was inside the plan's JSON."""
+    client = client_for()
+
+    async def _devise(**_: Any) -> Any:
+        from shared.experience import Experience
+
+        return Experience.from_dict(THE_AFTERNOON), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", _devise)
+    household = household_of(client)
+    offer_and_begin(client, household)
+
+    client.post(
+        f"/api/device/{household}/trail/aft_1",
+        json={
+            "kind": "hand_over",
+            "heading": "Le nuvole",
+            "lines": ["Prendi il foglio."],
+            "page": {
+                "kind": "notebook",
+                "title": "Le nuvole",
+                "illustration": "una finestra",
+                "note": [],
+                "spaces": [{"label": "La prima", "room": "a_line"}],
+            },
+        },
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+    made = client.get("/api/trail/aft_1", headers=headers()).json()["made"]
+    assert made[1]["paper"].splitlines() == ["Le nuvole", "— La prima", "(una finestra)"]
+
+
+def test_a_continuation_the_checks_refused_is_in_the_record(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The afternoon carried on from its written plan and the parent's page said nothing
+    had happened. What was paid for and refused is what a record of a machine is for."""
+    from panel.devising import RefusedByTheChecks
+
+    async def _continue(**_: Any) -> Any:
+        raise RefusedByTheChecks(
+            ["this way out is about 'il registro' and never says so"]
+        )
+
+    monkeypatch.setattr("panel.continuing.continue_experience", _continue)
+    client = client_for()
+    household = household_of(client)
+
+    answer = client.post(
+        f"/api/device/{household}/experience",
+        json={
+            "experience": THE_AFTERNOON,
+            "after": "l-ultimo-foglio",
+            "came": "marks",
+            "reading": {"cells": []},
+            "runId": "aft_1",
+        },
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+    assert answer.status_code == 422
+    made = client.get("/api/trail/aft_1", headers=headers()).json()["made"]
+    assert [one["kind"] for one in made] == [WENT_WRONG]
+    assert "never says so" in made[0]["body"]
+
+
+# ── The one half that is kept only while somebody is building this ───────────────────
+
+
+def continued(client: TestClient, household: str) -> Any:
+    return client.post(
+        f"/api/device/{household}/experience",
+        json={
+            "experience": THE_AFTERNOON,
+            "after": "l-ultimo-foglio",
+            "came": "marks",
+            "reading": {
+                "describes": ["un cavallo nel terzo riquadro"],
+                "written": True,
+            },
+            "runId": "aft_1",
+        },
+        headers={"X-Device-Key": DEVICE_KEY},
+    )
+
+
+def a_continuation(monkeypatch: pytest.MonkeyPatch) -> None:
+    from shared.experience import Continuation
+
+    rest: dict[str, Any] = {
+        "format_version": 2,
+        "experience_id": "un-pomeriggio-di-nuvole",
+        "after": "l-ultimo-foglio",
+        "moments": [
+            a.close(
+                moment_id="due-nuvole",
+                heading="Due nuvole",
+                weights=a.weights(lines=("Il foglio resta sul tavolo.",)),
+            )
+        ],
+    }
+
+    async def _continue(**_: Any) -> Any:
+        return Continuation.from_dict(rest), None
+
+    monkeypatch.setattr("panel.continuing.continue_experience", _continue)
+
+
+def test_a_household_nobody_turned_on_keeps_nothing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The default, and what every household in production is."""
+    a_continuation(monkeypatch)
+    client = client_for()
+    household = household_of(client)
+
+    continued(client, household)
+
+    whole = client.get("/api/trail/aft_1", headers=headers()).json()
+    assert [one["kind"] for one in whole["made"]] == [WHAT_COMES_AFTER]
+    assert "un cavallo" not in json.dumps(whole)
+
+
+def test_a_household_being_worked_on_keeps_the_other_half(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    a_continuation(monkeypatch)
+    client = client_for()
+    household = household_of(client)
+    client.app.state.keeping.set(  # type: ignore[attr-defined]
+        granted(household, by="admin-1", now=time.time())
+    )
+
+    continued(client, household)
+
+    made = client.get("/api/trail/aft_1", headers=headers()).json()["made"]
+    assert [one["kind"] for one in made] == [WHAT_CAME_BACK, WHAT_COMES_AFTER]
+    assert "un cavallo" in made[0]["body"]
+    assert made[0]["until"] > time.time()
+
+
+def test_what_was_kept_while_building_deletes_itself_when_the_permission_lapses(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Deleted, not filtered. A row that is merely left out of an answer is still a row."""
+    a_continuation(monkeypatch)
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.keeping  # type: ignore[attr-defined]
+    store.set(granted(household, by="admin-1", now=time.time() - KEPT_FOR_SECONDS + 60))
+
+    continued(client, household)
+    trail = client.app.state.trail  # type: ignore[attr-defined]
+    assert [one.kind for one in trail.get(household, "aft_1").made] == [
+        WHAT_CAME_BACK,
+        WHAT_COMES_AFTER,
+    ]
+
+    # The permission lapses a minute later, and so does everything it let through.
+    store.set(granted(household, by="admin-1", now=time.time() - KEPT_FOR_SECONDS - 1))
+    later = time.time() + KEPT_FOR_SECONDS
+    monkeypatch.setattr("panel.trail.time.time", lambda: later)
+
+    assert [one.kind for one in trail.get(household, "aft_1").made] == [WHAT_COMES_AFTER]
+
+
+def test_a_permission_that_lapsed_is_off_and_forgotten() -> None:
+    store = InMemoryKeepingStore()
+    store.set(granted("h1", by="admin-1", now=time.time() - KEPT_FOR_SECONDS - 1))
+
+    found = store.get("h1")
+
+    assert not found.standing(time.time())
+    assert found.set_by == ""
+
+
+def test_the_permission_is_the_administrator_s_and_not_the_parent_s() -> None:
+    """The parent's token reaches no route that mentions it, and no page they see does."""
+    client = client_for()
+    household = household_of(client)
+
+    answer = client.post(
+        f"/api/admin/households/{household}/keeping",
+        json={"keeping": True},
+        headers=headers(),
+    )
+
+    assert answer.status_code == 503
 
 
 def test_filing_what_was_done_carries_no_field_for_a_reading() -> None:

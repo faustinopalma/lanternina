@@ -43,4 +43,49 @@ describe("what the system wrote", () => {
 
     expect(await screen.findByText("Nessuna attività ancora.")).toBeInTheDocument();
   });
+
+  it("shows the sheet a model wrote, and not the document it arrived as", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi(), <TheTrail />);
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Apri" }));
+
+    expect(await screen.findByText("Sul foglio")).toBeInTheDocument();
+    expect(screen.getByText(/Guarda il cielo e disegna quello che vedi/)).toBeInTheDocument();
+    expect(screen.queryByText(/^\{/)).not.toBeInTheDocument();
+  });
+
+  it("says of a line kept while building that it deletes itself", async () => {
+    const user = userEvent.setup();
+    const api = fakeApi();
+    const whole = await api.trail("aft_1");
+    renderPanel(
+      fakeApi({
+        trail: async () => ({
+          ...whole,
+          made: [
+            {
+              id: "made_3",
+              at: 0,
+              kind: "came",
+              heading: "l-ultimo-foglio",
+              body: "un cavallo nel terzo riquadro",
+              why: "marks",
+              pictureId: "",
+              paper: "",
+              until: 2_000_000_000,
+            },
+          ],
+        }),
+      }),
+      <TheTrail />,
+    );
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Apri" }));
+
+    expect(await screen.findByText("Quello che è tornato dal vetro")).toBeInTheDocument();
+    expect(screen.getByText(/si cancella da sola/)).toBeInTheDocument();
+  });
 });

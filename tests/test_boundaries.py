@@ -140,7 +140,7 @@ CLOUD_SDKS = {
 
 # On-device inference runtimes: forbidden everywhere, including the router.
 # No model runs on this device — the mini-PC executes conventional code only and every
-# LLM/vision call goes to Azure AI Foundry. One inference path, not two.
+# LLM/vision call goes to Microsoft Foundry. One inference path, not two.
 LOCAL_RUNTIMES = {
     "transformers",
     "llama_cpp",

@@ -12,6 +12,13 @@ on them, not how long anything took, not whether it was finished. A trail with b
 it would be a record of a person; a trail with only this half is a record of a machine, which
 is the thing that needs watching. `docs/NON-GOALS.md` says the same in prose.
 
+**There is one exception and it is written as one.** While this is being built, a household
+an administrator names keeps the other half too, so that an afternoon that went wrong can be
+read against what it was answering. It is off unless somebody turned it on, it is turned on
+from the administrator's own surface and not the parent's, it lapses on a date rather than
+waiting to be turned off, and the rows it allowed carry that date and are deleted the first
+time the record is read after it. `panel/keeping.py` is the whole of it.
+
 That also decides what a trail cannot become. There is no field here that could hold a
 judgement, a total or a comparison, because there is no row here about a person to attach one
 to. Counting trails would count afternoons, which is a fact about the house; nothing counts
@@ -21,10 +28,11 @@ them, because nobody asked and a number on a page invites being made to go up.
 from __future__ import annotations
 
 import threading
+import time
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
-from shared.capabilities import Act
+from shared.capabilities import WENT_WRONG, Act
 
 # What one generated thing is filed under. A move is filed under the act it performs —
 # `shared.capabilities.Act`, so the vocabulary stays the house's own and nothing can be filed
@@ -35,9 +43,19 @@ WHAT_COMES_AFTER = "continuation"
 # files what it actually performed, and the two differ whenever the clock made it run a
 # shorter version or reach for the way out.
 THE_PLAN = "plan"
+# What the machine could not do: a page the printer never took, a continuation the checks
+# refused, a model that was not there. Until now it existed only in the journal on the house,
+# where the person reading the parent's page cannot see it, and an afternoon that quietly did
+# less than its plan looked from here like an afternoon that went as written. Its spelling
+# lives in `shared/capabilities.py`, because a house files one too.
+# The other half, kept only while `panel/keeping.py` says this household is being worked on.
+# Every row of this kind carries the instant that permission lapses and is deleted then.
+WHAT_CAME_BACK = "came"
 # Which of those a house may report having done. It performs acts and nothing else: a house
 # filing a `plan` or a `continuation` would be claiming to have written one.
 DONE = frozenset({str(one) for one in Act})
+# A house may also say what stopped it, which is not a claim to have written anything.
+HOUSE_MAY_FILE = DONE | {WENT_WRONG}
 
 # How much of one generated thing is kept. A move is capped at 3000 characters upstream and a
 # script at 6000; this is the backstop for a caller that is neither, and it truncates rather
@@ -61,6 +79,13 @@ class Made:
     why: str = ""
     # For a picture, which one in the archive. Empty for everything else.
     picture_id: str = ""
+    # The words a model wrote on a sheet, in the order they are on it. A page was always
+    # generated like everything else and always kept, but only inside the plan's JSON, where
+    # it was present and readable by nobody.
+    paper: str = ""
+    # When this row stops being kept. Zero is everything the system wrote, which is kept.
+    # See :data:`WHAT_CAME_BACK`.
+    until: float = 0.0
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -71,6 +96,8 @@ class Made:
             "body": self.body,
             "why": self.why,
             "pictureId": self.picture_id,
+            "paper": self.paper,
+            "until": self.until,
         }
 
 
@@ -109,6 +136,16 @@ def clipped(body: str) -> str:
     """Long bodies are kept short rather than refused. See :data:`MAX_BODY`."""
     text = str(body or "")
     return text if len(text) <= MAX_BODY else text[:MAX_BODY]
+
+
+def lapsed(record: Made, now: float) -> bool:
+    """Whether this row was only ever going to be kept for a while, and that while is over.
+
+    Deletion, not a filter: a store answers by removing the row, the way an expired note in
+    `panel/preferences.py` is removed rather than hidden. A record that is filtered on the
+    way out is still a record.
+    """
+    return bool(record.until) and record.until <= now
 
 
 @runtime_checkable
@@ -162,7 +199,12 @@ class InMemoryTrailStore:
             found = self._trails.get((household_id, run_id))
             if found is None:
                 return None
-            made = sorted(self._made.get((household_id, run_id), []), key=lambda one: one.at)
+            now = time.time()
+            rows = self._made.get((household_id, run_id), [])
+            kept = [one for one in rows if not lapsed(one, now)]
+            if len(kept) != len(rows):
+                self._made[(household_id, run_id)] = kept
+            made = sorted(kept, key=lambda one: one.at)
             return Trail(
                 run_id=found.run_id,
                 household_id=found.household_id,

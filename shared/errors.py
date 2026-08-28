@@ -46,7 +46,7 @@ class OperationalError(LanterninaError):
 
 
 class CloudUnavailable(OperationalError):
-    """Azure AI Foundry could not be reached or refused the request."""
+    """Microsoft Foundry could not be reached or refused the request."""
 
 
 class NoCapacityError(OperationalError):

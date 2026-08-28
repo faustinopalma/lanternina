@@ -8,7 +8,7 @@ import { Card, CardTitle, Quiet } from "@/components/ui/card";
 import { adminConfig } from "@/config";
 import { useWords } from "@/i18n";
 
-import { httpAdminApi, type AdminApi, type Admission, type Waiting } from "./api";
+import { httpAdminApi, type AdminApi, type Admission, type Keeping, type Waiting } from "./api";
 import { adminBearerFor, adminSignIn, adminSignOut } from "./msal";
 
 type Stage =
@@ -88,6 +88,88 @@ function WaitingList({ api }: { api: AdminApi }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** The one permission that is not a parent's to give: whether a household is one somebody
+ *  is building against, and so keeps what came back off its glass as well as what the
+ *  system wrote. It is off everywhere unless it is turned on here, and it lapses on its own
+ *  rather than waiting to be turned off. `panel/keeping.py` has the whole of it.
+ *
+ *  A field for the household rather than a list of them: a page that enumerated households
+ *  would be a way to find out who is registered, which is the thing the sign-up list is
+ *  deliberately not. */
+function WorkingOn({ api }: { api: AdminApi }) {
+  const { t, dateTime } = useWords();
+  const [household, setHousehold] = useState("");
+  const [found, setFound] = useState<Keeping | null>(null);
+  const [broken, setBroken] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const answered = (work: Promise<Keeping>) => {
+    setBusy(true);
+    setBroken(false);
+    work
+      .then(setFound)
+      .catch(() => setBroken(true))
+      .finally(() => setBusy(false));
+  };
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-end gap-2.5">
+        <label className="flex flex-col gap-1">
+          <span className="text-[0.85rem] text-quiet">{t("admin.keeping.household")}</span>
+          <input
+            className="rounded-control border border-edge bg-paper px-3 py-2"
+            value={household}
+            onChange={(event) => {
+              setHousehold(event.target.value);
+              setFound(null);
+            }}
+          />
+        </label>
+        <Button
+          size="small"
+          disabled={busy || !household.trim()}
+          onClick={() => answered(api.keeping(household.trim()))}
+        >
+          {t("admin.keeping.look")}
+        </Button>
+      </div>
+
+      {broken ? <Quiet className="mt-3">{t("admin.keeping.unreadable")}</Quiet> : null}
+
+      {found !== null ? (
+        <div className="mt-4">
+          <p>
+            {found.keeping
+              ? t("admin.keeping.standing", { until: dateTime(found.until) })
+              : t("admin.keeping.notStanding")}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2.5">
+            <Button
+              size="small"
+              disabled={busy}
+              onClick={() => answered(api.keep(found.householdId, true))}
+            >
+              {t(found.keeping ? "admin.keeping.renew" : "admin.keeping.on", {
+                days: String(found.daysAtATime),
+              })}
+            </Button>
+            {found.keeping ? (
+              <Button
+                size="small"
+                disabled={busy}
+                onClick={() => answered(api.keep(found.householdId, false))}
+              >
+                {t("admin.keeping.off")}
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -177,6 +259,14 @@ export function AdminApp() {
           <CardTitle>{t("admin.waiting.title")}</CardTitle>
           <Quiet className="mb-5">{t("admin.waiting.note")}</Quiet>
           <WaitingList api={stage.api} />
+        </Card>
+      ) : null}
+
+      {stage.view === "list" ? (
+        <Card>
+          <CardTitle>{t("admin.keeping.title")}</CardTitle>
+          <Quiet className="mb-5">{t("admin.keeping.note")}</Quiet>
+          <WorkingOn api={stage.api} />
         </Card>
       ) : null}
     </Shell>
