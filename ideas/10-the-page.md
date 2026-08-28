@@ -303,6 +303,24 @@ One call is one call and not a measurement of the change. What it does show is t
 5. **Whether the page is A4 at all.** Nothing requires it except the printer in this house.
 6. **What happens to a page nobody brings back.** With no code on it, a sheet that surfaces after its afternoon has ended is a drawing and nothing else. That may be the right answer — the afternoon is over and there is nothing to continue — but it is a decision and it should be made on purpose rather than discovered.
 
+## 8. Six rounds of drawing the page before writing any code — 28 August 2026
+
+Five afternoons were written by hand and about twenty-two pages drawn from them, calling the image model directly and touching nothing in `agents/`. The point was to find out what the page prompt gets wrong while it was still cheap to find out. What came back is in the prompt files now, each sentence beside the measurement that earned it; this is the ledger.
+
+**The illustration is the unscreened route for words onto paper.** It is the one string no gate reads as words, and it can become words. "a scale bar marked in paces" was lettered *in passi* on the sheet in three drawings out of three. Fixed in two places at once, because one was not enough: `shared/experience_prompt.the-marks-on-a-page.md` now forbids inventing a diagram, and `agents/page_maker.only-these-words.md` forbids drawing one. The compass and the legend left `kind-map.md` for the same reason.
+
+**Marks that imitate lettering are also words nobody wrote.** A drawn shutter came back with two plaques carrying squiggles that read as writing at arm's length. One sentence removed them and left the sign panel blank.
+
+**The kind sentence was fighting the sentence four lines below it.** `kind-dossier.md` asked for "fields ruled across the rest", which is the definition of a form, while `how-it-is-drawn.md` asked for something that is not one. The kind is first in the prompt and it won every time. `kind-label.md` produced set serif type against the same block's "hand-drawn"; the hand is now stated explicitly, and sans-serif, which is what the easy-to-read guidance asks for.
+
+**Nobody had said which way up the page reads.** Two drawings out of three put the picture above the writing and one did the opposite, and nothing asked for either. One sentence removes the worst case.
+
+**A fifth kind, and it is the one that asks for nothing.** The strongest page of the exercise was a heading, three lines of prose and a drawing, with no place to write: it is read standing up, and `notebook` with no spaces does not get there because a margin rule says somebody sat down. `PageKind.NOTICE`.
+
+**One rule was written, measured, and then cut down.** After an afternoon posed a letter-permutation cipher — which a human can check on paper and a model cannot — five prohibitions were drafted. Two were refuted the same day: asked for three, seven and twelve identical stones, the model drew three, seven and twelve; asked for a jug left, a book middle, a shoe right, it drew that order. So what shipped is one sentence, in `shared/experience_prompt.only-what-you-can-answer.md` and reaching both the deviser and the continuer: **ask only for something whose answer you have written down yourself.** It settles counting (the number was chosen), position (the order was chosen), anagrams (nothing to write) and a date to look up (an answer with no way to know it is true). It is enforceable where nothing else was: the format already demands a fourth rung of help that hands the answer over, so a question the deviser cannot answer is one it cannot finish writing.
+
+**What was tried and deliberately not shipped.** "At least half the paper stays empty" moved the ink from 3.21 % to 3.09 % on the same page with the same words — nothing. What sets the ink is how complicated the illustration is, so the sentence costs prompt and buys none.
+
 ---
 
 *Nothing in this document has been built. It is here to be corrected first.*

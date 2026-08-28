@@ -42,12 +42,18 @@ class PageKind(StrEnum):
 
     Each one is a layout somebody has written and looked at, so the list is short and grows
     by an ordinary change. A catalogue page was offered and left out.
+
+    :attr:`NOTICE` is the fifth, added 28 August 2026. The strongest page of a long design
+    exercise asked for nothing at all — a heading, some prose, a drawing, no place to write
+    — and it is read standing up. ``NOTEBOOK`` with no spaces comes near it and does not
+    reach it, because a margin rule and a sketch in the corner say somebody sat down.
     """
 
     MAP = "map"
     DOSSIER = "dossier"
     LABEL = "label"
     NOTEBOOK = "notebook"
+    NOTICE = "notice"
 
 
 class Room(StrEnum):

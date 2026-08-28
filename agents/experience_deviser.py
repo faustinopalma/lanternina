@@ -65,6 +65,7 @@ from shared.experience import (
 from shared.experience_checks import Complaint
 from shared.experience_prompt import (
     HOW_THE_TEXT_READS,
+    ONLY_WHAT_YOU_CAN_ANSWER,
     THE_ACTS,
     THE_LIMITS,
     THE_MARKS_ON_A_PAGE,
@@ -115,6 +116,7 @@ _MANNER: Final = (
     SAYS.text("manner-head")
     + HOW_THE_TEXT_READS
     + WHAT_TO_REFUSE_BY_DEFAULT
+    + ONLY_WHAT_YOU_CAN_ANSWER
     + WHAT_MAKES_IT_WORTH_DOING
     + SAYS.text("manner-tail")
 )

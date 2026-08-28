@@ -131,6 +131,8 @@ HOW_THE_TEXT_READS: Final = SAYS.text("how-the-text-reads")
 
 WHAT_TO_REFUSE_BY_DEFAULT: Final = SAYS.text("what-to-refuse-by-default")
 
+ONLY_WHAT_YOU_CAN_ANSWER: Final = SAYS.text("only-what-you-can-answer")
+
 WHAT_MAKES_IT_WORTH_DOING: Final = SAYS.text("what-makes-it-worth-doing")
 
 _DRAWN_SHAPE: Final = ", ".join(f'"{name}": "<a short phrase>"' for name in DIMENSIONS)

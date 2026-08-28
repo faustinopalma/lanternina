@@ -1,0 +1,1 @@
+The page is a notice somebody pinned up on a wall: a heading across the top, one drawing under it, and everything else left as plain paper. Nothing is ruled unless the notice asks for something to be written.
