@@ -629,32 +629,20 @@ describe("the latitude", () => {
     expect(await screen.findByText(/non fa partire niente/)).toBeInTheDocument();
   });
 
-  it("says the three examples are examples, and that pressing one settles nothing", async () => {
-    /* Unlabelled, they read as three lines already in force: they sit in boxes that look
-     * exactly like the controls beside them. */
+  it("offers no line of its own to press, because the fixed bounds are the example", async () => {
+    /* Three suggested limits sat under the form and had to explain themselves: whether
+     * pressing one settled anything was a question the parent had to answer before they
+     * could read them. The five below are plainly not editable and say it without asking. */
     const user = userEvent.setup();
     renderPanel(fakeApi());
 
     await open(user, "Limiti dell'attività");
-    expect(await screen.findByText(/Tre esempi/)).toBeInTheDocument();
+    await screen.findByLabelText("Un vincolo per l'attività");
 
-    const field = screen.getByLabelText("Un vincolo per l'attività");
-    await user.click(screen.getByRole("button", { name: "Niente forbici o lame" }));
-
-    expect(field).toHaveValue("Niente forbici o lame");
-  });
-
-  it("every example is a limit, because a fact about a drawer bounds nothing", async () => {
-    const user = userEvent.setup();
-    renderPanel(fakeApi());
-
-    await open(user, "Limiti dell'attività");
-    for (const shown of [
-      "Non deve uscire di casa",
-      "Niente forbici o lame",
-      "Niente che faccia rumore dopo le nove",
-    ]) {
-      expect(await screen.findByRole("button", { name: shown })).toBeInTheDocument();
-    }
+    const body = screen.getByRole("heading", { name: "Limiti dell'attività" }).parentElement!;
+    const pressable = within(body)
+      .getAllByRole("button")
+      .map((one) => one.textContent);
+    expect(pressable).toEqual(["Aggiungi", "Togli"]);
   });
 });

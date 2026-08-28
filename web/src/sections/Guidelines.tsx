@@ -8,26 +8,14 @@ import { Input } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
-/* Limits a parent may want and would not think to write. They fill the field and nothing
- * else: pressing one is reading it, and adding it is still a second press. A house that
- * presses none has the fixed bounds and nothing narrower, which is the default.
- *
- * They sat unlabelled under the form until 28 August 2026, three sentences in boxes that
- * looked exactly like the controls beside them, and the parent read them as three things
- * already in force. What they are has to be written down; the styling cannot say it.
- *
- * They were also the wrong three. "The scissors are in the first drawer" is a fact about
- * the house and not a limit on anything, and it was there because this page used to hold
- * permissions. One each for where, with what, and when. */
-const SUGGESTED: MessageKey[] = [
-  "guidelines.suggestOutside",
-  "guidelines.suggestBlades",
-  "guidelines.suggestNoise",
-];
-
 /* What we wrote, shown beside what the parent writes. There is no control here on purpose:
  * these hold in every household, and a switch would be offering to remove the reason this
  * system exists.
+ *
+ * They are also the only example on the page. Three suggested lines used to sit under the
+ * form; they were removed on 28 August 2026 because five limits, stated plainly and
+ * visibly not editable, already show what a limit reads like — and they show it without a
+ * parent having to work out whether pressing one settles anything.
  *
  * The panel says them in the parent's language and the API says them in the model's, so
  * these are two copies of one rule and they can drift. What is kept honest is the count —
@@ -122,22 +110,6 @@ export function Guidelines() {
           {t("guidelines.add")}
         </Button>
       </form>
-
-      <div className="mb-3.5 max-w-[42rem]">
-        <Quiet className="m-0">{t("guidelines.suggestNote")}</Quiet>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {SUGGESTED.map((key) => (
-            <Button
-              key={key}
-              size="small"
-              title={t("guidelines.suggestTitle", { line: t(key) })}
-              onClick={() => setLine(t(key))}
-            >
-              {t(key)}
-            </Button>
-          ))}
-        </div>
-      </div>
 
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}
 
