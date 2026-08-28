@@ -1,5 +1,5 @@
 page-maker  —  agents/page_maker.py :: asked_for()
-2590 characters, 22 lines
+2774 characters, 23 lines
 invented for this rendering: a notebook page about clouds, with two places to write, and one manner
 ==============================================================================
 The page is a leaf out of a field notebook: a margin rule down the left and a quick sketch in one corner. Rule lines only where the page asks for something to be written, and leave the paper plain everywhere else.
@@ -14,6 +14,7 @@ Drawn with a fine dip pen, seen from a little way off, with room around it, in f
 
 Draw the whole sheet as one complete A4 page, upright, ready to print.
 Black ink on white paper. Line art only: thin pen lines, no colour, no grey wash, no shading, no cross-hatching, no filled black areas, no background tone, no texture, no photograph. The paper stays white. It is printed on a home inkjet and it must use very little ink.
+Two things are told apart by their outlines and never by filling one of them in. Where a surface changes, draw the line where it changes and leave the paper white on both sides of it.
 Hand-drawn, unhurried, with generous empty space. It should look like an object somebody would pick up, not like a worksheet or a form.
 The drawing goes above the places where something has to be written. Somebody picks the sheet up, looks at the picture, and then reads down to what is asked of them.
 Every word on the page is lettered by hand, in a plain upright hand with no serifs.

@@ -323,6 +323,22 @@ Five afternoons were written by hand and about twenty-two pages drawn from them,
 
 **What was tried and deliberately not shipped.** "At least half the paper stays empty" moved the ink from 3.21 % to 3.09 % on the same page with the same words — nothing. What sets the ink is how complicated the illustration is, so the sentence costs prompt and buys none.
 
+## 9. A seventh round, this time against the real prompt — 28 August 2026
+
+Rounds one to six went through a copy of the prompt in `private/`. This one built three afternoons by hand, put them through `Experience.from_dict` and all seven checks, and drew their five pages through `agents/page_maker.asked_for` itself. So what came back is what the deployed system would hand over.
+
+**Seven things held.** The diagram ban survived its hardest case: a floor plan of a flat, seen from above, drawn twice, with no room name, no compass, no legend, no scale and no number anywhere — a page where labels are the natural thing to draw. `notice` works and was the best of the five. `dossier` no longer produces a form. `label` came back in a plain sans hand, which closes the serif defect of the day before. `notebook` was unchanged. The drawing was above the writing on five pages out of five. And five dust rings were drawn for five missing glasses, which is the counting result of round six holding on a page nobody was probing with.
+
+**Hatching, and the shape of the fix.** Two pages of five filled a surface instead of drawing its edge: a floor of boards beside a floor of tiles, and the shaft of a key. `how-it-is-drawn.md` had said *no cross-hatching, no texture* since the beginning and was losing, because a prohibition leaves a model with nothing to do when it has to show that two surfaces differ. What worked was saying where the ink goes instead: *two things are told apart by their outlines and never by filling one of them in*. Both pages redrawn twice each, hatching gone from all four.
+
+**It did not move the ink, and that is the second time.** File card 2.72 % → 2.56 and 2.98; museum label 2.37 % → 2.43 and 3.07. Together with "half the paper empty" that is two rules aimed at ink and neither of them touches it. The ink is set by how much of the sheet the drawing covers and how many separate things are in it, and any further attempt to lower it by instruction should be treated as unlikely until somebody measures otherwise. The rule stays on a different argument: at about 124 dpi hatching prints as a smudge.
+
+**`INK_BUDGET` is below what a good page costs.** The five measured 2.37 % to 3.11 %, mean 2.74 %, against the declared 2.78 % — two of five over, including the best-looking one. Nothing enforces it on this path, because the rendered page is never measured. `§4` already says the constant is a placeholder taken from the sheet this format replaced; this is the first set of numbers from pages somebody wanted to keep, and they say the placeholder is too low.
+
+**A label with three places to write is not a label.** The museum label came back with the object drawn large and alone, and then half the sheet ruled — because the afternoon gave it three spaces. The format cannot catch this: the kind and the spaces are independent fields and both were legal. So it is said where the choice is made, in `the-marks-on-a-page.md`: a label carries at most one place to write, a notice carries none, and a page that needs three is a dossier or a notebook.
+
+**The block list refused a sentence about a drawing.** `errore`, in *"non è un errore di chi disegnava"* — a remark about a plan drawn in 1971 and about nobody alive. `shared/blocklist.py` says in its own docstring that false refusals are the price and that the cost is bounded by where they land; this is the first one measured on prose somebody meant. It cost one rewrite and no harm, which is roughly what the docstring predicted.
+
 ---
 
 *Nothing in this document has been built. It is here to be corrected first.*
