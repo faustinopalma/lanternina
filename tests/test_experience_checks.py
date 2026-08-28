@@ -44,12 +44,31 @@ def where(complaints: tuple[Any, ...]) -> list[str]:
 
 
 def three_sheets_in_a_row() -> Experience:
-    """Three pages one after another, so every run hands over all three."""
+    """Three pages one after another, so all three are on the table together."""
     return an_experience(
         moments=[
             a.say(),
             a.hand_over("primo"),
             a.hand_over("secondo"),
+            a.hand_over("terzo"),
+            a.collect(on_marks="fine", on_blank="fine", if_no_page="fine"),
+            a.close(),
+        ]
+    )
+
+
+def three_sheets_one_at_a_time() -> Experience:
+    """Three pages with a collect after each, so the table never holds two.
+
+    This is the afternoon the first version of the check refused, and refusing it is what
+    sent us back to what the parent had actually answered.
+    """
+    return an_experience(
+        moments=[
+            a.hand_over("primo"),
+            a.collect("preso-primo", on_marks="secondo", on_blank="secondo", if_no_page="secondo"),
+            a.hand_over("secondo"),
+            a.collect("preso-secondo", on_marks="terzo", on_blank="terzo", if_no_page="terzo"),
             a.hand_over("terzo"),
             a.collect(on_marks="fine", on_blank="fine", if_no_page="fine"),
             a.close(),
@@ -83,7 +102,13 @@ def test_an_afternoon_that_spends_more_paper_than_the_house_allows_is_refused() 
     refused = no_more_paper_than_the_house_wants(three_sheets_in_a_row(), 2)
 
     assert where(refused) == ["moments"]
-    assert "hands over 3 sheets" in refused[0].says
+    assert "puts 3 sheets on the table at once" in refused[0].says
+
+
+def test_a_sheet_taken_back_is_no_longer_on_the_table() -> None:
+    """The parent answered how much paper is in front of somebody, not how much an
+    afternoon spends. Three sheets one at a time is three uncrowded tables."""
+    assert no_more_paper_than_the_house_wants(three_sheets_one_at_a_time(), 1) == ()
 
 
 def test_branches_are_alternatives_and_not_a_total() -> None:

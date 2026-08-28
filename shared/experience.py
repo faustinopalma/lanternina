@@ -1171,30 +1171,48 @@ def longest_at(moments: Sequence[Moment], weight: Weight, *, start: int = 0) -> 
     return beyond[start] if 0 <= start < len(beyond) else 0
 
 
-def sheets_at(moments: Sequence[Moment], *, start: int = 0) -> int:
-    """The most sheets one run through these moments can put on the table.
+def sheets_at_once(moments: Sequence[Moment], *, start: int = 0) -> int:
+    """The most sheets that can be on the table at one time, anywhere in these moments.
 
-    The longest path and not the number of ``hand_over`` moments, for the reason
-    :func:`longest_at` gives: branches are alternatives, and a document that hands over one
-    sheet whichever way it goes has not handed over three. A branch that says ``ask`` counts
-    nothing beyond itself, because the continuation is a document nobody has written yet.
+    Until 28 August 2026 this counted the sheets a whole afternoon spends, and the number
+    the parent had chosen was two. They meant two *at a time*: a three-hour afternoon that
+    hands something over, takes it back, and hands over the next thing is four interactions
+    and four sheets, and none of them is a crowded table. Counting the total refused that
+    afternoon and there was no reason to.
+
+    So the count runs along a path and resets at every ``collect``, because a collect is the
+    moment the paper goes back on the glass and stops being what somebody is looking at. The
+    largest run any path reaches is the answer. The longest path and not the sum, for the
+    reason :func:`longest_at` gives: branches are alternatives.
+
+    The whole afternoon is left bounded by its own shape rather than by a second number.
+    A ``collect`` must follow a ``hand_over`` and there are at most :data:`MAX_MOMENTS`
+    moments, so an afternoon allowed two sheets at a time cannot reach nine whatever it
+    does. That is a ceiling nobody has to maintain.
     """
     position_of = {moment.id: index for index, moment in enumerate(moments)}
-    beyond: list[int] = [0] * len(moments)
+    # `run` is the sheets still on the table entering this moment's path; `most` is the
+    # largest run any complete path from here reaches.
+    run: list[int] = [0] * len(moments)
+    most: list[int] = [0] * len(moments)
     for index in range(len(moments) - 1, -1, -1):
         moment = moments[index]
-        here = 1 if moment.act is Act.HAND_OVER else 0
-        if moment.act is Act.CLOSE:
-            beyond[index] = here
-        elif isinstance(moment, Collect):
+        if isinstance(moment, Collect):
             onward = [
-                0 if target == ASK else beyond[position_of[target]]
+                0 if target == ASK else most[position_of[target]]
                 for _, target in _leads_from(moment)
             ]
-            beyond[index] = here + max(onward, default=0)
-        else:
-            beyond[index] = here + (beyond[index + 1] if index + 1 < len(moments) else 0)
-    return beyond[start] if 0 <= start < len(beyond) else 0
+            run[index] = 0
+            most[index] = max(onward, default=0)
+            continue
+        if moment.act is Act.CLOSE:
+            continue
+        after = index + 1
+        carried = run[after] if after < len(moments) else 0
+        reached = most[after] if after < len(moments) else 0
+        run[index] = carried + (1 if moment.act is Act.HAND_OVER else 0)
+        most[index] = max(reached, run[index])
+    return most[start] if 0 <= start < len(most) else 0
 
 
 def _reachable(moments: Sequence[Moment]) -> set[str]:

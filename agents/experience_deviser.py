@@ -172,7 +172,7 @@ DISTANCES: Final[dict[str, str]] = {
     ),
 }
 
-# How many sheets one afternoon may put on the table. The parent sets it; `panel/preferences.py`
+# How many sheets may be on the table at one time. The parent sets it; `panel/preferences.py`
 # says why two rather than one, and `shared/experience_checks.py` refuses a document above it.
 DEFAULT_SHEETS: Final = 2
 

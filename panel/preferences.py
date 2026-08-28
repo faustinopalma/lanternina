@@ -66,11 +66,16 @@ MAX_NOTE_LENGTH = 600
 # convalescence, a house being packed up.
 NOTE_LASTS_SECONDS = 28 * 24 * 60 * 60
 
-# How many sheets one afternoon may put on the table. A ceiling, never a target: the number
-# the afternoon actually needs is usually one, and a second page is right when one page
-# would have to carry two different things. Two is the default because a page that has to
-# carry everything is the page nobody reads, and three is the top because an encyclopedia
-# every time is the other failure. `docs/EVIDENCE.md §2` has the measurements.
+# How many sheets may be on the table at one time. A ceiling, never a target: the number an
+# afternoon actually needs at any moment is usually one, and a second page is right when one
+# page would have to carry two different things. Two is the default because a page that has
+# to carry everything is the page nobody reads, and three is the top because an encyclopedia
+# handed over in one go is the other failure. `docs/EVIDENCE.md §2` has the measurements.
+#
+# This is not a budget for the whole afternoon, and until 28 August 2026 the check read it
+# as one. A three-hour afternoon that hands something over, takes it back and hands over the
+# next thing spends four sheets and never crowds the table, and refusing it was reading the
+# parent's answer as the answer to a question they were not asked.
 SHEETS_CHOICES = (1, 2, 3)
 DEFAULT_SHEETS = 2
 

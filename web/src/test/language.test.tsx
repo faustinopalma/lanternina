@@ -109,16 +109,17 @@ describe("what a saved setting carries", () => {
     expect(api.recorded.preferences[0]?.note).toBe("mese pieno di scuola");
   });
 
-  it("says the number of sheets is a ceiling, because a number reads as a target", async () => {
+  it("says the sheets number is a ceiling on the table, not a budget for the whole run", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
     renderPanel(api);
 
     await openSettings(user);
 
-    const sheets = await screen.findByLabelText("Quanti fogli al massimo");
+    const sheets = await screen.findByLabelText("Quanti fogli al massimo sul tavolo");
     expect(sheets).toHaveValue("2");
     expect(screen.getByText(/tetto, non un obiettivo/i)).toBeInTheDocument();
+    expect(screen.getByText(/non quanti ne stampa in tutto/i)).toBeInTheDocument();
 
     await user.selectOptions(sheets, "1");
     await user.click(screen.getByRole("button", { name: "Salva" }));

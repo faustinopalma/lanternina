@@ -10,7 +10,11 @@ import { useLoad } from "@/lib/useLoad";
 
 /* Lines a parent may want and would not think to write. They fill the field and nothing
  * else: pressing one is reading it, and adding it is still a second press. A house that
- * presses none keeps the narrowest setting there is, which is the default. */
+ * presses none keeps the narrowest setting there is, which is the default.
+ *
+ * They sat unlabelled under the form until 28 August 2026, three sentences in boxes that
+ * looked exactly like the controls beside them, and the parent read them as three things
+ * already in force. What they are has to be written down; the styling cannot say it. */
 const SUGGESTED: MessageKey[] = [
   "guidelines.suggestGarden",
   "guidelines.suggestPrinter",
@@ -115,12 +119,20 @@ export function Guidelines() {
         </Button>
       </form>
 
-      <div className="mb-3.5 flex max-w-[42rem] flex-wrap gap-2">
-        {SUGGESTED.map((key) => (
-          <Button key={key} size="small" onClick={() => setLine(t(key))}>
-            {t(key)}
-          </Button>
-        ))}
+      <div className="mb-3.5 max-w-[42rem]">
+        <Quiet className="m-0">{t("guidelines.suggestNote")}</Quiet>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {SUGGESTED.map((key) => (
+            <Button
+              key={key}
+              size="small"
+              title={t("guidelines.suggestTitle", { line: t(key) })}
+              onClick={() => setLine(t(key))}
+            >
+              {t(key)}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}

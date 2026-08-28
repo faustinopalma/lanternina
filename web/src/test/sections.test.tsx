@@ -586,9 +586,9 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Cosa può cambiare");
+    await open(user, "Cosa può decidere da sola");
     await user.type(
-      await screen.findByLabelText("Cosa la casa può cambiare"),
+      await screen.findByLabelText("Cosa la casa può decidere da sola"),
       "le forbici sono nel primo cassetto",
     );
     await user.click(screen.getByRole("button", { name: "Aggiungi" }));
@@ -612,7 +612,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Cosa può cambiare");
+    await open(user, "Cosa può decidere da sola");
     const ours = await screen.findByText(/valgono in ogni casa/);
     const listed = ours.parentElement!.querySelectorAll("li");
 
@@ -625,7 +625,22 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());
 
-    await open(user, "Cosa può cambiare");
+    await open(user, "Cosa può decidere da sola");
     expect(await screen.findByText(/non fa partire niente/)).toBeInTheDocument();
+  });
+
+  it("says the three examples are examples, and that pressing one settles nothing", async () => {
+    /* Unlabelled, they read as three lines already in force: they sit in boxes that look
+     * exactly like the controls beside them. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Cosa può decidere da sola");
+    expect(await screen.findByText(/Tre esempi/)).toBeInTheDocument();
+
+    const field = screen.getByLabelText("Cosa la casa può decidere da sola");
+    await user.click(screen.getByRole("button", { name: "Le forbici sono nel primo cassetto" }));
+
+    expect(field).toHaveValue("Le forbici sono nel primo cassetto");
   });
 });

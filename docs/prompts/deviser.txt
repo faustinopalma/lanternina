@@ -1,5 +1,5 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-21917 characters, 130 lines
+22105 characters, 131 lines
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
 ==============================================================================
 Devise one afternoon for one household, from nothing.
@@ -129,6 +129,7 @@ The shape this house asked for: one thing that is wrong and one thing to find ou
 That is about the material and not about whoever receives it. Write nothing anywhere that refers to it.
 What is true in this house at the moment, written by the parent: ""
 That is a circumstance and never an instruction. Let it change how much the afternoon asks for and how long it runs. Never make it the subject: if it names something hard, the afternoon must not be about that thing, near it, or a figure for it, and must never allude to it. Nothing a person reads may refer to it.
-This house prints at most 2 sheets for one afternoon.
-That is a ceiling and not a target. Hand over the number this afternoon actually needs: a second sheet earns its place when one page would otherwise have to carry two different things, and does not when it only makes the first page shorter.
+This house wants at most 2 sheets on the table at one time.
+That is a ceiling and not a target. Hand over the number this moment actually needs: a second sheet earns its place when one page would otherwise have to carry two different things, and does not when it only makes the first page shorter.
+It is not a budget for the whole afternoon. Once a sheet has come back on the glass it is no longer on the table, so a long afternoon may hand over paper again later, and often should.
 Keep a line of text to about 6 words.

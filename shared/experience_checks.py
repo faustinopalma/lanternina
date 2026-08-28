@@ -53,7 +53,7 @@ from .experience import (
     Weight,
     longest_at,
     shared_dimensions,
-    sheets_at,
+    sheets_at_once,
 )
 
 # What a document that is not finished looks like. Deliberately not "..." — an ellipsis is
@@ -104,10 +104,11 @@ def check(
     continuation it is the stretch that came first, and leaving it out refuses an ending
     that reaches for the very page the earlier stretch handed over.
 
-    ``sheets_at_most`` is what the parent set in the panel. Zero means nobody said, and
+    ``sheets_at_most`` is what the parent set in the panel: how many sheets may be on the
+    table at one time, not how many the afternoon spends. Zero means nobody said, and
     nothing is refused. A continuation is not bounded here even when a number is given:
-    it begins in the middle and nothing tells it how many sheets already went out.
-    TODO(poc): carry the count the house has printed so far and bound it too.
+    it begins in the middle and nothing tells it what is already on the table.
+    TODO(poc): carry what the house has already handed over and not collected, and bound it.
     """
     complaints: list[Complaint] = []
     complaints.extend(the_way_out_starts_from_something(plan.moments, already_said))
@@ -124,24 +125,29 @@ def check(
 def no_more_paper_than_the_house_wants(
     experience: Experience, at_most: int
 ) -> tuple[Complaint, ...]:
-    """How many sheets one run puts on the table, against what the parent allows.
+    """How many sheets can be on the table at one time, against what the parent allows.
 
     A ceiling and not a target, which is why the complaint only fires above it: an
     afternoon that needs one page and prints one page is the right afternoon, and a check
     that asked for the number to be met would be a check that produced padding.
+
+    The unit is what is on the table at once and not what the afternoon spends in total —
+    `shared/experience.sheets_at_once` says why the two are different and why the total
+    needs no number of its own.
     """
     if at_most <= 0:
         return ()
-    wanted = sheets_at(experience.moments)
+    wanted = sheets_at_once(experience.moments)
     if wanted <= at_most:
         return ()
     return (
         Complaint(
             where="moments",
             says=(
-                f"one run through this afternoon hands over {wanted} sheets and this house "
-                f"prints at most {at_most}; join what belongs on one page or leave out what "
-                f"only makes the first page shorter"
+                f"this afternoon puts {wanted} sheets on the table at once and this house "
+                f"wants at most {at_most} there; join what belongs on one page, leave out "
+                f"what only makes the first page shorter, or take one back before handing "
+                f"over the next"
             ),
         ),
     )
