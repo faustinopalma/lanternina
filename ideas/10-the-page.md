@@ -339,6 +339,18 @@ Rounds one to six went through a copy of the prompt in `private/`. This one buil
 
 **The block list refused a sentence about a drawing.** `errore`, in *"non è un errore di chi disegnava"* — a remark about a plan drawn in 1971 and about nobody alive. `shared/blocklist.py` says in its own docstring that false refusals are the price and that the cost is bounded by where they land; this is the first one measured on prose somebody meant. It cost one rewrite and no harm, which is roughly what the docstring predicted.
 
+## 10. The sheet cannot show this house — 28 August 2026
+
+Found by the parent, holding the page. One of the five was a floor plan headed *Pianta dell'alloggio, 1971*, with *"una stanza che è qui dentro adesso non c'è più. Trovala"* under it. Their question was three words long: **which room?**
+
+There is no answer, and the reason is not that a line of text was missing. **The plan is of a flat nobody lives in.** No model that draws these pages has seen the house, so a drawing that claims to be the reader's own rooms is a different flat with confidence. The instruction *compare this with your home* then asks for a comparison that cannot be made, and the person finds that out the moment they look up. Nothing later in the afternoon recovers from it: the premise was false on arrival.
+
+**Why the prompt invited it.** Two rules that are both right push straight at this. *It is set here and now* and *there is a way in, and it is a thing* together make a model reach for a document about the reader's own surroundings — a plan of the flat, a view of the street, the front of the building — because that is the most concrete way in there is. Nothing said it could not.
+
+**The rule, and it names the substitute.** In `experience_prompt.what-makes-it-worth-doing.md`, beside *only what is certainly in a house*: nothing printed may show this house. What the paper may show is a place that exists only in the story, which nothing can contradict, or nothing at all, with the page asking them to draw it. When the afternoon is about their own house, **the sheet asks and never shows.** An empty frame with *draw the rooms as they are* works; a plan with the rooms already on it cannot. The shorter form of the same sentence is in the illustration line of `the-marks-on-a-page.md`, which is the field that actually produces the drawing. Stating a prohibition without a substitute is what failed with the hatching in `§9`, and it is not repeated here.
+
+**Rebuilt and redrawn.** The same afternoon's first sheet became *Pianta di questo alloggio* — *di questa casa non esiste nessuna pianta, disegnala tu qui sotto, stanza per stanza. Poi segna il muro più sottile di tutti* — with one large empty box, and an illustration of a folded sheet of squared paper, a pencil and a ruler on a table. Objects, not the house. It works picked up cold: the paper says what to do and the question is answerable by knocking on the walls. It costs 4.07 % ink against 2.97 % for the page it replaced, and the extra is the squared paper drawn square by square, which is a cheaper problem than a page that cannot be used.
+
 ---
 
 *Nothing in this document has been built. It is here to be corrected first.*
