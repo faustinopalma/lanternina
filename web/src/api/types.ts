@@ -286,13 +286,15 @@ export interface NewRhythm {
 
 /** What a household steers with. There is no field for a name, here or on the route.
  *  `note` is the one free paragraph, and the only setting with a lifetime: the panel sends
- *  it, the server stamps `noteUntil`, and the server deletes it once that passes. */
+ *  it, the server stamps `noteUntil`, and the server deletes it once that passes.
+ *  `sheets` is a ceiling on how much paper one afternoon spends, never a target. */
 export interface NewPreferences {
   interests: string[];
   avoid: string[];
   difficulty: string;
   variety: string;
   language: string;
+  sheets: number;
   note: string;
 }
 
@@ -302,6 +304,7 @@ export interface Preferences extends NewPreferences {
   difficultyChoices: string[];
   varietyChoices: string[];
   languageChoices: string[];
+  sheetsChoices: number[];
 }
 
 /** How far the house may improvise when an afternoon did not go the way it was planned.

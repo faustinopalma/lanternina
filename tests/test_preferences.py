@@ -45,6 +45,7 @@ CHOSEN = {
     "difficulty": "steady",
     "variety": "frequent",
     "language": "en",
+    "sheets": 2,
     "note": "",
 }
 
@@ -153,6 +154,7 @@ def test_the_panel_holds_nothing_that_names_a_person() -> None:
         "difficulty",
         "variety",
         "language",
+        "sheets",
         "note",
         "note_until",
         "updated_at",
@@ -184,6 +186,7 @@ def test_every_setting_a_parent_can_write_reaches_the_model() -> None:
         difficulty="stretch",
         variety="frequent",
         language="it",
+        sheets=3,
         note="mese pieno di scuola",
     )
     written = the_prompt(
@@ -194,6 +197,7 @@ def test_every_setting_a_parent_can_write_reaches_the_model() -> None:
         shape=SHAPES[settings.difficulty],
         distance=DISTANCES[settings.variety],
         note=settings.standing(time.time()),
+        sheets=settings.sheets,
     )
 
     for reaching in (
@@ -202,8 +206,20 @@ def test_every_setting_a_parent_can_write_reaches_the_model() -> None:
         SHAPES["stretch"],
         DISTANCES["frequent"],
         "mese pieno di scuola",
+        "at most 3 sheets",
     ):
         assert reaching in written, f"{reaching!r} is settable and reaches nothing"
+
+
+def test_the_number_of_sheets_is_a_ceiling_and_says_so() -> None:
+    """A number in a prompt is read as a target, and a target produces padding: the
+    afternoon that needs one page and prints two is the failure this setting invites."""
+    from agents.experience_deviser import the_prompt
+
+    written = the_prompt(language="Italian", capabilities=frozenset(), sheets=2)
+
+    assert "at most 2 sheets" in written
+    assert "a ceiling and not a target" in written
 
 
 def test_the_settings_travel_as_hints_without_an_identity() -> None:

@@ -76,6 +76,7 @@ describe("what a saved setting carries", () => {
       "interests",
       "language",
       "note",
+      "sheets",
       "variety",
     ]);
   });
@@ -106,5 +107,23 @@ describe("what a saved setting carries", () => {
 
     await waitFor(() => expect(api.recorded.preferences).toHaveLength(1));
     expect(api.recorded.preferences[0]?.note).toBe("mese pieno di scuola");
+  });
+
+  it("says the number of sheets is a ceiling, because a number reads as a target", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+
+    await openSettings(user);
+
+    const sheets = await screen.findByLabelText("Quanti fogli al massimo");
+    expect(sheets).toHaveValue("2");
+    expect(screen.getByText(/tetto, non un obiettivo/i)).toBeInTheDocument();
+
+    await user.selectOptions(sheets, "1");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.preferences).toHaveLength(1));
+    expect(api.recorded.preferences[0]?.sheets).toBe(1);
   });
 });

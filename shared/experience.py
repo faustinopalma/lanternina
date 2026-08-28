@@ -1171,6 +1171,32 @@ def longest_at(moments: Sequence[Moment], weight: Weight, *, start: int = 0) -> 
     return beyond[start] if 0 <= start < len(beyond) else 0
 
 
+def sheets_at(moments: Sequence[Moment], *, start: int = 0) -> int:
+    """The most sheets one run through these moments can put on the table.
+
+    The longest path and not the number of ``hand_over`` moments, for the reason
+    :func:`longest_at` gives: branches are alternatives, and a document that hands over one
+    sheet whichever way it goes has not handed over three. A branch that says ``ask`` counts
+    nothing beyond itself, because the continuation is a document nobody has written yet.
+    """
+    position_of = {moment.id: index for index, moment in enumerate(moments)}
+    beyond: list[int] = [0] * len(moments)
+    for index in range(len(moments) - 1, -1, -1):
+        moment = moments[index]
+        here = 1 if moment.act is Act.HAND_OVER else 0
+        if moment.act is Act.CLOSE:
+            beyond[index] = here
+        elif isinstance(moment, Collect):
+            onward = [
+                0 if target == ASK else beyond[position_of[target]]
+                for _, target in _leads_from(moment)
+            ]
+            beyond[index] = here + max(onward, default=0)
+        else:
+            beyond[index] = here + (beyond[index + 1] if index + 1 < len(moments) else 0)
+    return beyond[start] if 0 <= start < len(beyond) else 0
+
+
 def _reachable(moments: Sequence[Moment]) -> set[str]:
     """Which moments a run can actually arrive at, starting from the first.
 

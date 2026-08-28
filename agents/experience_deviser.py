@@ -170,6 +170,10 @@ DISTANCES: Final[dict[str, str]] = {
     ),
 }
 
+# How many sheets one afternoon may put on the table. The parent sets it; `panel/preferences.py`
+# says why two rather than one, and `shared/experience_checks.py` refuses a document above it.
+DEFAULT_SHEETS: Final = 2
+
 
 def the_prompt(
     *,
@@ -184,6 +188,7 @@ def the_prompt(
     shape: str = "",
     distance: str = "",
     note: str = "",
+    sheets: int = DEFAULT_SHEETS,
     words_per_line: int = DEFAULT_WORDS_PER_LINE,
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
@@ -222,6 +227,7 @@ def the_prompt(
             shape=shape or SHAPES[DEFAULT_DIFFICULTY],
             variety=distance or DISTANCES[DEFAULT_VARIETY],
             note=json.dumps(note, ensure_ascii=False),
+            sheets=sheets,
             words_per_line=words_per_line,
         )
         + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
@@ -248,6 +254,7 @@ class ExperienceDeviser:
         shape: str = "",
         distance: str = "",
         note: str = "",
+        sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
@@ -265,6 +272,7 @@ class ExperienceDeviser:
                 shape=shape,
                 distance=distance,
                 note=note,
+                sheets=sheets,
                 words_per_line=words_per_line,
             )
         )
@@ -284,6 +292,7 @@ class ExperienceDeviser:
         shape: str = "",
         distance: str = "",
         note: str = "",
+        sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
     ) -> str:
         """The answer as it came back, before anything tries to read it.
@@ -319,6 +328,7 @@ class ExperienceDeviser:
                     shape=shape,
                     distance=distance,
                     note=note,
+                    sheets=sheets,
                     words_per_line=words_per_line,
                 ),
                 request_id=new_request_id(),

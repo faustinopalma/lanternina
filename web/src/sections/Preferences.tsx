@@ -24,6 +24,7 @@ interface Draft {
   difficulty: string;
   variety: string;
   language: string;
+  sheets: number;
   note: string;
 }
 
@@ -46,6 +47,7 @@ function Form({ settings }: { settings: Settings }) {
     difficulty: settings.difficulty,
     variety: settings.variety,
     language: settings.language,
+    sheets: settings.sheets,
     note: settings.note,
   }));
 
@@ -78,6 +80,7 @@ function Form({ settings }: { settings: Settings }) {
         difficulty: draft.difficulty,
         variety: draft.variety,
         language: draft.language,
+        sheets: draft.sheets,
         note: draft.note.trim(),
       });
       saved();
@@ -160,6 +163,26 @@ function Form({ settings }: { settings: Settings }) {
         </div>
 
         <Quiet className="m-0">{t("preferences.languageNote")}</Quiet>
+
+        {/* A ceiling on how much paper one afternoon spends, and the note under it says so:
+         * a number on a page reads as a target, and a target here would buy padding. */}
+        <div className="flex flex-col gap-1.5">
+          <span className="flex items-center gap-2">
+            <Label htmlFor="pref-sheets">{t("preferences.sheets")}</Label>
+            <Select
+              id="pref-sheets"
+              value={String(draft.sheets)}
+              onChange={(event) => edit({ sheets: Number(event.target.value) })}
+            >
+              {settings.sheetsChoices.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </Select>
+          </span>
+          <Quiet className="m-0">{t("preferences.sheetsNote")}</Quiet>
+        </div>
 
         {/* The one place the parent writes rather than chooses, and the only setting that
          * expires. The label asks what is true of the house, not of the person: the grammar

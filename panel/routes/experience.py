@@ -452,6 +452,7 @@ async def devise_afternoon(
             # material, so it goes to the prompt and never onto the document.
             difficulty=settings_of_the_house.difficulty,
             variety=settings_of_the_house.variety,
+            sheets=settings_of_the_house.sheets,
             # Empty once it has lapsed, and by then the store has deleted it.
             note=settings_of_the_house.standing(time.time()),
             already=already,

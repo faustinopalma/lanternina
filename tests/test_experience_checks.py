@@ -22,6 +22,7 @@ from shared.blocklist import Why, blocked_in
 from shared.experience import Continuation, Drawn, Experience, ExperienceError
 from shared.experience_checks import (
     check,
+    no_more_paper_than_the_house_wants,
     no_placeholder_is_left,
     not_the_same_afternoon_again,
     nothing_from_the_block_list,
@@ -37,6 +38,73 @@ def an_experience(**changed: Any) -> Experience:
 
 def where(complaints: tuple[Any, ...]) -> list[str]:
     return [complaint.where for complaint in complaints]
+
+
+# ── How much paper one afternoon spends ──────────────────────────────────────────────
+
+
+def three_sheets_in_a_row() -> Experience:
+    """Three pages one after another, so every run hands over all three."""
+    return an_experience(
+        moments=[
+            a.say(),
+            a.hand_over("primo"),
+            a.hand_over("secondo"),
+            a.hand_over("terzo"),
+            a.collect(on_marks="fine", on_blank="fine", if_no_page="fine"),
+            a.close(),
+        ]
+    )
+
+
+def two_sheets_on_different_branches() -> Experience:
+    """One page, then one of two others depending on what came back, each branch closing
+    on its own. Any single run hands over two, and counting the `hand_over` moments would
+    say three.
+
+    Each branch needs its own close, because a moment that is not a `collect` is followed
+    by the next one in the list: two `hand_over` moments printed one after the other are
+    two sheets on the same run, not two alternatives.
+    """
+    return an_experience(
+        moments=[
+            a.say(),
+            a.hand_over("primo"),
+            a.collect(on_marks="se-scritto", on_blank="se-vuoto", if_no_page="se-vuoto"),
+            a.hand_over("se-scritto"),
+            a.close("fine-scritto"),
+            a.hand_over("se-vuoto"),
+            a.close(),
+        ]
+    )
+
+
+def test_an_afternoon_that_spends_more_paper_than_the_house_allows_is_refused() -> None:
+    refused = no_more_paper_than_the_house_wants(three_sheets_in_a_row(), 2)
+
+    assert where(refused) == ["moments"]
+    assert "hands over 3 sheets" in refused[0].says
+
+
+def test_branches_are_alternatives_and_not_a_total() -> None:
+    """A document that hands over one sheet whichever way it goes has not handed over two.
+    Counting the `hand_over` moments would refuse a document that runs inside the bound."""
+    assert no_more_paper_than_the_house_wants(two_sheets_on_different_branches(), 2) == ()
+
+
+def test_the_number_is_a_ceiling_and_never_a_target() -> None:
+    """An afternoon that needs one page and prints one page is the right afternoon. A
+    check that asked for the number to be met would be a check that produced padding."""
+    assert no_more_paper_than_the_house_wants(an_experience(), 3) == ()
+
+
+def test_nobody_having_said_means_nothing_is_refused() -> None:
+    assert no_more_paper_than_the_house_wants(three_sheets_in_a_row(), 0) == ()
+
+
+def test_the_paper_bound_reaches_the_whole_check() -> None:
+    assert where(check(three_sheets_in_a_row(), sheets_at_most=2)) == ["moments"]
+    assert check(three_sheets_in_a_row(), sheets_at_most=3) == ()
 
 
 def test_an_afternoon_that_is_right_has_nothing_wrong_with_it() -> None:

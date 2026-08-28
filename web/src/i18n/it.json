@@ -183,6 +183,8 @@
   "preferences.italian": "italiano",
   "preferences.english": "inglese",
   "preferences.languageNote": "È la lingua dei contenuti, sulla carta e sul display. Non segue la lingua di questa pagina: un contenuto approvato in una lingua non è approvato in un'altra.",
+  "preferences.sheets": "Quanti fogli al massimo",
+  "preferences.sheetsNote": "È un tetto, non un obiettivo: quasi sempre ne basta uno. Un secondo foglio serve quando una pagina sola dovrebbe portare due cose diverse, e non serve quando accorcia soltanto la prima.",
   "preferences.save": "Salva",
   "preferences.saved": "Salvato. La casa lo applica al prossimo giro.",
   "preferences.saveFailed": "Non sono riuscito a salvare. Riprova più tardi.",

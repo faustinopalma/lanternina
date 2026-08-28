@@ -65,12 +65,14 @@ const PREFERENCES_FIELDS = [
   "difficulty",
   "variety",
   "language",
+  "sheets",
   "note",
   "noteUntil",
   "noteLastsDays",
   "difficultyChoices",
   "varietyChoices",
   "languageChoices",
+  "sheetsChoices",
 ] as const;
 
 const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;

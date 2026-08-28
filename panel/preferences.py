@@ -66,6 +66,14 @@ MAX_NOTE_LENGTH = 600
 # convalescence, a house being packed up.
 NOTE_LASTS_SECONDS = 28 * 24 * 60 * 60
 
+# How many sheets one afternoon may put on the table. A ceiling, never a target: the number
+# the afternoon actually needs is usually one, and a second page is right when one page
+# would have to carry two different things. Two is the default because a page that has to
+# carry everything is the page nobody reads, and three is the top because an encyclopedia
+# every time is the other failure. `docs/EVIDENCE.md §2` has the measurements.
+SHEETS_CHOICES = (1, 2, 3)
+DEFAULT_SHEETS = 2
+
 DEFAULT_DIFFICULTY = str(Difficulty.GENTLE)
 DEFAULT_VARIETY = str(ContentVariety.BALANCED)
 DEFAULT_LANGUAGE = "it"
@@ -81,6 +89,7 @@ class Preferences:
     difficulty: str = DEFAULT_DIFFICULTY
     variety: str = DEFAULT_VARIETY
     language: str = DEFAULT_LANGUAGE
+    sheets: int = DEFAULT_SHEETS
     # What is true in this house at the moment, in the parent's own words, and the instant
     # it stops being true. Empty is the ordinary state.
     note: str = ""
@@ -115,12 +124,14 @@ class Preferences:
             "difficulty": self.difficulty,
             "variety": self.variety,
             "language": self.language,
+            "sheets": self.sheets,
             "note": self.standing(moment),
             "noteUntil": self.note_until if self.standing(moment) else 0.0,
             "updatedAt": self.updated_at,
             "difficultyChoices": list(DIFFICULTY_CHOICES),
             "varietyChoices": list(VARIETY_CHOICES),
             "languageChoices": list(LANGUAGE_CHOICES),
+            "sheetsChoices": list(SHEETS_CHOICES),
             "noteLastsDays": NOTE_LASTS_SECONDS // (24 * 60 * 60),
         }
 
@@ -198,6 +209,7 @@ def clean_preferences(
     difficulty: Any,
     variety: Any,
     language: Any,
+    sheets: Any = DEFAULT_SHEETS,
     note: Any = "",
     now: float | None = None,
     updated_by: str = "",
@@ -210,6 +222,8 @@ def clean_preferences(
         raise ValueError(f"the variety must be one of {list(VARIETY_CHOICES)}")
     if language not in LANGUAGE_CHOICES:
         raise ValueError(f"the language must be one of {list(LANGUAGE_CHOICES)}")
+    if sheets not in SHEETS_CHOICES:
+        raise ValueError(f"the number of sheets must be one of {list(SHEETS_CHOICES)}")
     standing = _clean_note(note)
     return Preferences(
         household_id=household_id,
@@ -218,6 +232,7 @@ def clean_preferences(
         difficulty=str(difficulty),
         variety=str(variety),
         language=str(language),
+        sheets=int(sheets),
         note=standing,
         # Saving the note again is how it is renewed: there is no separate button, because
         # a parent editing what is true now has already said it is still true.

@@ -52,7 +52,7 @@ The easy-to-read standards go further and are checkable: one idea per sentence, 
 
 Measured on the eight pages drawn on 28 August: ink covered 1.79 % to 4.57 % of the sheet, mean 3.1 %. The two heaviest were the two that asked for four things; the two lightest asked for one. The page judged best asked for nothing at all — it was a notice to be read standing up, and the sheet to be filled in came after it.
 
-**What this changes.** An afternoon may print more than one sheet, and where the alternative is one crowded page it should. The bound is the person's attention, not a rule, and "not an encyclopedia every time" is the other half of the same sentence.
+**What this changes.** An afternoon may print more than one sheet, and where the alternative is one crowded page it should. How many is a setting the parent holds — two by default, one to three — and it is a ceiling rather than a target: `shared/experience_checks.py` refuses a document that goes over and asks nothing of one that stays under, because a check that wanted the number met would be a check that produced padding. "Not an encyclopedia every time" is the other half of the same sentence, and it is the half the ceiling is for.
 
 ## 3. A question with one right answer is allowed. A wrong answer with a consequence is not
 

@@ -437,6 +437,9 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         # last ones. Both are properties of the material, not claims about a person.
         "difficulty",
         "variety",
+        # How much paper this house will spend on one afternoon. About the printer and the
+        # attention of whoever reads it, and about nobody.
+        "sheets",
         "note",
         "now",
     }

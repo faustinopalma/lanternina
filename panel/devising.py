@@ -29,7 +29,12 @@ import os
 import secrets
 from collections.abc import Sequence
 
-from panel.preferences import DEFAULT_DIFFICULTY, DEFAULT_VARIETY, WORDS_PER_LINE
+from panel.preferences import (
+    DEFAULT_DIFFICULTY,
+    DEFAULT_SHEETS,
+    DEFAULT_VARIETY,
+    WORDS_PER_LINE,
+)
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
@@ -63,6 +68,7 @@ async def devise_experience(
     difficulty: str = DEFAULT_DIFFICULTY,
     variety: str = DEFAULT_VARIETY,
     note: str = "",
+    sheets: int = DEFAULT_SHEETS,
     words_per_line: int = WORDS_PER_LINE,
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
@@ -126,6 +132,7 @@ async def devise_experience(
             shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
             distance=DISTANCES.get(variety, DISTANCES[DEFAULT_VARIETY]),
             note=note,
+            sheets=sheets,
             words_per_line=words_per_line,
         )
         try:
@@ -140,7 +147,7 @@ async def devise_experience(
             experience = await deviser.repair_unreadable(
                 context, answer=answer, refusal=str(exc), language=language
             )
-        complaints = check(experience, recent=recent)
+        complaints = check(experience, recent=recent, sheets_at_most=sheets)
         for _ in range(REPAIRS):
             if not complaints:
                 break
@@ -150,7 +157,7 @@ async def devise_experience(
             experience = await deviser.repair(
                 context, refused=experience, complaints=complaints, language=language
             )
-            complaints = check(experience, recent=recent)
+            complaints = check(experience, recent=recent, sheets_at_most=sheets)
         if complaints:
             raise RefusedByTheChecks(complaints)
         # The chokepoint. Nothing above it may return early past it: the parse and the

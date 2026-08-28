@@ -13,7 +13,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..gate import CurrentAccount, DeviceKey
-from ..preferences import PreferencesStore, clean_preferences
+from ..preferences import DEFAULT_SHEETS, PreferencesStore, clean_preferences
 
 router = APIRouter()
 
@@ -32,6 +32,8 @@ class NewPreferences(BaseModel):
     difficulty: str
     variety: str
     language: str
+    # How many sheets one afternoon may put on the table. A ceiling, not a target.
+    sheets: int = DEFAULT_SHEETS
     # What is true in this house at the moment. Saving it is what renews it; sending it
     # empty is what ends it early.
     note: str = ""
@@ -56,6 +58,7 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
             difficulty=new.difficulty,
             variety=new.variety,
             language=new.language,
+            sheets=new.sheets,
             note=new.note,
             updated_by=str(account.id),
         )

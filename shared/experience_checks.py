@@ -53,6 +53,7 @@ from .experience import (
     Weight,
     longest_at,
     shared_dimensions,
+    sheets_at,
 )
 
 # What a document that is not finished looks like. Deliberately not "..." — an ellipsis is
@@ -90,6 +91,7 @@ def check(
     *,
     recent: Sequence[Drawn] = (),
     already_said: Sequence[str] = (),
+    sheets_at_most: int = 0,
 ) -> tuple[Complaint, ...]:
     """Everything wrong with this plan, or nothing.
 
@@ -101,6 +103,11 @@ def check(
     begins. Empty for a whole experience, which begins at its own beginning; for a
     continuation it is the stretch that came first, and leaving it out refuses an ending
     that reaches for the very page the earlier stretch handed over.
+
+    ``sheets_at_most`` is what the parent set in the panel. Zero means nobody said, and
+    nothing is refused. A continuation is not bounded here even when a number is given:
+    it begins in the middle and nothing tells it how many sheets already went out.
+    TODO(poc): carry the count the house has printed so far and bound it too.
     """
     complaints: list[Complaint] = []
     complaints.extend(the_way_out_starts_from_something(plan.moments, already_said))
@@ -110,7 +117,34 @@ def check(
     if isinstance(plan, Experience):
         complaints.extend(the_short_version_fits(plan))
         complaints.extend(not_the_same_afternoon_again(plan.drawn, recent))
+        complaints.extend(no_more_paper_than_the_house_wants(plan, sheets_at_most))
     return tuple(complaints)
+
+
+def no_more_paper_than_the_house_wants(
+    experience: Experience, at_most: int
+) -> tuple[Complaint, ...]:
+    """How many sheets one run puts on the table, against what the parent allows.
+
+    A ceiling and not a target, which is why the complaint only fires above it: an
+    afternoon that needs one page and prints one page is the right afternoon, and a check
+    that asked for the number to be met would be a check that produced padding.
+    """
+    if at_most <= 0:
+        return ()
+    wanted = sheets_at(experience.moments)
+    if wanted <= at_most:
+        return ()
+    return (
+        Complaint(
+            where="moments",
+            says=(
+                f"one run through this afternoon hands over {wanted} sheets and this house "
+                f"prints at most {at_most}; join what belongs on one page or leave out what "
+                f"only makes the first page shorter"
+            ),
+        ),
+    )
 
 
 def the_way_out_starts_from_something(

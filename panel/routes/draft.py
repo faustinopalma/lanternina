@@ -267,6 +267,7 @@ async def approve(draft_id: str, account: CurrentAccount, request: Request) -> A
             avoid=chosen.avoid,
             difficulty=chosen.difficulty,
             variety=chosen.variety,
+            sheets=chosen.sheets,
             note=chosen.standing(time.time()),
             now=time.time(),
         )

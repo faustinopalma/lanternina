@@ -37,6 +37,7 @@ from .messages import PendingMessage
 from .preferences import (
     DEFAULT_DIFFICULTY,
     DEFAULT_LANGUAGE,
+    DEFAULT_SHEETS,
     DEFAULT_VARIETY,
     Preferences,
 )
@@ -948,6 +949,7 @@ class CosmosPreferencesStore:
                 "difficulty": preferences.difficulty,
                 "variety": preferences.variety,
                 "language": preferences.language,
+                "sheets": preferences.sheets,
                 "note": preferences.note,
                 "noteUntil": preferences.note_until,
                 "updatedAt": preferences.updated_at,
@@ -965,6 +967,7 @@ def _to_preferences(document: dict[str, Any]) -> Preferences:
         difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
         variety=str(document.get("variety") or DEFAULT_VARIETY),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
+        sheets=int(document.get("sheets") or DEFAULT_SHEETS),
         note=str(document.get("note") or ""),
         note_until=float(document.get("noteUntil") or 0.0),
         updated_at=float(document.get("updatedAt") or 0.0),

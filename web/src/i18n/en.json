@@ -183,6 +183,8 @@
   "preferences.italian": "Italian",
   "preferences.english": "English",
   "preferences.languageNote": "The language of the content, on paper and on the display. It does not follow the language of this page: content approved in one language is not approved in another.",
+  "preferences.sheets": "How many sheets at most",
+  "preferences.sheetsNote": "A ceiling, not a target: one is usually enough. A second sheet earns its place when one page would have to carry two different things, and does not when it only makes the first page shorter.",
   "preferences.save": "Save",
   "preferences.saved": "Saved. The house applies it on its next run.",
   "preferences.saveFailed": "I could not save it. Try again later.",
