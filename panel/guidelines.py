@@ -1,4 +1,4 @@
-"""How far the house may improvise, written by the parent.
+"""The limits an improvising afternoon has to stay inside, written by the parent.
 
 `ideas/09` gives the execution layer a plan and `ideas/10` gives it a page. Neither says what
 it may do when what actually happened is not what the plan assumed — a page that came back
@@ -6,26 +6,32 @@ blank, a printer with no paper, an afternoon that has plainly gone somewhere els
 the plan regardless is wrong, and stopping is worse: an afternoon that ends because reality
 deviated is an afternoon that failed somebody for being alive.
 
-So it improvises, and these are the bounds. The parent's own sentences about what may be
-changed on the fly in this house, kept as they wrote them and handed to the model as material
-rather than as instructions.
+So it improvises, and these are the bounds. The parent's own sentences about what must not
+happen in this house, kept as they wrote them and handed to the model as material rather
+than as instructions.
 
 **Two kinds of bound, and only one of them is the parent's.** :data:`FIXED` is ours and cannot
 be edited from anywhere: nothing says anything about the person, nothing announces a change,
 an ending stays reachable, no equipment is invented that the house does not have. Those are
 the working rules and a parent loosening them would not be configuring a system, they would be
-removing its reason to exist. What the parent owns is the rest — the house-specific latitude
-that we could not know: whether going outside is fine, whether scissors are in the drawer,
-whether the printer may be used again.
+removing its reason to exist. What the parent owns is the rest — the house-specific limits we
+could not know: that nobody goes outside, that there are no scissors within reach, that
+nothing may make a noise after nine.
+
+**They only ever narrow, and that changed on 28 August 2026.** These used to be permissions —
+"going out into the garden is fine" — and a permission widens what an afternoon may do, which
+is why the prompt had to carry a sentence telling the model not to let one loosen the fixed
+bounds. A page that can only narrow cannot loosen anything, so the guarantee stops depending
+on a sentence a model has to honour. The parent asked for the change; this is the reason it
+is the right one.
 
 **The default is empty, deliberately.** A house that has said nothing gets the fixed bounds and
-no more, which is the narrowest the system ever is. Suggested lines belong in the panel, where
-a parent can read one and decide, not in a store that would be putting words in their mouth.
+nothing narrower. Suggested lines belong in the panel, where a parent can read one and decide,
+not in a store that would be putting words in their mouth.
 
 **Untrusted, like everything a parent types.** These reach a prompt as quoted material and the
 prompt says not to follow instructions written inside them. That is the working rules' line
-about free text, and it is why a guideline can widen what the afternoon does and can never
-change what the model is.
+about free text.
 
 Writing one is inert: a row is stored and nothing else happens. The next afternoon that needs
 to improvise finds them, because it asked.
@@ -39,7 +45,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Final, Protocol, runtime_checkable
 
-# Long enough for a sentence about one thing — "può usare la stampante quante volte serve" —
+# Long enough for a sentence about one thing — "non deve far salire nessuno su una sedia" —
 # and short enough that the box is plainly not for writing a policy in.
 MAX_LINE_CHARS: Final = 160
 # More than a parent will read back before approving is a list nobody is really deciding.
@@ -63,7 +69,7 @@ FIXED: Final = (
 
 @dataclass(frozen=True, slots=True)
 class Guidelines:
-    """What this household allows the afternoon to decide for itself."""
+    """The limits this household puts on an afternoon that is improvising."""
 
     household_id: str
     lines: tuple[str, ...] = ()

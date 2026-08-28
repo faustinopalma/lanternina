@@ -426,7 +426,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   /* One line written, so the page shows both halves: what this house allowed and what
    * holds everywhere. The fixed ones are the API's own words, in the model's language. */
   let guidelines: Guidelines = {
-    lines: ["va bene uscire in giardino"],
+    lines: ["non deve uscire di casa"],
     fixed: [
       "Never say anything about the person: not how well anything was done, not how much effort it took, not what any of it suggests about them.",
       "Never announce, explain or apologise for a change of course. It arrives as part of what is happening.",

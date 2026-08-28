@@ -8,17 +8,21 @@ import { Input } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
-/* Lines a parent may want and would not think to write. They fill the field and nothing
+/* Limits a parent may want and would not think to write. They fill the field and nothing
  * else: pressing one is reading it, and adding it is still a second press. A house that
- * presses none keeps the narrowest setting there is, which is the default.
+ * presses none has the fixed bounds and nothing narrower, which is the default.
  *
  * They sat unlabelled under the form until 28 August 2026, three sentences in boxes that
  * looked exactly like the controls beside them, and the parent read them as three things
- * already in force. What they are has to be written down; the styling cannot say it. */
+ * already in force. What they are has to be written down; the styling cannot say it.
+ *
+ * They were also the wrong three. "The scissors are in the first drawer" is a fact about
+ * the house and not a limit on anything, and it was there because this page used to hold
+ * permissions. One each for where, with what, and when. */
 const SUGGESTED: MessageKey[] = [
-  "guidelines.suggestGarden",
-  "guidelines.suggestPrinter",
-  "guidelines.suggestScissors",
+  "guidelines.suggestOutside",
+  "guidelines.suggestBlades",
+  "guidelines.suggestNoise",
 ];
 
 /* What we wrote, shown beside what the parent writes. There is no control here on purpose:

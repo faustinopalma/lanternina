@@ -56,11 +56,13 @@ Added 24 August 2026, from the parent: once the strategy is written the middle l
 
 Built the same day: `panel/guidelines.py` and `agents/experience_continuer.with_bounds`.
 
-**Two kinds of bound, and only one is the parent's.** `FIXED` is ours and has no field anywhere to edit it — nothing about the person, no announcing a change of course, an ending stays reachable, no invented equipment, nothing can be failed. What the parent owns is the latitude we cannot know: whether the garden counts as inside, whether the scissors are in the drawer, whether the printer may be used again. They go into the prompt as **two blocks in that order**, the household's marked as a description of the house rather than as instructions, because one merged list would let a sentence typed in a browser sit as an equal beside a rule about a person.
+**Two kinds of bound, and only one is the parent's.** `FIXED` is ours and has no field anywhere to edit it — nothing about the person, no announcing a change of course, an ending stays reachable, no invented equipment, nothing can be failed. What the parent owns is the rest: the house-specific limits we cannot know. They go into the prompt as **two blocks in that order**, the household's marked as a description of the house rather than as instructions, because one merged list would let a sentence typed in a browser sit as an equal beside a rule about a person.
+
+**They only narrow, decided 28 August 2026 by the parent.** They began as permissions — *va bene uscire in giardino*, *le forbici sono nel primo cassetto* — and that was two mistakes in one. The second of those is not a bound at all, it is a fact about a drawer; and a permission widens what an afternoon may do, which is why the prompt carried a sentence telling the model never to let one loosen the fixed bounds. Turning the page round removes both: every line is now something that must not happen, the three examples are one each for where, with what and when, and "a parent cannot loosen anything from here" stops being a sentence a model has to honour and becomes a property of what the page can hold. The panel title said *Cosa può cambiare* and then *Cosa può decidere da sola*; both left a reader asking who, and it is now *Limiti dell'attività*.
 
 **The licence and the limits are written by the same function.** Told it may improvise and not told the bounds is the one combination that must not exist, and a test asserts the licence does not appear without them.
 
-**The default is nothing written**, which is the narrowest the system ever is. Suggested lines belong in the panel, where a parent reads one and decides.
+**The default is nothing written**, which leaves the fixed bounds and nothing narrower. Suggested lines belong in the panel, where a parent reads one and decides.
 
 *Finished 24 August 2026.* `panel/routes/guidelines.py` holds two routes and no third — `GET` and `POST /api/guidelines` — and `panel/routes/experience.py` reads the store on the continuing path and hands the lines to `panel/continuing.py`, which adds `FIXED` and calls `continue_from`. The section is `web/src/sections/Guidelines.tsx`, with three suggested lines that fill the field and are still added by a second press.
 
@@ -72,7 +74,7 @@ Three decisions worth having written down rather than found later:
 
 Both halves were made to fail before being believed. Without the read on the route the two tests report `KeyError: 'household_bounds'`; without `bounds=FIXED` in `continuing.py`, `KeyError: 'bounds'`. 693 tests and 54 in the panel.
 
-*Done when:* a parent writes "va bene uscire in giardino" in the panel, and an afternoon that improvises can use the garden while one in a household that wrote nothing cannot.
+*Done when:* a parent writes "non deve uscire di casa" in the panel, and an afternoon that improvises stays indoors while one in a household that wrote nothing is not held to it.
 
 ## 3. What a page must carry, and it may be nothing at all
 

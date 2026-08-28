@@ -586,22 +586,22 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Cosa può decidere da sola");
+    await open(user, "Limiti dell'attività");
     await user.type(
-      await screen.findByLabelText("Cosa la casa può decidere da sola"),
-      "le forbici sono nel primo cassetto",
+      await screen.findByLabelText("Un vincolo per l'attività"),
+      "niente forbici o lame",
     );
     await user.click(screen.getByRole("button", { name: "Aggiungi" }));
 
     await waitFor(() =>
       expect(api.recorded.guidelines).toEqual([
-        ["va bene uscire in giardino", "le forbici sono nel primo cassetto"],
+        ["non deve uscire di casa", "niente forbici o lame"],
       ]),
     );
 
     await user.click(screen.getAllByRole("button", { name: "Togli" })[0]!);
     await waitFor(() => expect(api.recorded.guidelines).toHaveLength(2));
-    expect(api.recorded.guidelines[1]).toEqual(["le forbici sono nel primo cassetto"]);
+    expect(api.recorded.guidelines[1]).toEqual(["niente forbici o lame"]);
   });
 
   it("shows every bound we wrote, in the parent's language and with nothing to press", async () => {
@@ -612,7 +612,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(api);
 
-    await open(user, "Cosa può decidere da sola");
+    await open(user, "Limiti dell'attività");
     const ours = await screen.findByText(/valgono in ogni casa/);
     const listed = ours.parentElement!.querySelectorAll("li");
 
@@ -625,7 +625,7 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());
 
-    await open(user, "Cosa può decidere da sola");
+    await open(user, "Limiti dell'attività");
     expect(await screen.findByText(/non fa partire niente/)).toBeInTheDocument();
   });
 
@@ -635,12 +635,26 @@ describe("the latitude", () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());
 
-    await open(user, "Cosa può decidere da sola");
+    await open(user, "Limiti dell'attività");
     expect(await screen.findByText(/Tre esempi/)).toBeInTheDocument();
 
-    const field = screen.getByLabelText("Cosa la casa può decidere da sola");
-    await user.click(screen.getByRole("button", { name: "Le forbici sono nel primo cassetto" }));
+    const field = screen.getByLabelText("Un vincolo per l'attività");
+    await user.click(screen.getByRole("button", { name: "Niente forbici o lame" }));
 
-    expect(field).toHaveValue("Le forbici sono nel primo cassetto");
+    expect(field).toHaveValue("Niente forbici o lame");
+  });
+
+  it("every example is a limit, because a fact about a drawer bounds nothing", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Limiti dell'attività");
+    for (const shown of [
+      "Non deve uscire di casa",
+      "Niente forbici o lame",
+      "Niente che faccia rumore dopo le nove",
+    ]) {
+      expect(await screen.findByRole("button", { name: shown })).toBeInTheDocument();
+    }
   });
 });
