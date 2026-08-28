@@ -8,6 +8,8 @@ If you fork this project, these are the lines that make it Lanternina rather tha
 
 Some of them were loosened on 27 August 2026, and each carries the reason its line now sits where it does. A rule broad enough to forbid legitimate work is a rule that gets routed around, and a loosened rule with its reason next to it is stronger than a wide one nobody can follow. Which lines are **not** moving is stated at the end, because distinguishing them is what makes the relaxation credible.
 
+That is the general practice and not an exception made once: **a line here may be moved when moving it makes the experience better, and the reason is written beside it.** Several were written before anybody had run an afternoon and turned out to forbid things nobody meant to forbid. The five at the end are the ones that do not move, because they are about the adolescent rather than about the design. `docs/EVIDENCE.md` holds the reading behind a revision when there is one.
+
 The rules an agent works under are in `.github/copilot-instructions.md`, which states the same lines more briefly. Neither is generated from the other: revising one means revising the other.
 
 ---
@@ -73,11 +75,16 @@ Vision output describes ink on paper: "cell 3 is empty", "cell 4 has a mark". Wh
 
 Stopping is a legitimate outcome. Every activity can be abandoned at any point with no consequence and no follow-up.
 
+The evidence behind this list, and its limit, is in `docs/EVIDENCE.md §4`. In short: expected, tangible, task-contingent rewards are best attested to reduce intrinsic motivation exactly where initial interest is high, which is the cell this system sits in. The same literature reports that for an activity nobody wants to start, a reward can be the way in — so this list declines a tool that works in a case Lanternina has chosen not to be in, and would have to be rewritten rather than pointed at if that ever changed.
+
 ## Nothing here can be failed
+
+The line is **consequence**, not the existence of a right answer. A moment may pose a thing to work out, a code to break, a shape that fits, and one of the properties an afternoon is checked against asks for exactly that. What may not exist is a cost for getting it wrong.
 
 - **No countdown, no score, no lost attempt**, and no step that has to be got right before the next one arrives.
 - **No ending that reports how it went.** An activity that reached its ending early and one that reached it in full finish the same way, with the same object and the same closing, and neither refers to what was not seen.
 - **No announcement that the system adapted.** A change of course arrives as part of what is happening. The system does not explain it, apologise for it, or ask whether it is all right.
+- **Nothing is left to be discovered that the afternoon needs.** Where something has to be worked out, the way through is written down and given. Minimally guided instruction is the format that fails hardest for whoever has least prior knowledge (`docs/EVIDENCE.md §3`), and "nothing can be failed" must not quietly become "nothing is ever told".
 
 Every activity that starts carries a written way to reach its ending from wherever it has got to. That is a property of the plan, checked before anybody sees it, rather than care taken while it runs.
 
