@@ -1,0 +1,32 @@
+{
+  "at": "2026-08-29T092622Z",
+  "iterations": 4,
+  "households": [
+    "poco-e-vicino",
+    "due-fogli-e-una-svolta",
+    "lontano-e-lungo",
+    "un-mese-pesante",
+    "niente-di-scritto",
+    "con-dei-limiti"
+  ],
+  "afternoons": 24,
+  "refused": 0,
+  "endings": {
+    "closed": 2,
+    "asked": 9,
+    "stopped": 13,
+    "way_out": 0,
+    "went_wrong": 0
+  },
+  "axes": {
+    "canBeAbandoned": 3.88,
+    "canBeStarted": 4.71,
+    "everyStepLeavesAMark": 3.92,
+    "notASchoolSheet": 3.08,
+    "oneThingAtATime": 3.46,
+    "questionHasAWrittenAnswer": 2.79,
+    "sheetStandsAlone": 2.88,
+    "worthTheHour": 3.17
+  },
+  "minutes": 54.2
+}

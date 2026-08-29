@@ -60,6 +60,29 @@ Five come from [docs/EVIDENCE.md](../docs/EVIDENCE.md), which is the reading beh
 
 Beside them the judge returns `worstLine`, `whatToChangeInThePrompt` and `howItWentInAWord`. The middle one is what a run is actually for.
 
+## What the first three runs said
+
+Same seed, same six households, four iterations each, three prompt states. 29 August 2026, in [runs/](runs).
+
+| axis | first | after three sentences | in the object's voice |
+| --- | ---: | ---: | ---: |
+| `canBeStarted` | 4.57 | 4.78 | 4.71 |
+| `everyStepLeavesAMark` | 3.76 | **4.30** | 3.92 |
+| `canBeAbandoned` | 3.38 | 3.57 | **3.88** |
+| `oneThingAtATime` | 3.52 | 3.22 | 3.46 |
+| `worthTheHour` | 3.24 | 3.09 | 3.17 |
+| `notASchoolSheet` | 2.48 | 2.09 | **3.08** |
+| `questionHasAWrittenAnswer` | 2.43 | **3.13** | 2.79 |
+| `sheetStandsAlone` | 1.95 | **3.61** | 2.88 |
+| refused by the format | 3 | 1 | **0** |
+| reached their close | 0 | 1 | **2** |
+
+**One clean win.** The way out has to name its object in its own lines — the parser demanded it and the prompt never said so. Three refusals, then one, then none.
+
+**One real tension, and the loop is what made it visible.** Telling a sheet to print what to do with it moved `sheetStandsAlone` by 1.66 and cost 0.39 on `notASchoolSheet`: a page that says plainly what to do reads like a worksheet. Softening it into the object's own voice gave the voice back — nearly a whole point — and returned about half the clarity. The two pull against each other and neither run is simply better than the other.
+
+The third state is the one in the repository, on the argument that it is the flattest: no axis below 2.79, against 2.09 in the second. If clarity is worth more than voice, the second run's wording is in the history and the change is two sentences.
+
 ## What this does not answer
 
 Stated here rather than discovered in a pull request.

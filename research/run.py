@@ -62,6 +62,12 @@ async def one_afternoon(
 ) -> dict[str, Any]:
     """Devise, play and score one. Returns the row that goes into the run's JSON."""
     began = time.monotonic()
+    # Drawn before devising and not after. A refused afternoon returns without playing, so
+    # drawing here would leave the next afternoon with the mood the refused one would have
+    # had, and two runs with the same seed would stop being comparable the moment one of
+    # them refused something. Found comparing the second run with the third.
+    mood = dice.choice(MOODS)
+    weight = dice.choice(WEIGHTS)
     ran = list(memory.ran)
     going = how_it_has_gone(ran)  # type: ignore[arg-type]
     ground = the_ground(memory.offered)
@@ -91,12 +97,11 @@ async def one_afternoon(
         row["refused"] = {"by": "format", "says": str(exc)}
         return row
 
-    mood = dice.choice(MOODS)
     played = await play(
         ctx,
         experience=experience,
         household=house.name,
-        weight=dice.choice(WEIGHTS),
+        weight=weight,
         mood=mood,
     )
     scored: dict[str, Any] = {}
