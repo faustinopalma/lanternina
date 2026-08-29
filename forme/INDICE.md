@@ -1,6 +1,6 @@
 # Indice delle forme
 
-310 forme, 10 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+310 forme, 22 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -15,18 +15,18 @@
 8. [Scala di accordo (Likert)](01-come-e-fatta-la-domanda/008-scala-di-accordo-likert/README.md) · ⊘ irraggiungibile · fatta
 9. [Confronto a coppie](01-come-e-fatta-la-domanda/009-confronto-a-coppie/README.md) · aperto · fatta
 10. [Riordino di un testo tagliato a pezzi](01-come-e-fatta-la-domanda/010-riordino-di-un-testo-tagliato-a-pezzi/README.md) · aperto · fatta
-11. [Risposta breve](01-come-e-fatta-la-domanda/011-risposta-breve/README.md) · aperto · —
-12. [Completamento (cloze)](01-come-e-fatta-la-domanda/012-completamento-cloze/README.md) · ⚠ costoso · —
-13. [Cloze a scelta guidata](01-come-e-fatta-la-domanda/013-cloze-a-scelta-guidata/README.md) · ⚠ costoso · —
-14. [Elenco](01-come-e-fatta-la-domanda/014-elenco/README.md) · aperto · —
-15. [Definizione](01-come-e-fatta-la-domanda/015-definizione/README.md) · aperto · —
-16. [Spiegazione](01-come-e-fatta-la-domanda/016-spiegazione/README.md) · aperto · —
-17. [Riassunto](01-come-e-fatta-la-domanda/017-riassunto/README.md) · aperto · —
-18. [Parafrasi](01-come-e-fatta-la-domanda/018-parafrasi/README.md) · aperto · —
-19. [Traduzione](01-come-e-fatta-la-domanda/019-traduzione/README.md) · aperto · —
-20. [Tema / saggio](01-come-e-fatta-la-domanda/020-tema-saggio/README.md) · ⚠ costoso · —
-21. [Lettera](01-come-e-fatta-la-domanda/021-lettera/README.md) · aperto · —
-22. [Diario / registro](01-come-e-fatta-la-domanda/022-diario-registro/README.md) · aperto · —
+11. [Risposta breve](01-come-e-fatta-la-domanda/011-risposta-breve/README.md) · aperto · fatta
+12. [Completamento (cloze)](01-come-e-fatta-la-domanda/012-completamento-cloze/README.md) · ⚠ costoso · fatta
+13. [Cloze a scelta guidata](01-come-e-fatta-la-domanda/013-cloze-a-scelta-guidata/README.md) · ⚠ costoso · fatta
+14. [Elenco](01-come-e-fatta-la-domanda/014-elenco/README.md) · aperto · fatta
+15. [Definizione](01-come-e-fatta-la-domanda/015-definizione/README.md) · aperto · fatta
+16. [Spiegazione](01-come-e-fatta-la-domanda/016-spiegazione/README.md) · aperto · fatta
+17. [Riassunto](01-come-e-fatta-la-domanda/017-riassunto/README.md) · aperto · fatta
+18. [Parafrasi](01-come-e-fatta-la-domanda/018-parafrasi/README.md) · aperto · fatta
+19. [Traduzione](01-come-e-fatta-la-domanda/019-traduzione/README.md) · aperto · fatta
+20. [Tema / saggio](01-come-e-fatta-la-domanda/020-tema-saggio/README.md) · ⚠ costoso · fatta
+21. [Lettera](01-come-e-fatta-la-domanda/021-lettera/README.md) · aperto · fatta
+22. [Diario / registro](01-come-e-fatta-la-domanda/022-diario-registro/README.md) · aperto · fatta
 23. [Didascalia](01-come-e-fatta-la-domanda/023-didascalia/README.md) · aperto · —
 24. [Titolo](01-come-e-fatta-la-domanda/024-titolo/README.md) · aperto · —
 25. [Dialogo scritto](01-come-e-fatta-la-domanda/025-dialogo-scritto/README.md) · aperto · —
