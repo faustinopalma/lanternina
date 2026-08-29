@@ -185,9 +185,10 @@ def the_prompt(
     avoid: tuple[str, ...] = (),
     already: tuple[str, ...] = (),
     recent: Sequence[Drawn] = (),
-    subjects: Sequence[str] = (),
     happened: str = "",
-    ever: Sequence[str] = (),
+    counts: str = "",
+    direction: str = "",
+    ground: str = "",
     brief: str = "",
     shape: str = "",
     distance: str = "",
@@ -203,16 +204,14 @@ def the_prompt(
     which is what keeps it material rather than instruction.
 
     ``shape`` is what the parent chose under "how it should be made" — how many things
-    connect and how long a chain of them runs. It is about the material and never about
-    whoever receives it, which is why it goes into the prompt and not into the document:
-    `tests/test_experience.py` refuses a field named `difficulty` on an afternoon, and that
-    stays true.
+    connect and how long a chain of them runs. It is the starting point; ``direction`` says
+    which way to move from it, read off how the last runs actually went. Neither reaches the
+    document: `tests/test_experience.py` refuses a field named `difficulty` on an afternoon.
 
-    ``happened`` is what the last afternoons here came to — how far each got, whether the
-    paper came back marked or blank, what was on it — as JSON from
-    `panel/what_happened.py`. It arrives quoted, as observation, and the block it lands in
-    says what may not be done with it. ``ever`` is every subject this house has been
-    offered, so that the next one is not one of them.
+    Three arguments come out of `panel/what_happened.py` and they are three different jobs.
+    ``happened`` is the last few afternoons as rows — the evidence. ``counts`` and
+    ``direction`` are how much to ask for. ``ground`` is what this house has already been
+    over, in three bands by how recently, which is what keeps the next one off it.
 
     ``note`` is what the parent wrote about this house at this moment, and it is the only
     part of the household's settings with a lifetime. It arrives quoted, as material, and
@@ -240,19 +239,14 @@ def the_prompt(
             sheets=sheets,
             words_per_line=words_per_line,
         )
-        + _what_happened(happened, ever)
-        + (SAYS.text("brief", brief=brief) if brief else _not_again(recent, subjects))
-    )
-
-
-def _what_happened(happened: str, ever: Sequence[str]) -> str:
-    """Left out entirely when nothing has run here, rather than said as an empty list."""
-    if not happened:
-        return ""
-    return SAYS.text(
-        "what-happened",
-        happened=happened,
-        ever=json.dumps(list(ever), ensure_ascii=False),
+        + (SAYS.text("what-happened", happened=happened) if happened else "")
+        + (
+            SAYS.text("how-it-has-gone", counts=counts, direction=direction)
+            if counts and direction
+            else ""
+        )
+        + (SAYS.text("ground-covered", ground=ground) if ground else "")
+        + (SAYS.text("brief", brief=brief) if brief else _not_again(recent))
     )
 
 
@@ -271,9 +265,10 @@ class ExperienceDeviser:
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
-        subjects: Sequence[str] = (),
         happened: str = "",
-        ever: Sequence[str] = (),
+        counts: str = "",
+        direction: str = "",
+        ground: str = "",
         brief: str = "",
         shape: str = "",
         distance: str = "",
@@ -291,9 +286,10 @@ class ExperienceDeviser:
                 avoid=avoid,
                 already=already,
                 recent=recent,
-                subjects=subjects,
                 happened=happened,
-                ever=ever,
+                counts=counts,
+                direction=direction,
+                ground=ground,
                 brief=brief,
                 shape=shape,
                 distance=distance,
@@ -313,9 +309,10 @@ class ExperienceDeviser:
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
         recent: Sequence[Drawn] = (),
-        subjects: Sequence[str] = (),
         happened: str = "",
-        ever: Sequence[str] = (),
+        counts: str = "",
+        direction: str = "",
+        ground: str = "",
         brief: str = "",
         shape: str = "",
         distance: str = "",
@@ -337,9 +334,8 @@ class ExperienceDeviser:
         is a different afternoon — titles of documents, and nothing about who did them or
         how it went. ``recent`` is what those afternoons were drawn along, which is the
         constraint that can actually be checked afterwards: a title can be changed without
-        changing anything. ``subjects`` is what they were *about*, which is the half
-        neither of the other two can see — thirty measured runs came back as one afternoon
-        with thirty titles and thirty different sets of dimensions.
+        changing anything. What the afternoons were *about* is no longer here: it is
+        `ground-covered`, banded by how long ago rather than listed.
         """
         payload = await ctx.router.analyze(
             ModelRequest(
@@ -351,9 +347,10 @@ class ExperienceDeviser:
                     avoid=avoid,
                     already=already,
                     recent=recent,
-                    subjects=subjects,
                     happened=happened,
-                    ever=ever,
+                    counts=counts,
+                    direction=direction,
+                    ground=ground,
                     brief=brief,
                     shape=shape,
                     distance=distance,
@@ -445,26 +442,23 @@ class ExperienceDeviser:
         return experience_in(payload.text, experience_id=experience_id)
 
 
-def _not_again(recent: Sequence[Drawn], subjects: Sequence[str] = ()) -> str:
-    """The last few afternoons, as something the next one may not be again.
+def _not_again(recent: Sequence[Drawn]) -> str:
+    """The last few afternoons, as something the next one may not be made like again.
 
-    Two things, and the second was missing until thirty runs showed what that costs. The
-    ten dimensions say how an afternoon *works*, and ten afternoons whose dimensions all
-    differed came back as one afternoon: an object on a table, a moving edge of light, a
-    printed card, something to name. Nothing looked at the material, so nothing refused it.
-
-    ``subjects`` is the material — the themes, which are nouns. `ideas/08 §11.2`.
+    The ten dimensions say how an afternoon *works*. What it is *about* left this function
+    on 29 August 2026 and is now `ground-covered`, which bands it by how long ago rather
+    than listing the last five: the same subject means one thing from last week and another
+    from two years ago, and a flat list could not say that.
 
     An empty list says nothing at all rather than saying "avoid nothing", which is a
     sentence a model will find a way to be about.
     """
-    if not recent and not subjects:
+    if not recent:
         return ""
     drawn = [before.to_dict() for before in recent]
     return SAYS.text(
         "not-again",
         drawn=json.dumps(drawn, ensure_ascii=False),
-        subjects=json.dumps(list(subjects), ensure_ascii=False),
         max_shared=MAX_SHARED_DIMENSIONS,
     )
 

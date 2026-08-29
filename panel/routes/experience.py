@@ -59,8 +59,9 @@ from ..what_happened import (
     WhatHappenedStore,
     as_material,
     clean_reading,
+    how_it_has_gone,
     remembered,
-    themes_ever,
+    the_ground,
 )
 from . import Decision
 from .trail import filed, opened
@@ -438,14 +439,15 @@ async def devise_afternoon(
     store: ExperienceStore = request.app.state.experiences
     preferences: PreferencesStore = request.app.state.preferences
     settings_of_the_house = preferences.get(household_id)
-    # Titles, dimensions and subjects come out of the documents that were offered. What
-    # happened to them comes out of `panel/what_happened.py`, which the house writes when
-    # an afternoon ends.
+    # Two mechanisms and two sources. What has already been used comes out of every
+    # afternoon *proposed* here, because offering one again is the repeat. How much to ask
+    # for comes out of the ones that actually ran.
     already = tuple(row.title for row in store.list(household_id) if row.title)
     recent = _drawn_before(store, household_id)
-    subjects = _subjects_before(store, household_id)
+    ground = the_ground(_themes_proposed(store, household_id))
     memory: WhatHappenedStore = request.app.state.what_happened
     ran = memory.list(household_id)
+    going = how_it_has_gone(ran)
 
     from ..devising import RefusedByTheChecks, devise_experience
 
@@ -468,9 +470,10 @@ async def devise_afternoon(
             note=settings_of_the_house.standing(time.time()),
             already=already,
             recent=recent,
-            subjects=subjects,
             happened=as_material(ran),
-            ever=themes_ever(ran),
+            counts=json.dumps(going.to_dict(), ensure_ascii=False),
+            direction=going.direction(),
+            ground=json.dumps(ground.to_dict(), ensure_ascii=False) if ground.anything() else "",
             now=time.time(),
         )
         outcome = SERVED
@@ -510,19 +513,17 @@ async def devise_afternoon(
 DRAWN_BEFORE = 5
 
 
-def _subjects_before(store: ExperienceStore, household_id: str) -> tuple[str, ...]:
-    """What the last few afternoons were about, without repeats and in order.
+def _themes_proposed(store: ExperienceStore, household_id: str) -> tuple[tuple[str, ...], ...]:
+    """The subjects of every afternoon ever proposed here, one tuple each, oldest first.
 
-    The nouns, which is the half the ten dimensions cannot see: ten afternoons drawn along
-    ten different sets of dimensions came back as one afternoon about light on a table.
-    `ideas/08 §11.2` has the measurement.
+    All of them and not the last few: `panel/what_happened.the_ground` bands them by how
+    long ago, so what would be lost by cutting the list here is exactly the band that says
+    a subject may be returned to.
     """
-    said: list[str] = []
-    for row in store.list(household_id)[-DRAWN_BEFORE:]:
-        for theme in row.experience.get("themes") or ():
-            if str(theme) and str(theme) not in said:
-                said.append(str(theme))
-    return tuple(said)
+    return tuple(
+        tuple(str(theme) for theme in (row.experience.get("themes") or ()) if str(theme))
+        for row in store.list(household_id)
+    )
 
 
 def _drawn_before(store: ExperienceStore, household_id: str) -> tuple[Drawn, ...]:

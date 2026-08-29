@@ -431,11 +431,13 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         "avoid",
         "already",
         "recent",
-        "subjects",
-        # How the afternoons went, and every subject offered so far. Facts about runs:
-        # `panel/what_happened.py` has no field a judgement would fit in.
+        # Two mechanisms, two jobs. `happened` is the evidence; `counts` and `direction`
+        # say how much to ask for; `ground` says what has already been used. All three are
+        # computed at prompt time from `panel/what_happened.py` and stored nowhere.
         "happened",
-        "ever",
+        "counts",
+        "direction",
+        "ground",
         # How many things an afternoon holds together at once, and how far it goes from the
         # last ones. Both are properties of the material, not claims about a person.
         "difficulty",
