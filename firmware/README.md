@@ -21,6 +21,16 @@ The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the three patches in
 
 Both apply with `patch --binary -p1`. The `--binary` is not optional: the vendor's `bl.cpp` has CRLF line endings, and plain `patch` strips the carriage returns out of the patch and then refuses every hunk.
 
+### Flashing, and the two ways it goes wrong
+
+Both displays were flashed with the battery patch on 29 August 2026 and came back reading 4.06 V and 4.16 V, against exactly 4.2 on both before it. Getting there cost an evening and one display that looked lost, and both faults are worth writing down because neither announces itself.
+
+**Use `devices/trmnl_provision.py`, not esptool by hand.** It writes twice: the merged image at `0x0` and a per-device NVS at `0x9000`. Writing only the first is what a plain `write_flash 0x0` does, and it leaves the display with no Wi-Fi credentials and no token — it boots, joins nothing, and goes quiet. That reads exactly like a bricked board. `/opt/lanternina/devices/provision-one.sh` wraps it: it picks the port by MAC, because both displays are on the cable and `ttyACM0` and `ttyACM1` swap depending on which woke first.
+
+**esptool's reset does nothing on these boards.** It prints `Hard resetting via RTS pin...` and the XIAO ESP32-S3 speaks USB-Serial/JTAG, where there is no RTS. The chip stays in the ROM bootloader: permanently enumerated, never sleeping, never reporting. The tell is `/dev/ttyACM*` sitting there for minutes when a healthy display appears for about nine seconds every sixty-seven. `esptool --before usb_reset --after hard_reset run` leaves it, and so does unplugging the cable.
+
+The proven binary is kept at `/opt/lanternina/firmware/trmnl-7inch5-og-diy-kit-real-battery.bin`, beside the two it succeeds. Going back is one `provision-one.sh` run with `--firmware` pointing at the older one.
+
 Recovery does not depend on the button: the hub keeps 16 MiB of original flash per unit in `/var/lib/lanternina/trmnl-backups/` and reprovisions over USB, which is the same cable the reset would have forced anyway.
 
 USB is provisioning only. The hub stores one Wi-Fi configuration in `/etc/lanternina/trmnl-provisioning.json`; udev provisions a connected ESP32-S3 with the common firmware and a per-device NVS partition. After that, the display wakes, fetches over Wi-Fi, updates the paper and sleeps. It does not remain connected over USB.
