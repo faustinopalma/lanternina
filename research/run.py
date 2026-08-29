@@ -115,8 +115,7 @@ async def one_afternoon(
             weight=played.weight,
             minutes=played.minutes,
             reached=played.reached,
-            ending=played.ending,
-            answered=tuple(
+            ending=played.ending,            answered=tuple(
                 Answered(
                     moment_id=str(one.get("momentId", "")),
                     came=str(one.get("came", "blank")),
@@ -215,7 +214,7 @@ async def main() -> int:
         "refused": sum(1 for one in rows if "refused" in one),
         "endings": {
             ending: sum(1 for one in rows if one.get("ending") == ending)
-            for ending in ("closed", "way_out", "stopped", "went_wrong")
+            for ending in ("closed", "asked", "stopped", "way_out", "went_wrong")
         },
         "axes": _averages(rows),
         "minutes": round((time.monotonic() - began) / 60, 1),

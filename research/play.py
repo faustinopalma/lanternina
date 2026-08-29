@@ -32,12 +32,16 @@ from shared.experience import (
 
 from .calls import what_they_did
 
-# Where a run stopped. The same words `panel/what_happened.py` files, so a played afternoon
-# can be written into the memory the next one is devised from.
+# Where a run stopped. The first four are the words `panel/what_happened.py` files, so a
+# played afternoon can be written into the memory the next one is devised from. The fifth is
+# this loop's own: it is where the apparatus stopped and not where the afternoon did, and
+# counting it as an early ending would say an afternoon failed when the loop declined to buy
+# a continuation.
 CLOSED = "closed"
 WAY_OUT = "way_out"
 STOPPED = "stopped"
 WENT_WRONG = "went_wrong"
+ASKED = "asked"
 
 # A guard against a document that loops through a branch we misread. The format forbids
 # backwards outcomes, so reaching this is a defect and it is written into the transcript.
@@ -151,7 +155,7 @@ async def play(
             played.trail.append(f"  va a: {goes}")
             if goes == ASK:
                 played.trail.append("  (qui il pomeriggio vero chiederebbe la continuazione)")
-                played.ending = WAY_OUT
+                played.ending = ASKED
                 return played
             if goes not in by_id:
                 played.trail.append(f"  DIFETTO: {goes!r} non è un momento di questo pomeriggio")

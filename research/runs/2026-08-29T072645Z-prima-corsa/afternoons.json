@@ -88,5 +88,1885 @@
     "overview": "Un’indagine quieta dentro una vecchia carta ferroviaria, tra linee che sembrano tecniche e una scelta che invece riguarda un ritorno. Si resta al tavolo con una matita, seguendo una deviazione impossibile finché il suo senso cambia. L’atmosfera è sospesa, asciutta e leggermente malinconica; la pagina finita rimane come una mappa e un messaggio insieme.",
     "script": "IL MONDO A Passo Grigio la luce resta verde anche dopo il tramonto. La sala delle carte odora di carta umida e carbone freddo. Le linee mai percorse rimangono sulle mappe quando qualcuno le ha desiderate abbastanza; nessuno parla degli orologi. LA VIA D’ENTRATA Nel vassoio della stampante si trova oggi una carta ferroviaria che non appartiene a questa casa. Qualcuno prende la carta ferroviaria. Una linea spezzata lascia il percorso ufficiale, sfiora un deposito e termina accanto a un edificio isolato. LA DOMANDA Perché Nora tracciò la deviazione? Nora voleva rassicurare chi tornava: da una carrozza avrebbe visto una luce. Per un po’ sembra un percorso più breve verso il deposito; l’ipotesi si rompe quando la linea arriva dal lato in cui i carri non entravano e prosegue verso l’edificio isolato. Chi conservava la carta voleva sapere se archiviarla come proposta ferroviaria; ora può riconoscerla come messaggio personale. I BATTITI La carta appare nel vassoio e fa prendere in mano una deviazione che non dovrebbe esserci. La linea spezzata viene seguita con la matita e lascia una traccia visibile. L’ultimo edificio incontrato viene cerchiato e obbliga a guardare oltre il deposito. La direzione ammessa per i carri viene accostata alla deviazione e fa scrivere «non merci». Questo è il battito che rovescia la cosa: la scorciatoia plausibile diventa un percorso inutile al deposito. La frase sul margine viene messa accanto all’edificio cerchiato e fa annotare un motivo possibile. Questo è il battito in cui arriva la risposta: la deviazione offriva una luce a chi tornava. La carta torna sul vetro e ciò che vi è stato aggiunto decide le ultime parole. CIÒ CHE RESTA TRATTENUTO L’incompatibilità con il deposito viene detta soltanto dopo che l’ultimo edificio è stato cerchiato. La frase sul margine diventa una testimonianza soltanto dopo che è stato scritto «non merci». Il motivo di Nora viene consegnato soltanto dopo che la frase e l’edificio sono stati tenuti fianco a fianco. La natura personale della carta viene nominata soltanto dopo che una risposta è rimasta scritta sulla pagina. CIÒ CHE VIENE FATTO La carta ferroviaria «La deviazione di Passo Grigio» è l’appunto privato di Nora per l’ultima corsa; dice quali linee erano ufficiali, da dove entravano i carri e che da una carrozza basta una luce; chiede di lasciare sulla mappa la falsa spiegazione, ciò che la smentisce e il motivo della deviazione. DOVE PUÒ ANDARE DIVERSAMENTE Se la carta torna piena, resta davanti a chi conduce e le ultime parole vengono scritte a partire dai segni presenti. Se torna intatta, viene ripresa dal vetro e l’edificio isolato resta senza interpretazione; il pomeriggio finisce sulla carta. Se l’interesse si ferma a metà, si cerchia soltanto l’ultimo edificio raggiunto dalla linea e si piega la carta attorno a quel segno; il pomeriggio finisce lì. CIÒ CHE LO ROVINEREBBE Dire subito che la carta è un messaggio personale. Aggiungere nozioni sulla storia ferroviaria. Pretendere una ricostruzione precisa del percorso.",
     "iteration": 1
+  },
+  {
+    "household": "due-fogli-e-una-svolta",
+    "title": "Il posto lasciato alla tazza",
+    "experienceId": "aftn-1879150c",
+    "themes": [
+      "riparazioni",
+      "assenze",
+      "gesti di ritorno",
+      "immagini accostate"
+    ],
+    "minutes": 94,
+    "moments": 5,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "short",
+    "ending": "stopped",
+    "reached": "return-leaf",
+    "minutesPlayed": 25,
+    "sheets": [
+      {
+        "momentId": "first-leaf",
+        "sheet": "[notebook] La tazza sul banco\nPrima pagina del quaderno di Lina.\nLa tazza azzurra non fu riparata.\nLa forma accanto rimase incompleta.\nLa crepa raggiunge il bordo del foglio.\n— Ciò che la forma sembra essere (some_lines)\n— Il seguito della crepa (a_box)"
+      },
+      {
+        "momentId": "second-leaf",
+        "sheet": "[notebook] Il posto oltre il bordo\nSeconda pagina del quaderno di Lina.\nQuesto bordo seguiva il primo.\nLa forma intera occupava un posto.\nLa tazza fu lasciata davanti a quel posto.\n— La forma intera (a_line)\n— La decisione di Lina (some_lines)\n— Il posto tenuto libero (a_box)",
+        "came": "blank",
+        "reading": "Nessun segno a matita aggiunto; le righe e il riquadro sono rimasti vuoti.",
+        "why": "Non c’era scritto cosa fare sul foglio, quindi l’ho lasciato lì e ho smesso."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Tieni una matita sul tavolo.",
+          "says": "This names an immediate physical first step after presenting the page in the tray."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Non c'era scritto cosa fare sul foglio, quindi l'ho lasciato lì e ho smesso.",
+          "says": "This directly shows that the paper did not preserve the instructions needed after the screen was gone."
+        },
+        "oneThingAtATime": {
+          "score": 3,
+          "quote": "Gira il primo foglio.",
+          "says": "The commands are individually short, but the sequence soon requires remembering prior instructions while managing and aligning two sheets."
+        },
+        "everyStepLeavesAMark": {
+          "score": 4,
+          "quote": "Segna ciò che sembra mostrare.",
+          "says": "The intended central action would leave a visible pencil mark, although its unclear object prevented that action from being carried out."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— La decisione di Lina (some_lines)",
+          "says": "This implies an answer to be inferred, but supplies neither a determinate question nor a written answer through help."
+        },
+        "canBeAbandoned": {
+          "score": 1,
+          "quote": "Riprendi il foglio segnato.",
+          "says": "The way out depends on a marked sheet existing, so it fails precisely when the person abandons the marking task."
+        },
+        "worthTheHour": {
+          "score": 2,
+          "quote": "sul foglio: Nessun segno a matita aggiunto; le righe e il riquadro sono rimasti vuoti.",
+          "says": "The premise is specific and suggestive, but the played afternoon ended without anything made or found out."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "— La forma intera (a_line)",
+          "says": "This reads like a worksheet response field, including an exposed template token, rather than the voice of an interested companion."
+        }
+      },
+      "worstLine": "Segna ciò che sembra mostrare.",
+      "whatToChangeInThePrompt": "Require every physical sheet to include explicit, self-contained action instructions in ordinary language, without relying on vanished screens or template-field labels.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 130.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "eb40853f-a746-40ca-8fcb-bf3638210f06",
+      "input_tokens": 5586,
+      "output_tokens": 6665,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 3737,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il posto lasciato alla tazza\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: short\n\n[say] Qualcosa nel vassoio\n  display: Una pagina sporge dal vassoio.\n  display: Tieni una matita sul tavolo.\n\n[hand_over] La metà scura\n  display: Prendi il primo foglio.\n  display: Segna ciò che sembra mostrare.\n  foglio consegnato:\n    [notebook] La tazza sul banco\n    Prima pagina del quaderno di Lina.\n    La tazza azzurra non fu riparata.\n    La forma accanto rimase incompleta.\n    La crepa raggiunge il bordo del foglio.\n    — Ciò che la forma sembra essere (some_lines)\n    — Il seguito della crepa (a_box)\n\n[hand_over] L’altro bordo\n  display: Gira il primo foglio.\n  display: Prendi il secondo foglio.\n  display: Accosta i due bordi.\n  foglio consegnato:\n    [notebook] Il posto oltre il bordo\n    Seconda pagina del quaderno di Lina.\n    Questo bordo seguiva il primo.\n    La forma intera occupava un posto.\n    La tazza fu lasciata davanti a quel posto.\n    — La forma intera (a_line)\n    — La decisione di Lina (some_lines)\n    — Il posto tenuto libero (a_box)\n\n[collect] Il foglio ritorna\n  display: Posa il foglio segnato sul vetro.\n  display: Lascia l’altro foglio sul tavolo.\n  il foglio torna: blank\n    sul foglio: Nessun segno a matita aggiunto; le righe e il riquadro sono rimasti vuoti.\n    dice: Non c’era scritto cosa fare sul foglio, quindi l’ho lasciato lì e ho smesso.\n  ha smesso qui\n  via d'uscita: La frase resta\n    display: Riprendi il foglio segnato.\n    display: Accostalo alla prima pagina.\n    display: Il pomeriggio finisce qui.",
+    "overview": "Un’indagine quieta al tavolo della cucina, fatta di due pagine illustrate che sembrano raccontare una cosa finché non vengono accostate. Il tono è intimo e leggermente straniante: una crepa, una forma incompleta e il gesto discreto di qualcuno che ha lasciato aperta la possibilità di un ritorno.",
+    "script": "IL MONDO La Cucina delle Crepe resta illuminata anche quando le finestre sono buie. Odora di pera cotta e polvere fredda. Ogni tazza rotta conserva un posto sul banco, ma nessuno nomina mai chi dovrebbe usarla. LA VIA D’ACCESSO Dal vassoio della stampante sporge una pagina del quaderno di Lina. Chi conduce prende il primo foglio e lo lascia sul tavolo. Una figura scura, tagliata dal bordo, sembra stare accanto alla tazza azzurra. LA DOMANDA Perché Lina lasciò la tazza rotta sul banco? La risposta è che voleva dire a chi era partito che poteva tornare senza dare spiegazioni. Per un po’ sembra che volesse gettare la tazza: la mezza forma scura pare un secchio. L’idea si rompe quando i due fogli, messi fianco a fianco, completano una sedia vuota. Lina voleva saperlo prima di andarsene, e la risposta trasforma un oggetto scartato in un posto tenuto libero. LE BATTUTE Una pagina sporge dal vassoio, e una matita viene posata accanto. La tazza appare vicino a una mezza forma, e sul primo foglio viene segnata l’ipotesi che suggerisce. La crepa viene continuata fino al bordo, lasciando una traccia visibile. Il primo foglio viene girato, e il secondo foglio viene consegnato. I due bordi vengono accostati, e la forma scura viene completata. La svolta avviene quando il presunto secchio diventa lo schienale di una sedia. La posizione della tazza viene cerchiata rispetto al posto vuoto. La risposta arriva quando viene scritta una frase sulla decisione di Lina. Il foglio segnato torna sul vetro, e ciò che vi compare decide le parole finali. COSA RESTA NASCOSTO Il secondo foglio viene dato dopo che il primo è stato girato. La forma intera si mostra dopo che i due bordi sono stati accostati. La decisione di Lina viene detta dopo che la tazza e la sedia sono state considerate insieme. La chiusura viene data dopo che il foglio segnato è stato posato sul vetro. COSA SI CREA La prima pagina del quaderno di Lina mostra la tazza, la crepa e una forma incompleta; chiede che l’apparenza iniziale venga segnata e che la crepa venga continuata fino al bordo. La seconda pagina del quaderno completa la scena; chiede di nominare la forma intera e di scrivere quale decisione racconta la posizione della tazza. DOVE PUÒ CAMBIARE Se il foglio torna pieno, resta davanti a chi conduce e la chiusura viene scritta usando le parole che vi compaiono. Se il foglio torna intatto, i due fogli vengono lasciati accostati e la tazza resta davanti alla sedia; il pomeriggio finisce lì. Se l’interesse si ferma a metà, la matita viene posata lungo i due bordi come una cucitura e i fogli vengono lasciati insieme; il pomeriggio è finito. COSA LO ROVINEREBBE Aggiungere un terzo documento per spiegare Lina. Dire che la forma è una sedia prima di accostare i fogli. Disegnare una cucina che pretende di essere questa casa.",
+    "iteration": 1
+  },
+  {
+    "household": "lontano-e-lungo",
+    "refused": {
+      "by": "format",
+      "says": "this way out is about \"l'etichetta del vetro\" and never says so; an ending that names nothing in the person's hands is the goodbye that is felt as a cut"
+    },
+    "iteration": 1
+  },
+  {
+    "household": "un-mese-pesante",
+    "title": "La finestra che Mira non disegnò",
+    "experienceId": "aftn-be12d666",
+    "themes": [
+      "gatti",
+      "disegno",
+      "scelte",
+      "ritratti",
+      "paesaggi"
+    ],
+    "minutes": 58,
+    "moments": 4,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "page-on-glass",
+    "minutesPlayed": 12,
+    "sheets": [
+      {
+        "momentId": "portrait-arrives",
+        "sheet": "[notebook] La finestra lasciata a Elio\nPagina di bottega di Mira, preparata per il ritratto di Elio.\nIl gatto restò fermo mentre due panorami vennero cancellati.\nElio non aveva ancora scelto tra tetti e acqua.\n— Un altro panorama possibile (a_box)\n— Ciò che Mira non volle scegliere (a_line)\n— Il motivo della finestra vuota (some_lines)",
+        "came": "marks",
+        "reading": "Sulle righe in fondo è scritto a matita «non sapeva cosa scegliere»; il riquadro e la riga restano vuoti.",
+        "why": "Ho scritto il motivo richiesto e ho lasciato la pagina sul vetro con i segni visibili."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la pagina dal vassoio.",
+          "says": "This immediately names a physical action and locates the object needed to begin."
+        },
+        "sheetStandsAlone": {
+          "score": 5,
+          "quote": "— Il motivo della finestra vuota (some_lines)",
+          "says": "The paper itself preserves the prompt and provides a place for the written response."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Segna un motivo per il vuoto.",
+          "says": "This gives one compact task without asking the person to coordinate several ideas at once."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Lascia visibili i segni aggiunti.",
+          "says": "The requested action produces pencil marks that remain plainly observable."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 5,
+          "quote": "Sulle righe in fondo è scritto a matita «non sapeva cosa scegliere»; il riquadro e la riga restano vuoti.",
+          "says": "The question about the empty window ends with a definite answer recorded on the sheet."
+        },
+        "canBeAbandoned": {
+          "score": 4,
+          "quote": "Posa la pagina sul vetro.",
+          "says": "The ending releases the task through the page already in hand, though no equally explicit exit is offered earlier."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Il gatto restò fermo mentre due panorami vennero cancellati.",
+          "says": "The premise is strange and specific, but the final answer mostly restates information the page had already supplied."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Ho scritto il motivo richiesto e ho lasciato la pagina sul vetro con i segni visibili.",
+          "says": "The resulting language is about completing a required response correctly, which makes the exchange feel like compliance with a worksheet."
+        }
+      },
+      "worstLine": "Segna un motivo per il vuoto.",
+      "whatToChangeInThePrompt": "Require each afternoon to leave a genuine uncertainty for the person to resolve or invent, using the voice of a curious companion rather than assigning a required answer.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 136.4,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "eabdac84-cf3f-484c-8aca-60b7ff585561",
+      "input_tokens": 5421,
+      "output_tokens": 2564,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 111,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La finestra che Mira non disegnò\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: short\n\n[hand_over] Una pagina dal vassoio\n  display: Dal vassoio sporge una pagina.\n  display: Prendi la pagina dal vassoio.\n  display: Guarda la finestra rimasta vuota.\n  foglio consegnato:\n    [notebook] La finestra lasciata a Elio\n    Pagina di bottega di Mira, preparata per il ritratto di Elio.\n    Il gatto restò fermo mentre due panorami vennero cancellati.\n    Elio non aveva ancora scelto tra tetti e acqua.\n    — Un altro panorama possibile (a_box)\n    — Ciò che Mira non volle scegliere (a_line)\n    — Il motivo della finestra vuota (some_lines)\n\n[say] Il retro senza correzioni\n  display: Usa la matita sulla pagina.\n  display: Segna un motivo per il vuoto.\n\n[collect] La pagina ritorna\n  display: Posa la pagina sul vetro.\n  display: Lascia visibili i segni aggiunti.\n  il foglio torna: marks\n    sul foglio: Sulle righe in fondo è scritto a matita «non sapeva cosa scegliere»; il riquadro e la riga restano vuoti.\n    dice: Ho scritto il motivo richiesto e ho lasciato la pagina sul vetro con i segni visibili.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un ritratto di gatto arriva con una finestra inspiegabilmente vuota. Tra piccoli paesaggi cancellati, poche righe di bottega e spazio per un segno personale, il tavolo diventa lo studio silenzioso di un’illustratrice. È un’indagine breve e contemplativa, fatta guardando, voltando il foglio e decidendo quale intenzione custodire.",
+    "script": "IL MONDO Nella bottega di Mira, i ritratti di gatti mostrano anche il luogo che desiderano osservare. La luce ha il colore delle pere tagliate e l’aria odora di carta asciutta. Nessuno nomina mai il paesaggio finché il ritratto non è consegnato. LA VIA D’INGRESSO Dal vassoio sporge una pagina del quaderno di Mira. Mostra un gatto immobile davanti a una finestra vuota, con due piccoli panorami cancellati. Qualcuno prende la pagina dal vassoio e trova il lavoro lasciato a metà. LA DOMANDA Perché Mira lasciò vuota la finestra nel ritratto destinato a Elio? Mira la lasciò vuota perché voleva che Elio disegnasse il luogo in cui desiderava vivere. Per un po’ sembra che il gatto si sia mosso e abbia interrotto il lavoro; questa risposta cade quando i tre contorni identici mostrano che il gatto rimase fermo mentre cambiarono soltanto i panorami. Mira voleva saperlo, perché non intendeva scegliere la vita di Elio al posto suo. LE BATTUTE La pagina arriva dal vassoio e fa prendere in mano il ritratto incompleto. I tre gatti hanno la stessa posa e fanno segnare ciò che non è cambiato. I due panorami cancellati fanno tracciare una terza possibilità. Il retro intatto fa voltare di nuovo la pagina e annotare che il vuoto fu voluto. SVOLTA — I due panorami vengono tenuti affiancati e fanno scartare l’idea del gatto fuggito. Una frase sul foglio fa scrivere quale scelta Mira rifiutò di compiere. RISPOSTA — Il nuovo panorama fa arrivare l’intenzione di lasciare la scelta a Elio. CIÒ CHE RESTA NASCOSTO Che il vuoto sia intenzionale viene dato dopo aver voltato la pagina e trovato il retro senza correzioni. Che il gatto sia rimasto fermo viene dato dopo aver tenuto affiancati i due piccoli panorami. Che la scelta appartenesse a Elio viene dato dopo aver disegnato o nominato una terza vista. L’intenzione di Mira viene data dopo aver scritto una frase accanto alla finestra. CIÒ CHE SI CREA La pagina del quaderno di Mira è il ritratto destinato a Elio; racconta del gatto fermo e dei due panorami cancellati, chiede un panorama possibile e il motivo del vuoto, e viene osservata, voltata, disegnata e annotata. DOVE PUÒ CAMBIARE Se la pagina torna piena, resta davanti a qualcuno e le parole aggiunte guidano una chiusura scritta da ciò che vi compare. Se la pagina torna intatta, la finestra rimane aperta e la pagina viene posata accanto alla matita. Se l’interesse si ferma a metà, si cerchia uno dei due piccoli panorami e si scrive soltanto: «Mira non scelse questo». COSA LO ROVINEREBBE Aggiungere altri documenti sulla bottega. Trasformare il disegno in una prova tecnica. Spiegare l’intenzione prima che il foglio venga voltato.",
+    "iteration": 1
+  },
+  {
+    "household": "niente-di-scritto",
+    "title": "Il vaso lasciato vuoto",
+    "experienceId": "aftn-f594b840",
+    "themes": [
+      "Attesa",
+      "Decisioni",
+      "Assenza",
+      "Tracce",
+      "Giardini d’inverno"
+    ],
+    "minutes": 84,
+    "moments": 5,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "short",
+    "ending": "stopped",
+    "reached": "return-map",
+    "minutesPlayed": 19,
+    "sheets": [
+      {
+        "momentId": "ada-map",
+        "sheet": "[map] La serra registrata da Ada\nAda segnava ogni cosa portata fuori.\nSotto il vaso centrale scrisse: «Resta vuoto\nIl margine destro della frase è strappato.\n— Prima ipotesi di Ada (some_lines)\n— Motivo ricostruito (some_lines)"
+      },
+      {
+        "momentId": "lio-page",
+        "sheet": "[notebook] La pagina rimasta sotto il vaso\nLio lasciò questa pagina piegata nella serra.\nIl vaso centrale non era malato.\n«finché torno a scegliere con te.»\n«Se scegli sola, sembrerà che io non torni.»",
+        "came": "blank",
+        "reading": "Nessuna parola, linea o disegno aggiunto al testo stampato.",
+        "why": "Non c'era scritto cosa fare con il foglio, quindi l'ho posato e ho smesso."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Tieni il foglio di Ada.",
+          "says": "La prima scena offre subito un oggetto concreto e un primo gesto fisico semplice."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "— Motivo ricostruito (some_lines)",
+          "says": "Sul foglio compare soltanto un campo etichettato, mentre l'istruzione di completarlo resta nello schermo che scompare."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Posala accanto alla mappa.",
+          "says": "L'istruzione contiene un solo gesto breve con oggetti già presenti."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Completa il motivo ricostruito.",
+          "says": "Il compito richiesto produrrebbe una traccia scritta visibile, mentre gli altri gesti spostano oggetti in modo osservabile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 4,
+          "quote": "«finché torno a scegliere con te.»",
+          "says": "La pagina di Lio contiene per iscritto il motivo da ricostruire, anche se la domanda che dovrebbe guidare la ricostruzione è poco esplicita."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Posa la matita accanto ai fogli.",
+          "says": "La via d'uscita usa soltanto la matita e i fogli già nelle mani della persona e non richiede di finire correttamente."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Il vaso centrale non era malato.",
+          "says": "Il dettaglio introduce un piccolo mistero specifico, ma l'esito previsto rimane una breve ricostruzione ordinata più che una scoperta sorprendente."
+        },
+        "notASchoolSheet": {
+          "score": 1,
+          "quote": "Completa il motivo ricostruito.",
+          "says": "La formula imperativa e il campo da riempire hanno direttamente la voce di una scheda scolastica."
+        }
+      },
+      "worstLine": "— Motivo ricostruito (some_lines)",
+      "whatToChangeInThePrompt": "Imporre che ogni foglio stampi su di sé un'istruzione completa che dica esattamente cosa fare, dove lasciare il segno e con quale oggetto, senza dipendere da uno schermo precedente.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 110.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "b9e9dcc3-952c-4ab8-aee1-fba9a8da1360",
+      "input_tokens": 5572,
+      "output_tokens": 6530,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 3393,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il vaso lasciato vuoto\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: short\n\n[hand_over] Sotto il cassetto\n  display: Il centro della serra è vuoto.\n  display: Tieni il foglio di Ada.\n  display: Segna cosa sembra accaduto.\n  foglio consegnato:\n    [map] La serra registrata da Ada\n    Ada segnava ogni cosa portata fuori.\n    Sotto il vaso centrale scrisse: «Resta vuoto\n    Il margine destro della frase è strappato.\n    — Prima ipotesi di Ada (some_lines)\n    — Motivo ricostruito (some_lines)\n\n[hand_over] L’altra metà\n  display: Un secondo margine coincide.\n  display: Tieni la pagina di Lio.\n  display: Posala accanto alla mappa.\n  foglio consegnato:\n    [notebook] La pagina rimasta sotto il vaso\n    Lio lasciò questa pagina piegata nella serra.\n    Il vaso centrale non era malato.\n    «finché torno a scegliere con te.»\n    «Se scegli sola, sembrerà che io non torni.»\n\n[say] I margini coincidono\n  display: Tieni i due fogli affiancati.\n  display: Completa il motivo ricostruito.\n\n[collect] Il foglio ritorna\n  display: Posa il foglio sul vetro.\n  display: Lascia la matita sul tavolo.\n  il foglio torna: blank\n    sul foglio: Nessuna parola, linea o disegno aggiunto al testo stampato.\n    dice: Non c'era scritto cosa fare con il foglio, quindi l'ho posato e ho smesso.\n  ha smesso qui\n  via d'uscita: La scelta sul tavolo\n    display: Posa la matita accanto ai fogli.\n    display: La frase resta nella serra.\n    display: Il pomeriggio è finito.",
+    "overview": "Un’indagine quieta intorno a due fogli incompleti, trovati come resti di una serra impossibile. Le immagini suggeriscono una spiegazione semplice; accostando i margini, però, emerge una decisione più intima. Si scrive poco, si osserva a lungo e si conclude con una pagina che può restare sul tavolo.",
+    "script": "IL MONDO La Serra delle Ore Basse riceve luce soltanto dal pavimento. L’aria sa di buccia di pera e ogni vaso proietta due ombre. Nessuno nomina mai il posto vuoto al centro. LA VIA D’ENTRATA Oggi un foglio sporge da sotto un cassetto della cucina. È una mappa strappata della serra, con il nome di Ada sul margine. Qualcuno prende il foglio di Ada e trova il vaso centrale vuoto tra foglie ricadenti. LA DOMANDA Perché Ada decise di lasciare vuoto il vaso centrale? Ada lo lasciò vuoto perché voleva scegliere la pianta con Lio al suo ritorno e temeva che scegliere da sola significasse ammettere che non sarebbe tornato. Per un tratto sembra che nel vaso ci fosse una pianta malata, rimossa per proteggere le altre. Questa risposta si rompe quando la pagina di Lio dichiara che il vaso non era malato e completa la frase strappata di Ada. Ada voleva saperlo per decidere se mantenere quel posto libero; scoprirlo trasforma il vuoto da perdita ad attesa. I BATTITI Il foglio di Ada mostra un cerchio vuoto tra foglie basse e fa annotare la prima spiegazione che sembra possibile. Una frase termina sul margine strappato e fa tracciare una linea accanto alle parole interrotte. La pagina di Lio arriva con il margine opposto e fa cercare una continuità tra i due strappi. I due fogli vengono messi fianco a fianco e fanno leggere una sola frase attraverso entrambi. Questo è il battito che rovescia la storia: la pagina di Lio dice che il vaso non era malato. La frase ricomposta fa distinguere ciò che Ada voleva da ciò che temeva. Questo è il battito in cui arriva la risposta: sul foglio viene scritta la decisione di Ada in una frase. Il foglio di Ada passa sul vetro e ciò che vi è stato aggiunto decide le ultime parole della serra. CIÒ CHE RESTA NASCOSTO La seconda metà della frase viene data dopo che la prima ipotesi è stata segnata sul foglio di Ada. La dichiarazione che il vaso non era malato viene data dopo che i margini sono stati accostati. Il timore di Ada emerge dopo che desiderio e paura sono stati scritti separatamente. Le parole finali della serra vengono date dopo che il foglio segnato è stato posato sul vetro. CIÒ CHE VIENE CREATO La mappa strappata di Ada mostra la Serra delle Ore Basse dall’alto. Dice che Ada registrava ciò che veniva tolto e conserva l’inizio di una frase sotto il vaso centrale. Chiede un’ipotesi e il motivo ricostruito; chi la riceve vi scrive e accosta il margine strappato all’altra pagina. La pagina di Lio è una foglia del suo taccuino rimasta sotto un vaso. Dice che il vaso centrale non era malato e conserva la fine della frase condivisa. Chiede di essere posata accanto alla mappa affinché i due frammenti diventino una sola dichiarazione. DOVE PUÒ CAMBIARE STRADA Se il foglio torna pieno, le parole aggiunte vengono riprese nella chiusura e il vaso vuoto riceve un nome scelto da quelle parole. Se il foglio torna intatto, la pagina di Lio resta accanto alla mappa e la serra chiude senza chiedere altro. Se l’interesse si ferma a metà, si piegano insieme i due margini e si lascia visibile soltanto la frase ricomposta; il pomeriggio termina su quella. CIÒ CHE LO ROVINEREBBE Aggiungere altre persone o altri documenti alla serra. Trasformare i margini strappati in un codice da decifrare. Spiegare il significato del vaso prima che i fogli siano accostati.",
+    "iteration": 1
+  },
+  {
+    "household": "con-dei-limiti",
+    "title": "Il muro che non chiudeva nulla",
+    "experienceId": "aftn-26bdd8c9",
+    "themes": [
+      "Serre",
+      "Tracce",
+      "Protezione",
+      "Architetture",
+      "Decisioni"
+    ],
+    "minutes": 96,
+    "moments": 6,
+    "mood": "una giornata buona, c'è tempo e curiosità",
+    "weight": "standard",
+    "ending": "stopped",
+    "reached": "read-the-mark",
+    "minutesPlayed": 57,
+    "sheets": [
+      {
+        "momentId": "first-plan",
+        "sheet": "[map] Pianta della Serra delle Ombre\nCopia dell’architetto, rimasta nel cassetto di Ada.\nIl tratto scuro fu aggiunto quando la serra era già finita.\nNon raggiunge una porta né sostiene il tetto.\n— Segno che non appartiene al muro (a_box)\n— Cosa sembra proteggere (a_line)"
+      },
+      {
+        "momentId": "gardeners-leaf",
+        "sheet": "[notebook] Il foglio piegato del giardiniere\nIl gelsomino sembrava morto, ma le radici erano ancora vive.\nL’uomo sarebbe tornato per portarlo nella sua collezione.\nAda chiese calce e mattoni prima del suo ritorno.\n— La decisione di Ada (some_lines)\n— Ciò che temeva (some_lines)",
+        "came": "marks",
+        "reading": "Una frase in matita sulle righe di «La decisione di Ada»: «Ada decise di murare il gelsomino per nasconderlo all’uomo.»; le righe di «Ciò che temeva» restano vuote.",
+        "why": "Ho scritto la decisione suggerita dalla calce e dai mattoni, poi ho messo il foglio sullo scanner e mi sono fermato."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la pianta della serra.",
+          "says": "La situazione è già presente e questa riga offre subito un primo gesto fisico chiaro."
+        },
+        "sheetStandsAlone": {
+          "score": 2,
+          "quote": "Fai incontrare le curve.",
+          "says": "Un passaggio essenziale per usare insieme i fogli compare soltanto sullo schermo e non resta sulla carta."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Avvicina i due fogli.",
+          "says": "La riga affida un solo gesto semplice, mentre le azioni successive sono separate in righe proprie."
+        },
+        "everyStepLeavesAMark": {
+          "score": 4,
+          "quote": "Osserva dove rimane il ramo.",
+          "says": "Quasi tutto produce scrittura, disegno o movimento visibile, ma questa osservazione da sola non lascia traccia verificabile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 4,
+          "quote": "sul foglio: Una frase in matita sulle righe di «La decisione di Ada»: «Ada decise di murare il gelsomino per nasconderlo all’uomo.»; le righe di «Ciò che temeva» restano vuote.",
+          "says": "La domanda principale riceve una risposta scritta, ma un secondo campo interrogativo rimane aperto e senza un ultimo aiuto."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Riprendi il foglio annotato.",
+          "says": "La via d’uscita usa direttamente il foglio che la persona ha appena collocato sullo scanner e non richiede di risolvere altro."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Il tratto scuro fu aggiunto quando la serra era già finita.",
+          "says": "Il dettaglio architettonico è specifico e insolito e conduce a una scoperta concreta sul gelsomino nascosto."
+        },
+        "notASchoolSheet": {
+          "score": 3,
+          "quote": "Scrivi la decisione di Ada.",
+          "says": "La voce evita giudizi e spiegazioni, ma questo comando e i campi da riempire conservano un tono da scheda scolastica."
+        }
+      },
+      "worstLine": "— Ciò che temeva (some_lines)",
+      "whatToChangeInThePrompt": "Imporre che ogni campo di risposta stampato venga esplicitamente ripreso e sostenuto dalle istruzioni successive, vietando domande accessorie lasciate senza percorso.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 139.1,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "683e74e3-2c85-4468-ad88-ec5894884d55",
+      "input_tokens": 6366,
+      "output_tokens": 3428,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 166,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il muro che non chiudeva nulla\nCOME VA LA GIORNATA: una giornata buona, c'è tempo e curiosità\nPESO SCELTO: standard\n\n[hand_over] Una pagina nel vassoio\n  display: Una pagina è appena uscita.\n  display: Il margine porta una piega scura.\n  display: Prendi la pianta della serra.\n  display: Posala aperta sul tavolo.\n  foglio consegnato:\n    [map] Pianta della Serra delle Ombre\n    Copia dell’architetto, rimasta nel cassetto di Ada.\n    Il tratto scuro fu aggiunto quando la serra era già finita.\n    Non raggiunge una porta né sostiene il tetto.\n    — Segno che non appartiene al muro (a_box)\n    — Cosa sembra proteggere (a_line)\n\n[say] La curva incompleta\n  display: Prendi una matita.\n  display: Cerchia il distacco dal vetro.\n  display: Prolunga la curva sul margine.\n  display: Disegna cosa potrebbe contenere.\n\n[hand_over] Il foglio piegato\n  display: È arrivato un secondo foglio.\n  display: Porta un ramo schiacciato.\n  display: Prendi il foglio del giardiniere.\n  display: Cerca la curva sul margine.\n  foglio consegnato:\n    [notebook] Il foglio piegato del giardiniere\n    Il gelsomino sembrava morto, ma le radici erano ancora vive.\n    L’uomo sarebbe tornato per portarlo nella sua collezione.\n    Ada chiese calce e mattoni prima del suo ritorno.\n    — La decisione di Ada (some_lines)\n    — Ciò che temeva (some_lines)\n\n[say] Margine contro margine\n  display: Avvicina i due fogli.\n  display: Fai incontrare le curve.\n  display: Osserva dove rimane il ramo.\n  display: Scrivi la decisione di Ada.\n\n[collect] La scelta sul vetro\n  display: Prendi il foglio annotato.\n  display: Posalo sul vetro dello scanner.\n  display: Tieni la pianta accanto.\n  display: La serra legge la decisione.\n  il foglio torna: marks\n    sul foglio: Una frase in matita sulle righe di «La decisione di Ada»: «Ada decise di murare il gelsomino per nasconderlo all’uomo.»; le righe di «Ciò che temeva» restano vuote.\n    dice: Ho scritto la decisione suggerita dalla calce e dai mattoni, poi ho messo il foglio sullo scanner e mi sono fermato.\n  ha smesso qui\n  via d'uscita: Resta la decisione\n    display: Riprendi il foglio annotato.\n    display: Piegalo attorno al ramo.\n    display: Il pomeriggio è finito.",
+    "overview": "Un’indagine quieta dentro una serra di fine Ottocento, tra calce umida, foglie pressate e un muro costruito lontano da ogni passaggio. Due fogli incompleti diventano leggibili soltanto affiancati. L’atmosfera è raccolta e leggermente irreale: si osservano tracce, si disegna un’ipotesi e si decide quale intenzione lasciare scritta.",
+    "script": "THE WORLD È la fine dell’Ottocento, nella Serra delle Ombre. Anche a mezzogiorno la luce resta verde. L’aria odora di calce bagnata e scorza d’arancia. Nessuno nomina mai il muro curvo che non tocca alcun edificio. THE WAY IN Una pianta della serra è appena uscita nel vassoio della stampante. Porta una piega scura sul margine e il nome di Ada sotto una macchia di terra. Qualcuno prende la pagina e la posa sul tavolo. THE QUESTION Perché Ada fece costruire un muro davanti a una pianta ancora viva? La risposta è che voleva nasconderla al compratore che intendeva portarla via. Per un tratto sembra che il muro chiudesse un ingresso pericolante. Questa risposta si disfa quando i margini dei due fogli vengono accostati: il muro circonda il gelsomino e non incontra alcuna porta. Il giardiniere voleva sapere se Ada avesse abbandonato la serra; scoprirlo trasforma il muro nel segno della sua scelta di proteggerla. THE BEATS La pianta arriva macchiata; chi la prende cerchia il tratto che sembra un ingresso chiuso. Il margine piegato viene voltato; chi lo apre trova mezza curva senza edificio. Una matita prolunga la curva; chi disegna decide che cosa potrebbe contenere. Il foglio del giardiniere arriva; chi lo prende vede un ramo e l’altra metà della curva. I due fogli vengono affiancati; chi li muove fa coincidere le due metà. Questo è il giro: la presunta porta diventa un riparo attorno alla pianta. La nota sul compratore viene letta; chi la considera scrive la decisione di Ada. Questo è l’arrivo della risposta: il foglio annotato conserva ciò che Ada temeva e ciò che scelse. WHAT IS HELD BACK La seconda metà della curva viene data dopo che la prima è stata prolungata con una matita. La nota sul compratore appare dopo che il foglio del giardiniere è girato sul lato della piega. La forma completa del riparo appare dopo che i due margini sono posati fianco a fianco. La decisione di Ada viene data dopo che una frase o un segno è lasciato sul foglio. WHAT IS MADE La pianta della Serra delle Ombre è la copia dell’architetto: nomina il muro aggiunto da Ada, chiede quale spazio sembri proteggere e invita a cerchiare e prolungare il tratto scuro. Il foglio del giardiniere è una pagina piegata del suo taccuino: dice che un compratore cerca il gelsomino, chiede quale decisione prese Ada e invita a scriverla accanto al ramo pressato. WHERE IT CAN GO DIFFERENTLY Se il foglio torna pieno, viene lasciato sul vetro accanto alla pianta e la frase scritta diventa la voce con cui proseguire. Se torna intatto, viene ripiegato lungo la curva e posato sulla pianta; il muro resta chiuso e il pomeriggio finisce. Se l’interesse si interrompe, si cerchia soltanto il ramo racchiuso dalle due curve; i fogli restano affiancati e il pomeriggio finisce su quella forma. WHAT WOULD SPOIL IT Spiegare subito che il muro è un riparo. Trasformare il gelsomino in un’identificazione botanica. Aggiungere codici nascosti nei nomi.",
+    "iteration": 1
+  },
+  {
+    "household": "poco-e-vicino",
+    "title": "La sedia rivolta alla porta",
+    "experienceId": "aftn-af922b9d",
+    "themes": [
+      "Cinema",
+      "Paura del buio",
+      "Cura",
+      "Sedie",
+      "Attesa"
+    ],
+    "minutes": 48,
+    "moments": 5,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "read-the-page",
+    "minutesPlayed": 14,
+    "sheets": [
+      {
+        "momentId": "page-arrives",
+        "sheet": "[notebook] Pagina del turno all’Aurora\nLa sala odora d’arancia; dalla porta entra luce azzurra.\nUna sedia guarda la porta; tutte le altre guardano lo schermo.\nControllata e stabile. Ada: non raddrizzarla prima di Leo.\nLeo aspetta col violino; al buio non varca la soglia.\n— Il punto che stona (a_box)\n— La prima ipotesi (some_lines)\n— Ciò che Ada proteggeva (some_lines)\n— Il nuovo cartellino (some_lines)",
+        "came": "marks",
+        "reading": "A pencil circle around the five words «Una sedia guarda la porta» and a pencil underline beneath «stabile»; the box and lines are empty.",
+        "why": "I made only the two marks the screens asked for and then waited."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi il foglio dal vassoio.",
+          "says": "This gives an immediate physical first step after placing the sheet in a concrete situation."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Segna la sedia fuori posto.",
+          "says": "This necessary instruction appears only on a passing screen and is not printed on the sheet."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Gira il foglio verso la luce.",
+          "says": "This is one brief instruction containing a single action."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Sottolinea «stabile».",
+          "says": "This asks for a plainly doable action that leaves a visible mark."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "(qui il pomeriggio vero chiederebbe la continuazione)",
+          "says": "This explicitly admits that the continuation containing the inquiry and its written resolution is missing."
+        },
+        "canBeAbandoned": {
+          "score": 2,
+          "quote": "I made only the two marks the screens asked for and then waited.",
+          "says": "This shows the participant left waiting inside the sequence without an offered way to put it down and finish."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Leo aspetta col violino; al buio non varca la soglia.",
+          "says": "This is strange and specific, but the afternoon ends before its intriguing detail becomes something found out."
+        },
+        "notASchoolSheet": {
+          "score": 1,
+          "quote": "Sottolinea «stabile».",
+          "says": "This exact-answer classroom command makes the system sound like a teacher directing a worksheet."
+        }
+      },
+      "worstLine": "(qui il pomeriggio vero chiederebbe la continuazione)",
+      "whatToChangeInThePrompt": "Require every generated afternoon, including a short one, to complete its central inquiry with a final written answer or last rung of help printed on the persistent sheet.",
+      "howItWentInAWord": "ended early"
+    },
+    "seconds": 133.3,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "c592b214-322b-422e-9072-a39482756b17",
+      "input_tokens": 6013,
+      "output_tokens": 7362,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 4551,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La sedia rivolta alla porta\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: short\n\n[hand_over] Una pagina inattesa\n  display: Dal vassoio sporge il foglio.\n  display: Prendi il foglio dal vassoio.\n  foglio consegnato:\n    [notebook] Pagina del turno all’Aurora\n    La sala odora d’arancia; dalla porta entra luce azzurra.\n    Una sedia guarda la porta; tutte le altre guardano lo schermo.\n    Controllata e stabile. Ada: non raddrizzarla prima di Leo.\n    Leo aspetta col violino; al buio non varca la soglia.\n    — Il punto che stona (a_box)\n    — La prima ipotesi (some_lines)\n    — Ciò che Ada proteggeva (some_lines)\n    — Il nuovo cartellino (some_lines)\n\n[say] La sedia voltata\n  display: Tieni una matita sul tavolo.\n  display: Segna la sedia fuori posto.\n\n[say] La risposta si incrina\n  display: Gira il foglio verso la luce.\n  display: Sottolinea «stabile».\n\n[collect] Il vetro legge i segni\n  display: Posa il foglio sul vetro.\n  display: Chiudi il coperchio.\n  il foglio torna: marks\n    sul foglio: A pencil circle around the five words «Una sedia guarda la porta» and a pencil underline beneath «stabile»; the box and lines are empty.\n    dice: I made only the two marks the screens asked for and then waited.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un vecchio cinema quasi vuoto, una luce azzurra nel corridoio e una pagina di servizio che sembra trattenere una premura mai dichiarata. Il pomeriggio è quieto e raccolto: si resta con un solo particolare fuori posto, annotando ciò che cambia quando la spiegazione più facile non regge.",
+    "script": "IL MONDO Il Cinema Aurora resta aperto nelle ore in cui non proietta nulla. Dalla porta laterale entra una luce azzurra; la sala odora di buccia d’arancia. Le sedie guardano lo schermo, tranne una. Nessuno parla mai dello schermo spento. LA VIA D’ENTRATA Dal vassoio della stampante sporge una pagina che la custode non ha mandato. È una foglia del registro di sala, con il disegno di una sedia rivolta alla porta. Qualcuno prende il foglio e tiene una matita accanto. LA DOMANDA Perché Ada lasciò una sedia rivolta alla porta? Ada la girò perché Leo potesse vedere la porta illuminata mentre aspettava di suonare: aveva paura del buio. La risposta che sembra giusta è che la sedia fosse guasta; si sfalda davanti alla nota «controllata e stabile». La custode vuole saperlo prima di raddrizzarla, e sapendolo lascia la sedia com’era. LE BATTUTE La pagina compare senza richiesta, e chi la prende segna la sola cosa che stona. La fila di sedie rende naturale la prima ipotesi, e una frase la fissa sul foglio. La nota sulla stabilità contraddice quella frase, e viene sottolineata. Il nome di Leo porta lo sguardo verso la porta, e una linea collega i due punti. La custode domanda che cosa Ada stesse proteggendo, e il foglio riceve poche parole. La battuta che rovescia la cosa accosta «stabile» alla porta illuminata. La battuta in cui arriva la risposta trasforma la sedia da guasto a riparo. Il nuovo cartellino resta sul foglio, e il turno finisce con la sedia ancora voltata. CIÒ CHE RESTA NASCOSTO Che la sedia non sia guasta viene dato dopo aver sottolineato «controllata e stabile». Che Leo guardi la porta viene dato dopo aver tracciato una linea fra lui e la luce. Che Ada abbia agito per paura del buio viene dato dopo aver messo fianco a fianco la nota e la sedia. La frase del cartellino viene data dopo aver scritto ciò che Ada voleva evitare. CIÒ CHE SI CREA La pagina del turno all’Aurora è il registro lasciato dalla custode: racconta la sedia voltata, conserva le note di Ada, chiede un’ipotesi e un nuovo cartellino, e riceve cerchi, linee e parole a matita. DOVE PUÒ CAMBIARE Se il foglio torna pieno, la custode riprende le parole già presenti e detta un cartellino che conserva la loro intenzione. Se il foglio torna intatto, la custode lascia la sedia senza cartellino e chiude il turno sul foglio com’è. Se l’interesse si ferma a metà, la custode chiede soltanto un segno accanto alla sedia e chiude il turno su quel segno. COSA LO ROVINEREBBE Aggiungere una seconda anomalia nella sala. Trasformare la paura di Leo in una diagnosi. Spiegare Ada prima che la nota sulla sedia sia stata guardata.",
+    "iteration": 2
+  },
+  {
+    "household": "due-fogli-e-una-svolta",
+    "title": "Le due fini della zuppa chiara",
+    "experienceId": "aftn-135aa84d",
+    "themes": [
+      "scelte",
+      "ricette",
+      "contraddizioni",
+      "margini",
+      "commensali"
+    ],
+    "minutes": 83,
+    "moments": 5,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "extended",
+    "ending": "stopped",
+    "reached": "page-on-glass",
+    "minutesPlayed": 76,
+    "sheets": [
+      {
+        "momentId": "first-page",
+        "sheet": "[notebook] La prima fine della zuppa chiara\nFoglio di Ada, dalla Cucina delle Doppie Ombre.\nPrima fine: «Togli il limone.»\nMargine: «Non scelgo io.»\nUna traccia scura attraversa il bordo."
+      },
+      {
+        "momentId": "second-page",
+        "sheet": "[notebook] La seconda fine della zuppa chiara\nSeconda fine: «Lascia il limone.»\nMargine: «Assaggiano loro.»\nQuesta pagina rimase sotto la prima.\nLa riga chiara non fu cancellata.",
+        "came": "blank",
+        "reading": "Le cinque righe stampate, senza segni o parole aggiunti.",
+        "why": "Non c’era scritto cosa dovevo fare e, dopo tutto questo tempo, l’ho lasciato lì."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 3,
+          "quote": "Prendi il foglio piegato.",
+          "says": "Dà un primo gesto fisico chiaro, ma solo dopo una riga iniziale che non contiene alcuna azione."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Non c’era scritto cosa dovevo fare e, dopo tutto questo tempo, l’ho lasciato lì.",
+          "says": "Il foglio conserva il contenuto ma non le istruzioni necessarie per usarlo senza lo schermo."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "Posa la matita tra le versioni.",
+          "says": "Questa è la quarta istruzione ravvicinata dello stesso passaggio, quindi troppe azioni devono essere tenute insieme."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Unisci le frasi del margine.",
+          "says": "Non specifica se l’unione debba essere scritta, detta o soltanto pensata, perciò il risultato non è necessariamente visibile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "Segna la riga che pare ultima.",
+          "says": "Chiede di risolvere un’ambiguità senza mettere sul foglio una risposta determinata o un ultimo aiuto che la riveli."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Il pomeriggio è finito.",
+          "says": "La via d’uscita chiude senza giudizio usando le due pagine già presenti e non pretende che il compito sia stato risolto."
+        },
+        "worthTheHour": {
+          "score": 2,
+          "quote": "Non c’era scritto cosa dovevo fare e, dopo tutto questo tempo, l’ho lasciato lì.",
+          "says": "L’ambientazione è specifica, ma il lungo percorso termina senza qualcosa di fatto o una scoperta accessibile."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Segna l’ordine che sembra nuovo.",
+          "says": "La successione di imperativi da eseguire e segnare ha più la voce di una scheda scolastica che quella di qualcuno coinvolto nella ricerca."
+        }
+      },
+      "worstLine": "Segna la riga che pare ultima.",
+      "whatToChangeInThePrompt": "Imporre che ogni mistero o scelta abbia una risposta determinata stampata sui materiali conservati e che l’ultimo livello di aiuto la renda esplicita.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 120.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "e76ec0f9-a386-4e5b-a62e-3808473feab6",
+      "input_tokens": 5978,
+      "output_tokens": 6807,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 4057,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Le due fini della zuppa chiara\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: extended\n\n[hand_over] Il foglio nel cassetto\n  display: La luce sembra verde.\n  display: Prendi il foglio piegato.\n  display: Aprilo sul tavolo.\n  display: Segna la riga che pare finale.\n  foglio consegnato:\n    [notebook] La prima fine della zuppa chiara\n    Foglio di Ada, dalla Cucina delle Doppie Ombre.\n    Prima fine: «Togli il limone.»\n    Margine: «Non scelgo io.»\n    Una traccia scura attraversa il bordo.\n\n[hand_over] L’ordine contrario\n  display: Arriva la seconda pagina.\n  display: Prendi la seconda pagina.\n  display: Posala accanto alla prima.\n  display: Segna l’ordine che sembra nuovo.\n  foglio consegnato:\n    [notebook] La seconda fine della zuppa chiara\n    Seconda fine: «Lascia il limone.»\n    Margine: «Assaggiano loro.»\n    Questa pagina rimase sotto la prima.\n    La riga chiara non fu cancellata.\n\n[say] Il margine intero\n  display: Affianca le due pagine.\n  display: Segna la riga che pare ultima.\n  display: Unisci le frasi del margine.\n  display: Posa la matita tra le versioni.\n\n[collect] La pagina sul vetro\n  display: Prendi la seconda pagina.\n  display: Mettila sul vetro.\n  display: Accosta la prima al vetro.\n  display: Lascia visibili le due frasi.\n  il foglio torna: blank\n    sul foglio: Le cinque righe stampate, senza segni o parole aggiunti.\n    dice: Non c’era scritto cosa dovevo fare e, dopo tutto questo tempo, l’ho lasciato lì.\n  ha smesso qui\n  via d'uscita: La pagina resta leggibile\n    display: Tieni la seconda pagina.\n    display: Posala accanto alla prima.\n    display: Il pomeriggio è finito.",
+    "overview": "Un piccolo enigma di cucina attraversato da luce verde e odore di scorza. Due pagine attribuite alla stessa cuoca danno ordini opposti; accostandole, una nota marginale cambia il senso di entrambe. L’azione centrale è concreta e quieta: spostare i fogli, seguire una frase e lasciare un segno prima di affidare una pagina al vetro.",
+    "script": "IL MONDO La Cucina delle Doppie Ombre riceve una luce verde anche nel pomeriggio. Sa di scorza scaldata, sebbene sui fornelli non ci sia nulla. Ogni piatto può avere due fini, e nessuno nomina il sale finché qualcuno non ha deciso. LA VIA D’ENTRATA Nel cassetto delle posate c’è oggi un foglio piegato che non appartiene alla casa. Qualcuno prende il foglio piegato e trova la prima fine della zuppa chiara. Una seconda pagina arriva poco dopo e porta un ordine incompatibile con il primo. LA DOMANDA Perché Ada conservò due versioni opposte della stessa ricetta? La risposta è che voleva lasciare la scelta ai commensali, portando entrambe le versioni. La risposta falsa è che cambiò idea e sostituì la prima versione con quella scritta più scura. Sembra giusta finché i due margini, messi fianco a fianco, dicono: «Non scelgo io. Assaggiano loro.» Ada voleva saperlo prima di servire, e questo trasforma una correzione apparente in una decisione condivisa. I PASSAGGI Il foglio piegato compare nel cassetto, e qualcuno lo apre sul tavolo. La riga scura ordina di togliere il limone, e qualcuno la indica con la matita. La seconda pagina ordina di lasciarlo, e qualcuno la posa accanto alla prima. Le due istruzioni sembrano prima e seconda versione, e qualcuno segna quella che pare definitiva. IL PASSAGGIO CHE ROVESCIA TUTTO: i margini vengono accostati, e la frase divisa smentisce l’idea della correzione. Qualcuno sottolinea la frase nata dai due margini. IL PASSAGGIO IN CUI ARRIVA LA RISPOSTA: la frase mostra che Ada non voleva scegliere per gli altri. La seconda pagina va sul vetro con il segno rimasto, oppure resta intatta sul tavolo. CIÒ CHE RESTA NASCOSTO La seconda istruzione viene data dopo che il primo foglio è stato aperto sul tavolo. La frase intera viene data dopo che le due pagine sono state messe fianco a fianco. La decisione di Ada viene data dopo che la frase marginale è stata sottolineata. Il senso della riga scura viene dato dopo che le due istruzioni sono state considerate insieme. CIÒ CHE VIENE FATTO La prima fine della zuppa chiara: una pagina del quaderno di Ada; dice «Togli il limone» e conserva metà della nota marginale; chiede di essere aperta, indicata e accostata all’altra pagina. La seconda fine della zuppa chiara: la pagina conservata sotto la prima; dice «Lascia il limone» e completa la nota marginale; chiede di essere affiancata, segnata e affidata al vetro. DOVE PUÒ CAMBIARE Se la seconda pagina torna con segni, resta davanti a tutti e la frase segnata diventa il punto da cui nominare la decisione di Ada. Se torna intatta, le due pagine vengono posate vicine e la cucina lascia valide entrambe le fini. Se l’interesse si ferma a metà, si mette la riga scura accanto alla riga chiara e si chiude sulla contraddizione, senza chiederle di risolversi. COSA LO ROVINEREBBE Trasformare le due versioni in una prova con una risposta corretta. Aggiungere ingredienti, dosi o passaggi da ricordare. Spiegare il margine prima che le pagine siano state accostate.",
+    "iteration": 2
+  },
+  {
+    "household": "lontano-e-lungo",
+    "title": "La campana rimasta muta",
+    "experienceId": "aftn-0760f5a8",
+    "themes": [
+      "Decisioni",
+      "Attese",
+      "Legami",
+      "Suono",
+      "Memoria"
+    ],
+    "minutes": 86,
+    "moments": 5,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "standard",
+    "ending": "stopped",
+    "reached": "return-dossier",
+    "minutesPlayed": 45,
+    "sheets": [
+      {
+        "momentId": "three-things",
+        "sheet": "[dossier] Le tre cose della stanza alta\nDal fascicolo salato della custode Agata.\nLa nave era visibile, ma la campana rimase muta.\nL’orologio fu fermato a mano; il tamburo porta sale.\nIl biglietto riposava sotto il battente.\n— Legame tra le tre cose (a_box)\n— Segno che esclude il guasto (a_line)\n— Decisione di Agata (some_lines)"
+      },
+      {
+        "momentId": "folded-note",
+        "sheet": "[notebook] La nota sotto il battente\nScritta da Agata e mai consegnata.\nHo fermato l’ora perché tutti guardassero il molo.\nTu sentirai il tamburo attraverso il tavolo.\nQuando apparirà la nave, il primo annuncio sarà tuo.",
+        "came": "blank",
+        "reading": "Only the five printed lines; no pencil or ink marks were added.",
+        "why": "L'ho messo giù perché non c'era scritto cosa farne."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 4,
+          "quote": "Tieni una matita sul tavolo.",
+          "says": "This names an immediate physical first step after presenting the strange paper."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "— Legame tra le tre cose (a_box)",
+          "says": "This is only a labeled field with a formatting token, so the vanished screen is needed to know what action to take."
+        },
+        "oneThingAtATime": {
+          "score": 3,
+          "quote": "Osserva orologio, tamburo, biglietto.",
+          "says": "This compact instruction requires three pieces of evidence to be held together at once."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Confronta le tre cose.",
+          "says": "This asks for an internal comparison that leaves no visible sign of whether it happened."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 5,
+          "quote": "Ho fermato l’ora perché tutti guardassero il molo.",
+          "says": "This writes down the intentional explanation that resolves the apparent failure."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Riprendi il dossier delle tre cose.",
+          "says": "The way out calmly reaches for the dossier that is already on the glass and requires no successful answer."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "La nave era visibile, ma la campana rimase muta.",
+          "says": "This creates a strange and specific mystery, but the played afternoon ended before anything was made or established."
+        },
+        "notASchoolSheet": {
+          "score": 4,
+          "quote": "Dal fascicolo salato della custode Agata.",
+          "says": "This speaks from inside the fiction rather than praising, correcting, or explaining the exercise."
+        }
+      },
+      "worstLine": "— Legame tra le tre cose (a_box)",
+      "whatToChangeInThePrompt": "Require every handout to print complete action instructions beside its response spaces rather than relying on instructions shown only on transient screens.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 127.0,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "75b33771-7641-4b67-8b4a-40ac72fbe65f",
+      "input_tokens": 5600,
+      "output_tokens": 6643,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 3523,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La campana rimasta muta\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: standard\n\n[say] Carta nel cassetto\n  display: Nel cassetto c’è carta salata.\n  display: Non era qui stamattina.\n  display: Tieni una matita sul tavolo.\n\n[hand_over] Le tre cose\n  display: Prendi il dossier delle tre cose.\n  display: Osserva orologio, tamburo, biglietto.\n  display: Traccia un legame fra le figure.\n  display: Lascia una decisione possibile.\n  foglio consegnato:\n    [dossier] Le tre cose della stanza alta\n    Dal fascicolo salato della custode Agata.\n    La nave era visibile, ma la campana rimase muta.\n    L’orologio fu fermato a mano; il tamburo porta sale.\n    Il biglietto riposava sotto il battente.\n    — Legame tra le tre cose (a_box)\n    — Segno che esclude il guasto (a_line)\n    — Decisione di Agata (some_lines)\n\n[hand_over] Sotto il battente\n  display: La linea ha aperto la nota.\n  display: Prendi la nota piegata.\n  display: Posala accanto al dossier.\n  display: Confronta le tre cose.\n  foglio consegnato:\n    [notebook] La nota sotto il battente\n    Scritta da Agata e mai consegnata.\n    Ho fermato l’ora perché tutti guardassero il molo.\n    Tu sentirai il tamburo attraverso il tavolo.\n    Quando apparirà la nave, il primo annuncio sarà tuo.\n\n[collect] Il vetro quieto\n  display: Metti il dossier sul vetro.\n  display: Lascia visibili linee e parole.\n  display: La casa legge i segni.\n  il foglio torna: blank\n    sul foglio: Only the five printed lines; no pencil or ink marks were added.\n    dice: L'ho messo giù perché non c'era scritto cosa farne.\n  ha smesso qui\n  via d'uscita: La casa trattiene\n    display: Riprendi il dossier delle tre cose.\n    display: Copri i segni con la nota.\n    display: Il pomeriggio è finito.",
+    "overview": "Un’indagine quieta dentro una casa costiera del Settecento, dove una campana non suonò quando tutti la aspettavano. Un orologio fermo, un tamburo segnato dal sale e un biglietto nascosto sembrano raccontare un guasto; messi in relazione, raccontano invece una scelta privata e premurosa. Si osserva, si tracciano legami e si lascia una conclusione sulla carta.",
+    "script": "IL MONDO La Casa delle Tre Maree sorge su una costa del 1768 che appare soltanto con la nebbia. La luce è verde sotto le porte e le stanze odorano di scorza d’arancia secca. Nella stanza alta ci sono un orologio fermo, un tamburo velato di sale e una campana che nessuno nomina. LA VIA D’INGRESSO Oggi, nel cassetto della cucina, c’è un foglio irrigidito dal sale che prima non c’era. Il foglio è il dossier delle tre cose della stanza alta. Qualcuno lo prende dal cassetto e tiene una matita sul tavolo. LA DOMANDA Perché Agata tenne muta la campana quando la nave tornò? Agata voleva che sua sorella, capace di sentire il tamburo attraverso il tavolo, desse il primo annuncio del ritorno. Per un tratto sembra che l’orologio si sia guastato e che Agata abbia mancato l’ora; il graffio lasciato dalla sua mano, il sale disposto sul tamburo e il biglietto sotto il battente fanno crollare questa risposta. La sorella voleva sapere se quel silenzio fosse stato un errore, e scoprirlo trasforma il silenzio in un dono. I BATTITI Il foglio salato appare nel cassetto e porta a prendere il dossier. Le tre cose compaiono insieme e fanno tracciare una linea fra loro. L’orologio mostra un arresto volontario e fa segnare ciò che esclude il guasto. Il sale forma anelli sul tamburo e fa aggiungere un secondo legame. Il biglietto riposa sotto il battente e fa scrivere una possibile decisione. Questo è il battito che gira la cosa: il tamburo non doveva annunciare a tutti, ma a una sola persona. La nota piegata si apre e mette le tre tracce nella stessa frase. Questo è il battito in cui arriva la risposta: Agata lasciò alla sorella il primo annuncio della nave. Il dossier torna sul vetro e ciò che vi è stato segnato decide le ultime parole. CIÒ CHE RESTA NASCOSTO Il graffio vicino alla corona dell’orologio viene nominato dopo aver cerchiato il segno fatto da una mano. Il significato degli anelli di sale viene dato dopo aver accostato il tamburo all’orologio con una linea. Il posto del biglietto sotto il battente viene mostrato dopo aver collegato tutte e tre le cose. La frase di Agata viene consegnata dopo aver scritto una decisione possibile nel dossier. CIÒ CHE VIENE FATTO Il dossier delle tre cose della stanza alta è il foglio salato conservato da Agata. Dice che la nave era visibile mentre la campana taceva. Chiede di lasciare un legame, il segno che esclude il guasto e la decisione di Agata; chi lo tiene traccia, cerchia e scrive. La nota sotto il battente è la pagina piegata che Agata non consegnò. Dice che fermò l’ora, che il tamburo passava attraverso il tavolo e che il primo annuncio apparteneva alla sorella; chi la tiene la posa accanto al dossier e confronta le tre cose. DOVE PUÒ CAMBIARE Se il dossier torna pieno, resta aperto sul vetro e le parole finali vengono scritte mentre i segni sono visibili. Se torna intatto, la nota viene posata sopra il dossier e la casa lascia la campana in silenzio; il pomeriggio finisce lì. Se l’interesse si spegne a metà, la nota viene piegata attorno alla matita e lasciata sul dossier; la campana non pretende altro e il pomeriggio è finito. COSA LO ROVINEREBBE Consegnare la nota prima che le tre cose siano state messe in relazione. Aggiungere un codice nascosto al biglietto. Trasformare il suono della campana in una prova da imitare.",
+    "iteration": 2
+  },
+  {
+    "household": "un-mese-pesante",
+    "title": "Il quarto suono di Neri",
+    "experienceId": "aftn-2fa77e66",
+    "themes": [
+      "suoni domestici",
+      "attesa",
+      "memoria",
+      "ritorno"
+    ],
+    "minutes": 48,
+    "moments": 4,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "extended",
+    "ending": "stopped",
+    "reached": "read-traces",
+    "minutesPlayed": 47,
+    "sheets": [
+      {
+        "momentId": "neri-register",
+        "sheet": "[notebook] Registro dei suoni trattenuti\nFoglio di Neri, custode del Deposito.\nTre suoni sono chiusi; il quarto attende.\nSua sorella disse: «Torno prima di sera».\nAccanto rimase: «Se torna, lo riconosco».\n— Il segno del recipiente vuoto (a_box)\n— Due suoni arrivati al tavolo (some_lines)\n— Perché il quarto restò vuoto (some_lines)",
+        "came": "marks",
+        "reading": "«tic» e «toc» a matita sulle due righe; il riquadro e l’ultima riga sono vuoti.",
+        "why": "Ho scritto i due suoni come richiesto e poi ho lasciato il foglio perché non sapevo cosa mettere negli altri spazi."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Metti una matita sul tavolo.",
+          "says": "Questa riga indica subito un primo gesto fisico semplice dentro una situazione già visibile."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Fai suonare matita e tazza.",
+          "says": "Questa istruzione essenziale appare soltanto sullo schermo e non sul foglio che resta."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "Prendi il foglio di Neri.",
+          "says": "Questa riga presenta un solo gesto breve, anche se nel complesso diverse istruzioni arrivano in rapida successione."
+        },
+        "everyStepLeavesAMark": {
+          "score": 4,
+          "quote": "Scrivi come arriva il suono.",
+          "says": "Questa richiesta trasforma l'esperienza del suono in una traccia scritta e verificabile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— Perché il quarto restò vuoto (some_lines)",
+          "says": "Questa riga pone la domanda decisiva senza fornire una risposta determinabile né scriverla nell'ultimo aiuto."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Riprendi il foglio di Neri.",
+          "says": "Questa via d'uscita recupera proprio l'oggetto che la persona stava usando e non esige di completarlo."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "sul foglio: «tic» e «toc» a matita sulle due righe; il riquadro e l’ultima riga sono vuoti.",
+          "says": "Questa riga mostra un artefatto reale ma molto esile rispetto alla promessa specifica e misteriosa dell'attività estesa."
+        },
+        "notASchoolSheet": {
+          "score": 4,
+          "quote": "Se vuoi, aggiungi una cancellatura.",
+          "says": "Questa riga offre una possibilità curiosa senza elogiare, correggere o giudicare il risultato."
+        }
+      },
+      "worstLine": "— Perché il quarto restò vuoto (some_lines)",
+      "whatToChangeInThePrompt": "Imporre che ogni mistero presentato come domanda abbia una risposta determinabile e che l'ultimo gradino di aiuto la renda esplicitamente scrivibile.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 120.6,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "039df22e-a5ae-43a7-a088-4175690f5244",
+      "input_tokens": 6006,
+      "output_tokens": 6806,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 4411,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il quarto suono di Neri\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: extended\n\n[say] Dal cassetto\n  display: Un foglio sporge dal cassetto.\n  display: Porta il nome di Neri.\n  display: Metti una matita sul tavolo.\n  display: Se vuoi, ascolta prima la stanza.\n\n[hand_over] Il registro\n  display: Prendi il foglio di Neri.\n  display: Fai suonare matita e tazza.\n  display: Scrivi come arriva il suono.\n  display: Se vuoi, prova un altro oggetto.\n  foglio consegnato:\n    [notebook] Registro dei suoni trattenuti\n    Foglio di Neri, custode del Deposito.\n    Tre suoni sono chiusi; il quarto attende.\n    Sua sorella disse: «Torno prima di sera».\n    Accanto rimase: «Se torna, lo riconosco».\n    — Il segno del recipiente vuoto (a_box)\n    — Due suoni arrivati al tavolo (some_lines)\n    — Perché il quarto restò vuoto (some_lines)\n\n[collect] Sul vetro\n  display: Metti il foglio sul vetro.\n  display: Lascia visibili le parole.\n  display: Se vuoi, aggiungi una cancellatura.\n  display: La traccia entra nel Deposito.\n  il foglio torna: marks\n    sul foglio: «tic» e «toc» a matita sulle due righe; il riquadro e l’ultima riga sono vuoti.\n    dice: Ho scritto i due suoni come richiesto e poi ho lasciato il foglio perché non sapevo cosa mettere negli altri spazi.\n  ha smesso qui\n  via d'uscita: Il deposito risponde\n    display: Riprendi il foglio di Neri.\n    display: Tieni visibile lo spazio vuoto.\n    display: Il pomeriggio è finito.",
+    "overview": "Un mistero quieto costruito con piccoli rumori di casa, un foglio trovato e poche parole lasciate a matita. L’atmosfera è sospesa e leggermente irreale: si ascolta senza dover riconoscere nulla con precisione, mentre uno spazio vuoto acquista il peso di un’attesa. Il foglio resta come una pagina strappata da un luogo che conserva soltanto i suoni destinati a tornare.",
+    "script": "IL MONDO Il Deposito conserva i suoni che qualcuno teme di non sentire più. La luce resta bassa anche vicino alle finestre, e l’aria odora di scorza d’arancia. Quattro recipienti occupano ogni stanza, ma nessuno nomina mai quello vuoto. LA VIA D’ENTRATA Un foglio piegato sporge oggi dal cassetto della cucina, sotto le posate. Porta il nome di Neri e l’impronta rotonda di una tazza. Qualcuno prende il foglio e mette una matita sul tavolo. LA DOMANDA Perché Neri lasciò vuoto il quarto spazio? Neri voleva conservarlo per il suono della chiave di sua sorella nella serratura, perché temeva che lei non sarebbe tornata. Per un tratto sembra che volesse conservare il silenzio; questa risposta si rompe quando il foglio afferma che il quarto spazio attende un suono proveniente da una porta. Neri voleva saperlo per decidere se chiudere il Deposito, e la risposta gli permette di lasciarlo aperto. I BATTITI Il foglio sporge dal cassetto, e qualcuno lo prende con una matita. I tre recipienti pieni vengono osservati, e quello vuoto riceve un piccolo segno. Una matita tocca una tazza, e il suono lascia poche parole sul foglio. Un secondo suono viene provato al tavolo, e la differenza viene annotata. Questo è il battito che rovescia la cosa: il silenzio viene scritto e poi barrato. Le due descrizioni vengono messe fianco a fianco, e compare la serratura. Questo è il battito in cui arriva la risposta: il motivo di Neri viene scritto nello spazio finale. Il foglio torna sul vetro, e ciò che porta decide le ultime parole del Deposito. CIÒ CHE RESTA NASCOSTO La frase «non cercava il silenzio» viene data dopo che è stato provato il secondo suono. La provenienza dalla serratura viene data dopo che le due descrizioni sono state messe fianco a fianco. La chiave della sorella viene data dopo che sul foglio è stata scritta una possibile ragione. La paura che lei non tornasse viene data quando il foglio viene posato sul vetro. CIÒ CHE VIENE FATTO Il Registro dei suoni trattenuti è il foglio di Neri: racconta i tre suoni conservati, custodisce il quarto spazio e chiede un segno, due brevi descrizioni e una ragione possibile. DOVE PUÒ ANDARE DIVERSAMENTE Se il foglio torna con segni, resta davanti a tutti e le parole scritte diventano la voce con cui il Deposito consegna la risposta. Se il foglio torna intatto, viene ripreso dal vetro e lasciato chiuso sotto la matita; il Deposito chiude qui. Se l’interesse si ferma a metà, la matita viene posata attraverso il foglio e lo spazio già raggiunto diventa la sua ultima pagina. COSA LO ROVINEREBBE Aggiungere altri custodi, stanze o documenti. Chiedere di identificare correttamente un suono. Spiegare il significato dello spazio vuoto prima che riceva una ragione.",
+    "iteration": 2
+  },
+  {
+    "household": "niente-di-scritto",
+    "title": "Il cielo nella fodera",
+    "experienceId": "aftn-e7be06d7",
+    "themes": [
+      "Retroscena",
+      "Costumi",
+      "Conforto",
+      "Buio",
+      "Intimità"
+    ],
+    "minutes": 83,
+    "moments": 6,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "glass-reading",
+    "minutesPlayed": 18,
+    "sheets": [
+      {
+        "momentId": "left-page",
+        "sheet": "[notebook] Il cappotto del Teatro Orsa — sinistra\nPagina strappata dal quaderno di Mara, sarta del Teatro Orsa.\nIl blu serve al cambio rapido, così annotò qualcuno.\nSolo il lato sinistro del cappotto è rimasto qui.\n— Parte che vedrà la platea (a_box)\n— Uso attribuito al blu (a_line)"
+      },
+      {
+        "momentId": "right-page",
+        "sheet": "[notebook] Il cappotto del Teatro Orsa — destra\nL’altra metà era piegata nella tasca del cappotto.\nIl cappotto resta chiuso in scena e non viene mai rovesciato.\nLeone percorre il corridoio buio stringendo il risvolto.\nMara annotò: «Un cielo da tenere vicino».\n— Linea tra le due metà (a_box)\n— Ciò che non torna (some_lines)\n— La ragione di Mara (some_lines)",
+        "came": "marks",
+        "reading": "Una linea a matita nel riquadro; sotto «Ciò che non torna» è scritto «Come fa l’altra metà a essere nella tasca se il cappotto non viene mai rovesciato?». Le righe sotto «La ragione di Mara» sono vuote.",
+        "why": "Ho seguito le istruzioni sullo schermo e poi ho appoggiato il foglio sul vetro."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la pagina sinistra.",
+          "says": "The opening immediately names a concrete physical first step after presenting the page."
+        },
+        "sheetStandsAlone": {
+          "score": 3,
+          "quote": "Continua la cucitura con la matita.",
+          "says": "This important procedure appears only on the transient screen, although the paper retains a related answer box."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "Affianca i due fogli.",
+          "says": "The activity breaks the physical work into short, separate instructions rather than bundling it into one command."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Scrivi ciò che non torna.",
+          "says": "The central act produces a visible written trace that can be revisited."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 2,
+          "quote": "sul foglio: Una linea a matita nel riquadro; sotto «Ciò che non torna» è scritto «Come fa l’altra metà a essere nella tasca se il cappotto non viene mai rovesciato?». Le righe sotto «La ragione di Mara» sono vuote.",
+          "says": "The wording led to a written logistical question while the intended explanatory answer remained unwritten when play ended."
+        },
+        "canBeAbandoned": {
+          "score": 3,
+          "quote": "Un secondo foglio è arrivato.",
+          "says": "The sequence advances without requiring the first response to be correct, but it offers no explicit way to leave using the papers in hand."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Mara annotò: «Un cielo da tenere vicino».",
+          "says": "The hidden sky in a theatre coat is specific and strange, and it points toward a discovery rather than a generic exercise."
+        },
+        "notASchoolSheet": {
+          "score": 3,
+          "quote": "Il quaderno leggerà il segno.",
+          "says": "The poetic framing avoids praise or blame, but having a device read the mark introduces the feel of submitted schoolwork."
+        }
+      },
+      "worstLine": "L’altra metà era piegata nella tasca del cappotto.",
+      "whatToChangeInThePrompt": "Require every mystery to be checked for more obvious unintended readings, with the intended question and its answer recoverable from the persistent paper before collection.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 240.8,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "3664f19a-3ea8-4608-89e0-e5e7efb907ff",
+      "input_tokens": 5955,
+      "output_tokens": 6399,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 3067,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il cielo nella fodera\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: short\n\n[hand_over] Una metà è arrivata\n  display: Una pagina sporge dal vassoio.\n  display: Prendi la pagina sinistra.\n  display: Il cappotto è tagliato a metà.\n  foglio consegnato:\n    [notebook] Il cappotto del Teatro Orsa — sinistra\n    Pagina strappata dal quaderno di Mara, sarta del Teatro Orsa.\n    Il blu serve al cambio rapido, così annotò qualcuno.\n    Solo il lato sinistro del cappotto è rimasto qui.\n    — Parte che vedrà la platea (a_box)\n    — Uso attribuito al blu (a_line)\n\n[say] Ciò che vedrebbe la sala\n  display: Usa la matita sul foglio.\n  display: Cerchia la parte visibile.\n  display: Lascia una linea vicino al blu.\n\n[hand_over] L’altra metà\n  display: Un secondo foglio è arrivato.\n  display: Prendi la pagina destra.\n  display: Accostala al bordo strappato.\n  foglio consegnato:\n    [notebook] Il cappotto del Teatro Orsa — destra\n    L’altra metà era piegata nella tasca del cappotto.\n    Il cappotto resta chiuso in scena e non viene mai rovesciato.\n    Leone percorre il corridoio buio stringendo il risvolto.\n    Mara annotò: «Un cielo da tenere vicino».\n    — Linea tra le due metà (a_box)\n    — Ciò che non torna (some_lines)\n    — La ragione di Mara (some_lines)\n\n[say] La cucitura continua\n  display: Affianca i due fogli.\n  display: Continua la cucitura con la matita.\n  display: Scrivi ciò che non torna.\n\n[collect] La pagina sul vetro\n  display: Posa la pagina destra sul vetro.\n  display: Il quaderno leggerà il segno.\n  il foglio torna: marks\n    sul foglio: Una linea a matita nel riquadro; sotto «Ciò che non torna» è scritto «Come fa l’altra metà a essere nella tasca se il cappotto non viene mai rovesciato?». Le righe sotto «La ragione di Mara» sono vuote.\n    dice: Ho seguito le istruzioni sullo schermo e poi ho appoggiato il foglio sul vetro.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un retroscena silenzioso prende forma sul tavolo attraverso due pagine strappate. Un cappotto di scena sembra raccontare un espediente teatrale, finché le sue metà affiancate mostrano qualcosa di più riservato. Si disegna, si accostano indizi e si lascia una frase nel quaderno di una sarta.",
+    "script": "IL MONDO Siamo nel guardaroba del Teatro Orsa, dopo l’ultima prova. La luce entra da una finestra alta e rende azzurre le fodere scure. L’aria odora di polvere e sapone. Nessuno parla mai del corridoio senza lampade dietro il palco. LA VIA D’ENTRATA Dal vassoio della stampante sporge la pagina sinistra di un quaderno strappato. Mostra metà di un cappotto nero e un’annotazione sul suo interno blu. Qualcuno prende la pagina e la posa sul tavolo. LA DOMANDA Perché Mara cucì una fodera blu dentro il cappotto di Leone? La cucì per dargli un piccolo cielo privato, perché temeva il buio dietro le quinte. Per un po’ sembra una fodera destinata a un cambio rapido. L’ipotesi cede quando le due pagine affiancate mostrano che il cappotto resta chiuso e non viene mai rovesciato. Mara voleva sapere se il gesto sarebbe stato riconosciuto; saperlo trasforma un espediente di scena in un messaggio riservato. I PASSAGGI La pagina sinistra compare; chi la prende cerchia la parte che la platea potrebbe vedere. L’annotazione propone il cambio rapido; chi la legge segna dove dovrebbe apparire il blu. La pagina destra viene data dopo che un segno è comparso sulla prima; chi la prende cerca il bordo corrispondente. Le due metà vengono affiancate; chi segue la cucitura prolunga una linea da un foglio all’altro. Il disegno ricomposto mostra che il blu resta nascosto: questo è il passaggio che rovescia ciò che sembrava vero. La nota sul corridoio buio viene letta accanto alle parole «un cielo da tenere vicino»; qui arriva la risposta, che viene scritta sul quaderno. La pagina destra torna sul vetro; ciò che vi è stato aggiunto determina le ultime parole. CIÒ CHE RESTA NASCOSTO La pagina destra viene data dopo che sulla sinistra è stata cerchiata una parte del cappotto. La cucitura completa appare soltanto dopo che le due metà sono state messe fianco a fianco. L’inutilità del cambio rapido emerge dopo che una linea attraversa entrambi i fogli. La ragione di Mara viene data dopo che la frase sul cielo e quella sul corridoio sono state lette insieme. CIÒ CHE VIENE CREATO La pagina sinistra del quaderno di Mara dice che il blu serviva a un cambio rapido, chiede di indicare ciò che vedrebbe la platea e riceve un cerchio o una linea. La pagina destra dello stesso quaderno dice che il cappotto resta chiuso e ricorda il corridoio buio, chiede che cosa non torna e riceve la ragione attribuita a Mara. DOVE PUÒ CAMBIARE STRADA Se la pagina torna con segni, si tengono davanti le parole aggiunte e si chiude con la frase che esse suggeriscono. Se torna intatta, si lasciano le due metà accostate e si dice che il quaderno può restare così. Se l’interesse si ferma a metà, si appoggia la matita lungo la cucitura ricomposta e si chiude sul cappotto intero. CIÒ CHE LO ROVINEREBBE Aggiungere altri costumi con indizi concorrenti. Trasformare la fodera in un codice da decifrare. Spiegare il gesto di Mara prima di affiancare le pagine.",
+    "iteration": 2
+  },
+  {
+    "household": "con-dei-limiti",
+    "title": "La barca nascosta nel cappotto",
+    "experienceId": "aftn-fdb17408",
+    "themes": [
+      "Stoffe",
+      "Sorelle",
+      "Teatro",
+      "Segnali privati",
+      "Attesa"
+    ],
+    "minutes": 95,
+    "moments": 5,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "read-the-note",
+    "minutesPlayed": 18,
+    "sheets": [
+      {
+        "momentId": "wardrobe-file",
+        "sheet": "[dossier] Il rovescio del cappotto\nCartella del guardaroba del Teatro Orfeo.\nLidia cucì questi inserti nel rovescio del cappotto.\nIl custode li registrò come avanzi senza rapporto.\nNella tasca: «Dopo l’ultima scena, resta al tuo posto».\n— Ciò che sembra senza rapporto (some_lines)\n— Continuazione possibile (a_box)\n— Perché Lidia lo nascose (some_lines)"
+      },
+      {
+        "momentId": "rejected-sample",
+        "sheet": "[notebook] Il campione respinto\nCampione escluso dalla cartella del guardaroba.\nLe sorelle usavano una barca sui messaggi senza firma.\nIl custode lo separò perché il bordo pareva incompleto.\nFu trovato sotto la cucitura opposta.\n— Il punto in cui combaciano (a_line)",
+        "came": "marks",
+        "reading": "Un piccolo segno a penna sulla riga vuota in fondo al foglio.",
+        "why": "Ho segnato il punto indicato accostando i bordi dei due fogli, poi ho continuato perché le istruzioni erano chiare."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "display: Prendi il foglio del guardaroba.",
+          "says": "Questa riga indica subito un primo gesto fisico concreto con l’oggetto appena presentato."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "display: Accosta i bordi dei due fogli.",
+          "says": "L’istruzione indispensabile per usare insieme i fogli appare solo sullo schermo e non resta sulla carta."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "display: Segna il punto che coincide.",
+          "says": "La riga propone un solo gesto breve, anche se per compierlo bisogna contemporaneamente tenere allineati due fogli."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "sul foglio: Un piccolo segno a penna sulla riga vuota in fondo al foglio.",
+          "says": "Il passaggio produce una traccia fisica visibile e verificabile sul foglio."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 4,
+          "quote": "— Il punto in cui combaciano (a_line)",
+          "says": "C’è un punto concreto da trovare e registrare, benché il mistero narrativo più ampio non riceva una risposta conclusiva."
+        },
+        "canBeAbandoned": {
+          "score": 1,
+          "quote": "display: Posa il foglio annotato sul vetro.",
+          "says": "L’uscita richiede che il foglio sia già stato annotato correttamente, quindi non offre un modo incondizionato di fermarsi."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Le sorelle usavano una barca sui messaggi senza firma.",
+          "says": "Il dettaglio della barca segreta è specifico e insolito, e conduce alla scoperta materiale di una corrispondenza tra i fogli."
+        },
+        "notASchoolSheet": {
+          "score": 4,
+          "quote": "Fu trovato sotto la cucitura opposta.",
+          "says": "La voce alimenta una scoperta condivisa senza lodare, correggere o spiegare didatticamente il senso dell’attività."
+        }
+      },
+      "worstLine": "display: Posa il foglio annotato sul vetro.",
+      "whatToChangeInThePrompt": "Il prompt dovrebbe imporre che ogni istruzione necessaria resti stampata sui materiali persistenti e che ogni passaggio offra un’uscita immediata usando un oggetto già in mano, senza richiedere il completamento corretto.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 140.6,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "cb580969-f737-4faf-9f8a-a58ef14696ec",
+      "input_tokens": 6041,
+      "output_tokens": 3431,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 432,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La barca nascosta nel cappotto\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: short\n\n[hand_over] Dal cassetto\n  display: Un foglio sporge dal cassetto.\n  display: Prendi il foglio del guardaroba.\n  foglio consegnato:\n    [dossier] Il rovescio del cappotto\n    Cartella del guardaroba del Teatro Orfeo.\n    Lidia cucì questi inserti nel rovescio del cappotto.\n    Il custode li registrò come avanzi senza rapporto.\n    Nella tasca: «Dopo l’ultima scena, resta al tuo posto».\n    — Ciò che sembra senza rapporto (some_lines)\n    — Continuazione possibile (a_box)\n    — Perché Lidia lo nascose (some_lines)\n\n[hand_over] Il secondo bordo\n  display: Prendi il campione respinto.\n  display: Tienilo accanto al primo foglio.\n  foglio consegnato:\n    [notebook] Il campione respinto\n    Campione escluso dalla cartella del guardaroba.\n    Le sorelle usavano una barca sui messaggi senza firma.\n    Il custode lo separò perché il bordo pareva incompleto.\n    Fu trovato sotto la cucitura opposta.\n    — Il punto in cui combaciano (a_line)\n\n[say] Una figura sola\n  display: Accosta i bordi dei due fogli.\n  display: Segna il punto che coincide.\n\n[collect] La cartella ritorna\n  display: Posa il foglio annotato sul vetro.\n  display: Tieni l’altro foglio accanto.\n  il foglio torna: marks\n    sul foglio: Un piccolo segno a penna sulla riga vuota in fondo al foglio.\n    dice: Ho segnato il punto indicato accostando i bordi dei due fogli, poi ho continuato perché le istruzioni erano chiare.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un’indagine quieta dentro il guardaroba di un teatro ottocentesco. Due fogli apparentemente estranei diventano un unico oggetto quando vengono accostati. Matita, carta e una frase lasciata in una tasca portano da due reperti conservati separatamente al gesto privato di una sarta.",
+    "script": "IL MONDO È il guardaroba del Teatro Orfeo, nel 1896. La luce delle lampade rende azzurre le stoffe nere e l’aria odora di cipria e colla. Nel teatro nessuno nomina mai ciò che viene cucito dentro un costume. LA VIA D’INGRESSO Dal cassetto del tavolo sporge oggi una cartella del guardaroba. Qualcuno prende il foglio che porta il nome di Lidia e la descrizione di due inserti giudicati senza rapporto. LA DOMANDA Perché Lidia cucì due inserti diversi nel rovescio del cappotto? Voleva che sua sorella riconoscesse la loro barca e la aspettasse dopo lo spettacolo. Per un tratto sembra che Lidia abbia usato due avanzi casuali per finire il costume; questa risposta cede quando i bordi illustrati formano una sola barca e la nota nella tasca chiede di restare dopo l’ultima scena. Il custode del guardaroba voleva saperlo, perché la sua descrizione aveva separato ciò che Lidia aveva unito. I PASSAGGI — Una cartella sporge dal cassetto e fa prendere il foglio del guardaroba. — La descrizione degli avanzi fa segnare ciò che sembra non avere rapporto. — Il campione respinto compare e fa tenere i due fogli sullo stesso tavolo. — I bordi vengono accostati e fanno completare sulla carta il segno interrotto. — SVOLTA: la barca intera rende falsa l’idea degli avanzi casuali e fa correggere la descrizione. — La nota della tasca viene messa accanto al segno e fa scrivere chi doveva riconoscerlo. — Il foglio annotato torna sul vetro e fa scegliere alla storia le parole successive. — RISPOSTA: il segno delle sorelle e l’attesa dopo l’ultima scena fanno arrivare l’intenzione di Lidia. CIÒ CHE RESTA NASCOSTO — La continuazione del disegno viene data dopo che il campione respinto è stato preso. — La barca intera viene data dopo che i bordi illustrati sono stati accostati. — Il valore privato della barca viene dato dopo che la nota delle sorelle è stata messa accanto al disegno. — L’intenzione di Lidia viene data dopo che una frase è stata scritta oppure il foglio è tornato vuoto. CIÒ CHE VIENE CREATO — La cartella del guardaroba appartiene all’archivio del Teatro Orfeo, registra i due inserti come avanzi senza rapporto, chiede che la vecchia descrizione sia riesaminata e riceve segni, disegno e una frase. — Il campione respinto appartiene alla cucitura opposta del cappotto, racconta il segno usato dalle sorelle, chiede di essere accostato al primo bordo e riceve il punto in cui le due parti coincidono. DOVE PUÒ CAMBIARE Se la cartella torna piena, il guardaroba riprende le parole scritte e costruisce la chiusura con il foglio ancora visibile. Se torna intatta, la barca resta sui due fogli e il pomeriggio finisce senza domandare altro. Se l’interesse si ferma a metà, si accostano soltanto i bordi, si lascia la barca sul tavolo e si chiude sulla frase trovata nella tasca. CIÒ CHE LO ROVINEREBBE — Aggiungere altri costumi, altri messaggi o altri sospetti. — Trasformare la barca in un codice da decifrare. — Spiegare l’intenzione di Lidia prima che i due bordi siano stati accostati.",
+    "iteration": 2
+  },
+  {
+    "household": "poco-e-vicino",
+    "title": "La coppa sotto un altro nome",
+    "experienceId": "aftn-84e27c65",
+    "themes": [
+      "Ceramica",
+      "Firme",
+      "Botteghe",
+      "Segretezza",
+      "Attribuzione"
+    ],
+    "minutes": 39,
+    "moments": 4,
+    "mood": "una giornata buona, c'è tempo e curiosità",
+    "weight": "extended",
+    "ending": "stopped",
+    "reached": "read-the-marks",
+    "minutesPlayed": 34,
+    "sheets": [
+      {
+        "momentId": "sheet-arrives",
+        "sheet": "[dossier] La coppa sotto un altro nome\nFornace Bassa, registro del 1978.\nEsposta con la firma del maestro.\nMargine di Nora: «L’ho fatta io. Lascia la sua firma.»\nCapovolto: «Se scopre il forno, mi manda via.»\n— Segno del furto apparente (a_line)\n— Frase che lo smentisce (a_line)\n— Perché Nora scelse quella firma (some_lines)\n— Il nome che deve restare (a_line)\n— Un dettaglio della coppa (a_box)",
+        "came": "marks",
+        "reading": "Un ovale a matita intorno alla frase tra virgolette di Nora e una linea che collega le due note stampate; le righe e il riquadro restano vuoti.",
+        "why": "Ho posato la matita perché sul foglio non c’era il nome del maestro né una coppa da segnare, quindi non ho voluto inventarli."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "display: Prendi il foglio dal vassoio.",
+          "says": "This gives an immediate physical first step within an already established situation."
+        },
+        "sheetStandsAlone": {
+          "score": 3,
+          "quote": "Fornace Bassa, registro del 1978.",
+          "says": "The paper retains the central setting and evidence, although some later requested details are absent from it."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "display: Unisci le note con la matita.",
+          "says": "This is one of several distinct operations delivered rapidly in the same beat rather than being given room of its own."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "display: Ruota il foglio sul tavolo.",
+          "says": "Most steps produce visible marks or movements, but some requested marks cannot be made from the supplied material."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— Un dettaglio della coppa (a_box)",
+          "says": "This asks for a factual detail even though no cup or description of one is provided anywhere."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "display: Posa la matita accanto al vetro.",
+          "says": "The exit uses the pencil already in the person's hands and permits an orderly stop without requiring completion."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Capovolto: «Se scopre il forno, mi manda via.»",
+          "says": "The hidden authorship and threat of expulsion are specific and compelling, but the afternoon ends before they become a substantial new finding or object."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "display: Cerchia la frase di Nora.",
+          "says": "The repeated imperative to circle, connect, and fill blanks gives the encounter the voice of a conventional worksheet."
+        }
+      },
+      "worstLine": "— Un dettaglio della coppa (a_box)",
+      "whatToChangeInThePrompt": "Require every requested name, image, object, and factual answer to be visibly present on the persistent handout before the activity asks the player to identify or mark it.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 169.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "86cf1f6f-c727-4d4d-bbcb-c237c7966e17",
+      "input_tokens": 5323,
+      "output_tokens": 2540,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 181,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La coppa sotto un altro nome\nCOME VA LA GIORNATA: una giornata buona, c'è tempo e curiosità\nPESO SCELTO: extended\n\n[hand_over] Il registro è uscito\n  display: Un foglio è appena uscito.\n  display: Porta il nome del maestro.\n  display: Prendi il foglio dal vassoio.\n  display: Segna un bordo della coppa.\n  foglio consegnato:\n    [dossier] La coppa sotto un altro nome\n    Fornace Bassa, registro del 1978.\n    Esposta con la firma del maestro.\n    Margine di Nora: «L’ho fatta io. Lascia la sua firma.»\n    Capovolto: «Se scopre il forno, mi manda via.»\n    — Segno del furto apparente (a_line)\n    — Frase che lo smentisce (a_line)\n    — Perché Nora scelse quella firma (some_lines)\n    — Il nome che deve restare (a_line)\n    — Un dettaglio della coppa (a_box)\n\n[say] La frase capovolta\n  display: Ruota il foglio sul tavolo.\n  display: Cerchia la frase di Nora.\n  display: Unisci le note con la matita.\n  display: Aggiungi il nome che deve restare.\n\n[collect] Il vetro legge la pagina\n  display: Posa il foglio sul vetro.\n  display: Lascia visibili tutti i segni.\n  display: Aggiungi un ultimo nome.\n  display: Tieni la matita sul tavolo.\n  il foglio torna: marks\n    sul foglio: Un ovale a matita intorno alla frase tra virgolette di Nora e una linea che collega le due note stampate; le righe e il riquadro restano vuoti.\n    dice: Ho posato la matita perché sul foglio non c’era il nome del maestro né una coppa da segnare, quindi non ho voluto inventarli.\n  ha smesso qui\n  via d'uscita: Il nome rimasto\n    display: Posa la matita accanto al vetro.\n    display: La pagina conserva quel nome.\n    display: Il pomeriggio è finito.",
+    "overview": "Un pomeriggio quieto dentro una vecchia bottega di ceramica, con la luce bassa del forno e una sola pagina rimasta fuori posto. Si osservano una coppa e poche annotazioni contraddittorie, ruotando il foglio e lasciando segni a matita. L’atmosfera è raccolta, concreta e leggermente segreta; la conclusione resta sulla pagina come una nuova attribuzione.",
+    "script": "IL MONDO La Fornace Bassa chiuse nel 1978. La luce entrava color rame e l’aria odorava di polvere bagnata. Le coppe imperfette restavano esposte. Nessuno nominava mai il forno usato di notte. LA VIA D’ENTRATA Oggi una pagina del registro è uscita dal vassoio della stampante. Mostra una coppa scura attribuita al maestro. Sul margine compare una nota di Nora. Qualcuno prende il foglio dal vassoio e trova una seconda frase stampata capovolta. LA DOMANDA Perché Nora lasciò che la coppa portasse la firma del maestro? La risposta è questa: Nora nascose di aver usato il forno senza permesso perché temeva che il maestro la mandasse via. Per un poco sembra che il maestro si sia preso il merito. Questa risposta si rompe davanti alla frase di Nora: «Lascia la sua firma». Era Nora a volerlo sapere con certezza, perché voleva decidere quale nome dovesse restare accanto alla coppa. I PASSAGGI Arriva il registro sbagliato, e la firma viene segnata con la matita. La coppa viene osservata, e un dettaglio del bordo viene aggiunto nel riquadro. La nota sembra accusare il maestro, e quella lettura viene scritta sulla prima riga. Il foglio viene ruotato sul tavolo, e questo è il passaggio che rovescia la lettura. Le due frasi di Nora vengono affiancate con una linea curva. Il timore di essere mandata via diventa visibile, e questo è il passaggio in cui arriva la risposta. Un nuovo nome viene scritto accanto alla coppa, e la pagina diventa l’attribuzione che mancava. CIÒ CHE RESTA NASCOSTO La frase capovolta viene data soltanto dopo che il foglio è stato ruotato. Il legame tra le note viene dato soltanto dopo che sono state unite da una linea. Il motivo di Nora viene dato soltanto dopo che la firma apparente è stata messa accanto al timore scritto nel margine. La nuova attribuzione viene data soltanto dopo che qualcuno ha scritto il motivo nello spazio rimasto. CIÒ CHE VIENE FATTO Il dossier della coppa è la pagina superstite del registro. Dice che la coppa fu esposta con la firma del maestro, conserva le due note di Nora e chiede di lasciare il segno dell’errore apparente, la frase che lo smentisce e il motivo della firma. Chi lo riceve lo ruota, lo annota e gli assegna un nome da conservare. DOVE PUÒ CAMBIARE Se il foglio torna pieno, le parole già presenti diventano il testo dell’ultima attribuzione. Il display riprende una frase scritta, nomina la coppa con quel segno e dichiara finito il pomeriggio. Se il foglio torna intatto, viene restituito come pagina ancora indecisa. La coppa resta senza autore e il pomeriggio è finito. Se l’interesse si ferma a metà, si prende la frase già cerchiata. Quella frase diventa l’unica didascalia della coppa e il pomeriggio è finito. COSA LO ROVINEREBBE Aggiungere altri registri o altri sospetti. Trasformare la firma in un codice da decifrare. Spiegare il motivo prima di ruotare il foglio.",
+    "iteration": 3
+  },
+  {
+    "household": "due-fogli-e-una-svolta",
+    "title": "Il sigillo spezzato a forno freddo",
+    "experienceId": "aftn-97db3fec",
+    "themes": [
+      "autorialità",
+      "reputazione",
+      "tracce materiali",
+      "segreti di bottega"
+    ],
+    "minutes": 67,
+    "moments": 5,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "standard",
+    "ending": "stopped",
+    "reached": "vetro-del-registro",
+    "minutesPlayed": 40,
+    "sheets": [
+      {
+        "momentId": "prima-meta",
+        "sheet": "[dossier] La metà rimasta nel forno\nDal registro di Ada, custode del forno.\nIl sigillo azzurro garantiva ogni pane.\nAda cedette il forno, non il sigillo.\nQuesta metà apparve nel forno chiuso."
+      },
+      {
+        "momentId": "seconda-meta",
+        "sheet": "[dossier] La metà trovata sul banco\nDal banco chiuso durante la stessa notte.\nIl forno era freddo da molte ore.\nQuesta metà portava farina ancora fresca.\nPani col marchio comparvero dopo la chiusura.\n— Versione lasciata nel registro (some_lines)",
+        "came": "blank",
+        "reading": "Solo il testo stampato; nessuna parola, linea o disegno aggiunto.",
+        "why": "L'ho lasciato stare perché il foglio non diceva cosa farne."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la prima scheda.",
+          "says": "This gives an immediate physical first step using the object already introduced."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "L'ho lasciato stare perché il foglio non diceva cosa farne.",
+          "says": "This shows that the enduring paper did not carry the instruction needed after the screen had passed."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "Prendi la matita.",
+          "says": "The actions are generally separated into short, single-purpose instructions, though several arrive within each beat."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Guarda il bordo interrotto.",
+          "says": "This asks for an unobservable act that leaves no visible evidence, although later steps do request physical marks and movements."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 2,
+          "quote": "Lascia una frase sulla seconda.",
+          "says": "No question is stated and the requested phrase is not tied to any written answer or final rung of help."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Riprendi la seconda scheda.",
+          "says": "The way out asks only for a sheet that is already present and imposes no requirement to solve or complete anything first."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Questa metà portava farina ancora fresca.",
+          "says": "The cold oven, broken seal, and fresh flour make a specific mystery, but the afternoon never turns it into a clear discovery or completed artifact."
+        },
+        "notASchoolSheet": {
+          "score": 5,
+          "quote": "Le due schede ora si guardano.",
+          "says": "The voice is curious and companionable rather than evaluative, instructional in a school-like way, or concerned with performance."
+        }
+      },
+      "worstLine": "Lascia una frase sulla seconda.",
+      "whatToChangeInThePrompt": "Require every requested inscription to name exactly what the person is trying to answer or express, and require that instruction to be printed on the sheet that will remain.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 144.7,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "c935b2c7-3f9e-4764-b5cf-4971a9fa2c41",
+      "input_tokens": 6102,
+      "output_tokens": 8092,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5121,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il sigillo spezzato a forno freddo\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: standard\n\n[hand_over] Qualcosa è già uscito\n  display: Un foglio sporge dal vassoio.\n  display: Prendi la prima scheda.\n  display: Guarda il bordo interrotto.\n  display: Posala sul tavolo.\n  foglio consegnato:\n    [dossier] La metà rimasta nel forno\n    Dal registro di Ada, custode del forno.\n    Il sigillo azzurro garantiva ogni pane.\n    Ada cedette il forno, non il sigillo.\n    Questa metà apparve nel forno chiuso.\n\n[hand_over] Il bordo continua\n  display: Il bordo non finisce qui.\n  display: Prendi la seconda scheda.\n  display: Accosta i due bordi.\n  display: Lascia visibili entrambe le note.\n  foglio consegnato:\n    [dossier] La metà trovata sul banco\n    Dal banco chiuso durante la stessa notte.\n    Il forno era freddo da molte ore.\n    Questa metà portava farina ancora fresca.\n    Pani col marchio comparvero dopo la chiusura.\n    — Versione lasciata nel registro (some_lines)\n\n[say] La versione che resta\n  display: Le due schede ora si guardano.\n  display: Prendi la matita.\n  display: Segui la frattura con una linea.\n  display: Lascia una frase sulla seconda.\n\n[collect] Il vetro trattiene\n  display: Il registro conserva questa traccia.\n  display: Posa la seconda scheda sul vetro.\n  display: Lascia la prima sul tavolo.\n  display: Poi riprendi la seconda scheda.\n  il foglio torna: blank\n    sul foglio: Solo il testo stampato; nessuna parola, linea o disegno aggiunto.\n    dice: L'ho lasciato stare perché il foglio non diceva cosa farne.\n  ha smesso qui\n  via d'uscita: La traccia conservata\n    display: Riprendi la seconda scheda.\n    display: Accostala alla prima.\n    display: Il registro chiude il pomeriggio.",
+    "overview": "Un pomeriggio quieto da tavolo, con l’aria di una piccola indagine di bottega. Due carte provenienti da una cucina impossibile acquistano senso solo quando vengono accostate. Si lavora con una matita, poche tracce e il vetro dello scanner. Il centro non è trovare una soluzione esatta, ma decidere quale storia può restare accanto a un oggetto rotto.",
+    "script": "IL MONDO Il Forno delle Sette Nicchie resta azzurro anche a mezzogiorno. La farina odora di scorza d’arancia e ogni oggetto spezzato conserva l’ultima impronta ricevuta. Nessuno nomina la settima nicchia, benché sia sempre calda. LA VIA D’ENTRATA Dal vassoio della stampante sporge la scheda di una metà del sigillo azzurro. Apparteneva ad Ada e garantiva il pane uscito dal suo forno. Qualcuno prende la scheda, la posa sul tavolo e trova sul retro soltanto carta bianca. LA DOMANDA Perché Ada spezzò volontariamente il proprio sigillo? Lo fece perché temeva che altri vendessero pane usando il suo marchio. Per un tratto sembra vero che il calore abbia rotto il sigillo per caso; la versione cede quando le due metà mostrano che il forno era già freddo mentre il marchio continuava a comparire sul pane. Ada voleva saperlo per decidere quale versione lasciare nel registro della bottega. I BATTITI La prima metà arriva dal forno chiuso e fa posare la scheda sul tavolo. Il retro bianco fa girare la scheda e lascia scoperta la forma irregolare. La seconda metà arriva dal banco e fa accostare i due bordi. Le note separate diventano una sola sequenza e fanno seguire la traccia con la matita. SVOLTA — Il forno risulta già freddo e la versione del calore smette di reggere. Una frase viene lasciata sulla seconda scheda e dà ad Ada una versione da conservare. RISPOSTA — Il vetro riceve la scheda e rivela che Ada spezzò il sigillo per fermarne l’uso da parte di altri. Le due metà restano divise e il pomeriggio finisce sull’oggetto. CIÒ CHE RESTA NASCOSTO La seconda metà viene data soltanto dopo che la prima scheda è stata girata. La nota sul forno freddo si considera soltanto dopo che i due bordi sono stati accostati. Il motivo di Ada viene dato dopo che una versione è stata lasciata sulla seconda scheda e la scheda è passata sul vetro. CIÒ CHE VIENE FATTO La prima metà del sigillo azzurro è la scheda rimasta nel forno: dice che Ada aveva ceduto la bottega ma non il sigillo, chiede di attendere l’altra metà e va girata e accostata. La seconda metà del sigillo azzurro è la scheda trovata sul banco: dice che il forno era freddo mentre pani marchiati continuavano a comparire, chiede una versione per il registro e riceve una frase o un segno. DOVE PUÒ ANDARE DIVERSAMENTE Se la seconda scheda torna piena, resta sul vetro mentre la versione scritta decide le parole con cui Ada chiude il registro. Se torna intatta, la prima scheda resta sul tavolo e il sigillo rimane senza versione; il pomeriggio finisce lì. Se l’interesse si ferma a metà, si accostano soltanto i bordi, si traccia una linea fra le metà e si chiude sul sigillo diviso. CIÒ CHE LO ROVINEREBBE Aggiungere altri registri, testimoni o sospetti. Trasformare la frase lasciata in una risposta da correggere. Spiegare il motivo di Ada prima che le metà siano accostate.",
+    "iteration": 3
+  },
+  {
+    "household": "lontano-e-lungo",
+    "title": "L’isola che cambiava posto",
+    "experienceId": "aftn-f26e2419",
+    "themes": [
+      "Cartografia",
+      "Balene",
+      "Protezione",
+      "Rotte marine",
+      "Tracce"
+    ],
+    "minutes": 82,
+    "moments": 6,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "standard",
+    "ending": "way_out",
+    "reached": "read-the-mark",
+    "minutesPlayed": 61,
+    "sheets": [
+      {
+        "momentId": "moving-chart",
+        "sheet": "[map] Carta delle Acque Basse\nNerea lasciò questa carta ai piloti del porto.\nL’Isola Errante compare in tre luoghi diversi.\nNessuna delle tre coste coincide perfettamente.\n— Bordo comune ai tre avvistamenti (a_box)"
+      },
+      {
+        "momentId": "seabed-file",
+        "sheet": "[dossier] Dossier del fondale\nSotto le tre posizioni, l’acqua risultò profonda.\nNon furono trovati roccia, sabbia o terra.\nIn superficie comparvero tre spruzzi bassi.\n— Traccia incompatibile con uno scoglio (a_line)"
+      },
+      {
+        "momentId": "wide-route",
+        "sheet": "[notebook] Quaderno della rotta larga\nNerea osservò questo tratto dalla nave più lenta.\nDue piccoli nuotavano accanto alle madri.\nLe navi mercantili evitavano l’Isola Errante.\n— La ragione della falsa isola (some_lines)\n— Il tratto da lasciare libero (a_box)",
+        "came": "marks",
+        "reading": "Un contorno a matita attorno alla frase «Due piccoli nuotavano accanto alle madri»; le righe e il riquadro restano vuoti.",
+        "why": "Ho cerchiato l’unico punto che riprendeva chiaramente i piccoli senza inventare cosa scrivere negli spazi."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la carta dal vassoio.",
+          "says": "This names an immediate physical first step after the arriving map establishes the situation."
+        },
+        "sheetStandsAlone": {
+          "score": 4,
+          "quote": "Sotto le tre posizioni, l’acqua risultò profonda.",
+          "says": "The essential clue remains printed on the dossier and does not depend on recalling a vanished screen."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "Segui fondale, spruzzi e piccoli.",
+          "says": "This asks the player to integrate three clues across three sheets at once."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Osserva le tre posizioni.",
+          "says": "Several preparatory instructions ask for invisible noticing or comparison, although each section eventually offers a visible mark."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 2,
+          "quote": "— La ragione della falsa isola (some_lines)",
+          "says": "This clearly requests an answer, but the last help neither states that answer nor ensures that it gets written down."
+        },
+        "canBeAbandoned": {
+          "score": 4,
+          "quote": "Lascia una frase o un contorno.",
+          "says": "The choice of either words or a contour permits a minimal mark without requiring the mystery to be solved correctly."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "L’Isola Errante compare in tre luoghi diversi.",
+          "says": "The moving island is a specific impossible premise that supports a genuine discovery, though the played ending stops short of recording it."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "— La ragione della falsa isola (some_lines)",
+          "says": "A labeled answer field with prescribed lines makes the atmospheric mystery read like a worksheet to be completed."
+        }
+      },
+      "worstLine": "Lascia una frase o un contorno.",
+      "whatToChangeInThePrompt": "Require every mystery to put one concrete question on the persistent paper and make the final help explicitly contain its answer while still allowing any visible mark to count as an exit.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 176.8,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "847cf9e4-6fab-4cc6-bd1b-3e18ab753452",
+      "input_tokens": 6434,
+      "output_tokens": 3473,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 158,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: L’isola che cambiava posto\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: standard\n\n[hand_over] Una carta dal mare\n  display: Una carta è appena arrivata.\n  display: Prendi la carta dal vassoio.\n  display: Osserva le tre posizioni.\n  display: Traccia un bordo possibile.\n  foglio consegnato:\n    [map] Carta delle Acque Basse\n    Nerea lasciò questa carta ai piloti del porto.\n    L’Isola Errante compare in tre luoghi diversi.\n    Nessuna delle tre coste coincide perfettamente.\n    — Bordo comune ai tre avvistamenti (a_box)\n\n[hand_over] Il fondale non torna\n  display: È arrivato il dossier.\n  display: Prendi il dossier dal vassoio.\n  display: Confrontalo con la carta.\n  display: Segna ciò che non coincide.\n  foglio consegnato:\n    [dossier] Dossier del fondale\n    Sotto le tre posizioni, l’acqua risultò profonda.\n    Non furono trovati roccia, sabbia o terra.\n    In superficie comparvero tre spruzzi bassi.\n    — Traccia incompatibile con uno scoglio (a_line)\n\n[hand_over] La terza testimonianza\n  display: È arrivato il quaderno.\n  display: Prendi il quaderno dal vassoio.\n  display: Accosta i tre fogli.\n  display: Lascia un segno sulla pagina.\n  foglio consegnato:\n    [notebook] Quaderno della rotta larga\n    Nerea osservò questo tratto dalla nave più lenta.\n    Due piccoli nuotavano accanto alle madri.\n    Le navi mercantili evitavano l’Isola Errante.\n    — La ragione della falsa isola (some_lines)\n    — Il tratto da lasciare libero (a_box)\n\n[say] Tre fogli sul tavolo\n  display: Accosta i tre fogli.\n  display: Prendi la matita.\n  display: Segui fondale, spruzzi e piccoli.\n  display: Lascia una frase o un contorno.\n\n[collect] Il vetro legge\n  display: Prendi il quaderno.\n  display: Posalo sul vetro.\n  display: Tieni gli altri fogli vicini.\n  display: Lascia leggere il segno.\n  il foglio torna: marks\n    sul foglio: Un contorno a matita attorno alla frase «Due piccoli nuotavano accanto alle madri»; le righe e il riquadro restano vuoti.\n    dice: Ho cerchiato l’unico punto che riprendeva chiaramente i piccoli senza inventare cosa scrivere negli spazi.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un’indagine marina calma e concreta, distesa su tre fogli che sembrano contraddirsi. Il tavolo diventa il banco di una cartografa del Settecento: coste immaginarie, tracce di navigazione e balene viste da lontano. Si osserva, si accostano le carte e si lascia un segno, senza fretta e senza dover trovare parole precise.",
+    "script": "THE WORLD Il Porto delle Acque Basse esiste nel tardo Settecento, sotto una luce verde riflessa dal mare. Le stanze odorano di scorza d’arancia e catrame. Sulle carte nautiche compare un’isola che cambia posto, ma nessuno al porto la nomina mai. THE WAY IN Una carta appena uscita dalla stampante porta una piega disegnata e il nome di Nerea. Si trova nel vassoio, come una pagina rimasta troppo a lungo in un cassetto di bordo. Qualcuno prende la carta e trova tre possibili posizioni per la stessa isola. THE QUESTION Perché Nerea disegnò un’isola che cambiava posto? La risposta è che voleva tenere le navi mercantili lontane dal tratto di mare dove le balene allevavano i piccoli. Per un tratto sembra che volesse nascondere uno scoglio pericoloso. Questa spiegazione si rompe quando il fondale risulta libero, gli spruzzi compaiono in superficie e due piccoli viaggiano accanto alle madri. Un pilota del porto voleva saperlo, perché la falsa isola continuava a deviare le rotte. THE BEATS La carta arriva dal vassoio, e la persona segue con la matita il bordo delle tre posizioni. Il dossier mostra un fondale libero e alcuni spruzzi bassi, e la persona accosta il foglio alla carta. Le due pagine sembrano descrivere uno scoglio sommerso, e la persona segna ciò che non coincide. Questo è il punto che gira la cosa: l’acqua è profonda dove dovrebbe esserci roccia. Il quaderno mostra due piccoli accanto alle madri, e la persona dispone tutti e tre i fogli sul tavolo. Qui arriva la risposta: le tre posizioni circondano un tratto frequentato dalle balene con i piccoli. La persona lascia sul quaderno una frase, un contorno o entrambi, e posa il foglio sul vetro. Se il foglio resta intatto, le tre carte rimangono semplicemente sul tavolo e il pomeriggio finisce lì. WHAT IS HELD BACK Il dossier viene dato dopo che un bordo possibile è stato tracciato sulla carta. Il quaderno viene dato dopo che la carta e il dossier sono stati posati fianco a fianco. La frase completa di Nerea viene data dopo che il quaderno ha ricevuto un segno oppure quando l’ultimo aiuto la consegna. WHAT IS MADE La Carta delle Acque Basse è la carta nautica di Nerea; dice che l’isola fu segnata in tre luoghi; chiede un bordo comune; una persona lo traccia liberamente. Il Dossier del fondale è la scheda conservata dal porto; dice che sotto le tre posizioni c’è acqua profonda; chiede quale traccia contraddice uno scoglio; una persona la indica con una linea. Il Quaderno della rotta larga è una pagina di bordo; dice che due piccoli nuotavano accanto alle madri; chiede la ragione della falsa isola; una persona la scrive o la disegna. WHERE IT CAN GO DIFFERENTLY Se il quaderno torna con segni, resta aperto sul tavolo e la continuazione parte da quelle parole o da quel contorno. Se il quaderno torna intatto, lo schermo nomina i tre fogli e chiude l’indagine senza chiedere altro. Se l’interesse si ferma a metà, si posa la carta sopra gli altri fogli e si legge la frase finale con la carta ancora in mano. WHAT WOULD SPOIL IT Aggiungere altre navi, registri o nomi al porto. Trasformare le tre tracce in risposte da scegliere. Spiegare le balene prima che i tre fogli siano accostati.",
+    "iteration": 3
+  },
+  {
+    "household": "un-mese-pesante",
+    "refused": {
+      "by": "format",
+      "says": "this way out is about 'la matita' and never says so; an ending that names nothing in the person's hands is the goodbye that is felt as a cut"
+    },
+    "iteration": 3
+  },
+  {
+    "household": "niente-di-scritto",
+    "title": "Le due metà di Mare chiusa",
+    "experienceId": "aftn-43a5f535",
+    "themes": [
+      "Attribuzione",
+      "Reputazione",
+      "Anonimato",
+      "Musei",
+      "Sguardo pubblico"
+    ],
+    "minutes": 78,
+    "moments": 6,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "extended",
+    "ending": "stopped",
+    "reached": "return-card",
+    "minutesPlayed": 76,
+    "sheets": [
+      {
+        "momentId": "first-card",
+        "sheet": "[dossier] Mare chiusa: metà attribuita\nScheda interna del Museo delle Copie.\nQuesta metà è registrata a nome di Iva Serin.\nIl vecchio cartellino indicava una possibile copia.\nIl bordo non fu confrontato con l’altra metà.\n— Ciò che sembra vero (some_lines)\n— Continuazione del profilo (a_box)"
+      },
+      {
+        "momentId": "second-card",
+        "sheet": "[dossier] Mare chiusa: metà anonima\nScheda interna del Museo delle Copie.\nQuesta metà fu registrata come opera anonima.\nLe attribuzioni diverse erano condizione del prestito.\nLa condizione venne consegnata da Iva Serin.\n— Ciò che incrina il sospetto (some_lines)\n— Ciò che Iva voleva verificare (some_lines)\n— Frase da lasciare al museo (a_line)",
+        "came": "blank",
+        "reading": "Nessun segno aggiunto sulle righe o altrove; resta soltanto il testo stampato.",
+        "why": "L'ho lasciata lì perché non diceva cosa scrivere e non avevo voglia di provare a indovinare."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 4,
+          "quote": "Tieni la matita sul tavolo.",
+          "says": "This gives an immediate physical first step after presenting the protruding card."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "— Continuazione del profilo (a_box)",
+          "says": "The sheet provides only a label, while the vanished screen contains the necessary instruction to extend a curve."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "— Ciò che Iva voleva verificare (some_lines)",
+          "says": "This is one of several abstract writing demands added to comparing, reversing, and circling the cards."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Osserva la metà della scultura.",
+          "says": "Several steps consist only of looking or rereading, although other steps do ask for visible drawing, writing, circling, or moving."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— Ciò che Iva voleva verificare (some_lines)",
+          "says": "The central question is handed to the player without a definite answer or a final written rung of help."
+        },
+        "canBeAbandoned": {
+          "score": 4,
+          "quote": "Tieni la seconda scheda in mano.",
+          "says": "The way out reaches for a sheet that is actually present and does not require the task to be completed correctly."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Il museo non registra originali.",
+          "says": "The premise is strange and specific, but the afternoon ended without anything being made or decisively found out."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Scrivi ciò che sembra vero.",
+          "says": "The unexplained imperative sounds like a worksheet command rather than the voice of somebody sharing an interest."
+        }
+      },
+      "worstLine": "Scrivi ciò che sembra vero.",
+      "whatToChangeInThePrompt": "Require every writing request to name its subject and usable evidence on the persistent sheet, and require the ending to acknowledge blank or partial work rather than assuming completion.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 182.1,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "c90a4440-eefb-41b8-8e30-c998e03894c1",
+      "input_tokens": 5924,
+      "output_tokens": 4910,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 1648,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Le due metà di Mare chiusa\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: extended\n\n[say] Qualcosa nel vassoio\n  display: Una scheda sporge dal vassoio.\n  display: Il museo non registra originali.\n  display: Il bordo disegnato finisce netto.\n  display: Tieni la matita sul tavolo.\n\n[hand_over] La metà con un nome\n  display: Prendi la prima scheda.\n  display: Osserva la metà della scultura.\n  display: Prolunga una curva nel riquadro.\n  display: Scrivi ciò che sembra vero.\n  foglio consegnato:\n    [dossier] Mare chiusa: metà attribuita\n    Scheda interna del Museo delle Copie.\n    Questa metà è registrata a nome di Iva Serin.\n    Il vecchio cartellino indicava una possibile copia.\n    Il bordo non fu confrontato con l’altra metà.\n    — Ciò che sembra vero (some_lines)\n    — Continuazione del profilo (a_box)\n\n[hand_over] La metà senza nome\n  display: Prendi la seconda scheda.\n  display: Accosta le due schede.\n  display: Prova anche l’ordine opposto.\n  display: Cerchia il bordo che coincide.\n  foglio consegnato:\n    [dossier] Mare chiusa: metà anonima\n    Scheda interna del Museo delle Copie.\n    Questa metà fu registrata come opera anonima.\n    Le attribuzioni diverse erano condizione del prestito.\n    La condizione venne consegnata da Iva Serin.\n    — Ciò che incrina il sospetto (some_lines)\n    — Ciò che Iva voleva verificare (some_lines)\n    — Frase da lasciare al museo (a_line)\n\n[collect] Il vetro del deposito\n  display: Prendi la seconda scheda.\n  display: Rileggi la frase accanto alle metà.\n  display: Aggiungi una linea, se serve.\n  display: Mettila sul vetro dello scanner.\n  il foglio torna: blank\n    sul foglio: Nessun segno aggiunto sulle righe o altrove; resta soltanto il testo stampato.\n    dice: L'ho lasciata lì perché non diceva cosa scrivere e non avevo voglia di provare a indovinare.\n  ha smesso qui\n  via d'uscita: Il cartellino definitivo\n    display: Tieni la seconda scheda in mano.\n    display: La frase scritta resta al museo.\n    display: Il pomeriggio è finito.",
+    "overview": "Un quieto mistero d’attribuzione, tra carte da museo e una scultura che esiste soltanto sulla pagina. Le due schede chiedono di essere accostate, annotate e guardate come un unico oggetto. L’atmosfera è sospesa e lievemente irreale: più vicina a un deposito silenzioso che a un’indagine, con spazio per fermarsi appena la storia ha preso forma.",
+    "script": "THE WORLD Il Museo delle Copie conserva opere che cambiano autore quando vengono spostate. Nel deposito la luce ha il colore del latte e l’aria odora di scorza di limone. Nessuno nomina mai gli originali. THE WAY IN Nel vassoio della stampante è comparso l’angolo di una scheda piegata. Porta il titolo Mare chiusa e il nome di Iva Serin. Qualcuno prende la prima scheda e la posa sul tavolo. THE QUESTION Perché Iva volle che metà di Mare chiusa fosse esposta senza il suo nome? La risposta è che voleva vedere se i visitatori sceglievano l’opera oppure la fama legata al suo nome. Per un tratto sembra invece che il museo sospettasse una copia; questa risposta si rompe quando le due metà vengono accostate e la condizione del prestito risulta scritta dalla stessa Iva. Il museo voleva saperlo, perché deve lasciare una sola attribuzione accanto all’opera riunita. THE BEATS Una scheda emerge dal vassoio e porta a segnare ciò che sembra sospetto. La metà disegnata finisce su un bordo netto e porta a prolungarne il profilo con la matita. Una seconda scheda mostra il profilo opposto e porta ad accostare le due pagine. I bordi coincidono: questo è il beat che gira la storia e porta a cancellare o contraddire l’ipotesi della copia. La condizione del prestito attribuisce la scelta a Iva e porta a scrivere che cosa volesse verificare. La seconda scheda torna sul vetro e rende visibili insieme il segno e la frase. La risposta arriva quando le due attribuzioni vengono lette come un esperimento di Iva, non come un errore del museo. Una frase viene lasciata accanto all’opera riunita e chiude il pomeriggio sull’oggetto. WHAT IS HELD BACK Il profilo completo viene dato dopo che le due schede sono state accostate. L’inconsistenza dell’ipotesi della copia viene data dopo che i bordi sono stati confrontati. La condizione posta da Iva viene data dopo che la seconda scheda è stata girata verso la prima. Il motivo di Iva viene dato dopo che una frase è stata scritta e la scheda è tornata sul vetro. WHAT IS MADE La prima scheda di deposito di Mare chiusa dice che una metà porta il nome di Iva e che il vecchio cartellino parlava di una possibile copia; chiede un’ipotesi e un segno lungo il bordo. La seconda scheda di deposito di Mare chiusa dice che l’altra metà fu prestata come opera anonima per condizione dell’artista; chiede che cosa Iva volesse verificare e una frase da lasciare al museo. WHERE IT CAN GO DIFFERENTLY Se la scheda torna piena, la frase scritta diventa il nuovo cartellino e il museo consegna il motivo completo di Iva. Se torna intatta, il museo posa le due schede unite, consegna il motivo di Iva e dichiara concluso il pomeriggio. Se l’interesse si ferma a metà, una scheda resta accanto all’altra e una sola linea sul bordo diventa la registrazione finale. WHAT WOULD SPOIL IT Aggiungere altri sospetti, proprietari o documenti. Trasformare l’attribuzione in una risposta da indovinare. Spiegare il motivo di Iva prima di accostare le pagine.",
+    "iteration": 3
+  },
+  {
+    "household": "con-dei-limiti",
+    "refused": {
+      "by": "format",
+      "says": "this way out is about 'il foglio di fonderia' and never says so; an ending that names nothing in the person's hands is the goodbye that is felt as a cut"
+    },
+    "iteration": 3
+  },
+  {
+    "household": "poco-e-vicino",
+    "title": "Il minuto senza voce",
+    "experienceId": "aftn-e557d304",
+    "themes": [
+      "Silenzio",
+      "Dischi",
+      "Fratelli",
+      "Memoria",
+      "Partenze"
+    ],
+    "minutes": 71,
+    "moments": 6,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "catalog-glass",
+    "minutesPlayed": 13,
+    "sheets": [
+      {
+        "momentId": "silent-disc",
+        "sheet": "[dossier] Il disco vuoto di Lidia\nRegistro della Sala Bassa, 18 novembre 1924.\nLidia cantò in pubblico fino alla chiusura.\nPoi pagò per un disco con un minuto senza voce.\nSulla busta: «Per mio fratello».\n— Contrasto notato dal custode (a_line)\n— Nuova voce per il catalogo (some_lines)",
+        "came": "marks",
+        "reading": "Un ovale a matita attorno alla riga «Lidia cantò in pubblico fino alla chiusura.» e, sotto, le parole scritte a mano «un minuto senza voce».",
+        "why": "Ho cerchiato la riga del canto e ho scritto quello che il foglio diceva che restava fra loro."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "display: Prendi una matita.",
+          "says": "This names an immediate physical first step after the opening situation is presented."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "display: Il fratello partiva dal molo.",
+          "says": "This necessary context appears only on the transient screen and is absent from the dossier."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "display: Cerchia la riga del canto.",
+          "says": "This gives one brief, concrete action without combining it with another instruction."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "sul foglio: Un ovale a matita attorno alla riga «Lidia cantò in pubblico fino alla chiusura.» e, sotto, le parole scritte a mano «un minuto senza voce».",
+          "says": "This shows that both requested actions produced visible marks on the paper."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 2,
+          "quote": "display: Scrivi cosa restava fra loro.",
+          "says": "This asks an interpretive question without a help rung that eventually supplies a bounded written answer."
+        },
+        "canBeAbandoned": {
+          "score": 2,
+          "quote": "display: Posa il dossier sul vetro.",
+          "says": "This offers only the required final handoff, not a cost-free way to leave at any point."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Poi pagò per un disco con un minuto senza voce.",
+          "says": "This is a strange, specific impossibility that gives the activity genuine imaginative weight."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "display: Cerchia la riga del canto.",
+          "says": "This sounds like a conventional comprehension-sheet command with a predetermined line to identify."
+        }
+      },
+      "worstLine": "display: Scrivi cosa restava fra loro.",
+      "whatToChangeInThePrompt": "Require every paper handout to contain all later-needed context and instructions, and require every interpretive question to end in a help rung that states a bounded written answer.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 164.2,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "2acb743c-e36a-4ea9-b807-30fd4bb82332",
+      "input_tokens": 6335,
+      "output_tokens": 9270,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 6080,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il minuto senza voce\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: short\n\n[hand_over] Un minuto vuoto\n  display: Il dossier è appena uscito.\n  display: Prendi una matita.\n  display: Il centro non porta alcuna voce.\n  foglio consegnato:\n    [dossier] Il disco vuoto di Lidia\n    Registro della Sala Bassa, 18 novembre 1924.\n    Lidia cantò in pubblico fino alla chiusura.\n    Poi pagò per un disco con un minuto senza voce.\n    Sulla busta: «Per mio fratello».\n    — Contrasto notato dal custode (a_line)\n    — Nuova voce per il catalogo (some_lines)\n\n[say] La voce era presente\n  display: Prendi una matita.\n  display: Cerchia la riga del canto.\n\n[say] La nota nella busta\n  display: Tieni il dossier davanti a te.\n  display: Il fratello partiva dal molo.\n  display: Scrivi cosa restava fra loro.\n\n[collect] Sul vetro\n  display: Posa il dossier sul vetro.\n  display: Il custode legge i segni.\n  il foglio torna: marks\n    sul foglio: Un ovale a matita attorno alla riga «Lidia cantò in pubblico fino alla chiusura.» e, sotto, le parole scritte a mano «un minuto senza voce».\n    dice: Ho cerchiato la riga del canto e ho scritto quello che il foglio diceva che restava fra loro.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un pomeriggio quieto attorno a un vecchio disco inciso con un minuto di silenzio. Le poche frasi di un dossier sembrano raccontare una voce perduta, poi una nota sposta tutto verso un gesto privato fra due persone. Si resta al tavolo, con carta e matita, dentro l’atmosfera raccolta di una sala di registrazione ormai chiusa.",
+    "script": "IL MONDO La Sala Bassa registra voci nel 1924, sotto una luce color latte. L’aria odora di polvere tiepida e bucce amare. Nel catalogo nessuno menziona mai i minuti vuoti, benché alcuni dischi ne contengano uno. LA VIA D’ENTRATA Oggi dal vassoio esce il dossier di un disco registrato da Lidia. Il foglio porta il disegno del disco, tre righe del registro e uno spazio lasciato dal custode. Qualcuno prende il dossier e una matita. LA DOMANDA Perché Lidia pagò per incidere un minuto senza voce? Voleva conservare il silenzio condiviso con suo fratello prima che lui partisse. La prima risposta sembra essere che avesse perduto la voce; si rompe contro la riga che la registra mentre canta in pubblico fino alla chiusura. Il custode vuole saperlo per togliere il disco dall’elenco dei difetti e registrarlo come dono. I PASSAGGI Il dossier esce già aperto, e chi lo prende incontra subito il minuto vuoto. La riga sul canto pubblico viene cerchiata, lasciando il primo segno. L’ordine privato viene accostato al cerchio con una linea breve. Il custode propone la voce perduta, e il cerchio la rende insostenibile. Questo è il passaggio che rovescia la cosa: dalla busta emerge che il fratello partiva dal molo. La frase «ciò che non dicemmo» viene tenuta accanto al minuto senza voce. Una frase viene scritta nello spazio del catalogo, anche se resta approssimativa. Questo è il passaggio in cui arriva la risposta: il silenzio era il ricordo scelto da Lidia. Il dossier torna dal vetro con una nuova voce oppure resta com’era. L’ultima immagine è il disco nelle mani di chi chiude il dossier. CIÒ CHE RESTA NASCOSTO La proposta della voce perduta viene data dopo che la riga sul canto pubblico è stata cerchiata. La partenza del fratello viene data dopo che l’ordine del minuto vuoto è stato collegato al cerchio. Le parole del custode, «non era un difetto», vengono date dopo che una frase è stata scritta o il foglio è tornato intatto. La nuova voce del catalogo viene data dopo che il dossier è stato posato sul vetro. CIÒ CHE VIENE FATTO Il dossier del disco vuoto è la scheda conservata dalla Sala Bassa. Dice che Lidia cantò fino alla chiusura, poi ordinò un minuto senza voce per suo fratello. Chiede di riconoscere il contrasto, cerchiarlo, collegarlo all’ordine e scrivere che cosa Lidia voleva conservare. DOVE PUÒ CAMBIARE Se il foglio torna con segni, si leggono le parole presenti e si compone con esse la nuova voce del catalogo; il disco viene chiamato dono, ricordo o silenzio, secondo ciò che è stato scritto. Se il foglio torna intatto, il custode chiude il dossier e consegna direttamente la fraseBotanica del catalogo: Lidia conservava il silenzio condiviso col fratello prima della sua partenza. Se l’interesse si ferma a metà, si posa la matita sulla riga del minuto vuoto e si legge soltanto la nota del custode; il dossier viene chiuso su quella frase. CIÒ CHE LO ROVINEREBBE Aggiungere altri dischi al catalogo. Nascondere la risposta in un codice. Trasformare il silenzio in un esperimento sul suono.",
+    "iteration": 4
+  },
+  {
+    "household": "due-fogli-e-una-svolta",
+    "title": "Il mestolo che smise di chiamare",
+    "experienceId": "aftn-490d957f",
+    "themes": [
+      "autorità",
+      "congedi",
+      "memoria sonora",
+      "gerarchie"
+    ],
+    "minutes": 88,
+    "moments": 5,
+    "mood": "una giornata buona, c'è tempo e curiosità",
+    "weight": "standard",
+    "ending": "way_out",
+    "reached": "read-the-mark",
+    "minutesPlayed": 42,
+    "sheets": [
+      {
+        "momentId": "wrapped-handle",
+        "sheet": "[notebook] Il manico avvolto\nPrima metà dell’annotazione della Cucina del Vetro Opaco.\nIl registro attribuì il panno al calore del fornello.\nIl panno fu legato quando il fornello era già freddo."
+      },
+      {
+        "momentId": "silent-rail",
+        "sheet": "[notebook] La barra rimasta muta\nSeconda metà dell’annotazione separata dal foglio del manico.\nIrena scrisse: Non chiamerà più nessuno.\nChi entra in cucina sarà ricevuto, non convocato.\n— Il segno accanto al congedo (a_box)",
+        "came": "marks",
+        "reading": "Una sola linea tracciata nel riquadro accanto all’ultima riga; il resto è solo testo stampato.",
+        "why": "Ho tracciato la linea richiesta e poi ho messo il foglio sul vetro, restando in attesa."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi il foglio del manico.",
+          "says": "This gives an immediate physical first step after the opening situation."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Traccia una linea accanto al congedo.",
+          "says": "This necessary later action appears only on the transient screen and is not written as an instruction on the retained sheet."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "Il gesto ora cambia direzione.",
+          "says": "This adds an abstract interpretation after three other instructions in the same rapid beat."
+        },
+        "everyStepLeavesAMark": {
+          "score": 2,
+          "quote": "Confronta calore e fornello freddo.",
+          "says": "This asks for an internal comparison without requiring any visible record of it."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 2,
+          "quote": "(qui il pomeriggio vero chiederebbe la continuazione)",
+          "says": "This confirms that no question was actually posed and no final rung supplied its written answer."
+        },
+        "canBeAbandoned": {
+          "score": 1,
+          "quote": "Ho tracciato la linea richiesta e poi ho messo il foglio sul vetro, restando in attesa.",
+          "says": "This shows that completing the required actions leads only to waiting, with no offered way to leave using what is in hand."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Irena scrisse: Non chiamerà più nessuno.",
+          "says": "This introduces a strange and specific impossible history, though the played ending does not develop it into a full discovery."
+        },
+        "notASchoolSheet": {
+          "score": 4,
+          "quote": "La cucina guarda il segno lasciato.",
+          "says": "This is an interested, atmospheric voice with no praise, blame, explanation, or marking."
+        }
+      },
+      "worstLine": "(qui il pomeriggio vero chiederebbe la continuazione)",
+      "whatToChangeInThePrompt": "Require every generated afternoon to include its complete final question, a written answer in the last help rung, and a no-cost exit rather than ending at an unresolved ask.",
+      "howItWentInAWord": "ended early"
+    },
+    "seconds": 156.4,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "02560392-260d-4a9f-87f6-9b5e311fdaef",
+      "input_tokens": 6272,
+      "output_tokens": 8463,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5525,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il mestolo che smise di chiamare\nCOME VA LA GIORNATA: una giornata buona, c'è tempo e curiosità\nPESO SCELTO: standard\n\n[hand_over] Qualcosa nel vassoio\n  display: Qualcosa ha mosso il vassoio.\n  display: Prendi il foglio del manico.\n  display: Il panno fu messo a fornello freddo.\n  display: Lascia il foglio aperto sul tavolo.\n  foglio consegnato:\n    [notebook] Il manico avvolto\n    Prima metà dell’annotazione della Cucina del Vetro Opaco.\n    Il registro attribuì il panno al calore del fornello.\n    Il panno fu legato quando il fornello era già freddo.\n\n[hand_over] Arriva l’altra metà\n  display: Ora arriva il foglio della barra.\n  display: Prendi il foglio della barra.\n  display: Posalo accanto al primo.\n  display: Le due metà parlano dello stesso gesto.\n  foglio consegnato:\n    [notebook] La barra rimasta muta\n    Seconda metà dell’annotazione separata dal foglio del manico.\n    Irena scrisse: Non chiamerà più nessuno.\n    Chi entra in cucina sarà ricevuto, non convocato.\n    — Il segno accanto al congedo (a_box)\n\n[say] Le due metà\n  display: Metti i due fogli fianco a fianco.\n  display: Confronta calore e fornello freddo.\n  display: Traccia una linea accanto al congedo.\n  display: Il gesto ora cambia direzione.\n\n[collect] Il segno sul vetro\n  display: Prendi il foglio della barra.\n  display: Mettilo sul vetro.\n  display: La cucina guarda il segno lasciato.\n  display: Il panno resta fermo.\n  il foglio torna: marks\n    sul foglio: Una sola linea tracciata nel riquadro accanto all’ultima riga; il resto è solo testo stampato.\n    dice: Ho tracciato la linea richiesta e poi ho messo il foglio sul vetro, restando in attesa.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Una cucina immersa in una luce verdastra, dove gli utensili trattengono l’ultima intenzione affidata loro. Il pomeriggio procede con poche parole, due fogli da accostare e un solo segno a matita. Il tono è quello di una custodia silenziosa: qualcosa che sembrava pratico diventa un congedo deliberato.",
+    "script": "THE WORLD È la Cucina del Vetro Opaco, durante un pomeriggio che non finisce di schiarire. Sotto i pensili la luce è verde pallido e l’aria odora di finocchio tostato. Gli utensili trattengono l’ultima intenzione affidata loro. Nessuno nomina chi un tempo rispondeva al suono del mestolo. THE WAY IN Nel vassoio della stampante compare un foglio che porta una sottile impronta di farina. È la metà sul manico di un’annotazione separata. Qualcuno prende il foglio del manico e lo posa sul tavolo. THE QUESTION Perché Irena avvolse il mestolo del richiamo quando il fornello era già freddo? La risposta è che lo fece apposta per abolire il richiamo: non voleva più che qualcuno fosse convocato dal colpo di un utensile. Per un tratto sembra che il panno servisse a proteggere il manico dal calore. Questa risposta si disfa quando la seconda metà viene accostata alla prima: il fornello era freddo e la barra dove il mestolo batteva doveva restare muta. Chi custodisce la cucina voleva saperlo per decidere se togliere il panno; ora può lasciarlo dov’è. THE BEATS Il foglio del manico compare, e viene preso dal vassoio. La nota sul calore sembra sufficiente, e il foglio viene lasciato aperto. La metà sulla barra arriva, e viene posata accanto alla prima. Le due righe sul fornello freddo vengono accostate, e la spiegazione pratica perde consistenza. Questo è il beat che gira la cosa: la barra muta trasforma una protezione in un congedo. Una sola linea viene tracciata accanto alla frase che cambia il gesto. Questo è il beat in cui arriva la risposta: Irena aveva silenziato il richiamo di proposito. I due fogli restano affiancati come l’annotazione finalmente intera. WHAT IS HELD BACK La metà sulla barra viene data dopo che il foglio del manico è stato aperto sul tavolo. La frase sul fornello freddo prende peso solo dopo che le due metà sono state messe fianco a fianco. Il motivo di Irena viene dato dopo che una linea è stata lasciata accanto alla frase che trasforma il gesto. La decisione di non togliere il panno viene data quando il foglio segnato torna dal vetro. WHAT IS MADE Il manico avvolto è la prima metà dell’annotazione: dice che il panno fu messo a fornello freddo, conserva la vecchia spiegazione del calore e chiede soltanto di essere tenuto aperto. La barra rimasta muta è la seconda metà: porta le parole di Irena, mostra dove il mestolo non deve più battere e offre un solo spazio per il segno che cambia il gesto. WHERE IT CAN GO DIFFERENTLY Se il foglio torna con un segno, la voce riprende le parole vicine alla linea e chiude lasciando unite le due metà. Se il foglio torna intatto, la voce consegna direttamente il motivo di Irena e lascia i fogli sul tavolo. Se l’interesse si ferma a metà, si accostano comunque i due fogli e si legge il congedo già scritto sulla seconda metà. Il pomeriggio finisce con il mestolo lasciato avvolto. WHAT WOULD SPOIL IT Aggiungere un terzo documento per confermare ciò che i due fogli dicono già. Trasformare l’accostamento in un allineamento preciso da indovinare. Spiegare il congedo prima che la barra muta sia sul tavolo.",
+    "iteration": 4
+  },
+  {
+    "household": "lontano-e-lungo",
+    "title": "Le lancette trattenute",
+    "experienceId": "aftn-639c486d",
+    "themes": [
+      "Orologeria",
+      "Autorialità",
+      "Artigianato",
+      "Attribuzione",
+      "Contratti"
+    ],
+    "minutes": 84,
+    "moments": 6,
+    "mood": "una giornata buona, c'è tempo e curiosità",
+    "weight": "standard",
+    "ending": "way_out",
+    "reached": "read-register",
+    "minutesPlayed": 51,
+    "sheets": [
+      {
+        "momentId": "first-sheet",
+        "sheet": "[notebook] Foglio del banco di Lidia\nTre casse finite per la vetrina dell’officina.\nIl padrone le chiama modelli, non orologi da vendere.\nSu tutte mancano soltanto le lancette.\n— Il tratto comune (a_line)\n— La prima spiegazione (some_lines)\n— Il cartiglio dei tre lavori (a_box)"
+      },
+      {
+        "momentId": "second-sheet",
+        "sheet": "[notebook] Registro delle riparazioni, 1791\nTre lavori del banco di Lidia risultano saldati.\nAccanto a ogni lavoro il nome di Lidia è stato raschiato.\nLe lancette restano nel suo cassetto.\nNel margine: «Complete quando il cartiglio avrà il nome giusto».\n— Cosa voleva Lidia (some_lines)\n— La frase che cambia tutto (a_line)\n— Il legame fra nomi e lancette (a_box)",
+        "came": "marks",
+        "reading": "La frase nel margine è cerchiata; sulle righe c’è scritto «Voleva che il cartiglio avesse il nome giusto». La riga e il riquadro restano vuoti.",
+        "why": "Ho seguito le due istruzioni esplicite sul registro e poi l’ho messo sul vetro."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi il foglio del banco.",
+          "says": "Questa linea indica subito un primo gesto fisico con un oggetto già presente."
+        },
+        "sheetStandsAlone": {
+          "score": 5,
+          "quote": "Nel margine: «Complete quando il cartiglio avrà il nome giusto».",
+          "says": "Il registro conserva sulla carta l’indizio decisivo necessario per rispondere anche senza lo schermo."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "Confronta bordo, centro e cartiglio.",
+          "says": "Questa linea concentra tre elementi da confrontare, dentro una sequenza già fitta di istruzioni."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Guarda cosa condividono.",
+          "says": "Questo passaggio richiede un’osservazione mentale che da sola non lascia alcun segno verificabile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 5,
+          "quote": "— Cosa voleva Lidia (some_lines)",
+          "says": "La domanda è esplicita e la risposta può essere ricavata dall’indizio scritto nel margine e registrata sulle righe."
+        },
+        "canBeAbandoned": {
+          "score": 2,
+          "quote": "Il cartiglio attende sullo schermo.",
+          "says": "Questa linea mantiene aperta una richiesta sullo schermo invece di offrire una via d’uscita affidata a ciò che resta nelle mani."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Accanto a ogni lavoro il nome di Lidia è stato raschiato.",
+          "says": "Il dettaglio del nome raschiato rende la vicenda specifica e conduce a una scoperta concreta sul motivo delle lancette trattenute."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Scrivi cosa voleva Lidia.",
+          "says": "L’imperativo diretto e la risposta attesa fanno sentire la voce come quella di una scheda scolastica più che di un compagno curioso."
+        }
+      },
+      "worstLine": "Confronta bordo, centro e cartiglio.",
+      "whatToChangeInThePrompt": "Il prompt dovrebbe imporre che ogni confronto si basi su differenze materialmente presenti nel foglio e che ogni battuta chieda un solo segno osservabile prima di passare oltre.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 187.3,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "86e3ff59-118d-49d2-b413-aec73fa6a9e5",
+      "input_tokens": 6355,
+      "output_tokens": 3501,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 258,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Le lancette trattenute\nCOME VA LA GIORNATA: una giornata buona, c'è tempo e curiosità\nPESO SCELTO: standard\n\n[hand_over] Nel vassoio\n  display: Nel vassoio giace un foglio.\n  display: Tre casse aspettano le lancette.\n  display: Prendi il foglio del banco.\n  display: Guarda cosa condividono.\n  foglio consegnato:\n    [notebook] Foglio del banco di Lidia\n    Tre casse finite per la vetrina dell’officina.\n    Il padrone le chiama modelli, non orologi da vendere.\n    Su tutte mancano soltanto le lancette.\n    — Il tratto comune (a_line)\n    — La prima spiegazione (some_lines)\n    — Il cartiglio dei tre lavori (a_box)\n\n[say] Tre casse\n  display: Prendi una matita.\n  display: Confronta bordo, centro e cartiglio.\n  display: Collega la mancanza comune.\n  display: Scrivi una ragione provvisoria.\n\n[hand_over] Il registro\n  display: Arriva un secondo foglio.\n  display: È il registro delle riparazioni.\n  display: Prendilo senza voltarlo.\n  display: Accostalo al primo foglio.\n  foglio consegnato:\n    [notebook] Registro delle riparazioni, 1791\n    Tre lavori del banco di Lidia risultano saldati.\n    Accanto a ogni lavoro il nome di Lidia è stato raschiato.\n    Le lancette restano nel suo cassetto.\n    Nel margine: «Complete quando il cartiglio avrà il nome giusto».\n    — Cosa voleva Lidia (some_lines)\n    — La frase che cambia tutto (a_line)\n    — Il legame fra nomi e lancette (a_box)\n\n[say] Fianco a fianco\n  display: Metti i due fogli fianco a fianco.\n  display: Collega casse, conti e nomi.\n  display: Cerchia la frase nel margine.\n  display: Scrivi cosa voleva Lidia.\n\n[collect] Sul vetro\n  display: Metti il registro sul vetro.\n  display: Il banco legge linee e parole.\n  display: Il cartiglio attende sullo schermo.\n  il foglio torna: marks\n    sul foglio: La frase nel margine è cerchiata; sulle righe c’è scritto «Voleva che il cartiglio avesse il nome giusto». La riga e il riquadro restano vuoti.\n    dice: Ho seguito le due istruzioni esplicite sul registro e poi l’ho messo sul vetro.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un’indagine quieta in un’officina di orologi del 1791. Sul tavolo restano due pagine dense di particolari e tre casse senza lancette. Il pomeriggio procede per confronti, linee a matita e frasi provvisorie. La spiegazione più comoda perde terreno quando i documenti vengono accostati, lasciando emergere una richiesta di attribuzione.",
+    "script": "THE WORLD Torino, 1791. Nell’officina delle Tre Finestre la luce del pomeriggio diventa verde passando dal vetro. I cassetti odorano di olio di pera. Tre orologi finiti aspettano senza lancette, e nessuno pronuncia mai il nome del padrone. THE WAY IN Nel vassoio è comparso il foglio del banco. Mostra un orologio tondo, uno ovale e uno quadrato, tutti senza lancette. Qualcuno prende il foglio del banco e lo posa sul tavolo. THE QUESTION Perché Lidia trattenne le lancette dei tre orologi? Lidia trattenne le lancette finché il registro non le attribuì il lavoro sui tre orologi. La risposta falsa è che fossero semplici modelli da vetrina; sembra giusta perché così li descrive il padrone, ma si rompe quando i conti già saldati e i tre nomi raschiati vengono accostati. Chi riaprì l’officina voleva saperlo, perché il cartiglio dei tre lavori doveva ricevere un’autrice. THE BEATS Il foglio del banco compare nel vassoio e fa prendere in mano i tre orologi disegnati. Le tre casse vengono confrontate e una matita lascia una linea che dichiara cosa condividono. Il registro delle riparazioni arriva capovolto e fa mettere da parte la prima spiegazione. Il registro viene voltato accanto al foglio del banco; questo è il beat che rovescia la storia. I conti saldati, i nomi raschiati e le lancette trattenute vengono messi in relazione con tre segni. Una frase viene scritta accanto al cartiglio vuoto; questo è il beat in cui arriva la risposta. WHAT IS HELD BACK Il registro delle riparazioni viene dato dopo che una linea ha riunito i tre orologi. I conti saldati si leggono dopo che il registro è stato voltato. La frase nel margine si scopre dopo che i due fogli sono stati messi fianco a fianco. L’attribuzione finale viene data dopo che i tre nomi raschiati sono stati cerchiati. WHAT IS MADE Il foglio del banco è la pagina lasciata da Lidia: descrive tre orologi incompiuti, propone la spiegazione della vetrina e chiede una linea comune, una spiegazione provvisoria e un cartiglio. Il registro delle riparazioni è la pagina contabile dell’officina: dichiara saldati i tre lavori, mostra i nomi raschiati, conserva la frase sul nome giusto e chiede cosa voleva Lidia. WHERE IT CAN GO DIFFERENTLY Se il registro torna pieno, una frase o un segno viene ripreso sullo schermo e il cartiglio riceve parole costruite da ciò che è davanti. Se il registro torna intatto, il foglio del banco resta sul tavolo e la chiusura nomina soltanto i tre orologi. Se l’interesse si ferma a metà, una matita circonda uno dei tre orologi e quel contorno diventa il cartiglio conclusivo. WHAT WOULD SPOIL IT Aggiungere un codice nascosto nei nomi. Spiegare Lidia prima di accostare i fogli. Introdurre un terzo documento d’officina.",
+    "iteration": 4
+  },
+  {
+    "household": "un-mese-pesante",
+    "title": "La bobina dichiarata distrutta",
+    "experienceId": "aftn-1e4c6a20",
+    "themes": [
+      "cinema",
+      "segreti",
+      "prove",
+      "responsabilità",
+      "carta"
+    ],
+    "minutes": 42,
+    "moments": 4,
+    "mood": "una giornata normale, c'è voglia di fare qualcosa",
+    "weight": "standard",
+    "ending": "stopped",
+    "reached": "scan-register",
+    "minutesPlayed": 26,
+    "sheets": [
+      {
+        "momentId": "found-register",
+        "sheet": "[notebook] Registro dell’ultima bobina\nDal cassetto della cabina, dopo la chiusura.\nAlma segnò: «Bobina distrutta».\nOrdine: tagliare la scena del molo.\nDopo l’apertura, il guardiano fu accusato.\n— Il particolare che smentisce tutto (a_line)\n— La spiegazione che sembra vera (some_lines)\n— Quello che Alma temeva (some_lines)",
+        "came": "blank",
+        "reading": "Nessun segno a matita, nessuna chiave cerchiata e nessuna parola aggiunta.",
+        "why": "Mi sono fermato perché sul foglio non c’erano i tre fotogrammi né una chiave da cerchiare."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 1,
+          "quote": "Guarda i tre fotogrammi.",
+          "says": "The task cannot meaningfully begin because the three frames it immediately requires were not provided."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Mi sono fermato perché sul foglio non c’erano i tre fotogrammi né una chiave da cerchiare.",
+          "says": "The sheet lacks the visual evidence and key needed to follow the screen instructions after those screens disappear."
+        },
+        "oneThingAtATime": {
+          "score": 2,
+          "quote": "Lascialo accanto al secondo spazio.",
+          "says": "This requires holding the previous instruction and its unwritten answer in mind while locating a differently numbered space."
+        },
+        "everyStepLeavesAMark": {
+          "score": 1,
+          "quote": "Cerchia la chiave con la matita.",
+          "says": "The requested mark would be visible, but it cannot be made because there is no key on the sheet."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— Il particolare che smentisce tutto (a_line)",
+          "says": "The sheet poses a mystery with a placeholder but the missing frames and final help provide no answer that can be written down."
+        },
+        "canBeAbandoned": {
+          "score": 1,
+          "quote": "Lascia il cerchio sulla chiave.",
+          "says": "The way out reaches for a circle and key that are not actually in the person's hands or on the page."
+        },
+        "worthTheHour": {
+          "score": 2,
+          "quote": "Alma segnò: «Bobina distrutta».",
+          "says": "The premise is specific and intriguing, but the broken materials prevent the afternoon from ending with anything made or discovered."
+        },
+        "notASchoolSheet": {
+          "score": 1,
+          "quote": "Aggiungi una parola, se serve.",
+          "says": "The directive worksheet voice sounds like a teacher assigning and checking revisions rather than someone sharing an interest."
+        }
+      },
+      "worstLine": "Guarda i tre fotogrammi.",
+      "whatToChangeInThePrompt": "Require the system to verify that every referenced image, object, answer source, and exit artifact is physically present on the delivered sheet before generating any instructions that depend on it.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 126.3,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "ab9909e5-ec16-4382-ab47-808d5ae96991",
+      "input_tokens": 6132,
+      "output_tokens": 7244,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 4607,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La bobina dichiarata distrutta\nCOME VA LA GIORNATA: una giornata normale, c'è voglia di fare qualcosa\nPESO SCELTO: standard\n\n[hand_over] Una pagina sul vassoio\n  display: Una pagina è appena uscita.\n  display: Prendi il foglio dal vassoio.\n  display: Guarda i tre fotogrammi.\n  display: Segui il loro ordine con la matita.\n  foglio consegnato:\n    [notebook] Registro dell’ultima bobina\n    Dal cassetto della cabina, dopo la chiusura.\n    Alma segnò: «Bobina distrutta».\n    Ordine: tagliare la scena del molo.\n    Dopo l’apertura, il guardiano fu accusato.\n    — Il particolare che smentisce tutto (a_line)\n    — La spiegazione che sembra vera (some_lines)\n    — Quello che Alma temeva (some_lines)\n\n[say] La chiave nei fotogrammi\n  display: Nei fotogrammi resta una chiave.\n  display: Cerchia la chiave con la matita.\n  display: Scrivi il primo motivo possibile.\n  display: Lascialo accanto al secondo spazio.\n\n[collect] Il registro sul vetro\n  display: Rileggi le due spiegazioni.\n  display: Aggiungi una parola, se serve.\n  display: Metti il foglio sul vetro.\n  il foglio torna: blank\n    sul foglio: Nessun segno a matita, nessuna chiave cerchiata e nessuna parola aggiunta.\n    dice: Mi sono fermato perché sul foglio non c’erano i tre fotogrammi né una chiave da cerchiare.\n  ha smesso qui\n  via d'uscita: La cabina prende nota\n    display: Tieni il foglio accanto al vetro.\n    display: Lascia il cerchio sulla chiave.\n    display: Il pomeriggio è finito.",
+    "overview": "Un mistero quieto nella cabina di un cinema chiuso. Un registro e tre fotogrammi raccontano versioni incompatibili dello stesso gesto. Si osserva, si cerchia un particolare e si lascia sulla carta una spiegazione possibile, senza dover ricostruire altro. L’atmosfera è sospesa e concreta: polvere nel fascio del proiettore, una porta laterale e una decisione presa per proteggere qualcuno.",
+    "script": "IL MONDO La cabina del Cinema Bruma è chiusa, ma un fascio bianco attraversa ancora la polvere. L’aria sa di scorza d’arancia e tende pesanti. Nessuno nomina mai la porta laterale. LA VIA D’INGRESSO Una pagina è appena uscita sul vassoio. Sembra strappata dal registro della cabina e porta una nota di Alma. Qualcuno prende il foglio e trova tre fotogrammi stretti sotto la frase «Bobina distrutta». LA DOMANDA Perché Alma dichiarò distrutta una bobina che aveva invece conservato? La risposta è: Alma mentì per conservare la prova che il proprietario aveva consegnato la chiave al guardiano, perché temeva che accusassero lui. La falsa risposta è che volesse salvare una scena particolarmente bella; sembra plausibile finché i tre fotogrammi, spogli e quasi identici, mostrano che l’unico particolare importante è il passaggio della chiave. Il guardiano voleva saperlo, e la prova toglie da lui la responsabilità dell’apertura. I PASSAGGI — La pagina compare sul vassoio e fa prendere il foglio. — La frase «Bobina distrutta» incontra i fotogrammi e fa cerchiare ciò che la contraddice. — La scena del molo sembra trattenuta per la sua bellezza e fa annotare questa prima spiegazione. — Il passaggio della chiave rovescia la storia e fa cancellare o affiancare la prima spiegazione. Questo è il passaggio che gira la cosa. — La nota sull’accusa al guardiano fa scrivere che cosa Alma poteva temere. — Il foglio torna sul vetro e le tracce lasciate decidono la risposta della cabina. — La relazione tra chiave, proprietario e accusa diventa leggibile. Questo è il passaggio in cui arriva la risposta. — Il registro resta con la frase di chi lo ha esaminato, e il pomeriggio finisce sull’oggetto. CIÒ CHE RESTA NASCOSTO Il valore della chiave viene dato dopo che qualcuno l’ha cerchiata nei fotogrammi. La debolezza della falsa risposta viene data dopo che qualcuno ha scritto che cosa renderebbe bella la scena e ha trovato soltanto un gesto pratico. L’accusa contro il guardiano viene messa in primo piano dopo che le due spiegazioni sono state lasciate affiancate sul foglio. La ragione di Alma viene data quando il foglio segnato torna sul vetro; nulla resta nascosto oltre quel gesto. CIÒ CHE VIENE FATTO Il registro dell’ultima bobina è la pagina rimasta nella cabina: dice che Alma dichiarò distrutta la pellicola, conserva l’ordine di tagliare la scena e mostra il passaggio della chiave. Chiede quale particolare smentisce il registro, quale spiegazione sembra vera all’inizio e che cosa Alma temeva. Chi lo prende cerchia, annota e rimette il foglio sul vetro. DOVE PUÒ CAMBIARE Se il foglio torna pieno, la cabina riprende le parole scritte, distingue l’ipotesi iniziale dal timore di Alma e chiude con una breve nota sul registro. Se il foglio torna intatto, il fascio si ritira dai fotogrammi e la matita resta accanto al vetro; il pomeriggio è finito. Se qualcuno smette di interessarsi a metà, posa la matita sul foglio e piega appena il bordo sopra i fotogrammi; il registro rimane così e il pomeriggio è finito. CIÒ CHE LO ROVINEREBBE Aggiungere un secondo sospetto o un’altra bobina. Trasformare i fotogrammi in domande sul cinema. Dire il motivo di Alma prima che il foglio torni sul vetro.",
+    "iteration": 4
+  },
+  {
+    "household": "niente-di-scritto",
+    "title": "Il primo sapore della tavola",
+    "experienceId": "aftn-17d736f3",
+    "themes": [
+      "Sapori",
+      "Conversazione",
+      "Rituali",
+      "Gerarchie",
+      "Ospitalità"
+    ],
+    "minutes": 78,
+    "moments": 5,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "read-the-mark",
+    "minutesPlayed": 14,
+    "sheets": [
+      {
+        "momentId": "torn-account",
+        "sheet": "[notice] La cena del primo sapore\nAlla Locanda del Gusto Tardivo il primo sapore decideva chi parlava.\nOrdine di Elia: sorso amaro, pane, pera, crema.\nIl sorso era una prova di coraggio.\nIl bordo strappato continua altrove."
+      },
+      {
+        "momentId": "private-margin",
+        "sheet": "[notebook] Il margine di Elia\nChi vuole può lasciare il sorso.\nLo zucchero resta accanto, non arriva dopo.\nSe il primo dice «non so», il tavolo cambia voce.\nQuesta metà va contro il bordo del conto.",
+        "came": "marks",
+        "reading": "Un cerchio a matita attorno alla prima riga sotto il titolo; nessun’altra aggiunta.",
+        "why": "Ho cerchiato la riga più diretta perché era un gesto breve e lo schermo lo chiedeva chiaramente."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 4,
+          "quote": "Prendi il foglio del conto.",
+          "says": "This gives an immediate physical first step that brings the situation into the person's hands."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "Con la matita, cerchia il dettaglio",
+          "says": "The essential action appears only on the screen, so somebody who missed it could not use the sheets independently."
+        },
+        "oneThingAtATime": {
+          "score": 4,
+          "quote": "Posalo sul tavolo.",
+          "says": "This is a short instruction containing one concrete action, representative of the afternoon's generally well-separated steps."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Un cerchio a matita attorno alla prima riga sotto il titolo; nessun’altra aggiunta.",
+          "says": "The central response leaves a clear, visible, and collectable mark on the paper."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 5,
+          "quote": "Chi vuole può lasciare il sorso.",
+          "says": "This written line is the definite answer to the task of finding what contradicts the supposed test of courage."
+        },
+        "canBeAbandoned": {
+          "score": 2,
+          "quote": "Metti la pagina del margine sul vetro.",
+          "says": "The sequence directs the person onward to submission without offering a no-cost way to leave using what is already in hand."
+        },
+        "worthTheHour": {
+          "score": 4,
+          "quote": "Alla Locanda del Gusto Tardivo il primo sapore decideva chi parlava.",
+          "says": "This establishes a strange and specific rule that gives the brief act of finding a contradiction some imaginative substance."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "che smentisce la prova di coraggio.",
+          "says": "This phrasing turns the encounter into a teacher-like reading-comprehension exercise despite the more curious fictional frame."
+        }
+      },
+      "worstLine": "Con la matita, cerchia il dettaglio",
+      "whatToChangeInThePrompt": "Require the actionable question to be printed on the paper itself and require every sequence to include an explicit no-cost stopping action using an object already in the person's hands.",
+      "howItWentInAWord": "ended early"
+    },
+    "seconds": 135.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "ee67153b-3bbe-4a65-9124-845643881309",
+      "input_tokens": 6284,
+      "output_tokens": 8387,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5449,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il primo sapore della tavola\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: short\n\n[hand_over] Un bordo senza seguito\n  display: Prendi il foglio del conto.\n  display: Posalo sul tavolo.\n  foglio consegnato:\n    [notice] La cena del primo sapore\n    Alla Locanda del Gusto Tardivo il primo sapore decideva chi parlava.\n    Ordine di Elia: sorso amaro, pane, pera, crema.\n    Il sorso era una prova di coraggio.\n    Il bordo strappato continua altrove.\n\n[hand_over] L’altra metà\n  display: Prendi la pagina del margine.\n  display: Mettila accanto al bordo strappato.\n  foglio consegnato:\n    [notebook] Il margine di Elia\n    Chi vuole può lasciare il sorso.\n    Lo zucchero resta accanto, non arriva dopo.\n    Se il primo dice «non so», il tavolo cambia voce.\n    Questa metà va contro il bordo del conto.\n\n[say] La prova si rovescia\n  display: Con la matita, cerchia il dettaglio\n  display: che smentisce la prova di coraggio.\n\n[collect] Il margine torna\n  display: Metti la pagina del margine sul vetro.\n  il foglio torna: marks\n    sul foglio: Un cerchio a matita attorno alla prima riga sotto il titolo; nessun’altra aggiunta.\n    dice: Ho cerchiato la riga più diretta perché era un gesto breve e lo schermo lo chiedeva chiaramente.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un pomeriggio quieto e leggermente irreale, con due fogli strappati, sapori immaginati e una sola domanda umana. Ha il passo di una conversazione tenuta davanti a una tavola ancora apparecchiata: si osserva poco alla volta, si lascia un segno minimo e si scopre che un gesto giudicato severo aveva un’intenzione diversa.",
+    "script": "IL MONDO La Locanda del Gusto Tardivo apre soltanto nella luce color tè del pomeriggio. Le sale odorano di scorza d’arancia e pietra bagnata. Il primo sapore di ogni cena stabilisce chi può parlare per primo, ma nessuno nomina mai i prezzi. LA VIA D’ENTRATA Dal dispositivo di stampa esce il foglio del conto, con un bordo strappato disegnato lungo un lato. È la metà sinistra di qualcosa che fu separato. Qualcuno prende il foglio del conto e lo posa sul tavolo con il bordo rivolto verso lo spazio libero. LA DOMANDA Perché Elia mise il sorso amaro all’inizio della cena? Elia voleva che tutti dicessero «non so» prima di parlare, così il rango non avrebbe guidato la tavola. Per un tratto sembra che volesse mettere alla prova il coraggio degli ospiti. Questa risposta si rompe quando le due metà mostrano che il sorso poteva essere lasciato e che lo zucchero era già accanto. Chi custodisce oggi la locanda voleva saperlo, perché il vecchio conto decide se ricordare Elia come giudice o come ospite. LE BATTUTE Il foglio del conto arriva già strappato e fa posare la sua metà sul tavolo. La frase sulla prova di coraggio sembra spiegare l’ordine e fa tenere aperta quella possibilità. La pagina del margine arriva separata e fa cercare il bordo corrispondente. Le due metà vengono messe fianco a fianco e fanno apparire una sola tavola. La riga sullo zucchero contraddice il conto e fa lasciare un cerchio a matita. La battuta che rovescia tutto mostra che il sorso poteva essere lasciato. La frase «il tavolo cambia voce» fa scrivere o segnare ciò che Elia voleva. La battuta in cui arriva la risposta restituisce il foglio come memoria della cena. CIÒ CHE RESTA NASCOSTO La pagina del margine viene data dopo che il foglio del conto è stato posato con il bordo strappato verso lo spazio libero. La continuità della tavola appare dopo che le due metà sono state accostate. Il falso motivo cade dopo che la riga sullo zucchero è stata cerchiata o segnata. Il motivo di Elia viene dato dopo che la pagina è tornata sul vetro, oppure quando il foglio resta intatto e la tavola viene chiusa. CIÒ CHE VIENE FATTO Il foglio del conto è l’avviso rimasto nella locanda: dice l’ordine della cena e accusa Elia di aver preparato una prova di coraggio; chiede di essere appoggiato con il bordo strappato libero e poi confrontato con la sua metà. La pagina del margine è il foglio privato di Elia: dice che il sorso poteva essere lasciato, che lo zucchero era già accanto e che un «non so» cambiava la voce della tavola; chiede un solo cerchio sul dettaglio decisivo e va poi posata sul vetro. DOVE PUÒ CAMBIARE Se la pagina torna con un segno, resta davanti a chi conduce: il segno diventa il punto da cui chiedere quale intenzione tenga insieme le due metà. Se torna intatta, il foglio del conto viene lasciato aperto accanto alla pagina e la voce della locanda consegna il motivo di Elia prima di dichiarare finito il pomeriggio. Se l’interesse si interrompe, si accostano soltanto i bordi, si posa una matita tra i fogli e si chiude sulla tavola ricomposta. COSA LO ROVINEREBBE Spiegare il motivo di Elia prima che i bordi siano stati accostati. Aggiungere altri piatti, ospiti o regole alla locanda. Pretendere una frase completa invece di accettare un cerchio, una parola o una linea.",
+    "iteration": 4
+  },
+  {
+    "household": "con-dei-limiti",
+    "title": "Il melo segnato come assente",
+    "experienceId": "aftn-bd8d5abc",
+    "themes": [
+      "Botanica",
+      "Inventari",
+      "Memoria",
+      "Proprietà",
+      "Margini"
+    ],
+    "minutes": 94,
+    "moments": 5,
+    "mood": "una giornata buona, c'è tempo e curiosità",
+    "weight": "short",
+    "ending": "way_out",
+    "reached": "return-dossier",
+    "minutesPlayed": 21,
+    "sheets": [
+      {
+        "momentId": "torn-register",
+        "sheet": "[notebook] Registro di partenza del vivaio\nPagina tenuta da Ivo, custode del vivaio.\nIl melo grigio: NON PARTITO, RADICI DEBOLI.\nIl margine destro della pagina manca.\n— Quello che il registro sostiene (a_line)\n— Segno lasciato sul margine (a_box)"
+      },
+      {
+        "momentId": "apple-dossier",
+        "sheet": "[dossier] Il melo grigio\nControllo eseguito prima della partenza.\nRADICI SANE. Vaso spostato accanto al vecchio pozzo.\nSul margine: INNESTATO DA MIA MADRE.\n— Il segno che smentisce il registro (a_line)\n— Ciò che Ivo voleva (some_lines)\n— Nota da lasciare al melo (some_lines)",
+        "came": "marks",
+        "reading": "The four uppercase words “INNESTATO DA MIA MADRE” on the line for Ivo; the other answer lines left empty.",
+        "why": "I copied the clear margin note into Ivo’s line and put the page on the glass as instructed."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi il registro.",
+          "says": "This names an immediate physical first step using the register already located in the tray."
+        },
+        "sheetStandsAlone": {
+          "score": 5,
+          "quote": "Sul margine: INNESTATO DA MIA MADRE.",
+          "says": "The paper itself preserves the key evidence needed for the later writing task."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Accosta la scheda al registro.",
+          "says": "This gives one short physical instruction without adding another demand."
+        },
+        "everyStepLeavesAMark": {
+          "score": 5,
+          "quote": "Posala sul vetro.",
+          "says": "Placing the annotated page on the glass is a concrete action whose completion can be seen."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "Scrivi ciò che Ivo voleva.",
+          "says": "This asks for Ivo’s private intention even though the written clue states provenance rather than what he wanted."
+        },
+        "canBeAbandoned": {
+          "score": 4,
+          "quote": "sul foglio: The four uppercase words “INNESTATO DA MIA MADRE” on the line for Ivo; the other answer lines left empty.",
+          "says": "The afternoon accepted a partly blank sheet and moved on instead of requiring every field to be completed correctly."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "Sul margine: INNESTATO DA MIA MADRE.",
+          "says": "This is a strange and specific clue, but the resulting work merely copies it rather than resolving the contradiction or producing a new finding."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Scrivi ciò che Ivo voleva.",
+          "says": "This sounds like a teacher issuing an interpretive comprehension question rather than a companion sharing curiosity."
+        }
+      },
+      "worstLine": "Scrivi ciò che Ivo voleva.",
+      "whatToChangeInThePrompt": "Require every question about a character’s intention to have an explicit, recoverable written answer in the supplied materials rather than relying on unsupported inference.",
+      "howItWentInAWord": "carried through"
+    },
+    "seconds": 141.8,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "a9841468-17e8-45ed-8d8f-ed8f3d6631ea",
+      "input_tokens": 6144,
+      "output_tokens": 8205,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5270,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: Il melo segnato come assente\nCOME VA LA GIORNATA: una giornata buona, c'è tempo e curiosità\nPESO SCELTO: short\n\n[hand_over] Un margine manca\n  display: Il registro è nel vassoio.\n  display: Dice: NON PARTITO, RADICI DEBOLI.\n  display: Prendi il registro.\n  foglio consegnato:\n    [notebook] Registro di partenza del vivaio\n    Pagina tenuta da Ivo, custode del vivaio.\n    Il melo grigio: NON PARTITO, RADICI DEBOLI.\n    Il margine destro della pagina manca.\n    — Quello che il registro sostiene (a_line)\n    — Segno lasciato sul margine (a_box)\n\n[hand_over] L’altro bordo\n  display: La scheda continua il melo.\n  display: Dice: RADICI SANE.\n  display: Accosta la scheda al registro.\n  foglio consegnato:\n    [dossier] Il melo grigio\n    Controllo eseguito prima della partenza.\n    RADICI SANE. Vaso spostato accanto al vecchio pozzo.\n    Sul margine: INNESTATO DA MIA MADRE.\n    — Il segno che smentisce il registro (a_line)\n    — Ciò che Ivo voleva (some_lines)\n    — Nota da lasciare al melo (some_lines)\n\n[say] Le frasi si oppongono\n  display: La matita è accanto alla scheda.\n  display: Scrivi ciò che Ivo voleva.\n\n[collect] La scheda sul vetro\n  display: La pagina annotata è pronta.\n  display: Posala sul vetro.\n  il foglio torna: marks\n    sul foglio: The four uppercase words “INNESTATO DA MIA MADRE” on the line for Ivo; the other answer lines left empty.\n    dice: I copied the clear margin note into Ivo’s line and put the page on the glass as instructed.\n  va a: ask\n  (qui il pomeriggio vero chiederebbe la continuazione)",
+    "overview": "Un registro ottocentesco arriva con un margine strappato. Un secondo foglio, accostato al primo, trasforma una nota sul trasporto di un melo in una scelta privata. Il pomeriggio procede tra carta, matita e poche frasi, con il ritmo quieto di qualcuno che ricompone un gesto rimasto incompleto.",
+    "script": "THE WORLD È la fine dell’Ottocento, in un vivaio lungo una ferrovia. La luce passa attraverso vetri anneriti; l’aria sa di bucce di mela e terra umida. Nessuno nomina mai il vecchio pozzo. THE WAY IN Nel vassoio della stampante compare una pagina del registro di Ivo. Il margine destro sembra strappato, anche se il foglio è appena uscito. Qualcuno prende il registro dal vassoio e trova la nota NON PARTITO, RADICI DEBOLI. THE QUESTION Perché Ivo dichiarò che il melo non era partito? La risposta è: Ivo trattenne il melo per piantarlo accanto al pozzo in memoria di sua madre. La risposta che sembra giusta è che il melo fosse malato; si rompe quando l’altro foglio dichiara sane le radici e ricorda che sua madre lo aveva innestato. Chi conserva il registro vuole saperlo, perché la frase lasciata accanto al melo dipende da quel motivo. THE BEATS — Il registro arriva già mutilato e fa scrivere ciò che sembra sostenere. — Il margine interrompe il disegno del melo e fa cercare la sua continuazione. — La scheda del melo compare e fa accostare i due bordi. — Le radici risultano sane e fanno segnare la contraddizione. — SVOLTA — Il vaso è indicato presso il pozzo e la spiegazione della malattia smette di reggere. — La nota INNESTATO DA MIA MADRE fa scrivere ciò che Ivo poteva volere. — RISPOSTA — Le due frasi unite fanno nominare il gesto di memoria. — Una nota viene lasciata al melo e la scheda torna sul vetro. WHAT IS HELD BACK — La scheda del melo viene data dopo che il registro è stato girato e il bordo interrotto è stato seguito con un dito. — La contraddizione sulle radici viene data dopo che i due fogli sono stati accostati. — La frase sulla madre viene considerata dopo che RADICI DEBOLI e RADICI SANE sono state segnate insieme. — La frase finale viene accolta dopo che la scheda annotata è stata posata sul vetro. WHAT IS MADE — Il registro di partenza del vivaio è la pagina di Ivo: dice che il melo non partì per radici deboli, chiede quale affermazione sembra vera e riceve una breve nota a matita. — La scheda del melo grigio è il controllo della pianta: dice che le radici erano sane, che il vaso era presso il pozzo e che la madre di Ivo aveva innestato il melo; chiede la contraddizione, il motivo di Ivo e una nota da lasciare, poi viene annotata e posata sul vetro. WHERE IT CAN GO DIFFERENTLY Se la scheda torna piena, resta davanti a chi conduce e la frase scritta decide come nominare il gesto di Ivo. Se torna intatta, la matita viene posata sul tavolo e il registro non domanda altro. Se l’interesse si ferma a metà, si accostano soltanto i due bordi e si lascia sul registro una linea che attraversa il melo. WHAT WOULD SPOIL IT — Aggiungere altri documenti sul vivaio. — Trasformare le note in prove da risolvere. — Spiegare il motivo di Ivo prima che i fogli siano accostati.",
+    "iteration": 4
   }
 ]

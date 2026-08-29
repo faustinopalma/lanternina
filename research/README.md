@@ -66,7 +66,7 @@ Stated here rather than discovered in a pull request.
 
 - **A model standing in for an adolescent is a model writing what it thinks an adolescent would write.** That is a genre, not a person. A high score here means the afternoon survived a plausible reading; it does not mean anybody enjoyed it. The loop exists to make the first pass cheap, and it is meant to be replaced at the top by people.
 - **No page is drawn.** An image is about 25 s and four cents, and this loop measures whether an afternoon works rather than whether it is pretty, so a sheet reaches the stand-in as the words that would be lettered onto it. Whether the drawing works is measured separately, by hand.
-- **A branch that says `ask` ends the run.** The continuer is a second prompt with its own failures, and scoring a mixture of the two would produce a number that cannot say which one it is about. Those runs are recorded as ending `way_out`.
+- **A branch that says `ask` ends the run.** The continuer is a second prompt with its own failures, and scoring a mixture of the two would produce a number that cannot say which one it is about. Those runs end `asked`, which is where *the apparatus* stopped and not where the afternoon did — the first run filed them as `way_out` and so reported that no afternoon ever reached its close, which was half true and read as worse than it was.
 - **The judge and the devisor are the same family of model.** A shared blind spot is invisible to this apparatus by construction.
 - **The axes are not independent.** An afternoon that cannot be started scores badly on most of them, so the mean across axes is a summary and not a measurement.
 
