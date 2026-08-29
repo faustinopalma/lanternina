@@ -1,0 +1,92 @@
+[
+  {
+    "household": "poco-e-vicino",
+    "title": "La deviazione di Passo Grigio",
+    "experienceId": "aftn-2edc6c7c",
+    "themes": [
+      "Ferrovie",
+      "Cartografia",
+      "Ritorni",
+      "Decisioni",
+      "Tracce"
+    ],
+    "minutes": 68,
+    "moments": 5,
+    "mood": "una giornata storta: poca voglia, e niente di lungo",
+    "weight": "standard",
+    "ending": "stopped",
+    "reached": "return-map",
+    "minutesPlayed": 44,
+    "sheets": [
+      {
+        "momentId": "map-arrives",
+        "sheet": "[map] La deviazione di Passo Grigio\nAppunto di Nora per l’ultima corsa attraverso Passo Grigio.\nIl tratto continuo era ufficiale; quello spezzato non lo diventò.\nIl deposito riceveva i carri soltanto da est.\nMargine: «Da una carrozza, basta una luce.»\n— Tratto che sembra per le merci (a_box)\n— Ciò che smentisce le merci (a_line)\n— Perché Nora tracciò la deviazione (some_lines)",
+        "came": "marks",
+        "reading": "Una linea a matita sopra il tratto spezzato, un cerchio attorno all’ultimo edificio e «non merci» scritto vicino al deposito; il riquadro e le righe restano vuoti.",
+        "why": "Ho fatto i segni chiesti sul foglio e poi l’ho posato sul vetro, senza compilare le parti che non dicevano cosa scrivere."
+      }
+    ],
+    "appraisal": {
+      "axes": {
+        "canBeStarted": {
+          "score": 5,
+          "quote": "Prendi la carta ferroviaria.",
+          "says": "La situazione è già davanti alla persona e il primo gesto fisico è esplicito."
+        },
+        "sheetStandsAlone": {
+          "score": 1,
+          "quote": "senza compilare le parti che non dicevano cosa scrivere.",
+          "says": "La persona non poteva ricavare dal foglio da solo che cosa andasse scritto negli spazi rimasti vuoti."
+        },
+        "oneThingAtATime": {
+          "score": 5,
+          "quote": "Cerchia l’ultimo edificio.",
+          "says": "Ogni istruzione è breve, separata e richiede una sola azione."
+        },
+        "everyStepLeavesAMark": {
+          "score": 3,
+          "quote": "Guarda una volta la frase nel margine.",
+          "says": "Questo passaggio richiede soltanto di guardare e non lascia alcun segno verificabile."
+        },
+        "questionHasAWrittenAnswer": {
+          "score": 1,
+          "quote": "— Perché Nora tracciò la deviazione (some_lines)",
+          "says": "Il foglio pone la domanda centrale, ma nessun ultimo aiuto ne fornisce una risposta da scrivere."
+        },
+        "canBeAbandoned": {
+          "score": 5,
+          "quote": "Riprendi la carta ferroviaria.",
+          "says": "La via d’uscita recupera direttamente l’oggetto che la persona aveva appena posato e consente di finire senza completare altro."
+        },
+        "worthTheHour": {
+          "score": 3,
+          "quote": "La deviazione arriva da ovest.",
+          "says": "Il mistero ferroviario è specifico e produce segni concreti, ma la scoperta ottenuta resta piccola e incompleta."
+        },
+        "notASchoolSheet": {
+          "score": 2,
+          "quote": "Scrivi «non merci».",
+          "says": "La voce detta la risposta da copiare invece di partecipare alla scoperta come qualcuno ugualmente interessato."
+        }
+      },
+      "worstLine": "— Perché Nora tracciò la deviazione (some_lines)",
+      "whatToChangeInThePrompt": "Imporre che ogni domanda comparsa sul foglio abbia un’istruzione chiara per registrare la risposta e che l’ultimo aiuto scriva esplicitamente quella risposta.",
+      "howItWentInAWord": "stopped"
+    },
+    "seconds": 124.9,
+    "spent": {
+      "deployment": "gpt-5.6-sol-2026-07-09",
+      "request_id": "05e24cc0-0dc7-4b11-922f-6a1ff025e151",
+      "input_tokens": 5599,
+      "output_tokens": 6959,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 4201,
+      "size": "",
+      "quality": ""
+    },
+    "transcript": "TITOLO: La deviazione di Passo Grigio\nCOME VA LA GIORNATA: una giornata storta: poca voglia, e niente di lungo\nPESO SCELTO: standard\n\n[hand_over] Una linea fuori posto\n  display: Nel vassoio c’è una carta ferroviaria.\n  display: Nora la lasciò per l’ultima corsa.\n  display: Una linea termina fuori percorso.\n  display: Prendi la carta ferroviaria.\n  foglio consegnato:\n    [map] La deviazione di Passo Grigio\n    Appunto di Nora per l’ultima corsa attraverso Passo Grigio.\n    Il tratto continuo era ufficiale; quello spezzato non lo diventò.\n    Il deposito riceveva i carri soltanto da est.\n    Margine: «Da una carrozza, basta una luce.»\n    — Tratto che sembra per le merci (a_box)\n    — Ciò che smentisce le merci (a_line)\n    — Perché Nora tracciò la deviazione (some_lines)\n\n[say] Segui la deviazione\n  display: Prendi una matita.\n  display: Segui il tratto spezzato.\n  display: Cerchia l’ultimo edificio.\n  display: Lascia la traccia sulla carta.\n\n[say] Non era per le merci\n  display: Guarda il deposito sulla carta.\n  display: I carri entravano soltanto da est.\n  display: La deviazione arriva da ovest.\n  display: Scrivi «non merci».\n\n[collect] La carta ritorna\n  display: Guarda una volta la frase nel margine.\n  display: Posa la carta ferroviaria sul vetro.\n  display: Lascia visibili i segni.\n  display: La sala legge ciò che resta.\n  il foglio torna: marks\n    sul foglio: Una linea a matita sopra il tratto spezzato, un cerchio attorno all’ultimo edificio e «non merci» scritto vicino al deposito; il riquadro e le righe restano vuoti.\n    dice: Ho fatto i segni chiesti sul foglio e poi l’ho posato sul vetro, senza compilare le parti che non dicevano cosa scrivere.\n  ha smesso qui\n  via d'uscita: La linea conservata\n    display: Riprendi la carta ferroviaria.\n    display: Tieni il segno che hai lasciato.\n    display: Il pomeriggio è finito.",
+    "overview": "Un’indagine quieta dentro una vecchia carta ferroviaria, tra linee che sembrano tecniche e una scelta che invece riguarda un ritorno. Si resta al tavolo con una matita, seguendo una deviazione impossibile finché il suo senso cambia. L’atmosfera è sospesa, asciutta e leggermente malinconica; la pagina finita rimane come una mappa e un messaggio insieme.",
+    "script": "IL MONDO A Passo Grigio la luce resta verde anche dopo il tramonto. La sala delle carte odora di carta umida e carbone freddo. Le linee mai percorse rimangono sulle mappe quando qualcuno le ha desiderate abbastanza; nessuno parla degli orologi. LA VIA D’ENTRATA Nel vassoio della stampante si trova oggi una carta ferroviaria che non appartiene a questa casa. Qualcuno prende la carta ferroviaria. Una linea spezzata lascia il percorso ufficiale, sfiora un deposito e termina accanto a un edificio isolato. LA DOMANDA Perché Nora tracciò la deviazione? Nora voleva rassicurare chi tornava: da una carrozza avrebbe visto una luce. Per un po’ sembra un percorso più breve verso il deposito; l’ipotesi si rompe quando la linea arriva dal lato in cui i carri non entravano e prosegue verso l’edificio isolato. Chi conservava la carta voleva sapere se archiviarla come proposta ferroviaria; ora può riconoscerla come messaggio personale. I BATTITI La carta appare nel vassoio e fa prendere in mano una deviazione che non dovrebbe esserci. La linea spezzata viene seguita con la matita e lascia una traccia visibile. L’ultimo edificio incontrato viene cerchiato e obbliga a guardare oltre il deposito. La direzione ammessa per i carri viene accostata alla deviazione e fa scrivere «non merci». Questo è il battito che rovescia la cosa: la scorciatoia plausibile diventa un percorso inutile al deposito. La frase sul margine viene messa accanto all’edificio cerchiato e fa annotare un motivo possibile. Questo è il battito in cui arriva la risposta: la deviazione offriva una luce a chi tornava. La carta torna sul vetro e ciò che vi è stato aggiunto decide le ultime parole. CIÒ CHE RESTA TRATTENUTO L’incompatibilità con il deposito viene detta soltanto dopo che l’ultimo edificio è stato cerchiato. La frase sul margine diventa una testimonianza soltanto dopo che è stato scritto «non merci». Il motivo di Nora viene consegnato soltanto dopo che la frase e l’edificio sono stati tenuti fianco a fianco. La natura personale della carta viene nominata soltanto dopo che una risposta è rimasta scritta sulla pagina. CIÒ CHE VIENE FATTO La carta ferroviaria «La deviazione di Passo Grigio» è l’appunto privato di Nora per l’ultima corsa; dice quali linee erano ufficiali, da dove entravano i carri e che da una carrozza basta una luce; chiede di lasciare sulla mappa la falsa spiegazione, ciò che la smentisce e il motivo della deviazione. DOVE PUÒ ANDARE DIVERSAMENTE Se la carta torna piena, resta davanti a chi conduce e le ultime parole vengono scritte a partire dai segni presenti. Se torna intatta, viene ripresa dal vetro e l’edificio isolato resta senza interpretazione; il pomeriggio finisce sulla carta. Se l’interesse si ferma a metà, si cerchia soltanto l’ultimo edificio raggiunto dalla linea e si piega la carta attorno a quel segno; il pomeriggio finisce lì. CIÒ CHE LO ROVINEREBBE Dire subito che la carta è un messaggio personale. Aggiungere nozioni sulla storia ferroviaria. Pretendere una ricostruzione precisa del percorso.",
+    "iteration": 1
+  }
+]
