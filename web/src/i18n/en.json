@@ -195,6 +195,7 @@
   "devices.justNow": "heard from just now",
   "devices.heard": "heard from {ago}",
   "devices.silent": "not being heard from",
+  "devices.volts": "{volts} V",
   "devices.check": "worth a look",
   "devices.nameNote": "The name is the one that gets read out, so keep it to {limit} characters and to something recognisable. Do not put anybody's name in it.",
   "devices.namePlaceholder": "for example: the printer downstairs",

@@ -320,7 +320,9 @@ export interface Guidelines {
 
 /** One thing in the house. `label` is what it calls itself — the id a display puts on its
  *  own screen, or the mDNS service name — and `name` is what the parent called it. The
- *  battery fields are present only for a display that has reported. */
+ *  battery fields are present only for a display that has reported. `voltage` is the last
+ *  reading as it arrived, unrounded: `level` is a judgement about it and this is the
+ *  measurement, which is the half somebody can check. */
 export interface Device {
   id: string;
   kind: string;
@@ -332,6 +334,7 @@ export interface Device {
   address: string;
   nameRefused: boolean;
   level?: string;
+  voltage?: number | null;
   lastSeen: number;
   silentSeconds: number;
   silent: boolean;

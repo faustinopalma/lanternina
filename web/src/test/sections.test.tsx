@@ -373,6 +373,17 @@ describe("the devices", () => {
     expect(document.body.textContent).not.toMatch(/\d+\s?%/);
   });
 
+  it("shows the voltage it read beside the word it chose", async () => {
+    /* The thresholds behind the word are estimated from a generic discharge curve and not
+     * measured on this cell, so the reading is what somebody can check the word against. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+
+    await open(user, "Dispositivi");
+    expect(await screen.findByText(/4\.03 V/)).toBeInTheDocument();
+    expect(screen.getByText(/3\.68 V/)).toBeInTheDocument();
+  });
+
   it("shows what each thing calls itself, so a row can be matched to a shelf", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());

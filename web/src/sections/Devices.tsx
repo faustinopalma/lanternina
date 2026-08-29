@@ -40,6 +40,13 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
    * performed on a guess. A printer has no charge to report at all. */
   const level =
     device.level === undefined ? null : t(known(device.level, "level", "level.ok"));
+  /* The reading the level was decided from, shown beside it. The thresholds behind the
+   * level are estimated from a generic discharge curve rather than measured on this cell,
+   * so the number is the part a person can check the judgement against. */
+  const volts =
+    typeof device.voltage === "number"
+      ? t("devices.volts", { volts: device.voltage.toFixed(2) })
+      : null;
   const since = device.silent
     ? t("devices.silent")
     : device.silentSeconds < 120
@@ -52,7 +59,8 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
         <strong className="font-semibold">{device.label || device.id}</strong>
         <span className="text-[0.92rem] text-quiet">
           {kind}
-          {level === null ? "" : ` \u00b7 ${level}`} {"\u00b7"} {since}
+          {level === null ? "" : ` \u00b7 ${level}`}
+          {volts === null ? "" : ` \u00b7 ${volts}`} {"\u00b7"} {since}
         </span>
       </div>
       <div className="flex flex-wrap items-center gap-2.5">

@@ -195,6 +195,7 @@
   "devices.justNow": "si è fatto sentire ora",
   "devices.heard": "si è fatto sentire {ago}",
   "devices.silent": "non si fa sentire",
+  "devices.volts": "{volts} V",
   "devices.check": "da controllare",
   "devices.nameNote": "Il nome è quello che viene letto, quindi tienilo entro {limit} caratteri e riconoscibile. Non metterci il nome di una persona.",
   "devices.namePlaceholder": "per esempio: la stampante di sotto",
