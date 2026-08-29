@@ -13,7 +13,11 @@ Nothing is written yet. This directory holds the boundary, not an implementation
 
 ## TRMNL displays
 
-The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the two patches in `patches/`. `trmnl-v1.8.12-mdns-byos.patch` makes the BYOS URL `http://lanternina.local:8080` independent of the hub's DHCP address. `trmnl-v1.8.12-no-button-reset.patch` takes the two destructive presses off the button: upstream wipes the Wi-Fi credentials after five seconds of holding and the device credentials after fifteen, and holding is what somebody does when a press seems not to have registered.
+The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the three patches in `patches/`. `trmnl-v1.8.12-mdns-byos.patch` makes the BYOS URL `http://lanternina.local:8080` independent of the hub's DHCP address. `trmnl-v1.8.12-no-button-reset.patch` takes the two destructive presses off the button: upstream wipes the Wi-Fi credentials after five seconds of holding and the device credentials after fifteen, and holding is what somebody does when a press seems not to have registered.
+
+`trmnl-v1.8.12-real-battery.patch` makes the board read its battery. Upstream defines `FAKE_BATTERY_VOLTAGE` for `BOARD_XIAO_EPAPER_DISPLAY` in `src/DEV_Config.h`, with its own comment saying to take it out after testing, and `readBatteryVoltage()` therefore returns the constant `4.2f` and never touches the ADC. Both units in the house reported exactly 4.2 V for as long as anybody looked, and the panel said "batteria carica" about a display that had been off the cable for a fortnight. Everything downstream was dead with it: the 3.70 V and 3.60 V thresholds in `devices/trmnl_byos.py` could not fire, `LOW_BATTERY_REFRESH` and `CRITICAL_BATTERY_REFRESH` never applied, and the low-battery screens could not appear. The real read is in the same function, a few lines below the fake one — `PIN_VBAT_SWITCH` 6 on, eight samples of `PIN_BATTERY` 3, averaged and doubled for the divider.
+
+**Take the reading with a meter on the same cell before trusting the numbers.** The thresholds are derived from a generic single-cell LiPo curve, not measured on these cells, and a LiPo sags under load and recovers after, so one sample can read low with charge left. `ideas/02 §3` is the calibration that has not been done.
 
 Both apply with `patch --binary -p1`. The `--binary` is not optional: the vendor's `bl.cpp` has CRLF line endings, and plain `patch` strips the carriage returns out of the patch and then refuses every hunk.
 
