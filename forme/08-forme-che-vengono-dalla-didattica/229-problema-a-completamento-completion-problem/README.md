@@ -1,0 +1,18 @@
+# Problema a completamento (completion problem)
+
+- **Numero** 229 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Come la classifica l'enciclopedia** aperto
+- **In una riga** una soluzione a metà da finire.
+- **Stato della ricerca** non ancora fatta
+
+## Che cos'è
+
+## Da dove viene
+
+## Che cosa se ne sa
+
+## Esempi trovati
+
+## Una nostra versione
+
+## Che cosa cambia per noi
