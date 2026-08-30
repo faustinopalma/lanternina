@@ -417,6 +417,38 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-cruciverba-crittografato", "https://it.wikipedia.org/wiki/Cruciverba_crittografato"),
         ("it-lipogramma", "https://it.wikipedia.org/wiki/Lipogramma"),
     ],
+    "enigmi, capitolo 5, terzo blocco": [
+        ("invisible-ink", "https://en.wikipedia.org/wiki/Invisible_ink"),
+        ("mirror-writing", "https://en.wikipedia.org/wiki/Mirror_writing"),
+        ("rotational-symmetry", "https://en.wikipedia.org/wiki/Rotational_symmetry"),
+        ("microdot", "https://en.wikipedia.org/wiki/Microdot"),
+        ("micrography", "https://en.wikipedia.org/wiki/Micrography"),
+        ("cardan-grille", "https://en.wikipedia.org/wiki/Cardan_grille"),
+        ("grille-cryptography", "https://en.wikipedia.org/wiki/Grille_(cryptography)"),
+        ("null-cipher", "https://en.wikipedia.org/wiki/Null_cipher"),
+        ("visual-cryptography", "https://en.wikipedia.org/wiki/Visual_cryptography"),
+        ("zebra-puzzle", "https://en.wikipedia.org/wiki/Zebra_Puzzle"),
+        ("river-crossing-puzzle", "https://en.wikipedia.org/wiki/River_crossing_puzzle"),
+        (
+            "wolf-goat-cabbage",
+            "https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem",
+        ),
+        (
+            "missionaries-and-cannibals",
+            "https://en.wikipedia.org/wiki/Missionaries_and_cannibals_problem",
+        ),
+        ("bridge-and-torch", "https://en.wikipedia.org/wiki/Bridge_and_torch_problem"),
+        ("transport-puzzle", "https://en.wikipedia.org/wiki/Transport_puzzle"),
+        ("balance-puzzle", "https://en.wikipedia.org/wiki/Balance_puzzle"),
+        ("water-pouring-puzzle", "https://en.wikipedia.org/wiki/Water_pouring_puzzle"),
+        ("einstellung-effect", "https://en.wikipedia.org/wiki/Einstellung_effect"),
+        ("prisoners-and-hats", "https://en.wikipedia.org/wiki/Prisoners_and_hats_puzzle"),
+        ("hat-guessing-game", "https://en.wikipedia.org/wiki/Hat_guessing_game"),
+        ("common-knowledge-logic", "https://en.wikipedia.org/wiki/Common_knowledge_(logic)"),
+        ("it-steganografia", "https://it.wikipedia.org/wiki/Steganografia"),
+        ("it-inchiostro-simpatico", "https://it.wikipedia.org/wiki/Inchiostro_simpatico"),
+        ("it-griglia-di-cardano", "https://it.wikipedia.org/wiki/Griglia_di_Cardano"),
+    ],
 }
 
 
