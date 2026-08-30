@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 158 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 164 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -169,12 +169,12 @@
 150. [Enigma di situazione (lateral thinking)](05-enigmi/150-enigma-di-situazione-lateral-thinking/README.md) · fatta
 151. [Paradosso](05-enigmi/151-paradosso/README.md) · fatta
 152. [Problema impossibile](05-enigmi/152-problema-impossibile/README.md) · fatta
-153. [Problema di ottimizzazione](05-enigmi/153-problema-di-ottimizzazione/README.md) · —
-154. [Sudoku e affini (Nikoli)](05-enigmi/154-sudoku-e-affini-nikoli/README.md) · —
-155. [Nonogramma / picross](05-enigmi/155-nonogramma-picross/README.md) · —
-156. [Problema di scacchi](05-enigmi/156-problema-di-scacchi/README.md) · —
-157. [Enigma di teoria dei giochi](05-enigmi/157-enigma-di-teoria-dei-giochi/README.md) · —
-158. [Enigma auto-referenziale](05-enigmi/158-enigma-auto-referenziale/README.md) · —
+153. [Problema di ottimizzazione](05-enigmi/153-problema-di-ottimizzazione/README.md) · fatta
+154. [Sudoku e affini (Nikoli)](05-enigmi/154-sudoku-e-affini-nikoli/README.md) · fatta
+155. [Nonogramma / picross](05-enigmi/155-nonogramma-picross/README.md) · fatta
+156. [Problema di scacchi](05-enigmi/156-problema-di-scacchi/README.md) · fatta
+157. [Enigma di teoria dei giochi](05-enigmi/157-enigma-di-teoria-dei-giochi/README.md) · fatta
+158. [Enigma auto-referenziale](05-enigmi/158-enigma-auto-referenziale/README.md) · fatta
 159. [Puzzle a incastro (jigsaw)](05-enigmi/159-puzzle-a-incastro-jigsaw/README.md) · —
 160. [Tangram e puzzle di tassellazione](05-enigmi/160-tangram-e-puzzle-di-tassellazione/README.md) · —
 161. [Puzzle di dissezione](05-enigmi/161-puzzle-di-dissezione/README.md) · —
