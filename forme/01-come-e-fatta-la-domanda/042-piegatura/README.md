@@ -3,7 +3,7 @@
 - **Numero** 42 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
 - **Si chiama anche** piegatura, origami, piega, kirigami, pop-up
 - **In una riga** origami, e in generale una forma che nasce da una sequenza di gesti.
-- **Fonti** `origami.txt`, presa il 30 agosto 2026; Huzita-Hatori e' a memoria
+- **Fonti** `origami.txt` e `huzita-hatori-axioms.txt`, lette il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -21,7 +21,9 @@ Parti mobili:
 
 L'origami giapponese ha una notazione internazionale, il sistema **Yoshizawa–Randlett**, con simboli per la piega a valle, a monte, il capovolgimento, la piega inversa. È un linguaggio che si legge senza parole e attraversa le lingue.
 
-Ha anche una matematica sua: gli assiomi di Huzita–Hatori descrivono che cosa si può costruire piegando, e si può fare più che con riga e compasso — la trisezione dell'angolo, per esempio, che con riga e compasso è impossibile.
+Ha anche una matematica sua. Gli assiomi della piegatura descrivono che cosa si può costruire piegando un foglio, e sono più potenti di riga e compasso: l'assioma 6 — la piega di Beloch, dal nome di Margharita P. Beloch, che nel 1936 mostrò come usarla per risolvere le equazioni cubiche generali — può avere fino a tre soluzioni, dove riga e compasso si fermano a due (`huzita-hatori-axioms.txt`, letta il 30 agosto 2026). I primi quattro assiomi, da soli, danno un sistema **più debole** di riga e compasso; è il quinto a pareggiare i conti e il sesto a superarli.
+
+Sull'attribuzione era stato scritto qualcosa di sbagliato, ed è stato corretto: i primi sette assiomi li trova **Jacques Justin nel 1986**; gli assiomi da 1 a 6 li riscopre Humiaki Huzita e li presenta nel 1991 alla prima conferenza internazionale sull'origami nell'educazione e nella terapia; il settimo lo riscopre **Koshiro Hatori nel 2001**, e lo trova anche Robert J. Lang. La stessa fonte li chiama **assiomi di Huzita–Justin**.
 
 E ha applicazioni serie: pannelli solari che si aprono nello spazio, stent che si dilatano, airbag.
 
@@ -32,13 +34,13 @@ E ha applicazioni serie: pannelli solari che si aprono nello spazio, stent che s
 - **Pop-up** — la piega che fa apparire una figura quando si apre.
 - **Piegatura funzionale** — buste, scatole, barche.
 - **Tassellazione piegata** — motivi che si ripetono, come il Miura-ori.
-- **Assiomi di Huzita–Hatori** — la geometria della piega.
+- **Assiomi di Huzita–Justin** — la geometria della piega, sette operazioni elementari.
 - **Fortune teller** — il gioco di carta con i numeri sotto le alette.
 - **Piegatura come meccanismo** — la busta che nasconde una previsione (28).
 
 ## Che cosa se ne sa
 
-Fonte: `_reference/esercizi-e-sfide/origami.txt`, presa il 30 agosto 2026, per la notazione e le applicazioni. Huzita–Hatori è a memoria e **va verificato**.
+Fonti: `_reference/esercizi-e-sfide/origami.txt`, presa il 30 agosto 2026, per la notazione e le applicazioni; `huzita-hatori-axioms.txt`, letta lo stesso giorno, per gli assiomi. L'attribuzione degli assiomi era stata scritta a memoria ed era sbagliata: il dettaglio sta in `OSSERVAZIONI.md`.
 
 Tre osservazioni per noi. **La verifica è nell'oggetto**: la piega combacia o no, e si vede. Nessuno corregge.
 

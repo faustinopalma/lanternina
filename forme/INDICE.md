@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 61 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 78 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -63,23 +63,23 @@
 53. [Contare](02-che-cosa-mette-in-moto-la-risposta/053-contare/README.md) · fatta
 54. [Misurare](02-che-cosa-mette-in-moto-la-risposta/054-misurare/README.md) · fatta
 55. [Confrontare](02-che-cosa-mette-in-moto-la-risposta/055-confrontare/README.md) · fatta
-56. [Ordinare](02-che-cosa-mette-in-moto-la-risposta/056-ordinare/README.md) · —
-57. [Raggruppare](02-che-cosa-mette-in-moto-la-risposta/057-raggruppare/README.md) · —
-58. [Cercare](02-che-cosa-mette-in-moto-la-risposta/058-cercare/README.md) · —
-59. [Escludere](02-che-cosa-mette-in-moto-la-risposta/059-escludere/README.md) · —
-60. [Dedurre](02-che-cosa-mette-in-moto-la-risposta/060-dedurre/README.md) · —
-61. [Indurre](02-che-cosa-mette-in-moto-la-risposta/061-indurre/README.md) · —
-62. [Abdurre](02-che-cosa-mette-in-moto-la-risposta/062-abdurre/README.md) · —
-63. [Inferire da un'assenza](02-che-cosa-mette-in-moto-la-risposta/063-inferire-da-un-assenza/README.md) · —
-64. [Simulare](02-che-cosa-mette-in-moto-la-risposta/064-simulare/README.md) · —
-65. [Provare](02-che-cosa-mette-in-moto-la-risposta/065-provare/README.md) · —
-66. [Progettare](02-che-cosa-mette-in-moto-la-risposta/066-progettare/README.md) · —
-67. [Immaginare](02-che-cosa-mette-in-moto-la-risposta/067-immaginare/README.md) · —
-68. [Trasporre](02-che-cosa-mette-in-moto-la-risposta/068-trasporre/README.md) · —
-69. [Vincolare](02-che-cosa-mette-in-moto-la-risposta/069-vincolare/README.md) · —
-70. [Decidere](02-che-cosa-mette-in-moto-la-risposta/070-decidere/README.md) · —
-71. [Valutare](02-che-cosa-mette-in-moto-la-risposta/071-valutare/README.md) · —
-72. [Negoziare](02-che-cosa-mette-in-moto-la-risposta/072-negoziare/README.md) · —
+56. [Ordinare](02-che-cosa-mette-in-moto-la-risposta/056-ordinare/README.md) · fatta
+57. [Raggruppare](02-che-cosa-mette-in-moto-la-risposta/057-raggruppare/README.md) · fatta
+58. [Cercare](02-che-cosa-mette-in-moto-la-risposta/058-cercare/README.md) · fatta
+59. [Escludere](02-che-cosa-mette-in-moto-la-risposta/059-escludere/README.md) · fatta
+60. [Dedurre](02-che-cosa-mette-in-moto-la-risposta/060-dedurre/README.md) · fatta
+61. [Indurre](02-che-cosa-mette-in-moto-la-risposta/061-indurre/README.md) · fatta
+62. [Abdurre](02-che-cosa-mette-in-moto-la-risposta/062-abdurre/README.md) · fatta
+63. [Inferire da un'assenza](02-che-cosa-mette-in-moto-la-risposta/063-inferire-da-un-assenza/README.md) · fatta
+64. [Simulare](02-che-cosa-mette-in-moto-la-risposta/064-simulare/README.md) · fatta
+65. [Provare](02-che-cosa-mette-in-moto-la-risposta/065-provare/README.md) · fatta
+66. [Progettare](02-che-cosa-mette-in-moto-la-risposta/066-progettare/README.md) · fatta
+67. [Immaginare](02-che-cosa-mette-in-moto-la-risposta/067-immaginare/README.md) · fatta
+68. [Trasporre](02-che-cosa-mette-in-moto-la-risposta/068-trasporre/README.md) · fatta
+69. [Vincolare](02-che-cosa-mette-in-moto-la-risposta/069-vincolare/README.md) · fatta
+70. [Decidere](02-che-cosa-mette-in-moto-la-risposta/070-decidere/README.md) · fatta
+71. [Valutare](02-che-cosa-mette-in-moto-la-risposta/071-valutare/README.md) · fatta
+72. [Negoziare](02-che-cosa-mette-in-moto-la-risposta/072-negoziare/README.md) · fatta
 
 ## 3. Su che cosa arriva la domanda
 
