@@ -130,6 +130,38 @@ Le voci 50-72 descrivono verbi cognitivi invece che forme di pagina, e per quest
 
 **Stampare insieme la casella scomoda e quella comoda** rende l'ammissione una risposta prevista invece che una confessione. Parente dell'autorizzazione al vuoto, schede 011, 014, 022. — voce 70, decidere.
 
+## Quello che ha detto il capitolo dei supporti
+
+Le voci 73-82 non descrivono forme ma canali, e per questo si comportano come un secondo asse: quasi ogni voce dei capitoli precedenti si può ripetere su un supporto diverso e diventa un'altra cosa.
+
+**Un supporto porta una consegna o porta uno stato, e non tutti e due.** Il foglio contiene il compito; il pannello dice a che punto siamo. Il capitolo ci è arrivato due volte per strade indipendenti — dalla voce 74, display e dalla voce 82, rete di supporti — dopo che la voce 63, inferire da un'assenza aveva già mostrato che quattro righe non sono un foglio più piccolo. Finora quasi tutti gli esempi dell'enciclopedia hanno trattato il display come una consegna abbreviata, e sembra la scelta sbagliata.
+
+**La proprietà che divide i supporti in due famiglie è se si guardano tutti insieme.** Foglio, stanza e oggetto sì; voce, video e display no. La prima famiglia porta bene le strutture — cose che *stanno*, e che si leggono per contrasto; la seconda porta bene i processi — cose che *accadono*. È il criterio più semplice trovato finora per dire quale supporto vuole una forma, e va provato all'indietro su tutto l'elenco. — voci 73, 77 e 78.
+
+**Il tempo non è un supporto accanto agli altri: è una dimensione che attraversa tutti.** Ogni forma si può chiedere in due tempi, e in molti casi diventa un'altra forma. È la seconda trasformazione universale incontrata, dopo il domandare invece che rispondere. — voce 80, tempo.
+
+**La casa ha già una rete di quattro canali e non l'abbiamo mai usata.** Foglio stampato, pannello, fotografia di ritorno, orologio. Quasi tutti gli esempi scritti finora immaginano un foglio da solo. Distribuire una forma su due di questi quattro non costa niente e produce una cosa diversa. — voce 82, rete di supporti.
+
+**La fotografia è quello che fa entrare nel sistema i supporti che non ha.** Non fabbrica oggetti, non tocca la stanza, non vede muoversi nessuno; ma un oggetto costruito, una stanza disposta e una posa arrivano tutti come immagine. È il ponte fra i canali che mancano e quello che c'è, e conferma da un'altra strada quello che la voce 49, fotografia diceva. — voci 75, 78 e 79.
+
+**Quello che manca entra come esito, mai come processo.** Quanti passi hai fatto, dove sei arrivato, in che ordine l'altro ha tirato fuori le cose. La restrizione produce consegne più precise di quelle che si farebbero con una telecamera o un microfono, perché obbliga a chiedere una cosa invece di guardare. È la stessa osservazione già fatta per il suono e il gesto, e adesso vale per cinque canali su dieci. — voci 76, 77, 79 e 81.
+
+**L'affordance e «lo spazio stampato è la consegna vera» sembrano lo stesso fenomeno.** Una riga da tre centimetri e un incastro a forma di stella fanno lo stesso lavoro: dicono che cosa si può fare senza dirlo. Gibson lo chiama relazionale — non è una proprietà dell'oggetto ma della coppia — e questo spiega perché la stessa scheda non consegni la stessa domanda a due persone. — voce 75, oggetto fisico.
+
+**Il controllo dell'errore vale anche per lo spazio.** La porta si apre o no, la cosa fuori posto è stata trovata o no. È la terza volta che questa idea di Montessori ricompare fuori dal suo contesto: sugli oggetti, sulle relazioni (taglia-e-scegli) e adesso sulle stanze. Sta diventando l'osservazione più trasversale dell'enciclopedia. — voci 75 e 78.
+
+**«Una volta sola» è una proprietà che il foglio non ha.** Un testo che passa e non torna produce un compito diverso dallo stesso testo stampato, e la differenza non è la difficoltà: è che il secondo si può controllare. La voce lo fa naturalmente; il display lo fa sostituendo quello che mostrava. — voci 74 e 76.
+
+**Togliere si nota meno che aggiungere,** nello spazio come sulla carta. Un oggetto in più in una stanza conosciuta si vede; uno in meno quasi mai. È la voce 63, inferire da un'assenza in tre dimensioni. — voce 78, ambiente.
+
+**Una persona è l'unico supporto che porta dentro materiale non previsto.** Tutto il resto contiene quello che ci abbiamo messo. Se si vuole che in un pomeriggio entri qualcosa di vero, quella è la porta — e il prezzo è che chi progetta non sa che cosa uscirà, e deve reggere anche il caso in cui non esca niente. — voce 81, altra persona.
+
+**Un foglio indirizzato a qualcun altro in casa è una forma che l'elenco non nomina.** Il sistema stampa, chi risponde fa da postino. È il modo più economico di far esistere una seconda persona, e aggiunge una terza via d'uscita alle due già trovate per le forme a due — sostituire l'altro con un insieme dato, o usare una procedura che non richieda fiducia.
+
+**Ogni rimando fra supporti è un punto in cui qualcuno si perde,** e chi progetta non lo vede perché conosce il percorso. Negli ARG a rimettere in carreggiata è la comunità dei giocatori; in una casa con una persona sola non c'è nessuno. Il rimedio è la ridondanza, cioè l'opposto di quello che rende una rete interessante. — voce 82, rete di supporti.
+
+**Il numero scomodo torna, e qui è di passi.** «Trentadue passi in una direzione qualsiasi» toglie la scelta della destinazione, che è la parte che blocca. Stessa leva del vincolo di materiale della voce 66, progettare e del numero di gruppi della voce 57, classificare.
+
 ## Domande aperte per la rassegna
 
 **Serve una forma di pagina per i fogli da smontare?** Un foglio con pezzi da ritagliare non si legge, si smonta. Da contare quante voci dell'elenco la chiedono. — scheda 010.
@@ -153,6 +185,22 @@ Le voci 50-72 descrivono verbi cognitivi invece che forme di pagina, e per quest
 
 **Il ridisegno *as built*** — ridisegnare una cosa com'è venuta davvero, non come la si era progettata — è una forma che manca, fra lo schizzo tecnico e il registro. — voce 66, progettare.
 
+**Che cosa resta dell'escape room senza il tempo e senza la squadra?** Le fonti danno il cronometro e il gruppo come caratteristiche del genere, senza separarli. Una casa con una persona sola non ha né l'uno né l'altro, e prima di prendere qualcosa da lì bisogna sapere quale dei due faceva il lavoro. — voce 78, ambiente.
+
+**Ridondanza o complementarità.** Ripetere la stessa cosa su due canali spreca ma non esclude nessuno; distribuire pezzi diversi obbliga ad averli visti tutti. Nessuna fonte lo affronta, ed è il vero parametro di ogni forma su più supporti. — voce 82, rete di supporti.
+
+**Il curatore fittizio.** Nel romanzo epistolare qualcuno dentro il libro dichiara di aver solo raccolto e ordinato i documenti, e questo risolve in una riga il problema di chi parla. In un sistema in cui a parlare è una macchina, è la cosa da guardare con più attenzione di tutto il capitolo. — voce 82, rete di supporti.
+
+**Un oggetto opaco — che si tocca e non si vede — non ha nessuna voce nell'elenco.** Il sacchetto in cui si infila la mano è una forma antica e produce descrizioni che nessuna immagine produce. — voce 75, oggetto fisico.
+
+**L'oggetto che si guarda di sfuggita.** Lo spago appeso di Weiser, la sfera dell'Ambient Orb: un dato mappato su una dimensione sola, senza parole, che si legge dalla porta. Nessuna voce dell'elenco la descrive. — voce 74, display.
+
+**Il time-lapse fatto con quattro fotografie.** Cambiare la scala del tempo per rendere visibile un processo non richiede un video: bastano quattro immagini e una data sotto ciascuna. In quella versione entra in casa, e manca dall'elenco. — voce 77, video.
+
+**L'interruzione voluta.** Zeigarnik dice che il non finito resta più accessibile del finito. Un pomeriggio che si ferma a metà apposta è una cosa diversa da uno che finisce, e non è chiaro se sia una crudeltà o una risorsa. — voce 80, tempo.
+
+**Chi allestisce e chi risponde paga.** Ogni forma che chiede una stanza preparata costa lavoro a un adulto; ogni forma che chiede a una persona impegna qualcuno che non ha scelto. In una casa la disponibilità non è simmetrica e il rifiuto non è libero. Nessuna delle fonti lette lo tratta. — voci 78 e 81.
+
 **Quante forme si reggono su un numero che chi scrive non conosce?** «Ci sono sette cose fuori posto in questa casa» funziona perché la verifica sta fuori dal foglio. Che cosa succede quando quel numero è sbagliato. — voce 58, cercare.
 
 ## Quello che è stato verificato, e come
@@ -174,23 +222,43 @@ Il 30 agosto 2026 sono state scaricate 47 pagine nuove in `_reference/esercizi-e
 - **Photovoice**: sviluppata nel **1992** da Caroline C. Wang, Università del Michigan, e Mary Ann Burris, Ford Foundation a Pechino; si appoggia esplicitamente a Freire. (`photovoice.txt`)
 - **Le mappe concettuali** sono di **Joseph D. Novak** e del suo gruppo alla Cornell, negli **anni Settanta**, nate per rappresentare la conoscenza scientifica emergente degli studenti. (`concept-map.txt`)
 - **Dalcroze**, **Orff**, **Kodály**, **Schafer**: l'euritmica di Émile Jaques-Dalcroze è di inizio Novecento e ha influenzato gli altri due metodi; l'Orff Schulwerk è di **Carl Orff e Gunild Keetman, anni Venti**; il metodo Kodály nasce in Ungheria a metà Novecento ed è patrimonio UNESCO dal **2016**; Murray Schafer (1933-2021) è l'autore del *World Soundscape Project* e di *The Tuning of the World*, **1977**. (`dalcroze-eurhythmics.txt`, `orff-schulwerk.txt`, `kodaly-method.txt`, `murray-schafer.txt`)
-- **Il metro**: nato durante la Rivoluzione francese come un decimilionesimo della distanza dal polo all'equatore passante per Parigi, poi il *Mètre des Archives* di platino, poi la Convenzione del Metro del **1875**, poi il krypton-86 nel **1960** e la velocità della luce nel **1983**. La data 1791 non è stata trovata nella pagina letta e **resta da verificare**. (`history-of-the-metre.txt`)
+- **Il metro**: nato durante la Rivoluzione francese come un decimilionesimo della distanza dal polo all'equatore passante per Parigi, poi il *Mètre des Archives* di platino, poi la Convenzione del Metro del **1875**, poi il krypton-86 nel **1960** e la velocità della luce nel **1983**. La data 1791 non era in questa pagina; è stata confermata il giorno stesso su altre due. (`history-of-the-metre.txt`, poi `metre.txt` e `metric-system.txt`)
+
+## Il secondo giro di verifiche, 30 agosto 2026
+
+Scaricate altre 49 pagine — i gruppi «supporti» e «da verificare, secondo giro» in `tools/fetch_exercise_sources.py` — e fatte tre ricerche fuori dalle pagine locali per le cose che nessuna pagina copriva. Sei punti su sette si sono chiusi. Nessuno è risultato sbagliato, ma due erano più poveri di come li portava la memoria.
+
+**La Question Formulation Technique — chiusa.** La pagina di Wikipedia non esiste e quella del Right Question Institute che lo script cercava dà 404; il sito dell'istituto invece risponde (`rqi-site.txt`, https://rightquestion.org/what-is-the-qft/, 30 agosto 2026). Autori: **Dan Rothstein e Luz Santana**, fondatori del Right Question Institute; l'origine dichiarata è un gruppo di genitori di una comunità povera del Massachusetts che spiegò ai due che «non sapere che cosa chiedere» li teneva fuori dalla scuola dei figli. Il libro è *Make Just One Change: Teach Students to Ask Their Own Questions*, Harvard Education Press, **2011**. I passi sono **sei**, non quattro: progettare un *Question Focus* (che non può essere una domanda), introdurre le regole, produrre domande, migliorarle, dare loro una priorità, riflettere. Le **quattro regole** sono la parte che ci serve, e sono queste: fanne quante puoi; non fermarti a discutere, giudicare o rispondere; scrivi ogni domanda esattamente com'è stata detta; trasforma ogni affermazione in domanda. Due dettagli utili: prima di cominciare si chiede al gruppo *quale regola sarà più difficile da seguire*, e chi conduce non deve dire quali siano le difficoltà; e nel passo «migliora» si classificano le domande in aperte e chiuse e poi si converte una domanda per tipo nell'altro tipo. — scheda 030.
+
+**Predict-observe-explain — chiuso.** Non c'è pagina di Wikipedia. La fonte primaria è **R. T. White e R. F. Gunstone, *Probing Understanding*, Falmer Press, 1992**, citata per esteso dagli Assessment Resource Banks del New Zealand Council for Educational Research (https://arbs.nzcer.org.nz/predict-observe-explain-poe, scheda di Chris Joyce, 2006, letta il 30 agosto 2026) e dalla pagina di Keith S. Taber (science-education-research.com, stessa data). Il dettaglio che la memoria non aveva: il modulo dell'ARB ha **quattro caselle e non tre** — previsione, *ragioni della previsione*, osservazione, spiegazione riveduta — e la casella delle ragioni è quella che rivela le teorie di chi risponde. Due limiti che la fonte dichiara: se lo si usa spesso, conviene che qualche dimostrazione non dia un esito sorprendente, altrimenti si comincia a cercare il trucco; e alcuni ricercatori sostengono che si impari di più dalle osservazioni che *confermano* la previsione, il che consiglia di non lasciare che la previsione sia un tiro a caso. — scheda 028.
+
+**La struttura del nature journaling — chiusa, e l'attribuzione era incompleta.** *I Notice, I Wonder, It Reminds Me Of* è una **Exploration Routine** del **BEETLES Project** (Science and Teaching for Field Instructors, Lawrence Hall of Science, Università della California, Berkeley; https://beetlesproject.org/resources/for-field-instructors/notice-wonder-reminds/, letta il 30 agosto 2026), non una struttura di John Muir Laws — che la usa e la insegna, ma nella pagina letta la routine ha il nome di quel progetto. Struttura: si prende un oggetto naturale, si dicono a voce ad alta *«noto…»* con un compagno, poi si condivide con il gruppo; si rifà con *«mi chiedo…»* e con *«mi ricorda…»*. Gli obiettivi dichiarati includono uno che ci riguarda: **far capire che un'osservazione descrittiva è una cosa diversa da un'opinione o da un'identificazione**. La fonte riferisce che molti istruttori la indicano come il loro strumento più efficace, il che è un dato di reputazione e non una misura. — scheda 022.
+
+**Perec e il Dogma 95 — confermati.** *La Disparition* è del **1969**, 300 pagine, lipogramma senza la lettera e, sotto vincolo oulipiano; la traduzione inglese di **Gilbert Adair**, *A Void*, ha vinto il Scott Moncrieff Prize nel 1995. Le traduzioni hanno tutte tenuto il vincolo cambiando lettera: la spagnola è senza a, la russa senza о, la giapponese senza le sillabe con il suono «i» (`a-void.txt`, `georges-perec.txt`). Il **Dogme 95** è di **Lars von Trier e Thomas Vinterberg**, annunciato il **13 marzo 1995** a Parigi, al convegno *Le cinéma vers son deuxième siècle*, con volantini rossi lanciati a una platea perplessa; i due dicono di aver scritto manifesto e *Voto di castità* in quarantacinque minuti, e il manifesto ricalca nell'attacco il saggio di Truffaut del 1954. Le regole sono **dieci**. Il primo film Dogme è *Festen* di Vinterberg, **1998**. Il particolare più utile: entrambi gli autori hanno poi «confessato» di aver infranto le proprie regole — Vinterberg per aver coperto una finestra, von Trier per aver usato musica di sottofondo (`dogme-95.txt`). — voce 69, vincolare.
+
+**La data del 1791 per il metro — confermata**, e la pagina che serviva non era quella cercata. Sta in `metre.txt`: «il metro fu originariamente definito nel 1791 dall'Assemblea Nazionale francese come un decimilionesimo della distanza dall'equatore al Polo Nord lungo un cerchio massimo passante per Parigi», e in `metric-system.txt` nella stessa forma. La pagina sulla storia del metro, letta nella sessione precedente, riportava il 1791 solo in una nota bibliografica. Morale minore: una data assente da una pagina non è una data sbagliata. — voce 54, misurare.
+
+**Le graduatorie da confronto a coppie — chiuso il pezzo teorico, non quello empirico.** L'impianto esiste e ha nome, autore e data: la **legge del giudizio comparativo** di **L. L. Thurstone**, *A law of comparative judgement*, *Psychological Review* 34, 273-286, **1927** (`law-of-comparative-judgment.txt`, 30 agosto 2026). La fonte è netta su che cosa sia: in termini psicometrici moderni non è una legge ma un **modello di misura**, e cioè un'ipotesi che i dati possono confermare o no; se i dati concordano con il modello, se ne ricava una scala. Nota anche che Andrich (1978) ha mostrato che il caso 5 dovrebbe dare in linea di principio gli stessi risultati del modello di Rasch, e che l'Analytic Hierarchy Process si appoggia allo stesso principio. **Non c'è, nelle pagine lette, nessun confronto misurato fra graduatorie da confronto a coppie e graduatorie da rubrica.** Quella resta l'affermazione a memoria. — scheda 009, voci 56 e 70.
+
+**La penny task — non chiusa.** La citazione che la memoria porta è Nickerson e Adams, *Long-term memory for a common object*, *Cognitive Psychology*, 1979. Nessuna pagina libera trovata: l'articolo su ScienceDirect è dietro autenticazione, e le pagine di Wikipedia sulla memoria a lungo termine e sulla memoria visiva scaricate apposta non lo nominano. Resta a memoria, e **va verificato**.
 
 ## Da verificare, prima di poggiarci sopra qualcosa
 
-**La struttura del nature journaling** (*noto / mi chiedo / mi ricorda*) è riportata a memoria. La pagina che lo script scaricava dava 404 e adesso risponde, ma è la pagina sbagliata: `nature-journaling.html` è la voce sulla rivista *Nature*, non sul taccuino di osservazione. Va cercata un'altra fonte. — scheda 022.
-
-**Le graduatorie da confronto a coppie sarebbero più stabili di quelle da rubrica.** È in memoria, non nelle fonti locali. Quello che le fonti dicono è un'altra cosa e più forte: metodi diversi sugli stessi dati danno graduatorie diverse. — scheda 009, voci 56 e 70.
-
-**Predict–observe–explain** — sigla, autori, data. Non è stata trovata nessuna pagina da scaricare. — scheda 028.
-
-**La Question Formulation Technique** — nome, protocollo in quattro passi, istituto. La pagina del Right Question Institute dà 404: va cercata altrove. — scheda 030.
-
 **L'obiezione che l'apprendimento per indagine renda meno a chi ha meno basi.** `docs/EVIDENCE.md §3` ha il parente stretto (Kirschner, Sweller e Clark) ma non questa. — scheda 029, voce 65.
 
-**La penny task** — la moneta disegnata a memoria. Nessuna pagina scaricata.
+**La penny task** — la moneta disegnata a memoria. Cercata il 30 agosto 2026 e non trovata in nessuna pagina libera; l'articolo di riferimento è a pagamento.
 
-**Perec, *La Disparition*, e il Dogma 95** — titoli, date e dettagli sono a memoria. — voce 69, vincolare.
+**Che una tiratura di uno dica qualcosa a chi riceve.** Nessuna misura in nessuna delle fonti lette. La tradizione delle zine mostra che la tiratura minuscola è stata usata per decenni come segno, ma questo non è un dato sull'effetto. — voce 73, foglio stampato.
+
+**Quanto pesa una frase che scompare rispetto a una che resta.** Il display è l'unico supporto che il sistema abbia in grado di sostituire quello che mostrava. Nessuna delle fonti sulla carta elettronica o sulla *calm technology* misura niente del genere. — voce 74, display.
+
+**Quanto vale davvero la memoria dello spazio.** Il metodo dei loci ha duemila anni di documentazione e nessun numero nella pagina letta. — voce 79, corpo.
+
+**«Otto-dodici minuti» per una videolezione** è un numero che circola, e la fonte lo dichiara come tale. Prima di usarlo per dimensionare qualcosa servirebbe l'esperimento da cui viene. — voce 77, video.
+
+**Del mentoring fra pari si sa poco,** e la fonte lo dice apertamente: pochi studi coerenti oltre le buone sensazioni e le amicizie. È il genere di pratica che gode di ottima reputazione senza prove, e vale la pena averlo scritto. — voce 81, altra persona.
 
 **Quanto è inaffidabile la memoria su questa roba.** Due schede su sei del capitolo 12 sono state scritte a memoria e poi corrette dalle fonti italiane appena scaricate: il lucchetto non è antico, è del 1950 e ha un autore con nome e pseudonimo; la zeppa cambia nome in *aggiunta* quando la lettera sta agli estremi. Entrambi gli errori suonavano sicuri. Adesso c'è un terzo caso, ed è il più istruttivo: gli assiomi dell'origami erano attribuiti alle due persone sbagliate, e l'attribuzione corretta — Justin 1986 — non è nemmeno nel nome con cui si citano di solito. **Su tredici cose verificate in una sessione, una era sbagliata:** è la ragione per cui ogni scheda dichiara che cosa è letto e che cosa è ricordato.
+
+Il secondo giro, sempre il 30 agosto 2026, non ha trovato errori ma ha trovato due cose **più povere** di come la memoria le portava, ed è un modo diverso di sbagliare: la Question Formulation Technique ha sei passi e non quattro, e il modulo del predict-observe-explain ha quattro caselle e non tre — in mezzo, prima dell'osservazione, quella delle *ragioni della previsione*, che è poi la casella che fa il lavoro. In tutti e due i casi la memoria aveva tenuto la parte che si racconta bene e perso quella che serve a costruire. Una terza: la struttura *noto / mi chiedo / mi ricorda* non è di John Muir Laws, è del BEETLES Project di Berkeley, che è la stessa specie di errore già visto sugli assiomi dell'origami — un metodo attribuito a chi l'ha reso famoso invece che a chi l'ha fatto.
 

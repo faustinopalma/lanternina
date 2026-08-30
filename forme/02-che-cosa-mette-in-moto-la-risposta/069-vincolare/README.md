@@ -55,7 +55,7 @@ Terza, e **va verificata**: il vincolo che il sistema non può controllare è pr
 
 ## Esempi trovati
 
-Dall'Oulipo: *La Disparition* di Georges Perec, romanzo intero senza la lettera E, e la sua traduzione italiana che ha dovuto scegliere quale lettera sacrificare. **Va verificato**: il titolo, la data e la vicenda della traduzione sono a memoria, e nessuna delle pagine locali è stata letta su questo punto.
+Dall'Oulipo: *La Disparition* di Georges Perec, **1969**, romanzo di trecento pagine intero senza la lettera e. Le traduzioni hanno tenuto il vincolo cambiando lettera: la spagnola è senza a, la russa senza о, la giapponese senza le sillabe con il suono «i»; l'inglese, *A Void* di Gilbert Adair, ha vinto lo Scott Moncrieff Prize nel 1995 (`a-void.txt`, presa il 30 agosto 2026).
 
 Dalla poesia: l'haiku, che è un vincolo di conteggio che nessuno considera un gioco.
 
@@ -63,7 +63,7 @@ Da *Oblique Strategies*: la carta pescata prima di ricominciare, che non sa nien
 
 Dalla scuola: le tre parole obbligatorie in un tema, che è la versione domestica del vocabolario obbligato.
 
-Dal cinema: il *Dogma 95*, un elenco di regole di produzione che vietano fra l'altro la musica aggiunta e le scenografie — un vincolo formale applicato a un mezzo intero. Anche questo è a memoria e **va verificato**.
+Dal cinema: il **Dogme 95** di Lars von Trier e Thomas Vinterberg, annunciato il **13 marzo 1995** a Parigi con volantini rossi lanciati a una platea perplessa. Sono dieci regole — il *Voto di castità* — che vietano fra l'altro la musica aggiunta e le scenografie costruite: un vincolo formale applicato a un mezzo intero. Il particolare più utile è la coda: entrambi gli autori hanno poi «confessato» di aver infranto le proprie regole, Vinterberg per aver coperto una finestra, von Trier per aver usato del Saint-Saëns (`dogme-95.txt`, presa il 30 agosto 2026).
 
 ## Una nostra versione
 

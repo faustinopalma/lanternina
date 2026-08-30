@@ -33,7 +33,7 @@ Nella didattica è arrivata come *comparative judgement*: invece di dare un voto
 
 ## Che cosa se ne sa
 
-Fonti scaricate il 30 agosto 2026: `educational-assessment.txt`, `rubric.txt`. Sul comparative judgement le fonti locali non hanno numeri, e non ne riporto: il fatto che le graduatorie da confronto siano più stabili di quelle da rubrica è un risultato che ho in memoria e che va verificato prima di poggiarci sopra qualcosa.
+Fonti scaricate il 30 agosto 2026: `educational-assessment.txt`, `rubric.txt`, e `law-of-comparative-judgment.txt`. Quest'ultima dà l'impianto e non l'esito: la **legge del giudizio comparativo** è di **L. L. Thurstone**, *A law of comparative judgement*, *Psychological Review* 34, 273-286, **1927**, e in termini psicometrici moderni — lo dice la fonte — non è una legge ma un **modello di misura**, cioè un'ipotesi che i dati possono confermare o no; se i dati concordano, se ne ricava una scala. Che le graduatorie da confronto siano poi più stabili di quelle da rubrica non sta in nessuna delle pagine lette: quello resta un risultato che ho in memoria e che **va verificato**.
 
 Quello che si può dire con sicurezza è strutturale, e vale per noi. **Il confronto a coppie fra due cose ammissibili non ha una risposta sbagliata.** È la sola forma a risposta chiusa di tutta la sezione 1.1 che nasca senza chiave e senza distrattori, invece che venirci ridotta.
 

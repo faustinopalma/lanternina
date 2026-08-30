@@ -39,7 +39,7 @@ Nella didattica delle scienze la misura ripetuta è il modo standard di introdur
 
 ## Che cosa se ne sa
 
-Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; la storia del metro è a memoria e **va verificata**.
+Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; la data del 1791 è stata verificata lo stesso giorno su `metre.txt` e `metric-system.txt`, che riportano entrambe la definizione data dall'Assemblea Nazionale francese in quell'anno.
 
 L'osservazione che conta per noi è pratica: **la misura col corpo toglie la dipendenza dallo strumento**, che è la prima cosa che ferma un'attività in casa. Chi non ha un metro ha comunque un piede, e una misura in piedi è una misura vera purché sia dichiarata.
 

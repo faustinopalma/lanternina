@@ -3,7 +3,7 @@
 - **Numero** 22 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
 - **Si chiama anche** diario, registro, giornale di bordo, taccuino, log
 - **In una riga** annotare quello che succede, ripetutamente.
-- **Fonti** `citizen-science.txt`, presa il 30 agosto 2026; il nature journaling e' a memoria e la fonte da' 404
+- **Fonti** `citizen-science.txt`, presa il 30 agosto 2026; per il nature journaling, la pagina del BEETLES Project, letta il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -21,7 +21,7 @@ Parti mobili:
 
 Due famiglie diverse con lo stesso nome. Il **diario intimo** è un genere letterario e privato. Il **registro** — giornale di bordo, quaderno di campagna, taccuino di laboratorio — è uno strumento di mestiere, e ha regole: si scrive sul momento, non si cancella, si data tutto.
 
-Il **nature journaling** sta in mezzo e ha una struttura codificata che vale la pena rubare: data, luogo, ora, tempo, e poi tre inviti — *noto*, *mi chiedo*, *mi ricorda*.
+Il **nature journaling** sta in mezzo e ha una struttura codificata che vale la pena rubare: data, luogo, ora, tempo, e poi tre inviti — *noto*, *mi chiedo*, *mi ricorda*. I tre inviti sono una *Exploration Routine* del **BEETLES Project** (Science and Teaching for Field Instructors, Lawrence Hall of Science, Università della California, Berkeley), non di John Muir Laws, che la usa e la insegna. Si prende un oggetto naturale e si dicono a voce le tre cose, una famiglia per volta. Uno degli obiettivi dichiarati è far capire che **un'osservazione descrittiva è una cosa diversa da un'opinione o da un'identificazione**.
 
 ## Varianti e parenti
 
@@ -34,7 +34,7 @@ Il **nature journaling** sta in mezzo e ha una struttura codificata che vale la 
 
 ## Che cosa se ne sa
 
-Fonti prese il 30 agosto 2026: `citizen-science.txt`. La pagina sul nature journaling non risponde più (404), e la struttura riportata qui sopra viene dalla mia memoria: **va verificata su una fonte prima che qualcosa la usi**.
+Fonti prese il 30 agosto 2026: `citizen-science.txt`. La struttura del nature journaling è stata verificata lo stesso giorno sulla pagina del BEETLES Project (https://beetlesproject.org/resources/for-field-instructors/notice-wonder-reminds/): i tre inviti sono quelli, e l'attribuzione corretta è al progetto e non a John Muir Laws. La fonte dice che molti istruttori la indicano come il loro strumento più efficace, che è un dato di reputazione e non una misura.
 
 Quello che la voce sulla scienza partecipata documenta bene è che **l'osservazione ripetuta da non professionisti produce dati veri e usati**, in ecologia, astronomia e meteorologia. È la ragione più forte per tenere un registro: non è un esercizio, serve a qualcuno.
 
@@ -87,4 +87,4 @@ Da scrivere fra le cose da non fare, perché non è ovvio: **il sistema non cont
 
 Due mosse da riusare. **La colonna che sembra fuori posto**, che porta l'ipotesi senza enunciarla e non costa niente a chi non la vede. E **dire per iscritto quante righe bastano** — tre — perché una tabella con cinque righe stampate ne chiede cinque, qualsiasi cosa dica il testo. È la stessa osservazione della scheda 011, risposta breve: lo spazio stampato è la consegna vera.
 
-Da verificare prima di usarla: **la struttura del nature journaling** (*noto / mi chiedo / mi ricorda*) è riportata a memoria e la fonte non risponde più. Va trovata un'altra fonte e aggiunta a `tools/fetch_exercise_sources.py`.
+Verificato il 30 agosto 2026: **la struttura del nature journaling** (*noto / mi chiedo / mi ricorda*) esiste come descritta, ed è una routine del BEETLES Project di Berkeley. Quello che resta da sapere è se abbia mai retto una misura: la pagina non ne riporta nessuna.

@@ -3,7 +3,7 @@
 - **Numero** 28 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
 - **Si chiama anche** previsione, pronostico, «cosa succedera'», predict-observe-explain, calibrazione
 - **In una riga** dire cosa succederà, prima che succeda, e poi guardare.
-- **Fonti** `inquiry-based-learning.txt`, `educational-assessment.txt`, prese il 30 agosto 2026; il POE e' a memoria
+- **Fonti** `inquiry-based-learning.txt`, `educational-assessment.txt`, prese il 30 agosto 2026; per il POE, gli Assessment Resource Banks del NZCER, letti il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,7 +19,7 @@ Parti mobili:
 
 ## Da dove viene
 
-È il cuore del metodo sperimentale, e nella didattica delle scienze ha un nome e una sigla: **predict–observe–explain** (POE), formalizzata da White e Gunstone negli anni Novanta. Si prevede, si guarda, si spiega la differenza.
+È il cuore del metodo sperimentale, e nella didattica delle scienze ha un nome e una sigla: **predict–observe–explain** (POE), sviluppato da **R. T. White e R. F. Gunstone** in *Probing Understanding*, Falmer Press, **1992**. Si prevede, si guarda, si spiega la differenza. Il modulo usato dagli Assessment Resource Banks del New Zealand Council for Educational Research ha però **quattro caselle e non tre**: previsione, *ragioni della previsione*, osservazione, spiegazione riveduta. La casella delle ragioni è quella che rivela le teorie di chi risponde, ed è la parte che di solito si perde.
 
 Ha una storia parallela nella misura delle previsioni: i **punteggi di calibrazione** (Brier, 1950) misurano quanto uno che dice «al 70 %» abbia ragione il 70 % delle volte. È una tradizione che va dai meteorologi ai forecasting tournament di Tetlock.
 
@@ -35,7 +35,7 @@ Ha una storia parallela nella misura delle previsioni: i **punteggi di calibrazi
 
 ## Che cosa se ne sa
 
-Fonti prese il 30 agosto 2026: `inquiry-based-learning.txt`, `educational-assessment.txt`. Il POE non è trattato per esteso nelle pagine scaricate: quello che scrivo qui sopra sulla sigla e sugli autori è a memoria e **va verificato**.
+Fonti prese il 30 agosto 2026: `inquiry-based-learning.txt`, `educational-assessment.txt`. Il POE non è trattato nelle pagine scaricate ed è stato verificato lo stesso giorno sulla scheda di Chris Joyce, 2006, negli Assessment Resource Banks del NZCER (https://arbs.nzcer.org.nz/predict-observe-explain-poe), che cita per esteso White e Gunstone 1992. La stessa scheda dichiara due limiti: se lo si usa spesso conviene che qualche dimostrazione non dia un esito sorprendente, altrimenti si comincia a cercare il trucco; e alcuni ricercatori sostengono che si impari di più dalle osservazioni che *confermano* la previsione, il che consiglia di non lasciare che la previsione sia un tiro a caso.
 
 Quello che le fonti sull'apprendimento per indagine sostengono è la struttura generale — partire da una domanda e da un'attesa, e poi misurare — e non un numero.
 
@@ -83,4 +83,4 @@ La piega è il meccanismo: rende la previsione non modificabile senza che nessun
 
 **La previsione puntata su di sé** (quanto ci metterò, quanto sarà difficile) è la variante che porta a un numero su una persona. Registrata qui perché l'elenco è esaustivo, e da guardare alla rassegna insieme alla voce 8, scala di accordo (Likert).
 
-Da verificare: sigla, autori e data del **predict–observe–explain** sono a memoria e non nelle fonti scaricate.
+Verificato il 30 agosto 2026: sigla, autori e data del **predict–observe–explain** sono White e Gunstone, *Probing Understanding*, 1992. Da riprendere: il modulo canonico ha quattro caselle e non tre, e la casella in più — le ragioni della previsione, scritte prima di guardare — è quella che fa il lavoro.

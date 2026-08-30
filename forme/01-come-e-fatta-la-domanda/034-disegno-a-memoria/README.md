@@ -35,7 +35,7 @@ Ha anche una tradizione artistica: la *memoria visiva* era un esercizio d'accade
 
 ## Che cosa se ne sa
 
-Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; la *penny task* è a memoria e **va verificata**.
+Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; la *penny task* è a memoria e **va verificata**. Cercata di nuovo lo stesso giorno senza esito: l'articolo di riferimento — Nickerson e Adams, *Long-term memory for a common object*, *Cognitive Psychology*, 1979 — è dietro autenticazione, e le pagine di Wikipedia sulla memoria a lungo termine e sulla memoria visiva, scaricate apposta, non lo nominano.
 
 L'osservazione che regge da sola è la ragione per cui questa forma vale: **produce una sorpresa sicura**. Chiunque disegni a memoria un oggetto quotidiano scopre di non conoscerlo, e la scoperta è su una cosa e non su di sé. Poche forme dell'elenco garantiscono una scoperta; questa la garantisce quasi sempre.
 

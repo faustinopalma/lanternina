@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 78 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 88 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -83,16 +83,16 @@
 
 ## 3. Su che cosa arriva la domanda
 
-73. [Foglio stampato](03-su-che-cosa-arriva-la-domanda/073-foglio-stampato/README.md) · —
-74. [Display](03-su-che-cosa-arriva-la-domanda/074-display/README.md) · —
-75. [Oggetto fisico](03-su-che-cosa-arriva-la-domanda/075-oggetto-fisico/README.md) · —
-76. [Voce](03-su-che-cosa-arriva-la-domanda/076-voce/README.md) · —
-77. [Video](03-su-che-cosa-arriva-la-domanda/077-video/README.md) · —
-78. [Ambiente](03-su-che-cosa-arriva-la-domanda/078-ambiente/README.md) · —
-79. [Corpo](03-su-che-cosa-arriva-la-domanda/079-corpo/README.md) · —
-80. [Tempo](03-su-che-cosa-arriva-la-domanda/080-tempo/README.md) · —
-81. [Altra persona](03-su-che-cosa-arriva-la-domanda/081-altra-persona/README.md) · —
-82. [Rete di supporti](03-su-che-cosa-arriva-la-domanda/082-rete-di-supporti/README.md) · —
+73. [Foglio stampato](03-su-che-cosa-arriva-la-domanda/073-foglio-stampato/README.md) · fatta
+74. [Display](03-su-che-cosa-arriva-la-domanda/074-display/README.md) · fatta
+75. [Oggetto fisico](03-su-che-cosa-arriva-la-domanda/075-oggetto-fisico/README.md) · fatta
+76. [Voce](03-su-che-cosa-arriva-la-domanda/076-voce/README.md) · fatta
+77. [Video](03-su-che-cosa-arriva-la-domanda/077-video/README.md) · fatta
+78. [Ambiente](03-su-che-cosa-arriva-la-domanda/078-ambiente/README.md) · fatta
+79. [Corpo](03-su-che-cosa-arriva-la-domanda/079-corpo/README.md) · fatta
+80. [Tempo](03-su-che-cosa-arriva-la-domanda/080-tempo/README.md) · fatta
+81. [Altra persona](03-su-che-cosa-arriva-la-domanda/081-altra-persona/README.md) · fatta
+82. [Rete di supporti](03-su-che-cosa-arriva-la-domanda/082-rete-di-supporti/README.md) · fatta
 
 ## 4. Come è impacchettata
 
