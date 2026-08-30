@@ -1,7 +1,7 @@
 # Decidere
 
 - **Numero** 70 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classifica l'enciclopedia** aperto
+- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** scegliere fra opzioni non ordinate, e sapere che si è scelto.
 - **Stato della ricerca** non ancora fatta
 
@@ -9,10 +9,12 @@
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna

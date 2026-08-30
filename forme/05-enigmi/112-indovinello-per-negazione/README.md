@@ -1,7 +1,7 @@
 # Indovinello per negazione
 
 - **Numero** 112 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classifica l'enciclopedia** aperto
+- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** «non ha bocca e parla».
 - **Stato della ricerca** non ancora fatta
 
@@ -9,10 +9,12 @@
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna

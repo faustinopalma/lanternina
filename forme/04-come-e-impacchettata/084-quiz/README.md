@@ -1,7 +1,7 @@
 # Quiz
 
 - **Numero** 84 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classifica l'enciclopedia** ✗ chiuso
+- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** una serie di domande con risposte giuste. ✗ chiuso.
 - **Stato della ricerca** non ancora fatta
 
@@ -9,10 +9,12 @@
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna

@@ -74,7 +74,7 @@ def folder(method: Method) -> Path:
 TEMPLATE = """# {name}
 
 - **Numero** {number} nell'enciclopedia, capitolo {chapter} — {chapter_name}{section}
-- **Come la classifica l'enciclopedia** {mark}
+- **Come la classificava il primo giro** {mark} — promemoria, non un verdetto
 - **In una riga** {gloss}
 - **Stato della ricerca** non ancora fatta
 
@@ -82,13 +82,15 @@ TEMPLATE = """# {name}
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 """
 
 
@@ -98,19 +100,29 @@ def write_one(method: Method) -> bool:
     if page.exists():
         return False
     where.mkdir(parents=True, exist_ok=True)
-    page.write_text(
-        TEMPLATE.format(
-            name=method.name,
-            number=method.number,
-            chapter=method.chapter,
-            chapter_name=method.chapter_name,
-            section=f", sezione «{method.section}»" if method.section else "",
-            mark=method.mark,
-            gloss=method.gloss,
-        ),
-        encoding="utf-8",
-    )
+    page.write_text(_filled(method), encoding="utf-8")
     return True
+
+
+def retemplate(method: Method) -> bool:
+    """Riscrive lo stub di una scheda ancora vuota; una scheda gia' fatta non si tocca."""
+    page = folder(method) / "README.md"
+    if not page.exists() or "non ancora fatta" not in _state(method):
+        return False
+    page.write_text(_filled(method), encoding="utf-8")
+    return True
+
+
+def _filled(method: Method) -> str:
+    return TEMPLATE.format(
+        name=method.name,
+        number=method.number,
+        chapter=method.chapter,
+        chapter_name=method.chapter_name,
+        section=f", sezione «{method.section}»" if method.section else "",
+        mark=method.mark,
+        gloss=method.gloss,
+    )
 
 
 def write_index(methods: list[Method]) -> None:
@@ -148,11 +160,17 @@ def _state(method: Method) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--index", action="store_true", help="riscrive solo l'indice")
-    only_index = parser.parse_args().index
+    parser.add_argument("--retemplate", action="store_true", help="riscrive gli stub ancora vuoti")
+    done = parser.parse_args()
     methods = read()
-    made = 0 if only_index else sum(write_one(one) for one in methods)
+    if done.retemplate:
+        made = sum(retemplate(one) for one in methods)
+        word = "stub riscritti"
+    else:
+        made = 0 if done.index else sum(write_one(one) for one in methods)
+        word = "cartelle nuove"
     write_index(methods)
-    print(f"{len(methods)} forme lette da {SOURCE.name}, {made} cartelle nuove")
+    print(f"{len(methods)} forme lette da {SOURCE.name}, {made} {word}")
     return 0
 
 

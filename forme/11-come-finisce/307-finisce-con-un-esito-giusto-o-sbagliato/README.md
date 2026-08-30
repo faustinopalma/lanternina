@@ -1,7 +1,7 @@
 # Finisce con un esito giusto o sbagliato
 
 - **Numero** 307 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classifica l'enciclopedia** ✗ chiuso
+- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso.
 - **Stato della ricerca** non ancora fatta
 
@@ -9,10 +9,12 @@
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna

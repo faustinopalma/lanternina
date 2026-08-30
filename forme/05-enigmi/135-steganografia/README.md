@@ -1,7 +1,7 @@
 # Steganografia
 
 - **Numero** 135 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classifica l'enciclopedia** ⊘ irraggiungibile
+- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
 - **In una riga** un messaggio nascosto dentro un altro. Praticabile nelle forme fisiche (la prima lettera di ogni riga è ⊘; la parola cerchiata è praticabile).
 - **Stato della ricerca** non ancora fatta
 
@@ -9,10 +9,12 @@
 
 ## Da dove viene
 
+## Varianti e parenti
+
 ## Che cosa se ne sa
 
 ## Esempi trovati
 
 ## Una nostra versione
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna

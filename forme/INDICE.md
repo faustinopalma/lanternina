@@ -1,6 +1,6 @@
 # Indice delle forme
 
-310 forme, 22 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+310 forme, 32 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -27,16 +27,16 @@
 20. [Tema / saggio](01-come-e-fatta-la-domanda/020-tema-saggio/README.md) · ⚠ costoso · fatta
 21. [Lettera](01-come-e-fatta-la-domanda/021-lettera/README.md) · aperto · fatta
 22. [Diario / registro](01-come-e-fatta-la-domanda/022-diario-registro/README.md) · aperto · fatta
-23. [Didascalia](01-come-e-fatta-la-domanda/023-didascalia/README.md) · aperto · —
-24. [Titolo](01-come-e-fatta-la-domanda/024-titolo/README.md) · aperto · —
-25. [Dialogo scritto](01-come-e-fatta-la-domanda/025-dialogo-scritto/README.md) · aperto · —
-26. [Istruzioni](01-come-e-fatta-la-domanda/026-istruzioni/README.md) · aperto · —
-27. [Descrizione tecnica](01-come-e-fatta-la-domanda/027-descrizione-tecnica/README.md) · aperto · —
-28. [Previsione](01-come-e-fatta-la-domanda/028-previsione/README.md) · aperto · —
-29. [Ipotesi](01-come-e-fatta-la-domanda/029-ipotesi/README.md) · aperto · —
-30. [Domanda](01-come-e-fatta-la-domanda/030-domanda/README.md) · aperto · —
-31. [Obiezione](01-come-e-fatta-la-domanda/031-obiezione/README.md) · aperto · —
-32. [Controesempio](01-come-e-fatta-la-domanda/032-controesempio/README.md) · aperto · —
+23. [Didascalia](01-come-e-fatta-la-domanda/023-didascalia/README.md) · aperto · fatta
+24. [Titolo](01-come-e-fatta-la-domanda/024-titolo/README.md) · aperto · fatta
+25. [Dialogo scritto](01-come-e-fatta-la-domanda/025-dialogo-scritto/README.md) · aperto · fatta
+26. [Istruzioni](01-come-e-fatta-la-domanda/026-istruzioni/README.md) · aperto · fatta
+27. [Descrizione tecnica](01-come-e-fatta-la-domanda/027-descrizione-tecnica/README.md) · aperto · fatta
+28. [Previsione](01-come-e-fatta-la-domanda/028-previsione/README.md) · aperto · fatta
+29. [Ipotesi](01-come-e-fatta-la-domanda/029-ipotesi/README.md) · aperto · fatta
+30. [Domanda](01-come-e-fatta-la-domanda/030-domanda/README.md) · aperto · fatta
+31. [Obiezione](01-come-e-fatta-la-domanda/031-obiezione/README.md) · aperto · fatta
+32. [Controesempio](01-come-e-fatta-la-domanda/032-controesempio/README.md) · aperto · fatta
 33. [Disegno dal vero](01-come-e-fatta-la-domanda/033-disegno-dal-vero/README.md) · aperto · —
 34. [Disegno a memoria](01-come-e-fatta-la-domanda/034-disegno-a-memoria/README.md) · aperto · —
 35. [Schizzo tecnico](01-come-e-fatta-la-domanda/035-schizzo-tecnico/README.md) · aperto · —
