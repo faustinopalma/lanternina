@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 169 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 176 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -180,13 +180,13 @@
 161. [Puzzle di dissezione](05-enigmi/161-puzzle-di-dissezione/README.md) · fatta
 162. [Puzzle di piegatura](05-enigmi/162-puzzle-di-piegatura/README.md) · fatta
 163. [Puzzle di fiammiferi / stecchini](05-enigmi/163-puzzle-di-fiammiferi-stecchini/README.md) · fatta
-164. [Labirinto su carta](05-enigmi/164-labirinto-su-carta/README.md) · —
-165. [Labirinto logico](05-enigmi/165-labirinto-logico/README.md) · —
-166. [Labirinto fisico](05-enigmi/166-labirinto-fisico/README.md) · —
-167. [Puzzle di districamento](05-enigmi/167-puzzle-di-districamento/README.md) · —
-168. [Nodi](05-enigmi/168-nodi/README.md) · —
-169. [Scatola a segreto](05-enigmi/169-scatola-a-segreto/README.md) · —
-170. [Serratura a combinazione](05-enigmi/170-serratura-a-combinazione/README.md) · —
+164. [Labirinto su carta](05-enigmi/164-labirinto-su-carta/README.md) · fatta
+165. [Labirinto logico](05-enigmi/165-labirinto-logico/README.md) · fatta
+166. [Labirinto fisico](05-enigmi/166-labirinto-fisico/README.md) · fatta
+167. [Puzzle di districamento](05-enigmi/167-puzzle-di-districamento/README.md) · fatta
+168. [Nodi](05-enigmi/168-nodi/README.md) · fatta
+169. [Scatola a segreto](05-enigmi/169-scatola-a-segreto/README.md) · fatta
+170. [Serratura a combinazione](05-enigmi/170-serratura-a-combinazione/README.md) · fatta
 171. [Puzzle a scorrimento (15, Sokoban)](05-enigmi/171-puzzle-a-scorrimento-15-sokoban/README.md) · —
 172. [Cubo di Rubik e combinatori](05-enigmi/172-cubo-di-rubik-e-combinatori/README.md) · —
 173. [Puzzle a bilanciamento](05-enigmi/173-puzzle-a-bilanciamento/README.md) · —
