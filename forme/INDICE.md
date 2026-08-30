@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 128 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 135 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -139,13 +139,13 @@
 120. [Sciarada](05-enigmi/120-sciarada/README.md) · fatta
 121. [Anagramma](05-enigmi/121-anagramma/README.md) · fatta
 122. [Acrostico](05-enigmi/122-acrostico/README.md) · fatta
-123. [Palindromo](05-enigmi/123-palindromo/README.md) · —
-124. [Lipogramma](05-enigmi/124-lipogramma/README.md) · —
-125. [Cruciverba](05-enigmi/125-cruciverba/README.md) · —
-126. [Cruciverba crittico](05-enigmi/126-cruciverba-crittico/README.md) · —
-127. [Parole crociate senza schema](05-enigmi/127-parole-crociate-senza-schema/README.md) · —
-128. [Crucipuzzle (word search)](05-enigmi/128-crucipuzzle-word-search/README.md) · —
-129. [Cifrario a sostituzione](05-enigmi/129-cifrario-a-sostituzione/README.md) · —
+123. [Palindromo](05-enigmi/123-palindromo/README.md) · fatta
+124. [Lipogramma](05-enigmi/124-lipogramma/README.md) · fatta
+125. [Cruciverba](05-enigmi/125-cruciverba/README.md) · fatta
+126. [Cruciverba crittico](05-enigmi/126-cruciverba-crittico/README.md) · fatta
+127. [Parole crociate senza schema](05-enigmi/127-parole-crociate-senza-schema/README.md) · fatta
+128. [Crucipuzzle (word search)](05-enigmi/128-crucipuzzle-word-search/README.md) · fatta
+129. [Cifrario a sostituzione](05-enigmi/129-cifrario-a-sostituzione/README.md) · fatta
 130. [Cifrario di Cesare](05-enigmi/130-cifrario-di-cesare/README.md) · —
 131. [Codice a numeri (A=1)](05-enigmi/131-codice-a-numeri-a-1/README.md) · —
 132. [Morse](05-enigmi/132-morse/README.md) · —
