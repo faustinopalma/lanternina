@@ -1,6 +1,6 @@
 # Indice delle forme
 
-310 forme, 32 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 38 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -345,3 +345,97 @@
 308. [Finisce con un punteggio](11-come-finisce/308-finisce-con-un-punteggio/README.md) · ✗ chiuso · —
 309. [Finisce con un confronto](11-come-finisce/309-finisce-con-un-confronto/README.md) · ✗ chiuso · —
 310. [Non finisce](11-come-finisce/310-non-finisce/README.md) · ✗ chiuso · —
+
+## 12. Enigmistica classica
+
+311. [Zeppa](12-enigmistica-classica/311-zeppa/README.md) · aperto · fatta
+312. [Zeppa sillabica](12-enigmistica-classica/312-zeppa-sillabica/README.md) · aperto · —
+313. [Zeppa iniziale, centrale, finale](12-enigmistica-classica/313-zeppa-iniziale-centrale-finale/README.md) · aperto · —
+314. [Scarto](12-enigmistica-classica/314-scarto/README.md) · aperto · —
+315. [Scarto sillabico](12-enigmistica-classica/315-scarto-sillabico/README.md) · aperto · —
+316. [Cambio di lettera](12-enigmistica-classica/316-cambio-di-lettera/README.md) · aperto · —
+317. [Cambio di vocale, di consonante, di sillaba](12-enigmistica-classica/317-cambio-di-vocale-di-consonante-di-sillaba/README.md) · aperto · —
+318. [Scambio](12-enigmistica-classica/318-scambio/README.md) · aperto · —
+319. [Spostamento](12-enigmistica-classica/319-spostamento/README.md) · aperto · —
+320. [Metatesi](12-enigmistica-classica/320-metatesi/README.md) · aperto · —
+321. [Antipodo](12-enigmistica-classica/321-antipodo/README.md) · aperto · —
+322. [Falso accrescitivo, falso diminutivo](12-enigmistica-classica/322-falso-accrescitivo-falso-diminutivo/README.md) · aperto · —
+323. [Sciarada](12-enigmistica-classica/323-sciarada/README.md) · aperto · —
+324. [Sciarada alterna](12-enigmistica-classica/324-sciarada-alterna/README.md) · aperto · —
+325. [Sciarada incatenata](12-enigmistica-classica/325-sciarada-incatenata/README.md) · aperto · —
+326. [Lucchetto](12-enigmistica-classica/326-lucchetto/README.md) · aperto · fatta
+327. [Lucchetto riflesso](12-enigmistica-classica/327-lucchetto-riflesso/README.md) · aperto · —
+328. [Incastro](12-enigmistica-classica/328-incastro/README.md) · aperto · —
+329. [Cerniera](12-enigmistica-classica/329-cerniera/README.md) · aperto · —
+330. [Intarsio (tarsia)](12-enigmistica-classica/330-intarsio-tarsia/README.md) · aperto · —
+331. [Anagramma](12-enigmistica-classica/331-anagramma/README.md) · aperto · —
+332. [Anagramma a frase](12-enigmistica-classica/332-anagramma-a-frase/README.md) · aperto · —
+333. [Bifronte](12-enigmistica-classica/333-bifronte/README.md) · aperto · fatta
+334. [Palindromo](12-enigmistica-classica/334-palindromo/README.md) · aperto · —
+335. [Bisenso](12-enigmistica-classica/335-bisenso/README.md) · aperto · —
+336. [Monoverbo](12-enigmistica-classica/336-monoverbo/README.md) · aperto · —
+337. [Indovinello in versi](12-enigmistica-classica/337-indovinello-in-versi/README.md) · aperto · fatta
+338. [Enigma in versi](12-enigmistica-classica/338-enigma-in-versi/README.md) · aperto · —
+339. [Poesia enigmatica](12-enigmistica-classica/339-poesia-enigmatica/README.md) · aperto · —
+340. [Quesito narrativo](12-enigmistica-classica/340-quesito-narrativo/README.md) · aperto · —
+341. [Crittografia pura](12-enigmistica-classica/341-crittografia-pura/README.md) · aperto · fatta
+342. [Crittografia perifrastica](12-enigmistica-classica/342-crittografia-perifrastica/README.md) · aperto · —
+343. [Crittografia mnemonica](12-enigmistica-classica/343-crittografia-mnemonica/README.md) · aperto · —
+344. [Crittografia sinonimica](12-enigmistica-classica/344-crittografia-sinonimica/README.md) · aperto · —
+345. [Cambio di spaziatura](12-enigmistica-classica/345-cambio-di-spaziatura/README.md) · aperto · —
+346. [Rebus](12-enigmistica-classica/346-rebus/README.md) · aperto · fatta
+347. [Rebus stereoscopico](12-enigmistica-classica/347-rebus-stereoscopico/README.md) · aperto · —
+348. [Rebus a domanda](12-enigmistica-classica/348-rebus-a-domanda/README.md) · aperto · —
+349. [Acrostico](12-enigmistica-classica/349-acrostico/README.md) · aperto · —
+350. [Mesostico, telestico](12-enigmistica-classica/350-mesostico-telestico/README.md) · aperto · —
+351. [Frase bipartita](12-enigmistica-classica/351-frase-bipartita/README.md) · aperto · —
+352. [Cruciverba](12-enigmistica-classica/352-cruciverba/README.md) · aperto · —
+353. [Cruciverba senza schema](12-enigmistica-classica/353-cruciverba-senza-schema/README.md) · aperto · —
+354. [Cruciverba crittografato](12-enigmistica-classica/354-cruciverba-crittografato/README.md) · aperto · —
+355. [Crucintarsio](12-enigmistica-classica/355-crucintarsio/README.md) · aperto · —
+356. [Crucipuzzle](12-enigmistica-classica/356-crucipuzzle/README.md) · aperto · —
+357. [Parole incrociate a schema libero](12-enigmistica-classica/357-parole-incrociate-a-schema-libero/README.md) · aperto · —
+358. [Zigzag, kakuro, crossnumber](12-enigmistica-classica/358-zigzag-kakuro-crossnumber/README.md) · aperto · —
+
+## 13. Giochi matematici e ricreativi
+
+359. [Problema di Fermi](13-giochi-matematici-e-ricreativi/359-problema-di-fermi/README.md) · aperto · —
+360. [Rompicapo classico](13-giochi-matematici-e-ricreativi/360-rompicapo-classico/README.md) · aperto · —
+361. [Crittarismo (alfametica)](13-giochi-matematici-e-ricreativi/361-crittarismo-alfametica/README.md) · aperto · —
+362. [Quadrato magico](13-giochi-matematici-e-ricreativi/362-quadrato-magico/README.md) · aperto · —
+363. [Problema di parità](13-giochi-matematici-e-ricreativi/363-problema-di-parita/README.md) · aperto · —
+364. [Invariante](13-giochi-matematici-e-ricreativi/364-invariante/README.md) · aperto · —
+365. [Principio dei cassetti](13-giochi-matematici-e-ricreativi/365-principio-dei-cassetti/README.md) · aperto · —
+366. [Problema di grafi](13-giochi-matematici-e-ricreativi/366-problema-di-grafi/README.md) · aperto · —
+367. [Gioco combinatorio imparziale](13-giochi-matematici-e-ricreativi/367-gioco-combinatorio-imparziale/README.md) · aperto · —
+368. [Successione con regola dichiarata](13-giochi-matematici-e-ricreativi/368-successione-con-regola-dichiarata/README.md) · aperto · —
+369. [Dimostrazione senza parole](13-giochi-matematici-e-ricreativi/369-dimostrazione-senza-parole/README.md) · aperto · —
+370. [Dissezione geometrica](13-giochi-matematici-e-ricreativi/370-dissezione-geometrica/README.md) · aperto · —
+371. [Costruzione con riga e compasso](13-giochi-matematici-e-ricreativi/371-costruzione-con-riga-e-compasso/README.md) · aperto · —
+372. [Aritmetica in altra base](13-giochi-matematici-e-ricreativi/372-aritmetica-in-altra-base/README.md) · aperto · —
+373. [Paradosso probabilistico](13-giochi-matematici-e-ricreativi/373-paradosso-probabilistico/README.md) · aperto · —
+374. [Automa cellulare](13-giochi-matematici-e-ricreativi/374-automa-cellulare/README.md) · aperto · —
+375. [Topologia ricreativa](13-giochi-matematici-e-ricreativi/375-topologia-ricreativa/README.md) · aperto · —
+376. [Impacchettamento e tassellazione](13-giochi-matematici-e-ricreativi/376-impacchettamento-e-tassellazione/README.md) · aperto · —
+377. [Problema di ottimizzazione con vincoli fisici](13-giochi-matematici-e-ricreativi/377-problema-di-ottimizzazione-con-vincoli-fisici/README.md) · aperto · —
+
+## 14. Percezione e inganno dell'occhio
+
+378. [Illusione ottica geometrica](14-percezione-e-inganno-dell-occhio/378-illusione-ottica-geometrica/README.md) · aperto · —
+379. [Ambiguità figura-sfondo](14-percezione-e-inganno-dell-occhio/379-ambiguita-figura-sfondo/README.md) · aperto · —
+380. [Figura reversibile](14-percezione-e-inganno-dell-occhio/380-figura-reversibile/README.md) · aperto · —
+381. [Impossibile geometrico](14-percezione-e-inganno-dell-occhio/381-impossibile-geometrico/README.md) · aperto · —
+382. [Anamorfosi](14-percezione-e-inganno-dell-occhio/382-anamorfosi/README.md) · aperto · —
+383. [Pareidolia](14-percezione-e-inganno-dell-occhio/383-pareidolia/README.md) · aperto · —
+384. [Mimetismo e camuffamento](14-percezione-e-inganno-dell-occhio/384-mimetismo-e-camuffamento/README.md) · aperto · —
+385. [Cecità al cambiamento](14-percezione-e-inganno-dell-occhio/385-cecita-al-cambiamento/README.md) · aperto · —
+386. [Trova le differenze](14-percezione-e-inganno-dell-occhio/386-trova-le-differenze/README.md) · aperto · —
+387. [Aguzza la vista](14-percezione-e-inganno-dell-occhio/387-aguzza-la-vista/README.md) · aperto · —
+388. [Oggetto nascosto in piena vista](14-percezione-e-inganno-dell-occhio/388-oggetto-nascosto-in-piena-vista/README.md) · aperto · —
+389. [Moiré](14-percezione-e-inganno-dell-occhio/389-moire/README.md) · aperto · —
+390. [Immagine da comporre in controluce](14-percezione-e-inganno-dell-occhio/390-immagine-da-comporre-in-controluce/README.md) · aperto · —
+391. [Unisci i puntini](14-percezione-e-inganno-dell-occhio/391-unisci-i-puntini/README.md) · aperto · —
+392. [Rotazione mentale](14-percezione-e-inganno-dell-occhio/392-rotazione-mentale/README.md) · aperto · —
+393. [Sezione e proiezione](14-percezione-e-inganno-dell-occhio/393-sezione-e-proiezione/README.md) · aperto · —
+394. [Prospettiva forzata](14-percezione-e-inganno-dell-occhio/394-prospettiva-forzata/README.md) · aperto · —
+395. [Stereogramma](14-percezione-e-inganno-dell-occhio/395-stereogramma/README.md) · aperto · —

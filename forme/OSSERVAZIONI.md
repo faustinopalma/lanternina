@@ -69,7 +69,15 @@ Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardando
 **La griglia stampata rende praticabile una forma lunga.** Cinque righe etichettate producono il testo di un paragrafo senza chiedere di scriverne uno. Voci 011, 022, 027.
 
 **Domandare invece che rispondere** \u00e8 una trasformazione applicabile a quasi tutte le voci del capitolo 1. Da provare sistematicamente: presa una forma qualsiasi, che cosa diventa se si chiede la domanda al posto della risposta.
+**Girare il gioco dalla parte dell'autore.** Non risolvere un anagramma ma costruirne uno, non decifrare ma cifrare. Toglie insieme il problema della generazione e quello della verifica, ed è la mossa che rende praticabile un capitolo — il 12 — altrimenti chiuso per intero. Da provare su tutte le sue voci. — schede 311, 341, 346.
 
+**Il mondo come processore di simboli.** Uno specchio, una piega, la controluce, due strisce sovrapposte: operazioni esatte su lettere che il sistema non saprebbe fare. Da censire tutte le forme del capitolo 12 che hanno un equivalente fisico. — schede 326, 333.
+
+**La consegna fatta di soli esempi risolti** è il modo giusto di aprire una forma opaca. Tre righe già tradotte spiegano una crittografia meglio di qualunque regola. — scheda 341.
+
+**La spiegazione storica come consegna.** Raccontare da dove viene una forma costa tre righe e sostituisce la spiegazione della regola, e sembra funzionare meglio. — schede 333, 346.
+
+**Il titolo come metà della consegna.** In enigmistica il nome del gioco dice la regola. È un'economia che il nostro formato non usa. — scheda 311.
 ## Domande aperte per la rassegna
 
 **Serve una forma di pagina per i fogli da smontare?** Un foglio con pezzi da ritagliare non si legge, si smonta. Da contare quante voci dell'elenco la chiedono. — scheda 010.
@@ -79,7 +87,11 @@ Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardando
 **Le forme a due tempi** — che chiedono di tornare — sono poche e ricorrenti: previsione (028), registro (022), esperimento, ripasso distanziato, gioco legacy. Da guardare insieme.
 
 **Una serie di richieste minuscole e indipendenti** (sei didascalie, tre regole da rompere) potrebbe essere una struttura di momento a s\u00e9, invece che una richiesta singola. — schede 023, 032.
+**Dove passa esattamente il limite sulle lettere?** Un modello sbaglia a contare e a permutare le lettere dentro una parola, ma sa dire come una parola comincia e come finisce. Se il confine è questo, metà del capitolo 12 è recuperabile. Da stabilire con una prova, non a intuito. — scheda 326.
 
+**Difficile e opaco non sono la stessa cosa.** Una cosa difficile si affronta e non viene; una cosa opaca non si affronta nemmeno. Sembrano chiedere rimedi diversi, e nell'elenco sono confuse. — scheda 341.
+
+**Generare forme cambiando una regola sola.** Sciarada, sciarada incatenata, biscarto, lucchetto, lucchetto riflesso: ogni gioco nasce cambiando una regola del precedente, e ci sono voluti cent'anni. È un metodo, e si potrebbe applicare a tutto l'elenco. — scheda 326.
 ## Da verificare, prima di poggiarci sopra qualcosa
 
 **La struttura del nature journaling** (*noto / mi chiedo / mi ricorda*) è riportata a memoria e la fonte dà 404 — l'unica delle 75. — scheda 022.
@@ -93,3 +105,5 @@ Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardando
 **Lakatos, *Proofs and Refutations* (1976)**, e il **compito 2-4-6 di Wason**. — scheda 032.
 
 **L'obiezione che l'apprendimento per indagine renda meno a chi ha meno basi.** `docs/EVIDENCE.md §3` ha il parente stretto (Kirschner, Sweller e Clark) ma non questa. — scheda 029.
+
+**Quanto è inaffidabile la memoria su questa roba.** Due schede su sei del capitolo 12 sono state scritte a memoria e poi corrette dalle fonti italiane appena scaricate: il lucchetto non è antico, è del 1950 e ha un autore con nome e pseudonimo; la zeppa cambia nome in *aggiunta* quando la lettera sta agli estremi. Entrambi gli errori suonavano sicuri. È la ragione per cui ogni scheda dichiara che cosa è letto e che cosa è ricordato.

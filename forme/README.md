@@ -1,6 +1,6 @@
 # Le forme
 
-Una cartella per ogni modo di porre a un adolescente una cosa da fare. Trecentodieci, elencate in `docs/EXERCISE-FORMS.md`, che resta l'unica lista: una cartella qui esiste perché una voce esiste là, e `tools/forme_scaffold.py` costruisce l'albero da quel file.
+Una cartella per ogni modo di porre a un adolescente una cosa da fare. Sono elencate in `docs/EXERCISE-FORMS.md`, che resta l'unica lista: una cartella qui esiste perché una voce esiste là, e `tools/forme_scaffold.py` costruisce l'albero da quel file. L'elenco cresce quando si trova un filone che mancava.
 
 Questa è la ricerca su cui poggia tutto il resto del progetto, e si fa **libera**. Mentre si compila l'elenco non si applica nessuna regola di questo progetto: una forma si descrive per quello che è, con la sua storia, i suoi esempi e quello che si sa di lei, anche se è una forma che qui non si userebbe mai. Filtrare mentre si elenca vuol dire elencare solo quello a cui si era già pensato, e sarebbe la fine della ricerca prima di cominciarla.
 

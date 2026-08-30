@@ -105,7 +105,7 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
     ],
     "mani e mondo": [
         ("citizen-science", "https://en.wikipedia.org/wiki/Citizen_science"),
-        ("nature-journaling", "https://en.wikipedia.org/wiki/Nature_journaling"),
+        ("nature-journaling", "https://en.wikipedia.org/wiki/Nature_journal"),
         ("origami", "https://en.wikipedia.org/wiki/Origami"),
         ("bookbinding", "https://en.wikipedia.org/wiki/Bookbinding"),
         ("cyanotype", "https://en.wikipedia.org/wiki/Cyanotype"),
@@ -113,10 +113,61 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("cartography", "https://en.wikipedia.org/wiki/Cartography"),
         ("oral-history", "https://en.wikipedia.org/wiki/Oral_history"),
     ],
+    # In italiano: la tassonomia dei giochi enigmistici non ha un corrispettivo inglese.
+    "enigmistica": [
+        ("it-enigmistica", "https://it.wikipedia.org/wiki/Enigmistica"),
+        ("it-gioco-enigmistico", "https://it.wikipedia.org/wiki/Gioco_enigmistico"),
+        ("it-crittografia-gioco", "https://it.wikipedia.org/wiki/Crittografia_(enigmistica)"),
+        ("it-rebus", "https://it.wikipedia.org/wiki/Rebus"),
+        ("it-sciarada", "https://it.wikipedia.org/wiki/Sciarada"),
+        ("it-lucchetto", "https://it.wikipedia.org/wiki/Lucchetto_(enigmistica)"),
+        ("it-zeppa", "https://it.wikipedia.org/wiki/Zeppa_(enigmistica)"),
+        ("it-scarto", "https://it.wikipedia.org/wiki/Scarto_(enigmistica)"),
+        ("it-cambio", "https://it.wikipedia.org/wiki/Cambio_(enigmistica)"),
+        ("it-bifronte", "https://it.wikipedia.org/wiki/Bifronte_(enigmistica)"),
+        ("it-incastro", "https://it.wikipedia.org/wiki/Incastro_(enigmistica)"),
+        ("it-anagramma", "https://it.wikipedia.org/wiki/Anagramma"),
+        ("it-palindromo", "https://it.wikipedia.org/wiki/Palindromo"),
+        ("it-indovinello", "https://it.wikipedia.org/wiki/Indovinello"),
+        ("it-settimana-enigmistica", "https://it.wikipedia.org/wiki/La_Settimana_Enigmistica"),
+        ("it-cruciverba", "https://it.wikipedia.org/wiki/Cruciverba"),
+        ("it-acrostico", "https://it.wikipedia.org/wiki/Acrostico"),
+        ("it-scrittura-speculare", "https://it.wikipedia.org/wiki/Scrittura_speculare"),
+        ("word-ladder", "https://en.wikipedia.org/wiki/Word_ladder"),
+        ("ambigram", "https://en.wikipedia.org/wiki/Ambigram"),
+        ("rebus-principle", "https://en.wikipedia.org/wiki/Rebus#Rebus_principle"),
+    ],
+    "matematica e percezione": [
+        ("fermi-problem", "https://en.wikipedia.org/wiki/Fermi_problem"),
+        ("martin-gardner", "https://en.wikipedia.org/wiki/Martin_Gardner"),
+        ("recreational-mathematics", "https://en.wikipedia.org/wiki/Recreational_mathematics"),
+        ("verbal-arithmetic", "https://en.wikipedia.org/wiki/Verbal_arithmetic"),
+        ("magic-square", "https://en.wikipedia.org/wiki/Magic_square"),
+        ("pigeonhole-principle", "https://en.wikipedia.org/wiki/Pigeonhole_principle"),
+        ("invariant-mathematics", "https://en.wikipedia.org/wiki/Invariant_(mathematics)"),
+        ("nim", "https://en.wikipedia.org/wiki/Nim"),
+        ("proof-without-words", "https://en.wikipedia.org/wiki/Proof_without_words"),
+        ("dissection-puzzle", "https://en.wikipedia.org/wiki/Dissection_puzzle"),
+        ("monty-hall-problem", "https://en.wikipedia.org/wiki/Monty_Hall_problem"),
+        ("cellular-automaton", "https://en.wikipedia.org/wiki/Cellular_automaton"),
+        ("optical-illusion", "https://en.wikipedia.org/wiki/Optical_illusion"),
+        ("multistable-perception", "https://en.wikipedia.org/wiki/Multistable_perception"),
+        ("impossible-object", "https://en.wikipedia.org/wiki/Impossible_object"),
+        ("anamorphosis", "https://en.wikipedia.org/wiki/Anamorphosis"),
+        ("pareidolia", "https://en.wikipedia.org/wiki/Pareidolia"),
+        ("change-blindness", "https://en.wikipedia.org/wiki/Change_blindness"),
+        ("moire-pattern", "https://en.wikipedia.org/wiki/Moir%C3%A9_pattern"),
+        ("mental-rotation", "https://en.wikipedia.org/wiki/Mental_rotation"),
+        ("camouflage", "https://en.wikipedia.org/wiki/Camouflage"),
+        ("forced-perspective", "https://en.wikipedia.org/wiki/Forced_perspective"),
+    ],
 }
 
 
 def fetch(name: str, url: str) -> tuple[str, int | str]:
+    where = WHERE / f"{name}.html"
+    if where.exists():
+        return name, -1
     request = urllib.request.Request(
         url, headers={"User-Agent": "lanternina-research/1.0 (documentation gathering)"}
     )
@@ -125,7 +176,7 @@ def fetch(name: str, url: str) -> tuple[str, int | str]:
             body = answer.read()
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         return name, f"{type(exc).__name__}: {exc}"
-    (WHERE / f"{name}.html").write_bytes(body)
+    where.write_bytes(body)
     return name, len(body)
 
 
@@ -143,10 +194,12 @@ def main() -> int:
                 print(f"  ✗ {got}: {size}")
                 lines.append(f"- ✗ `{got}` — {url} — {size}")
                 missing += 1
+            elif size < 0:
+                lines.append(f"- `{got}.html` — {url} — già presente")
             else:
                 print(f"  ✓ {got}  {size // 1024} kB")
                 lines.append(f"- `{got}.html` — {url} — {size // 1024} kB")
-            time.sleep(0.4)
+                time.sleep(0.4)
         lines.append("")
     (WHERE / "SOURCES.md").write_text("\n".join(lines), encoding="utf-8")
     total = sum(len(one) for one in SOURCES.values())

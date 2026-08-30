@@ -1,0 +1,20 @@
+# Aritmetica in altra base
+
+- **Numero** 372 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
+- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
+- **In una riga** contare in cinque, in due, in sessanta.
+- **Stato della ricerca** non ancora fatta
+
+## Che cos'è
+
+## Da dove viene
+
+## Varianti e parenti
+
+## Che cosa se ne sa
+
+## Esempi trovati
+
+## Una nostra versione
+
+## Da riprendere alla rassegna

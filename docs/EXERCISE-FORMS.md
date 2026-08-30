@@ -416,6 +416,131 @@ L'asse più trascurato: da dove viene la domanda.
 
 ---
 
+## 12. Enigmistica classica
+
+La tradizione italiana dei giochi in versi ha una tassonomia più fine di qualunque altra parte di questo elenco, con definizioni codificate, nomi stabili da un secolo e una rivista che li pubblica ogni settimana. Va tenuta separata dal capitolo 5 perché lì gli enigmi sono classificati per che cosa chiedono, e qui per **come è fatta la trasformazione fra le parole**.
+
+Quasi tutte queste forme lavorano sulle lettere dentro le parole. È esattamente quello che un modello linguistico non sa fare (`ideas/10 §6`), e resta il caso più interessante dell'elenco: un intero corpo di forme, molto raffinato, che il nostro sistema non può generare — ma che una persona può costruire su un foglio, e che il sistema può stampare se qualcun altro lo ha fatto.
+
+### 12.1 Giochi che tolgono, aggiungono o cambiano lettere
+
+311. **Zeppa** — si aggiunge una lettera e si ottiene un'altra parola: *cane → carne*.
+312. **Zeppa sillabica** — si aggiunge una sillaba: *pane → pantane*.
+313. **Zeppa iniziale, centrale, finale** — la posizione dell'aggiunta è dichiarata nel nome del gioco.
+314. **Scarto** — si toglie una lettera: *scarpa → scapa*, ma solo se resta una parola vera.
+315. **Scarto sillabico** — si toglie una sillaba.
+316. **Cambio di lettera** — se ne sostituisce una: *pane → pace*.
+317. **Cambio di vocale, di consonante, di sillaba** — la stessa cosa, ristretta.
+318. **Scambio** — due lettere si scambiano di posto: *carta → tarca*.
+319. **Spostamento** — una lettera si sposta altrove nella parola.
+320. **Metatesi** — due sillabe si scambiano.
+321. **Antipodo** — si sposta la prima lettera in fondo o viceversa: *amaro → maroa*.
+322. **Falso accrescitivo, falso diminutivo** — *matto* e *mattone* non sono parenti, e il gioco vive di questo.
+
+### 12.2 Giochi che uniscono o dividono parole
+
+323. **Sciarada** — due parole si accostano e ne fanno una terza: *pane + rone → panerone*.
+324. **Sciarada alterna** — le lettere delle due parole si alternano.
+325. **Sciarada incatenata** — l'ultima sillaba della prima è la prima della seconda.
+326. **Lucchetto** — due parole con una parte comune che sparisce: la parte comune è la chiave.
+327. **Lucchetto riflesso** — lo stesso, con una delle due letta al contrario.
+328. **Incastro** — una parola si infila dentro un'altra: *pane* dentro *ora* dà *panora*.
+329. **Cerniera** — due parole condividono lettere centrali che compaiono in entrambe.
+330. **Intarsio (tarsia)** — una parola si distribuisce dentro un'altra a lettere alterne.
+331. **Anagramma** — le stesse lettere in altro ordine.
+332. **Anagramma a frase** — un'intera frase riordinata in un'altra frase sensata.
+333. **Bifronte** — una parola che letta al rovescio ne dà un'altra: *amor / Roma*.
+334. **Palindromo** — una parola o frase che si legge uguale nei due sensi.
+
+### 12.3 Giochi che lavorano sul senso
+
+335. **Bisenso** — una sola parola con due significati, e la definizione li tiene insieme.
+336. **Monoverbo** — una definizione che si risolve con una parola sola, di solito con un doppio senso.
+337. **Indovinello in versi** — la forma classica: rime, un soggetto travestito, e una lettura di superficie che regge da sola.
+338. **Enigma in versi** — l'indovinello lungo, spesso in due parti, in cui la lettura di superficie racconta una scena intera.
+339. **Poesia enigmatica** — un componimento con dentro una soluzione, e nessuna consegna che lo dichiari.
+340. **Quesito narrativo** — una situazione raccontata in prosa e una domanda in fondo, senza giochi di lettere.
+
+### 12.4 Crittografie
+
+341. **Crittografia pura** — una sequenza di lettere e numeri da leggere come frase: `A B C = alfabeto muto`.
+342. **Crittografia perifrastica** — l'esposto è una frase da riscrivere in un'altra che dice la stessa cosa in modo obliquo.
+343. **Crittografia mnemonica** — l'esposto è una frase fatta o un proverbio, e la soluzione lo spiega.
+344. **Crittografia sinonimica** — la soluzione è un sinonimo dell'esposto, letto diversamente.
+345. **Cambio di spaziatura** — la stessa sequenza di lettere divisa in un altro modo dà un'altra frase.
+
+### 12.5 Rebus e forme miste
+
+346. **Rebus** — immagini con lettere sopra, e la lettura produce una frase.
+347. **Rebus stereoscopico** — due vignette che condividono elementi, e la lettura passa dall'una all'altra.
+348. **Rebus a domanda** — la soluzione risponde a una domanda posta dal disegno stesso.
+349. **Acrostico** — le iniziali dei versi compongono una parola.
+350. **Mesostico, telestico** — la stessa cosa con le lettere centrali o finali.
+351. **Frase bipartita** — una frase che cambia significato a seconda di dove si mette la pausa.
+
+### 12.6 Griglie
+
+352. **Cruciverba** — la griglia con le definizioni.
+353. **Cruciverba senza schema** — la griglia va costruita insieme alle parole.
+354. **Cruciverba crittografato** — ogni lettera è un numero, e non ci sono definizioni.
+355. **Crucintarsio** — parole date da incastrare in una griglia vuota.
+356. **Crucipuzzle** — parole nascoste in una griglia di lettere.
+357. **Parole incrociate a schema libero** — le caselle nere le decide chi compila.
+358. **Zigzag, kakuro, crossnumber** — griglie con numeri invece che lettere.
+
+---
+
+## 13. Giochi matematici e ricreativi
+
+Un filone con una letteratura sua — Dudeney, Loyd, Gardner, Lucas — e una proprietà rara: quasi ogni voce qui ha una soluzione verificabile senza che nessuno giudichi.
+
+359. **Problema di Fermi** — stimare a spanne una quantità che nessuno sa, scomponendola. *Quanti accordatori di pianoforte ci sono a Chicago.*
+360. **Rompicapo classico** — i problemi di Dudeney e Loyd: enunciato di tre righe, soluzione di una pagina.
+361. **Crittarismo (alfametica)** — un'operazione in cui le lettere stanno per cifre: `SEND + MORE = MONEY`.
+362. **Quadrato magico** — righe, colonne e diagonali con la stessa somma.
+363. **Problema di parità** — si dimostra che una cosa è impossibile guardando che qualcosa non cambia mai.
+364. **Invariante** — la stessa idea generalizzata: si cerca la quantità che resta uguale.
+365. **Principio dei cassetti** — se ci sono più oggetti che cassetti, un cassetto ne ha due.
+366. **Problema di grafi** — i ponti di Königsberg, il commesso viaggiatore, il giro del cavallo.
+367. **Gioco combinatorio imparziale** — Nim e parenti: c'è una strategia vincente e si può trovare.
+368. **Successione con regola dichiarata** — a differenza della voce 149, la regola è data e si applica.
+369. **Dimostrazione senza parole** — un disegno che rende evidente un'identità.
+370. **Dissezione geometrica** — tagliare una figura e ricomporla in un'altra.
+371. **Costruzione con riga e compasso** — e le costruzioni impossibili, che sono la parte interessante.
+372. **Aritmetica in altra base** — contare in cinque, in due, in sessanta.
+373. **Paradosso probabilistico** — Monty Hall, il paradosso dei compleanni, il paradosso di Simpson.
+374. **Automa cellulare** — regole semplici su una griglia che producono cose non previste.
+375. **Topologia ricreativa** — il nastro di Möbius, i nodi, le superfici che si tagliano male.
+376. **Impacchettamento e tassellazione** — quante ce ne stanno, e perché non di più.
+377. **Problema di ottimizzazione con vincoli fisici** — il percorso più breve fatto con uno spago.
+
+---
+
+## 14. Percezione e inganno dell'occhio
+
+Forme che non chiedono di sapere né di ragionare, ma di guardare — e che quasi tutte funzionano su un foglio stampato in bianco e nero.
+
+378. **Illusione ottica geometrica** — Müller-Lyer, Ponzo, Zöllner: due segmenti uguali che non sembrano.
+379. **Ambiguità figura-sfondo** — il vaso di Rubin, dove si vede una cosa o l'altra e mai tutte e due.
+380. **Figura reversibile** — il cubo di Necker, l'anatra-coniglio.
+381. **Impossibile geometrico** — il triangolo di Penrose, le scale di Escher.
+382. **Anamorfosi** — un'immagine che si compone solo guardandola da un punto o in uno specchio.
+383. **Pareidolia** — vedere facce e figure dove non ce ne sono.
+384. **Mimetismo e camuffamento** — trovare l'animale nella fotografia.
+385. **Cecità al cambiamento** — due immagini quasi uguali, e la differenza non salta all'occhio.
+386. **Trova le differenze** — la versione da settimanale della precedente.
+387. **Aguzza la vista** — trovare un oggetto dentro una scena affollata.
+388. **Oggetto nascosto in piena vista** — la lettera rubata.
+389. **Moiré** — due trame sovrapposte che generano una terza figura.
+390. **Immagine da comporre in controluce** — due fogli che insieme dicono una cosa che nessuno dei due dice.
+391. **Unisci i puntini** — la figura appare dall'ordine.
+392. **Rotazione mentale** — quale di queste è lo stesso oggetto girato.
+393. **Sezione e proiezione** — dato un solido, che ombra fa.
+394. **Prospettiva forzata** — un oggetto vicino che sembra grande, e la fotografia che lo prova.
+395. **Stereogramma** — due immagini che diventano profondità quando gli occhi si arrendono.
+
+---
+
 ## Che cosa manca a questo elenco
 
 Quattro cose, dette qui invece che scoperte dopo.
