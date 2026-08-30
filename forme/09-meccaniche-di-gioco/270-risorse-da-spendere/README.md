@@ -1,7 +1,7 @@
 # Risorse da spendere
 
 - **Numero** 270 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ⚠ costoso: introduce la possibilità di sprecare.
+- **In una riga** quantita limitate da distribuire fra usi alternativi.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

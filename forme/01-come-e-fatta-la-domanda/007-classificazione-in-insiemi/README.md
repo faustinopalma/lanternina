@@ -1,7 +1,6 @@
 # Classificazione in insiemi
 
 - **Numero** 7 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** «quali di questi sono...». Praticabile se gli insiemi si distinguono guardando, non ricordando.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -59,7 +58,7 @@ Da laboratorio: la chiave dicotomica dei manuali di botanica — «foglie oppost
 
 Il divieto esplicito nella consegna («non deve essere grandi, medie, piccole») chiude la strada facile e vale più di tre righe di incoraggiamento. L'ultima riga è la stessa mossa della scheda 6: chiedere dove la classificazione fatica, che è la cosa che una griglia con le caselle non può chiedere.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta a criterio libero, chiusa a criterio dato con caselle.**
 

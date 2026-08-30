@@ -1,7 +1,7 @@
 # Acrostico
 
 - **Numero** 122 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **In una riga** ⊘ stesso limite.
+- **In una riga** le iniziali dei versi compongono una parola.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

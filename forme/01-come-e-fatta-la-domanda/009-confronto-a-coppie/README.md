@@ -1,7 +1,6 @@
 # Confronto a coppie
 
 - **Numero** 9 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** quale dei due preferisci. Praticabile e non è una domanda con risposta: è una preferenza, e come tale non ha esito.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -57,7 +56,7 @@ Montessori e materiali sensoriali: le coppie di tavolette da confrontare per gra
 
 Il confronto è la struttura, ma la richiesta è rovesciata — non le differenze, che saltano all'occhio, ma le **permanenze**, che chiedono di guardare a lungo. La domanda finale è un confronto a coppie puro: nessuna risposta è giusta, e serve solo a lasciare qualcosa in mano a chi non ha voglia delle tre righe.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e l'enciclopedia lo dice già. La ricerca aggiunge che è **la forma più sottovalutata di tutta la sezione**.
 

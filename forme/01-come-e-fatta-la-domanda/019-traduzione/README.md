@@ -1,7 +1,6 @@
 # Traduzione
 
 - **Numero** 19 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** da una lingua a un'altra, o da un registro a un altro.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -58,7 +57,7 @@ Storico: la stele di Rosetta, che è una legenda lunga duemila anni.
 
 Il sistema non genera nessun codice: lo genera chi legge, e quindi non c'è niente da verificare. Le quattro righe sono un tetto, non un obiettivo. L'ultima domanda è la parte che rende la cosa una riflessione sulla traduzione invece che un gioco di segni: **ogni codice perde qualcosa**, e accorgersi di che cosa è il contenuto vero.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta nella direzione giusta, chiusa nell'altra.**
 

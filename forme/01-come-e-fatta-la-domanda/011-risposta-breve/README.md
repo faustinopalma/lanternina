@@ -1,7 +1,6 @@
 # Risposta breve
 
 - **Numero** 11 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** una parola o una riga.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -56,7 +55,7 @@ Da gioco: le schede dei giochi di ruolo, dove ogni riga breve — *una cosa che 
 
 Sei risposte brevi, e quattro sono senza risposta giusta. La quinta — *un segno che qualcuno ci ha lasciato* — chiede di guardare invece che di sapere. L'ultima riga della consegna è quella che fa il lavoro più grosso: **autorizza il vuoto per iscritto**, e senza quell'autorizzazione un modulo con una riga vuota è una domanda a cui si è mancato.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, ed è la forma più usata dal nostro sistema senza che sia mai stata guardata da vicino.
 

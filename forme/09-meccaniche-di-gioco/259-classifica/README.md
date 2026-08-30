@@ -1,7 +1,7 @@
 # Classifica
 
 - **Numero** 259 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ✗ chiuso.
+- **In una riga** i partecipanti in fila secondo un punteggio.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

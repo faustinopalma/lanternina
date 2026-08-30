@@ -1,7 +1,7 @@
 # Distintivi / badge
 
 - **Numero** 258 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ✗ chiuso.
+- **In una riga** un segno che attesta una cosa fatta e resta visibile.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

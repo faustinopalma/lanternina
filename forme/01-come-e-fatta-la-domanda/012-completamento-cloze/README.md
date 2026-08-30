@@ -1,8 +1,7 @@
 # Completamento (cloze)
 
 - **Numero** 12 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** ⚠ costoso
-- **In una riga** un testo con dei buchi. ⚠ costoso: le linee guida easy-to-read chiedono di non spezzare il testo, e un buco è un testo spezzato. Praticabile quando il buco è alla fine di una riga e non in mezzo.
+- **In una riga** un testo con dei buchi.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -45,7 +44,7 @@ Soggettivo, dalla fonte: «Ho visto un uomo stendere la giacca su una pozzangher
 
 ## Una nostra versione
 
-Il buco in mezzo alla frase non ci sta — spezza il testo, ed è quello che le regole sul testo facile chiedono di non fare. Il buco **in fondo** ci sta, e l'ultimo esempio trovato indica la strada: un cloze dove le risposte sono tutte buone non è più un cloze, è un innesco.
+Il buco in mezzo alla frase spezza il testo, ed è quello che le linee guida sul testo facile chiedono di non fare. Il buco **in fondo** regge, e l'ultimo esempio trovato indica la strada: un cloze dove le risposte sono tutte buone non è più un cloze, è un innesco.
 
 > **Il diario del custode, pagina strappata**
 >
@@ -64,9 +63,9 @@ Il buco in mezzo alla frase non ci sta — spezza il testo, ed è quello che le 
 
 Ogni buco sta alla fine, come chiede la fonte per restringere in modo naturale, e ogni riga prima del buco è un testo intero e leggibile. «Non ci sono più» toglie la chiave in due parole. E le tre righe insieme costruiscono un martedì che nessuno ha scritto.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-L'enciclopedia la dà **⚠ costosa**, con la ragione del testo spezzato. La ricerca conferma quella ragione e ne trova una più grave.
+La ragione che si conosceva — il testo spezzato — regge, e ce n'è una più grave.
 
 **Il cloze misura cose diverse in lettori diversi** — previsione locale per chi fatica, comprensione del brano per chi no. Un sistema che si rivolge a tutta la gamma senza sapere dove sia chi legge non può usare uno strumento così: darebbe due compiti credendo di darne uno, e i due non sono nemmeno paragonabili in difficoltà.
 

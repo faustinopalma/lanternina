@@ -1,7 +1,6 @@
 # Elenco
 
 - **Numero** 14 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** «scrivi tre cose che...».
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -58,7 +57,7 @@ Da museo: «tre cose in questa sala che potresti tenere in mano», stampato sull
 
 La seconda colonna è quello che trasforma una lista in un pensiero, e costa mezza riga. L'ultima frase fa due cose: avverte che l'ultimo costa — il che rende il costo previsto invece che subito — e autorizza a fermarsi con una formula che non contiene la parola «basta» né la parola «puoi».
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e va promossa a forma di riserva del formato: quando un momento non sa che forma prendere, l'elenco è quella che sbaglia meno.
 

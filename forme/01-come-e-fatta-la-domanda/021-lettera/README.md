@@ -1,7 +1,6 @@
 # Lettera
 
 - **Numero** 21 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** un testo con un destinatario. Molto più leggero del tema, perché il destinatario dà la forma.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -64,7 +63,7 @@ Da mestiere: la lettera di reclamo, che ha una struttura ferrea e uno scopo veri
 
 «Sappi che non può leggerti» toglie il giudizio in cinque parole. **La prima frase stampata** è la scala di aiuti dentro la consegna: chi si blocca ha già l'inizio, e l'inizio è la parte cara. Quattro righe stampate dicono quanto basta.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e va promossa: è la forma da usare ogni volta che si vorrebbe chiedere un testo.
 

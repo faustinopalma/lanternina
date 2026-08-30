@@ -1,7 +1,7 @@
 # Ricompensa a intervalli variabili
 
 - **Numero** 262 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ✗ chiuso, e il più pericoloso: è la meccanica delle slot machine.
+- **In una riga** la ricompensa arriva ogni tanto e non si sa quando.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

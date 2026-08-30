@@ -1,8 +1,7 @@
 # Tema / saggio
 
 - **Numero** 20 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** ⚠ costoso
-- **In una riga** un testo lungo su un argomento assegnato. ⚠ costoso: è la forma scolastica per eccellenza, e il tono di questo sistema è esplicitamente non scolastico.
+- **In una riga** un testo lungo su un argomento assegnato.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -44,7 +43,7 @@ Da rivista: il pezzo di apertura, che ha un destinatario, una lunghezza e una sc
 
 ## Una nostra versione
 
-Il tema assegnato non ci sta. Quello che ci sta è **un testo lungo con un destinatario, un motivo e un argomento minuscolo**.
+Il tema assegnato non regge in questo formato. Quello che regge è **un testo lungo con un destinatario, un motivo e un argomento minuscolo**.
 
 > **Istruzioni per il prossimo**
 >
@@ -60,9 +59,9 @@ Non c'è un numero di righe, e non serve: «una cosa sola, spiegata bene» dà i
 
 Se chi scrive si ferma a tre righe, le tre righe sono le istruzioni e vanno bene.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-L'enciclopedia lo dà **⚠ costoso**, con la ragione che è la forma scolastica per eccellenza. La ricerca conferma, e sposta il motivo: il problema non è il tono, è **il foglio bianco senza destinatario**.
+La fama del tema viene dalla scuola, e il difetto che la letteratura gli attribuisce — nella correzione entrano calligrafia ed esposizione — dipende interamente dall'esistenza di chi corregge. Quello che resta, dove nessuno corregge, è **il foglio bianco senza destinatario**: un costo di partenza, non un difetto di principio.
 
 Il difetto documentato del tema — che nella correzione entrano calligrafia ed esposizione — **da noi non esiste**, perché nessuno corregge. Vale la pena dirlo, perché significa che il testo lungo non è vietato per una ragione di principio: è solo caro da cominciare.
 

@@ -1,8 +1,7 @@
 # Scelta multipla a risposte multiple
 
 - **Numero** 3 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ✗ chiuso
-- **In una riga** «segna tutte quelle che valgono». ✗ chiuso.
+- **In una riga** «segna tutte quelle che valgono».
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -33,7 +32,7 @@ La forma incapsulata, che è quella che la fonte raccomanda: le opzioni diventan
 
 ## Una nostra versione
 
-Segnare caselle non ci sta. **Raggruppare, sì** — ed è la stessa operazione mentale senza la griglia di correzione.
+Segnare caselle non regge in questo formato. **Raggruppare, sì** — ed è la stessa operazione mentale senza la griglia di correzione.
 
 > **Due mucchi**
 >
@@ -51,8 +50,8 @@ Le otto figurine si possono dividere in molti modi, e nessuno è la chiave. Chi 
 
 La seconda riga — *rifallo con una regola diversa* — è la parte che vale: costringe ad accorgersi che il primo criterio era uno fra tanti.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-Resta **✗ chiusa** come item con caselle e chiavi.
+Come item con caselle e chiavi è la scheda 001 distribuita su più righe, e ne eredita tutto.
 
 La sostituzione è **la classificazione a criterio libero** (voce 57 dell'enciclopedia, «raggruppare»), che tiene il contenuto cognitivo e butta la griglia. Non serve una regola nuova: serve ricordare che quando un'attività vuole chiedere «quali di questi», la forma da stampare è un mucchio da dividere e una riga su cui dire perché.

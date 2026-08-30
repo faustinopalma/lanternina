@@ -1,7 +1,7 @@
 # Puzzle a griglia (chi beve cosa, chi vive dove)
 
 - **Numero** 142 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
-- **In una riga** ⚠ costoso: è la forma che chiede di tenere insieme più cose contemporaneamente, che è l'asse su cui questo progetto va piano.
+- **In una riga** una tabella di persone, cose e attributi, e un elenco di indizi che la riempie in un modo solo.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

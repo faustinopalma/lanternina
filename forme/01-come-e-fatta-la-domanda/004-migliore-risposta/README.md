@@ -1,8 +1,7 @@
 # Migliore risposta
 
 - **Numero** 4 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ✗ chiuso
-- **In una riga** tutte plausibili, una preferibile. ✗ chiuso, e peggiore delle altre: la gerarchia è di chi ha scritto la domanda e non è ispezionabile.
+- **In una riga** tutte plausibili, una preferibile.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -33,7 +32,7 @@ La trasposizione scolastica, che è quella che fa danno: «qual è il motivo *pr
 
 ## Una nostra versione
 
-La forma non ci sta, e non per il motivo delle precedenti: qui il problema non è la casella, è che **la gerarchia è di chi ha scritto e non è ispezionabile**. Chi risponde bene per una ragione diversa risulta sbagliato.
+La forma non regge, e non per il motivo delle precedenti: qui il problema non è la casella, è che **la gerarchia è di chi ha scritto e non è ispezionabile**. Chi risponde bene per una ragione diversa risulta sbagliato.
 
 Quello che si salva è il *caso*: mezza pagina di situazione densa. La domanda cambia.
 
@@ -50,8 +49,8 @@ Quello che si salva è il *caso*: mezza pagina di situazione densa. La domanda c
 
 Lo stesso caso, e il verbo cambia da *scegliere* a *chiedere* (voce 30 dell'enciclopedia: formulare una domanda invece che risponderne una). Non c'è una coppia di domande giusta. Ce ne sono di più utili e di meno utili, e la differenza si vede da sé quando si prova a immaginare la risposta.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-Resta **✗ chiusa**, con la ragione peggiore della famiglia: non produce solo un errore, produce un errore **non contestabile**, perché il criterio non è sul foglio.
+Ha la ragione peggiore della famiglia: non produce solo un errore, produce un errore **non contestabile**, perché il criterio non è sul foglio.
 
 La parte da tenere è il **caso denso**: una situazione con più dettagli del necessario, alcuni rilevanti e altri no. È materiale ottimo, e nel nostro formato regge benissimo un foglio intero. Quello che va cambiato è la domanda in fondo — *quali due domande faresti*, *che cosa noteresti per primo*, *che cosa manca in questo racconto* — tutte forme che hanno un contenuto e non una chiave.

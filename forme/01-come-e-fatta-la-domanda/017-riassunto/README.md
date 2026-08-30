@@ -1,7 +1,6 @@
 # Riassunto
 
 - **Numero** 17 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** dire in meno parole.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -50,7 +49,7 @@ Da museo: il cartellino, che riassume un oggetto in venti parole per qualcuno ch
 
 Gli spazi stampati contano al posto di chi scrive: nessuno deve contare, e il vincolo si vede. Il testo di partenza è di undici righe, non di un capitolo. E l'ultima domanda — *che cosa hai deciso di non dirgli* — sposta l'attenzione sulla scelta invece che sul risultato, che è la parte del riassunto che vale.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta, con un tetto sul testo di partenza.**
 

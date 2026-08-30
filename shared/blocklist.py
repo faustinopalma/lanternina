@@ -1,36 +1,47 @@
-"""Words an afternoon does not say, in one place because it is checked twice.
+"""What an afternoon does not say, in one place because it is checked twice.
 
-`ideas/09 §7` puts a filter at two different times, and they have to hold the same list or
+`ideas/09 §7` puts a filter at two different times, and they have to hold the same rules or
 they are two policies. Before an afternoon is saved, every written word in the document is
 checked against this and a document that fails is repaired rather than stored. While the
-afternoon runs, every string heading for a display or a printer is checked against the same
-list, and one that fails is replaced by the text already written in the plan.
+afternoon runs, every string heading for a display or a printer is checked against the
+same rules, and one that fails is replaced by the text already written in the plan.
+
+**This used to be a list of 78 literal phrases.** It caught the common failures for
+nothing, and it also refused `errore` in a sentence about a draughtsman dead for fifty
+years (`ideas/10 §11`), `livello` in *the water level*, `vittoria` in any account of a
+battle, and `mamma` and `papà` everywhere at once — which took the family out of fiction in
+order to keep one fact out of it. The concern was never the vocabulary. It was **who the
+sentence is about**.
+
+So the rules are patterns with a person in them. What is refused is the second person
+carrying a judgement — *hai sbagliato*, *sei stato bravo*, *il tuo punteggio* — and the
+machine speaking about its own operation to the reader — *ho semplificato*, *tuo padre ha
+scelto*, *ti restano dieci minuti*. A ledger may contain an error, a keeper may leave in a
+hurry, a battle may be won, and a grandmother may write a letter.
 
 Five groups, and the reason each is here is the same reason stated five ways: none of them
 is about the words being unpleasant. They are the ways a text stops being the thing
 somebody is doing and becomes a remark about them, or about the machine.
 
-* **Praise and blame** turn an afternoon into an assessment. "Nothing the system states is
-  a verdict about a person" is a rule of this project, and praise is a verdict with a
-  friendly face.
+* **Praise and blame** turn an afternoon into an assessment. Praise is a verdict with a
+  friendly face, and it is a verdict only when it is addressed to somebody.
 * **Hurry** is a countdown by another name. Nothing here can be failed, and nothing can be
-  failed for being slow either.
+  failed for being slow either — which is about telling the reader to be quick, not about a
+  character who hurried.
 * **Score** is the field this project must never grow, appearing as a sentence instead of
-  as a column.
-* **The machinery** is the one that is easy to lose. A text that mentions adapting,
-  shortening, the time left, the parent, the system or the model tells the person that
-  something was decided about them behind the afternoon. `ideas/09 §8` is emphatic that
-  the parent's channel must never be revealed; this is where that becomes code.
+  as a column. A tally inside the story is not that; *your score* is.
+* **The machinery** is the one that is easy to lose. A text that tells the person that
+  something was adapted, shortened or chosen for them says that a decision was made about
+  them behind the afternoon. `ideas/09 §8` is emphatic that the parent's channel must never
+  be revealed; this is where that becomes code.
 
 **What this is not.** It is not a safety classifier, and it does not replace
-:mod:`orchestrator.safety` — that gate looks for harm, this list looks for tone. Nor is it
-a guarantee: a model can write a verdict without using any of these words. What a list of
-literal phrases buys is that the *common* failure is caught for nothing, at both times,
-with no model call. What it costs is false refusals — "veloce" is a fine word for a cloud
-— and the cost is bounded by where the refusals land: at devise time a repair round, at
-run time the pre-written text.
+:mod:`orchestrator.safety` — that gate looks for harm, this looks for who a sentence is
+about. Nor is it a guarantee: a model can write a verdict without matching any pattern
+here. What patterns buy over a word list is that the false refusals fall where nobody meant
+to write, instead of falling on half the nouns in the language.
 
-The phrases are Italian first because that is what the house speaks, with the English
+The patterns are Italian first because that is what the house speaks, with the English
 equivalents beside them because the prompts, the tests and half the repository are in
 English and a model asked for Italian will occasionally answer in both.
 """
@@ -44,7 +55,7 @@ from typing import Final
 
 
 class Why(StrEnum):
-    """Which of the five reasons a phrase is on the list."""
+    """Which of the five reasons a sentence is refused."""
 
     PRAISE = "praise"
     BLAME = "blame"
@@ -53,99 +64,79 @@ class Why(StrEnum):
     MACHINERY = "machinery"
 
 
-# Phrases, not stems. A stem catches more and explains less: "brav" would refuse
-# "bravata", and the refusal a repair loop reads back has to name something a person can
-# find in their own text.
-_LIST: Final[tuple[tuple[Why, str], ...]] = (
-    (Why.PRAISE, "bravo"),
-    (Why.PRAISE, "brava"),
-    (Why.PRAISE, "bravissimo"),
-    (Why.PRAISE, "bravissima"),
-    (Why.PRAISE, "complimenti"),
-    (Why.PRAISE, "ottimo lavoro"),
-    (Why.PRAISE, "ben fatto"),
-    (Why.PRAISE, "perfetto"),
-    (Why.PRAISE, "eccellente"),
-    (Why.PRAISE, "fantastico"),
-    (Why.PRAISE, "sei stato bravo"),
-    (Why.PRAISE, "well done"),
-    (Why.PRAISE, "good job"),
-    (Why.PRAISE, "excellent"),
-    (Why.PRAISE, "perfect"),
-    (Why.BLAME, "sbagliato"),
-    (Why.BLAME, "sbagliata"),
-    (Why.BLAME, "hai sbagliato"),
-    (Why.BLAME, "errore"),
-    (Why.BLAME, "errato"),
-    (Why.BLAME, "riprova"),
-    (Why.BLAME, "non va bene"),
-    (Why.BLAME, "peccato"),
-    (Why.BLAME, "wrong"),
-    (Why.BLAME, "mistake"),
-    (Why.BLAME, "try again"),
-    (Why.HURRY, "sbrigati"),
-    (Why.HURRY, "affrettati"),
-    (Why.HURRY, "fai in fretta"),
-    (Why.HURRY, "in fretta"),
-    (Why.HURRY, "fai veloce"),
-    (Why.HURRY, "il piu veloce possibile"),
-    (Why.HURRY, "tempo scaduto"),
-    (Why.HURRY, "conto alla rovescia"),
-    (Why.HURRY, "hurry"),
-    (Why.HURRY, "quickly"),
-    (Why.HURRY, "time is up"),
-    (Why.HURRY, "countdown"),
-    (Why.SCORE, "punteggio"),
-    (Why.SCORE, "punti"),
-    (Why.SCORE, "classifica"),
-    (Why.SCORE, "record"),
-    (Why.SCORE, "hai vinto"),
-    (Why.SCORE, "hai perso"),
-    (Why.SCORE, "vittoria"),
-    (Why.SCORE, "sconfitta"),
-    (Why.SCORE, "voto"),
-    (Why.SCORE, "livello"),
-    (Why.SCORE, "premio"),
-    (Why.SCORE, "score"),
-    (Why.SCORE, "points"),
-    (Why.SCORE, "you win"),
-    (Why.SCORE, "you lose"),
-    (Why.SCORE, "leaderboard"),
-    (Why.MACHINERY, "il sistema"),
-    (Why.MACHINERY, "il modello"),
-    (Why.MACHINERY, "intelligenza artificiale"),
-    (Why.MACHINERY, "il computer"),
-    (Why.MACHINERY, "il programma"),
-    (Why.MACHINERY, "ho adattato"),
-    (Why.MACHINERY, "adattato"),
-    (Why.MACHINERY, "semplificato"),
-    (Why.MACHINERY, "accorciato"),
-    (Why.MACHINERY, "abbreviato"),
-    (Why.MACHINERY, "tempo rimasto"),
-    (Why.MACHINERY, "tempo rimanente"),
-    (Why.MACHINERY, "minuti rimasti"),
-    (Why.MACHINERY, "tuo padre"),
-    (Why.MACHINERY, "tua madre"),
-    (Why.MACHINERY, "i tuoi genitori"),
-    (Why.MACHINERY, "il genitore"),
-    (Why.MACHINERY, "mamma"),
-    (Why.MACHINERY, "papa"),
-    (Why.MACHINERY, "the system"),
-    (Why.MACHINERY, "the model"),
-    (Why.MACHINERY, "your parent"),
-    (Why.MACHINERY, "time left"),
-    (Why.MACHINERY, "shortened"),
-    (Why.MACHINERY, "adapted"),
+# Written against folded text: lower case, accents removed, single spaces. Every pattern
+# carries the person it is about, because that is the thing being refused.
+_RULES: Final[tuple[tuple[Why, str], ...]] = (
+    # praise: a judgement handed to the reader
+    (Why.PRAISE, r"\b(sei|eri|sarai) (stat[oa] )?(brav\w*|perfett\w+|eccellente|fantastic\w+)\b"),
+    # A vocative: "bravo," and "bravo!" are addressed to somebody, "un bravo falegname" is not.
+    (Why.PRAISE, r"\bbrav[oaie]\w*\s*[,!]"),
+    (Why.PRAISE, r"^brav\w*\b"),
+    (Why.PRAISE, r"^(brav\w*|perfetto|eccellente|fantastico|ottimo)\s*[!.]?$"),
+    (Why.PRAISE, r"\b(brav\w*|perfetto|eccellente|fantastico|ottimo)\s*!"),
+    (Why.PRAISE, r"(^|[.!?] )(perfetto|eccellente|fantastico|ottimo)\s*,"),
+    (Why.PRAISE, r"\bcomplimenti\b"),
+    (Why.PRAISE, r"\b(ottimo|bel) lavoro\b"),
+    (Why.PRAISE, r"\bben fatto\b"),
+    (Why.PRAISE, r"\b(hai|avete) fatto (benissimo|un ottimo lavoro)\b"),
+    (Why.PRAISE, r"\b(well done|good job|nicely done|you did (great|well))\b"),
+    # blame: the same thing with the sign turned round
+    (Why.BLAME, r"\b(hai|avete|ha) sbagliat\w+\b"),
+    (Why.BLAME, r"\b(hai|avete) (fatto|commesso) un errore\b"),
+    (Why.BLAME, r"\bnon (hai|avete) (capito|fatto bene|indovinato)\b"),
+    (Why.BLAME, r"\b(la tua|questa) risposta (e |non e )?(sbagliat\w+|errat\w+)\b"),
+    (Why.BLAME, r"\briprova\b"),
+    (Why.BLAME, r"\bnon e (quello|quella) (giusto|giusta)\b"),
+    (Why.BLAME, r"\b(you are|you're|that is|that's) wrong\b"),
+    (Why.BLAME, r"\btry again\b"),
+    # hurry: told to the reader, not narrated about somebody
+    (Why.HURRY, r"\b(sbrigati|affrettati|sbrigatevi|affrettatevi)\b"),
+    (Why.HURRY, r"\bfai (in fretta|veloce|presto)\b"),
+    (Why.HURRY, r"\b(piu|il piu) (veloce|in fretta) possibile\b"),
+    (Why.HURRY, r"\b(hai|avete) (solo )?\d+ (minuti|secondi)\b"),
+    (Why.HURRY, r"\btempo scaduto\b"),
+    (Why.HURRY, r"\bconto alla rovescia\b"),
+    (Why.HURRY, r"\b(hurry up|be quick|as fast as you can|time is up|countdown)\b"),
+    # score: a number about the reader
+    (Why.SCORE, r"\b(hai|avete) (vinto|perso|totalizzato|guadagnato)\b"),
+    (Why.SCORE, r"\b(il )?tuo (punteggio|voto|record|livello|risultato)\b"),
+    (Why.SCORE, r"\b(punteggio|voto) finale\b"),
+    (Why.SCORE, r"\b(hai|avete) (fatto|ottenuto) \d+ punti\b"),
+    (Why.SCORE, r"\bsei (al|in) (primo|secondo|terzo|\d+)[o]? (posto|livello)\b"),
+    (Why.SCORE, r"\b(your (score|level|rank)|you (win|lose|won|lost)|leaderboard)\b"),
+    # machinery: the system, and the channel behind it
+    (Why.MACHINERY, r"\b(ho|abbiamo) (adattato|semplificato|accorciato|abbreviato)\b"),
+    (Why.MACHINERY, r"\b(ho|abbiamo|ha) (scelto|deciso|preparato) per te\b"),
+    (Why.MACHINERY, r"\b(questo|il) (sistema|programma|modello|computer) (ha|ti|sa|decide)\b"),
+    (Why.MACHINERY, r"\bintelligenza artificiale\b"),
+    (
+        Why.MACHINERY,
+        r"\b(tuo|tua|i tuoi) (padre|madre|genitori)\b[^.]{0,40}?"
+        r"\b(ha|hanno) (scelto|deciso|impostato|chiesto|preparato|voluto)\b",
+    ),
+    (
+        Why.MACHINERY,
+        r"\b(mamma|papa|il genitore)\b[^.]{0,40}?"
+        r"\b(ha|hanno) (scelto|deciso|impostato|preparato)\b",
+    ),
+    (Why.MACHINERY, r"\bti (restano|rimangono)\b"),
+    (Why.MACHINERY, r"\b(tempo riman\w+|tempo rimasto|minuti rimasti)\b"),
+    (Why.MACHINERY, r"\b(the (system|model) (has|chose|decided)|your parent (chose|set))\b"),
+    (Why.MACHINERY, r"\b(shortened|simplified|adapted) (it )?for you\b"),
 )
 
 # Accents are folded away before matching, so "papà" is caught by "papa" and a model that
-# drops an accent does not slip through a list written with one.
+# drops an accent does not slip through a rule written with one.
 _ACCENTS: Final = str.maketrans("àáâäèéêëìíîïòóôöùúûüç", "aaaaeeeeiiiioooouuuuc")
 
 
 @dataclass(frozen=True, slots=True)
 class Blocked:
-    """One phrase found, and why it is on the list."""
+    """One thing found, and why it is refused.
+
+    ``phrase`` is the text that actually matched rather than the rule that matched it, so a
+    repair request names something the writer can find in their own sentence.
+    """
 
     phrase: str
     why: Why
@@ -159,25 +150,21 @@ def fold(text: str) -> str:
     return " ".join(text.lower().translate(_ACCENTS).split())
 
 
-def _pattern(phrase: str) -> re.Pattern[str]:
-    return re.compile(rf"(?<![\w]){re.escape(phrase)}(?![\w])")
-
-
-_COMPILED: Final[tuple[tuple[re.Pattern[str], Blocked], ...]] = tuple(
-    (_pattern(phrase), Blocked(phrase=phrase, why=why)) for why, phrase in _LIST
+_COMPILED: Final[tuple[tuple[re.Pattern[str], Why], ...]] = tuple(
+    (re.compile(pattern), why) for why, pattern in _RULES
 )
 
 
 def blocked_in(text: str) -> tuple[Blocked, ...]:
-    """Every phrase from the list this text uses. Empty means it may be said.
+    """Everything here that is a remark about the reader. Empty means it may be said.
 
     All of them rather than the first, because at devise time the answer is handed to a
-    model to repair and one phrase at a time is one round trip per word.
+    model to repair and one thing at a time is one round trip per phrase.
     """
     folded = fold(text)
-    found = [entry for pattern, entry in _COMPILED if pattern.search(folded)]
-    # Deduplicated on the phrase: the same word twice in a paragraph is one thing to fix.
     seen: dict[str, Blocked] = {}
-    for entry in found:
-        seen.setdefault(entry.phrase, entry)
+    for pattern, why in _COMPILED:
+        for match in pattern.finditer(folded):
+            found = match.group(0).strip()
+            seen.setdefault(found, Blocked(phrase=found, why=why))
     return tuple(seen.values())

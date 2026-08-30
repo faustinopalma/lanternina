@@ -1,7 +1,7 @@
 # Cubo di Rubik e combinatori
 
 - **Numero** 172 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
-- **In una riga** ⊘ come cosa da generare.
+- **In una riga** un solido che si gira a strati e torna in ordine con una sequenza di mosse.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

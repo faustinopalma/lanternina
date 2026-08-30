@@ -1,8 +1,7 @@
 # Scelta multipla
 
 - **Numero** 1 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ✗ chiuso
-- **In una riga** una domanda, quattro risposte, una giusta. ✗ chiuso: tre alternative su quattro sono lì per essere sbagliate, e una risposta sbagliata con una conseguenza è quello che la regola «niente si può fallire» vieta. È anche la forma che il progetto ha nominato per prima come da non costruire.
+- **In una riga** una domanda, quattro risposte, una giusta.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -59,7 +58,7 @@ Un item mal scritto e uno scritto bene, riscritti dagli esempi della fonte.
 
 ## Una nostra versione
 
-Un foglio A4 in bianco e nero, una persona sola, niente da sbagliare. La scelta multipla non ci sta. Ma la **scelta fra alternative** ci sta, e questo è l'esempio che la separa dalla forma vietata.
+Un foglio A4 in bianco e nero, una persona sola, niente da sbagliare. La scelta multipla non regge. Invece la **scelta fra alternative** ci sta, e questo è l'esempio che la separa dalla forma vietata.
 
 > **Tre porte, e nessuna chiave**
 >
@@ -93,12 +92,10 @@ E l'esempio che mostra dove si rompe, se qualcuno provasse a farla passare:
 
 Tre caselle su quattro esistono per essere segnate per sbaglio. Non c'è versione di questa cosa che stia dentro «niente si può fallire».
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-La forma resta **✗ chiusa**, e il motivo va detto meglio di come è scritto adesso.
+Il danno non sta nell'*avere delle alternative*: sta nella terna **chiave + distrattori + costo**. I distrattori sono progettati per attirare, il dato sui cambi di risposta (57,8 % contro 20,2 %) dice che ci riescono, e il *formula scoring* punisce persino il tentativo. Una forma che fabbrica l'errore e poi lo tariffa è una cosa; un elenco chiuso di opzioni senza risposta giusta e senza costo è un'altra.
 
-Il divieto nelle regole di lavoro nomina la scelta multipla come esempio di quello che non si costruisce. Ma il danno non è nell'*avere delle alternative*: è nella terna **chiave + distrattori + costo**. I distrattori sono progettati per attirare, il dato sui cambi di risposta (57,8 % contro 20,2 %) dice che ci riescono, e il *formula scoring* punisce persino il tentativo. Una forma che fabbrica l'errore e poi lo tariffa è esattamente quello che «nessuna conseguenza per aver sbagliato» esclude.
+**La seconda non è una scelta multipla:** è un vincolo narrativo, ed è utile proprio a chi fatica davanti a un foglio bianco. Le tre porte qui sopra sono quella cosa. Alla rassegna vale la pena tenere separate le due, perché confonderle costa un aiuto e non evita un danno.
 
-**Il vincolo è però più largo del necessario, e va stretto invece che lasciato vago.** Un elenco chiuso di opzioni, senza risposta giusta e senza costo, non è una scelta multipla: è un vincolo narrativo, ed è utile proprio a chi fatica davanti a un foglio bianco. Le tre porte qui sopra sono quella cosa. Se la regola si legge come «mai proporre alternative», vieta un aiuto e non un danno.
-
-Da correggere, quando questa ricerca arriverà a toccare le regole: la riga sulla scelta multipla dovrebbe nominare **chiave e distrattori**, non «opzioni». Il criterio operativo che ne segue si verifica guardando un foglio — *se una delle alternative è lì perché qualcuno la prenda per sbaglio, il foglio non passa*.
+Il criterio che le distingue si verifica guardando una pagina: *una delle alternative è lì perché qualcuno la prenda per sbaglio?*

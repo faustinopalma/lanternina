@@ -1,8 +1,7 @@
 # Corrispondenza (matching)
 
 - **Numero** 5 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ✗ chiuso
-- **In una riga** due colonne da appaiare. ✗ chiuso come valutazione; ⚠ costoso come gioco: appaiare per somiglianza va bene, appaiare per «giusto» no.
+- **In una riga** due colonne da appaiare.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -39,7 +38,7 @@ Da gioco: nelle escape room compare come **tabella di sostituzione** — simboli
 
 ## Una nostra versione
 
-L'uso da valutazione non ci sta. L'uso da **strumento** ci sta benissimo, ed è la stessa forma con un altro ruolo: la tabella non è quello che si deve indovinare, è quello che si tiene accanto per fare altro.
+L'uso da valutazione non regge in questo formato. L'uso da **strumento** e' tutt'altra cosa, ed è la stessa forma con un altro ruolo: la tabella non è quello che si deve indovinare, è quello che si tiene accanto per fare altro.
 
 > **Il quaderno del guardiano del faro**
 >
@@ -63,10 +62,10 @@ L'uso da valutazione non ci sta. L'uso da **strumento** ci sta benissimo, ed è 
 
 La corrispondenza c'è, ed è data. Non c'è niente da accoppiare: c'è da usare l'accoppiamento. Il 14 novembre, con tre volte lo stesso segno, è lì apposta e nella legenda non ha un significato — chi ci arriva inventa, e inventare è la risposta.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-L'enciclopedia la dà **✗ chiusa come valutazione, ⚠ costosa come gioco**, e la ricerca conferma la prima parte e corregge la seconda.
+Sono due forme diverse con lo stesso nome, e conviene non confonderle: come item da correggere ha i difetti della famiglia, come **tabella data** è tutt'altro.
 
-**Come tabella data, la corrispondenza non è costosa: è uno degli strumenti migliori che abbiamo.** Una legenda stampata sul foglio è la sola via per usare cifrari, alfabeti alternativi e sistemi di segni senza chiedere al modello di manipolare lettere, che è quello che non sa fare. Le voci 132 e 134 dell'enciclopedia già lo dicono per il Morse e per le bandiere; questa scheda dice che il principio è generale.
+**La legenda stampata sul foglio è la sola via per usare cifrari, alfabeti alternativi e sistemi di segni** senza chiedere al modello di manipolare lettere, che è quello che non sa fare. Le voci 132 e 134 dell'elenco già lo dicono per il Morse e per le bandiere; questa scheda dice che il principio è generale.
 
-Da scrivere quando si toccheranno le note dell'enciclopedia: la corrispondenza va spostata da ⚠ ad aperta **nella forma con legenda data**, e resta chiusa nella forma con linee da tracciare fra due colonne.
+Da tenere presente alla rassegna: la corrispondenza con legenda data non ha niente in comune con la corrispondenza a linee fra due colonne, se non il nome.

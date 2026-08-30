@@ -1,7 +1,7 @@
 # Dibattito
 
 - **Numero** 254 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **In una riga** ⚠ costoso: è una competizione fra posizioni.
+- **In una riga** due posizioni sostenute a turno davanti a qualcuno che decide.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

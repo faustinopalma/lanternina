@@ -1,7 +1,7 @@
 # Cooperazione
 
 - **Numero** 276 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ⚠ costoso: chiede qualcun altro.
+- **In una riga** due o più persone che perseguono la stessa cosa.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

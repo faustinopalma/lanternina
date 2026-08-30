@@ -1,7 +1,7 @@
 # Timer
 
 - **Numero** 267 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ✗ chiuso.
+- **In una riga** un orologio che misura quanto ci si mette.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

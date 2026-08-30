@@ -46,6 +46,7 @@ from .capabilities import Act
 from .experience import (
     MAX_SHARED_DIMENSIONS,
     MAY_RECUR,
+    SET_BY_THE_HOUSE,
     Continuation,
     Drawn,
     Experience,
@@ -66,7 +67,9 @@ _PLACEHOLDERS: Final[tuple[tuple[re.Pattern[str], str], ...]] = (
     (re.compile(r"\[[^\]]{1,40}\]"), "something in square brackets"),
     (re.compile(r"\{"), "a brace"),
     (re.compile(r"\b(todo|tbd|xxx|fixme|placeholder|lorem ipsum)\b"), "a marker word"),
-    (re.compile(r"\S \/ \S"), "two options with a slash between them"),
+    # Two *words* with a spaced slash, which is how a model leaves a choice open. A number
+    # on either side is a fraction or a date, and a pair like "bianco / nero" is a pair.
+    (re.compile(r"\b[a-z]{3,} \/ [a-z]{3,}\b(?! *[,.])"), "two options with a slash between them"),
 )
 
 
@@ -238,7 +241,11 @@ def the_ending_is_written_down(moments: Sequence[Moment]) -> tuple[Complaint, ..
 
 
 def nothing_from_the_block_list(plan: Experience | Continuation) -> tuple[Complaint, ...]:
-    """No praise, no blame, no hurry, no score, and no word about the machinery.
+    """Nothing here is a remark about the person reading it, or about the machine.
+
+    Praise, blame, hurry, a score and the machinery, each caught by the person in the
+    sentence rather than by a word: *hai sbagliato* and not *errore*. `shared/blocklist.py`
+    says why the second one was tried first and what it cost.
 
     Checked over the pre-written text because the pre-written text is the runtime fallback.
     A filter that replaces a bad sentence with a stored one is worth nothing if the stored
@@ -297,18 +304,21 @@ def not_the_same_afternoon_again(
 ) -> tuple[Complaint, ...]:
     """Not the last few afternoons with different nouns, and not a new world every time.
 
-    A seed produces variety that cannot be checked. Recorded dimensions produce variety
-    that can. But two of the ten are the world — where it is set and what the person is
-    inside it — and those are allowed to come back: a house that liked a place wants to
-    return to it, and nothing can be built across afternoons if nothing may recur.
+    A seed produces variety that cannot be checked. Recorded dimensions produce variety that
+    can. But two of the ten are the world — where it is set and what the person is inside it
+    — and those are allowed to come back: a house that liked a place wants to return to it,
+    and nothing can be built across afternoons if nothing may recur. Four more are the
+    channel, and a house does not choose those: it owns a printer and one display, or it
+    does not.
 
-    So the count is over the eight that are machinery. Sharing more than two of those is
-    refused, and the refusal names which, so a repair redraws those rather than the whole
-    afternoon.
+    So the count is over the four that are decisions — mechanic, progress, tone, ending.
+    Sharing more than two of them is refused, and the refusal names which, so a repair
+    redraws those rather than the whole afternoon.
     """
     complaints: list[Complaint] = []
+    ignored = MAY_RECUR | SET_BY_THE_HOUSE
     for before in recent:
-        same = tuple(one for one in shared_dimensions(drawn, before) if one not in MAY_RECUR)
+        same = tuple(one for one in shared_dimensions(drawn, before) if one not in ignored)
         if len(same) > MAX_SHARED_DIMENSIONS:
             complaints.append(
                 Complaint(

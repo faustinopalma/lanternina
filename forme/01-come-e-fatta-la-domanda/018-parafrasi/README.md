@@ -1,7 +1,6 @@
 # Parafrasi
 
 - **Numero** 18 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** dire le stesse cose con altre parole.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -53,7 +52,7 @@ Da traduzione intersemiotica: raccontare un quadro a chi non lo vede.
 
 Il testo di partenza è breve e comico nella sua goffaggine, quindi riscriverlo è una vendetta e non un compito. «Vie di esodo» è la parola cerchiabile: è il motivo del divieto, ed è la parte che il burocratese seppellisce. Chi cerchia quella ha capito il testo anche se non riscrive niente.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e sottovalutata: è fra le forme che reggono meglio il nostro foglio, perché il testo di partenza può essere corto, il compito non dipende da conoscenze pregresse e il risultato è utile a qualcuno.
 

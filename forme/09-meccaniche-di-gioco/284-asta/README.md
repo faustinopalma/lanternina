@@ -1,7 +1,7 @@
 # Asta
 
 - **Numero** 284 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **In una riga** ⚠ costoso, competitivo.
+- **In una riga** chi offre di più si prende la cosa.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -309,10 +309,29 @@ def test_a_word_about_the_machinery_in_a_rung_of_help_is_refused() -> None:
 
 def test_the_overview_the_parent_reads_is_on_the_same_list() -> None:
     complaints = nothing_from_the_block_list(
-        an_experience(overview="Un pomeriggio con un punteggio alla fine.")
+        an_experience(overview="Alla fine saprai il tuo punteggio.")
     )
 
     assert where(complaints) == ["overview"]
+
+
+def test_a_tally_inside_the_story_is_not_a_verdict() -> None:
+    """The overview above is refused for *tuo*, not for *punteggio*.
+
+    A lighthouse keeper's ledger may hold points, a battle may be won and a draughtsman may
+    have made an error — none of those is a remark about the person reading. The list used
+    to refuse all three, and `ideas/10 §11` records the sentence it cost.
+    """
+    fine = (
+        "Il registro del faro segna dodici punti quella notte.",
+        "Non è un errore di chi disegnava.",
+        "Il livello dell'acqua era salito di due dita.",
+        "La vittoria fu netta e nessuno la festeggiò.",
+        "Mia nonna scriveva a mia mamma ogni martedì.",
+        "Il custode uscì in fretta e lasciò la porta aperta.",
+    )
+    for overview in fine:
+        assert not nothing_from_the_block_list(an_experience(overview=overview)), overview
 
 
 def test_the_block_list_says_which_of_the_five_reasons_it_is() -> None:
@@ -325,9 +344,9 @@ def test_the_block_list_says_which_of_the_five_reasons_it_is() -> None:
 
 
 def test_the_block_list_folds_accents_and_case_away() -> None:
-    """A model that drops an accent must not slip through a list that was written with one."""
-    assert blocked_in("Chiedi a papà")
-    assert blocked_in("CHIEDI A PAPA")
+    """A model that drops an accent must not slip through a rule that was written with one."""
+    assert blocked_in("Papà ha scelto questo pomeriggio")
+    assert blocked_in("PAPA HA SCELTO QUESTO POMERIGGIO")
 
 
 def test_an_ordinary_afternoon_says_nothing_off_the_list() -> None:

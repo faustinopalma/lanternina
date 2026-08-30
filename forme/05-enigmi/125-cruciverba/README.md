@@ -1,7 +1,7 @@
 # Cruciverba
 
 - **Numero** 125 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **In una riga** ⚠ costoso: manipolazione di lettere, e una griglia è la forma meno easy-to-read che esista.
+- **In una riga** una griglia di caselle e due liste di definizioni che si incrociano.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

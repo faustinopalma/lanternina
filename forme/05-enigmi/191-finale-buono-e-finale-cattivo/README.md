@@ -1,7 +1,7 @@
 # Finale buono e finale cattivo
 
 - **Numero** 191 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **In una riga** ✗ chiuso: un finale cattivo è una punizione.
+- **In una riga** la stessa storia arriva a due esiti, uno migliore dell’altro.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

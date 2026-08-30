@@ -272,39 +272,48 @@ def test_a_devised_afternoon_cannot_be_stored_without_passing_the_gate() -> None
 
 # ── What is left of the camera rules ─────────────────────────────────────────────────
 #
-# `vision/` is empty, so the two tests below currently guard nothing: the identifier check
-# has no files to scan, and nothing constructs a RawFrame. They are kept as the shape of
-# the check the handheld camera will need, not as evidence about the system today — the
+# `vision/` is empty, so the test below currently guards nothing. It is kept as the shape
+# of the check the handheld camera will need, not as evidence about the system today — the
 # README says so in Status rather than claiming them in its table.
+#
+# Narrowed on 30 August 2026. The list used to name techniques rather than uses:
+# `landmarks` is how a scanned sheet is deskewed, `detectMultiScale` finds a printed
+# marker as readily as a face, and `imwrite` is how anybody debugs an image pipeline. A ban
+# on those forbids the tooling and not the harm, and the harm has a name: taking a person
+# as the subject. What is left is the vocabulary that only makes sense pointed at somebody,
+# plus continuous capture, which is a different thing again.
 
 FORBIDDEN_IN_VISION = {
-    # person / face / affect analysis, forbidden even as an intermediate step
-    "CascadeClassifier",
-    "detectMultiScale",
+    # inference about a person, forbidden even as an intermediate step
     "FaceDetectorYN",
     "FaceRecognizerSF",
     "face_recognition",
     "detect_faces",
+    "face_encodings",
     "emotion",
     "affect",
     "gaze",
-    "landmarks",
-    # continuous capture
+    "age_estimate",
+    "gender",
+    "identify_person",
+    # continuous capture: a frame nobody asked for
     "StreamingResponse",
     "VideoWriter",
-    # a photograph written straight to disk is one nobody chose to keep
-    "imwrite",
 }
 
 
 def test_vision_does_not_look_at_people_or_stream() -> None:
-    """Faces will be in frame; what is forbidden is inferring anything from them."""
+    """Faces will be in frame; what is forbidden is inferring anything from them.
+
+    Where a photograph goes is not enforced here. It is enforced by `RawFrame`, which
+    raises rather than being pickled, copied or written out — a guarantee about the object
+    rather than a guess from an identifier.
+    """
     for path in _python_files("vision"):
         leaked = _identifiers(path) & FORBIDDEN_IN_VISION
         assert not leaked, (
-            f"{path.relative_to(REPO)} references {sorted(leaked)}. Nothing here infers "
-            "anything about a person, and nothing captures without a button press; see "
-            "docs/NON-GOALS.md."
+            f"{path.relative_to(REPO)} references {sorted(leaked)}. Nothing here takes a "
+            "person as its subject, and nothing captures without a button press."
         )
 
 

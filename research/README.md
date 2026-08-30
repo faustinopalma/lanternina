@@ -45,18 +45,18 @@ They live here and not in `agents/` on purpose. One stands in for a person and o
 
 ## The eight axes
 
-Five come from [docs/EVIDENCE.md](../docs/EVIDENCE.md), which is the reading behind the working rules; three come from the rules themselves. Each is scored 1–5 where 3 is "does the job", 1 is the failure the axis exists to catch and 5 is what it looks like when it is right.
+Five come from [docs/EVIDENCE.md](../docs/EVIDENCE.md), which is the reading behind the design; three come from the design itself themselves. Each is scored 1–5 where 3 is "does the job", 1 is the failure the axis exists to catch and 5 is what it looks like when it is right.
 
 | axis | what it catches | where it comes from |
 | --- | --- | --- |
 | `canBeStarted` | announcing what the afternoon is called instead of putting a situation in front of somebody | `EVIDENCE §1` |
 | `sheetStandsAlone` | a sheet that only makes sense with a screen that has already gone | `EVIDENCE §1`, and the defect of 28 August |
 | `oneThingAtATime` | how much has to be held together at once — not the same as length | COGA objective 3, `EVIDENCE §2` |
-| `everyStepLeavesAMark` | a beat whose whole content is *notice which one lasts longer* | working rules; `ideas/09 §16` |
+| `everyStepLeavesAMark` | a beat whose whole content is *notice which one lasts longer* | `ideas/09 §16` |
 | `questionHasAWrittenAnswer` | a question the system cannot answer, handed to somebody who believes there is one | `EVIDENCE §3`, and the anagram of 28 August |
-| `canBeAbandoned` | anything with a cost for stopping, and a way out reaching for an object nobody has | working rules §1 |
+| `canBeAbandoned` | anything with a cost for stopping, and a way out reaching for an object nobody has | `ideas/09 §7` |
 | `worthTheHour` | generic, tidy, about nothing in particular | `experience_prompt.what-makes-it-worth-doing.md` |
-| `notASchoolSheet` | the teacher's voice, praise, blame, any remark on how it went | working rules §1, `shared/blocklist.py` |
+| `notASchoolSheet` | the teacher's voice, praise, blame, any remark on how it went | `shared/blocklist.py` |
 
 Beside them the judge returns `worstLine`, `whatToChangeInThePrompt` and `howItWentInAWord`. The middle one is what a run is actually for.
 

@@ -1,7 +1,7 @@
 # Attore dal vivo nella stanza
 
 - **Numero** 192 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **In una riga** ⊘ irraggiungibile qui, e sarebbe il genitore.
+- **In una riga** una persona in carne e ossa dentro la finzione, che risponde.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

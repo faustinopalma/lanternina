@@ -1,8 +1,7 @@
 # Vero o falso
 
 - **Numero** 2 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ✗ chiuso
-- **In una riga** un'affermazione, due esiti. ✗ chiuso, stesso motivo, in forma più povera: metà delle risposte giuste per caso.
+- **In una riga** un'affermazione, due esiti.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -35,7 +34,7 @@ La variante più onesta che ho trovato in giro è **vero/falso con correzione ob
 
 ## Una nostra versione
 
-La forma nuda non ci sta. La versione con correzione, sì — e sposta il peso dalla scelta alla scrittura.
+La forma nuda non regge in questo formato. La versione con correzione, sì — e sposta il peso dalla scelta alla scrittura.
 
 > **Il catalogo sbagliato**
 >
@@ -53,8 +52,8 @@ La forma nuda non ci sta. La versione con correzione, sì — e sposta il peso d
 
 Non c'è una casella da segnare. Il gesto richiesto è riscrivere, e chi indica la riga sbagliata senza riscriverla ha comunque fatto qualcosa di visibile. Se sbaglia riga, riscrive una riga giusta in un altro modo — e nessuno gliene chiede conto, perché non c'è punteggio.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-Resta **✗ chiusa** nella forma nuda, e la ragione è più forte che per la scelta multipla, non più debole: metà punteggio per caso significa che il risultato non dice quasi niente, quindi la forma paga il costo del giudizio senza comprare l'informazione.
+Nella forma nuda la resa è bassissima: metà punteggio per caso significa che il risultato non dice quasi niente, quindi la forma paga il costo del giudizio senza comprare l'informazione.
 
 **Ma la variante «trova quella che non regge e riscrivila» è aperta**, e vale la pena nominarla, perché è la sola forma di questa famiglia che sopravvive. Il criterio è lo stesso della scheda 1: non ci sono caselle da segnare, e quello che resta sul foglio è scritto da chi l'ha fatto.

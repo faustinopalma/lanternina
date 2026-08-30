@@ -1,8 +1,7 @@
 # Scala di accordo (Likert)
 
 - **Numero** 8 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** ⊘ irraggiungibile
-- **In una riga** quanto sei d'accordo, da 1 a 5. ⊘ irraggiungibile con senso: produce un numero su una persona, che è la cosa che non si tiene.
+- **In una riga** quanto sei d'accordo, da 1 a 5.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -41,7 +40,7 @@ Usi non valutativi, e sono quelli buoni: le scale di intensità nei taccuini nat
 
 ## Una nostra versione
 
-La forma puntata su una persona non ci sta. Puntata sul mondo, ci sta e serve.
+La forma puntata su una persona non regge in questo formato. Puntata sul mondo, regge e serve.
 
 > **La scala del vento, fatta in casa**
 >
@@ -61,8 +60,8 @@ La forma puntata su una persona non ci sta. Puntata sul mondo, ci sta e serve.
 
 Cinque gradini, come una Likert. Ma il numero descrive la giornata, non chi la guarda, ed è **ancorato a una cosa visibile** invece che a una sensazione. La riga «perché ho visto» è quella che rende il numero ispezionabile: senza, sarebbe un giudizio; con, è un'osservazione con un'etichetta corta.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-L'enciclopedia la dà **⊘ irraggiungibile con senso**, e la ricerca la sposta a una formulazione più utile: **✗ chiusa quando misura una persona, aperta quando misura il mondo**.
+La differenza che conta non è la forma ma **il soggetto della frase da graduare**. «Quanto tira il vento» descrive una giornata; «quanto ti senti sicuro» descrive chi legge, ed è un numero su una persona in tre caratteri. «Quanto è stato difficile» sta in mezzo e pende verso il secondo: la difficoltà è una proprietà dell'incontro fra la cosa e chi la fa, e chiederla per iscritto la fa atterrare sulla persona.
 
-La differenza è verificabile guardando il foglio, e vale la pena scriverla come criterio: *il soggetto della frase da graduare non può essere chi sta leggendo*. «Quanto ti senti sicuro» è chiuso. «Quanto tira il vento» è aperto. «Quanto è stato difficile» è il caso al confine, e sta dalla parte chiusa: la difficoltà di una cosa è una proprietà dell'incontro fra la cosa e chi la fa, e chiederla per iscritto la fa atterrare sulla persona.
+La scala ancorata a una cosa visibile — *si muovono le foglie* — è quello che rende il numero ispezionabile invece che opinabile. È vecchia quanto la scala Beaufort, che è del 1805.

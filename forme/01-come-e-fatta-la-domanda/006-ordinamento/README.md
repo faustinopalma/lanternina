@@ -1,7 +1,6 @@
 # Ordinamento
 
 - **Numero** 6 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** mettere in sequenza. Praticabile quando l'ordine è una proprietà del mondo (dal più piccolo al più grande, dal prima al dopo) e non un ordine che qualcuno ha deciso.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -60,7 +59,7 @@ Rimettila in fila.
 Due possono stare in due posti.
 ```
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e l'enciclopedia lo dice già con la condizione giusta: praticabile quando l'ordine è una proprietà del mondo e non una decisione di qualcuno.
 

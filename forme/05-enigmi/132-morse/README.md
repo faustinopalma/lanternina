@@ -1,7 +1,7 @@
 # Morse
 
 - **Numero** 132 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **In una riga** ⊘ come composizione automatica; praticabile se la tabella è stampata sul foglio e la parola è di tre lettere.
+- **In una riga** punti e linee, nate per il telegrafo e poi per la radio.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

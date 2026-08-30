@@ -1,7 +1,6 @@
 # Riordino di un testo tagliato a pezzi
 
 - **Numero** 10 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** le strisce da rimettere in ordine.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -67,7 +66,7 @@ Sei pezzi, in fondo al foglio.
 Uno viene da un'altra lettera.
 ```
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta**, e la ricerca la promuove: è fra le forme migliori che questo formato possa stampare.
 

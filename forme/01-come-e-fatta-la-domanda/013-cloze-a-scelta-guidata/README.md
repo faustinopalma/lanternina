@@ -1,8 +1,7 @@
 # Cloze a scelta guidata
 
 - **Numero** 13 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** ⚠ costoso
-- **In una riga** buchi con una lista di parole da usare. ⚠ costoso, e la lista è mezza scelta multipla.
+- **In una riga** buchi con una lista di parole da usare.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -56,9 +55,9 @@ La lista come vincolo funziona; la lista come insieme di risposte giuste no. La 
 
 Le sei parole entrano nei sei buchi in più modi, e l'ultima riga sceglie il criterio — *più preoccupante* — che non è corretto né scorretto. Chi lo fa produce un messaggio, non lo indovina.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
-L'enciclopedia la dà **⚠ costosa** e nota che «la lista è mezza scelta multipla». La ricerca dice che è **scelta multipla intera**, e sposta la voce a **✗ chiusa nella forma con una soluzione**.
+«La lista è mezza scelta multipla» è un'osservazione che si legge spesso, e è troppo generosa: la lista è scelta multipla intera, perché una parola che non entra in nessun buco fa esattamente il lavoro di un distrattore.
 
 Quello che resta aperto è il **cloze a lista obbligatoria senza soluzione unica**: tutte le parole devono essere usate, molte disposizioni funzionano, e il criterio di scelta è di chi scrive. Non è più un cloze in senso psicometrico — è un vincolo combinatorio, ed è imparentato con la voce 223 dell'enciclopedia più che con questa.
 

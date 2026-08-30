@@ -1,7 +1,7 @@
 # Sfida contro un tempo
 
 - **Numero** 88 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **In una riga** ✗ chiuso: il conto alla rovescia è nominato esplicitamente fra le cose da non costruire.
+- **In una riga** un tempo dato entro cui la cosa va finita.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

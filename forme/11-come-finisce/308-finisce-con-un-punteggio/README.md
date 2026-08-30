@@ -1,7 +1,7 @@
 # Finisce con un punteggio
 
 - **Numero** 308 nell'enciclopedia, capitolo 11 — Come finisce
-- **In una riga** ✗ chiuso.
+- **In una riga** alla fine c’è un numero.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

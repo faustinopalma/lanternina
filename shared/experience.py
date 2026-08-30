@@ -218,8 +218,21 @@ DIMENSIONS: Final[tuple[str, ...]] = (
 # be built on. Letting the world persist and the machinery vary is what a series is.
 MAY_RECUR: Final[frozenset[str]] = frozenset({"frame", "role"})
 
-# How many of the varying eight two afternoons may share before they are the same afternoon
-# wearing a different hat. Three is a refusal; two is a coincidence.
+# Which of the ten the house does not really choose. A flat with one display and a printer
+# draws the same four values every week, so counting them as sameness charges a house for
+# its hardware. They were counted until 30 August 2026, and the arithmetic was the problem:
+# with four of the eight pinned by the equipment, two afternoons started halfway to a
+# refusal before anything about them had been decided.
+SET_BY_THE_HOUSE: Final[frozenset[str]] = frozenset({"paper", "glass", "displays", "camera"})
+
+# How many of the remaining four — mechanic, progress, tone, ending — two afternoons may
+# share before they are the same afternoon wearing a different hat. Three is a refusal; two
+# is a coincidence.
+#
+# Two is also what makes a series possible. The same mechanic with a different progress is
+# the shape `docs/EVIDENCE.md §3` argues for — a form shown, then the same form with new
+# content — and the previous count, over all eight, refused it: repeating the mechanic and
+# keeping the printer and the display was already three.
 MAX_SHARED_DIMENSIONS: Final = 2
 
 _ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,31}$")

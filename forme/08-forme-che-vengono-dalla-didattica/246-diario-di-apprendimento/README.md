@@ -1,7 +1,7 @@
 # Diario di apprendimento
 
 - **Numero** 246 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **In una riga** ⚠ costoso: la riflessione sul proprio apprendimento è a un passo dall'autovalutazione.
+- **In una riga** annotare che cosa si è imparato e come.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

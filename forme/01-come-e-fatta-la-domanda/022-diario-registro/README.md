@@ -1,7 +1,6 @@
 # Diario / registro
 
 - **Numero** 22 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** annotare quello che succede, ripetutamente.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -69,7 +68,7 @@ La colonna apparentemente inutile è l'ipotesi nascosta — la pressione dell'ac
 
 «Un registro con tre righe è un registro» toglie la serie in sei parole.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta come registro del mondo, chiusa come diario di sé** — e la seconda parte è già la voce 246.
 

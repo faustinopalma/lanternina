@@ -1,7 +1,6 @@
 # Spiegazione
 
 - **Numero** 16 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** dire perché una cosa succede.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -69,7 +68,7 @@ Tutti i dati sono sul foglio, quindi la spiegazione non dipende da che cosa si s
 
 L'ultima riga è la parte migliore: **scartare** è più facile che spiegare, e chi non riesce a scrivere le tre righe può fare quella e ha lavorato lo stesso.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta, con una condizione: i dati devono stare sul foglio.**
 

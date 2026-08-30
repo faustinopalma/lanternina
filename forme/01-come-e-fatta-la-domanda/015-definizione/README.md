@@ -1,7 +1,6 @@
 # Definizione
 
 - **Numero** 15 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classifica l'enciclopedia** aperto
 - **In una riga** dire che cos'è una cosa con parole proprie.
 - **Stato della ricerca** fatta, 30 agosto 2026
 
@@ -60,7 +59,7 @@ Dal *Dictionary Game*: ognuno scrive una definizione falsa e plausibile per una 
 
 Le parole le sceglie chi scrive, quindi non c'è modo di non saperle. Le due righe stampate danno già la struttura — *è ... che serve a ...* — e quella è la parte che nella versione scolastica si dà per acquisita. L'ultima riga sposta la verifica fuori dal foglio: chi ascolta indovina o no, e nessuno ha corretto niente.
 
-## Che cosa cambia per noi
+## Da riprendere alla rassegna
 
 **Aperta, con una condizione stretta: le parole le sceglie chi scrive.**
 
