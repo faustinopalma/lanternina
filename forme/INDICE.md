@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 38 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 55 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -37,23 +37,23 @@
 30. [Domanda](01-come-e-fatta-la-domanda/030-domanda/README.md) · fatta
 31. [Obiezione](01-come-e-fatta-la-domanda/031-obiezione/README.md) · fatta
 32. [Controesempio](01-come-e-fatta-la-domanda/032-controesempio/README.md) · fatta
-33. [Disegno dal vero](01-come-e-fatta-la-domanda/033-disegno-dal-vero/README.md) · —
-34. [Disegno a memoria](01-come-e-fatta-la-domanda/034-disegno-a-memoria/README.md) · —
-35. [Schizzo tecnico](01-come-e-fatta-la-domanda/035-schizzo-tecnico/README.md) · —
-36. [Diagramma](01-come-e-fatta-la-domanda/036-diagramma/README.md) · —
-37. [Mappa](01-come-e-fatta-la-domanda/037-mappa/README.md) · —
-38. [Grafico](01-come-e-fatta-la-domanda/038-grafico/README.md) · —
-39. [Tabella](01-come-e-fatta-la-domanda/039-tabella/README.md) · —
-40. [Linea del tempo](01-come-e-fatta-la-domanda/040-linea-del-tempo/README.md) · —
-41. [Segno su un'immagine data](01-come-e-fatta-la-domanda/041-segno-su-un-immagine-data/README.md) · —
-42. [Piegatura](01-come-e-fatta-la-domanda/042-piegatura/README.md) · —
-43. [Taglio](01-come-e-fatta-la-domanda/043-taglio/README.md) · —
-44. [Costruzione](01-come-e-fatta-la-domanda/044-costruzione/README.md) · —
-45. [Composizione fisica](01-come-e-fatta-la-domanda/045-composizione-fisica/README.md) · —
-46. [Modello in scala](01-come-e-fatta-la-domanda/046-modello-in-scala/README.md) · —
-47. [Suono](01-come-e-fatta-la-domanda/047-suono/README.md) · —
-48. [Gesto / mimo](01-come-e-fatta-la-domanda/048-gesto-mimo/README.md) · —
-49. [Fotografia](01-come-e-fatta-la-domanda/049-fotografia/README.md) · —
+33. [Disegno dal vero](01-come-e-fatta-la-domanda/033-disegno-dal-vero/README.md) · fatta
+34. [Disegno a memoria](01-come-e-fatta-la-domanda/034-disegno-a-memoria/README.md) · fatta
+35. [Schizzo tecnico](01-come-e-fatta-la-domanda/035-schizzo-tecnico/README.md) · fatta
+36. [Diagramma](01-come-e-fatta-la-domanda/036-diagramma/README.md) · fatta
+37. [Mappa](01-come-e-fatta-la-domanda/037-mappa/README.md) · fatta
+38. [Grafico](01-come-e-fatta-la-domanda/038-grafico/README.md) · fatta
+39. [Tabella](01-come-e-fatta-la-domanda/039-tabella/README.md) · fatta
+40. [Linea del tempo](01-come-e-fatta-la-domanda/040-linea-del-tempo/README.md) · fatta
+41. [Segno su un'immagine data](01-come-e-fatta-la-domanda/041-segno-su-un-immagine-data/README.md) · fatta
+42. [Piegatura](01-come-e-fatta-la-domanda/042-piegatura/README.md) · fatta
+43. [Taglio](01-come-e-fatta-la-domanda/043-taglio/README.md) · fatta
+44. [Costruzione](01-come-e-fatta-la-domanda/044-costruzione/README.md) · fatta
+45. [Composizione fisica](01-come-e-fatta-la-domanda/045-composizione-fisica/README.md) · fatta
+46. [Modello in scala](01-come-e-fatta-la-domanda/046-modello-in-scala/README.md) · fatta
+47. [Suono](01-come-e-fatta-la-domanda/047-suono/README.md) · fatta
+48. [Gesto / mimo](01-come-e-fatta-la-domanda/048-gesto-mimo/README.md) · fatta
+49. [Fotografia](01-come-e-fatta-la-domanda/049-fotografia/README.md) · fatta
 
 ## 2. Che cosa mette in moto la risposta
 

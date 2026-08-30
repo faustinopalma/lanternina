@@ -54,21 +54,21 @@ Non sono regole. Sono cose che, guardando molte forme, tornano.
 
 ## Tratti che tornano, e che sembrano trasversali
 
-Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardandone molte, e vanno verificate con l'elenco intero davanti.
+Non sono proprietà delle singole forme: sono cose che ricompaiono guardandone molte, e vanno verificate con l'elenco intero davanti.
 
-**Il vincolo negativo produce pi\u00f9 del vincolo positivo.** Definire senza usare la parola (015), non dire perch\u00e9 la porta \u00e8 chiusa (025), vietare gli aggettivi di valore (027), raccontare senza nominare (224). Sempre la stessa leva.
+**Il vincolo negativo produce più del vincolo positivo.** Definire senza usare la parola (015), non dire perché la porta è chiusa (025), vietare gli aggettivi di valore (027), raccontare senza nominare (224). Sempre la stessa leva.
 
 **Chiederne tante invece di una buona** sblocca. I primi due o tre vengono da soli e sono gli ovvi; dal quarto comincia il lavoro. Elenco (014), titoli (024), domande (030), ipotesi (029).
 
-**Dire in anticipo che l'ultimo costa,** o che si potrebbe non trovare niente, toglie la delusione e non \u00e8 un complimento. Voci 014, 024, 032.
+**Dire in anticipo che l'ultimo costa,** o che si potrebbe non trovare niente, toglie la delusione e non è un complimento. Voci 014, 024, 032.
 
-**Fissare i due estremi e lasciare libero il mezzo** toglie in un colpo i due problemi pi\u00f9 cari della scrittura: cominciare e finire. Prima e ultima battuta date (025), buste con la piega (028).
+**Fissare i due estremi e lasciare libero il mezzo** toglie in un colpo i due problemi più cari della scrittura: cominciare e finire. Prima e ultima battuta date (025), buste con la piega (028).
 
-**La verifica pu\u00f2 stare fuori dal foglio.** Istruzioni che qualcuno esegue (026), definizioni da far indovinare (015), oggetti che si aprono o no (007). Sembra una famiglia trasversale ai capitoli: da censire tutta alla rassegna.
+**La verifica può stare fuori dal foglio.** Istruzioni che qualcuno esegue (026), definizioni da far indovinare (015), oggetti che si aprono o no (007). Sembra una famiglia trasversale ai capitoli: da censire tutta alla rassegna.
 
 **La griglia stampata rende praticabile una forma lunga.** Cinque righe etichettate producono il testo di un paragrafo senza chiedere di scriverne uno. Voci 011, 022, 027.
 
-**Domandare invece che rispondere** \u00e8 una trasformazione applicabile a quasi tutte le voci del capitolo 1. Da provare sistematicamente: presa una forma qualsiasi, che cosa diventa se si chiede la domanda al posto della risposta.
+**Domandare invece che rispondere** è una trasformazione applicabile a quasi tutte le voci del capitolo 1. Da provare sistematicamente: presa una forma qualsiasi, che cosa diventa se si chiede la domanda al posto della risposta.
 **Girare il gioco dalla parte dell'autore.** Non risolvere un anagramma ma costruirne uno, non decifrare ma cifrare. Toglie insieme il problema della generazione e quello della verifica, ed è la mossa che rende praticabile un capitolo — il 12 — altrimenti chiuso per intero. Da provare su tutte le sue voci. — schede 311, 341, 346.
 
 **Il mondo come processore di simboli.** Uno specchio, una piega, la controluce, due strisce sovrapposte: operazioni esatte su lettere che il sistema non saprebbe fare. Da censire tutte le forme del capitolo 12 che hanno un equivalente fisico. — schede 326, 333.
@@ -78,6 +78,28 @@ Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardando
 **La spiegazione storica come consegna.** Raccontare da dove viene una forma costa tre righe e sostituisce la spiegazione della regola, e sembra funzionare meglio. — schede 333, 346.
 
 **Il titolo come metà della consegna.** In enigmistica il nome del gioco dice la regola. È un'economia che il nostro formato non usa. — scheda 311.
+**La verifica fisica è la migliore che ci sia.** Immediata, non opinabile, e non passa da nessuno: la torre sta in piedi o cade, la piega combacia o no, chi esegue le istruzioni ottiene l'oggetto o non lo ottiene. Le voci che ce l'hanno — 007, 010, 015, 026, 035, 042, 043, 044, 045, 046 — sembrano la famiglia più importante dell'elenco, e attraversano tutti i capitoli.
+
+**Un vincolo tecnico che rende impossibile riuscire bene è più rassicurante di qualunque frase rassicurante.** Il disegno fatto senza guardare il foglio viene storto per costruzione, quindi non c'è niente da confrontare. — scheda 033.
+
+**Dire in anticipo che non verrà** trasforma il fallimento nel risultato atteso: «nessuno ci riesce», «quando cade», «il quinto è il più difficile», «la prima scala che scegli non entra». Cinque occorrenze in famiglie lontane. — schede 014, 032, 034, 044, 046.
+
+**Far costruire la regola invece di applicarla.** Inventare il codice invece di decifrarlo, scrivere la legenda invece di usarla, dichiarare il criterio invece di indovinarlo. — schede 019, 045, 047.
+
+**Chiedere quello che si è scartato** — la parola non detta, l'inquadratura non scattata. Rende visibile una decisione che altrimenti non lascia traccia. — schede 017, 049.
+
+**Il numero come leva, nei due sensi.** Chiederne molti sblocca chi non comincia; chiederne uno solo obbliga a scegliere. Quale serva dipende dal costo del primo passo. — schede 014, 024, 030, 041, 049.
+
+**Il foglio chiede invece di mostrare.** Ogni volta che il sistema vorrebbe rappresentare qualcosa del mondo di chi legge — la casa, la strada, la famiglia — la mossa è chiederlo. — scheda 037.
+
+**Il costo materiale può essere zero.** Piegatura, taglio, cancellatura, sovrapposizione di due fogli: il foglio stampato è già il materiale, e il sistema ne stampa più di uno per volta. — schede 042, 043.
+
+**Istruzioni senza parole.** L'origami ha una notazione internazionale che si esegue senza leggere niente. È l'unica famiglia dell'elenco con questa proprietà. — scheda 042.
+
+**Il suono e il gesto non sono fuori portata: devono atterrare su carta.** Una notazione inventata, una mappa, un registro. Il canale che manca costringe la famiglia a passare per il foglio, e produce forme migliori di quelle che si farebbero con un microfono. — schede 047, 048.
+
+**La fotografia è infrastruttura prima che attività.** È il solo canale non testuale che il sistema abbia, ed è il modo di far restare tutto quello che è effimero: una costruzione, una disposizione, una posa. — scheda 049.
+
 ## Domande aperte per la rassegna
 
 **Serve una forma di pagina per i fogli da smontare?** Un foglio con pezzi da ritagliare non si legge, si smonta. Da contare quante voci dell'elenco la chiedono. — scheda 010.
@@ -86,7 +108,7 @@ Non sono propriet\u00e0 delle singole forme: sono cose che ricompaiono guardando
 
 **Le forme a due tempi** — che chiedono di tornare — sono poche e ricorrenti: previsione (028), registro (022), esperimento, ripasso distanziato, gioco legacy. Da guardare insieme.
 
-**Una serie di richieste minuscole e indipendenti** (sei didascalie, tre regole da rompere) potrebbe essere una struttura di momento a s\u00e9, invece che una richiesta singola. — schede 023, 032.
+**Una serie di richieste minuscole e indipendenti** (sei didascalie, tre regole da rompere) potrebbe essere una struttura di momento a sé, invece che una richiesta singola. — schede 023, 032.
 **Dove passa esattamente il limite sulle lettere?** Un modello sbaglia a contare e a permutare le lettere dentro una parola, ma sa dire come una parola comincia e come finisce. Se il confine è questo, metà del capitolo 12 è recuperabile. Da stabilire con una prova, non a intuito. — scheda 326.
 
 **Difficile e opaco non sono la stessa cosa.** Una cosa difficile si affronta e non viene; una cosa opaca non si affronta nemmeno. Sembrano chiedere rimedi diversi, e nell'elenco sono confuse. — scheda 341.
