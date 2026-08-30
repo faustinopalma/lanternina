@@ -1,7 +1,9 @@
 # Vincolare
 
 - **Numero** 69 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** produrre qualcosa sotto una costrizione formale (vedi §7).
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

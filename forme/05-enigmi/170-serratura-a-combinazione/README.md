@@ -1,7 +1,9 @@
 # Serratura a combinazione
 
 - **Numero** 170 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** la combinazione è il risultato di qualcos'altro. È il meccanismo centrale delle escape room.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

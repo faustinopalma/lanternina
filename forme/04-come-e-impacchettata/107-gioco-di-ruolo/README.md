@@ -1,7 +1,9 @@
 # Gioco di ruolo
 
 - **Numero** 107 nell'enciclopedia, capitolo 4 — Come è impacchettata
+- **Si chiama anche**
 - **In una riga** qualcuno interpreta qualcun altro.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

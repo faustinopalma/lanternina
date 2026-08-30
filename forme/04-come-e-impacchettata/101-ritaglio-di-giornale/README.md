@@ -1,7 +1,9 @@
 # Ritaglio di giornale
 
 - **Numero** 101 nell'enciclopedia, capitolo 4 — Come è impacchettata
+- **Si chiama anche**
 - **In una riga** un fatto raccontato male, di proposito.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

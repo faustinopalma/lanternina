@@ -1,7 +1,9 @@
 # Aritmetica in altra base
 
 - **Numero** 372 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
+- **Si chiama anche**
 - **In una riga** contare in cinque, in due, in sessanta.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

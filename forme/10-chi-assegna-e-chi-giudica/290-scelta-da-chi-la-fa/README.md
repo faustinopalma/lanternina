@@ -1,7 +1,9 @@
 # Scelta da chi la fa
 
 - **Numero** 290 nell'enciclopedia, capitolo 10 — Chi assegna, e chi giudica
+- **Si chiama anche**
 - **In una riga** un menu di cose possibili.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

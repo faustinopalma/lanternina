@@ -1,7 +1,9 @@
 # Compito autentico
 
 - **Numero** 255 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** una cosa che serve davvero a qualcuno.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

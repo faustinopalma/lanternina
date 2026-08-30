@@ -1,7 +1,9 @@
 # Trova le differenze
 
 - **Numero** 386 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** la versione da settimanale della precedente.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

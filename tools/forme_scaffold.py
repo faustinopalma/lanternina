@@ -24,6 +24,7 @@ CHAPTER = re.compile(r"^## (\d+)\. (.+)$")
 SECTION = re.compile(r"^### (\d+)\.(\d+) (.+)$")
 METHOD = re.compile(r"^(\d+)\. \*\*(.+?)\*\* — (.+)$")
 
+
 @dataclass(frozen=True)
 class Method:
     number: int
@@ -64,7 +65,9 @@ def folder(method: Method) -> Path:
 TEMPLATE = """# {name}
 
 - **Numero** {number} nell'enciclopedia, capitolo {chapter} — {chapter_name}{section}
+- **Si chiama anche**
 - **In una riga** {gloss}
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

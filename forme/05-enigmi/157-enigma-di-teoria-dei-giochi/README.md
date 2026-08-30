@@ -1,7 +1,9 @@
 # Enigma di teoria dei giochi
 
 - **Numero** 157 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
+- **Si chiama anche**
 - **In una riga** chi ha una strategia vincente.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

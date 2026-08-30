@@ -1,7 +1,9 @@
 # Raggruppare
 
 - **Numero** 57 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** per una proprietà scelta da chi raggruppa, non da chi chiede.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

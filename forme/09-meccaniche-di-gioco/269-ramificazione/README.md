@@ -1,7 +1,9 @@
 # Ramificazione
 
 - **Numero** 269 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
+- **Si chiama anche**
 - **In una riga** la storia va diversamente. È quello che questo formato già fa.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Fading
 
 - **Numero** 230 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** l'aiuto si riduce a ogni ripetizione.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

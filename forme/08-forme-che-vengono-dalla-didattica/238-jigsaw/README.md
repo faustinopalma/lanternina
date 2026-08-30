@@ -1,7 +1,9 @@
 # Jigsaw
 
 - **Numero** 238 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** ognuno impara un pezzo e lo insegna agli altri.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

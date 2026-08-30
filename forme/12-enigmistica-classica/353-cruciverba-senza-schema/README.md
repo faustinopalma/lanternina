@@ -1,7 +1,9 @@
 # Cruciverba senza schema
 
 - **Numero** 353 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Griglie»
+- **Si chiama anche**
 - **In una riga** la griglia va costruita insieme alle parole.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

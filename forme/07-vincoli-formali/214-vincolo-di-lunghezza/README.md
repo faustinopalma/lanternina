@@ -1,7 +1,9 @@
 # Vincolo di lunghezza
 
 - **Numero** 214 nell'enciclopedia, capitolo 7 — Vincoli formali
+- **Si chiama anche**
 - **In una riga** esattamente diciassette parole.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

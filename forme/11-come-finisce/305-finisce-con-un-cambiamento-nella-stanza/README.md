@@ -1,7 +1,9 @@
 # Finisce con un cambiamento nella stanza
 
 - **Numero** 305 nell'enciclopedia, capitolo 11 — Come finisce
+- **Si chiama anche**
 - **In una riga** qualcosa è spostato, appeso, aperto.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

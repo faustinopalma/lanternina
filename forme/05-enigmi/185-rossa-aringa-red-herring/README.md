@@ -1,7 +1,9 @@
 # Rossa aringa (red herring)
 
 - **Numero** 185 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
+- **Si chiama anche**
 - **In una riga** un oggetto messo lì per depistare.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

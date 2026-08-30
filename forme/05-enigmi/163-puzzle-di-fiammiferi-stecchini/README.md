@@ -1,7 +1,9 @@
 # Puzzle di fiammiferi / stecchini
 
 - **Numero** 163 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** spostarne due per fare quattro quadrati.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

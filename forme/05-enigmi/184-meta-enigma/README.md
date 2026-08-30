@@ -1,7 +1,9 @@
 # Meta-enigma
 
 - **Numero** 184 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
+- **Si chiama anche**
 - **In una riga** le soluzioni degli enigmi precedenti sono i dati del finale. È la struttura delle puzzle hunt.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

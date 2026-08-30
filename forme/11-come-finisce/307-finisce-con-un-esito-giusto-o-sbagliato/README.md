@@ -1,7 +1,9 @@
 # Finisce con un esito giusto o sbagliato
 
 - **Numero** 307 nell'enciclopedia, capitolo 11 — Come finisce
+- **Si chiama anche**
 - **In una riga** alla fine si sa se è andata bene o male.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

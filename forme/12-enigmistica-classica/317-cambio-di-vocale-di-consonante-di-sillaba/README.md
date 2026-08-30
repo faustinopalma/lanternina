@@ -1,7 +1,9 @@
 # Cambio di vocale, di consonante, di sillaba
 
 - **Numero** 317 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
+- **Si chiama anche**
 - **In una riga** la stessa cosa, ristretta.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

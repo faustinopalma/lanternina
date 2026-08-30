@@ -1,7 +1,9 @@
 # Anagramma a frase
 
 - **Numero** 332 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
+- **Si chiama anche**
 - **In una riga** un'intera frase riordinata in un'altra frase sensata.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

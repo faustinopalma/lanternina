@@ -1,7 +1,9 @@
 # Simulazione di ruolo
 
 - **Numero** 253 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** impersonare qualcuno che decide.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

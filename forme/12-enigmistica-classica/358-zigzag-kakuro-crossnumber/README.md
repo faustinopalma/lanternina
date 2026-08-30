@@ -1,7 +1,9 @@
 # Zigzag, kakuro, crossnumber
 
 - **Numero** 358 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Griglie»
+- **Si chiama anche**
 - **In una riga** griglie con numeri invece che lettere.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Codice a numeri (A=1)
 
 - **Numero** 131 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
+- **Si chiama anche**
 - **In una riga** ogni lettera diventa il suo numero d’ordine.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

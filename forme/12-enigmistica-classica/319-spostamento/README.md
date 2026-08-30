@@ -1,7 +1,9 @@
 # Spostamento
 
 - **Numero** 319 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
+- **Si chiama anche**
 - **In una riga** una lettera si sposta altrove nella parola.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

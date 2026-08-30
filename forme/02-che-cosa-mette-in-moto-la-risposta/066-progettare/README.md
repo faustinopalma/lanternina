@@ -1,7 +1,9 @@
 # Progettare
 
 - **Numero** 66 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** decidere prima come sarà fatta una cosa.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

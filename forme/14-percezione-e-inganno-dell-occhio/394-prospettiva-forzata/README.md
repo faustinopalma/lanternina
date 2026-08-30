@@ -1,7 +1,9 @@
 # Prospettiva forzata
 
 - **Numero** 394 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** un oggetto vicino che sembra grande, e la fotografia che lo prova.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

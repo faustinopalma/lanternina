@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 55 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 61 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -57,12 +57,12 @@
 
 ## 2. Che cosa mette in moto la risposta
 
-50. [Ricordare](02-che-cosa-mette-in-moto-la-risposta/050-ricordare/README.md) · —
-51. [Riconoscere](02-che-cosa-mette-in-moto-la-risposta/051-riconoscere/README.md) · —
-52. [Osservare](02-che-cosa-mette-in-moto-la-risposta/052-osservare/README.md) · —
-53. [Contare](02-che-cosa-mette-in-moto-la-risposta/053-contare/README.md) · —
-54. [Misurare](02-che-cosa-mette-in-moto-la-risposta/054-misurare/README.md) · —
-55. [Confrontare](02-che-cosa-mette-in-moto-la-risposta/055-confrontare/README.md) · —
+50. [Ricordare](02-che-cosa-mette-in-moto-la-risposta/050-ricordare/README.md) · fatta
+51. [Riconoscere](02-che-cosa-mette-in-moto-la-risposta/051-riconoscere/README.md) · fatta
+52. [Osservare](02-che-cosa-mette-in-moto-la-risposta/052-osservare/README.md) · fatta
+53. [Contare](02-che-cosa-mette-in-moto-la-risposta/053-contare/README.md) · fatta
+54. [Misurare](02-che-cosa-mette-in-moto-la-risposta/054-misurare/README.md) · fatta
+55. [Confrontare](02-che-cosa-mette-in-moto-la-risposta/055-confrontare/README.md) · fatta
 56. [Ordinare](02-che-cosa-mette-in-moto-la-risposta/056-ordinare/README.md) · —
 57. [Raggruppare](02-che-cosa-mette-in-moto-la-risposta/057-raggruppare/README.md) · —
 58. [Cercare](02-che-cosa-mette-in-moto-la-risposta/058-cercare/README.md) · —

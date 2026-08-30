@@ -1,7 +1,9 @@
 # Labirinto logico
 
 - **Numero** 165 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** un labirinto le cui regole di movimento sono strane.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Finale buono e finale cattivo
 
 - **Numero** 191 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
+- **Si chiama anche**
 - **In una riga** la stessa storia arriva a due esiti, uno migliore dell’altro.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

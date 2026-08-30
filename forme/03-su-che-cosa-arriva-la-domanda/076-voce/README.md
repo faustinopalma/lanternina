@@ -1,7 +1,9 @@
 # Voce
 
 - **Numero** 76 nell'enciclopedia, capitolo 3 — Su che cosa arriva la domanda
+- **Si chiama anche**
 - **In una riga** qualcuno che parla.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

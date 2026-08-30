@@ -1,7 +1,9 @@
 # Abdurre
 
 - **Numero** 62 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** dall'effetto alla causa più probabile. È il verbo del giallo.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

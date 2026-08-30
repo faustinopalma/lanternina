@@ -1,7 +1,9 @@
 # Quiz
 
 - **Numero** 84 nell'enciclopedia, capitolo 4 — Come è impacchettata
+- **Si chiama anche**
 - **In una riga** una serie di domande con risposte giuste.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

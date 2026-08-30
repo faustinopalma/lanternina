@@ -1,7 +1,9 @@
 # Assegnata dal sistema
 
 - **Numero** 287 nell'enciclopedia, capitolo 10 — Chi assegna, e chi giudica
+- **Si chiama anche**
 - **In una riga** il caso normale.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

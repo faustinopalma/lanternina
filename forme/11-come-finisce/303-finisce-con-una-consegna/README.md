@@ -1,7 +1,9 @@
 # Finisce con una consegna
 
 - **Numero** 303 nell'enciclopedia, capitolo 11 — Come finisce
+- **Si chiama anche**
 - **In una riga** la cosa va a qualcuno.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

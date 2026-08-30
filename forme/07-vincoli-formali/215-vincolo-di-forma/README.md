@@ -1,7 +1,9 @@
 # Vincolo di forma
 
 - **Numero** 215 nell'enciclopedia, capitolo 7 — Vincoli formali
+- **Si chiama anche**
 - **In una riga** haiku, sonetto, elenco.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

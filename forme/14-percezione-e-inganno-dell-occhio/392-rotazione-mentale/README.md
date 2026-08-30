@@ -1,7 +1,9 @@
 # Rotazione mentale
 
 - **Numero** 392 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** quale di queste è lo stesso oggetto girato.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

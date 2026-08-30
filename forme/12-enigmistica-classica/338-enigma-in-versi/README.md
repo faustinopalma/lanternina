@@ -1,7 +1,9 @@
 # Enigma in versi
 
 - **Numero** 338 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che lavorano sul senso»
+- **Si chiama anche**
 - **In una riga** l'indovinello lungo, spesso in due parti, in cui la lettura di superficie racconta una scena intera.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

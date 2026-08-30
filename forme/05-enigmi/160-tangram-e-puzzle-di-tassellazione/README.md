@@ -1,7 +1,9 @@
 # Tangram e puzzle di tassellazione
 
 - **Numero** 160 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** poche forme che coprono una figura senza buchi.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

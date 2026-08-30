@@ -1,7 +1,9 @@
 # Osservazione strutturata
 
 - **Numero** 247 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** guardare una cosa con una griglia data.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

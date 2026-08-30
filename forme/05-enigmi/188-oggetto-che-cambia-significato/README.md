@@ -1,7 +1,9 @@
 # Oggetto che cambia significato
 
 - **Numero** 188 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
+- **Si chiama anche**
 - **In una riga** una cosa vista all'inizio e capita alla fine.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Zeppa iniziale, centrale, finale
 
 - **Numero** 313 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
+- **Si chiama anche**
 - **In una riga** la posizione dell'aggiunta è dichiarata nel nome del gioco.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

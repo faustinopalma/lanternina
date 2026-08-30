@@ -1,7 +1,9 @@
 # Ambiguità figura-sfondo
 
 - **Numero** 379 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** il vaso di Rubin, dove si vede una cosa o l'altra e mai tutte e due.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

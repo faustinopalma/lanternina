@@ -1,7 +1,9 @@
 # Conto alla rovescia
 
 - **Numero** 189 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
+- **Si chiama anche**
 - **In una riga** un tempo che scorre e si vede scorrere.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Indurre
 
 - **Numero** 61 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** dai casi alla regola.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

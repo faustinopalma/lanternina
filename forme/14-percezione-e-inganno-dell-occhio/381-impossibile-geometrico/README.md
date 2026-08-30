@@ -1,7 +1,9 @@
 # Impossibile geometrico
 
 - **Numero** 381 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** il triangolo di Penrose, le scale di Escher.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

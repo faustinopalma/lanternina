@@ -1,7 +1,9 @@
 # Missione
 
 - **Numero** 90 nell'enciclopedia, capitolo 4 — Come è impacchettata
+- **Si chiama anche**
 - **In una riga** un compito dato da qualcuno dentro una storia.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

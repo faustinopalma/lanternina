@@ -1,7 +1,9 @@
 # Metodo socratico
 
 - **Numero** 233 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** domande che portano a scoprire una contraddizione.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

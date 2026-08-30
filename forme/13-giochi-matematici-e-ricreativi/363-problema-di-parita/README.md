@@ -1,7 +1,9 @@
 # Problema di parità
 
 - **Numero** 363 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
+- **Si chiama anche**
 - **In una riga** si dimostra che una cosa è impossibile guardando che qualcosa non cambia mai.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

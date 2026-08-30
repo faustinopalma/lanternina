@@ -1,7 +1,9 @@
 # Costruzione con riga e compasso
 
 - **Numero** 371 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
+- **Si chiama anche**
 - **In una riga** e le costruzioni impossibili, che sono la parte interessante.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

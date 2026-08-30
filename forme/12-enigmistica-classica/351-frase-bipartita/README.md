@@ -1,7 +1,9 @@
 # Frase bipartita
 
 - **Numero** 351 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Rebus e forme miste»
+- **Si chiama anche**
 - **In una riga** una frase che cambia significato a seconda di dove si mette la pausa.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

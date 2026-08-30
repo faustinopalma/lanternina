@@ -1,7 +1,9 @@
 # Rebus
 
 - **Numero** 119 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
+- **Si chiama anche**
 - **In una riga** immagini e lettere che compongono una frase.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Gioco pervasivo
 
 - **Numero** 203 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
+- **Si chiama anche**
 - **In una riga** il gioco non ha un confine spaziale dichiarato.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

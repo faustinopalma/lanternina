@@ -1,7 +1,9 @@
 # Cartellino da museo
 
 - **Numero** 97 nell'enciclopedia, capitolo 4 — Come è impacchettata
+- **Si chiama anche**
 - **In una riga** un oggetto e quello che il museo vuole si sappia.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

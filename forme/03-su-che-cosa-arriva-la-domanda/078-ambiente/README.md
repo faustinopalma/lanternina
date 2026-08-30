@@ -1,7 +1,9 @@
 # Ambiente
 
 - **Numero** 78 nell'enciclopedia, capitolo 3 — Su che cosa arriva la domanda
+- **Si chiama anche**
 - **In una riga** la stanza stessa è la domanda.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

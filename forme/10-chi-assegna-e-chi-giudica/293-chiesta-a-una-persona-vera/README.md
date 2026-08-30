@@ -1,7 +1,9 @@
 # Chiesta a una persona vera
 
 - **Numero** 293 nell'enciclopedia, capitolo 10 — Chi assegna, e chi giudica
+- **Si chiama anche**
 - **In una riga** «chiedi a qualcuno che c'era».
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Crittografia mnemonica
 
 - **Numero** 343 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Crittografie»
+- **Si chiama anche**
 - **In una riga** l'esposto è una frase fatta o un proverbio, e la soluzione lo spiega.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Finisce con una scoperta
 
 - **Numero** 304 nell'enciclopedia, capitolo 11 — Come finisce
+- **Si chiama anche**
 - **In una riga** si sa una cosa che prima non si sapeva.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Apprendimento per indagine (inquiry)
 
 - **Numero** 236 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** si parte da una domanda propria.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

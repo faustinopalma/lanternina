@@ -1,7 +1,9 @@
 # Scienza partecipata (citizen science)
 
 - **Numero** 250 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** raccogliere dati veri che servono a qualcuno. È la forma con il senso più forte disponibile.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

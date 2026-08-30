@@ -1,7 +1,9 @@
 # Sezione e proiezione
 
 - **Numero** 393 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** dato un solido, che ombra fa.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

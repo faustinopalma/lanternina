@@ -1,7 +1,9 @@
 # Assegnata dal genitore
 
 - **Numero** 289 nell'enciclopedia, capitolo 10 — Chi assegna, e chi giudica
+- **Si chiama anche**
 - **In una riga** esiste già: la bozza nel pannello.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Dibattito
 
 - **Numero** 254 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** due posizioni sostenute a turno davanti a qualcuno che decide.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,9 @@
 # Protocollo di pensiero ad alta voce
 
 - **Numero** 241 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
+- **Si chiama anche**
 - **In una riga** dire cosa si sta pensando mentre si fa.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

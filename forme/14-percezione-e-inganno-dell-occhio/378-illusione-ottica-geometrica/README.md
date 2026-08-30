@@ -1,7 +1,9 @@
 # Illusione ottica geometrica
 
 - **Numero** 378 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
+- **Si chiama anche**
 - **In una riga** Müller-Lyer, Ponzo, Zöllner: due segmenti uguali che non sembrano.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

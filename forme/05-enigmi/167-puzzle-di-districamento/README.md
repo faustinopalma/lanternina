@@ -1,7 +1,9 @@
 # Puzzle di districamento
 
 - **Numero** 167 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** anelli e corde.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

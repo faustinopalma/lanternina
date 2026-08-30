@@ -1,7 +1,9 @@
 # Negoziare
 
 - **Numero** 72 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** mettersi d'accordo con un altro.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

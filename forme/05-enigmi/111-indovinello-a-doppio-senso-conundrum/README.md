@@ -1,7 +1,9 @@
 # Indovinello a doppio senso (conundrum)
 
 - **Numero** 111 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
+- **Si chiama anche**
 - **In una riga** la risposta sta in un gioco di parole.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

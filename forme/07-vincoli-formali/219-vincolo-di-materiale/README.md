@@ -1,7 +1,9 @@
 # Vincolo di materiale
 
 - **Numero** 219 nell'enciclopedia, capitolo 7 — Vincoli formali
+- **Si chiama anche**
 - **In una riga** usare solo le parole che compaiono in una pagina data (found poetry).
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

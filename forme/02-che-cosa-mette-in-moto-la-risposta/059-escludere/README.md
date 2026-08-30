@@ -1,7 +1,9 @@
 # Escludere
 
 - **Numero** 59 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
+- **Si chiama anche**
 - **In una riga** restringere per esclusioni successive.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

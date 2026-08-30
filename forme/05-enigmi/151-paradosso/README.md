@@ -1,7 +1,9 @@
 # Paradosso
 
 - **Numero** 151 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
+- **Si chiama anche**
 - **In una riga** una cosa che non torna e sulla quale non c'è niente da fare.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

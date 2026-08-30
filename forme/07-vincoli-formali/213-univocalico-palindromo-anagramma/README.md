@@ -1,7 +1,9 @@
 # Univocalico, palindromo, anagramma
 
 - **Numero** 213 nell'enciclopedia, capitolo 7 — Vincoli formali
+- **Si chiama anche**
 - **In una riga** vedi §5.1.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

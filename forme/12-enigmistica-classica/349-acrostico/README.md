@@ -1,7 +1,9 @@
 # Acrostico
 
 - **Numero** 349 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Rebus e forme miste»
+- **Si chiama anche**
 - **In una riga** le iniziali dei versi compongono una parola.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

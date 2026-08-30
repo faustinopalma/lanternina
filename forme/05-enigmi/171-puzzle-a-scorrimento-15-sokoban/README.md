@@ -1,7 +1,9 @@
 # Puzzle a scorrimento (15, Sokoban)
 
 - **Numero** 171 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
+- **Si chiama anche**
 - **In una riga** tessere che si muovono solo negli spazi liberi, fino a una configurazione voluta.
+- **Fonti**
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è
