@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 164 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 169 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -175,11 +175,11 @@
 156. [Problema di scacchi](05-enigmi/156-problema-di-scacchi/README.md) · fatta
 157. [Enigma di teoria dei giochi](05-enigmi/157-enigma-di-teoria-dei-giochi/README.md) · fatta
 158. [Enigma auto-referenziale](05-enigmi/158-enigma-auto-referenziale/README.md) · fatta
-159. [Puzzle a incastro (jigsaw)](05-enigmi/159-puzzle-a-incastro-jigsaw/README.md) · —
-160. [Tangram e puzzle di tassellazione](05-enigmi/160-tangram-e-puzzle-di-tassellazione/README.md) · —
-161. [Puzzle di dissezione](05-enigmi/161-puzzle-di-dissezione/README.md) · —
-162. [Puzzle di piegatura](05-enigmi/162-puzzle-di-piegatura/README.md) · —
-163. [Puzzle di fiammiferi / stecchini](05-enigmi/163-puzzle-di-fiammiferi-stecchini/README.md) · —
+159. [Puzzle a incastro (jigsaw)](05-enigmi/159-puzzle-a-incastro-jigsaw/README.md) · fatta
+160. [Tangram e puzzle di tassellazione](05-enigmi/160-tangram-e-puzzle-di-tassellazione/README.md) · fatta
+161. [Puzzle di dissezione](05-enigmi/161-puzzle-di-dissezione/README.md) · fatta
+162. [Puzzle di piegatura](05-enigmi/162-puzzle-di-piegatura/README.md) · fatta
+163. [Puzzle di fiammiferi / stecchini](05-enigmi/163-puzzle-di-fiammiferi-stecchini/README.md) · fatta
 164. [Labirinto su carta](05-enigmi/164-labirinto-su-carta/README.md) · —
 165. [Labirinto logico](05-enigmi/165-labirinto-logico/README.md) · —
 166. [Labirinto fisico](05-enigmi/166-labirinto-fisico/README.md) · —
