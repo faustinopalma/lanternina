@@ -1,7 +1,9 @@
 # Fotografia
 
 - **Numero** 49 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** fotografia, scatto, inquadratura, photovoice, rifotografia
 - **In una riga** inquadrare e scattare.
+- **Fonti** nessuna fra le pagine locali; la photovoice e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -79,6 +81,6 @@ Lo scatto unico obbliga a guardare. Le due inquadrature scartate sono la parte c
 
 **Chiedere quello che si è scartato** è la mossa migliore di questa scheda, e ricompare dalla voce 17 (che cosa hai deciso di non dirgli). Due occorrenze in famiglie lontane: probabile che sia generale.
 
-**Il vincolo di numero al minimo** — uno — è l'opposto della leva della voce 14 e funziona per la ragione opposta. Vale la pena guardarle insieme alla rassegna: quando molti sbloccano e quando uno obbliga.
+**Il vincolo di numero al minimo** — uno — è l'opposto della leva della voce 14, elenco e funziona per la ragione opposta. Vale la pena guardarle insieme alla rassegna: quando molti sbloccano e quando uno obbliga.
 
 Da verificare: la photovoice, chi l'ha formalizzata e con che esiti.

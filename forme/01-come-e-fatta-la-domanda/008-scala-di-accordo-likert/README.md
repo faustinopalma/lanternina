@@ -1,7 +1,9 @@
 # Scala di accordo (Likert)
 
 - **Numero** 8 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** scala Likert, scala di accordo, «da 1 a 5», scala di gradimento
 - **In una riga** quanto sei d'accordo, da 1 a 5.
+- **Fonti** `educational-assessment.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,6 +21,14 @@ Parti mobili:
 Psicometria degli atteggiamenti, anni Trenta. È diventata la forma dominante di ogni questionario — soddisfazione dei clienti, clima aziendale, sondaggi — perché produce un numero da una cosa che non ne ha uno.
 
 Nella scuola è arrivata attraverso l'autovalutazione: «quanto ti senti sicuro su questo argomento, da 1 a 5», spesso stampata in fondo alla scheda.
+
+## Varianti e parenti
+
+- **Scala Beaufort** — la scala ordinale ancorata a cose visibili, 1805.
+- **Confronto a coppie** (9) — l'ordine senza il numero.
+- **Semaforo verde-giallo-rosso** — una Likert a tre gradini travestita.
+- **Scala di intensità in un taccuino** — la stessa griglia puntata sul mondo.
+- **Autovalutazione con rubrica** (244) — il parente che produce un giudizio su una persona.
 
 ## Che cosa se ne sa
 

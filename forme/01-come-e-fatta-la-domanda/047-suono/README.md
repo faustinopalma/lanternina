@@ -1,7 +1,9 @@
 # Suono
 
 - **Numero** 47 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** suono, ritmo, ascolto, partitura grafica, paesaggio sonoro
 - **In una riga** battere, riprodurre un ritmo, cantare una frase.
+- **Fonti** nessuna fra le pagine locali; Dalcroze, Orff, Kodaly e Schafer sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

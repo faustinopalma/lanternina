@@ -1,7 +1,9 @@
 # Grafico
 
 - **Numero** 38 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** grafico, diagramma cartesiano, curva, istogramma, visualizzazione di dati
 - **In una riga** mostrare come una quantità cambia.
+- **Fonti** nessuna fra le pagine locali; Playfair, Snow e Nightingale sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

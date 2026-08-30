@@ -1,7 +1,9 @@
 # Tema / saggio
 
 - **Numero** 20 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** tema, saggio, essay, componimento, testo argomentativo
 - **In una riga** un testo lungo su un argomento assegnato.
+- **Fonti** `essay.txt`, `multiple-choice.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -20,6 +22,15 @@ Parti mobili:
 Montaigne, 1580, come genere letterario personale e digressivo. La scuola lo ha adottato come forma d'esame e nel farlo ne ha rovesciato il senso: da *tentativo* a *prova*.
 
 Nella valutazione moderna è l'*extended constructed response*, ed è la forma più costosa da correggere — il che è esattamente il motivo per cui la scelta multipla l'ha sostituita ovunque i numeri fossero grandi.
+
+## Varianti e parenti
+
+- **Lettera** (21) — il testo lungo con un destinatario.
+- **Diario** (22) — il testo lungo ripetuto.
+- **Istruzioni** (26) — il testo lungo con uno scopo verificabile.
+- **Traccia con documenti allegati** — il tema con il materiale dato.
+- **Essai di Montaigne** — il genere prima che diventasse una prova.
+- **Pezzo di rivista** — con destinatario, lunghezza e scadenza.
 
 ## Che cosa se ne sa
 

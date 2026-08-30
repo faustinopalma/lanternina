@@ -1,7 +1,9 @@
 # Disegno a memoria
 
 - **Numero** 34 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** disegno a memoria, memoria visiva, penny task, disegnare senza guardare
 - **In una riga** disegnare una cosa che non si sta guardando.
+- **Fonti** nessuna fra le pagine locali; la penny task e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

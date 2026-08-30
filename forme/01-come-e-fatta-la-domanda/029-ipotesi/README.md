@@ -1,7 +1,9 @@
 # Ipotesi
 
 - **Numero** 29 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** ipotesi, congettura, spiegazione possibile, abduzione, diagnosi differenziale
 - **In una riga** dire cosa potrebbe spiegare una cosa.
+- **Fonti** `inquiry-based-learning.txt`, `problem-based-learning.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -17,7 +19,7 @@ Parti mobili:
 
 ## Da dove viene
 
-Dal metodo scientifico, e prima ancora dall'indagine giudiziaria e dalla medicina. Peirce la chiamò **abduzione** — il terzo tipo di inferenza dopo deduzione e induzione, quello che va dall'effetto alla causa più plausibile — ed è la voce 62 dell'enciclopedia.
+Dal metodo scientifico, e prima ancora dall'indagine giudiziaria e dalla medicina. Peirce la chiamò **abduzione** — il terzo tipo di inferenza dopo deduzione e induzione, quello che va dall'effetto alla causa più plausibile — ed è la voce 62, abdurre dell'enciclopedia.
 
 Nella didattica è il perno dell'apprendimento per indagine: si parte da un fenomeno e non da una spiegazione.
 
@@ -25,10 +27,10 @@ Nel giallo è il genere intero. Chesterton e Conan Doyle hanno insegnato a due g
 
 ## Varianti e parenti
 
-- **Previsione** (voce 28) — stessa attività, direzione opposta.
+- **Previsione** (voce 28, previsione) — stessa attività, direzione opposta.
 - **Diagnosi** — ipotesi con un elenco di candidate note.
 - **Analisi di guasto** — ipotesi su qualcosa che si è rotto, con la possibilità di smontarlo.
-- **Enigma di situazione** (voce 150) — ipotesi a cui qualcuno risponde sì o no.
+- **Enigma di situazione** (voce 150, enigma di situazione (lateral thinking)) — ipotesi a cui qualcuno risponde sì o no.
 - **Ipotesi multiple concorrenti** — la tecnica in cui si tengono in piedi più spiegazioni e si cerca il dato che ne uccide una.
 - **Congettura matematica** — ipotesi su una regolarità, e poi la dimostrazione.
 - **Ricostruzione storica** — ipotesi su fatti che non torneranno.

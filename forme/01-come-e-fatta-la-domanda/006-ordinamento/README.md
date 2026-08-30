@@ -1,7 +1,9 @@
 # Ordinamento
 
 - **Numero** 6 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** ordinamento, mettere in sequenza, riordina, sequencing
 - **In una riga** mettere in sequenza. Praticabile quando l'ordine è una proprietà del mondo (dal più piccolo al più grande, dal prima al dopo) e non un ordine che qualcuno ha deciso.
+- **Fonti** nessuna fra le pagine locali; il comportamento delle inversioni e' aritmetica
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,6 +21,15 @@ Questa distinzione è tutta la scheda.
 ## Da dove viene
 
 È una delle forme più antiche che esistano, perché precede la scuola: mettere in fila è quello che si fa con gli oggetti prima di saperli nominare. Nelle prove standardizzate compare come *ordering task*, e nei giochi da tavolo come meccanica intera — *Timeline*, dove si piazzano carte di eventi su una linea del tempo, ne è tutto il regolamento.
+
+## Varianti e parenti
+
+- **Riordino di un testo tagliato a pezzi** (10) — l'ordine sta nelle cuciture.
+- **Linea del tempo** (40) — l'ordine con anche le distanze.
+- **Classificazione in insiemi** (7) — raggruppare invece di mettere in fila.
+- **Timeline, il gioco** — si infila una carta al posto giusto e si verifica subito.
+- **Ordine parziale** — trovare dove l'ordine è indifferente.
+- **Confronto a coppie** (9) — l'ordinamento ridotto a due elementi.
 
 ## Che cosa se ne sa
 

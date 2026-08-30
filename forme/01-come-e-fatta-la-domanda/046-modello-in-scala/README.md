@@ -1,7 +1,9 @@
 # Modello in scala
 
 - **Numero** 46 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** modello in scala, plastico, miniatura, riduzione in scala, diorama
 - **In una riga** costruire una cosa più piccola della vera.
+- **Fonti** nessuna fra le pagine locali; Haldane 1926 e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -74,6 +76,6 @@ La misura col corpo toglie il bisogno del metro. L'avvertimento sulla prima scal
 
 **Sbagliare la scala è il contenuto**, non un incidente da prevenire. È il primo caso dell'elenco in cui la consegna migliore è quella che lascia sbagliare e lo annuncia — e va confrontato con le voci 14, 32, 34 e 44, dove la stessa cosa è comparsa in forma più debole.
 
-**Misurare con il corpo** rende praticabile una forma che sembrava chiedere uno strumento. Da guardare per tutta la famiglia della misura (voce 54).
+**Misurare con il corpo** rende praticabile una forma che sembrava chiedere uno strumento. Da guardare per tutta la famiglia della misura (voce 54, misurare).
 
 **La legge del quadrato-cubo** è un contenuto vero che sta in un pomeriggio, e nessuna scuola lo mette dove si tocca.

@@ -1,7 +1,9 @@
 # Titolo
 
 - **Numero** 24 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** titolo, intitolare, dare un nome, headline
 - **In una riga** dare un nome a una cosa.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -24,8 +26,8 @@ La **titolazione artistica**: da *Senza titolo* a *La persistenza della memoria*
 
 ## Varianti e parenti
 
-- **Didascalia** (voce 23) — sotto invece che sopra, e più lunga.
-- **Definizione** (voce 15) — il titolo di una parola, si potrebbe dire.
+- **Didascalia** (voce 23, didascalia) — sotto invece che sopra, e più lunga.
+- **Definizione** (voce 15, definizione) — il titolo di una parola, si potrebbe dire.
 - **Nomi propri inventati** — dare un nome a un luogo, a un animale, a un attrezzo che non ce l'ha.
 - **Indice** — una fila di titoli, che è anche una struttura.
 - **Titolazione al contrario** — dato un titolo, produrre la cosa. È un innesco di scrittura fra i più usati.
@@ -35,7 +37,7 @@ La **titolazione artistica**: da *Senza titolo* a *La persistenza della memoria*
 
 Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata.
 
-Quello che si sa dai laboratori di scrittura, e che non ho una fonte per quantificare: **chiedere molti titoli è una tecnica standard di sblocco**. I primi tre vengono da soli e sono descrittivi; dal quarto in poi bisogna guardare la cosa da un altro lato, e lì comincia il lavoro. È la stessa dinamica notata alla voce 14 sull'elenco, e le due forme sono parenti più stretti di quanto sembri.
+Quello che si sa dai laboratori di scrittura, e che non ho una fonte per quantificare: **chiedere molti titoli è una tecnica standard di sblocco**. I primi tre vengono da soli e sono descrittivi; dal quarto in poi bisogna guardare la cosa da un altro lato, e lì comincia il lavoro. È la stessa dinamica notata alla voce 14, elenco sull'elenco, e le due forme sono parenti più stretti di quanto sembri.
 
 L'altra cosa che si sa: **titolare è il modo più corto di chiedere un'interpretazione**. Un titolo contiene una tesi su che cosa la cosa sia, e la contiene senza doverla argomentare.
 
@@ -68,7 +70,7 @@ Museale: i titoli attribuiti dai conservatori a opere che non ne avevano, e che 
 >
 > Il primo nome è il più facile ed è quasi sempre il peggiore. Il quarto è quello che vale.
 
-Nominare una cosa senza nome non può essere sbagliato, perché non c'è un nome giusto contro cui confrontarsi. La seconda riga di ogni scheda — *che cosa nomina* — costringe a essere precisi e fa metà del lavoro. L'avvertenza finale è la stessa mossa della voce 14: dire in anticipo che il primo tentativo è debole toglie la delusione dal quarto.
+Nominare una cosa senza nome non può essere sbagliato, perché non c'è un nome giusto contro cui confrontarsi. La seconda riga di ogni scheda — *che cosa nomina* — costringe a essere precisi e fa metà del lavoro. L'avvertenza finale è la stessa mossa della voce 14, elenco: dire in anticipo che il primo tentativo è debole toglie la delusione dal quarto.
 
 ## Da riprendere alla rassegna
 
@@ -76,4 +78,4 @@ Due cose da guardare quando si tirerà le somme.
 
 **Titolare al contrario** — dare un titolo e chiedere la cosa — è un innesco molto usato che questa scheda ha solo nominato. Merita una prova sua: è la forma in cui il vincolo sta tutto nella prima riga e il resto è libero.
 
-**La numerosità come strumento** torna qui come alla voce 14. Vale la pena vedere, con l'elenco intero davanti, quante forme si sbloccano semplicemente chiedendone tante invece di una buona. Sembra un tratto trasversale e non una proprietà di queste due voci.
+**La numerosità come strumento** torna qui come alla voce 14, elenco. Vale la pena vedere, con l'elenco intero davanti, quante forme si sbloccano semplicemente chiedendone tante invece di una buona. Sembra un tratto trasversale e non una proprietà di queste due voci.

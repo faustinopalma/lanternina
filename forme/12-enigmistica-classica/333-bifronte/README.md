@@ -1,7 +1,9 @@
 # Bifronte
 
 - **Numero** 333 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
+- **Si chiama anche** bifronte, parola rovesciabile, ambigramma, scrittura speculare
 - **In una riga** una parola che letta al rovescio ne dà un'altra: *amor / Roma*.
+- **Fonti** nessuna fra le pagine locali; la definizione e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -43,7 +45,7 @@ Due osservazioni.
 
 **Ma il rovesciamento ha una forma fisica**, e questa è la parte interessante. Uno specchio rovescia. Un foglio girato in controluce rovescia. Un testo scritto su un vetro e guardato dall'altra parte rovescia. Nessuna di queste richiede al sistema di sapere in che ordine stanno le lettere: richiede a chi gioca di procurarsi uno specchio, e lo specchio è esatto.
 
-Questa è la differenza fra chiedere a un modello di manipolare simboli e chiedere al mondo di farlo, ed è la stessa mossa vista alla voce 326 con le strisce di carta.
+Questa è la differenza fra chiedere a un modello di manipolare simboli e chiedere al mondo di farlo, ed è la stessa mossa vista alla voce 326, lucchetto con le strisce di carta.
 
 ## Esempi trovati
 

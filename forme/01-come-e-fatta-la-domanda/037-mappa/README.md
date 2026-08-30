@@ -1,7 +1,9 @@
 # Mappa
 
 - **Numero** 37 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** mappa, pianta, carta, cartografia, mappa mentale
 - **In una riga** mostrare dove sono delle cose.
+- **Fonti** `cartography.txt`, presa il 30 agosto 2026; Lynch 1960 e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

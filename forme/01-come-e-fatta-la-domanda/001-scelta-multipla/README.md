@@ -1,7 +1,9 @@
 # Scelta multipla
 
 - **Numero** 1 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** scelta multipla, quiz a crocette, MCQ, multiple choice, test oggettivo
 - **In una riga** una domanda, quattro risposte, una giusta.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -26,6 +28,15 @@ E. L. Thorndike lavorava a un approccio scientifico alla misura del rendimento; 
 Vale la pena tenere questa data in mente. La forma non ha vinto perché insegnava meglio: ha vinto perché **costava meno per candidato**, ed è ancora la ragione per cui si usa dove i numeri sono grandi. La fonte lo dice senza giri: resta popolare perché è facile da creare, da correggere e da analizzare.
 
 In medicina si è evoluta in due direzioni: la **single best answer** (tutte le opzioni hanno qualcosa di corretto, una è superiore), che ha sostituito il vero/falso negli anni Duemila, e l'**extended matching question**, pensata per il ragionamento clinico invece che per il ricordo. Uno studio comparativo trovò che gli studenti *preferivano* la scelta multipla ordinaria ma che le EMQ misuravano meglio — una divergenza fra gradimento e resa che tornerà spesso in questa ricerca.
+
+## Varianti e parenti
+
+- **Vero o falso** (2) — la stessa cosa con due sole opzioni.
+- **Risposte multiple** (3) — più di una chiave.
+- **Migliore risposta** (4) — tutte corrette, una superiore.
+- **Corrispondenza estesa (EMQ)** (5) — un elenco lungo di opzioni e più casi che ci pescano.
+- **Cloze a scelta guidata** (13) — la stessa struttura dentro un testo.
+- **Scelta narrativa senza chiave** — tre porte, e nessuna è quella giusta.
 
 ## Che cosa se ne sa
 

@@ -80,6 +80,6 @@ La definizione dichiarata prima è il pezzo interessante e sta in due righe. Il 
 
 **Contare è un pretesto per guardare**, e il numero quasi sempre non serve. Da usare consapevolmente: quando si vuole far guardare qualcosa, dare una cosa da contare è più efficace che chiedere di guardare.
 
-**Dichiarare l'unità prima** trasforma un compito meccanico in una definizione (voce 15). È la stessa mossa di «scrivi la regola» della voce 45, in un altro capitolo: sono tre occorrenze e comincia a essere una tecnica.
+**Dichiarare l'unità prima** trasforma un compito meccanico in una definizione (voce 15, definizione). È la stessa mossa di «scrivi la regola» della voce 45, in un altro capitolo: sono tre occorrenze e comincia a essere una tecnica.
 
 **Il doppio conteggio** produce un dato su come si è contato, e non ha un risultato sbagliato: la differenza è l'informazione.

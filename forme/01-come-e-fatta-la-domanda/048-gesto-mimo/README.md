@@ -1,7 +1,9 @@
 # Gesto / mimo
 
 - **Numero** 48 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** gesto, mimo, movimento, pantomima, notazione della danza
 - **In una riga** eseguire una cosa col corpo perché qualcuno la riconosca.
+- **Fonti** nessuna fra le pagine locali; Decroux, Laban e Benesh sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -72,7 +74,7 @@ Da casa: il modo in cui qualcuno apre una porta che si incastra, che è un gesto
 >
 > Il più difficile da scrivere è quello che fai da più tempo.
 
-Il gesto non deve tornare: torna la sua descrizione, che è la voce 26 applicata al corpo. L'ultima riga è vera e si scopre facendolo: quello che si fa senza pensarci è quello che non si sa descrivere.
+Il gesto non deve tornare: torna la sua descrizione, che è la voce 26, istruzioni applicata al corpo. L'ultima riga è vera e si scopre facendolo: quello che si fa senza pensarci è quello che non si sa descrivere.
 
 ## Da riprendere alla rassegna
 

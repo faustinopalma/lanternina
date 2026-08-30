@@ -1,14 +1,16 @@
 # Riordino di un testo tagliato a pezzi
 
 - **Numero** 10 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** riordino di strisce, jumbled paragraphs, text reconstruction, testo tagliato
 - **In una riga** le strisce da rimettere in ordine.
+- **Fonti** `cloze-test.txt`, `educational-assessment.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
 
 Un testo tagliato in strisce e mescolato. Si rimette insieme.
 
-È imparentato con l'ordinamento (voce 6), ma il materiale cambia il compito: qui l'ordine non sta in una proprietà degli elementi, sta nei **legami fra le loro estremità**. Un pronome che riprende un nome, un «poi», una virgola che resta aperta. Si rimette insieme un testo guardando le cuciture, non i contenuti.
+È imparentato con l'ordinamento (voce 6, ordinamento), ma il materiale cambia il compito: qui l'ordine non sta in una proprietà degli elementi, sta nei **legami fra le loro estremità**. Un pronome che riprende un nome, un «poi», una virgola che resta aperta. Si rimette insieme un testo guardando le cuciture, non i contenuti.
 
 Parti mobili:
 
@@ -21,6 +23,15 @@ Parti mobili:
 È un esercizio classico di didattica delle lingue — *text reconstruction*, *jumbled paragraphs* — e compare in quasi tutti i manuali. Nella forma fisica, con le strisce sul banco, è anche un materiale montessoriano.
 
 Ha una parentela che vale la pena nominare: la ricostruzione di documenti strappati è un mestiere vero, dalla filologia dei papiri al recupero degli archivi della Stasi, e questa parentela dà alla forma una storia da raccontare che non è scolastica.
+
+## Varianti e parenti
+
+- **Ordinamento** (6) — la stessa cosa senza le cuciture.
+- **Cloze** (12) — il testo bucato invece che tagliato.
+- **Cut-up** — tagliare e rimontare senza cercare l'originale.
+- **Documento strappato da escape room** — i pezzi sparsi nella stanza.
+- **Ricostruzione di papiri** — il mestiere vero, che accosta le fibre.
+- **Carte narrative cooperative** — l'ordine si ricostruisce parlando.
 
 ## Che cosa se ne sa
 

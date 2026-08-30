@@ -1,7 +1,9 @@
 # Descrizione tecnica
 
 - **Numero** 27 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** descrizione tecnica, scheda di catalogo, verbale, descrizione diagnostica
 - **In una riga** dire com'è fatta una cosa, senza dire com'è.
+- **Fonti** `cartography.txt`, `oral-history.txt`, prese il 30 agosto 2026; nessuna dedicata
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -23,12 +25,12 @@ In Italia le schede di catalogo dell'ICCD sono un esempio pubblico e molto detta
 
 ## Varianti e parenti
 
-- **Cartellino da museo** (voce 97) — la stessa cosa, corta e per il pubblico.
-- **Scheda d'archivio** (voce 98) — la stessa cosa, lunga e per chi cercherà.
+- **Cartellino da museo** (voce 97, cartellino da museo) — la stessa cosa, corta e per il pubblico.
+- **Scheda d'archivio** (voce 98, scheda d'archivio) — la stessa cosa, lunga e per chi cercherà.
 - **Chiave dicotomica** — descrizione ridotta alle sole differenze che distinguono.
 - **Identikit e descrizione di persona** — lo stesso mestiere puntato su qualcuno, e con problemi suoi.
 - **Descrizione per far disegnare** — due persone, una descrive e l'altra disegna senza vedere. È anche un gioco.
-- **Ekphrasis** (voce 219) — il contrario esatto: descrivere per far sentire.
+- **Ekphrasis** (voce 219, vincolo di materiale) — il contrario esatto: descrivere per far sentire.
 - **Alt text** — descrizione tecnica con uno scopo d'uso preciso.
 
 ## Che cosa se ne sa
@@ -75,4 +77,4 @@ Da gioco: *descrivi e fai disegnare*, in cui la qualità della descrizione si mi
 
 **La griglia stampata rende praticabile una forma lunga.** Cinque righe con un'etichetta ciascuna producono lo stesso testo di un paragrafo, senza chiedere di scriverne uno. Da confrontare con quello che si è notato alle voci 011 e 022 sullo spazio stampato.
 
-Da mettere accanto alla voce 219: descrizione tecnica ed ekphrasis sono la stessa attività con lo scopo rovesciato, e messe in fila danno una progressione naturale.
+Da mettere accanto alla voce 219, vincolo di materiale: descrizione tecnica ed ekphrasis sono la stessa attività con lo scopo rovesciato, e messe in fila danno una progressione naturale.

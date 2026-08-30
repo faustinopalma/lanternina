@@ -1,7 +1,9 @@
 # Elenco
 
 - **Numero** 14 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** elenco, lista, «scrivi tre cose», brainstorming scritto
 - **In una riga** «scrivi tre cose che...».
+- **Fonti** nessuna fra le pagine locali; e' una forma che nessuno ha studiato
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -20,6 +22,15 @@ La parte mobile è **il numero**, e ha un comportamento che vale la pena conosce
 È la forma più antica del compito scritto, e non ha una storia disciplinare propria: sta nei manuali, nei moduli, nei taccuini, nei giochi di società («nomi cose città») e nelle liste della spesa.
 
 Nel vocabolario della valutazione non ha nemmeno un nome tecnico stabile: si classifica come *short constructed response*. È un segno che nessuno l'ha studiata molto.
+
+## Varianti e parenti
+
+- **Risposta breve** (11) — un solo elemento invece di una serie.
+- **Molti titoli** (24) — l'elenco applicato a una cosa sola.
+- **Formulare domande** (30) — l'elenco di domande invece che di cose.
+- **Nomi cose città** — l'elenco come gioco a vincolo.
+- **Lista di cose da trovare** (194) — l'elenco che diventa una caccia.
+- **Inventario** — l'elenco con una seconda colonna.
 
 ## Che cosa se ne sa
 

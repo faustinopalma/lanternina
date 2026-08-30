@@ -1,7 +1,9 @@
 # Composizione fisica
 
 - **Numero** 45 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** composizione, disposizione, knolling, flat lay, natura morta, allestimento
 - **In una riga** mettere degli oggetti in un ordine o in una configurazione.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

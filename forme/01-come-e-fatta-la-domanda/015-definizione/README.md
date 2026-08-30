@@ -1,7 +1,9 @@
 # Definizione
 
 - **Numero** 15 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** definizione, «che cos'e'», spiegare una parola, genere e differenza
 - **In una riga** dire che cos'è una cosa con parole proprie.
+- **Fonti** nessuna fra le pagine locali; l'argomento indiretto viene da `multiple-choice.txt`
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -21,6 +23,15 @@ Parti mobili:
 Aristotele, e poi tutta la lessicografia. Nella didattica è una delle attività più antiche e più abusate, perché la versione degenerata — ricopiare la definizione dal manuale — è indistinguibile da quella vera se si guarda solo il risultato.
 
 Ha una vita da gioco che vale più di quella scolastica: **Taboo**, dove si deve far indovinare una parola senza usarne altre cinque, e i giochi in cui si scrivono definizioni false per una parola vera e gli altri devono trovare quella del dizionario.
+
+## Varianti e parenti
+
+- **Taboo** — far capire una parola senza usarne altre cinque.
+- **Dictionary game** — definizioni false e plausibili mescolate a quella vera.
+- **Definizione lessicografica** — il mestiere, con le sue regole.
+- **Descrizione tecnica** (27) — dire com'è fatto invece di che cos'è.
+- **Indovinello** (110) — la definizione travestita.
+- **Titolo** (24) — la definizione ridotta a una parola.
 
 ## Che cosa se ne sa
 

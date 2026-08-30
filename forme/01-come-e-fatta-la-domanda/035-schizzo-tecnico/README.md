@@ -1,7 +1,9 @@
 # Schizzo tecnico
 
 - **Numero** 35 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** schizzo tecnico, disegno quotato, viste ortogonali, vista esplosa, patent drawing
 - **In una riga** un oggetto visto da tre lati.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -79,6 +81,6 @@ Da cucina: lo schema di un dolce a strati in sezione, che è un disegno tecnico 
 
 **È la forma di disegno che non chiede di saper disegnare**, e questo la rende una via d'accesso alla famiglia grafica per chi ne sta fuori. Da tenere accanto alla 33 e alla 41, che hanno la stessa proprietà per altre ragioni.
 
-**La verifica per ricostruzione** ricompare qui dalla voce 26. È la terza forma con verifica esterna pulita, e la lista comincia a essere una famiglia.
+**La verifica per ricostruzione** ricompare qui dalla voce 26, istruzioni. È la terza forma con verifica esterna pulita, e la lista comincia a essere una famiglia.
 
 **Il genere del brevetto** come travestimento è economico: due parole di contesto e una consegna diventa un mestiere invece che un compito.

@@ -1,7 +1,9 @@
 # Risposta breve
 
 - **Numero** 11 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** risposta breve, domanda aperta corta, short answer, constructed response
 - **In una riga** una parola o una riga.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -17,6 +19,15 @@ La seconda parte mobile è **quanto è stretta la domanda**. «In che anno?» am
 È la forma d'esame precedente a tutte le altre: la domanda scritta con la risposta scritta esiste da quando esiste la scrittura. Nel vocabolario della valutazione moderna è il *constructed response* corto, contrapposto al *selected response* della famiglia precedente.
 
 La fonte sulla scelta multipla dice una cosa che vale la pena riportare qui: **problemi e ragionamento di ordine alto si misurano meglio con risposte brevi e temi**, e la scelta multipla si usa lo stesso perché costa meno per candidato. La risposta breve è la forma che perse per ragioni economiche.
+
+## Varianti e parenti
+
+- **Elenco** (14) — più risposte brevi in fila.
+- **Cloze** (12) — la risposta breve dentro un testo.
+- **Definizione** (15) — la risposta breve con una struttura obbligata.
+- **Modulo** — molte risposte brevi con etichette.
+- **Scheda d'archivio** (98) — la stessa cosa con l'aria di un mestiere.
+- **Testata di un taccuino** — data, luogo, ora: risposte brevi che nessuno vive come domande.
 
 ## Che cosa se ne sa
 

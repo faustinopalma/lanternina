@@ -1,7 +1,9 @@
 # Completamento (cloze)
 
 - **Numero** 12 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** cloze, completamento, riempi gli spazi, testo bucato, fill in the blank
 - **In una riga** un testo con dei buchi.
+- **Fonti** `cloze-test.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -21,6 +23,15 @@ Lo descrisse **Wilson L. Taylor nel 1953**. Nato per misurare la leggibilità di
 Ha avuto una seconda vita fuori dalla valutazione: la **cancellazione come tecnica di studio**. Coprire pezzi di testo con la carta, o evidenziarli e poi passarci sopra un righello del colore complementare — un righello rosso su un evidenziatore verde — così che spariscano. In Giappone è diffusa. Anki e SuperMemo la generano quasi da sé e la infilano nella ripetizione distanziata.
 
 È anche, e non per caso, il compito su cui si addestrano i modelli linguistici.
+
+## Varianti e parenti
+
+- **Cloze a scelta guidata** (13) — con le parole date.
+- **Cancellazione come studio** — coprire il testo con un righello colorato.
+- **Cloze in Anki e SuperMemo** — la cancellatura dentro la ripetizione distanziata.
+- **Riordino di strisce** (10) — il testo spezzato prima invece che durante.
+- **Buco in fondo alla riga** — la variante che non spezza la lettura.
+- **Mad Libs** (222) — lo stesso schema con il segno rovesciato.
 
 ## Che cosa se ne sa
 
@@ -69,6 +80,6 @@ La ragione che si conosceva — il testo spezzato — regge, e ce n'è una più 
 
 **Il cloze misura cose diverse in lettori diversi** — previsione locale per chi fatica, comprensione del brano per chi no. Un sistema che si rivolge a tutta la gamma senza sapere dove sia chi legge non può usare uno strumento così: darebbe due compiti credendo di darne uno, e i due non sono nemmeno paragonabili in difficoltà.
 
-La conseguenza pratica è stretta e si verifica guardando un foglio: **il buco sta in fondo alla riga o non si stampa**, e le risposte devono essere tutte buone. Un cloze con una parola giusta ricade nella famiglia della scheda 001 e prende lo stesso divieto.
+La conseguenza pratica è stretta e si verifica guardando un foglio: **il buco sta in fondo alla riga o non si stampa**, e le risposte devono essere tutte buone. Un cloze con una parola giusta ricade nella famiglia della scheda 001, scelta multipla e prende lo stesso divieto.
 
 Da non fare mai, nonostante la fonte lo raccomandi: il **cloze a scelta multipla**. È il rimedio buono per la psicometria e il peggiore per noi, perché risolve il problema di chi corregge creando distrattori, che è la cosa che abbiamo chiuso.

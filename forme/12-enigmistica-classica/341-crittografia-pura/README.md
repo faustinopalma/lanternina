@@ -1,7 +1,9 @@
 # Crittografia pura
 
 - **Numero** 341 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Crittografie»
+- **Si chiama anche** crittografia pura, esposto, enigma di lettere e numeri, cryptic
 - **In una riga** una sequenza di lettere e numeri da leggere come frase: `A B C = alfabeto muto`.
+- **Fonti** nessuna fra le pagine locali; la definizione e il lessico sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

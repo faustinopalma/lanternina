@@ -24,7 +24,7 @@ Dalla storia naturale, dove osservare è il metodo. Il taccuino di campo esiste 
 
 Dall'astronomia amatoriale, dove l'osservazione è una disciplina con protocolli.
 
-E dalla fenomenologia e dal disegno: **guardare per disegnare** è il modo più affidabile di guardare a lungo, ed è la conclusione della scheda 33.
+E dalla fenomenologia e dal disegno: **guardare per disegnare** è il modo più affidabile di guardare a lungo, ed è la conclusione della scheda 33, disegno dal vero.
 
 ## Varianti e parenti
 

@@ -1,7 +1,9 @@
 # Lettera
 
 - **Numero** 21 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** lettera, epistola, missiva, testo con destinatario
 - **In una riga** un testo con un destinatario. Molto più leggero del tema, perché il destinatario dà la forma.
+- **Fonti** `alternate-reality-game.txt`, `escape-room.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,6 +21,15 @@ Parti mobili:
 È uno dei generi letterari più antichi, e ha una tradizione didattica sua — l'*ars dictaminis* medievale insegnava le parti di una lettera come si insegna una ricetta.
 
 Nella scuola contemporanea è la forma di ripiego del tema. Ma ha una vita molto più interessante nei giochi: nelle escape room, negli ARG e nella narrativa epistolare, **la lettera è il modo standard di far arrivare informazione da un mondo che non esiste**. Chi la riceve non la vive come un testo da leggere: la vive come una cosa che gli è arrivata.
+
+## Varianti e parenti
+
+- **Lettera a chi non può rispondere** — a un morto, a un futuro abitante.
+- **Lettera trovata** — il documento come oggetto di finzione.
+- **Diario** (22) — il testo senza destinatario.
+- **Narrativa epistolare** — il romanzo fatto di lettere.
+- **Lettera di reclamo** — la forma con uno scopo verificabile.
+- **Gioco per corrispondenza** — il turno che è una busta.
 
 ## Che cosa se ne sa
 

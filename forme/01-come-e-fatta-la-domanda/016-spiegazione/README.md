@@ -1,7 +1,9 @@
 # Spiegazione
 
 - **Numero** 16 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** spiegazione, «perche' succede», dare conto, self-explanation
 - **In una riga** dire perché una cosa succede.
+- **Fonti** `worked-example-effect.txt`, `blooms-taxonomy.txt`, `multiple-choice.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -16,9 +18,18 @@ Parti mobili:
 
 ## Da dove viene
 
-Dalla scuola, e da prima. Nella didattica contemporanea ha un posto preciso: il **self-explanation effect** — spiegare a sé stessi mentre si studia migliora quello che resta — e il *protocollo di pensiero ad alta voce*, che è la voce 241 dell'enciclopedia.
+Dalla scuola, e da prima. Nella didattica contemporanea ha un posto preciso: il **self-explanation effect** — spiegare a sé stessi mentre si studia migliora quello che resta — e il *protocollo di pensiero ad alta voce*, che è la voce 241, protocollo di pensiero ad alta voce dell'enciclopedia.
 
 Ha anche un uso che non è didattico ed è il più vicino a noi: la spiegazione come **mestiere**. Il referto, il verbale, la relazione tecnica. Chi spiega non lo fa per dimostrare di aver capito, lo fa perché qualcun altro deve poter agire.
+
+## Varianti e parenti
+
+- **Ipotesi** (29) — la spiegazione proposta invece che ricostruita.
+- **Esempio svolto** (227) — la spiegazione mostrata prima di essere chiesta.
+- **Pensiero ad alta voce** (241) — la spiegazione detta mentre si fa.
+- **Analisi di guasto** — la spiegazione con l'oggetto davanti.
+- **Pannello «come funziona»** — la spiegazione scritta per chi passa.
+- **Metodo socratico** (233) — la spiegazione tirata fuori con domande.
 
 ## Che cosa se ne sa
 

@@ -1,7 +1,9 @@
 # Istruzioni
 
 - **Numero** 26 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** istruzioni, procedura, «come si fa», manuale, algoritmo
 - **In una riga** scrivere come si fa una cosa, per qualcun altro.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -25,12 +27,12 @@ Nel disegno tecnico e nei manuali IKEA esiste la versione **senza parole**, che 
 
 ## Varianti e parenti
 
-- **Ricetta** (voce 102) — istruzioni con ingredienti e tempi.
-- **Partitura** (voce 103) — istruzioni da eseguire nel tempo.
+- **Ricetta** (voce 102, ricetta) — istruzioni con ingredienti e tempi.
+- **Partitura** (voce 103, partitura / spartito) — istruzioni da eseguire nel tempo.
 - **Algoritmo** — istruzioni senza ambiguità e senza esecutore intelligente.
-- **Manuale** (voce 94) — istruzioni per una cosa che non si sa cosa sia.
+- **Manuale** (voce 94, manuale) — istruzioni per una cosa che non si sa cosa sia.
 - **Regole di un gioco** — istruzioni che devono essere lette prima e non durante.
-- **Origami** (voce 42) — istruzioni che sono solo disegni.
+- **Origami** (voce 42, piegatura) — istruzioni che sono solo disegni.
 - **Istruzioni per una cosa impossibile** — il genere comico e poetico che ne discende (Cortázar, *Istruzioni per salire una scala*).
 - **Istruzioni al contrario** — dato un risultato, ricostruire i passi.
 
@@ -82,4 +84,4 @@ Questa è la forma con la **verifica esterna** più pulita incontrata finora: ne
 
 Da guardare accanto: la versione **senza parole** (diagrammi tipo origami) toglie del tutto la scrittura e tiene tutto il resto. È la stessa forma per chi non ha voglia di scrivere.
 
-Da notare per il capitolo 10: qui **chi giudica è il mondo**, ed è la voce 299.
+Da notare per il capitolo 10: qui **chi giudica è il mondo**, ed è la voce 299, verificata dal mondo.

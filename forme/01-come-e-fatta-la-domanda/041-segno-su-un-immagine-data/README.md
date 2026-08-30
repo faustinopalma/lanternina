@@ -1,7 +1,9 @@
 # Segno su un'immagine data
 
 - **Numero** 41 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** cerchiare, sottolineare, indicare, annotare, hotspot, «segna dove»
 - **In una riga** cerchiare, sottolineare, indicare.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

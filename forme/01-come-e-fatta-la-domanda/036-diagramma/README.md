@@ -1,7 +1,9 @@
 # Diagramma
 
 - **Numero** 36 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** diagramma, schema, mappa concettuale, grafo, rete di relazioni
 - **In una riga** mostrare come sono collegate delle cose.
+- **Fonti** nessuna fra le pagine locali; Novak e le mappe concettuali sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

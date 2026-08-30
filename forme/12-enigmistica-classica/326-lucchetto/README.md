@@ -1,7 +1,9 @@
 # Lucchetto
 
 - **Numero** 326 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
+- **Si chiama anche** lucchetto, biscarto, lucchetto riflesso, XZ/ZY=XY
 - **In una riga** due parole con una parte comune che sparisce: la parte comune è la chiave.
+- **Fonti** `it-lucchetto.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -82,6 +84,6 @@ Le dodici strisce sono materiale, e il materiale si corregge da sé: la sillaba 
 
 **La distinzione fra sillabe agli estremi e lettere in mezzo** sembra il confine vero del limite tecnico. Un modello sbaglia a contare e a permutare le lettere; sa però dire come comincia e come finisce una parola. Se il confine è questo, una parte del capitolo 12 è recuperabile e un'altra no, e vale la pena stabilire dove passa con una prova invece che a intuito.
 
-**Il gioco reso oggetto** — strisce che si sovrappongono — toglie insieme il problema della generazione e quello della verifica. È la stessa mossa vista alla voce 010 con i pezzi da rimettere insieme, e comincia a sembrare una strategia generale e non un caso.
+**Il gioco reso oggetto** — strisce che si sovrappongono — toglie insieme il problema della generazione e quello della verifica. È la stessa mossa vista alla voce 010, riordino di un testo tagliato a pezzi con i pezzi da rimettere insieme, e comincia a sembrare una strategia generale e non un caso.
 
 **Una famiglia che si è costruita per differenze minime.** Sciarada, sciarada incatenata, biscarto, lucchetto, lucchetto riflesso: ogni gioco nasce cambiando una regola sola del precedente, e ci sono voluti cent'anni. È un modo di generare forme — prendine una e cambia una regola — che si potrebbe applicare a tutto l'elenco alla rassegna.

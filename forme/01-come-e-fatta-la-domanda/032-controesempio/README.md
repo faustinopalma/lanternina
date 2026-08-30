@@ -1,7 +1,9 @@
 # Controesempio
 
 - **Numero** 32 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** controesempio, «basta un caso», falsificazione, eccezione che rompe la regola
 - **In una riga** trovare il caso che rompe una regola enunciata.
+- **Fonti** nessuna fra le pagine locali; Lakatos e il compito 2-4-6 di Wason sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -25,7 +27,7 @@ Nella grammatica è l'esperienza quotidiana di ogni bambino che impara i verbi i
 
 ## Varianti e parenti
 
-- **Obiezione** (voce 31) — confutazione con un argomento invece che con un caso.
+- **Obiezione** (voce 31, obiezione) — confutazione con un argomento invece che con un caso.
 - **Eccezione alla regola** — il controesempio addomesticato, che invece di rompere la regola la specifica.
 - **Caso limite** — il controesempio che sta al confine e mette in crisi la definizione.
 - **Mostro** (nel senso di Lakatos) — il controesempio così strano che si è tentati di escluderlo per decreto.
@@ -81,7 +83,7 @@ Le tre regole hanno difficoltà crescente e sono di tre tipi diversi: fisica, lo
 
 ## Da riprendere alla rassegna
 
-**La richiesta è minuscola e il contenuto è grande.** Una riga per regola, e dentro c'è la differenza fra universale e generale. Da mettere accanto alla voce 9 e alla 30 fra le forme a costo d'ingresso basso.
+**La richiesta è minuscola e il contenuto è grande.** Una riga per regola, e dentro c'è la differenza fra universale e generale. Da mettere accanto alla voce 9, confronto a coppie e alla 30 fra le forme a costo d'ingresso basso.
 
 **Il non-trovare va nominato in anticipo,** altrimenti chi non trova legge una mancanza sua. È la stessa mossa vista alle voci 14 e 24 in altra forma — dire prima che cosa succede se non viene.
 

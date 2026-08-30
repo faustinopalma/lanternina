@@ -22,7 +22,7 @@ Parti mobili:
 
 È il gesto fondativo di quasi ogni disciplina: l'anatomia comparata, la linguistica comparata, il metodo comparativo in storia, la critica testuale che mette due manoscritti accanto.
 
-Nella psicofisica è il metodo di Thurstone (voce 9): le persone sanno dire «questo più di quello» molto meglio di quanto sappiano dire «questo vale sette».
+Nella psicofisica è il metodo di Thurstone (voce 9, confronto a coppie): le persone sanno dire «questo più di quello» molto meglio di quanto sappiano dire «questo vale sette».
 
 E nella pratica del disegno e della scrittura è il modo in cui si insegna il gusto: non spiegando, ma mettendo accanto.
 
@@ -39,7 +39,7 @@ E nella pratica del disegno e della scrittura è il modo in cui si insegna il gu
 
 ## Che cosa se ne sa
 
-Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; Thurstone è già segnato come da verificare alla scheda 9.
+Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; Thurstone è già segnato come da verificare alla scheda 9, confronto a coppie.
 
 Due osservazioni. **La coppia è la consegna.** Scegliendo bene i due termini non serve quasi scrivere niente: due fotografie della stessa strada a quarant'anni di distanza non hanno bisogno di una domanda. Il lavoro di chi prepara è tutto nella scelta, e questo è un carico che si sposta dal foglio al sistema.
 

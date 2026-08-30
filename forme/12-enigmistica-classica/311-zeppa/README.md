@@ -1,7 +1,9 @@
 # Zeppa
 
 - **Numero** 311 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
+- **Si chiama anche** zeppa, aggiunta, epentesi, bizeppa, word ladder
 - **In una riga** si aggiunge una lettera e si ottiene un'altra parola: *cane → carne*.
+- **Fonti** `it-zeppa.txt`, `it-settimana-enigmistica.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -88,7 +90,7 @@ La costruzione è di chi gioca, quindi la verifica è nel vocabolario e non nel 
 
 **Il titolo come metà della consegna.** In enigmistica il nome del gioco dice la regola, e chi lo sa non ha bisogno di spiegazioni. È un modello di economia della consegna che il nostro formato non usa e potrebbe.
 
-**Il diagramma fra parentesi** — *(4 / 5)* — è la stessa idea dello spazio stampato notata alla voce 011: un vincolo dichiarato come numero, che restringe e insieme aiuta.
+**Il diagramma fra parentesi** — *(4 / 5)* — è la stessa idea dello spazio stampato notata alla voce 011, risposta breve: un vincolo dichiarato come numero, che restringe e insieme aiuta.
 
 **La nomenclatura anomala vale come avvertimento.** La fonte stessa nota che non c'è nessun motivo perché il gioco cambi nome secondo la posizione della lettera, e che si mantiene per tradizione. Vale la pena ricordarlo ogni volta che si prende in prestito un vocabolario tecnico: porta dentro anche le sue incoerenze.
 

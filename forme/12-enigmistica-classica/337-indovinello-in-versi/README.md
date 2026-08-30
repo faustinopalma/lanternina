@@ -1,7 +1,9 @@
 # Indovinello in versi
 
 - **Numero** 337 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che lavorano sul senso»
+- **Si chiama anche** indovinello, enigma in versi, riddle, doppio senso, indovinello popolare
 - **In una riga** la forma classica: rime, un soggetto travestito, e una lettura di superficie che regge da sola.
+- **Fonti** `riddle.txt`, presa il 30 agosto 2026; la regola italiana del doppio senso e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

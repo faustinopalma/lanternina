@@ -1,7 +1,9 @@
 # Corrispondenza (matching)
 
 - **Numero** 5 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** corrispondenza, abbinamento, collega con una freccia, matching, EMQ
 - **In una riga** due colonne da appaiare.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,6 +21,15 @@ La versione medica evoluta è l'**extended matching question**: un elenco lungo 
 ## Da dove viene
 
 È una delle forme più antiche dei test oggettivi, contemporanea alla scelta multipla e nata dalla stessa esigenza: correzione meccanica. L'EMQ è la sua versione seria, progettata in educazione medica per misurare ragionamento clinico e conoscenza applicata invece del semplice ricordo.
+
+## Varianti e parenti
+
+- **Corrispondenza estesa (EMQ)** — elenco lungo a destra, più casi a sinistra.
+- **Scelta multipla** (1) — la stessa famiglia con una premessa sola.
+- **Legenda data** — la tabella come strumento e non come domanda.
+- **Tabella di sostituzione** — simboli e lettere, per leggere altro.
+- **Morse, semaforo, bandiere** (132, 134) — sistemi di segni con la loro tavola.
+- **Domino di sillabe** — la corrispondenza resa oggetto.
 
 ## Che cosa se ne sa
 

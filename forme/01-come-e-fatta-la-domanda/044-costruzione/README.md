@@ -1,7 +1,9 @@
 # Costruzione
 
 - **Numero** 44 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** costruzione, montaggio, prototipo, «fai una cosa che sta in piedi»
 - **In una riga** con quello che c'è: carta, spago, elastici, scatole.
+- **Fonti** nessuna fra le pagine locali; la torre di spaghetti e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -36,7 +38,7 @@ Quella **ingegneristica**: la prototipazione rapida, dove costruire un modello b
 
 Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata; la torre di spaghetti e il suo risultato sono a memoria e **vanno verificati**.
 
-L'osservazione che regge, ed è la più forte dell'intera sezione: **il criterio è fisico, quindi non c'è nessuno che giudichi.** La torre sta in piedi o cade. Non c'è un voto, non c'è un modello da avvicinare, e chi la fa lo sa prima di chiunque altro. È la voce 299 dell'elenco — verificata dal mondo — nella sua forma più pura.
+L'osservazione che regge, ed è la più forte dell'intera sezione: **il criterio è fisico, quindi non c'è nessuno che giudichi.** La torre sta in piedi o cade. Non c'è un voto, non c'è un modello da avvicinare, e chi la fa lo sa prima di chiunque altro. È la voce 299, verificata dal mondo dell'elenco — verificata dal mondo — nella sua forma più pura.
 
 La seconda: **il vincolo materiale è quello che rende la cosa un problema.** Con materiale libero non c'è niente da risolvere; con tre materiali e un criterio, c'è.
 

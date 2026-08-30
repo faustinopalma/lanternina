@@ -1,7 +1,9 @@
 # Disegno dal vero
 
 - **Numero** 33 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** disegno dal vero, disegno d'osservazione, life drawing, copiare guardando
 - **In una riga** copiare quello che si ha davanti.
+- **Fonti** nessuna fra le pagine locali; Betty Edwards 1979 e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

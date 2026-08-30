@@ -1,7 +1,9 @@
 # Scelta multipla a risposte multiple
 
 - **Numero** 3 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** risposte multiple, «segna tutte quelle che valgono», multiple response
 - **In una riga** «segna tutte quelle che valgono».
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -15,6 +17,14 @@ La parte mobile è **come si conta una risposta parziale**. Cinque opzioni, tre 
 Nasce come rimedio al difetto della scelta multipla — che una domanda vera ha spesso più risposte vere — e ne eredita tutto il resto. La fonte segnala anche un guasto pratico: molti autori di test *non sanno* che la scelta multipla ordinaria ammette una risposta sola, e scrivono item che si aspettano più segni senza dirlo, o senza offrire l'opzione che li racchiude («I e II»).
 
 Questo è un dettaglio che vale più di quanto sembri: la forma è così scivolosa che chi la scrive di mestiere la sbaglia.
+
+## Varianti e parenti
+
+- **Scelta multipla** (1) — una chiave sola.
+- **Corrispondenza** (5) — l'appaiamento invece della selezione.
+- **Classificazione in insiemi** (7) — la stessa operazione senza caselle.
+- **Forma incapsulata** — le opzioni diventano «I e II», «tutte», e si torna a una chiave.
+- **Raggruppare** (57) — il verbo cognitivo che c'è sotto.
 
 ## Che cosa se ne sa
 
@@ -52,6 +62,6 @@ La seconda riga — *rifallo con una regola diversa* — è la parte che vale: c
 
 ## Da riprendere alla rassegna
 
-Come item con caselle e chiavi è la scheda 001 distribuita su più righe, e ne eredita tutto.
+Come item con caselle e chiavi è la scheda 001, scelta multipla distribuita su più righe, e ne eredita tutto.
 
-La sostituzione è **la classificazione a criterio libero** (voce 57 dell'enciclopedia, «raggruppare»), che tiene il contenuto cognitivo e butta la griglia. Non serve una regola nuova: serve ricordare che quando un'attività vuole chiedere «quali di questi», la forma da stampare è un mucchio da dividere e una riga su cui dire perché.
+La sostituzione è **la classificazione a criterio libero** (voce 57, raggruppare dell'enciclopedia, «raggruppare»), che tiene il contenuto cognitivo e butta la griglia. Non serve una regola nuova: serve ricordare che quando un'attività vuole chiedere «quali di questi», la forma da stampare è un mucchio da dividere e una riga su cui dire perché.

@@ -1,7 +1,9 @@
 # Domanda
 
 - **Numero** 30 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** formulare domande, «che cosa chiederesti», question formulation, intervista
 - **In una riga** la richiesta è di formularne una, non di risponderne una. È una delle forme più forti e meno usate.
+- **Fonti** nessuna fra le pagine locali; la Question Formulation Technique e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -26,7 +28,7 @@ Prima e altrove: il metodo socratico rovesciato, il giornalismo (le domande sono
 - **Intervista** — domande a qualcuno che risponderà.
 - **Question Formulation Technique** — il protocollo in quattro passi.
 - **Domande a un oggetto** — che cosa chiederesti a questa sedia se potesse rispondere.
-- **Domande che non hanno risposta** — il genere che confina con il koan (voce 118).
+- **Domande che non hanno risposta** — il genere che confina con il koan (voce 118, koan).
 - **Domande per restringere** — come nel gioco delle venti domande, dove ogni domanda deve dimezzare.
 - **Domanda di ricerca** — una domanda formulata in modo da poter essere indagata.
 - **Domanda nascosta** — dato un testo, trovare la domanda a cui rispondeva.

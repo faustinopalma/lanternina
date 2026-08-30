@@ -1,7 +1,9 @@
 # Riassunto
 
 - **Numero** 17 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** riassunto, sintesi, epitome, abstract, «dillo in meno parole»
 - **In una riga** dire in meno parole.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -13,6 +15,15 @@ Un vincolo di lunghezza duro — *esattamente trenta parole* — cambia la forma
 ## Da dove viene
 
 Retorica antica (l'*epitome*), poi scuola. Fuori dalla scuola vive nei mestieri in cui la brevità costa: l'abstract, il lancio d'agenzia, la quarta di copertina, il verbale, il telegramma — che era corto perché si pagava a parola.
+
+## Varianti e parenti
+
+- **Parafrasi** (18) — stessa lunghezza, altre parole.
+- **Titolo** (24) — il riassunto in una riga.
+- **Didascalia** (23) — il riassunto di un'immagine.
+- **Telegramma** — il riassunto con un costo per parola.
+- **Abstract** — il riassunto di mestiere.
+- **Cartellino da museo** (97) — venti parole per chi passa e non torna.
 
 ## Che cosa se ne sa
 

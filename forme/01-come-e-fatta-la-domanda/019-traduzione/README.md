@@ -1,7 +1,9 @@
 # Traduzione
 
 - **Numero** 19 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** traduzione, versione, trasposizione, traduzione intersemiotica
 - **In una riga** da una lingua a un'altra, o da un registro a un altro.
+- **Fonti** nessuna trattazione dedicata; il limite sulle lettere e' misurato in `ideas/10 §6`
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -15,6 +17,15 @@ La parte mobile è **quanto il sistema di arrivo è conosciuto**. Tradurre verso
 Dal mestiere più antico che ci sia dopo lo scriba. Nella didattica delle lingue classiche la *versione* è stata per secoli la forma d'esame principale, ed è anche una delle più dure che esistano: un errore in una parola può far crollare un periodo intero.
 
 La **traduzione intersemiotica** — Jakobson, 1959 — è il nome della versione che a noi interessa: dire la stessa cosa in un altro sistema di segni. Descrivere un suono, disegnare una frase, mettere in gesti un testo.
+
+## Varianti e parenti
+
+- **Codice inventato** — costruire il sistema invece di applicarlo.
+- **Legenda data** — la tavola stampata accanto.
+- **Parafrasi** (18) — la traduzione dentro la stessa lingua.
+- **Traduzione intersemiotica** — dire la stessa cosa in un altro sistema di segni.
+- **Partitura grafica** — un suono disegnato invece che scritto in note.
+- **Cifrari** (129, 130, 131) — la famiglia che il sistema non sa produrre.
 
 ## Che cosa se ne sa
 
@@ -65,4 +76,4 @@ Da scrivere fra i limiti tecnici: *il sistema non stampa mai un testo che ha cif
 
 Quello che invece regge, e che vale la pena usare più spesso di quanto si faccia: **far costruire il codice a chi legge**. È la stessa attività mentale della decifrazione, non richiede niente al sistema, e produce un oggetto — una legenda scritta a mano — che resta.
 
-E una domanda da riusare ovunque: **che cosa questo sistema non riesce a dire.** Vale per un codice, per una lingua, per un modulo, per una mappa. È la voce 63 dell'enciclopedia — inferire da un'assenza — in una riga sola.
+E una domanda da riusare ovunque: **che cosa questo sistema non riesce a dire.** Vale per un codice, per una lingua, per un modulo, per una mappa. È la voce 63, inferire da un'assenza dell'enciclopedia — inferire da un'assenza — in una riga sola.

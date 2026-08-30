@@ -1,7 +1,9 @@
 # Piegatura
 
 - **Numero** 42 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** piegatura, origami, piega, kirigami, pop-up
 - **In una riga** origami, e in generale una forma che nasce da una sequenza di gesti.
+- **Fonti** `origami.txt`, presa il 30 agosto 2026; Huzita-Hatori e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -79,4 +81,4 @@ Le istruzioni sono due simboli e dei numeri: si eseguono senza leggere. La scato
 
 **Istruzioni senza parole** — una forma che non chiede di leggere. Da mettere in cima alla lista di quelle da guardare per chi fatica col testo.
 
-**La piega come meccanismo** e non come fine: nascondere, chiudere, far apparire in controluce. Torna alla voce 28 e alla 140, e sembra un filone.
+**La piega come meccanismo** e non come fine: nascondere, chiudere, far apparire in controluce. Torna alla voce 28, previsione e alla 140, e sembra un filone.

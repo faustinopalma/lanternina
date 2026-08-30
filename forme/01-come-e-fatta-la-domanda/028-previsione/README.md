@@ -1,7 +1,9 @@
 # Previsione
 
 - **Numero** 28 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** previsione, pronostico, «cosa succedera'», predict-observe-explain, calibrazione
 - **In una riga** dire cosa succederà, prima che succeda, e poi guardare.
+- **Fonti** `inquiry-based-learning.txt`, `educational-assessment.txt`, prese il 30 agosto 2026; il POE e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -23,7 +25,7 @@ Ha una storia parallela nella misura delle previsioni: i **punteggi di calibrazi
 
 ## Varianti e parenti
 
-- **Ipotesi** (voce 29) — che cosa spiegherebbe una cosa già vista; la previsione guarda avanti, l'ipotesi indietro.
+- **Ipotesi** (voce 29, ipotesi) — che cosa spiegherebbe una cosa già vista; la previsione guarda avanti, l'ipotesi indietro.
 - **Scommessa** — previsione con una posta.
 - **Predict–observe–explain** — la versione didattica in tre tempi.
 - **Previsione registrata in busta chiusa** — la versione teatrale, che è anche un trucco da prestigiatori.
@@ -79,6 +81,6 @@ La piega è il meccanismo: rende la previsione non modificabile senza che nessun
 
 **La piega del foglio come meccanismo** è un modo fisico di impedire di barare che non richiede nessun controllo. Da guardare accanto alle altre forme in cui il materiale garantisce qualcosa da sé.
 
-**La previsione puntata su di sé** (quanto ci metterò, quanto sarà difficile) è la variante che porta a un numero su una persona. Registrata qui perché l'elenco è esaustivo, e da guardare alla rassegna insieme alla voce 8.
+**La previsione puntata su di sé** (quanto ci metterò, quanto sarà difficile) è la variante che porta a un numero su una persona. Registrata qui perché l'elenco è esaustivo, e da guardare alla rassegna insieme alla voce 8, scala di accordo (Likert).
 
 Da verificare: sigla, autori e data del **predict–observe–explain** sono a memoria e non nelle fonti scaricate.

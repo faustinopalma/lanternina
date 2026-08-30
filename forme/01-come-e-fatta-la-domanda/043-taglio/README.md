@@ -1,7 +1,9 @@
 # Taglio
 
 - **Numero** 43 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** taglio, ritaglio, sagoma, silhouette, collage, cut-up
 - **In una riga** sagome, sagome incastrate, silhouette.
+- **Fonti** nessuna fra le pagine locali; Cardano 1550 e il cut-up sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

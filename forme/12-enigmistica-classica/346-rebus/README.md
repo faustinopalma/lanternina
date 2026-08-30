@@ -1,7 +1,9 @@
 # Rebus
 
 - **Numero** 346 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Rebus e forme miste»
+- **Si chiama anche** rebus, scrittura per immagini, principio del rebus, emoji
 - **In una riga** immagini con lettere sopra, e la lettura produce una frase.
+- **Fonti** `puzzle.txt`, presa il 30 agosto 2026; le convenzioni italiane sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

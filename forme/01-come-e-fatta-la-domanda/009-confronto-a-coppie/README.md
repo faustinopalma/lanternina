@@ -1,7 +1,9 @@
 # Confronto a coppie
 
 - **Numero** 9 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** confronto a coppie, paired comparison, «quale dei due», comparative judgement
 - **In una riga** quale dei due preferisci. Praticabile e non è una domanda con risposta: è una preferenza, e come tale non ha esito.
+- **Fonti** `educational-assessment.txt`, `rubric.txt`, prese il 30 agosto 2026; Thurstone e' a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -19,6 +21,15 @@ Parti mobili:
 Psicofisica: il metodo dei confronti a coppie di Thurstone, anni Venti, nato dalla constatazione che le persone sanno dire «questo più di quello» molto meglio di quanto sappiano dire «questo vale 7». È lo stesso principio che oggi fa funzionare i sistemi di punteggio Elo e le valutazioni di modelli linguistici per confronto.
 
 Nella didattica è arrivata come *comparative judgement*: invece di dare un voto a ogni tema, si mostrano coppie di temi a più lettori e si chiede quale sia il migliore. Le classifiche che ne escono sono più stabili di quelle prodotte da rubriche.
+
+## Varianti e parenti
+
+- **Confronto** (55) — la descrizione invece della scelta.
+- **Comparative judgement** — molte coppie per costruire una graduatoria.
+- **Trova le differenze** (386) — la coppia ridotta a ricerca visiva.
+- **Metodo di Thurstone** — l'origine psicofisica.
+- **Rifotografia** — la coppia separata da decenni.
+- **Tavolette sensoriali montessoriane** — il confronto come compito e non come mezzo.
 
 ## Che cosa se ne sa
 

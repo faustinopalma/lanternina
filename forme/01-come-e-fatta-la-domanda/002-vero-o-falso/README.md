@@ -1,7 +1,9 @@
 # Vero o falso
 
 - **Numero** 2 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** vero o falso, V/F, true or false, item dicotomico
 - **In una riga** un'affermazione, due esiti.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -15,6 +17,14 @@ La parte mobile interessante è una sola: **la soglia**. Un'affermazione vera al
 È la forma d'esame che precedeva la scelta multipla nell'educazione medica. La fonte è netta: negli anni Duemila gli educatori conclusero che la **single best answer** fosse superiore, e il vero/falso uscì di scena. Non fu una moda: fu la constatazione che due opzioni misurano troppo poco.
 
 Sopravvive dove serve velocità: quiz di riscaldamento, verifiche di lettura, moduli di consenso. Sopravvive anche perché è la sola forma che una persona possa scrivere in dieci secondi.
+
+## Varianti e parenti
+
+- **Scelta multipla** (1) — la stessa cosa con più distrattori.
+- **Vero/falso con correzione** — se segni falso devi riscrivere la versione vera.
+- **Trova l'affermazione che non regge** — una fra tre, e si riscrive.
+- **Sì/no in un gioco di deduzione** — come nell'enigma di situazione (150).
+- **Item dicotomico in un questionario** — dove non c'è una risposta giusta.
 
 ## Che cosa se ne sa
 
@@ -56,4 +66,4 @@ Non c'è una casella da segnare. Il gesto richiesto è riscrivere, e chi indica 
 
 Nella forma nuda la resa è bassissima: metà punteggio per caso significa che il risultato non dice quasi niente, quindi la forma paga il costo del giudizio senza comprare l'informazione.
 
-**Ma la variante «trova quella che non regge e riscrivila» è aperta**, e vale la pena nominarla, perché è la sola forma di questa famiglia che sopravvive. Il criterio è lo stesso della scheda 1: non ci sono caselle da segnare, e quello che resta sul foglio è scritto da chi l'ha fatto.
+**Ma la variante «trova quella che non regge e riscrivila» è aperta**, e vale la pena nominarla, perché è la sola forma di questa famiglia che sopravvive. Il criterio è lo stesso della scheda 1, scelta multipla: non ci sono caselle da segnare, e quello che resta sul foglio è scritto da chi l'ha fatto.

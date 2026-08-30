@@ -22,7 +22,7 @@ Parti mobili:
 
 Dalla scuola, dove è stato per secoli l'unico verbo. Nella tassonomia di Bloom sta in fondo, e la fonte lo colloca esplicitamente come il livello più basso — una gerarchia che poi è stata letta come una scala di valore, e che ha reso il ricordo sospetto.
 
-Ha una riabilitazione nella ricerca cognitiva: **recuperare qualcosa dalla memoria la rafforza più che rileggerla** (l'effetto test, voce 243). Ricordare non è solo prova, è anche costruzione.
+Ha una riabilitazione nella ricerca cognitiva: **recuperare qualcosa dalla memoria la rafforza più che rileggerla** (l'effetto test, voce 243, effetto test (retrieval practice)). Ricordare non è solo prova, è anche costruzione.
 
 E ha una tradizione tecnica antica: le arti della memoria, i palazzi della memoria, i loci ciceroniani.
 

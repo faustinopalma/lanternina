@@ -1,7 +1,9 @@
 # Migliore risposta
 
 - **Numero** 4 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** migliore risposta, single best answer, SBA, risposta piu' appropriata
 - **In una riga** tutte plausibili, una preferibile.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -15,6 +17,14 @@ La parte mobile è **il criterio di superiorità**, e non è stampato. Chi rispo
 Educazione medica. Nasce esplicitamente per distinguersi dalle forme a *risposta corretta unica*, che generavano confusione quando più di una risposta aveva una qualche validità. Durante gli anni Duemila ha sostituito il vero/falso come forma tipica d'esame.
 
 Ha senso nel contesto in cui è nata: in clinica esiste davvero una diagnosi più probabile, e sbagliarla ha conseguenze fuori dall'esame. È una forma costruita per un mestiere in cui la gerarchia fra risposte è reale e condivisa.
+
+## Varianti e parenti
+
+- **Scelta multipla** (1) — dove i distrattori sono falsi e non solo inferiori.
+- **Corrispondenza estesa (EMQ)** (5) — nata nello stesso ambiente per misurare il ragionamento.
+- **Diagnosi differenziale** — la versione di mestiere, dove la gerarchia è nel mondo.
+- **Caso denso senza domanda a scelta** — la stessa vignetta con una richiesta aperta.
+- **Formulare domande** (30) — che cosa chiederesti prima di decidere.
 
 ## Che cosa se ne sa
 
@@ -47,7 +57,7 @@ Quello che si salva è il *caso*: mezza pagina di situazione densa. La domanda c
 >  2. ────────────────────────────────────
 > ```
 
-Lo stesso caso, e il verbo cambia da *scegliere* a *chiedere* (voce 30 dell'enciclopedia: formulare una domanda invece che risponderne una). Non c'è una coppia di domande giusta. Ce ne sono di più utili e di meno utili, e la differenza si vede da sé quando si prova a immaginare la risposta.
+Lo stesso caso, e il verbo cambia da *scegliere* a *chiedere* (voce 30, domanda dell'enciclopedia: formulare una domanda invece che risponderne una). Non c'è una coppia di domande giusta. Ce ne sono di più utili e di meno utili, e la differenza si vede da sé quando si prova a immaginare la risposta.
 
 ## Da riprendere alla rassegna
 

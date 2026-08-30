@@ -1,7 +1,9 @@
 # Parafrasi
 
 - **Numero** 18 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** parafrasi, riscrittura, «dillo con parole tue», lingua facile
 - **In una riga** dire le stesse cose con altre parole.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -15,6 +17,15 @@ La parte mobile è **che cosa si deve cambiare**: le parole, la sintassi, il reg
 Retorica classica, dove era un esercizio di base. Nella scuola italiana è legata alla poesia: parafrasare un canto significa smontarne l'inversione sintattica. È l'uso che ha dato alla forma la sua fama peggiore, perché produce un testo che nessuno vorrebbe leggere.
 
 Fuori dalla scuola è un mestiere vero: la **riscrittura in lingua facile**, che prende un testo amministrativo e lo rende leggibile. Le linee guida easy-to-read sono un manuale di parafrasi.
+
+## Varianti e parenti
+
+- **Riassunto** (17) — con la lunghezza che cambia.
+- **Traduzione** (19) — con la lingua che cambia.
+- **Riscrittura in lingua facile** — il mestiere vero.
+- **Cambio di registro** — dire una cosa solenne in modo pratico.
+- **Telefono senza fili scritto** — la parafrasi ripetuta finché si deforma.
+- **Ekphrasis** (219) — raccontare un'immagine a chi non la vede.
 
 ## Che cosa se ne sa
 

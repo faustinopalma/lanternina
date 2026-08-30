@@ -1,7 +1,9 @@
 # Obiezione
 
 - **Numero** 31 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** obiezione, confutazione, «dove non torna», critica di un argomento, fallacia
 - **In una riga** trovare cosa non torna in un ragionamento dato.
+- **Fonti** `multiple-choice.txt`, presa il 30 agosto 2026, per l'elemento indiretto
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -25,7 +27,7 @@ Nella scienza è la revisione fra pari.
 
 ## Varianti e parenti
 
-- **Controesempio** (voce 32) — obiezione che porta un caso invece di un argomento.
+- **Controesempio** (voce 32, controesempio) — obiezione che porta un caso invece di un argomento.
 - **Avvocato del diavolo** — obiettare a una posizione che si condivide.
 - **Caccia alle fallacie** — obiezione con un catalogo dato.
 - **Trova l'errore** — la versione matematica: una dimostrazione sbagliata che conclude che 1 = 2.

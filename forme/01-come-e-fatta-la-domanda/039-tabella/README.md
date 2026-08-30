@@ -1,7 +1,9 @@
 # Tabella
 
 - **Numero** 39 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** tabella, griglia, prospetto, foglio di calcolo, matrice
 - **In una riga** mettere delle cose in righe e colonne.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -35,7 +37,7 @@ Nella didattica è diventata lo strumento standard del confronto, e nella statis
 
 Nelle 117 fonti prese il 30 agosto 2026 non c'è una trattazione dedicata alla tabella come esercizio.
 
-L'osservazione che regge: **la tabella è la forma che rende visibile quello che manca.** Una riga con una cella vuota si vede da lontano, e questo la rende diversa da un testo, dove un'assenza è invisibile. È la voce 63 dell'elenco — inferire da un'assenza — resa automatica dal supporto.
+L'osservazione che regge: **la tabella è la forma che rende visibile quello che manca.** Una riga con una cella vuota si vede da lontano, e questo la rende diversa da un testo, dove un'assenza è invisibile. È la voce 63, inferire da un'assenza dell'elenco — inferire da un'assenza — resa automatica dal supporto.
 
 La seconda: **decidere le colonne è l'intera attività.** Compilare una tabella data è lavoro d'ufficio; sceglierne le colonne significa decidere che cosa conta di un insieme di cose, ed è un ragionamento vero che si fa in cinque parole.
 
@@ -75,4 +77,4 @@ Il divieto delle due colonne ovvie è il vincolo che fa il lavoro. La regola «s
 
 **Distinguere fra la cella vuota perché non si sa e quella vuota perché la domanda non si applica** è una distinzione da mestiere che costa una riga e insegna qualcosa che la scuola non insegna.
 
-**Il divieto delle scelte ovvie** ricompare qui dalla voce 007. Sembra la stessa leva del vincolo negativo, applicata alle categorie invece che alle parole.
+**Il divieto delle scelte ovvie** ricompare qui dalla voce 007, classificazione in insiemi. Sembra la stessa leva del vincolo negativo, applicata alle categorie invece che alle parole.

@@ -1,7 +1,9 @@
 # Didascalia
 
 - **Numero** 23 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** didascalia, caption, cartellino, testo sotto un'immagine, ancoraggio
 - **In una riga** poche parole sotto un'immagine.
+- **Fonti** nessuna trattazione dedicata; l'indicazione sui droodle viene da `puzzle.txt`
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -22,9 +24,9 @@ Nei musei è un mestiere codificato: il cartellino dice cosa, chi, quando, di ch
 
 ## Varianti e parenti
 
-- **Cartellino da museo** (voce 97) — didascalia con campi fissi.
-- **Titolo** (voce 24) — didascalia sopra invece che sotto, e una parola invece di dieci.
-- **Droodle** (voce 122) — un disegno minimo la cui didascalia è la battuta, e senza la quale non si capisce niente.
+- **Cartellino da museo** (voce 97, cartellino da museo) — didascalia con campi fissi.
+- **Titolo** (voce 24, titolo) — didascalia sopra invece che sotto, e una parola invece di dieci.
+- **Droodle** (voce 122, acrostico) — un disegno minimo la cui didascalia è la battuta, e senza la quale non si capisce niente.
 - **Vignetta** — didascalia e disegno che si spiegano a vicenda.
 - **Alt text** — la didascalia scritta per chi non vede l'immagine, che ha regole diverse e più dure.
 - **Fotoromanzo** — la didascalia diventa la narrazione.
@@ -71,6 +73,6 @@ Sei righe indipendenti: chi ne fa due ha fatto due retri. La consegna «per sé,
 
 La forma è minuscola e produce molto. Vale la pena vedere, alla rassegna, se **una serie di didascalie sia una struttura di momento a sé** — sei richieste indipendenti su un foglio, ognuna abbandonabile — invece che una richiesta singola.
 
-Da notare per il confronto con la scheda 011: qui lo spazio stampato è esplicitamente una riga per immagine, e la brevità non è un limite ma il genere.
+Da notare per il confronto con la scheda 011, risposta breve: qui lo spazio stampato è esplicitamente una riga per immagine, e la brevità non è un limite ma il genere.
 
-Da guardare accanto alla voce 122: il droodle è la stessa forma con l'immagine ridotta al minimo, ed è il caso in cui la didascalia porta tutto il peso.
+Da guardare accanto alla voce 122, acrostico: il droodle è la stessa forma con l'immagine ridotta al minimo, ed è il caso in cui la didascalia porta tutto il peso.

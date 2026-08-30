@@ -1,7 +1,9 @@
 # Classificazione in insiemi
 
 - **Numero** 7 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta scelta fra alternative date»
+- **Si chiama anche** classificazione, raggruppamento, sorting, dividere in insiemi
 - **In una riga** «quali di questi sono...». Praticabile se gli insiemi si distinguono guardando, non ricordando.
+- **Fonti** `montessori-education.txt`, `educational-assessment.txt`, prese il 30 agosto 2026
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -20,6 +22,15 @@ Le parti mobili sono tre, e la terza è quella che decide tutto:
 
 Nel materiale montessoriano è ovunque, e con una proprietà che vale la pena rubare: **il materiale si corregge da sé**. Gli incastri di una serie entrano solo dove devono, e nessuno deve dire «sbagliato».
 
+## Varianti e parenti
+
+- **Raggruppare a criterio libero** (57) — il criterio lo sceglie chi fa.
+- **Risposte multiple** (3) — la stessa operazione con le caselle.
+- **Chiave dicotomica** — la classificazione come macchina stampabile.
+- **Wisconsin Card Sorting** — la regola cambia senza avviso.
+- **Zendo e i giochi di induzione** — la regola è segreta e si propone.
+- **Materiale montessoriano** — l'incastro che entra solo dove deve.
+
 ## Che cosa se ne sa
 
 Fonti: `montessori-education.txt` e `educational-assessment.txt`, prese il 30 agosto 2026.
@@ -30,7 +41,7 @@ Non ho trovato, nelle fonti scaricate, una misura che confronti la classificazio
 
 ## Esempi trovati
 
-Scolastico: «segna quali di questi sono mammiferi», con caselle. È la voce 3 dell'enciclopedia sotto altro nome.
+Scolastico: «segna quali di questi sono mammiferi», con caselle. È la voce 3, scelta multipla a risposte multiple dell'enciclopedia sotto altro nome.
 
 Montessori: le tavolette dei colori da appaiare per tonalità, i cilindri che entrano solo nel foro giusto. Nessuna domanda scritta.
 
@@ -56,7 +67,7 @@ Da laboratorio: la chiave dicotomica dei manuali di botanica — «foglie oppost
 >
 > Una di queste undici cose ti dà fastidio perché sta bene in due mucchi. Cerchiala.
 
-Il divieto esplicito nella consegna («non deve essere grandi, medie, piccole») chiude la strada facile e vale più di tre righe di incoraggiamento. L'ultima riga è la stessa mossa della scheda 6: chiedere dove la classificazione fatica, che è la cosa che una griglia con le caselle non può chiedere.
+Il divieto esplicito nella consegna («non deve essere grandi, medie, piccole») chiude la strada facile e vale più di tre righe di incoraggiamento. L'ultima riga è la stessa mossa della scheda 6, ordinamento: chiedere dove la classificazione fatica, che è la cosa che una griglia con le caselle non può chiedere.
 
 ## Da riprendere alla rassegna
 

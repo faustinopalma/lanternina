@@ -1,7 +1,9 @@
 # Linea del tempo
 
 - **Numero** 40 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
+- **Si chiama anche** linea del tempo, cronologia, timeline, asse temporale
 - **In una riga** mettere dei fatti su un asse.
+- **Fonti** nessuna fra le pagine locali; Priestley 1765 e Minard 1869 sono a memoria
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è

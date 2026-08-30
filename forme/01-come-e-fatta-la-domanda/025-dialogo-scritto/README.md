@@ -1,7 +1,9 @@
 # Dialogo scritto
 
 - **Numero** 25 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** dialogo, botta e risposta, copione, scambio di battute
 - **In una riga** due voci.
+- **Fonti** nessuna trattazione dedicata fra le pagine locali
 - **Stato della ricerca** fatta, 30 agosto 2026
 
 ## Che cos'è
@@ -17,7 +19,7 @@ Parti mobili:
 
 ## Da dove viene
 
-Platone lo usò come forma di argomentazione, non di narrazione, ed è la radice del metodo socratico (voce 233). Il teatro lo usa come forma unica da duemilacinquecento anni.
+Platone lo usò come forma di argomentazione, non di narrazione, ed è la radice del metodo socratico (voce 233, metodo socratico). Il teatro lo usa come forma unica da duemilacinquecento anni.
 
 Nella didattica delle lingue è la forma di esercizio più diffusa dopo il completamento, perché permette di far praticare formule d'uso senza chiedere un testo.
 
@@ -27,9 +29,9 @@ Nei giochi di ruolo è il gioco stesso.
 
 - **Intervista** — dialogo asimmetrico, con uno che chiede e uno che risponde.
 - **Interrogatorio** — intervista in cui uno dei due non vuole rispondere.
-- **Copione teatrale** (voce 108) — dialogo con indicazioni di scena.
+- **Copione teatrale** (voce 108, copione teatrale) — dialogo con indicazioni di scena.
 - **Botta e risposta epistolare** — dialogo con giorni fra una battuta e l'altra.
-- **Dialogo socratico** (voce 233) — dialogo in cui uno dei due sa già dove si va a finire.
+- **Dialogo socratico** (voce 233, metodo socratico) — dialogo in cui uno dei due sa già dove si va a finire.
 - **Dialogo con un oggetto o con un morto** — la voce mancante la scrive chi fa l'esercizio.
 - **Chat** — dialogo scritto con la sintassi sua, che gli adolescenti maneggiano meglio di chiunque.
 

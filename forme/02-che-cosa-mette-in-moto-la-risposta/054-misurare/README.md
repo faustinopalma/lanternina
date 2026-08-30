@@ -81,7 +81,7 @@ L'unità la sceglie chi misura. La proporzione è data come idea e non come form
 
 ## Da riprendere alla rassegna
 
-**Misurare col corpo o con un oggetto qualsiasi** apre un'intera famiglia di attività che sembravano richiedere strumenti. Vale anche per la voce 46 e per metà del capitolo 5.
+**Misurare col corpo o con un oggetto qualsiasi** apre un'intera famiglia di attività che sembravano richiedere strumenti. Vale anche per la voce 46, modello in scala e per metà del capitolo 5.
 
 **Due misure che non coincidono** sono un contenuto vero, gratuito, e senza risposta sbagliata. Da usare ovunque si misuri qualcosa.
 
