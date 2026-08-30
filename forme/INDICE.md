@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 152 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 158 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -163,12 +163,12 @@
 144. [Enigma di pesatura](05-enigmi/144-enigma-di-pesatura/README.md) · fatta
 145. [Enigma di travaso](05-enigmi/145-enigma-di-travaso/README.md) · fatta
 146. [Enigma di cappelli](05-enigmi/146-enigma-di-cappelli/README.md) · fatta
-147. [Enigma di verità e menzogna](05-enigmi/147-enigma-di-verita-e-menzogna/README.md) · —
-148. [Enigma induttivo](05-enigmi/148-enigma-induttivo/README.md) · —
-149. [Enigma di successione](05-enigmi/149-enigma-di-successione/README.md) · —
-150. [Enigma di situazione (lateral thinking)](05-enigmi/150-enigma-di-situazione-lateral-thinking/README.md) · —
-151. [Paradosso](05-enigmi/151-paradosso/README.md) · —
-152. [Problema impossibile](05-enigmi/152-problema-impossibile/README.md) · —
+147. [Enigma di verità e menzogna](05-enigmi/147-enigma-di-verita-e-menzogna/README.md) · fatta
+148. [Enigma induttivo](05-enigmi/148-enigma-induttivo/README.md) · fatta
+149. [Enigma di successione](05-enigmi/149-enigma-di-successione/README.md) · fatta
+150. [Enigma di situazione (lateral thinking)](05-enigmi/150-enigma-di-situazione-lateral-thinking/README.md) · fatta
+151. [Paradosso](05-enigmi/151-paradosso/README.md) · fatta
+152. [Problema impossibile](05-enigmi/152-problema-impossibile/README.md) · fatta
 153. [Problema di ottimizzazione](05-enigmi/153-problema-di-ottimizzazione/README.md) · —
 154. [Sudoku e affini (Nikoli)](05-enigmi/154-sudoku-e-affini-nikoli/README.md) · —
 155. [Nonogramma / picross](05-enigmi/155-nonogramma-picross/README.md) · —

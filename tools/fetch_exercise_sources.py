@@ -449,6 +449,67 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-inchiostro-simpatico", "https://it.wikipedia.org/wiki/Inchiostro_simpatico"),
         ("it-griglia-di-cardano", "https://it.wikipedia.org/wiki/Griglia_di_Cardano"),
     ],
+    "enigmi, capitolo 5, quarto blocco": [
+        ("knights-and-knaves", "https://en.wikipedia.org/wiki/Knights_and_Knaves"),
+        ("raymond-smullyan", "https://en.wikipedia.org/wiki/Raymond_Smullyan"),
+        (
+            "hardest-logic-puzzle-ever",
+            "https://en.wikipedia.org/wiki/The_Hardest_Logic_Puzzle_Ever",
+        ),
+        ("sum-and-product-puzzle", "https://en.wikipedia.org/wiki/Sum_and_Product_Puzzle"),
+        ("integer-sequence", "https://en.wikipedia.org/wiki/Integer_sequence"),
+        (
+            "oeis",
+            "https://en.wikipedia.org/wiki/On-Line_Encyclopedia_of_Integer_Sequences",
+        ),
+        ("lateral-thinking", "https://en.wikipedia.org/wiki/Lateral_thinking"),
+        ("situation-puzzle", "https://en.wikipedia.org/wiki/Situation_puzzle"),
+        ("paradox", "https://en.wikipedia.org/wiki/Paradox"),
+        ("liar-paradox", "https://en.wikipedia.org/wiki/Liar_paradox"),
+        ("self-reference", "https://en.wikipedia.org/wiki/Self-reference"),
+        ("quine-computing", "https://en.wikipedia.org/wiki/Quine_(computing)"),
+        (
+            "godel-incompleteness",
+            "https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems",
+        ),
+        (
+            "seven-bridges",
+            "https://en.wikipedia.org/wiki/Seven_Bridges_of_K%C3%B6nigsberg",
+        ),
+        (
+            "travelling-salesman",
+            "https://en.wikipedia.org/wiki/Travelling_salesman_problem",
+        ),
+        ("shortest-path-problem", "https://en.wikipedia.org/wiki/Shortest_path_problem"),
+        ("sudoku", "https://en.wikipedia.org/wiki/Sudoku"),
+        ("mathematics-of-sudoku", "https://en.wikipedia.org/wiki/Mathematics_of_Sudoku"),
+        ("nikoli-publisher", "https://en.wikipedia.org/wiki/Nikoli_(publisher)"),
+        ("nonogram", "https://en.wikipedia.org/wiki/Nonogram"),
+        ("chess-problem", "https://en.wikipedia.org/wiki/Chess_problem"),
+        ("chess-puzzle", "https://en.wikipedia.org/wiki/Chess_puzzle"),
+        ("two-move-problem", "https://en.wikipedia.org/wiki/Chess_composer"),
+        (
+            "combinatorial-game-theory",
+            "https://en.wikipedia.org/wiki/Combinatorial_game_theory",
+        ),
+        ("game-theory", "https://en.wikipedia.org/wiki/Game_theory"),
+        (
+            "prisoners-dilemma",
+            "https://en.wikipedia.org/wiki/Prisoner%27s_dilemma",
+        ),
+        ("zero-sum-game", "https://en.wikipedia.org/wiki/Zero-sum_game"),
+        ("impossible-puzzle", "https://en.wikipedia.org/wiki/Impossible_puzzle"),
+        ("unexpected-hanging", "https://en.wikipedia.org/wiki/Unexpected_hanging_paradox"),
+        ("zenos-paradoxes", "https://en.wikipedia.org/wiki/Zeno%27s_paradoxes"),
+        ("squaring-the-circle", "https://en.wikipedia.org/wiki/Squaring_the_circle"),
+        ("mutilated-chessboard", "https://en.wikipedia.org/wiki/Mutilated_chessboard_problem"),
+        ("it-paradosso", "https://it.wikipedia.org/wiki/Paradosso"),
+        ("it-sudoku", "https://it.wikipedia.org/wiki/Sudoku"),
+        (
+            "it-ponti-di-konigsberg",
+            "https://it.wikipedia.org/wiki/Problema_dei_ponti_di_K%C3%B6nigsberg",
+        ),
+    ],
 }
 
 
