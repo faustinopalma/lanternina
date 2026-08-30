@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 102 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 115 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -110,19 +110,19 @@
 94. [Manuale](04-come-e-impacchettata/094-manuale/README.md) · fatta
 95. [Mappa](04-come-e-impacchettata/095-mappa/README.md) · fatta
 96. [Registro / catalogo](04-come-e-impacchettata/096-registro-catalogo/README.md) · fatta
-97. [Cartellino da museo](04-come-e-impacchettata/097-cartellino-da-museo/README.md) · —
-98. [Scheda d'archivio](04-come-e-impacchettata/098-scheda-d-archivio/README.md) · —
-99. [Avviso affisso](04-come-e-impacchettata/099-avviso-affisso/README.md) · —
-100. [Diario di qualcun altro](04-come-e-impacchettata/100-diario-di-qualcun-altro/README.md) · —
-101. [Ritaglio di giornale](04-come-e-impacchettata/101-ritaglio-di-giornale/README.md) · —
-102. [Ricetta](04-come-e-impacchettata/102-ricetta/README.md) · —
-103. [Partitura / spartito](04-come-e-impacchettata/103-partitura-spartito/README.md) · —
-104. [Gioco da tavolo](04-come-e-impacchettata/104-gioco-da-tavolo/README.md) · —
-105. [Mazzo di carte](04-come-e-impacchettata/105-mazzo-di-carte/README.md) · —
-106. [Libro-gioco](04-come-e-impacchettata/106-libro-gioco/README.md) · —
-107. [Gioco di ruolo](04-come-e-impacchettata/107-gioco-di-ruolo/README.md) · —
-108. [Copione teatrale](04-come-e-impacchettata/108-copione-teatrale/README.md) · —
-109. [Kit](04-come-e-impacchettata/109-kit/README.md) · —
+97. [Cartellino da museo](04-come-e-impacchettata/097-cartellino-da-museo/README.md) · fatta
+98. [Scheda d'archivio](04-come-e-impacchettata/098-scheda-d-archivio/README.md) · fatta
+99. [Avviso affisso](04-come-e-impacchettata/099-avviso-affisso/README.md) · fatta
+100. [Diario di qualcun altro](04-come-e-impacchettata/100-diario-di-qualcun-altro/README.md) · fatta
+101. [Ritaglio di giornale](04-come-e-impacchettata/101-ritaglio-di-giornale/README.md) · fatta
+102. [Ricetta](04-come-e-impacchettata/102-ricetta/README.md) · fatta
+103. [Partitura / spartito](04-come-e-impacchettata/103-partitura-spartito/README.md) · fatta
+104. [Gioco da tavolo](04-come-e-impacchettata/104-gioco-da-tavolo/README.md) · fatta
+105. [Mazzo di carte](04-come-e-impacchettata/105-mazzo-di-carte/README.md) · fatta
+106. [Libro-gioco](04-come-e-impacchettata/106-libro-gioco/README.md) · fatta
+107. [Gioco di ruolo](04-come-e-impacchettata/107-gioco-di-ruolo/README.md) · fatta
+108. [Copione teatrale](04-come-e-impacchettata/108-copione-teatrale/README.md) · fatta
+109. [Kit](04-come-e-impacchettata/109-kit/README.md) · fatta
 
 ## 5. Enigmi
 
