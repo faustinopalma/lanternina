@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 115 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 128 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -126,19 +126,19 @@
 
 ## 5. Enigmi
 
-110. [Indovinello classico (enigma)](05-enigmi/110-indovinello-classico-enigma/README.md) · —
-111. [Indovinello a doppio senso (conundrum)](05-enigmi/111-indovinello-a-doppio-senso-conundrum/README.md) · —
-112. [Indovinello per negazione](05-enigmi/112-indovinello-per-negazione/README.md) · —
-113. [Indovinello per enumerazione](05-enigmi/113-indovinello-per-enumerazione/README.md) · —
-114. [Indovinello dell'anno](05-enigmi/114-indovinello-dell-anno/README.md) · —
-115. [Indovinello della persona](05-enigmi/115-indovinello-della-persona/README.md) · —
-116. [Indovinello dell'oggetto che scrive](05-enigmi/116-indovinello-dell-oggetto-che-scrive/README.md) · —
-117. [Neck-riddle](05-enigmi/117-neck-riddle/README.md) · —
-118. [Koan](05-enigmi/118-koan/README.md) · —
-119. [Rebus](05-enigmi/119-rebus/README.md) · —
-120. [Sciarada](05-enigmi/120-sciarada/README.md) · —
-121. [Anagramma](05-enigmi/121-anagramma/README.md) · —
-122. [Acrostico](05-enigmi/122-acrostico/README.md) · —
+110. [Indovinello classico (enigma)](05-enigmi/110-indovinello-classico-enigma/README.md) · fatta
+111. [Indovinello a doppio senso (conundrum)](05-enigmi/111-indovinello-a-doppio-senso-conundrum/README.md) · fatta
+112. [Indovinello per negazione](05-enigmi/112-indovinello-per-negazione/README.md) · fatta
+113. [Indovinello per enumerazione](05-enigmi/113-indovinello-per-enumerazione/README.md) · fatta
+114. [Indovinello dell'anno](05-enigmi/114-indovinello-dell-anno/README.md) · fatta
+115. [Indovinello della persona](05-enigmi/115-indovinello-della-persona/README.md) · fatta
+116. [Indovinello dell'oggetto che scrive](05-enigmi/116-indovinello-dell-oggetto-che-scrive/README.md) · fatta
+117. [Neck-riddle](05-enigmi/117-neck-riddle/README.md) · fatta
+118. [Koan](05-enigmi/118-koan/README.md) · fatta
+119. [Rebus](05-enigmi/119-rebus/README.md) · fatta
+120. [Sciarada](05-enigmi/120-sciarada/README.md) · fatta
+121. [Anagramma](05-enigmi/121-anagramma/README.md) · fatta
+122. [Acrostico](05-enigmi/122-acrostico/README.md) · fatta
 123. [Palindromo](05-enigmi/123-palindromo/README.md) · —
 124. [Lipogramma](05-enigmi/124-lipogramma/README.md) · —
 125. [Cruciverba](05-enigmi/125-cruciverba/README.md) · —
