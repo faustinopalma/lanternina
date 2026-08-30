@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 140 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 152 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -151,18 +151,18 @@
 132. [Morse](05-enigmi/132-morse/README.md) · fatta
 133. [Braille come cifra visiva](05-enigmi/133-braille-come-cifra-visiva/README.md) · fatta
 134. [Semaforo, bandiere, alfabeti alternativi](05-enigmi/134-semaforo-bandiere-alfabeti-alternativi/README.md) · fatta
-135. [Steganografia](05-enigmi/135-steganografia/README.md) · —
-136. [Inchiostro invisibile / luce](05-enigmi/136-inchiostro-invisibile-luce/README.md) · —
-137. [Specchio](05-enigmi/137-specchio/README.md) · —
-138. [Testo capovolto o ruotato](05-enigmi/138-testo-capovolto-o-ruotato/README.md) · —
-139. [Testo troppo piccolo / troppo grande](05-enigmi/139-testo-troppo-piccolo-troppo-grande/README.md) · —
-140. [Sovrapposizione di due fogli](05-enigmi/140-sovrapposizione-di-due-fogli/README.md) · —
-141. [Griglia di Cardano](05-enigmi/141-griglia-di-cardano/README.md) · —
-142. [Puzzle a griglia (chi beve cosa, chi vive dove)](05-enigmi/142-puzzle-a-griglia-chi-beve-cosa-chi-vive-dove/README.md) · —
-143. [Enigma di attraversamento](05-enigmi/143-enigma-di-attraversamento/README.md) · —
-144. [Enigma di pesatura](05-enigmi/144-enigma-di-pesatura/README.md) · —
-145. [Enigma di travaso](05-enigmi/145-enigma-di-travaso/README.md) · —
-146. [Enigma di cappelli](05-enigmi/146-enigma-di-cappelli/README.md) · —
+135. [Steganografia](05-enigmi/135-steganografia/README.md) · fatta
+136. [Inchiostro invisibile / luce](05-enigmi/136-inchiostro-invisibile-luce/README.md) · fatta
+137. [Specchio](05-enigmi/137-specchio/README.md) · fatta
+138. [Testo capovolto o ruotato](05-enigmi/138-testo-capovolto-o-ruotato/README.md) · fatta
+139. [Testo troppo piccolo / troppo grande](05-enigmi/139-testo-troppo-piccolo-troppo-grande/README.md) · fatta
+140. [Sovrapposizione di due fogli](05-enigmi/140-sovrapposizione-di-due-fogli/README.md) · fatta
+141. [Griglia di Cardano](05-enigmi/141-griglia-di-cardano/README.md) · fatta
+142. [Puzzle a griglia (chi beve cosa, chi vive dove)](05-enigmi/142-puzzle-a-griglia-chi-beve-cosa-chi-vive-dove/README.md) · fatta
+143. [Enigma di attraversamento](05-enigmi/143-enigma-di-attraversamento/README.md) · fatta
+144. [Enigma di pesatura](05-enigmi/144-enigma-di-pesatura/README.md) · fatta
+145. [Enigma di travaso](05-enigmi/145-enigma-di-travaso/README.md) · fatta
+146. [Enigma di cappelli](05-enigmi/146-enigma-di-cappelli/README.md) · fatta
 147. [Enigma di verità e menzogna](05-enigmi/147-enigma-di-verita-e-menzogna/README.md) · —
 148. [Enigma induttivo](05-enigmi/148-enigma-induttivo/README.md) · —
 149. [Enigma di successione](05-enigmi/149-enigma-di-successione/README.md) · —
