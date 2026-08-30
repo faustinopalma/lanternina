@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 135 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 140 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -146,11 +146,11 @@
 127. [Parole crociate senza schema](05-enigmi/127-parole-crociate-senza-schema/README.md) · fatta
 128. [Crucipuzzle (word search)](05-enigmi/128-crucipuzzle-word-search/README.md) · fatta
 129. [Cifrario a sostituzione](05-enigmi/129-cifrario-a-sostituzione/README.md) · fatta
-130. [Cifrario di Cesare](05-enigmi/130-cifrario-di-cesare/README.md) · —
-131. [Codice a numeri (A=1)](05-enigmi/131-codice-a-numeri-a-1/README.md) · —
-132. [Morse](05-enigmi/132-morse/README.md) · —
-133. [Braille come cifra visiva](05-enigmi/133-braille-come-cifra-visiva/README.md) · —
-134. [Semaforo, bandiere, alfabeti alternativi](05-enigmi/134-semaforo-bandiere-alfabeti-alternativi/README.md) · —
+130. [Cifrario di Cesare](05-enigmi/130-cifrario-di-cesare/README.md) · fatta
+131. [Codice a numeri (A=1)](05-enigmi/131-codice-a-numeri-a-1/README.md) · fatta
+132. [Morse](05-enigmi/132-morse/README.md) · fatta
+133. [Braille come cifra visiva](05-enigmi/133-braille-come-cifra-visiva/README.md) · fatta
+134. [Semaforo, bandiere, alfabeti alternativi](05-enigmi/134-semaforo-bandiere-alfabeti-alternativi/README.md) · fatta
 135. [Steganografia](05-enigmi/135-steganografia/README.md) · —
 136. [Inchiostro invisibile / luce](05-enigmi/136-inchiostro-invisibile-luce/README.md) · —
 137. [Specchio](05-enigmi/137-specchio/README.md) · —
