@@ -1,8 +1,7 @@
 # Univocalico, palindromo, anagramma
 
 - **Numero** 213 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** vedi §5.1: ⊘ per il sistema, praticabili per una persona.
+- **In una riga** vedi §5.1.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

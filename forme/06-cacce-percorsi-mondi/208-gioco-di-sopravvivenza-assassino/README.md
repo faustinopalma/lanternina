@@ -1,7 +1,6 @@
 # Gioco di sopravvivenza / assassino
 
 - **Numero** 208 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso.
 - **Stato della ricerca** non ancora fatta
 

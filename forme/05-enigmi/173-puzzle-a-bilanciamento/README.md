@@ -1,7 +1,6 @@
 # Puzzle a bilanciamento
 
 - **Numero** 173 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** pesi e leve.
 - **Stato della ricerca** non ancora fatta
 

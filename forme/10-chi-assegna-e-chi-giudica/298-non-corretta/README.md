@@ -1,7 +1,6 @@
 # Non corretta
 
 - **Numero** 298 nell'enciclopedia, capitolo 10 — Chi assegna, e chi giudica
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** il caso normale qui, ed è una scelta e non una mancanza.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Enigma di pesatura
 
 - **Numero** 144 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** trovare la moneta falsa in tre pesate.
 - **Stato della ricerca** non ancora fatta
 

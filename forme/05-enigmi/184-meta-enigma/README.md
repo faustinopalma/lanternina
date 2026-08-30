@@ -1,7 +1,6 @@
 # Meta-enigma
 
 - **Numero** 184 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** le soluzioni degli enigmi precedenti sono i dati del finale. È la struttura delle puzzle hunt.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Problema di ottimizzazione con vincoli fisici
 
 - **Numero** 377 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** il percorso più breve fatto con uno spago.
 - **Stato della ricerca** non ancora fatta
 

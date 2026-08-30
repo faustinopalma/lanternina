@@ -1,7 +1,6 @@
 # Cartellino da museo
 
 - **Numero** 97 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un oggetto e quello che il museo vuole si sappia.
 - **Stato della ricerca** non ancora fatta
 

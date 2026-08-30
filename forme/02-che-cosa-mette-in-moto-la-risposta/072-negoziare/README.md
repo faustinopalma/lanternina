@@ -1,8 +1,7 @@
 # Negoziare
 
 - **Numero** 72 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** mettersi d'accordo con un altro. ⊘ irraggiungibile da solo.
+- **In una riga** mettersi d'accordo con un altro.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

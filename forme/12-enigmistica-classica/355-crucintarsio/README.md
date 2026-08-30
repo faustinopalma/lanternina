@@ -1,7 +1,6 @@
 # Crucintarsio
 
 - **Numero** 355 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Griglie»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** parole date da incastrare in una griglia vuota.
 - **Stato della ricerca** non ancora fatta
 

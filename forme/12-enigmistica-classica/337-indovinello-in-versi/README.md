@@ -1,7 +1,6 @@
 # Indovinello in versi
 
 - **Numero** 337 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che lavorano sul senso»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la forma classica: rime, un soggetto travestito, e una lettura di superficie che regge da sola.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

@@ -1,7 +1,6 @@
 # Vincolo di punto di vista
 
 - **Numero** 225 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la stessa scena da due parti.
 - **Stato della ricerca** non ancora fatta
 

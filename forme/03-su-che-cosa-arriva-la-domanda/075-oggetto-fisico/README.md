@@ -1,7 +1,6 @@
 # Oggetto fisico
 
 - **Numero** 75 nell'enciclopedia, capitolo 3 — Su che cosa arriva la domanda
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la domanda è nell'oggetto: una scatola che si apre in un modo solo.
 - **Stato della ricerca** non ancora fatta
 

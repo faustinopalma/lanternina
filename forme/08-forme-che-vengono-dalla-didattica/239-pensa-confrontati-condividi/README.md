@@ -1,7 +1,6 @@
 # Pensa–confrontati–condividi
 
 - **Numero** 239 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
 - **In una riga** ⚠ costoso, chiede un gruppo.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Abdurre
 
 - **Numero** 62 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** dall'effetto alla causa più probabile. È il verbo del giallo.
 - **Stato della ricerca** non ancora fatta
 

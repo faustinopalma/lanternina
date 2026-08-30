@@ -1,7 +1,6 @@
 # Dibattito
 
 - **Numero** 254 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
 - **In una riga** ⚠ costoso: è una competizione fra posizioni.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Previsione
 
 - **Numero** 28 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** dire cosa succederà, prima che succeda, e poi guardare.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

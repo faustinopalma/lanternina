@@ -1,8 +1,7 @@
 # Cadavere squisito
 
 - **Numero** 221 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
-- **In una riga** ognuno aggiunge senza vedere il resto. ⚠ costoso: chiede più persone.
+- **In una riga** ognuno aggiunge senza vedere il resto.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

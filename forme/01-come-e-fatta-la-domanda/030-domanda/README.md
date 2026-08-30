@@ -1,7 +1,6 @@
 # Domanda
 
 - **Numero** 30 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la richiesta è di formularne una, non di risponderne una. È una delle forme più forti e meno usate.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

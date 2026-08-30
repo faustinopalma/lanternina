@@ -1,8 +1,7 @@
 # Cruciverba crittico
 
 - **Numero** 126 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** ogni definizione è essa stessa un enigma in due parti. ⊘ irraggiungibile.
+- **In una riga** ogni definizione è essa stessa un enigma in due parti.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,6 @@
 # Grafico
 
 - **Numero** 38 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** mostrare come una quantità cambia.
 - **Stato della ricerca** non ancora fatta
 

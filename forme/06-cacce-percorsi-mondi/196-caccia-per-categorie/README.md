@@ -1,7 +1,6 @@
 # Caccia per categorie
 
 - **Numero** 196 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** «una cosa più vecchia di te, una cosa che nessuno ha scelto».
 - **Stato della ricerca** non ancora fatta
 

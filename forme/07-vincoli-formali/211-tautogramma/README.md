@@ -1,7 +1,6 @@
 # Tautogramma
 
 - **Numero** 211 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** tutte le parole con la stessa iniziale.
 - **Stato della ricerca** non ancora fatta
 

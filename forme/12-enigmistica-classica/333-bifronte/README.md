@@ -1,7 +1,6 @@
 # Bifronte
 
 - **Numero** 333 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una parola che letta al rovescio ne dà un'altra: *amor / Roma*.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

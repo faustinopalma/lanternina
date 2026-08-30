@@ -1,8 +1,7 @@
 # Enigma di successione
 
 - **Numero** 149 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
-- **In una riga** «quale numero viene dopo». ⚠ costoso: ha spesso più risposte valide e una sola accettata.
+- **In una riga** «quale numero viene dopo».
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

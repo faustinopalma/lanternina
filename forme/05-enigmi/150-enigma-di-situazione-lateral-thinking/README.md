@@ -1,8 +1,7 @@
 # Enigma di situazione (lateral thinking)
 
 - **Numero** 150 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** una scena assurda, e domande a cui si risponde sì o no. ⊘ irraggiungibile senza un interlocutore che risponda.
+- **In una riga** una scena assurda, e domande a cui si risponde sì o no.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

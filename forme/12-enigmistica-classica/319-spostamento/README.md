@@ -1,7 +1,6 @@
 # Spostamento
 
 - **Numero** 319 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una lettera si sposta altrove nella parola.
 - **Stato della ricerca** non ancora fatta
 

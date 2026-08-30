@@ -1,7 +1,6 @@
 # Tabella
 
 - **Numero** 39 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** mettere delle cose in righe e colonne.
 - **Stato della ricerca** non ancora fatta
 

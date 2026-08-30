@@ -1,7 +1,6 @@
 # Gioco pervasivo
 
 - **Numero** 203 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** il gioco non ha un confine spaziale dichiarato.
 - **Stato della ricerca** non ancora fatta
 

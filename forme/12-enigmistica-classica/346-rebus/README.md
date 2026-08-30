@@ -1,7 +1,6 @@
 # Rebus
 
 - **Numero** 346 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Rebus e forme miste»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** immagini con lettere sopra, e la lettura produce una frase.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

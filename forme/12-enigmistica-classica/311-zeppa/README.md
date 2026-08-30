@@ -1,7 +1,6 @@
 # Zeppa
 
 - **Numero** 311 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che tolgono, aggiungono o cambiano lettere»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** si aggiunge una lettera e si ottiene un'altra parola: *cane → carne*.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

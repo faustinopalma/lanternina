@@ -1,7 +1,6 @@
 # Aguzza la vista
 
 - **Numero** 387 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** trovare un oggetto dentro una scena affollata.
 - **Stato della ricerca** non ancora fatta
 

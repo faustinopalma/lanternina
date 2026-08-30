@@ -1,8 +1,7 @@
 # Problema di Fermi
 
 - **Numero** 359 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** stimare a spanne una quantità che nessuno sa, scomponendola. *Quanti accordatori di pianoforte ci sono a Chicago.*
+- **In una riga** stimare a spanne una quantità che nessuno sa, scomponendola. *Quanti accordatori di pianoforte ci sono a Chicago.*.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,6 @@
 # Modello in scala
 
 - **Numero** 46 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** costruire una cosa più piccola della vera.
 - **Stato della ricerca** non ancora fatta
 

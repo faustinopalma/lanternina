@@ -1,7 +1,6 @@
 # Finisce con un oggetto
 
 - **Numero** 302 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** resta una cosa.
 - **Stato della ricerca** non ancora fatta
 

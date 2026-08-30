@@ -1,8 +1,7 @@
 # Interrogazione
 
 - **Numero** 86 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
-- **In una riga** orale, con qualcuno che giudica. ✗ chiuso.
+- **In una riga** orale, con qualcuno che giudica.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

@@ -1,7 +1,6 @@
 # Emergenza
 
 - **Numero** 275 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** regole semplici che producono situazioni non previste.
 - **Stato della ricerca** non ancora fatta
 

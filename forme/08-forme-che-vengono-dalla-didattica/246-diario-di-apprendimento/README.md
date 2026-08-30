@@ -1,7 +1,6 @@
 # Diario di apprendimento
 
 - **Numero** 246 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
 - **In una riga** ⚠ costoso: la riflessione sul proprio apprendimento è a un passo dall'autovalutazione.
 - **Stato della ricerca** non ancora fatta
 

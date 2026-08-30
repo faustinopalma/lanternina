@@ -1,8 +1,7 @@
 # Scelta con conseguenza
 
 - **Numero** 268 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile: la conseguenza è narrativa e non è una perdita.
+- **In una riga** quello che si sceglie cambia quello che succede dopo.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

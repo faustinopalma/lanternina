@@ -1,7 +1,6 @@
 # Mazzo di carte
 
 - **Numero** 105 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** con carte da pescare e ordinare.
 - **Stato della ricerca** non ancora fatta
 

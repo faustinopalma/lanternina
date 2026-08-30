@@ -1,7 +1,6 @@
 # Crittografia pura
 
 - **Numero** 341 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Crittografie»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una sequenza di lettere e numeri da leggere come frase: `A B C = alfabeto muto`.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

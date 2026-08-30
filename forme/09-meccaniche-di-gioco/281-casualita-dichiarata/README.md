@@ -1,8 +1,7 @@
 # Casualità dichiarata
 
 - **Numero** 281 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** un dado. Praticabile e utile: toglie a chi gioca la responsabilità di una scelta.
+- **In una riga** un dado.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

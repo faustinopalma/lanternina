@@ -1,7 +1,6 @@
 # Non finisce
 
 - **Numero** 310 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso: ogni percorso deve poter raggiungere un finale.
 - **Stato della ricerca** non ancora fatta
 

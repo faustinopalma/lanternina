@@ -1,7 +1,6 @@
 # Serratura a combinazione
 
 - **Numero** 170 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la combinazione è il risultato di qualcos'altro. È il meccanismo centrale delle escape room.
 - **Stato della ricerca** non ancora fatta
 

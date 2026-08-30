@@ -1,7 +1,6 @@
 # Immaginare
 
 - **Numero** 67 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** produrre una cosa che non c'è.
 - **Stato della ricerca** non ancora fatta
 

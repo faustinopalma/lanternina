@@ -1,7 +1,6 @@
 # Ritaglio di giornale
 
 - **Numero** 101 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un fatto raccontato male, di proposito.
 - **Stato della ricerca** non ancora fatta
 

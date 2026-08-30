@@ -1,7 +1,6 @@
 # Finisce con una consegna
 
 - **Numero** 303 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la cosa va a qualcuno.
 - **Stato della ricerca** non ancora fatta
 

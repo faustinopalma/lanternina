@@ -2,9 +2,9 @@
 
 Un quaderno di appunti, non un elenco di decisioni. **Niente qui è stato deciso e niente è stato applicato.** Si scrive quello che si nota mentre si guarda una forma da vicino, e ci si torna alla rassegna — che verrà quando l'elenco sarà completo, e non prima.
 
-Le schede in `forme/` sono deliberatamente libere: descrivono ogni forma per quello che è, senza filtrarla attraverso le regole di questo progetto. Le regole si guarderanno dopo, con l'elenco intero davanti. Quello che finisce qui è solo materiale per quel momento.
+Le schede in `forme/` sono deliberatamente libere: descrivono ogni forma per quello che è, senza filtro. Le regole di disegno del progetto verranno da qui, e al momento non ci sono.
 
-## Punti dove una regola del progetto potrebbe risultare più larga del danno
+## Punti su cui, alla rassegna, converrà guardare due volte
 
 **La scelta multipla.** La regola nomina la forma; il danno sembra stare nella terna **chiave + distrattori + costo**. Un elenco chiuso di alternative senza risposta giusta e senza costo è un vincolo narrativo, e aiuta chi fatica davanti al foglio bianco. — scheda 001.
 

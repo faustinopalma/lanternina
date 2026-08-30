@@ -1,7 +1,6 @@
 # Caccia agli oggetti (scavenger hunt)
 
 - **Numero** 194 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una lista di cose da trovare, in qualsiasi ordine.
 - **Stato della ricerca** non ancora fatta
 

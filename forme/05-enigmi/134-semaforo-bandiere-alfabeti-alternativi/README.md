@@ -1,8 +1,7 @@
 # Semaforo, bandiere, alfabeti alternativi
 
 - **Numero** 134 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabili con la tabella accanto.
+- **In una riga** sistemi di segni con una tabella di conversione.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

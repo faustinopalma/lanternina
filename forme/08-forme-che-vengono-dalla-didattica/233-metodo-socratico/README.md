@@ -1,8 +1,7 @@
 # Metodo socratico
 
 - **Numero** 233 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
-- **In una riga** domande che portano a scoprire una contraddizione. ⚠ costoso: chi conduce sa già dove va, e la persona lo sente.
+- **In una riga** domande che portano a scoprire una contraddizione.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

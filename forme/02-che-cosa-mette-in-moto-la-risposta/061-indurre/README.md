@@ -1,7 +1,6 @@
 # Indurre
 
 - **Numero** 61 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** dai casi alla regola.
 - **Stato della ricerca** non ancora fatta
 

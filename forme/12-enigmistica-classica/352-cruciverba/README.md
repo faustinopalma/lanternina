@@ -1,7 +1,6 @@
 # Cruciverba
 
 - **Numero** 352 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Griglie»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la griglia con le definizioni.
 - **Stato della ricerca** non ancora fatta
 

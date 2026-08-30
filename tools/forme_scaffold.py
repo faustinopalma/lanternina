@@ -24,9 +24,6 @@ CHAPTER = re.compile(r"^## (\d+)\. (.+)$")
 SECTION = re.compile(r"^### (\d+)\.(\d+) (.+)$")
 METHOD = re.compile(r"^(\d+)\. \*\*(.+?)\*\* — (.+)$")
 
-MARKS = {"✗": "chiuso", "⚠": "costoso", "⊘": "irraggiungibile"}
-
-
 @dataclass(frozen=True)
 class Method:
     number: int
@@ -35,13 +32,6 @@ class Method:
     chapter: int
     chapter_name: str
     section: str
-
-    @property
-    def mark(self) -> str:
-        for sign, word in MARKS.items():
-            if sign in self.gloss:
-                return f"{sign} {word}"
-        return "aperto"
 
 
 def slug(text: str) -> str:
@@ -74,7 +64,6 @@ def folder(method: Method) -> Path:
 TEMPLATE = """# {name}
 
 - **Numero** {number} nell'enciclopedia, capitolo {chapter} — {chapter_name}{section}
-- **Come la classificava il primo giro** {mark} — promemoria, non un verdetto
 - **In una riga** {gloss}
 - **Stato della ricerca** non ancora fatta
 
@@ -120,7 +109,6 @@ def _filled(method: Method) -> str:
         chapter=method.chapter,
         chapter_name=method.chapter_name,
         section=f", sezione «{method.section}»" if method.section else "",
-        mark=method.mark,
         gloss=method.gloss,
     )
 
@@ -141,9 +129,7 @@ def write_index(methods: list[Method]) -> None:
             lines += ["", f"## {chapter}. {method.chapter_name}", ""]
         where = folder(method).relative_to(WHERE).as_posix()
         state = "fatta" if "non ancora fatta" not in _state(method) else "—"
-        lines.append(
-            f"{method.number}. [{method.name}]({where}/README.md) · {method.mark} · {state}"
-        )
+        lines.append(f"{method.number}. [{method.name}]({where}/README.md) · {state}")
     (WHERE / "INDICE.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

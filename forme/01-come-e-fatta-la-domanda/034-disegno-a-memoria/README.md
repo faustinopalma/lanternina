@@ -1,7 +1,6 @@
 # Disegno a memoria
 
 - **Numero** 34 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** disegnare una cosa che non si sta guardando.
 - **Stato della ricerca** non ancora fatta
 

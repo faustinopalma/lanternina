@@ -1,7 +1,6 @@
 # Barra di avanzamento
 
 - **Numero** 265 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiusa mentre l'attività corre.
 - **Stato della ricerca** non ancora fatta
 

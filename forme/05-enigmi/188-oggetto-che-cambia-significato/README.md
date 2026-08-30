@@ -1,7 +1,6 @@
 # Oggetto che cambia significato
 
 - **Numero** 188 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una cosa vista all'inizio e capita alla fine.
 - **Stato della ricerca** non ancora fatta
 

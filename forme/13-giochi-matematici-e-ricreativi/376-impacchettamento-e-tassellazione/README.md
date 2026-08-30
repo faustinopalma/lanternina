@@ -1,7 +1,6 @@
 # Impacchettamento e tassellazione
 
 - **Numero** 376 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** quante ce ne stanno, e perché non di più.
 - **Stato della ricerca** non ancora fatta
 

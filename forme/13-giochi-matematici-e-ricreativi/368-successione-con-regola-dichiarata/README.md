@@ -1,7 +1,6 @@
 # Successione con regola dichiarata
 
 - **Numero** 368 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** a differenza della voce 149, la regola è data e si applica.
 - **Stato della ricerca** non ancora fatta
 

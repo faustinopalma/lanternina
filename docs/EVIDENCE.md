@@ -1,8 +1,8 @@
 # What the evidence says
 
-This file exists because the rules in `.github/copilot-instructions.md` were written from judgement, and judgement is a bad thing to leave unexamined when the person on the other end of it is an adolescent who may find reading hard. It reads the literature that bears on what Lanternina offers and how it offers it, and says — for each finding — what it changes here, what it does not, and where it argues against something already built.
+This file reads the literature that bears on what Lanternina offers and how it offers it, and says — for each finding — what it changes here, what it does not, and where it argues against something already built. It exists because the design was decided from judgement, and judgement is a bad thing to leave unexamined when the person on the other end of it is an adolescent who may find reading hard.
 
-**One rule governs everything below, and it is not up for revision.** This is evidence about *design*, never about a person. Nothing here becomes a field, a setting per adolescent, a level, or an inference. Lanternina is built for adolescents without asking which ones (`docs/NON-GOALS.md`), and the way that stays true while the design gets better is that findings change what the system *makes*, and never what it *records*. A finding that could only be applied by first classifying somebody is a finding this project declines to use.
+Everything below is evidence about *design*, and reading it that way is what makes it usable: Lanternina is built for adolescents without asking which ones, so a finding changes what the system *makes* rather than what it *records* about anybody.
 
 The sources are in `_reference/progettare-per-adolescenti/`, downloaded by `build/fetch_evidence.py` on 28 August 2026. That folder is gitignored: it is other people's text. What is committed is this reading of it.
 
@@ -108,4 +108,4 @@ This is a framework's suggestion, not a finding, and it is written here as one.
 
 ## Where this is meant to be used
 
-By whoever writes the prompts in `agents/`, and by whoever reviews an afternoon before it is offered. It is not a specification and nothing in it is enforced. Where a finding here has become a rule, the rule is in `.github/copilot-instructions.md` and says so; where it has become a check, the check is in `shared/experience_checks.py` or `shared/page.py`. Everything else in this file is an argument, and arguments are for reading.
+By whoever writes the prompts in `agents/`, and by whoever reviews an afternoon before it is offered. It is not a specification and nothing in it is enforced. Where a finding here has become a check, the check is in `shared/experience_checks.py` or `shared/page.py`. Everything else in this file is an argument, and arguments are for reading.

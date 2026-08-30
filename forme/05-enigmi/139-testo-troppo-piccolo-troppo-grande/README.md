@@ -1,8 +1,7 @@
 # Testo troppo piccolo / troppo grande
 
 - **Numero** 139 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile.
+- **In una riga** leggibile cambiando distanza o strumento.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

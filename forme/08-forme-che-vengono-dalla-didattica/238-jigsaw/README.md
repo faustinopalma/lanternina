@@ -1,8 +1,7 @@
 # Jigsaw
 
 - **Numero** 238 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
-- **In una riga** ognuno impara un pezzo e lo insegna agli altri. ⚠ costoso: chiede un gruppo.
+- **In una riga** ognuno impara un pezzo e lo insegna agli altri.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

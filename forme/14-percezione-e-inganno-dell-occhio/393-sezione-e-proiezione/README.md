@@ -1,7 +1,6 @@
 # Sezione e proiezione
 
 - **Numero** 393 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** dato un solido, che ombra fa.
 - **Stato della ricerca** non ancora fatta
 

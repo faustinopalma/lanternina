@@ -1,7 +1,6 @@
 # Cooperazione
 
 - **Numero** 276 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
 - **In una riga** ⚠ costoso: chiede qualcun altro.
 - **Stato della ricerca** non ancora fatta
 

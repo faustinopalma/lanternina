@@ -2,7 +2,7 @@
 
 This document explains the boundaries in the codebase and why each one exists. The reasoning matters more than the rule: the constraints here are unusual, and without the reasoning the next person will read them as ceremony and route around them.
 
-Read [NON-GOALS.md](NON-GOALS.md) first. This document describes how the code makes those non-goals structural rather than aspirational.
+This document describes the shape of the code: what each part does, what it hands to the next, and where the boundaries fall.
 
 ---
 

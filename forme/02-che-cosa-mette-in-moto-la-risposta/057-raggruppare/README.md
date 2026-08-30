@@ -1,7 +1,6 @@
 # Raggruppare
 
 - **Numero** 57 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** per una proprietà scelta da chi raggruppa, non da chi chiede.
 - **Stato della ricerca** non ancora fatta
 

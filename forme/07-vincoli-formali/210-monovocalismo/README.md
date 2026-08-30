@@ -1,7 +1,6 @@
 # Monovocalismo
 
 - **Numero** 210 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** con una vocale sola.
 - **Stato della ricerca** non ancora fatta
 

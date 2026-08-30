@@ -1,7 +1,6 @@
 # Palindromo
 
 - **Numero** 334 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una parola o frase che si legge uguale nei due sensi.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Bluff
 
 - **Numero** 283 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** ⚠ costoso — promemoria, non un verdetto
 - **In una riga** ⚠ costoso e sociale.
 - **Stato della ricerca** non ancora fatta
 

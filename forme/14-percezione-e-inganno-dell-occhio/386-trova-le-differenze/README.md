@@ -1,7 +1,6 @@
 # Trova le differenze
 
 - **Numero** 386 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la versione da settimanale della precedente.
 - **Stato della ricerca** non ancora fatta
 

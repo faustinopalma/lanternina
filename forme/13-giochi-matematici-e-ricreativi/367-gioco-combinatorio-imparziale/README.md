@@ -1,7 +1,6 @@
 # Gioco combinatorio imparziale
 
 - **Numero** 367 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** Nim e parenti: c'è una strategia vincente e si può trovare.
 - **Stato della ricerca** non ancora fatta
 

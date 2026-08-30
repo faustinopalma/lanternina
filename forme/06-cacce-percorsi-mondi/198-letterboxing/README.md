@@ -1,7 +1,6 @@
 # Letterboxing
 
 - **Numero** 198 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** timbri e indizi scritti, senza GPS.
 - **Stato della ricerca** non ancora fatta
 

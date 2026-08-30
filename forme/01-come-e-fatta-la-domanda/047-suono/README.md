@@ -1,8 +1,7 @@
 # Suono
 
 - **Numero** 47 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta non verbale»
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** battere, riprodurre un ritmo, cantare una frase. ⊘ irraggiungibile su carta e display: nessun canale la raccoglie.
+- **In una riga** battere, riprodurre un ritmo, cantare una frase.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

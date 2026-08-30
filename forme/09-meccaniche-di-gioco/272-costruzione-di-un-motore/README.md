@@ -1,7 +1,6 @@
 # Costruzione di un motore
 
 - **Numero** 272 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** ogni pezzo rende più facile il successivo.
 - **Stato della ricerca** non ancora fatta
 

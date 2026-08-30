@@ -1,7 +1,6 @@
 # Scheda d'archivio
 
 - **Numero** 98 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un esemplare, e i suoi dati.
 - **Stato della ricerca** non ancora fatta
 

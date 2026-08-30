@@ -1,7 +1,6 @@
 # Lettera ricevuta
 
 - **Numero** 92 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** qualcuno scrive e chiede una cosa.
 - **Stato della ricerca** non ancora fatta
 

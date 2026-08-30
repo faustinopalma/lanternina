@@ -1,8 +1,7 @@
 # Tangram e puzzle di tassellazione
 
 - **Numero** 160 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile con carta e forbici.
+- **In una riga** poche forme che coprono una figura senza buchi.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

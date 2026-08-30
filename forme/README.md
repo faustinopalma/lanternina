@@ -2,9 +2,9 @@
 
 Una cartella per ogni modo di porre a un adolescente una cosa da fare. Sono elencate in `docs/EXERCISE-FORMS.md`, che resta l'unica lista: una cartella qui esiste perché una voce esiste là, e `tools/forme_scaffold.py` costruisce l'albero da quel file. L'elenco cresce quando si trova un filone che mancava.
 
-Questa è la ricerca su cui poggia tutto il resto del progetto, e si fa **libera**. Mentre si compila l'elenco non si applica nessuna regola di questo progetto: una forma si descrive per quello che è, con la sua storia, i suoi esempi e quello che si sa di lei, anche se è una forma che qui non si userebbe mai. Filtrare mentre si elenca vuol dire elencare solo quello a cui si era già pensato, e sarebbe la fine della ricerca prima di cominciarla.
+Questa è la ricerca su cui poggia tutto il resto del progetto, e si fa **libera**. Mentre si compila l'elenco non si applica nessuna regola: una forma si descrive per quello che è, con la sua storia, i suoi esempi e quello che si sa di lei. Filtrare mentre si elenca vuol dire elencare solo quello a cui si era già pensato, e sarebbe la fine della ricerca prima di cominciarla.
 
-**La rassegna viene dopo**, quando l'elenco è completo: si guarderà forma per forma che cosa si tiene, che cosa no e perché, e solo alla fine si vedrà se qualche regola in `.github/copilot-instructions.md §1` va ridefinita. Fino ad allora niente è deciso. Le marcature ereditate dal primo giro — `✗`, `⚠`, `⊘` in `docs/EXERCISE-FORMS.md` — restano nell'intestazione delle schede **come promemoria di quello che si pensava allora**, non come verdetti.
+**La rassegna viene dopo**, quando l'elenco sarà completo: si guarderà forma per forma che cosa si tiene, che cosa no e perché, e da lì verranno le regole di disegno del progetto, che al momento non ci sono. Fino ad allora niente è deciso.
 
 Quello che si nota strada facendo va in `OSSERVAZIONI.md`, che è un quaderno di appunti per la rassegna e non un elenco di decisioni.
 
@@ -12,16 +12,16 @@ Quello che si nota strada facendo va in `OSSERVAZIONI.md`, che è un quaderno di
 
 Ogni cartella ha un `README.md` con le stesse parti, sempre nello stesso ordine.
 
-- **L'intestazione** — numero, capitolo, come la classificava il primo giro, la riga di glossa, e lo stato della ricerca.
+- **L'intestazione** — numero, capitolo, la riga di glossa, e lo stato della ricerca.
 - **Che cos'è** — la forma descritta in modo che si possa costruire. Non una definizione da dizionario: le parti mobili, e che cosa cambia se se ne toglie una.
 - **Da dove viene** — chi l'ha fatta e quando, dove ha vissuto prima. Quasi ogni forma porta con sé il contesto in cui è nata, e portarlo dentro senza accorgersene è il modo più comune di sbagliare.
 - **Varianti e parenti** — le altre facce della stessa cosa, e le forme confinanti da cui si distingue.
 - **Che cosa se ne sa** — quello che è stato misurato, con la fonte e la data. Dove non è stato misurato niente, la scheda lo dice: è un'informazione anche quella.
 - **Esempi trovati** — casi reali, con la provenienza. Riscritti, mai copiati: quello che sta nel repository è nostro.
-- **Una nostra versione** — un esempio costruito da noi. Dove la forma è compatibile con quello che il sistema può stampare, l'esempio è giocabile; dove non lo è, l'esempio mostra la forma nella sua versione migliore e la scheda dice dove si romperebbe. **Non si scarta un esempio perché viola una regola del progetto.**
+- **Una nostra versione** — un esempio costruito da noi. Dove la forma è compatibile con quello che il sistema può stampare, l'esempio è giocabile; dove non lo è, l'esempio mostra la forma nella sua versione migliore e la scheda dice dove si romperebbe.
 - **Da riprendere alla rassegna** — osservazioni, non conclusioni. Che cosa costerebbe, che cosa chiederebbe, dove sta la sua parte interessante, che cosa resterebbe se se ne togliesse un pezzo.
 
-Le prime ventidue schede sono state scritte prima di questa decisione e la loro ultima sezione si chiama ancora «Che cosa cambia per noi» e suona conclusiva. Va letta come il resto: appunti per la rassegna, non deliberazioni.
+Le prime ventidue schede sono state scritte prima che l'elenco tornasse libero, e la loro ultima sezione si chiama ancora «Che cosa cambia per noi» e suona conclusiva. Va letta come il resto: appunti per la rassegna, non deliberazioni.
 
 ## Come si fa la ricerca su una forma
 

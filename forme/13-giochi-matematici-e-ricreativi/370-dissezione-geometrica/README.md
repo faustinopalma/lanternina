@@ -1,7 +1,6 @@
 # Dissezione geometrica
 
 - **Numero** 370 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** tagliare una figura e ricomporla in un'altra.
 - **Stato della ricerca** non ancora fatta
 

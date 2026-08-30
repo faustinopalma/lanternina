@@ -1,8 +1,7 @@
 # Gara / torneo
 
 - **Numero** 87 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
-- **In una riga** chi arriva primo. ✗ chiuso: c'è un perdente.
+- **In una riga** chi arriva primo.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

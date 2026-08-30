@@ -1,7 +1,6 @@
 # Finisce quando si smette
 
 - **Numero** 301 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** e smettere è un finale.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Cecità al cambiamento
 
 - **Numero** 385 nell'enciclopedia, capitolo 14 — Percezione e inganno dell'occhio
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** due immagini quasi uguali, e la differenza non salta all'occhio.
 - **Stato della ricerca** non ancora fatta
 

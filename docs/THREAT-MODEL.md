@@ -29,7 +29,7 @@ Personal material may be processed in the cloud tier and not only in the house. 
 
 | Failure | How it happens | Mitigation |
 | --- | --- | --- |
-| Engagement optimisation creeps in | A streak "to help motivation"; a nudge after two quiet days | Forbidden by [NON-GOALS.md](NON-GOALS.md); `tests/test_boundaries.py` fails on the vocabulary; no metric is stored to optimise against |
+| Engagement optimisation creeps in | A streak "to help motivation"; a nudge after two quiet days | `tests/test_boundaries.py` fails on the vocabulary; no metric is stored to optimise against |
 | The system starts stating verdicts | Adaptation needs a model of what happened, and a model is one rename away from a claim about the person | A reading is read and not kept: `WhatCameBack` closes the implicit routes out of memory, and the record has no field one would fit in. What is durable is what was made and what was configured |
 | A verdict surfaces | An adaptation signal is shown to be helpful: "this got easier", a trend line in the panel | Nothing about how somebody is doing is rendered, on paper, on a display or in the panel. The parent sees proposals, not assessments. `tests/test_boundaries.py` fails on that vocabulary in the stored shape, the panel and the prompts |
 | A dashboard change starts work in the house | A configuration route also enqueues generation or signals the device | Dashboard mutations persist only; processing begins only on an authenticated request initiated by the home server |
@@ -61,7 +61,7 @@ It will. It is handheld and carried around, so friends, rooms and faces end up i
 | --- | --- |
 | A capture triggered from outside the room | No remote trigger exists; nothing in the cloud and nothing in the parent's panel can take a photograph |
 | Firmware that captures without a press | Holding the button is the only path to the sensor having power, and the activity light is wired in series on that rail rather than driven from a pin |
-| A preview endpoint added "temporarily" | No streaming endpoint exists; forbidden in NON-GOALS |
+| A preview endpoint added "temporarily" | No streaming endpoint exists |
 | Continuous or motion capture | Single-shot on button press only; no timer or trigger loop exists |
 | Face, age, identity or affect analysis | Forbidden including as an intermediate step |
 | A photograph nobody meant to keep | What is kept lands in a gallery its owner can see and delete from; Content Safety runs on inbound photographs as well as generated output |

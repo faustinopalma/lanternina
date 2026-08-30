@@ -1,8 +1,7 @@
 # Mad Libs
 
 - **Numero** 222 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** parole chieste fuori contesto e poi inserite in un testo. Praticabile e leggero.
+- **In una riga** parole chieste fuori contesto e poi inserite in un testo.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

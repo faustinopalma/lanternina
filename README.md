@@ -67,7 +67,7 @@ No decision is taken on the parent's behalf. Convenience is allowed and is often
 
 Nothing here optimises for engagement: no streaks, no daily goals, no variable rewards, no nudge triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy to add to a system like this and would do harm, which is why it is a written rule rather than a matter of judgement.
 
-[docs/NON-GOALS.md](docs/NON-GOALS.md) lists what will never be built, and why — including which of these lines have been loosened and which will not be. It is worth reading before contributing.
+[docs/NON-GOALS.md](docs/NON-GOALS.md) is where the lines this project will not cross are written down. It is empty at the moment: they are being worked out again from the compilation in `forme/`.
 
 ### The dashboard is inert
 
@@ -97,7 +97,7 @@ The overview page is the shortest route in: one page, three diagrams, and each n
 | [docs/an-afternoon.html](docs/an-afternoon.html) | How an afternoon is devised and how it is run, step by step, with the clock playable. Includes what is weakest about it. |
 | [docs/prompts/](docs/prompts/README.md) | Every prompt sent to a model, whole, as the model receives it. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Why each boundary exists, and what the design costs. |
-| [docs/NON-GOALS.md](docs/NON-GOALS.md) | What will never be built, and why. |
+| [docs/NON-GOALS.md](docs/NON-GOALS.md) | Where the lines this project will not cross are written down. |
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Reproducing the cloud tier in your own subscription. |
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware reasoning, with what is verified and what is a guess. |
@@ -222,4 +222,4 @@ Retention: kept for as long as the household exists. No shorter period has been 
 
 ## Licence
 
-[MIT](LICENSE). If you fork it and remove the constraints in [docs/NON-GOALS.md](docs/NON-GOALS.md), please call it something else.
+[MIT](LICENSE).

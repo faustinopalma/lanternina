@@ -1,7 +1,6 @@
 # Dedurre
 
 - **Numero** 60 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** dalla regola al caso.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Conto alla rovescia
 
 - **Numero** 189 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso.
 - **Stato della ricerca** non ancora fatta
 

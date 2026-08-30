@@ -1,7 +1,6 @@
 # Autovalutazione con rubrica
 
 - **Numero** 244 nell'enciclopedia, capitolo 8 — Forme che vengono dalla didattica
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso: una rubrica è un voto scritto per esteso.
 - **Stato della ricerca** non ancora fatta
 

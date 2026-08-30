@@ -1,8 +1,7 @@
 # Turno
 
 - **Numero** 280 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile e sottovalutato: il pomeriggio è già a turni.
+- **In una riga** il tempo diviso in unità, e una cosa per unità.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

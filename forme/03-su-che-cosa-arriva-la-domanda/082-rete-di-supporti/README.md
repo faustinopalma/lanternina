@@ -1,7 +1,6 @@
 # Rete di supporti
 
 - **Numero** 82 nell'enciclopedia, capitolo 3 — Su che cosa arriva la domanda
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** la stessa cosa attraversa più supporti (transmedia). È il meccanismo degli ARG.
 - **Stato della ricerca** non ancora fatta
 

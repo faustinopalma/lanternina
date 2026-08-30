@@ -1,7 +1,6 @@
 # Principio dei cassetti
 
 - **Numero** 365 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** se ci sono più oggetti che cassetti, un cassetto ne ha due.
 - **Stato della ricerca** non ancora fatta
 

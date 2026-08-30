@@ -1,8 +1,7 @@
 # Gioco solitario
 
 - **Numero** 277 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile, ed è il caso normale qui.
+- **In una riga** una persona sola, senza avversario e senza compagni.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

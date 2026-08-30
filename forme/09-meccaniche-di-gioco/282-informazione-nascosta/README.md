@@ -1,7 +1,6 @@
 # Informazione nascosta
 
 - **Numero** 282 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** qualcosa che si sa e qualcosa che no.
 - **Stato della ricerca** non ancora fatta
 

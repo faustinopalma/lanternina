@@ -1,7 +1,6 @@
 # Simulazione
 
 - **Numero** 279 nell'enciclopedia, capitolo 9 — Meccaniche di gioco
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un mondo che risponde secondo regole.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,7 +1,6 @@
 # Lucchetto
 
 - **Numero** 326 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** due parole con una parte comune che sparisce: la parte comune è la chiave.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

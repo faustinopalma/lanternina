@@ -1,7 +1,6 @@
 # Legend tripping
 
 - **Numero** 202 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** andare in un posto perché se ne racconta una storia.
 - **Stato della ricerca** non ancora fatta
 

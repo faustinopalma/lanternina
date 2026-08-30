@@ -1,7 +1,6 @@
 # Intarsio (tarsia)
 
 - **Numero** 330 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che uniscono o dividono parole»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una parola si distribuisce dentro un'altra a lettere alterne.
 - **Stato della ricerca** non ancora fatta
 

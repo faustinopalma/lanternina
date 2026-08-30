@@ -1,8 +1,7 @@
 # Labirinto su carta
 
 - **Numero** 164 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi fisici e meccanici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile.
+- **In una riga** un percorso fra due punti, con i vicoli ciechi.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

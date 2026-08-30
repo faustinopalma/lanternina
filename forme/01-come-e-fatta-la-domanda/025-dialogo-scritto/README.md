@@ -1,7 +1,6 @@
 # Dialogo scritto
 
 - **Numero** 25 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** due voci.
 - **Stato della ricerca** fatta, 30 agosto 2026
 

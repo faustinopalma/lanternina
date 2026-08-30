@@ -1,7 +1,6 @@
 # Inferire da un'assenza
 
 - **Numero** 63 nell'enciclopedia, capitolo 2 — Che cosa mette in moto la risposta
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** accorgersi che manca una cosa. Il verbo più difficile e più bello.
 - **Stato della ricerca** non ancora fatta
 

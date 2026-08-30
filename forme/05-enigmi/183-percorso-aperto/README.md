@@ -1,7 +1,6 @@
 # Percorso aperto
 
 - **Numero** 183 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Meccanismi da escape room»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** tutto disponibile subito, l'ordine lo sceglie chi gioca.
 - **Stato della ricerca** non ancora fatta
 

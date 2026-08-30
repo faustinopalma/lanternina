@@ -1,7 +1,6 @@
 # Registro / catalogo
 
 - **Numero** 96 nell'enciclopedia, capitolo 4 — Come è impacchettata
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** righe da riempire, in una forma che si ripete.
 - **Stato della ricerca** non ancora fatta
 

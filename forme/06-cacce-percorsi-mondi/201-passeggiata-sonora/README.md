@@ -1,7 +1,6 @@
 # Passeggiata sonora
 
 - **Numero** 201 nell'enciclopedia, capitolo 6 — Cacce, percorsi, mondi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un percorso definito da quello che si sente.
 - **Stato della ricerca** non ancora fatta
 

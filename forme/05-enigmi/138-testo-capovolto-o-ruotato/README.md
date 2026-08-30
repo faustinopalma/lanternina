@@ -1,8 +1,7 @@
 # Testo capovolto o ruotato
 
 - **Numero** 138 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** praticabile.
+- **In una riga** leggibile girando il foglio.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

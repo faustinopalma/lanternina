@@ -1,7 +1,6 @@
 # Enigma auto-referenziale
 
 - **Numero** 158 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi logici»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** un quiz le cui domande parlano di sé stesso.
 - **Stato della ricerca** non ancora fatta
 

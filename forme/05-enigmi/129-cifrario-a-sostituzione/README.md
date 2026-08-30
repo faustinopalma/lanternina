@@ -1,8 +1,7 @@
 # Cifrario a sostituzione
 
 - **Numero** 129 nell'enciclopedia, capitolo 5 — Enigmi, sezione «Enigmi verbali»
-- **Come la classificava il primo giro** ⊘ irraggiungibile — promemoria, non un verdetto
-- **In una riga** ogni lettera diventa un'altra. ⊘ irraggiungibile.
+- **In una riga** ogni lettera diventa un'altra.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

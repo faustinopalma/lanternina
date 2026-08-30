@@ -19,7 +19,7 @@ Written in English because this repository is destined to be public and the rest
 
 ## 1. The filter
 
-Before any device is interesting, it has to survive these. They come from `.github/copilot-instructions.md` and they are not preferences.
+Before any device is interesting, it has to survive these.
 
 **It must not watch a person.** Not with radar, not with a microphone, not with a wearable. The camera in this system is handheld, and faces will be in frame — so the rule cannot be about where the lens points. It is about two other things: a capture happens only because the person holding the device pressed the button, and nothing infers anything about a person from what comes back. Anything that senses *a person* without either of those — including the entire category of devices marketed as "privacy-friendly presence detection" — is out.
 

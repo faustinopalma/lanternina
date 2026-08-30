@@ -1,8 +1,7 @@
 # Altra persona
 
 - **Numero** 81 nell'enciclopedia, capitolo 3 — Su che cosa arriva la domanda
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** la domanda si risolve chiedendo a qualcuno. Praticabile e sottovalutata.
+- **In una riga** la domanda si risolve chiedendo a qualcuno.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

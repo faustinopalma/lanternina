@@ -1,7 +1,6 @@
 # Finisce con un confronto
 
 - **Numero** 309 nell'enciclopedia, capitolo 11 — Come finisce
-- **Come la classificava il primo giro** ✗ chiuso — promemoria, non un verdetto
 - **In una riga** ✗ chiuso.
 - **Stato della ricerca** non ancora fatta
 

@@ -1,8 +1,7 @@
 # Cancellatura (blackout poetry)
 
 - **Numero** 220 nell'enciclopedia, capitolo 7 — Vincoli formali
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
-- **In una riga** un testo dato, e si annerisce tutto tranne una frase. Praticabile, bellissimo su carta, e non chiede di scrivere niente.
+- **In una riga** un testo dato, e si annerisce tutto tranne una frase.
 - **Stato della ricerca** non ancora fatta
 
 ## Che cos'è

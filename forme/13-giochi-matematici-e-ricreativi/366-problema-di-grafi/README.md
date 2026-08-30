@@ -1,7 +1,6 @@
 # Problema di grafi
 
 - **Numero** 366 nell'enciclopedia, capitolo 13 — Giochi matematici e ricreativi
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** i ponti di Königsberg, il commesso viaggiatore, il giro del cavallo.
 - **Stato della ricerca** non ancora fatta
 

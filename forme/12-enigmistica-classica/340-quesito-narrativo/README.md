@@ -1,7 +1,6 @@
 # Quesito narrativo
 
 - **Numero** 340 nell'enciclopedia, capitolo 12 — Enigmistica classica, sezione «Giochi che lavorano sul senso»
-- **Come la classificava il primo giro** aperto — promemoria, non un verdetto
 - **In una riga** una situazione raccontata in prosa e una domanda in fondo, senza giochi di lettere.
 - **Stato della ricerca** non ancora fatta
 
