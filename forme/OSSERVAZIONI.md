@@ -162,6 +162,44 @@ Le voci 73-82 non descrivono forme ma canali, e per questo si comportano come un
 
 **Il numero scomodo torna, e qui è di passi.** «Trentadue passi in una direzione qualsiasi» toglie la scelta della destinazione, che è la parte che blocca. Stessa leva del vincolo di materiale della voce 66, progettare e del numero di gruppi della voce 57, classificare.
 
+## Quello che ha detto la prima metà del capitolo dei generi
+
+Le voci 83-96 descrivono forme-oggetto: la cosa da fare imita una scheda, un quiz, un modulo, una lettera, una mappa. Il capitolo era quello a rischio più alto di ripetizione, perché molte voci confinano, e la cosa che le tiene separate si è rivelata sempre la stessa.
+
+**Un genere è un patto, non un formato.** Quiz e compito in classe hanno la stessa pagina; modulo e scheda hanno la stessa griglia; registro e catalogo hanno le stesse righe. Quello che cambia è chi ha scritto, per chi, e che cosa si aspetta indietro — e cambiando quello cambia tutto il resto senza toccare una riga di impaginazione. Scrivere il patto in testa a ogni voce è bastato a non farle sovrapporre, ed è probabilmente il criterio con cui va scritta anche la seconda metà.
+
+**I patti incontrati stanno su un asse solo: quanto chi scrive si rivolge a chi legge.** All'estremo impersonale il modulo (91), che è identico per tutti tranne il numero di protocollo, e il reperto (93), dove nessuno ha scritto niente per nessuno. All'estremo opposto la lettera (92), scritta da una persona sola a una persona sola. In mezzo la scheda (83), che si rivolge a una classe, e la missione (90), che si rivolge a un ruolo. **Più il testo è impersonale, meno costa rispondergli**, e questo contraddice l'idea che la vicinanza aiuti sempre. È l'ipotesi più verificabile che la sessione lascia.
+
+**La scheda è il termine di paragone del capitolo.** Ogni altro genere è «una scheda più una finzione». Alla rassegna si può misurare ognuno per differenza: che cosa aggiunge la finzione, e che cosa succede quando non tiene.
+
+**Il vincolo negativo compare in una forma nuova: l'avvertenza.** In un manuale, «non riempire oltre la linea» dichiara che l'oggetto è cavo, e «attendere che si fermi» che si muove. Un divieto descrive l'oggetto meglio di una descrizione. È la stessa leva già osservata — definire senza usare la parola, raccontare senza nominare — ma qui produce informazione invece che stile. — voce 94, manuale.
+
+**Dare la versione sbagliata da correggere costa quanto darne una giusta.** La pianta del 1974 che non corrisponde alla casa produce venti osservazioni; una pianta esatta non ne produce nessuna. Da provare su tutto il capitolo: il registro con le colonne sbagliate, la scheda d'archivio con i campi scambiati, il manuale di un altro oggetto. — voce 95, mappa.
+
+**Un limite tecnico può diventare la premessa invece dell'ostacolo.** Il sistema non conosce la casa in cui stampa, quindi ogni pianta che disegna è sbagliata — ed è esattamente la condizione di chi disegna una mappa, che non è lì adesso. È il primo caso trovato in cui l'ignoranza del sistema è il contenuto. Vale la pena cercarne altri.
+
+**Stampare il foglio di chi conduce invece di quello di chi risponde.** L'interrogazione chiede una voce e un giudice, e il sistema non ne ha; ma il foglio dell'esaminatore — le domande, quando tacere, che cosa annotare — si stampa. È la quarta via d'uscita per le forme a due persone, dopo l'insieme dato, la procedura che non richiede fiducia e il foglio indirizzato a qualcun altro in casa. — voce 86, interrogazione.
+
+**Il cronometro va sulle cose facili, e questo è misurato.** La legge di Yerkes-Dodson (1908) è monotòna per compiti semplici o ben appresi — più attivazione, più prestazione — e si rovescia per compiti complessi o nuovi. Ne segue una regola applicabile a tutto l'elenco: **ogni forma che chiede di inventare, progettare o capire peggiora sotto un tempo; ogni forma che chiede di elencare, cercare o riordinare migliora.** Da provare all'indietro. — voce 88, sfida contro un tempo.
+
+**«Fai del tuo meglio» è la peggiore delle consegne misurate.** Locke e Latham: obiettivi specifici e difficili producono più di obiettivi facili, di nessun obiettivo *e dell'esortazione generica*. La taratura suggerita è il novantesimo percentile, cioè un risultato che riesce una volta su dieci. Contraddice il modo in cui si parla in casa, e per usarlo serve conoscere la distribuzione — quindi serve un registro. — voce 89, sfida contro sé stessi.
+
+**Il premio può togliere invece di aggiungere.** Effetto di sovragiustificazione (Deci, Lepper): un incentivo esterno atteso su un'attività già interessante riduce la motivazione intrinseca, e quando il premio finisce l'interesse resta più basso di prima. Se una gara serve a far cominciare, il premio annunciato è la cosa che rischia di far smettere. — voce 87, gara e torneo.
+
+**Il modulo toglie il giudizio dal compito per progetto,** e la fonte lo dichiara come pregio gestionale: il pezzo che richiede una decisione viene staccato dal flusso, così che il resto lo possa fare chi non è qualificato o una macchina. È la spiegazione tecnica di perché compilare un modulo costi poco, e quindi di perché il genere abbassi la soglia d'ingresso. — voce 91, incarico d'ufficio.
+
+**Il formato di conservazione decide che cosa si può pensare.** Linneo tiene gli esemplari su fogli sciolti invece che incollati in un volume, e da lì può riordinare per somiglianza. Lo zibaldone si organizza per voci, il diario per date, e la stessa raccolta diventa due macchine diverse. Ogni volta che si stampa una serie va deciso se le righe stanno insieme o si staccano. — voce 96, registro e catalogo.
+
+**Il pannello conta i giorni.** Alle voci 22, diario e registro e 80, tempo si era chiesto dove passasse il confine fra un registro e una serie da non interrompere, e si era risposto: in chi conta i giorni. Il pannello sa dire «riga 4 di 7, stasera non l'hai ancora scritta». È la prima domanda aperta che si chiude con un canale già esistente invece che con una forma nuova.
+
+**Tre voci su quattordici distribuite su due canali,** ed è la prima volta che succede: il pannello annuncia l'arrivo della missione (90), tiene lo stato del tempo fisico (88), conta le righe del registro (96). In tutti e tre i casi il pannello porta lo stato e il foglio porta la consegna, come le voci 74, display e 82, rete di supporti avevano previsto. Nessuno dei tre esempi sarebbe stato peggiore su un foglio solo — sarebbe stato un'altra cosa.
+
+**La misura fisica come cronometro.** Il cubetto di ghiaccio che si scioglie è un tempo che si vede senza essere un numero, non si mette in pausa e non dice mai quanto manca. Costa niente e toglie la strategia del risparmio. Parente del controllo dell'errore nel materiale.
+
+**Descrizione prima, ipotesi dopo, separate sul foglio.** È la procedura dell'archeologia, costa due riquadri, e vale per qualunque cosa si guardi. Insieme alla distinzione fra dove una cosa è stata trovata e da dove viene, è il lascito più riusabile della voce 93, reperto.
+
+**La riga che chiede dove il ragionamento ha vacillato arriva a undici occorrenze,** e per la prima volta in due varianti nuove: la scrive qualcun altro (l'esaminatore, alla voce 86) e la risponde un oggetto (il segno che nessuna ipotesi spiega, alla voce 93). Non è più un'osservazione: è una riga da trattare come struttura.
+
 ## Domande aperte per la rassegna
 
 **Serve una forma di pagina per i fogli da smontare?** Un foglio con pezzi da ritagliare non si legge, si smonta. Da contare quante voci dell'elenco la chiedono. — scheda 010.
@@ -202,6 +240,22 @@ Le voci 73-82 non descrivono forme ma canali, e per questo si comportano come un
 **Chi allestisce e chi risponde paga.** Ogni forma che chiede una stanza preparata costa lavoro a un adulto; ogni forma che chiede a una persona impegna qualcuno che non ha scelto. In una casa la disponibilità non è simmetrica e il rifiuto non è libero. Nessuna delle fonti lette lo tratta. — voci 78 e 81.
 
 **Quante forme si reggono su un numero che chi scrive non conosce?** «Ci sono sette cose fuori posto in questa casa» funziona perché la verifica sta fuori dal foglio. Che cosa succede quando quel numero è sbagliato. — voce 58, cercare.
+
+**Quanto vale davvero la cornice narrativa?** Metà del capitolo 4 si appoggia all'idea che un compito dentro una storia venga fatto più volentieri di uno nudo, e **nessuna delle fonti lette lo misura**. È la verifica più importante lasciata aperta, e sarebbe economica: lo stesso contenuto in due versioni, con e senza mittente. — voci 90, missione e 92, lettera ricevuta.
+
+**Il quiz mette il sistema nella posizione di dover avere ragione,** ed è l'unica forma del capitolo 4 che lo faccia. Una risposta plausibile e falsa non rende il quiz difficile: lo rompe, e lo rompe in modo invisibile a chi non sa già. Alla rassegna va deciso se questo escluda il genere del tutto o solo nella versione a conoscenza generale. — voce 84, quiz.
+
+**Che cosa resta di un compito in classe una volta tolto il confronto?** Il tempo uguale per tutti serve a rendere confrontabili i risultati, e in una casa con una persona sola non c'è nessuno con cui confrontarsi. È la stessa domanda già posta per l'escape room alla voce 78, ambiente, e adesso ha due occorrenze. — voce 85, compito in classe.
+
+**Il rifiuto della chiamata è un passo previsto dalla struttura.** Nel monomito l'eroe dice di no prima di dire di sì. Nessuna forma dell'elenco prevede per iscritto che si possa rifiutare, e non è chiaro se scriverlo tolga la pressione o dia il permesso di smettere. — voce 90, missione.
+
+**Il curatore fittizio compare per la seconda volta, da una fonte diversa.** Nel romanzo epistolare è definito come l'espediente che crea l'impressione di autenticità: qualcuno dichiara di aver solo raccolto e ordinato documenti scritti da altri. È la risposta più netta trovata al problema di chi parla quando a parlare è una macchina, e va trattata come struttura invece che come osservazione. — voci 82, rete di supporti e 92, lettera ricevuta.
+
+**Una lettera privata è una convenzione, non un fatto.** Nel Settecento si scriveva sapendo di poter essere letti. Se un foglio invita a confidarsi, va deciso che fine fa quello che è stato scritto — perché il sistema, a differenza di un amico, conserva. — voce 92, lettera ricevuta.
+
+**Curiosità o esclusione.** Serafini dichiara di aver voluto riprodurre «la sensazione dei bambini davanti a libri che non sanno ancora leggere». È un effetto mai misurato, e i due esiti possibili sono opposti. Prima di usare l'opacità come materiale bisognerebbe sapere quale dei due arriva. — voce 94, manuale, e la domanda già aperta su difficile contro opaco alla scheda 341.
+
+**«Se qualcuno te lo dice, il reperto è bruciato».** È l'unico caso incontrato in cui una regola è rivolta all'ambiente invece che a chi risponde. Assomiglia al «conta fino a dieci prima di parlare» dato a chi interroga. Sembrano due esemplari di una famiglia che l'elenco non nomina: le istruzioni per chi sta intorno. — voci 86 e 93.
 
 ## Quello che è stato verificato, e come
 
@@ -261,4 +315,15 @@ Scaricate altre 49 pagine — i gruppi «supporti» e «da verificare, secondo g
 **Quanto è inaffidabile la memoria su questa roba.** Due schede su sei del capitolo 12 sono state scritte a memoria e poi corrette dalle fonti italiane appena scaricate: il lucchetto non è antico, è del 1950 e ha un autore con nome e pseudonimo; la zeppa cambia nome in *aggiunta* quando la lettera sta agli estremi. Entrambi gli errori suonavano sicuri. Adesso c'è un terzo caso, ed è il più istruttivo: gli assiomi dell'origami erano attribuiti alle due persone sbagliate, e l'attribuzione corretta — Justin 1986 — non è nemmeno nel nome con cui si citano di solito. **Su tredici cose verificate in una sessione, una era sbagliata:** è la ragione per cui ogni scheda dichiara che cosa è letto e che cosa è ricordato.
 
 Il secondo giro, sempre il 30 agosto 2026, non ha trovato errori ma ha trovato due cose **più povere** di come la memoria le portava, ed è un modo diverso di sbagliare: la Question Formulation Technique ha sei passi e non quattro, e il modulo del predict-observe-explain ha quattro caselle e non tre — in mezzo, prima dell'osservazione, quella delle *ragioni della previsione*, che è poi la casella che fa il lavoro. In tutti e due i casi la memoria aveva tenuto la parte che si racconta bene e perso quella che serve a costruire. Una terza: la struttura *noto / mi chiedo / mi ricorda* non è di John Muir Laws, è del BEETLES Project di Berkeley, che è la stessa specie di errore già visto sugli assiomi dell'origami — un metodo attribuito a chi l'ha reso famoso invece che a chi l'ha fatto.
+
+## Il terzo scarico di fonti, 30 agosto 2026
+
+Per la prima metà del capitolo 4 sono state scaricate **37 pagine nuove** — il gruppo «generi, capitolo 4» in `tools/fetch_exercise_sources.py` — e nessuna ha dato 404. Le pagine locali sono così passate da 215 a 252. Tre note che valgono per chi verrà dopo.
+
+**Una pagina cercata era una disambiguazione e non conteneva niente.** `personal-best.txt` elenca un album, una band, un film e una miniserie, e del primato personale come pratica dice una riga. Sul primato personale — quanto motivi, in chi, per quanto — non esiste in queste fonti nessun dato. Il posto in cui la cosa è misurata è la teoria della fissazione degli obiettivi, che parla di obiettivi e non di record, e l'accostamento fra le due è nostro. — voce 89, sfida contro sé stessi.
+
+**Una fonte molto citata è dichiaratamente satirica.** La legge di Parkinson — il lavoro si espande fino a occupare tutto il tempo disponibile — viene da un saggio umoristico pubblicato dall'*Economist* nel 1955, e Parkinson stesso la dava come «osservazione ovvia» prima di passare al vero argomento del pezzo, che era la crescita degli organici pubblici. È entrata in scienze gestionali e psicologia sociale, ma **va verificato** se esistano misure prima di usarla per dimensionare qualcosa.
+
+**Un'origine molto raccontata è dichiarata incerta dalla fonte stessa,** e vale la pena averla come esempio del genere: che *deadline* venga dalla linea oltre la quale i prigionieri della guerra civile americana venivano uccisi è, secondo la pagina, sostenuto solo da **evidenza indiretta**; il primo uso documentato nel senso moderno è del 1917, ed è tipografico. Come la leggenda della scommessa di Richard Daly sulla parola *quiz* nel 1791, che la stessa enciclopedia dà per falsa perché la parola era già in uso. Due etimologie memorabili su due, entrambe da maneggiare con la riserva scritta accanto.
+
 

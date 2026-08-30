@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 88 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 102 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -96,20 +96,20 @@
 
 ## 4. Come è impacchettata
 
-83. [Scheda / esercizio](04-come-e-impacchettata/083-scheda-esercizio/README.md) · —
-84. [Quiz](04-come-e-impacchettata/084-quiz/README.md) · —
-85. [Compito in classe](04-come-e-impacchettata/085-compito-in-classe/README.md) · —
-86. [Interrogazione](04-come-e-impacchettata/086-interrogazione/README.md) · —
-87. [Gara / torneo](04-come-e-impacchettata/087-gara-torneo/README.md) · —
-88. [Sfida contro un tempo](04-come-e-impacchettata/088-sfida-contro-un-tempo/README.md) · —
-89. [Sfida contro sé stessi](04-come-e-impacchettata/089-sfida-contro-se-stessi/README.md) · —
-90. [Missione](04-come-e-impacchettata/090-missione/README.md) · —
-91. [Incarico d'ufficio](04-come-e-impacchettata/091-incarico-d-ufficio/README.md) · —
-92. [Lettera ricevuta](04-come-e-impacchettata/092-lettera-ricevuta/README.md) · —
-93. [Reperto](04-come-e-impacchettata/093-reperto/README.md) · —
-94. [Manuale](04-come-e-impacchettata/094-manuale/README.md) · —
-95. [Mappa](04-come-e-impacchettata/095-mappa/README.md) · —
-96. [Registro / catalogo](04-come-e-impacchettata/096-registro-catalogo/README.md) · —
+83. [Scheda / esercizio](04-come-e-impacchettata/083-scheda-esercizio/README.md) · fatta
+84. [Quiz](04-come-e-impacchettata/084-quiz/README.md) · fatta
+85. [Compito in classe](04-come-e-impacchettata/085-compito-in-classe/README.md) · fatta
+86. [Interrogazione](04-come-e-impacchettata/086-interrogazione/README.md) · fatta
+87. [Gara / torneo](04-come-e-impacchettata/087-gara-torneo/README.md) · fatta
+88. [Sfida contro un tempo](04-come-e-impacchettata/088-sfida-contro-un-tempo/README.md) · fatta
+89. [Sfida contro sé stessi](04-come-e-impacchettata/089-sfida-contro-se-stessi/README.md) · fatta
+90. [Missione](04-come-e-impacchettata/090-missione/README.md) · fatta
+91. [Incarico d'ufficio](04-come-e-impacchettata/091-incarico-d-ufficio/README.md) · fatta
+92. [Lettera ricevuta](04-come-e-impacchettata/092-lettera-ricevuta/README.md) · fatta
+93. [Reperto](04-come-e-impacchettata/093-reperto/README.md) · fatta
+94. [Manuale](04-come-e-impacchettata/094-manuale/README.md) · fatta
+95. [Mappa](04-come-e-impacchettata/095-mappa/README.md) · fatta
+96. [Registro / catalogo](04-come-e-impacchettata/096-registro-catalogo/README.md) · fatta
 97. [Cartellino da museo](04-come-e-impacchettata/097-cartellino-da-museo/README.md) · —
 98. [Scheda d'archivio](04-come-e-impacchettata/098-scheda-d-archivio/README.md) · —
 99. [Avviso affisso](04-come-e-impacchettata/099-avviso-affisso/README.md) · —
