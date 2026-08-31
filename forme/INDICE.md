@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 254 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 261 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -274,13 +274,13 @@
 246. [Diario di apprendimento](08-forme-che-vengono-dalla-didattica/246-diario-di-apprendimento/README.md) · fatta
 247. [Osservazione strutturata](08-forme-che-vengono-dalla-didattica/247-osservazione-strutturata/README.md) · fatta
 248. [Esperimento controllato](08-forme-che-vengono-dalla-didattica/248-esperimento-controllato/README.md) · fatta
-249. [Taccuino di campo (nature journaling)](08-forme-che-vengono-dalla-didattica/249-taccuino-di-campo-nature-journaling/README.md) · —
-250. [Scienza partecipata (citizen science)](08-forme-che-vengono-dalla-didattica/250-scienza-partecipata-citizen-science/README.md) · —
-251. [Storia orale](08-forme-che-vengono-dalla-didattica/251-storia-orale/README.md) · —
-252. [Studio di caso](08-forme-che-vengono-dalla-didattica/252-studio-di-caso/README.md) · —
-253. [Simulazione di ruolo](08-forme-che-vengono-dalla-didattica/253-simulazione-di-ruolo/README.md) · —
-254. [Dibattito](08-forme-che-vengono-dalla-didattica/254-dibattito/README.md) · —
-255. [Compito autentico](08-forme-che-vengono-dalla-didattica/255-compito-autentico/README.md) · —
+249. [Taccuino di campo (nature journaling)](08-forme-che-vengono-dalla-didattica/249-taccuino-di-campo-nature-journaling/README.md) · fatta
+250. [Scienza partecipata (citizen science)](08-forme-che-vengono-dalla-didattica/250-scienza-partecipata-citizen-science/README.md) · fatta
+251. [Storia orale](08-forme-che-vengono-dalla-didattica/251-storia-orale/README.md) · fatta
+252. [Studio di caso](08-forme-che-vengono-dalla-didattica/252-studio-di-caso/README.md) · fatta
+253. [Simulazione di ruolo](08-forme-che-vengono-dalla-didattica/253-simulazione-di-ruolo/README.md) · fatta
+254. [Dibattito](08-forme-che-vengono-dalla-didattica/254-dibattito/README.md) · fatta
+255. [Compito autentico](08-forme-che-vengono-dalla-didattica/255-compito-autentico/README.md) · fatta
 
 ## 9. Meccaniche di gioco
 
