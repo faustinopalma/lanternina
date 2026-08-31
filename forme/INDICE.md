@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 205 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 208 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -219,9 +219,9 @@
 197. [Geocaching](06-cacce-percorsi-mondi/197-geocaching/README.md) · fatta
 198. [Letterboxing](06-cacce-percorsi-mondi/198-letterboxing/README.md) · fatta
 199. [Orienteering](06-cacce-percorsi-mondi/199-orienteering/README.md) · fatta
-200. [Deriva psicogeografica](06-cacce-percorsi-mondi/200-deriva-psicogeografica/README.md) · —
-201. [Passeggiata sonora](06-cacce-percorsi-mondi/201-passeggiata-sonora/README.md) · —
-202. [Legend tripping](06-cacce-percorsi-mondi/202-legend-tripping/README.md) · —
+200. [Deriva psicogeografica](06-cacce-percorsi-mondi/200-deriva-psicogeografica/README.md) · fatta
+201. [Passeggiata sonora](06-cacce-percorsi-mondi/201-passeggiata-sonora/README.md) · fatta
+202. [Legend tripping](06-cacce-percorsi-mondi/202-legend-tripping/README.md) · fatta
 203. [Gioco pervasivo](06-cacce-percorsi-mondi/203-gioco-pervasivo/README.md) · —
 204. [ARG (alternate reality game)](06-cacce-percorsi-mondi/204-arg-alternate-reality-game/README.md) · —
 205. [Gioco a scatola nera](06-cacce-percorsi-mondi/205-gioco-a-scatola-nera/README.md) · —
