@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 176 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 180 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -187,10 +187,10 @@
 168. [Nodi](05-enigmi/168-nodi/README.md) · fatta
 169. [Scatola a segreto](05-enigmi/169-scatola-a-segreto/README.md) · fatta
 170. [Serratura a combinazione](05-enigmi/170-serratura-a-combinazione/README.md) · fatta
-171. [Puzzle a scorrimento (15, Sokoban)](05-enigmi/171-puzzle-a-scorrimento-15-sokoban/README.md) · —
-172. [Cubo di Rubik e combinatori](05-enigmi/172-cubo-di-rubik-e-combinatori/README.md) · —
-173. [Puzzle a bilanciamento](05-enigmi/173-puzzle-a-bilanciamento/README.md) · —
-174. [Puzzle idraulico](05-enigmi/174-puzzle-idraulico/README.md) · —
+171. [Puzzle a scorrimento (15, Sokoban)](05-enigmi/171-puzzle-a-scorrimento-15-sokoban/README.md) · fatta
+172. [Cubo di Rubik e combinatori](05-enigmi/172-cubo-di-rubik-e-combinatori/README.md) · fatta
+173. [Puzzle a bilanciamento](05-enigmi/173-puzzle-a-bilanciamento/README.md) · fatta
+174. [Puzzle idraulico](05-enigmi/174-puzzle-idraulico/README.md) · fatta
 175. [Puzzle ottico](05-enigmi/175-puzzle-ottico/README.md) · —
 176. [Puzzle acustico](05-enigmi/176-puzzle-acustico/README.md) · —
 177. [Puzzle magnetico](05-enigmi/177-puzzle-magnetico/README.md) · —
