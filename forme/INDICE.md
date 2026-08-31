@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 222 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 230 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -239,14 +239,14 @@
 214. [Vincolo di lunghezza](07-vincoli-formali/214-vincolo-di-lunghezza/README.md) · fatta
 215. [Vincolo di forma](07-vincoli-formali/215-vincolo-di-forma/README.md) · fatta
 216. [Vincolo di persona](07-vincoli-formali/216-vincolo-di-persona/README.md) · fatta
-217. [Vincolo di tempo verbale](07-vincoli-formali/217-vincolo-di-tempo-verbale/README.md) · —
-218. [Vincolo di registro](07-vincoli-formali/218-vincolo-di-registro/README.md) · —
-219. [Vincolo di materiale](07-vincoli-formali/219-vincolo-di-materiale/README.md) · —
-220. [Cancellatura (blackout poetry)](07-vincoli-formali/220-cancellatura-blackout-poetry/README.md) · —
-221. [Cadavere squisito](07-vincoli-formali/221-cadavere-squisito/README.md) · —
-222. [Mad Libs](07-vincoli-formali/222-mad-libs/README.md) · —
-223. [Vincolo combinatorio](07-vincoli-formali/223-vincolo-combinatorio/README.md) · —
-224. [Vincolo di negazione](07-vincoli-formali/224-vincolo-di-negazione/README.md) · —
+217. [Vincolo di tempo verbale](07-vincoli-formali/217-vincolo-di-tempo-verbale/README.md) · fatta
+218. [Vincolo di registro](07-vincoli-formali/218-vincolo-di-registro/README.md) · fatta
+219. [Vincolo di materiale](07-vincoli-formali/219-vincolo-di-materiale/README.md) · fatta
+220. [Cancellatura (blackout poetry)](07-vincoli-formali/220-cancellatura-blackout-poetry/README.md) · fatta
+221. [Cadavere squisito](07-vincoli-formali/221-cadavere-squisito/README.md) · fatta
+222. [Mad Libs](07-vincoli-formali/222-mad-libs/README.md) · fatta
+223. [Vincolo combinatorio](07-vincoli-formali/223-vincolo-combinatorio/README.md) · fatta
+224. [Vincolo di negazione](07-vincoli-formali/224-vincolo-di-negazione/README.md) · fatta
 225. [Vincolo di punto di vista](07-vincoli-formali/225-vincolo-di-punto-di-vista/README.md) · —
 226. [Vincolo materiale fisico](07-vincoli-formali/226-vincolo-materiale-fisico/README.md) · —
 
