@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 230 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 238 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -247,17 +247,17 @@
 222. [Mad Libs](07-vincoli-formali/222-mad-libs/README.md) · fatta
 223. [Vincolo combinatorio](07-vincoli-formali/223-vincolo-combinatorio/README.md) · fatta
 224. [Vincolo di negazione](07-vincoli-formali/224-vincolo-di-negazione/README.md) · fatta
-225. [Vincolo di punto di vista](07-vincoli-formali/225-vincolo-di-punto-di-vista/README.md) · —
-226. [Vincolo materiale fisico](07-vincoli-formali/226-vincolo-materiale-fisico/README.md) · —
+225. [Vincolo di punto di vista](07-vincoli-formali/225-vincolo-di-punto-di-vista/README.md) · fatta
+226. [Vincolo materiale fisico](07-vincoli-formali/226-vincolo-materiale-fisico/README.md) · fatta
 
 ## 8. Forme che vengono dalla didattica
 
-227. [Esempio svolto (worked example)](08-forme-che-vengono-dalla-didattica/227-esempio-svolto-worked-example/README.md) · —
-228. [Coppia esempio–esercizio](08-forme-che-vengono-dalla-didattica/228-coppia-esempio-esercizio/README.md) · —
-229. [Problema a completamento (completion problem)](08-forme-che-vengono-dalla-didattica/229-problema-a-completamento-completion-problem/README.md) · —
-230. [Fading](08-forme-che-vengono-dalla-didattica/230-fading/README.md) · —
-231. [Impalcatura (scaffolding)](08-forme-che-vengono-dalla-didattica/231-impalcatura-scaffolding/README.md) · —
-232. [Apprendistato cognitivo](08-forme-che-vengono-dalla-didattica/232-apprendistato-cognitivo/README.md) · —
+227. [Esempio svolto (worked example)](08-forme-che-vengono-dalla-didattica/227-esempio-svolto-worked-example/README.md) · fatta
+228. [Coppia esempio–esercizio](08-forme-che-vengono-dalla-didattica/228-coppia-esempio-esercizio/README.md) · fatta
+229. [Problema a completamento (completion problem)](08-forme-che-vengono-dalla-didattica/229-problema-a-completamento-completion-problem/README.md) · fatta
+230. [Fading](08-forme-che-vengono-dalla-didattica/230-fading/README.md) · fatta
+231. [Impalcatura (scaffolding)](08-forme-che-vengono-dalla-didattica/231-impalcatura-scaffolding/README.md) · fatta
+232. [Apprendistato cognitivo](08-forme-che-vengono-dalla-didattica/232-apprendistato-cognitivo/README.md) · fatta
 233. [Metodo socratico](08-forme-che-vengono-dalla-didattica/233-metodo-socratico/README.md) · —
 234. [Apprendimento per problemi (PBL)](08-forme-che-vengono-dalla-didattica/234-apprendimento-per-problemi-pbl/README.md) · —
 235. [Apprendimento per progetti](08-forme-che-vengono-dalla-didattica/235-apprendimento-per-progetti/README.md) · —
