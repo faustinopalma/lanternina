@@ -112,7 +112,7 @@ Dove si romperebbe: il sistema non può nascondere niente sul foglio, perché il
 
 ## Da riprendere alla rassegna
 
-**Il numero che si chiede è la leva, ed è misurabile.** Chiedere tre invece di uno moltiplica per tre quello che passa sotto gli occhi, senza cambiare una parola sul resto della consegna. **Questo è il quinto caso in cui il numero chiesto governa la forma** — si veda quanto già annotato per la voce 14, elenco e la voce 24, titolo — e il primo in cui si può calcolare quanto.
+**Il numero che si chiede è la leva, ed è misurabile.** Chiedere tre invece di uno moltiplica per tre quello che passa sotto gli occhi, senza cambiare una parola sul resto della consegna. **È la sesta occorrenza di «il numero come leva»** — le prime cinque sono registrate in `OSSERVAZIONI.md` come le schede 014, 024, 030, 041 e 049 — e la prima in cui si può calcolare quanto valga.
 
 **La consegna vera messa in fondo è una mossa nuova e va provata altrove.** Se sta in cima, chi legge cerca la cosa strana invece di incontrarla. È l'unico modo trovato finora di ottenere per iscritto una cosa che per definizione non si può chiedere.
 

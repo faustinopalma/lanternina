@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 277 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 285 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -300,14 +300,14 @@
 269. [Ramificazione](09-meccaniche-di-gioco/269-ramificazione/README.md) · fatta
 270. [Risorse da spendere](09-meccaniche-di-gioco/270-risorse-da-spendere/README.md) · fatta
 271. [Collezione](09-meccaniche-di-gioco/271-collezione/README.md) · fatta
-272. [Costruzione di un motore](09-meccaniche-di-gioco/272-costruzione-di-un-motore/README.md) · —
-273. [Esplorazione](09-meccaniche-di-gioco/273-esplorazione/README.md) · —
-274. [Scoperta](09-meccaniche-di-gioco/274-scoperta/README.md) · —
-275. [Emergenza](09-meccaniche-di-gioco/275-emergenza/README.md) · —
-276. [Cooperazione](09-meccaniche-di-gioco/276-cooperazione/README.md) · —
-277. [Gioco solitario](09-meccaniche-di-gioco/277-gioco-solitario/README.md) · —
-278. [Sandbox](09-meccaniche-di-gioco/278-sandbox/README.md) · —
-279. [Simulazione](09-meccaniche-di-gioco/279-simulazione/README.md) · —
+272. [Costruzione di un motore](09-meccaniche-di-gioco/272-costruzione-di-un-motore/README.md) · fatta
+273. [Esplorazione](09-meccaniche-di-gioco/273-esplorazione/README.md) · fatta
+274. [Scoperta](09-meccaniche-di-gioco/274-scoperta/README.md) · fatta
+275. [Emergenza](09-meccaniche-di-gioco/275-emergenza/README.md) · fatta
+276. [Cooperazione](09-meccaniche-di-gioco/276-cooperazione/README.md) · fatta
+277. [Gioco solitario](09-meccaniche-di-gioco/277-gioco-solitario/README.md) · fatta
+278. [Sandbox](09-meccaniche-di-gioco/278-sandbox/README.md) · fatta
+279. [Simulazione](09-meccaniche-di-gioco/279-simulazione/README.md) · fatta
 280. [Turno](09-meccaniche-di-gioco/280-turno/README.md) · —
 281. [Casualità dichiarata](09-meccaniche-di-gioco/281-casualita-dichiarata/README.md) · —
 282. [Informazione nascosta](09-meccaniche-di-gioco/282-informazione-nascosta/README.md) · —
