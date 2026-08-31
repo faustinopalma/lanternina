@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 288 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 292 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -311,10 +311,10 @@
 280. [Turno](09-meccaniche-di-gioco/280-turno/README.md) · fatta
 281. [Casualità dichiarata](09-meccaniche-di-gioco/281-casualita-dichiarata/README.md) · fatta
 282. [Informazione nascosta](09-meccaniche-di-gioco/282-informazione-nascosta/README.md) · fatta
-283. [Bluff](09-meccaniche-di-gioco/283-bluff/README.md) · —
-284. [Asta](09-meccaniche-di-gioco/284-asta/README.md) · —
-285. [Deduzione sociale](09-meccaniche-di-gioco/285-deduzione-sociale/README.md) · —
-286. [Legacy](09-meccaniche-di-gioco/286-legacy/README.md) · —
+283. [Bluff](09-meccaniche-di-gioco/283-bluff/README.md) · fatta
+284. [Asta](09-meccaniche-di-gioco/284-asta/README.md) · fatta
+285. [Deduzione sociale](09-meccaniche-di-gioco/285-deduzione-sociale/README.md) · fatta
+286. [Legacy](09-meccaniche-di-gioco/286-legacy/README.md) · fatta
 
 ## 10. Chi assegna, e chi giudica
 
