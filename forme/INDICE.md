@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 238 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 246 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -258,14 +258,14 @@
 230. [Fading](08-forme-che-vengono-dalla-didattica/230-fading/README.md) · fatta
 231. [Impalcatura (scaffolding)](08-forme-che-vengono-dalla-didattica/231-impalcatura-scaffolding/README.md) · fatta
 232. [Apprendistato cognitivo](08-forme-che-vengono-dalla-didattica/232-apprendistato-cognitivo/README.md) · fatta
-233. [Metodo socratico](08-forme-che-vengono-dalla-didattica/233-metodo-socratico/README.md) · —
-234. [Apprendimento per problemi (PBL)](08-forme-che-vengono-dalla-didattica/234-apprendimento-per-problemi-pbl/README.md) · —
-235. [Apprendimento per progetti](08-forme-che-vengono-dalla-didattica/235-apprendimento-per-progetti/README.md) · —
-236. [Apprendimento per indagine (inquiry)](08-forme-che-vengono-dalla-didattica/236-apprendimento-per-indagine-inquiry/README.md) · —
-237. [WebQuest](08-forme-che-vengono-dalla-didattica/237-webquest/README.md) · —
-238. [Jigsaw](08-forme-che-vengono-dalla-didattica/238-jigsaw/README.md) · —
-239. [Pensa–confrontati–condividi](08-forme-che-vengono-dalla-didattica/239-pensa-confrontati-condividi/README.md) · —
-240. [Insegnamento fra pari](08-forme-che-vengono-dalla-didattica/240-insegnamento-fra-pari/README.md) · —
+233. [Metodo socratico](08-forme-che-vengono-dalla-didattica/233-metodo-socratico/README.md) · fatta
+234. [Apprendimento per problemi (PBL)](08-forme-che-vengono-dalla-didattica/234-apprendimento-per-problemi-pbl/README.md) · fatta
+235. [Apprendimento per progetti](08-forme-che-vengono-dalla-didattica/235-apprendimento-per-progetti/README.md) · fatta
+236. [Apprendimento per indagine (inquiry)](08-forme-che-vengono-dalla-didattica/236-apprendimento-per-indagine-inquiry/README.md) · fatta
+237. [WebQuest](08-forme-che-vengono-dalla-didattica/237-webquest/README.md) · fatta
+238. [Jigsaw](08-forme-che-vengono-dalla-didattica/238-jigsaw/README.md) · fatta
+239. [Pensa–confrontati–condividi](08-forme-che-vengono-dalla-didattica/239-pensa-confrontati-condividi/README.md) · fatta
+240. [Insegnamento fra pari](08-forme-che-vengono-dalla-didattica/240-insegnamento-fra-pari/README.md) · fatta
 241. [Protocollo di pensiero ad alta voce](08-forme-che-vengono-dalla-didattica/241-protocollo-di-pensiero-ad-alta-voce/README.md) · —
 242. [Ripasso distanziato (spaced repetition)](08-forme-che-vengono-dalla-didattica/242-ripasso-distanziato-spaced-repetition/README.md) · —
 243. [Effetto test (retrieval practice)](08-forme-che-vengono-dalla-didattica/243-effetto-test-retrieval-practice/README.md) · —
