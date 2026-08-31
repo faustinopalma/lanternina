@@ -784,7 +784,61 @@ Le voci 183-192 chiudono la sezione dei meccanismi da escape room e con essa il 
 
 **Il blocco non ha dato segni di ripetizione, e la ragione è che gli esempi hanno usato sette meccanismi diversi.** Una quota su un elenco (183), una passeggiata su un righello (184), un problema con dati inutili (185), una griglia a coordinate (186), una scala di aiuti (187), uno scontrino (188), una clessidra di casa (189), una classifica con riferimenti finti (190), cinque scelte a soglia (191), due fogli e cinque frasi (192). **Il segnale che nel blocco scorso aveva accorciato la voce 178 — quattro esempi su dodici con la stessa struttura — non si è ripresentato**, e quello che sembra averlo evitato è aver deciso il meccanismo di verifica prima di scrivere l'esempio, invece che dopo.
 
+## Quello che ha detto il primo blocco del capitolo delle cacce
+
+Le voci 193-204 aprono il capitolo 6 e si dividono in quattro famiglie che non si sono sovrapposte perché per ognuna si è deciso in anticipo **che cosa si cerca e in che ordine**: le quattro cacce (193-196) si distinguono per la presenza o meno di una sequenza, per che cosa vale come prova, e per l'esistenza o meno di un fatto sotto la riga; le tre forme che usano il mondo come coordinata (197-199) per come è fatto l'indizio — un numero, un testo, una mappa; le tre in cui non si cerca niente (200-202) per che cosa sostituisce la meta — una regola, un senso, una storia; le due senza confine (203-204) per quale confine cade.
+
+**Il limite più duro del capitolo ha quattro soluzioni, e sono in scala.** Il sistema non sa dov'è chi legge, e le voci hanno prodotto quattro modi di nominare senza sapere, ognuno più generale del precedente. **La funzione al posto dell'oggetto** — «un mobile sotto cui non guarda nessuno» invece di «il tavolo di cucina» — funziona per i luoghi (voce 193). **La categoria al posto della cosa** — «una cosa che c'è per sbaglio» — funziona per gli oggetti (voce 196). **La proprietà dell'immagine al posto del soggetto** — «una foto in cui non si capisce quanto è grande la cosa» — funziona per le fotografie (voce 195). E **la regola di cammino al posto della meta** non richiede niente affatto, perché «ogni volta che puoi girare prendi la seconda a destra» è identica in un paese e in un corridoio (voce 200). La quarta è la più forte e la si è trovata per ultima.
+
+**Il percorso artificiale identico ovunque è la quinta soluzione, e viene da uno sport.** L'ultrasprint dell'orientamento si corre in un labirinto costruito apposta, e la ragione dichiarata è che **lo stesso percorso può essere montato in posti geografici diversi** e corso in contemporanea. Nessuna delle altre voci l'aveva suggerito, e vale per qualunque forma che voglia essere la stessa per tutti senza conoscere nessuno. — voce 199.
+
+**Due unità di misura che sostituiscono l'orologio, e sono migliori del tempo.** Il sistema non ha un orologio, e questo era registrato come limite dalla voce 189. Le **fermate per guardare la mappa** (voce 199) misurano il costo di capire e non quello di muoversi, che è esattamente quello che rende una strada corta più lenta di una lunga; le **decisioni prese** (voce 200) rendono confrontabili una passeggiata in un paese e una in una città, cosa che i minuti non fanno. Con il **budget di punti** al posto del tempo limite (voce 194) fanno tre. **Non sono ripieghi: contano quello che chi gioca fa, e il tempo non lo contava.**
+
+**Il foglio stampato è già pervasivo nel tempo, e per sei capitoli lo si era letto come un difetto.** Nella definizione di Markus Montola un gioco pervasivo espande il cerchio magico nello spazio, nel tempo o nel sociale — le combinazioni non vuote sono sette. Un foglio che arriva e resta sul tavolo **non ha una sessione**: non c'è un istante in cui l'attività cominci. Il progetto ha una delle tre espansioni gratis, e l'oggetto lasciato in vista fa da sessione. — voce 203.
+
+**La seconda cosa che il progetto ha gratis: consegnare pezzi separati che nessuno dichiara collegati.** È l'unica cosa che un ARG richieda davvero secondo la sua stessa definizione — i personaggi che rispondono e i media multipli sono fuori portata —, e un sistema che stampa un foglio al giorno la soddisfa senza sforzo. — voce 204.
+
+**Il vincolo che chiudeva il capitolo 5 è caduto, e in una voce è caduto per definizione.** Un enigma ha una risposta e qualcuno deve saperla; una caccia per categorie no. La distinzione utile, e vale su tutto l'elenco, è fra **categorie con un fatto sotto** — un coleottero, una moneta anteriore al 2002: chi cerca classifica e può sbagliare — e **categorie senza un fatto sotto** — la cosa più stanca della casa: chi cerca costituisce la classe scegliendo, e nessuno può dire che è la risposta sbagliata. Non è «non si può verificare»: è «non c'è niente da verificare». — voce 196.
+
+**Un accordo vale quanto una tecnologia, e questo si è visto tre volte.** Un sistema di coordinate ha bisogno di un punto zero, due direzioni e un'unità, non di satelliti (voce 197); un nord dichiarato fa tutto il lavoro che farebbe un nord vero (voce 199); un segno personale fatto riempiendo una griglia di venticinque caselle dà **33 554 432** possibilità, **4 211 744** contando uguali quelle ruotate e ribaltate, e non richiede né gomma né taglierino (voce 198). **La precisione non serve; serve che siano d'accordo in due.**
+
+**L'esattezza non finisce il lavoro, e i due dati stanno in fonti diverse.** La cache geocaching sulla Stazione Spaziale, di cui si conosce la posizione con precisione assoluta, ha **un solo ritrovamento confermato in sedici anni**; il Degree Confluence Project, che esiste apposta per raggiungere punti definiti da coordinate intere, considera riuscita una visita **entro cento metri** dal punto. Sapere dov'è una cosa non è trovarla, e l'errore su due assi cresce col quadrato: sbagliare di cinque unità non è cinque volte peggio che sbagliarne una, è venticinque. — voce 197.
+
+**Il foglio che misura sé stesso arriva a otto occorrenze e ha cambiato oggetto due volte.** Alle voci 195 e 196 conta **quante cose si sono scartate prima di scegliere** — un gesto, non una lettura —; alla voce 198 misura **la chiarezza di un testo scritto da chi legge**, chiedendo quanti passi dell'indizio hanno mancato. Con le cinque già registrate fa otto, ed è ormai la famiglia più grande dell'elenco.
+
+**Chiedere dove si è barato.** Una regola arbitraria seguita per venti bivi viene infranta almeno una volta; chiederlo apertamente toglie la vergogna e restituisce l'unica informazione che dice qualcosa sul posto, cioè dove la regola era insopportabile. È nuova e non compare in nessuna delle voci precedenti. — voce 200.
+
+**Chiedere quando si è capito, e come si sa che è finito.** Sono le due domande che misurano una forma che non dichiara sé stessa (voce 204) e una che non dichiara la propria fine (voce 203). Nessuna delle 192 voci precedenti ne aveva bisogno, perché tutte finivano in un momento preciso. **Vanno consegnate al capitolo 11, come finisce**, che è tutto da fare, 0 su 11.
+
+**Una fonte dice finalmente qualcosa sugli adolescenti, e dice anche la parte scomoda.** Il legend tripping è «un passatempo giovanile per lo più innocuo, forse perfino utile», che permette di **dimostrare il proprio coraggio in un posto in cui il rischio fisico reale è probabilmente lieve**. È la frase più vicina all'oggetto di questo progetto trovata in otto sessioni. La stessa pagina però dice che i panici morali degli adulti **accrescono ancora il prestigio del viaggio agli occhi degli adolescenti**: la disapprovazione non è un attrito, è un ingrediente. **Ne segue che ci sono forme che un sistema di casa non può offrire senza guastarle**, e alla rassegna vale la pena censire quali invece di scoprirlo una alla volta. — voce 202.
+
+**Sostenuto contro supportato dalla tecnologia, ed è una distinzione della fonte.** Un gioco *sostenuto* non esiste senza un calcolatore che ne tenga lo stato; un gioco *supportato* la usa per una parte e non per tutte le attività. **La definizione ammette esplicitamente giochi pervasivi che funzionano senza che nessun apparecchio sappia che cosa sta succedendo**, ed è la porta d'ingresso a una famiglia che sembrava chiusa. — voce 203.
+
+**Il pubblico batte gli autori, e per noi la conseguenza è rovesciata.** I Cloudmakers costrinsero i burattinai di *The Beast* a scrivere nuove sottotrame per restare avanti. Una persona sola non può superare un foglio: il problema centrale del genere sparisce, **e con lui sparisce l'eccitazione che ne veniva.** Che cosa sostituisca, per chi è solo, il fatto che migliaia stiano guardando la stessa cosa nello stesso momento è una domanda aperta. — voce 204.
+
+**Il livello dell'impossibile è più alto di quello che chi scrive immagina.** Nel 2012, su oltre centocinquanta compiti assurdi di GISHWHES, **una sola voce non fu soddisfatta da nessuno**: ricoprire un dirigibile di foglie d'autunno. Le altre includevano un kilt di fette di cetriolo e una partita a *anatra anatra oca* con anatre vere. Il dato è di scala e non di effetto, ma la direzione dell'errore è sempre la stessa. — voce 194.
+
+**Una forma può perdere la sua funzione d'origine e crescere lo stesso.** Il letterboxing serviva a spedire lettere per vie lentissime; adesso non serve più a quello, la fonte lo dice, e i siti sono passati da una dozzina a migliaia. **È il primo caso in cui la ragion d'essere originaria scompare senza che la forma ne risenta**, ed è un avvertimento su tutte le spiegazioni che si danno del perché una cosa funzioni. — voce 198.
+
+**Un fondatore che dichiara poco chiara la propria idea.** Debord sulla psicogeografia: «niente di tutto questo è molto chiaro. È un monologo da ubriaco perfettamente tipico». La pratica è sopravvissuta settant'anni. **Vale la pena distinguere le forme che reggono dalle spiegazioni che le accompagnano.** — voce 200.
+
+**Due mondi lontanissimi hanno detto la stessa cosa, uno con una frase e uno con un numero.** Debord: «il percorso di minor resistenza che si segue automaticamente nelle passeggiate senza meta». Gli studi sul calpestio: **bastano quindici passaggi perché si formi un sentiero distinto, e il sentiero attira altri passaggi.** Nessuno dei due nomina l'altro. — voce 200.
+
+**Troppi segni fuorviano più di nessun segno.** I guardaparco statunitensi smontano gli ometti di pietra in eccesso perché **fuorviano la navigazione**. È un depistaggio prodotto dall'abbondanza e non dall'intenzione, e apre una domanda che la voce 185, rossa aringa (red herring) non poneva: quanta parte del depistaggio in una forma qualsiasi sia rumore invece che disegno. — voce 193.
+
+**Un apparecchio pensato per individualizzare che sincronizzava tutti.** La prima visita guidata sonora di un museo, allo Stedelijk nel **1952**, trasmetteva una registrazione sola su un'antenna ad anello: i visitatori si muovevano di sala in sala «come guidati da una forza invisibile, in perfetta sincronia». **È il primo caso raccolto in cui l'effetto misurato di uno strumento è l'opposto della sua ragione dichiarata.** — voce 201.
+
+**La categoria mai usata è un'informazione, e leggere quello che manca costa zero.** Una tabella a cinque categorie in cui ne compaiono tre dice qualcosa a un sistema che non ha percepito niente. Vale per la legenda sonora di Schafer e per qualunque forma che chieda di classificare. — voce 201.
+
+**Rendere impossibile l'errore tipico invece di vietarlo, terza occorrenza.** La partenza scaglionata e la mappa consegnata solo al via esistono perché non si possa seguire qualcuno. Dopo il disegno fatto senza guardare il foglio (voce 33) e il personaggio a frasi fisse che non può bloccare (voce 192), la famiglia ha tre membri in capitoli lontani. — voce 199.
+
+**Una forma nata da un provvedimento amministrativo, in un giorno.** La *selective availability* viene tolta dal GPS il **2 maggio 2000**; il primo contenitore è nascosto il **3 maggio 2000**. La condizione tecnica non ha reso possibile qualcosa che qualcuno cercava: l'ha prodotta in ventiquattro ore. Alla rassegna vale la pena chiedersi quante forme dell'elenco dipendano da una condizione che qualcuno può togliere. — voce 197.
+
+**Il blocco non ha dato segni di ripetizione, e gli esempi hanno usato dodici meccanismi diversi.** Riquadri stampati fuori ordine (193), un budget di punti su una lista (194), righe che nominano l'inquadratura invece del soggetto (195), categorie senza risposta più una riga da lasciare vuota (196), un sistema di coordinate di casa con la tabella dell'errore al quadrato (197), un timbro fatto riempiendo una griglia (198), due percorsi sulla stessa pianta con le fermate contate (199), venti decisioni sotto una regola (200), cinque fermate con una legenda di cinque nomi (201), una leggenda da scrivere in tre pezzi (202), una regola che vale finché il foglio è sul tavolo (203), tre fogli in tre giorni che non dicono di essere un gioco (204). **Quello che sembra averlo evitato è la stessa cosa del blocco precedente: decidere il meccanismo di verifica prima di scrivere l'esempio.**
+
 ## Quello che è stato verificato, e come
+
+
 
 Il 30 agosto 2026 sono state scaricate 47 pagine nuove in `_reference/esercizi-e-sfide/` — due chiamate «verbi del ragionamento» e «da verificare» in `tools/fetch_exercise_sources.py` — apposta per controllare le cose che le schede portavano a memoria. Quasi tutte hanno retto; una no.
 
@@ -838,6 +892,16 @@ Scaricate altre 49 pagine — i gruppi «supporti» e «da verificare, secondo g
 **«Otto-dodici minuti» per una videolezione** è un numero che circola, e la fonte lo dichiara come tale. Prima di usarlo per dimensionare qualcosa servirebbe l'esperimento da cui viene. — voce 77, video.
 
 **Del mentoring fra pari si sa poco,** e la fonte lo dice apertamente: pochi studi coerenti oltre le buone sensazioni e le amicizie. È il genere di pratica che gode di ottima reputazione senza prove, e vale la pena averlo scritto. — voce 81, altra persona.
+
+**Quanta parte di quello che si sente venga filtrata via prima di arrivare.** La *keynote* di Schafer è definita come un suono che non si percepisce non perché sia inudibile ma perché è tolto cognitivamente. Nessuna delle fonti sull'ecologia acustica misura quanta. Sarebbe un numero utile a molte voci e non solo a questa. — voce 201, passeggiata sonora.
+
+**La precisione del GPS prima e dopo il 2 maggio 2000.** La pagina sul geocaching dice solo che era «migliorata abbastanza», e le cifre che circolano non stanno in nessuna pagina locale. Il solo numero primario raccolto è di un altro progetto: il Degree Confluence Project considera riuscita una visita entro cento metri dal punto. — voce 197, geocaching.
+
+**Se un vincolo di quantità e uno di tempo producano lo stesso tipo di scelta.** Un budget di venti punti è stato usato al posto di un tempo limite perché il sistema non ha un orologio. Nessuna fonte confronta le due cose, e l'accostamento è nostro. — voce 194, caccia agli oggetti (scavenger hunt).
+
+**Se esista una misura di qualunque genere sul legend tripping.** Le cinque pagine lette non ne contengono nessuna: le affermazioni sull'utilità e sul rito di passaggio sono giudizi di studiosi riportati senza dati. — voce 202, legend tripping.
+
+**Che cosa succeda a chi cerca quando sa che alla fine non c'è niente.** Il rotolo di rame elenca sessantatré nascondigli e non ne ha prodotto uno; le mappe dei pirati non sono mai esistite; il premio di *MAZE* fu diviso fra dodici persone che non avevano risolto. Nessuna fonte tratta la domanda, e si pone da sé. — voce 193, caccia al tesoro.
 
 **Quanto è inaffidabile la memoria su questa roba.** Due schede su sei del capitolo 12 sono state scritte a memoria e poi corrette dalle fonti italiane appena scaricate: il lucchetto non è antico, è del 1950 e ha un autore con nome e pseudonimo; la zeppa cambia nome in *aggiunta* quando la lettera sta agli estremi. Entrambi gli errori suonavano sicuri. Adesso c'è un terzo caso, ed è il più istruttivo: gli assiomi dell'origami erano attribuiti alle due persone sbagliate, e l'attribuzione corretta — Justin 1986 — non è nemmeno nel nome con cui si citano di solito. **Su tredici cose verificate in una sessione, una era sbagliata:** è la ragione per cui ogni scheda dichiara che cosa è letto e che cosa è ricordato.
 
@@ -898,6 +962,21 @@ Per il settimo blocco del capitolo 5 sono state scaricate **34 pagine nuove** �
 **Una pagina rimanda a un glossario enorme.** `unlockable-gaming.txt` sono 633 kB e non è la voce sugli sblocchi: è il glossario dei termini dei videogiochi, a cui il titolo rimanda. Non è stata usata; la stessa materia sta in `metroidvania.txt` e `nonlinear-gameplay.txt`, che sono voci vere.
 
 **Il conto delle pagine locali va tenuto con il numero di file di testo e non con il numero di indirizzi nello script.** Lo script dichiara 506 indirizzi e le pagine di testo sono 501, e la differenza sono i doppioni: nomi diversi che rimandano alla stessa voce, e che quindi producono un file solo o due file identici. **Un indirizzo in più non è una fonte in più**, e questa è la nona e la decima volta che se ne è avuta conferma.
+
+## L'ottavo scarico di fonti, 31 agosto 2026
+
+Per il primo blocco del capitolo 6 sono state scaricate **42 pagine nuove** — il gruppo «cacce e percorsi, capitolo 6, primo blocco» in `tools/fetch_exercise_sources.py`. Le pagine locali sono passate da 501 a 543. Cinque note.
+
+**Tre indirizzi su quarantatré hanno dato 404, e la ricerca a testo pieno li ha risolti tutti insieme.** `Photo_scavenger_hunt` non esiste — la ricerca risponde con la frase «The page "Photo scavenger hunt" does not exist» e poi elenca le pagine vere, fra cui `University_of_Chicago_Scavenger_Hunt`, `GISHWHES`, `Cipher_Hunt` e `Herald_Hunt`, che sono state prese al suo posto. `Sketchcrawl` non esiste e non ha sostituti: la ricerca non restituisce niente. In italiano `Deriva_(situazionismo)` non esiste, e la materia sta in `Situazionismo` e in `Psicogeografia`. È la nona sessione di fila in cui la ricerca a testo pieno risolve i 404 in una chiamata sola.
+
+**Due file già presenti sono la stessa pagina, e il titolo non lo lasciava sospettare.** `waymarking.txt` e `trail-blazing.txt` hanno la stessa prima riga — «Practice of marking footpaths by leaving signs that indicate the route» — e la stessa dimensione, **15 780 byte**. Il primo titolo fa pensare al passatempo di segnalare luoghi interessanti, che è tutt'altra cosa e **non è coperto da nessuna fonte locale**. È l'undicesima volta in otto sessioni che due nomi danno un file solo, e la prima in cui il doppione riguarda due argomenti diversi che condividono un rimando. Il controllo delle prime righe e delle dimensioni, fatto su cinquantasette fonti in una chiamata sola, l'ha preso.
+
+**Una pagina italiana si dichiara priva di note.** `it-situazionismo.txt` avverte in cima che la voce è «priva o carente di note e riferimenti bibliografici». Non è stata usata. È la seconda volta in otto sessioni, dopo `it-leva.txt`.
+
+**Due pagine italiane sono troppo povere per reggere qualcosa.** `it-psicogeografia.txt` sono 6,5 kB e cominciano con una riga di bibliografia; `it-caccia-al-tesoro.txt` sono 3,7 kB e portano l'avviso di mancanza di fonti. La prima non è stata usata affatto; della seconda si è usata solo la tipologia, dichiarando che a sostenerla è la pagina inglese e non lei.
+
+**Una fonte elenca nove esempi e non ne descrive nessuno.** `pervasive-game.txt` riporta *Pokémon Go*, *Négone*, *The Killer*, *The Beast*, *Shelby Logan's Run*, *BotFighters*, *Pac-Manhattan*, *Uncle Roy All Around You* e *Amazing Race* in una riga sola, senza una parola su come funzionino. La tentazione di descriverli a memoria è forte e in questa sessione è stata scritta e poi tolta: **degli esempi elencati e non descritti si può dire solo che qualcuno li ha classificati così.** Dodicesimo caso di fonte che non contiene quello per cui era stata presa, e il primo in cui il contenuto c'è ma è una lista di nomi.
+
 
 
 
