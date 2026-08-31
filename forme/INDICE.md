@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 188 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 198 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -199,16 +199,16 @@
 180. [Combinazione da comporre](05-enigmi/180-combinazione-da-comporre/README.md) · fatta
 181. [Percorso lineare](05-enigmi/181-percorso-lineare/README.md) · fatta
 182. [Percorso a imbuto](05-enigmi/182-percorso-a-imbuto/README.md) · fatta
-183. [Percorso aperto](05-enigmi/183-percorso-aperto/README.md) · —
-184. [Meta-enigma](05-enigmi/184-meta-enigma/README.md) · —
-185. [Rossa aringa (red herring)](05-enigmi/185-rossa-aringa-red-herring/README.md) · —
-186. [Sblocco progressivo dello spazio](05-enigmi/186-sblocco-progressivo-dello-spazio/README.md) · —
-187. [Indizio a scaglioni](05-enigmi/187-indizio-a-scaglioni/README.md) · —
-188. [Oggetto che cambia significato](05-enigmi/188-oggetto-che-cambia-significato/README.md) · —
-189. [Conto alla rovescia](05-enigmi/189-conto-alla-rovescia/README.md) · —
-190. [Classifica dei tempi](05-enigmi/190-classifica-dei-tempi/README.md) · —
-191. [Finale buono e finale cattivo](05-enigmi/191-finale-buono-e-finale-cattivo/README.md) · —
-192. [Attore dal vivo nella stanza](05-enigmi/192-attore-dal-vivo-nella-stanza/README.md) · —
+183. [Percorso aperto](05-enigmi/183-percorso-aperto/README.md) · fatta
+184. [Meta-enigma](05-enigmi/184-meta-enigma/README.md) · fatta
+185. [Rossa aringa (red herring)](05-enigmi/185-rossa-aringa-red-herring/README.md) · fatta
+186. [Sblocco progressivo dello spazio](05-enigmi/186-sblocco-progressivo-dello-spazio/README.md) · fatta
+187. [Indizio a scaglioni](05-enigmi/187-indizio-a-scaglioni/README.md) · fatta
+188. [Oggetto che cambia significato](05-enigmi/188-oggetto-che-cambia-significato/README.md) · fatta
+189. [Conto alla rovescia](05-enigmi/189-conto-alla-rovescia/README.md) · fatta
+190. [Classifica dei tempi](05-enigmi/190-classifica-dei-tempi/README.md) · fatta
+191. [Finale buono e finale cattivo](05-enigmi/191-finale-buono-e-finale-cattivo/README.md) · fatta
+192. [Attore dal vivo nella stanza](05-enigmi/192-attore-dal-vivo-nella-stanza/README.md) · fatta
 
 ## 6. Cacce, percorsi, mondi
 
