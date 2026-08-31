@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 202 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 205 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -216,9 +216,9 @@
 194. [Caccia agli oggetti (scavenger hunt)](06-cacce-percorsi-mondi/194-caccia-agli-oggetti-scavenger-hunt/README.md) · fatta
 195. [Caccia fotografica](06-cacce-percorsi-mondi/195-caccia-fotografica/README.md) · fatta
 196. [Caccia per categorie](06-cacce-percorsi-mondi/196-caccia-per-categorie/README.md) · fatta
-197. [Geocaching](06-cacce-percorsi-mondi/197-geocaching/README.md) · —
-198. [Letterboxing](06-cacce-percorsi-mondi/198-letterboxing/README.md) · —
-199. [Orienteering](06-cacce-percorsi-mondi/199-orienteering/README.md) · —
+197. [Geocaching](06-cacce-percorsi-mondi/197-geocaching/README.md) · fatta
+198. [Letterboxing](06-cacce-percorsi-mondi/198-letterboxing/README.md) · fatta
+199. [Orienteering](06-cacce-percorsi-mondi/199-orienteering/README.md) · fatta
 200. [Deriva psicogeografica](06-cacce-percorsi-mondi/200-deriva-psicogeografica/README.md) · —
 201. [Passeggiata sonora](06-cacce-percorsi-mondi/201-passeggiata-sonora/README.md) · —
 202. [Legend tripping](06-cacce-percorsi-mondi/202-legend-tripping/README.md) · —
