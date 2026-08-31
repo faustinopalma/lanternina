@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 198 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 202 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -212,10 +212,10 @@
 
 ## 6. Cacce, percorsi, mondi
 
-193. [Caccia al tesoro](06-cacce-percorsi-mondi/193-caccia-al-tesoro/README.md) · —
-194. [Caccia agli oggetti (scavenger hunt)](06-cacce-percorsi-mondi/194-caccia-agli-oggetti-scavenger-hunt/README.md) · —
-195. [Caccia fotografica](06-cacce-percorsi-mondi/195-caccia-fotografica/README.md) · —
-196. [Caccia per categorie](06-cacce-percorsi-mondi/196-caccia-per-categorie/README.md) · —
+193. [Caccia al tesoro](06-cacce-percorsi-mondi/193-caccia-al-tesoro/README.md) · fatta
+194. [Caccia agli oggetti (scavenger hunt)](06-cacce-percorsi-mondi/194-caccia-agli-oggetti-scavenger-hunt/README.md) · fatta
+195. [Caccia fotografica](06-cacce-percorsi-mondi/195-caccia-fotografica/README.md) · fatta
+196. [Caccia per categorie](06-cacce-percorsi-mondi/196-caccia-per-categorie/README.md) · fatta
 197. [Geocaching](06-cacce-percorsi-mondi/197-geocaching/README.md) · —
 198. [Letterboxing](06-cacce-percorsi-mondi/198-letterboxing/README.md) · —
 199. [Orienteering](06-cacce-percorsi-mondi/199-orienteering/README.md) · —
