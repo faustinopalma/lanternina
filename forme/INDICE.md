@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 269 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 277 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -292,14 +292,14 @@
 261. [Obiettivo giornaliero](09-meccaniche-di-gioco/261-obiettivo-giornaliero/README.md) · fatta
 262. [Ricompensa a intervalli variabili](09-meccaniche-di-gioco/262-ricompensa-a-intervalli-variabili/README.md) · fatta
 263. [Sblocco di contenuti](09-meccaniche-di-gioco/263-sblocco-di-contenuti/README.md) · fatta
-264. [Notifica per inattività](09-meccaniche-di-gioco/264-notifica-per-inattivita/README.md) · —
-265. [Barra di avanzamento](09-meccaniche-di-gioco/265-barra-di-avanzamento/README.md) · —
-266. [Vite / tentativi](09-meccaniche-di-gioco/266-vite-tentativi/README.md) · —
-267. [Timer](09-meccaniche-di-gioco/267-timer/README.md) · —
-268. [Scelta con conseguenza](09-meccaniche-di-gioco/268-scelta-con-conseguenza/README.md) · —
-269. [Ramificazione](09-meccaniche-di-gioco/269-ramificazione/README.md) · —
-270. [Risorse da spendere](09-meccaniche-di-gioco/270-risorse-da-spendere/README.md) · —
-271. [Collezione](09-meccaniche-di-gioco/271-collezione/README.md) · —
+264. [Notifica per inattività](09-meccaniche-di-gioco/264-notifica-per-inattivita/README.md) · fatta
+265. [Barra di avanzamento](09-meccaniche-di-gioco/265-barra-di-avanzamento/README.md) · fatta
+266. [Vite / tentativi](09-meccaniche-di-gioco/266-vite-tentativi/README.md) · fatta
+267. [Timer](09-meccaniche-di-gioco/267-timer/README.md) · fatta
+268. [Scelta con conseguenza](09-meccaniche-di-gioco/268-scelta-con-conseguenza/README.md) · fatta
+269. [Ramificazione](09-meccaniche-di-gioco/269-ramificazione/README.md) · fatta
+270. [Risorse da spendere](09-meccaniche-di-gioco/270-risorse-da-spendere/README.md) · fatta
+271. [Collezione](09-meccaniche-di-gioco/271-collezione/README.md) · fatta
 272. [Costruzione di un motore](09-meccaniche-di-gioco/272-costruzione-di-un-motore/README.md) · —
 273. [Esplorazione](09-meccaniche-di-gioco/273-esplorazione/README.md) · —
 274. [Scoperta](09-meccaniche-di-gioco/274-scoperta/README.md) · —
