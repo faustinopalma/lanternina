@@ -1040,6 +1040,39 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-storia-orale", "https://it.wikipedia.org/wiki/Storia_orale"),
         ("it-caso-di-studio", "https://it.wikipedia.org/wiki/Caso_di_studio"),
     ],
+    "meccaniche di gioco, capitolo 9, primo blocco": [
+        ("experience-point", "https://en.wikipedia.org/wiki/Experience_point"),
+        ("achievement-video-games", "https://en.wikipedia.org/wiki/Achievement_(video_games)"),
+        ("achievement-hunting", "https://en.wikipedia.org/wiki/Achievement_hunting"),
+        ("mozilla-open-badges", "https://en.wikipedia.org/wiki/Mozilla_Open_Badges"),
+        ("digital-credential", "https://en.wikipedia.org/wiki/Digital_credential"),
+        (
+            "online-credentials-for-learning",
+            "https://en.wikipedia.org/wiki/Online_credentials_for_learning",
+        ),
+        ("ranking", "https://en.wikipedia.org/wiki/Ranking"),
+        ("token-economy", "https://en.wikipedia.org/wiki/Token_economy"),
+        ("nathan-azrin", "https://en.wikipedia.org/wiki/Nathan_Azrin"),
+        ("behavior-management", "https://en.wikipedia.org/wiki/Behavior_management"),
+        ("reinforcement", "https://en.wikipedia.org/wiki/Reinforcement"),
+        ("operant-conditioning", "https://en.wikipedia.org/wiki/Operant_conditioning"),
+        (
+            "operant-conditioning-chamber",
+            "https://en.wikipedia.org/wiki/Operant_conditioning_chamber",
+        ),
+        ("bf-skinner", "https://en.wikipedia.org/wiki/B._F._Skinner"),
+        ("compulsion-loop", "https://en.wikipedia.org/wiki/Compulsion_loop"),
+        ("loot-box", "https://en.wikipedia.org/wiki/Loot_box"),
+        ("dark-pattern", "https://en.wikipedia.org/wiki/Dark_pattern"),
+        ("duolingo", "https://en.wikipedia.org/wiki/Duolingo"),
+        (
+            "motivation-second-language",
+            "https://en.wikipedia.org/wiki/Motivation_in_second-language_learning",
+        ),
+        ("delayed-gratification", "https://en.wikipedia.org/wiki/Delayed_gratification"),
+        ("it-gamification", "https://it.wikipedia.org/wiki/Gamification"),
+        ("it-metagioco", "https://it.wikipedia.org/wiki/Metagioco"),
+    ],
 }
 
 

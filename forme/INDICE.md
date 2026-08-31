@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 261 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 269 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -284,14 +284,14 @@
 
 ## 9. Meccaniche di gioco
 
-256. [Punti](09-meccaniche-di-gioco/256-punti/README.md) · —
-257. [Livelli](09-meccaniche-di-gioco/257-livelli/README.md) · —
-258. [Distintivi / badge](09-meccaniche-di-gioco/258-distintivi-badge/README.md) · —
-259. [Classifica](09-meccaniche-di-gioco/259-classifica/README.md) · —
-260. [Serie di giorni (streak)](09-meccaniche-di-gioco/260-serie-di-giorni-streak/README.md) · —
-261. [Obiettivo giornaliero](09-meccaniche-di-gioco/261-obiettivo-giornaliero/README.md) · —
-262. [Ricompensa a intervalli variabili](09-meccaniche-di-gioco/262-ricompensa-a-intervalli-variabili/README.md) · —
-263. [Sblocco di contenuti](09-meccaniche-di-gioco/263-sblocco-di-contenuti/README.md) · —
+256. [Punti](09-meccaniche-di-gioco/256-punti/README.md) · fatta
+257. [Livelli](09-meccaniche-di-gioco/257-livelli/README.md) · fatta
+258. [Distintivi / badge](09-meccaniche-di-gioco/258-distintivi-badge/README.md) · fatta
+259. [Classifica](09-meccaniche-di-gioco/259-classifica/README.md) · fatta
+260. [Serie di giorni (streak)](09-meccaniche-di-gioco/260-serie-di-giorni-streak/README.md) · fatta
+261. [Obiettivo giornaliero](09-meccaniche-di-gioco/261-obiettivo-giornaliero/README.md) · fatta
+262. [Ricompensa a intervalli variabili](09-meccaniche-di-gioco/262-ricompensa-a-intervalli-variabili/README.md) · fatta
+263. [Sblocco di contenuti](09-meccaniche-di-gioco/263-sblocco-di-contenuti/README.md) · fatta
 264. [Notifica per inattività](09-meccaniche-di-gioco/264-notifica-per-inattivita/README.md) · —
 265. [Barra di avanzamento](09-meccaniche-di-gioco/265-barra-di-avanzamento/README.md) · —
 266. [Vite / tentativi](09-meccaniche-di-gioco/266-vite-tentativi/README.md) · —
