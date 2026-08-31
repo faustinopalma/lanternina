@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 184 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 188 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -195,10 +195,10 @@
 176. [Puzzle acustico](05-enigmi/176-puzzle-acustico/README.md) · fatta
 177. [Puzzle magnetico](05-enigmi/177-puzzle-magnetico/README.md) · fatta
 178. [Puzzle di attrito e equilibrio](05-enigmi/178-puzzle-di-attrito-e-equilibrio/README.md) · fatta
-179. [Chiave nascosta](05-enigmi/179-chiave-nascosta/README.md) · —
-180. [Combinazione da comporre](05-enigmi/180-combinazione-da-comporre/README.md) · —
-181. [Percorso lineare](05-enigmi/181-percorso-lineare/README.md) · —
-182. [Percorso a imbuto](05-enigmi/182-percorso-a-imbuto/README.md) · —
+179. [Chiave nascosta](05-enigmi/179-chiave-nascosta/README.md) · fatta
+180. [Combinazione da comporre](05-enigmi/180-combinazione-da-comporre/README.md) · fatta
+181. [Percorso lineare](05-enigmi/181-percorso-lineare/README.md) · fatta
+182. [Percorso a imbuto](05-enigmi/182-percorso-a-imbuto/README.md) · fatta
 183. [Percorso aperto](05-enigmi/183-percorso-aperto/README.md) · —
 184. [Meta-enigma](05-enigmi/184-meta-enigma/README.md) · —
 185. [Rossa aringa (red herring)](05-enigmi/185-rossa-aringa-red-herring/README.md) · —
