@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 246 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 254 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -266,14 +266,14 @@
 238. [Jigsaw](08-forme-che-vengono-dalla-didattica/238-jigsaw/README.md) · fatta
 239. [Pensa–confrontati–condividi](08-forme-che-vengono-dalla-didattica/239-pensa-confrontati-condividi/README.md) · fatta
 240. [Insegnamento fra pari](08-forme-che-vengono-dalla-didattica/240-insegnamento-fra-pari/README.md) · fatta
-241. [Protocollo di pensiero ad alta voce](08-forme-che-vengono-dalla-didattica/241-protocollo-di-pensiero-ad-alta-voce/README.md) · —
-242. [Ripasso distanziato (spaced repetition)](08-forme-che-vengono-dalla-didattica/242-ripasso-distanziato-spaced-repetition/README.md) · —
-243. [Effetto test (retrieval practice)](08-forme-che-vengono-dalla-didattica/243-effetto-test-retrieval-practice/README.md) · —
-244. [Autovalutazione con rubrica](08-forme-che-vengono-dalla-didattica/244-autovalutazione-con-rubrica/README.md) · —
-245. [Portfolio](08-forme-che-vengono-dalla-didattica/245-portfolio/README.md) · —
-246. [Diario di apprendimento](08-forme-che-vengono-dalla-didattica/246-diario-di-apprendimento/README.md) · —
-247. [Osservazione strutturata](08-forme-che-vengono-dalla-didattica/247-osservazione-strutturata/README.md) · —
-248. [Esperimento controllato](08-forme-che-vengono-dalla-didattica/248-esperimento-controllato/README.md) · —
+241. [Protocollo di pensiero ad alta voce](08-forme-che-vengono-dalla-didattica/241-protocollo-di-pensiero-ad-alta-voce/README.md) · fatta
+242. [Ripasso distanziato (spaced repetition)](08-forme-che-vengono-dalla-didattica/242-ripasso-distanziato-spaced-repetition/README.md) · fatta
+243. [Effetto test (retrieval practice)](08-forme-che-vengono-dalla-didattica/243-effetto-test-retrieval-practice/README.md) · fatta
+244. [Autovalutazione con rubrica](08-forme-che-vengono-dalla-didattica/244-autovalutazione-con-rubrica/README.md) · fatta
+245. [Portfolio](08-forme-che-vengono-dalla-didattica/245-portfolio/README.md) · fatta
+246. [Diario di apprendimento](08-forme-che-vengono-dalla-didattica/246-diario-di-apprendimento/README.md) · fatta
+247. [Osservazione strutturata](08-forme-che-vengono-dalla-didattica/247-osservazione-strutturata/README.md) · fatta
+248. [Esperimento controllato](08-forme-che-vengono-dalla-didattica/248-esperimento-controllato/README.md) · fatta
 249. [Taccuino di campo (nature journaling)](08-forme-che-vengono-dalla-didattica/249-taccuino-di-campo-nature-journaling/README.md) · —
 250. [Scienza partecipata (citizen science)](08-forme-che-vengono-dalla-didattica/250-scienza-partecipata-citizen-science/README.md) · —
 251. [Storia orale](08-forme-che-vengono-dalla-didattica/251-storia-orale/README.md) · —
