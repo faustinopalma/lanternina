@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 180 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 184 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -191,10 +191,10 @@
 172. [Cubo di Rubik e combinatori](05-enigmi/172-cubo-di-rubik-e-combinatori/README.md) · fatta
 173. [Puzzle a bilanciamento](05-enigmi/173-puzzle-a-bilanciamento/README.md) · fatta
 174. [Puzzle idraulico](05-enigmi/174-puzzle-idraulico/README.md) · fatta
-175. [Puzzle ottico](05-enigmi/175-puzzle-ottico/README.md) · —
-176. [Puzzle acustico](05-enigmi/176-puzzle-acustico/README.md) · —
-177. [Puzzle magnetico](05-enigmi/177-puzzle-magnetico/README.md) · —
-178. [Puzzle di attrito e equilibrio](05-enigmi/178-puzzle-di-attrito-e-equilibrio/README.md) · —
+175. [Puzzle ottico](05-enigmi/175-puzzle-ottico/README.md) · fatta
+176. [Puzzle acustico](05-enigmi/176-puzzle-acustico/README.md) · fatta
+177. [Puzzle magnetico](05-enigmi/177-puzzle-magnetico/README.md) · fatta
+178. [Puzzle di attrito e equilibrio](05-enigmi/178-puzzle-di-attrito-e-equilibrio/README.md) · fatta
 179. [Chiave nascosta](05-enigmi/179-chiave-nascosta/README.md) · —
 180. [Combinazione da comporre](05-enigmi/180-combinazione-da-comporre/README.md) · —
 181. [Percorso lineare](05-enigmi/181-percorso-lineare/README.md) · —
