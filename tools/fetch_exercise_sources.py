@@ -880,6 +880,48 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-metodo-socratico", "https://it.wikipedia.org/wiki/Metodo_socratico"),
         ("it-teeteto", "https://it.wikipedia.org/wiki/Teeteto"),
     ],
+    "didattica, capitolo 8, secondo blocco": [
+        # project-based-learning, webquest, learning-by-teaching e flipped-classroom
+        # sono gia nei gruppi "valutazione e didattica" e "supporti".
+        ("jigsaw-teaching", "https://en.wikipedia.org/wiki/Jigsaw_(teaching_technique)"),
+        ("reverse-jigsaw", "https://en.wikipedia.org/wiki/Reverse_jigsaw"),
+        ("think-pair-share", "https://en.wikipedia.org/wiki/Think-pair-share"),
+        ("peer-learning", "https://en.wikipedia.org/wiki/Peer_learning"),
+        ("cooperative-learning", "https://en.wikipedia.org/wiki/Cooperative_learning"),
+        ("elliot-aronson", "https://en.wikipedia.org/wiki/Elliot_Aronson"),
+        ("active-learning", "https://en.wikipedia.org/wiki/Active_learning"),
+        ("experiential-learning", "https://en.wikipedia.org/wiki/Experiential_learning"),
+        ("howard-barrows", "https://en.wikipedia.org/wiki/Howard_Barrows"),
+        ("small-group-learning", "https://en.wikipedia.org/wiki/Small_group_learning"),
+        (
+            "constructivist-teaching-methods",
+            "https://en.wikipedia.org/wiki/Constructivist_teaching_methods",
+        ),
+        ("teaching-method", "https://en.wikipedia.org/wiki/Teaching_method"),
+        ("design-based-learning", "https://en.wikipedia.org/wiki/Design-based_learning"),
+        ("phenomenon-based-learning", "https://en.wikipedia.org/wiki/Phenomenon-based_learning"),
+        (
+            "it-apprendimento-cooperativo",
+            "https://it.wikipedia.org/wiki/Apprendimento_cooperativo",
+        ),
+        (
+            "it-apprendimento-cooperativo-in-aula",
+            "https://it.wikipedia.org/wiki/Apprendimento_cooperativo_in_aula",
+        ),
+        (
+            "it-apprendimento-basato-sui-problemi",
+            "https://it.wikipedia.org/wiki/Apprendimento_basato_sui_problemi",
+        ),
+        (
+            "it-apprendimento-collaborativo",
+            "https://it.wikipedia.org/wiki/Apprendimento_collaborativo",
+        ),
+        ("it-community-of-learners", "https://it.wikipedia.org/wiki/Community_of_learners"),
+        ("it-apprendimento-ancorato", "https://it.wikipedia.org/wiki/Apprendimento_ancorato"),
+        ("it-apprendimento-autentico", "https://it.wikipedia.org/wiki/Apprendimento_autentico"),
+        ("it-tutorial", "https://it.wikipedia.org/wiki/Tutorial"),
+        ("it-didattica-collaborativa", "https://it.wikipedia.org/wiki/Didattica_collaborativa"),
+    ],
 }
 
 
