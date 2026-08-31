@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 214 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 219 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -231,11 +231,11 @@
 
 ## 7. Vincoli formali
 
-209. [Lipogramma](07-vincoli-formali/209-lipogramma/README.md) · —
-210. [Monovocalismo](07-vincoli-formali/210-monovocalismo/README.md) · —
-211. [Tautogramma](07-vincoli-formali/211-tautogramma/README.md) · —
-212. [S+7](07-vincoli-formali/212-s-7/README.md) · —
-213. [Univocalico, palindromo, anagramma](07-vincoli-formali/213-univocalico-palindromo-anagramma/README.md) · —
+209. [Lipogramma](07-vincoli-formali/209-lipogramma/README.md) · fatta
+210. [Monovocalismo](07-vincoli-formali/210-monovocalismo/README.md) · fatta
+211. [Tautogramma](07-vincoli-formali/211-tautogramma/README.md) · fatta
+212. [S+7](07-vincoli-formali/212-s-7/README.md) · fatta
+213. [Univocalico, palindromo, anagramma](07-vincoli-formali/213-univocalico-palindromo-anagramma/README.md) · fatta
 214. [Vincolo di lunghezza](07-vincoli-formali/214-vincolo-di-lunghezza/README.md) · —
 215. [Vincolo di forma](07-vincoli-formali/215-vincolo-di-forma/README.md) · —
 216. [Vincolo di persona](07-vincoli-formali/216-vincolo-di-persona/README.md) · —
