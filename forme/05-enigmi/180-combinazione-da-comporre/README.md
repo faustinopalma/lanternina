@@ -43,7 +43,7 @@ Nelle escape room la stessa struttura c'è ma con un nome diverso: gli enigmi «
 - **Voce 170, serratura a combinazione** — il giunto che accetta o rifiuta. Sono fatte per stare insieme e sono due cose.
 - **Voce 179, chiave nascosta** — l'altro pezzo di caccia di questo blocco; là si trova una cosa sola, qui se ne compongono quattro.
 - **Voce 182, percorso a imbuto** — la stessa architettura vista come forma di percorso invece che come contenuto di un codice.
-- **Voce 184, meta-enigma** — capitolo 6, dove il metaenigma sarà descritto come struttura di un evento con la sua storia. **Qui si descrive che cosa chiede a chi riceve il foglio.**
+- **Voce 184, meta-enigma** — la voce successiva ma due, nella stessa sezione di questo capitolo, e la sua glossa dice che è la struttura delle *puzzle hunt*. **Il confine con questa e con la voce 182, percorso a imbuto va scritto quando si scriverà quella**, perché le tre descrivono la stessa architettura da tre lati.
 - **Voce 131, codice a numeri (A=1)** e **voce 5, corrispondenza (matching)** — i modi di trasformare una risposta in una cifra, cioè l'estrazione.
 
 ## Che cosa se ne sa

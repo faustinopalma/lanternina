@@ -32,7 +32,7 @@ L'esempio canonico è quello che la fonte porta, e va riportato perché è il mo
 
 **Il difetto strutturale è documentato e ha un nome.** La struttura stessa rende spesso possibile indovinare, con più o meno sicurezza, le risposte degli enigmi che alimentano il finale **senza risolverli**: si chiama **backsolving**. Chi ha risolto BLACK, HAMMER, FROST, KNIFE e ha capito che il meta è JACK può indovinare UNION invece di risolvere il quinto enigma. La fonte è onesta sul limite: **non è infallibile** — lo stesso solutore potrebbe indovinare SPRING-HEELED con la stessa facilità, e sbagliare.
 
-Il parente stretto sta al capitolo 6 e va nominato: la voce 184, meta-enigma. **Là il metaenigma sarà descritto come la struttura di un evento, con la storia e l'itinerario che lo tengono insieme; qui si descrive che cosa chiede a chi riceve il foglio.** Le tre forme dell'ordine sono divise fra i due capitoli — lineare e a imbuto qui, aperto e meta là — e questo è un fatto sull'elenco più che sulle forme.
+**E qui c'è una cosa che riguarda l'elenco e non la forma, e va scritta.** La voce 184, meta-enigma sta due voci più avanti, nella stessa sezione di questo capitolo, e la sua glossa dice «le soluzioni degli enigmi precedenti sono i dati del finale; è la struttura delle puzzle hunt» — cioè **la stessa cosa descritta qui.** Questa voce è stata scritta come forma di percorso: che cosa chiede a chi riceve il foglio, e che topologia ha. Quando si scriverà la 184 bisognerà o darle un taglio diverso — l'evento, la storia, il modo in cui si costruisce una serie —, oppure constatare che l'elenco contiene due volte la stessa voce. **La rassegna dovrà decidere, e la decisione va presa lì e non qui.**
 
 ## Varianti e parenti
 
@@ -42,8 +42,8 @@ Il parente stretto sta al capitolo 6 e va nominato: la voce 184, meta-enigma. **
 - **Rally** — variante lineare, in cui ogni enigma sblocca la posizione del prossimo. È la voce 181, percorso lineare.
 - **Voce 180, combinazione da comporre** — la stessa architettura vista come contenuto di un codice invece che come forma di percorso. **Là il tema è che le cifre vengono da posti diversi, qui che nessuna di esse dice niente da sola.**
 - **Voce 170, serratura a combinazione** — il giunto che accetta o rifiuta il risultato del finale.
-- **Voce 183, percorso aperto** — capitolo 6: tutto disponibile e nessun finale che raccoglie.
-- **Voce 184, meta-enigma** — capitolo 6, dove sarà l'architettura di un evento.
+- **Voce 183, percorso aperto** — tutto disponibile e nessun finale che raccoglie. È la terza delle tre forme dell'ordine, e sta subito dopo.
+- **Voce 184, meta-enigma** — la stessa architettura, ancora da scrivere, nella stessa sezione. Vedi sopra.
 - **Voce 155, nonogramma / picross** — l'altra forma dell'elenco in cui il risultato è una figura che appare, e in cui riconoscerla è la verifica.
 
 ## Che cosa se ne sa

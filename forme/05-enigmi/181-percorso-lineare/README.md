@@ -30,7 +30,7 @@ Nelle escape room la struttura è la stessa e la fonte la nomina di sfuggita: gl
 
 **Quell'apparato non è un accessorio: è la conseguenza obbligata della forma.** Una stanza che dura dai 45 ai 60 minuti e che è fatta a catena, senza indizi, finisce per la maggior parte delle squadre al primo passo che non viene. La fonte registra anche il resto della conseguenza: i giocatori «falliscono» se non completano tutti gli enigmi nel tempo, ma la maggior parte dei gestori cerca di far divertire i clienti anche quando non vincono, e alcune sedi concedono tempo in più o una visita accelerata a quello che restava.
 
-Il parente stretto sta al capitolo 6 e conviene nominarlo subito: la voce 183, percorso aperto, dove tutto è disponibile fin dall'inizio e l'ordine lo sceglie chi gioca. **Le tre forme dell'ordine — lineare, a imbuto, aperto — stanno divise fra due capitoli**, e questo è un fatto sull'elenco più che sulle forme.
+Il parente stretto è la voce successiva ma una, nella stessa sezione: la voce 183, percorso aperto, dove tutto è disponibile fin dall'inizio e l'ordine lo sceglie chi gioca. **Le tre forme dell'ordine — lineare, a imbuto, aperto — stanno di seguito nell'elenco**, dalla 181 alla 183, e vanno lette insieme.
 
 ## Varianti e parenti
 
@@ -39,8 +39,8 @@ Il parente stretto sta al capitolo 6 e conviene nominarlo subito: la voce 183, p
 - **Catena di posizioni** — ogni passo dice dove sta il prossimo foglio; leggere avanti sarebbe utile e va impedito nascondendo.
 - **Catena con salvagente** — la stessa cosa più un modo di saltare un passo, a un prezzo.
 - **Voce 182, percorso a imbuto** — parallelo invece che in fila, e senza punto di rottura unico.
-- **Voce 183, percorso aperto** — capitolo 6: tutto subito, e l'ordine lo sceglie chi gioca.
-- **Voce 187, indizio a scaglioni** — capitolo 6: l'aiuto che arriva a livelli. È il salvagente di questa forma, descritto là.
+- **Voce 183, percorso aperto** — tutto subito, e l'ordine lo sceglie chi gioca. È la terza delle tre forme dell'ordine.
+- **Voce 187, indizio a scaglioni** — l'aiuto che arriva a livelli: è il salvagente di questa forma, e sarà descritto lì.
 - **Voce 180, combinazione da comporre** — l'altro modo di legare più enigmi: là si raccolgono pezzi in parallelo, qui si va in fila.
 - **Voce 164, labirinto su carta** — un labirinto è una catena con dei bivi; qui i bivi non ci sono.
 - **Voce 102, ricetta** — una sequenza da eseguire, e la somiglianza è formale: in una ricetta ogni passo si legge, qui ogni passo va aperto.
