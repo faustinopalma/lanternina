@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 210 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 214 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -224,10 +224,10 @@
 202. [Legend tripping](06-cacce-percorsi-mondi/202-legend-tripping/README.md) · fatta
 203. [Gioco pervasivo](06-cacce-percorsi-mondi/203-gioco-pervasivo/README.md) · fatta
 204. [ARG (alternate reality game)](06-cacce-percorsi-mondi/204-arg-alternate-reality-game/README.md) · fatta
-205. [Gioco a scatola nera](06-cacce-percorsi-mondi/205-gioco-a-scatola-nera/README.md) · —
-206. [Puzzle hunt](06-cacce-percorsi-mondi/206-puzzle-hunt/README.md) · —
-207. [Gara a tappe (Amazing Race)](06-cacce-percorsi-mondi/207-gara-a-tappe-amazing-race/README.md) · —
-208. [Gioco di sopravvivenza / assassino](06-cacce-percorsi-mondi/208-gioco-di-sopravvivenza-assassino/README.md) · —
+205. [Gioco a scatola nera](06-cacce-percorsi-mondi/205-gioco-a-scatola-nera/README.md) · fatta
+206. [Puzzle hunt](06-cacce-percorsi-mondi/206-puzzle-hunt/README.md) · fatta
+207. [Gara a tappe (Amazing Race)](06-cacce-percorsi-mondi/207-gara-a-tappe-amazing-race/README.md) · fatta
+208. [Gioco di sopravvivenza / assassino](06-cacce-percorsi-mondi/208-gioco-di-sopravvivenza-assassino/README.md) · fatta
 
 ## 7. Vincoli formali
 
