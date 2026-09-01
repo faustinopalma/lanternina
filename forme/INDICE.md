@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 305 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 310 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -334,11 +334,11 @@
 
 ## 11. Come finisce
 
-300. [Finisce quando è finita](11-come-finisce/300-finisce-quando-e-finita/README.md) · —
-301. [Finisce quando si smette](11-come-finisce/301-finisce-quando-si-smette/README.md) · —
-302. [Finisce con un oggetto](11-come-finisce/302-finisce-con-un-oggetto/README.md) · —
-303. [Finisce con una consegna](11-come-finisce/303-finisce-con-una-consegna/README.md) · —
-304. [Finisce con una scoperta](11-come-finisce/304-finisce-con-una-scoperta/README.md) · —
+300. [Finisce quando è finita](11-come-finisce/300-finisce-quando-e-finita/README.md) · fatta
+301. [Finisce quando si smette](11-come-finisce/301-finisce-quando-si-smette/README.md) · fatta
+302. [Finisce con un oggetto](11-come-finisce/302-finisce-con-un-oggetto/README.md) · fatta
+303. [Finisce con una consegna](11-come-finisce/303-finisce-con-una-consegna/README.md) · fatta
+304. [Finisce con una scoperta](11-come-finisce/304-finisce-con-una-scoperta/README.md) · fatta
 305. [Finisce con un cambiamento nella stanza](11-come-finisce/305-finisce-con-un-cambiamento-nella-stanza/README.md) · —
 306. [Finisce aperta](11-come-finisce/306-finisce-aperta/README.md) · —
 307. [Finisce con un esito giusto o sbagliato](11-come-finisce/307-finisce-con-un-esito-giusto-o-sbagliato/README.md) · —
