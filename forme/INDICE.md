@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 342 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 346 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -379,10 +379,10 @@
 339. [Poesia enigmatica](12-enigmistica-classica/339-poesia-enigmatica/README.md) · fatta
 340. [Quesito narrativo](12-enigmistica-classica/340-quesito-narrativo/README.md) · fatta
 341. [Crittografia pura](12-enigmistica-classica/341-crittografia-pura/README.md) · fatta
-342. [Crittografia perifrastica](12-enigmistica-classica/342-crittografia-perifrastica/README.md) · —
-343. [Crittografia mnemonica](12-enigmistica-classica/343-crittografia-mnemonica/README.md) · —
-344. [Crittografia sinonimica](12-enigmistica-classica/344-crittografia-sinonimica/README.md) · —
-345. [Cambio di spaziatura](12-enigmistica-classica/345-cambio-di-spaziatura/README.md) · —
+342. [Crittografia perifrastica](12-enigmistica-classica/342-crittografia-perifrastica/README.md) · fatta
+343. [Crittografia mnemonica](12-enigmistica-classica/343-crittografia-mnemonica/README.md) · fatta
+344. [Crittografia sinonimica](12-enigmistica-classica/344-crittografia-sinonimica/README.md) · fatta
+345. [Cambio di spaziatura](12-enigmistica-classica/345-cambio-di-spaziatura/README.md) · fatta
 346. [Rebus](12-enigmistica-classica/346-rebus/README.md) · fatta
 347. [Rebus stereoscopico](12-enigmistica-classica/347-rebus-stereoscopico/README.md) · —
 348. [Rebus a domanda](12-enigmistica-classica/348-rebus-a-domanda/README.md) · —
