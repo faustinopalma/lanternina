@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 346 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 351 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -384,11 +384,11 @@
 344. [Crittografia sinonimica](12-enigmistica-classica/344-crittografia-sinonimica/README.md) · fatta
 345. [Cambio di spaziatura](12-enigmistica-classica/345-cambio-di-spaziatura/README.md) · fatta
 346. [Rebus](12-enigmistica-classica/346-rebus/README.md) · fatta
-347. [Rebus stereoscopico](12-enigmistica-classica/347-rebus-stereoscopico/README.md) · —
-348. [Rebus a domanda](12-enigmistica-classica/348-rebus-a-domanda/README.md) · —
-349. [Acrostico](12-enigmistica-classica/349-acrostico/README.md) · —
-350. [Mesostico, telestico](12-enigmistica-classica/350-mesostico-telestico/README.md) · —
-351. [Frase bipartita](12-enigmistica-classica/351-frase-bipartita/README.md) · —
+347. [Rebus stereoscopico](12-enigmistica-classica/347-rebus-stereoscopico/README.md) · fatta
+348. [Rebus a domanda](12-enigmistica-classica/348-rebus-a-domanda/README.md) · fatta
+349. [Acrostico](12-enigmistica-classica/349-acrostico/README.md) · fatta
+350. [Mesostico, telestico](12-enigmistica-classica/350-mesostico-telestico/README.md) · fatta
+351. [Frase bipartita](12-enigmistica-classica/351-frase-bipartita/README.md) · fatta
 352. [Cruciverba](12-enigmistica-classica/352-cruciverba/README.md) · —
 353. [Cruciverba senza schema](12-enigmistica-classica/353-cruciverba-senza-schema/README.md) · —
 354. [Cruciverba crittografato](12-enigmistica-classica/354-cruciverba-crittografato/README.md) · —
