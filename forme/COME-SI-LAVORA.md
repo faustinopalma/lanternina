@@ -22,7 +22,9 @@ Le voci dei capitoli 12 (enigmistica classica), 13 (giochi matematici e ricreati
 
 Si dichiara con la riga `- **Contratto** voce breve`, **subito dopo «In una riga»**. Le righe di intestazione diventano sei, quindi il comando del §8 va lanciato con `-TotalCount 8`. `forme_check.py` non guarda l'intestazione e passa comunque.
 
-**Quando un blocco è fatto di forme che si somigliano, si scrive per primo il termine di paragone** — la voce in cui la variabile del blocco prende il valore più povero — e le altre si descrivono per differenza da lei. La regola ha funzionato sei volte: voci 287, 298, 300, 310, 314 e 321. **La riga di differenza va stampata dentro ogni voce**, in fondo alla sezione della rassegna, perché chi apre una voce sola non ha in mente le altre. **Povero non vuol dire povera**: la voce in cui la variabile vale meno può essere quella con più cose dentro, ed è successo alla voce 321, antipodo.
+**Quando un blocco è fatto di forme che si somigliano, si scrive per primo il termine di paragone** — la voce in cui la variabile del blocco prende il valore più povero — e le altre si descrivono per differenza da lei. La regola ha funzionato otto volte: voci 287, 298, 300, 310, 314, 321, 323 e 328. **La riga di differenza va stampata dentro ogni voce**, in fondo alla sezione della rassegna, perché chi apre una voce sola non ha in mente le altre. **Povero non vuol dire povera**: la voce in cui la variabile vale meno può essere quella con più cose dentro, ed è successo alla voce 321, antipodo.
+
+**Un blocco può contenere una voce che sulla variabile non sta, e la si dichiara invece di forzarla.** Nel blocco 328-332 la cerniera apparteneva a un'altra famiglia; scriverlo dentro la voce è costato una riga, e cercare una variabile che le comprendesse tutte e cinque sarebbe costato una voce sbagliata.
 
 ## 3. Ambiente
 
@@ -42,7 +44,7 @@ Si dichiara con la riga `- **Contratto** voce breve`, **subito dopo «In una rig
 1. `build/check_titoli_<n>.py` manda `https://<lang>.wikipedia.org/w/api.php?action=query&format=json&redirects=1&titles=A|B|C…` e stampa per ogni titolo se esista **e dove rimandi**. Quaranta titoli per chiamata. **Serve sempre l'intestazione `{"User-Agent": "lanternina-research/1.0"}`: senza, Wikipedia risponde 403.** Si legge la freccia, non solo il sì.
 2. Poi si cerca il nome nello script, con un ciclo solo su tutti i candidati:
    `foreach ($x in $lista) { $m = Select-String -Path tools\fetch_exercise_sources.py -Pattern $x -SimpleMatch; if ($m) { "GIA' $x" } }`
-   **Attenzione: questo controllo cerca l'indirizzo**, quindi non trova una pagina che sta in casa sotto un titolo che rimanda — `Score_(video_games)` non risultava presente perché era stata presa da `Score_(game)`. Nella lista vanno messi anche i titoli-rimando noti.
+   **Attenzione: questo controllo cerca l'indirizzo**, quindi sbaglia nei due versi. Per difetto non trova una pagina che sta in casa sotto un titolo che rimanda — `Score_(video_games)` non risultava presente perché era stata presa da `Score_(game)`; nella lista vanno messi anche i titoli-rimando noti. Per eccesso segnala presente un titolo che è **sottostringa** di un altro indirizzo — `Permutation` dentro `Riffle_shuffle_permutation` —, e il rimedio è cercare `/wiki/<Titolo>"` con la virgoletta finale invece del titolo nudo.
 3. Poi `build/check_fonti_<n>.py` sulle pagine scaricate **e su tutte quelle che si intende citare**: stampa prime tre righe e dimensioni, **e trova i doppioni sul corpo del testo ignorando la riga «Retrieved from»**, che è l'unico modo che funziona.
 
 La ricerca a testo pieno su `https://en.wikipedia.org/w/index.php?search=<parole>&title=Special:Search&fulltext=1` resta utile per un'altra cosa: fa emergere pagine che nessuno cercava e che servono.
@@ -101,6 +103,9 @@ Lettura: la ricerca testuale nel workspace salta le cartelle gitignored, quindi 
 - **Il tetto della riga va messo nell'asserzione prima di scrivere il testo del blocco.** È la trappola più ricorrente di tutte, e la rilettura non la prende mai.
 - **Quando si modella un errore umano, il modello deve poter produrre gli stessi oggetti che produce la mano**: niente divisione intera dove una persona scriverebbe una frazione.
 - **Un enigma inventato per un esempio va risolto prima di dichiararlo unico.** Non si scrive «una sola risposta» senza averle contate.
+- **Una funzione che «trova» un oggetto dentro uno spazio va scritta perché li trovi tutti**, e poi si filtra. La prima risposta non è la risposta: cercando la prima parola di un intarsio dentro il totale, la prima lettura valida non era quella della fonte, e la fonte non era in errore — erano due letture entrambe valide.
+- **Il conto delle maschere e il conto degli oggetti distinti divergono** ogni volta che i pezzi hanno simboli in comune: ventun modi di intrecciare *sano* e *ponte* danno diciotto stringhe. La differenza va misurata, non assunta uguale a zero.
+- **Un vocabolario ricavato dalle pagine scaricate serve a cercare, non a contare.** Le pagine italiane in casa danno quasi trentamila stringhe di lettere, con dentro nomi propri, parole inglesi e frammenti: come strumento di ricerca funziona — ha ritrovato da solo l'esempio di una fonte —, ma un conteggio fatto sopra non è stampabile, perché andrebbe elencato e la maggior parte delle righe non sono parole.
 - **Una costante presa dal codice non si ricopia: si legge**, con una regex, così che un cambiamento nel codice faccia fallire lo script invece di smentire la voce in silenzio.
 - **Una controprova scritta a mano dentro uno script è una controprova finta.** Quando due metodi discordano, il primo sospettato è quello scritto per ultimo, e il secondo è il dominio.
 - **Uno strumento di controllo può essere incompleto e dire di sì.** Quando un controllo segnala un falso allarme, la prima cosa da guardare è il controllo.

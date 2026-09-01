@@ -1573,6 +1573,20 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
             "https://en.wikipedia.org/wiki/Riffle_shuffle_permutation",
         ),
     ],
+    "enigmistica, capitolo 12, blocco 328-332": [
+        ("it-cernita", "https://it.wikipedia.org/wiki/Cernita"),
+        ("permutation", "https://en.wikipedia.org/wiki/Permutation"),
+        ("factorial", "https://en.wikipedia.org/wiki/Factorial"),
+        ("multinomial-theorem", "https://en.wikipedia.org/wiki/Multinomial_theorem"),
+        ("multiset", "https://en.wikipedia.org/wiki/Multiset"),
+        ("it-coefficiente-multinomiale", "https://it.wikipedia.org/wiki/Coefficiente_multinomiale"),
+        ("anagrams-game", "https://en.wikipedia.org/wiki/Anagrams_(game)"),
+        ("anagram-dictionary", "https://en.wikipedia.org/wiki/Anagram_dictionary"),
+        ("anagrammatic-poetry", "https://en.wikipedia.org/wiki/Anagrammatic_poetry"),
+        ("jumble", "https://en.wikipedia.org/wiki/Jumble"),
+        ("word-square", "https://en.wikipedia.org/wiki/Word_square"),
+        ("heaps-algorithm", "https://en.wikipedia.org/wiki/Heap%27s_algorithm"),
+    ],
 }
 
 

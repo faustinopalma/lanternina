@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 331 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 337 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -365,13 +365,13 @@
 325. [Sciarada incatenata](12-enigmistica-classica/325-sciarada-incatenata/README.md) · fatta
 326. [Lucchetto](12-enigmistica-classica/326-lucchetto/README.md) · fatta
 327. [Lucchetto riflesso](12-enigmistica-classica/327-lucchetto-riflesso/README.md) · fatta
-328. [Incastro](12-enigmistica-classica/328-incastro/README.md) · —
-329. [Cerniera](12-enigmistica-classica/329-cerniera/README.md) · —
-330. [Intarsio (tarsia)](12-enigmistica-classica/330-intarsio-tarsia/README.md) · —
-331. [Anagramma](12-enigmistica-classica/331-anagramma/README.md) · —
-332. [Anagramma a frase](12-enigmistica-classica/332-anagramma-a-frase/README.md) · —
+328. [Incastro](12-enigmistica-classica/328-incastro/README.md) · fatta
+329. [Cerniera](12-enigmistica-classica/329-cerniera/README.md) · fatta
+330. [Intarsio (tarsia)](12-enigmistica-classica/330-intarsio-tarsia/README.md) · fatta
+331. [Anagramma](12-enigmistica-classica/331-anagramma/README.md) · fatta
+332. [Anagramma a frase](12-enigmistica-classica/332-anagramma-a-frase/README.md) · fatta
 333. [Bifronte](12-enigmistica-classica/333-bifronte/README.md) · fatta
-334. [Palindromo](12-enigmistica-classica/334-palindromo/README.md) · —
+334. [Palindromo](12-enigmistica-classica/334-palindromo/README.md) · fatta
 335. [Bisenso](12-enigmistica-classica/335-bisenso/README.md) · —
 336. [Monoverbo](12-enigmistica-classica/336-monoverbo/README.md) · —
 337. [Indovinello in versi](12-enigmistica-classica/337-indovinello-in-versi/README.md) · fatta

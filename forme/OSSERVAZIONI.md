@@ -2211,6 +2211,60 @@ Le voci 323-327 aprono la sezione 12.2 dell'elenco, «Giochi che uniscono o divi
 
 **Una voce scritta prima che il contratto ridotto esistesse resta lunga, e va bene così.** La voce 326, lucchetto è del 30 agosto e non porta la riga **Contratto**; ampliarla ha aggiunto sessantuno righe e ne ha tolte tre. Alla rassegna il capitolo 12 avrà voci di due lunghezze, e la ragione è una data e non una scelta di merito.
 
+## Il ventisettesimo scarico di fonti, 1 settembre 2026
+
+Per il blocco 328-332 sono state scaricate **12 pagine nuove** — il gruppo «enigmistica, capitolo 12, blocco 328-332» in `tools/fetch_exercise_sources.py`. Le pagine di testo sono passate da 1 225 a **1 237**. **Zero 404 su dodici indirizzi, quindicesima sessione di fila**, e il conteggio finale dello scarico dice 1 246 su 1 250: i quattro mancanti sono i vecchi, già noti.
+
+Il controllo dei titoli, fatto su ventinove candidati in due lingue e in due chiamate, ha dato **quattro inesistenti**: `Frase_a_incastro`, `Enigmistica_italiana`, `Anagramma_a_frase` e `Lettura_alterna`. Le prime tre stavano nell'elenco delle fonti del prompt come titoli «da prendere». Due rimandi da dichiarare: `Antigram` porta a `Anagram`, che era già in casa, e `Anagrammatic_poem` porta a `Anagrammatic poetry`.
+
+**Le venti fonti che il prompt dichiarava già in casa c'erano tutte e venti, con quel nome.** Terza sessione di fila in cui il controllo non trova niente sul lato dei file locali, mentre continua a trovare qualcosa sul lato dei titoli da scaricare.
+
+`it-cernita.txt` è di 2 246 byte, cioè sotto la soglia dei due kilobyte e mezzo, e **non è una disambiguazione**: ha la riga di disambiguazione in cima e sotto una pagina vera, con definizione, inventore, data ed esempi. La soglia resta un indizio utile, ma la prima riga va letta comunque.
+
+## Trappole nuove, pagate il 1 settembre 2026, diciannovesimo giro
+
+**Il controllo dei nomi già presenti nello script dà falsi positivi per sottostringa.** Cercando `Permutation` in `tools/fetch_exercise_sources.py` risultava «già presente», e la riga trovata era `Riffle_shuffle_permutation`. La pagina `Permutation` non c'era, ed è servita. Il rimedio è cercare l'indirizzo intero — `/wiki/<Titolo>"` con la virgoletta finale — invece del titolo nudo. È l'altra faccia della trappola già scritta: quel controllo cerca l'indirizzo, e quindi sbaglia sia per difetto (i rimandi) sia per eccesso (le sottostringhe).
+
+**Una funzione che «trova» un oggetto dentro uno spazio va scritta perché li trovi tutti.** Il primo `leggi_intarsio` tornava la prima lettura buona e dava *matassa / itro* invece di *matassa / tiro*: lo script non era sbagliato, era la fonte a non avere una lettura sola. Riscritto perché le enumeri tutte e poi si filtri, ha mostrato che **tutti e due gli esempi di `it-intarsio.txt` ammettono due letture**, il che è un fatto sulla forma. Quando si cerca dentro uno spazio, la prima risposta non è la risposta.
+
+**Ventuno maschere possono dare diciotto stringhe.** Intrecciando *sano* e *ponte* le maschere combinatorie sono 21 e le stringhe distinte 18, perché la N e la O stanno in tutte e due le parole. Il conto combinatorio e il conto degli oggetti distinti divergono ogni volta che i pezzi hanno simboli in comune, e la differenza va misurata invece che assunta uguale a zero.
+
+**Un vocabolario ricavato dalle fonti scaricate serve a cercare, non a contare.** Le pagine italiane in casa danno 28 754 stringhe di lettere, e dentro ci sono nomi propri, parole inglesi e frammenti. Come strumento di ricerca ha funzionato bene — cercando gli intarsi ha ritrovato da solo l'esempio della fonte, *asine / censo = ascensione* — ma un conteggio fatto sopra non è stampabile, perché richiederebbe di elencare le 337 righe che lo producono e la maggior parte non sono parole. **Cercare sì, misurare no**, e nella voce lo si dichiara al posto del numero.
+
+**Un primato storico può reggere su un segno che non è una lettera.** Il primo palindromo di frase inglese, *Lewd did I live, & evil I did dwel* di John Taylor, 1614, è palindromo se la *&* non si legge e smette di esserlo se la si scrive *and*. La pagina lo dice fra parentesi, chiamandolo «una specie di trucco», e la cosa si vede solo rifacendo il conto.
+
+**Una lista di primati può usare tre unità di misura senza dirlo.** I testi palindromi più lunghi sono dati in lettere (25 905 per l'italiano, 58 795 per l'inglese), in caratteri (6 093) e in parole (31 954), nella stessa fila. Confrontabili sono soltanto i primi, e il rapporto è 2,27. Nessuna delle due pagine lo segnala.
+
+**Un anagramma storico può essere imperfetto esattamente quanto le convenzioni del suo secolo permettevano.** In *Eleanor Audeley* / *Reveale, O Daniel*, 1634, avanzano una U e una Y da una parte e una V e una I dall'altra: sono gli scambi U per V e Y per I che quel secolo ammetteva, e che `anagram.txt` documenta due sezioni più su. La pagina avverte in astratto che il materiale storico va letto con le convenzioni del suo tempo; il conto lo dimostra sul suo stesso esempio.
+
+## Quello che ha detto il quarto blocco del capitolo dell'enigmistica, e con esso la sezione 12.2 si chiude
+
+Sei voci nuove — 328, 329, 330, 331, 332 e 334 — più la voce 333, bifronte ampliata con una fonte che il 30 agosto non c'era. Ventisette su quarantotto nel capitolo 12, e la sezione «Giochi che uniscono o dividono parole» è completa dalla voce 323, sciarada alla voce 334, palindromo.
+
+**Il termine di paragone scritto per primo ha funzionato per l'ottava volta**, dopo la voce 287, assegnata dal sistema, la voce 298, non corretta, la voce 300, finisce quando è finita, la voce 310, non finisce, la voce 314, scarto, la voce 321, antipodo e la voce 323, sciarada. La variabile del blocco è **quanta libertà ha l'ordine delle lettere nel totale**, il valore più povero è la voce 328, incastro, e la riga di differenza è stampata dentro le altre tre. **Il blocco conteneva però una voce che su quella variabile non sta**: la voce 329, cerniera butta via delle lettere invece di conservarle, e appartiene alla griglia della voce 326, lucchetto. Scriverlo nella voce è costato una riga e ha risolto il problema; forzarla sulla variabile sarebbe costato di più.
+
+**Quattro giochi sono le quattro classi di una sola partizione, e nessuna fonte la disegna.** Su un totale di otto lettere le spartizioni fra due parole sono 127, e il numero di giunzioni le classifica: 7 sciarade, 21 incastri, 42 intarsi, 57 sciarade alterne. Verificato per formula binomiale e per enumerazione in `build/check_328.py`. È la seconda struttura nascosta di questa sezione dopo la griglia dei quattro biscarti della voce 326, lucchetto, ed è venuta fuori nello stesso modo: mettendo in fila formule che le pagine danno una per una. Alla rassegna la domanda generale è: **quante famiglie di forme dell'elenco sono in realtà i valori di un solo parametro.**
+
+**La sezione si ordina con dei numeri.** Sulle stesse otto lettere: 7 sciarade, 21 incastri, 42 intarsi, 248 intrecci distinti, 40 320 anagrammi, 5 160 960 anagrammi a frase. È la prima volta nell'enciclopedia che una sezione intera si dispone su una scala misurata invece che su una successione di descrizioni, e il salto fra i due estremi è di sei ordini di grandezza. — voce 332, anagramma a frase.
+
+**La ciclicità della cerniera è un teorema e si dimostra in tre righe.** Da ZX / YZ = XY seguono YZ / XY = ZX e XY / ZX = YZ per qualunque Z, X, Y, e la fonte lo afferma senza dimostrarlo. Ne segue la cosa che interessa: **nella cerniera non c'è un totale**, i tre ruoli si scambiano, e la stessa terna dà tre esercizi con lo stesso materiale. È l'unica forma delle quarantotto del capitolo 12 di cui si possa dire. Alla rassegna: quante forme dell'elenco reggono più di una consegna sullo stesso materiale, perché sono quelle in cui un foglio rende tre volte tanto. — voce 329, cerniera.
+
+**Un invariante rende il controllo dell'errore un conto invece che un giudizio.** Il vettore di Parikh — quante volte compare ogni lettera — è conservato dall'anagramma e calcolabile da chi risponde. Ne segue una classe che il censimento del controllo dell'errore non ha: **la verifica per confutazione**, dove il materiale non contiene la risposta ma contiene abbastanza per bocciare quasi tutte le risposte sbagliate. Alle cinque classi del censimento ne va aggiunta questa, e va cercata in tutto l'elenco. — voce 331, anagramma e voce 332, anagramma a frase.
+
+**Il palindromo è l'unica forma del capitolo 12 la cui proprietà si verifica senza vocabolario**, e la ragione è un teorema di informatica. L'insieme dei palindromi è libero dal contesto e non regolare: leggendo da sinistra a destra non si sa dove sia il mezzo finché non si è finito, quindi verificare richiede memoria. **Su un foglio la memoria è il foglio**, e chi legge può guardare le due estremità insieme: ⌊n/2⌋ confronti, quattro per una parola di nove lettere. È il primo caso in cui un vincolo del formato — la carta — risulta un vantaggio dimostrabile e non una limitazione, e alla rassegna vale la pena cercarne altri. — voce 334, palindromo, `build/check_334.py`.
+
+**Il verso stampabile non è sempre lo stesso.** Alla voce 323, sciarada e alla voce 328, incastro conviene stampare le letture del totale (otto righe, ventuno righe); alla voce 330, intarsio (tarsia) conviene stampare gli intrecci delle due parole (diciotto righe), perché dal totale sarebbero novantanove. Per ogni forma con due versi, quale dei due spazi di ricerca stia su un foglio è una domanda da porre ogni volta, e la risposta cambia.
+
+**Una fonte può portare un numero giusto con il nome sbagliato accanto.** `it-anagramma.txt` chiama *n*! / (*s*₁! … *s*ₖ!) «disposizioni con ripetizione», che sono invece *n*ᵏ; le due pagine inglesi la chiamano permutazione di un multinsieme e portano lo stesso esempio, MISSISSIPPI, 34 650. Il conto italiano è corretto e solo il nome è sbagliato, e questo è il tipo di errore che sopravvive a qualunque rilettura. — voce 331, anagramma.
+
+**Una fonte può dichiarare dimostrabile una cosa e non dimostrarla.** `it-anagramma.txt` afferma che più lettere ha l'esposto, più crescono le frasi di senso compiuto ottenibili, e che «l'incremento nei risultati positivi è dimostrabile col calcolo combinatorio». La direzione è plausibile ma l'argomento manca, e non è banale perché crescono anche i vincoli. Con il vocabolario che avevamo in casa il conto non si può fare bene, e lo si dichiara invece di stamparlo. — voce 332, anagramma a frase.
+
+**Una voce senza fonti può restare giusta, ed è un caso e non un metodo.** La voce 333, bifronte è stata scritta il 30 agosto a memoria, dichiarandolo; `it-bifronte-vero.txt`, arrivata il 1 settembre, conferma definizione, distinzione dal palindromo e variante sillabica. Quello che mancava non erano errori ma **fatti**: la data del 1932 in cui l'enigmistica italiana ufficializzò la distinzione, i nomi francese e inglese — *anacyclique*, *semordnilap* —, e le quattro varianti con lo scarto di un estremo. Alla rassegna vale la pena guardare quante voci marcate *va verificato* stiano così: non sbagliate, ma povere.
+
+**Le glosse sbagliate del capitolo 12 sono adesso sei, e si possono elencare.** Voce 320, metatesi; voce 321, antipodo; voce 325, sciarada incatenata; voce 328, incastro, il cui esempio perde una lettera per strada; voce 329, cerniera, sbagliata due volte nella stessa riga — «lettere centrali» descrive il biscarto centrale e «compaiono in entrambe» descrive il gioco opposto; voce 330, intarsio (tarsia), dove «a lettere alterne» descrive la sciarada alterna e il vincolo su capo e coda non è nominato. A queste si aggiunge la voce 323, sciarada, la cui glossa è giusta e il cui esempio non funziona. Sette righe su quarantotto controllate, e il capitolo non è finito.
+
+**La spiegazione scientifica di un gioco è più interessante del gioco, per la sesta volta**, dopo la voce 333, bifronte, la voce 346, rebus, la voce 316, cambio di lettera, la voce 320, metatesi e le tre sciarade. Qui è la teoria degli automi che spiega perché il palindromo si verifichi guardando e non ricordando.
+
 
 
 
