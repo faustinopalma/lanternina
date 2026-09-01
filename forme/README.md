@@ -30,7 +30,9 @@ Le sezioni:
 6. **Una nostra versione** — un esempio costruito da noi, per esteso e giocabile, con sotto due o tre righe che dicono quale parte fa il lavoro. Dove la forma non sta nel nostro formato, l'esempio la mostra nella sua versione migliore e la voce dice dove si romperebbe.
 7. **Da riprendere alla rassegna** — osservazioni, non conclusioni. Che cosa costerebbe, dove sta la parte interessante, che cosa resterebbe togliendone un pezzo.
 
-**La voce modello** è `02-che-cosa-mette-in-moto-la-risposta/054-misurare/README.md`. Chi comincia una sessione nuova legge questo file e quella voce, e ha tutto.
+**La voce modello** è `02-che-cosa-mette-in-moto-la-risposta/054-misurare/README.md`. Chi comincia una sessione nuova legge questo file, quella voce e `COME-SI-LAVORA.md`, e ha tutto.
+
+`COME-SI-LAVORA.md` raccoglie le parti che non cambiano da una sessione all'altra: ambiente, come si prendono le fonti, le trappole già pagate, la verifica. Il prompt di sessione contiene solo l'obiettivo e quello che è cambiato davvero, e rimanda là per il resto.
 
 ## Come si fa la ricerca su una forma
 
