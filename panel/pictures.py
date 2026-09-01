@@ -135,16 +135,20 @@ class BlobPictureArchive:
         return f"{household_id}/{picture_id}.bmp"
 
     def save(self, record: PictureRecord, image: bytes) -> PictureRecord:
+        metadata = {
+            "theme": record.theme,
+            "createdAt": str(record.created_at),
+            "kind": record.kind,
+        }
+        # Left out rather than written empty: whether the service takes an empty metadata
+        # value has not been measured here, and a refusal would cost the picture itself.
+        if record.display:
+            metadata["display"] = record.display
         self._container.upload_blob(
             name=self._name(record.household_id, record.id),
             data=image,
             overwrite=True,
-            metadata={
-                "theme": record.theme,
-                "createdAt": str(record.created_at),
-                "kind": record.kind,
-                "display": record.display,
-            },
+            metadata=metadata,
             content_type="image/bmp",
         )
         return record
