@@ -4,6 +4,8 @@ Un quaderno di appunti, non un elenco di decisioni. **Niente qui è stato deciso
 
 Le schede in `forme/` sono deliberatamente libere: descrivono ogni forma per quello che è, senza filtro. Le regole di disegno del progetto verranno da qui, e al momento non ci sono.
 
+**Come si pesano i conteggi, scritto prima che i conteggi vengano presi.** Alla rassegna si conta per capitolo e non per voce: il capitolo 12 vale 48 voci su 395 ed è granulare per una ragione diversa dagli altri, perché separa gli enigmi e non i modi di chiedere, quindi una somma sulle voci gli darebbe un peso che non ha.
+
 ## Punti su cui, alla rassegna, converrà guardare due volte
 
 **La scelta multipla.** La regola nomina la forma; il danno sembra stare nella terna **chiave + distrattori + costo**. Un elenco chiuso di alternative senza risposta giusta e senza costo è un vincolo narrativo, e aiuta chi fatica davanti al foglio bianco. — scheda 001.
