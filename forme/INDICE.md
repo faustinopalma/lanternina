@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 327 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 331 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -360,11 +360,11 @@
 320. [Metatesi](12-enigmistica-classica/320-metatesi/README.md) · fatta
 321. [Antipodo](12-enigmistica-classica/321-antipodo/README.md) · fatta
 322. [Falso accrescitivo, falso diminutivo](12-enigmistica-classica/322-falso-accrescitivo-falso-diminutivo/README.md) · fatta
-323. [Sciarada](12-enigmistica-classica/323-sciarada/README.md) · —
-324. [Sciarada alterna](12-enigmistica-classica/324-sciarada-alterna/README.md) · —
-325. [Sciarada incatenata](12-enigmistica-classica/325-sciarada-incatenata/README.md) · —
+323. [Sciarada](12-enigmistica-classica/323-sciarada/README.md) · fatta
+324. [Sciarada alterna](12-enigmistica-classica/324-sciarada-alterna/README.md) · fatta
+325. [Sciarada incatenata](12-enigmistica-classica/325-sciarada-incatenata/README.md) · fatta
 326. [Lucchetto](12-enigmistica-classica/326-lucchetto/README.md) · fatta
-327. [Lucchetto riflesso](12-enigmistica-classica/327-lucchetto-riflesso/README.md) · —
+327. [Lucchetto riflesso](12-enigmistica-classica/327-lucchetto-riflesso/README.md) · fatta
 328. [Incastro](12-enigmistica-classica/328-incastro/README.md) · —
 329. [Cerniera](12-enigmistica-classica/329-cerniera/README.md) · —
 330. [Intarsio (tarsia)](12-enigmistica-classica/330-intarsio-tarsia/README.md) · —

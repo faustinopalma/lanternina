@@ -1554,6 +1554,25 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-paretimologia", "https://it.wikipedia.org/wiki/Paretimologia"),
         ("it-ipercorrettismo", "https://it.wikipedia.org/wiki/Ipercorrettismo"),
     ],
+    "enigmistica, capitolo 12, blocco 323-327": [
+        ("it-cerniera", "https://it.wikipedia.org/wiki/Cerniera_(enigmistica)"),
+        ("it-doppia-estrazione", "https://it.wikipedia.org/wiki/Doppia_estrazione"),
+        ("it-intarsio", "https://it.wikipedia.org/wiki/Intarsio_(enigmistica)"),
+        ("it-tarsia", "https://it.wikipedia.org/wiki/Tarsia"),
+        ("it-composizione-linguistica", "https://it.wikipedia.org/wiki/Composizione_(linguistica)"),
+        ("it-parola-macedonia", "https://it.wikipedia.org/wiki/Parola_macedonia"),
+        ("it-univerbazione", "https://it.wikipedia.org/wiki/Univerbazione"),
+        ("compound-linguistics", "https://en.wikipedia.org/wiki/Compound_(linguistics)"),
+        ("portmanteau", "https://en.wikipedia.org/wiki/Portmanteau"),
+        ("longest-common-substring", "https://en.wikipedia.org/wiki/Longest_common_substring"),
+        ("longest-common-subsequence", "https://en.wikipedia.org/wiki/Longest_common_subsequence"),
+        ("concatenation", "https://en.wikipedia.org/wiki/Concatenation"),
+        ("interleaving", "https://en.wikipedia.org/wiki/Interleaving"),
+        (
+            "riffle-shuffle-permutation",
+            "https://en.wikipedia.org/wiki/Riffle_shuffle_permutation",
+        ),
+    ],
 }
 
 
