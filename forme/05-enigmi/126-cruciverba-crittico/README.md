@@ -43,7 +43,7 @@ Negli Stati Uniti la forma è stata importata nel 1968 da **Stephen Sondheim**, 
 ## Varianti e parenti
 
 - **Cruciverba** (voce 125, cruciverba) — la stessa griglia con definizioni normali. La differenza sta tutta nella definizione, e da lì scende tutto il resto, compreso quanto la griglia deve essere intrecciata.
-- **Monoverbo** (voce 336, monoverbo) — **il confine da dichiarare**: nell'enigmistica italiana il monoverbo è una definizione che si risolve con una parola sola, di solito per doppio senso, ed è il parente italiano più vicino. Lì il gioco come genere editoriale con le sue regole di gara; qui la definizione a due parti come meccanismo.
+- **Monoverbo** (voce 336, monoverbo) — **il confine da dichiarare**: nell'enigmistica italiana il monoverbo non è una definizione, ma una crittografia la cui soluzione sta in una parola sola — `it-crittografia-gioco.txt`, presa il 1 settembre 2026. Il parente italiano più vicino alla definizione crittica resta lui, ma per il modo di procedere e non per la struttura: lì l'esposto si descrive e si rispazia, qui la definizione si spezza in due parti.
 - **Crittografia pura** (voce 341, crittografia pura) — l'altro modo italiano di fare una definizione che è essa stessa un enigma. La differenza è che la crittografia lavora su una sequenza di segni data, la definizione crittica su una frase che finge di essere italiano normale.
 - **Anagramma** (voce 121, anagramma) — il tipo di gioco di parole più comune. Nella terminologia inglese l'indicatore si chiama *anagrind* e le lettere da rimescolare *fodder*, il foraggio.
 - **Sciarada** (voce 120, sciarada) — nel gergo inglese *charade*, o *Ikea clue*, perché la risposta si monta da pezzi.

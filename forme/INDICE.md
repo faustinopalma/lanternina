@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 337 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 342 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -372,12 +372,12 @@
 332. [Anagramma a frase](12-enigmistica-classica/332-anagramma-a-frase/README.md) · fatta
 333. [Bifronte](12-enigmistica-classica/333-bifronte/README.md) · fatta
 334. [Palindromo](12-enigmistica-classica/334-palindromo/README.md) · fatta
-335. [Bisenso](12-enigmistica-classica/335-bisenso/README.md) · —
-336. [Monoverbo](12-enigmistica-classica/336-monoverbo/README.md) · —
+335. [Bisenso](12-enigmistica-classica/335-bisenso/README.md) · fatta
+336. [Monoverbo](12-enigmistica-classica/336-monoverbo/README.md) · fatta
 337. [Indovinello in versi](12-enigmistica-classica/337-indovinello-in-versi/README.md) · fatta
-338. [Enigma in versi](12-enigmistica-classica/338-enigma-in-versi/README.md) · —
-339. [Poesia enigmatica](12-enigmistica-classica/339-poesia-enigmatica/README.md) · —
-340. [Quesito narrativo](12-enigmistica-classica/340-quesito-narrativo/README.md) · —
+338. [Enigma in versi](12-enigmistica-classica/338-enigma-in-versi/README.md) · fatta
+339. [Poesia enigmatica](12-enigmistica-classica/339-poesia-enigmatica/README.md) · fatta
+340. [Quesito narrativo](12-enigmistica-classica/340-quesito-narrativo/README.md) · fatta
 341. [Crittografia pura](12-enigmistica-classica/341-crittografia-pura/README.md) · fatta
 342. [Crittografia perifrastica](12-enigmistica-classica/342-crittografia-perifrastica/README.md) · —
 343. [Crittografia mnemonica](12-enigmistica-classica/343-crittografia-mnemonica/README.md) · —
