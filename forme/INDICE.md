@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 300 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 305 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -326,11 +326,11 @@
 292. [Assegnata a qualcun altro](10-chi-assegna-e-chi-giudica/292-assegnata-a-qualcun-altro/README.md) · fatta
 293. [Chiesta a una persona vera](10-chi-assegna-e-chi-giudica/293-chiesta-a-una-persona-vera/README.md) · fatta
 294. [Autoassegnata con vincolo](10-chi-assegna-e-chi-giudica/294-autoassegnata-con-vincolo/README.md) · fatta
-295. [Corretta dal sistema](10-chi-assegna-e-chi-giudica/295-corretta-dal-sistema/README.md) · —
-296. [Corretta da sé](10-chi-assegna-e-chi-giudica/296-corretta-da-se/README.md) · —
-297. [Corretta da un pari](10-chi-assegna-e-chi-giudica/297-corretta-da-un-pari/README.md) · —
-298. [Non corretta](10-chi-assegna-e-chi-giudica/298-non-corretta/README.md) · —
-299. [Verificata dal mondo](10-chi-assegna-e-chi-giudica/299-verificata-dal-mondo/README.md) · —
+295. [Corretta dal sistema](10-chi-assegna-e-chi-giudica/295-corretta-dal-sistema/README.md) · fatta
+296. [Corretta da sé](10-chi-assegna-e-chi-giudica/296-corretta-da-se/README.md) · fatta
+297. [Corretta da un pari](10-chi-assegna-e-chi-giudica/297-corretta-da-un-pari/README.md) · fatta
+298. [Non corretta](10-chi-assegna-e-chi-giudica/298-non-corretta/README.md) · fatta
+299. [Verificata dal mondo](10-chi-assegna-e-chi-giudica/299-verificata-dal-mondo/README.md) · fatta
 
 ## 11. Come finisce
 
