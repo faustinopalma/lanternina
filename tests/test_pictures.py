@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 
 from panel.app import create_app
 from panel.config import Settings
-from panel.pictures import InMemoryPictureArchive
+from panel.pictures import InMemoryPictureArchive, PictureRecord
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 
@@ -150,3 +150,54 @@ def test_a_page_past_the_end_shows_the_last_one_rather_than_nothing() -> None:
 def test_an_empty_archive_still_has_one_page() -> None:
     answer = client_for().get("/api/pictures", headers=headers()).json()
     assert (answer["pictures"], answer["page"], answer["pages"]) == ([], 1, 1)
+
+
+class _Container:
+    """Enough of a blob container to see what actually goes on the wire."""
+
+    def __init__(self) -> None:
+        self.metadata: dict[str, str] = {}
+
+    def upload_blob(self, *, name: str, data: bytes, metadata: dict[str, str], **_: object) -> None:
+        for value in metadata.values():
+            # http.client does exactly this to every header, and raised here on
+            # 1 September 2026 with a subject the parent had typed.
+            value.encode("latin-1")
+        self.metadata = metadata
+        self.name = name
+
+
+class _Blob:
+    def __init__(self, name: str, metadata: dict[str, str]) -> None:
+        self.name = name
+        self.metadata = metadata
+
+
+def test_a_subject_with_an_apostrophe_survives_the_archive() -> None:
+    """Blob metadata is an HTTP header, and a header is latin-1. A typographic apostrophe
+    raised inside the storage SDK *after* the picture had been generated and paid for."""
+    from panel.pictures import BlobPictureArchive, _to_record
+
+    subject = "l\u2019acqua che rimane sul vetro dopo la pioggia d\u2019agosto"
+    archive = object.__new__(BlobPictureArchive)
+    archive._container = _Container()  # type: ignore[attr-defined]
+    archive.save(
+        PictureRecord(
+            id="pic_1", household_id="h1", theme=subject, created_at=10.0, display="CF7D04"
+        ),
+        b"bitmap",
+    )
+
+    stored = archive._container.metadata  # type: ignore[attr-defined]
+    assert stored["theme"] != subject, "nothing was encoded, so the header would have raised"
+    read = _to_record("h1", _Blob("h1/pic_1.bmp", stored))
+    assert (read.theme, read.display) == (subject, "CF7D04")
+
+
+def test_a_subject_written_before_the_encoding_reads_back_unchanged() -> None:
+    """Every row in the archive today is plain ASCII, and must not start decoding oddly."""
+    from panel.pictures import _to_record
+
+    plain = {"theme": "animali del bosco", "createdAt": "10.0", "kind": "ok"}
+    read = _to_record("h1", _Blob("h1/pic_1.bmp", plain))
+    assert (read.theme, read.display) == ("animali del bosco", "")

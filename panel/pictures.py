@@ -16,6 +16,7 @@ import threading
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
+from urllib.parse import quote, unquote
 
 # How many pictures the gallery shows at once. The parent picks one of these; anything
 # else is refused rather than rounded, so a hand-typed URL cannot ask for the whole
@@ -64,13 +65,35 @@ def on_other_displays(records: Sequence[PictureRecord], display: str) -> list[st
 
 
 def last_used(records: Sequence[PictureRecord]) -> dict[str, float]:
-    """When each subject was last painted, anywhere in the house."""
+    """When each subject was last painted, anywhere in the house.
+
+    This is what makes subjects come round in turn, so it only works while every picture
+    that reaches a display also reaches the archive: a subject that fails to be recorded
+    stays "never used" and is therefore chosen again, and again.
+    """
     when: dict[str, float] = {}
     for record in records:
         if record.kind != "ok" or not record.theme:
             continue
         when[record.theme] = max(when.get(record.theme, 0.0), record.created_at)
     return when
+
+
+def _as_metadata(value: str) -> str:
+    """Blob metadata travels as an HTTP header, and a header is latin-1.
+
+    A subject the parent typed with a typographic apostrophe raised UnicodeEncodeError
+    inside the storage SDK on 1 September 2026 — after the picture had been generated and
+    paid for. Percent-encoding lets the subject keep its punctuation instead of being
+    flattened to something the parent did not write.
+    """
+    return quote(value, safe=" ")
+
+
+def _from_metadata(value: str) -> str:
+    # ASCII rows written before this are unchanged by decoding, so they read back as they
+    # were. The one exception is a subject holding a literal % before two hex digits.
+    return unquote(value)
 
 
 @runtime_checkable
@@ -136,14 +159,14 @@ class BlobPictureArchive:
 
     def save(self, record: PictureRecord, image: bytes) -> PictureRecord:
         metadata = {
-            "theme": record.theme,
+            "theme": _as_metadata(record.theme),
             "createdAt": str(record.created_at),
             "kind": record.kind,
         }
         # Left out rather than written empty: whether the service takes an empty metadata
         # value has not been measured here, and a refusal would cost the picture itself.
         if record.display:
-            metadata["display"] = record.display
+            metadata["display"] = _as_metadata(record.display)
         self._container.upload_blob(
             name=self._name(record.household_id, record.id),
             data=image,
@@ -182,10 +205,10 @@ class BlobPictureArchive:
             PictureRecord(
                 id=picture_id,
                 household_id=household_id,
-                theme=str(metadata.get("theme") or ""),
+                theme=_from_metadata(str(metadata.get("theme") or "")),
                 created_at=float(metadata.get("createdAt") or 0.0),
                 kind=str(metadata.get("kind") or "ok"),
-                display=str(metadata.get("display") or ""),
+                display=_from_metadata(str(metadata.get("display") or "")),
             ),
             bytes(image),
         )
@@ -197,8 +220,8 @@ def _to_record(household_id: str, blob: Any) -> PictureRecord:
     return PictureRecord(
         id=name[:-4] if name.endswith(".bmp") else name,
         household_id=household_id,
-        theme=str(metadata.get("theme") or ""),
+        theme=_from_metadata(str(metadata.get("theme") or "")),
         created_at=float(metadata.get("createdAt") or 0.0),
         kind=str(metadata.get("kind") or "ok"),
-        display=str(metadata.get("display") or ""),
+        display=_from_metadata(str(metadata.get("display") or "")),
     )
