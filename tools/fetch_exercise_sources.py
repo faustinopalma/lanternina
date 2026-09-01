@@ -1530,6 +1530,30 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-distanza-di-levenshtein", "https://it.wikipedia.org/wiki/Distanza_di_Levenshtein"),
         ("it-bifronte-vero", "https://it.wikipedia.org/wiki/Bifronte"),
     ],
+    "enigmistica, capitolo 12, blocco 318-322": [
+        (
+            "damerau-levenshtein-distance",
+            "https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance",
+        ),
+        ("transposition-cipher", "https://en.wikipedia.org/wiki/Transposition_cipher"),
+        ("hypercorrection", "https://en.wikipedia.org/wiki/Hypercorrection"),
+        ("folk-etymology", "https://en.wikipedia.org/wiki/Folk_etymology"),
+        ("back-formation", "https://en.wikipedia.org/wiki/Back-formation"),
+        ("diminutive", "https://en.wikipedia.org/wiki/Diminutive"),
+        ("augmentative", "https://en.wikipedia.org/wiki/Augmentative"),
+        ("it-metatesi-linguistica", "https://it.wikipedia.org/wiki/Metatesi_(linguistica)"),
+        ("it-scambio", "https://it.wikipedia.org/wiki/Scambio_(enigmistica)"),
+        ("it-spostamento", "https://it.wikipedia.org/wiki/Spostamento_(enigmistica)"),
+        ("it-antipodo", "https://it.wikipedia.org/wiki/Antipodo"),
+        ("it-biscarto", "https://it.wikipedia.org/wiki/Biscarto"),
+        ("it-falso-derivato", "https://it.wikipedia.org/wiki/Falso_derivato"),
+        ("it-accrescitivo", "https://it.wikipedia.org/wiki/Accrescitivo"),
+        ("it-diminutivo", "https://it.wikipedia.org/wiki/Diminutivo"),
+        ("it-alterazione", "https://it.wikipedia.org/wiki/Alterazione_(linguistica)"),
+        ("it-retroformazione", "https://it.wikipedia.org/wiki/Retroformazione"),
+        ("it-paretimologia", "https://it.wikipedia.org/wiki/Paretimologia"),
+        ("it-ipercorrettismo", "https://it.wikipedia.org/wiki/Ipercorrettismo"),
+    ],
 }
 
 

@@ -22,7 +22,7 @@ Le voci dei capitoli 12 (enigmistica classica), 13 (giochi matematici e ricreati
 
 Si dichiara con la riga `- **Contratto** voce breve`, **subito dopo «In una riga»**. Le righe di intestazione diventano sei, quindi il comando del §8 va lanciato con `-TotalCount 8`. `forme_check.py` non guarda l'intestazione e passa comunque.
 
-**Quando un blocco è fatto di forme che si somigliano, si scrive per primo il termine di paragone** — la voce in cui la variabile del blocco prende il valore più povero — e le altre si descrivono per differenza da lei. La regola ha funzionato cinque volte: voci 287, 298, 300, 310 e 314. **La riga di differenza va stampata dentro ogni voce**, in fondo alla sezione della rassegna, perché chi apre una voce sola non ha in mente le altre.
+**Quando un blocco è fatto di forme che si somigliano, si scrive per primo il termine di paragone** — la voce in cui la variabile del blocco prende il valore più povero — e le altre si descrivono per differenza da lei. La regola ha funzionato sei volte: voci 287, 298, 300, 310, 314 e 321. **La riga di differenza va stampata dentro ogni voce**, in fondo alla sezione della rassegna, perché chi apre una voce sola non ha in mente le altre. **Povero non vuol dire povera**: la voce in cui la variabile vale meno può essere quella con più cose dentro, ed è successo alla voce 321, antipodo.
 
 ## 3. Ambiente
 
@@ -33,6 +33,7 @@ Si dichiara con la riga `- **Contratto** voce breve`, **subito dopo «In una rig
 - PowerShell: `python -c "..."` su più righe si blocca sul prompt di continuazione. Gli script vanno in `build/` e si lanciano. Niente heredoc: i messaggi di commit vanno in `build/commit-*.txt` e si usano con `git commit -F`, senza lettere accentate.
 - `Select-Object Name, @{n='kB';e={...}}` in una pipeline dà output illeggibile. Si usa `ForEach-Object { "{0} {1}" -f $_.Name, $_.Length }`.
 - **All'inizio della sessione: `git status --short` e `git log --oneline -3`.** Se un file è modificato e non si sa perché, si guarda il diff prima di scrivere.
+- **Dopo ogni modifica a un file lungo: `git diff --numstat`.** Uno strumento di modifica può scrivere sopra una versione anteriore all'ultimo commit e cancellare il lavoro di una sessione intera; è successo a `OSSERVAZIONI.md` — 64 righe tolte in un'operazione che era solo un'aggiunta — e la sola spia è il numero delle righe tolte. Il ripristino è `git checkout -- <file>` e la riscrittura.
 
 ## 4. Come si prendono fonti nuove
 
@@ -64,6 +65,8 @@ Quando nessuna pagina copre una cosa, la si cerca fuori: `fetch_webpage` su una 
 - **Alcune fonti hanno in cima un navbox o un blocco di codice della citazione, e non il testo.** Si cerca con grep prima di concludere che la fonte è vuota.
 - **Prima di dire che una fonte non dice una cosa la si cerca con grep in tutto il file.**
 - **Le affermazioni più forti di una pagina sono spesso le meno sostenute**, e più una fonte dice quello che si sperava, più conviene guardare la nota.
+- **Una fonte presa perché risolve un problema va letta fino alla restrizione, non solo fino all'aggiunta.** La distanza di Damerau–Levenshtein aggiunge la trasposizione alle tre operazioni di Levenshtein, ma **solo fra caratteri adiacenti**: bastava quella parola per ribaltare la conclusione di un blocco intero.
+- **Il limite che rende ambiguo un numero può stare nella stessa pagina, due righe più sotto**, e non in nota. Chi si ferma alla prima frase porta a casa una misura che non c'è.
 - **Una fonte italiana può non avere l'avviso in cima ed essere scritta in registro promozionale.** La mancanza di note sotto le affermazioni forti è un segnale più affidabile dell'avviso in cima.
 
 Lettura: la ricerca testuale nel workspace salta le cartelle gitignored, quindi per i `.txt` serve `includeIgnoredFiles`; `read_file` con percorso assoluto funziona ed è il modo più veloce, tre o quattro in parallelo. **Per una fonte da 40 kB o più conviene prima un `grep_search` con `^## |^### ` e poi un `read_file` sulle righe che servono.**
@@ -104,7 +107,8 @@ Lettura: la ricerca testuale nel workspace salta le cartelle gitignored, quindi 
 - **L'accordo fra due varianti dello stesso strumento non ne misura la precisione.** Due impostazioni dello stesso classificatore concordavano al 78,6% e prendevano il 10% e il 25% contro una lettura a mano: due versioni della stessa idea sbagliata sbagliano insieme. Per misurare uno strumento serve un secondo lettore, non una seconda impostazione, e il campione va scelto **prima** di guardare che cosa dica lo strumento.
 - **Una classe definita da un'assenza non ha spie di testo.** Un classificatore a parole chiave la fa sparire — 1,6% contro il 36% letto a mano. Il rimedio non è aggiungere spie: è porre la domanda in due tempi, prima se la cosa esista e poi dove stia.
 - **Una frase di commento accanto a un numero giusto non è controllata da niente.** Un'asserzione va messa anche sotto la parte in prosa: una spiegazione sbagliata accanto a un dato corretto sopravvive a qualunque rilettura.
-- **I blocchi stampati si generano con uno script e si incolla l'output**, e lo script verifica da sé che le colonne coincidano. **La larghezza di una colonna si prende sul massimo fra intestazione e ogni riga di dati, più due.**
+- **I blocchi stampati si generano con uno script e si incolla l'output**, e lo script verifica da sé che le colonne coincidano. **La larghezza di una colonna si prende sul massimo fra intestazione e ogni riga di dati, più due.** **E lo script rilegge la voce e asserisce che il blocco ci compaia tale e quale**: senza quella riga, un blocco ritoccato a mano dopo l'incollatura non lo prende nessuno.
+- **Una sostituzione il cui testo nuovo differisce dal vecchio solo per un a capo lo cancella e basta.** Uno script è morto con un errore di sintassi alla riga successiva. Si rilancia dopo ogni modifica, anche dopo quelle che sembravano non farne nessuna.
 - **L'allineamento si controlla con due strumenti**: `build/check_colonne.py <numero>` guarda solo i blocchi con barre verticali, `build/check_stacchi.py <numero>` stampa lunghezza di ogni riga e posizione di ogni stacco. Nessuno dei due sostituisce l'asserzione dentro `blocco_<numero>.py`. Quando le etichette hanno lunghezze diverse, `check_stacchi.py` segnala «forme di riga distinte» anche se le colonne sono incolonnate.
 - **`show_blocks.py` toglie gli spazi in testa alla riga**, quindi non serve a controllare l'allineamento.
 - **Dentro i blocchi di codice si usano solo caratteri di larghezza uno**, e non lettere accentate: «e» per «è», «piu» per «più», «da'» per «dà». Fuori dai blocchi si scrivono normalmente.
@@ -116,6 +120,7 @@ Lettura: la ricerca testuale nel workspace salta le cartelle gitignored, quindi 
 ## 8. Trappole sulla struttura delle voci
 
 - **Non si ricordano i nomi delle voci: si controllano.** `Select-String -Path docs\EXERCISE-FORMS.md -Pattern '^(N|M|…)\. '` prende venti nomi in un colpo. **Il prompt è la fonte meno verificata del repository.**
+- **La glossa dell'elenco non è una fonte.** `docs/EXERCISE-FORMS.md` si consulta per i **nomi** delle voci e per i confini fra i capitoli, non per le definizioni: nel blocco 318-322 due glosse su cinque erano sbagliate, una perché si fermava al passo intermedio e una perché non corrispondeva a nessuna delle due discipline che nominava. Quando una glossa e le fonti divergono, lo si scrive nella voce.
 - **Non si ricordano i confini fra i capitoli: si controllano**, con `Select-String -Path docs\EXERCISE-FORMS.md -Pattern '^## '`.
 - **Gli stub esistono già: `create_file` fallisce.** Si sostituisce lo stub **intero**, dall'intestazione all'ultima sezione, in un colpo solo — sostituire solo la testa lascia in fondo le sei sezioni vuote, e `forme_check.py` dice soltanto «le sezioni non sono quelle previste, nell'ordine previsto».
 - **Ma sostituire lo stub intero non protegge l'intestazione.** L'ordine giusto è **Numero, Si chiama anche, In una riga, Fonti, Stato della ricerca**, una riga per ognuna, e nessuno strumento lo verifica. Il comando, da lanciare **dopo ogni voce**:

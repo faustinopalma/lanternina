@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 322 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 327 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -355,11 +355,11 @@
 315. [Scarto sillabico](12-enigmistica-classica/315-scarto-sillabico/README.md) · fatta
 316. [Cambio di lettera](12-enigmistica-classica/316-cambio-di-lettera/README.md) · fatta
 317. [Cambio di vocale, di consonante, di sillaba](12-enigmistica-classica/317-cambio-di-vocale-di-consonante-di-sillaba/README.md) · fatta
-318. [Scambio](12-enigmistica-classica/318-scambio/README.md) · —
-319. [Spostamento](12-enigmistica-classica/319-spostamento/README.md) · —
-320. [Metatesi](12-enigmistica-classica/320-metatesi/README.md) · —
-321. [Antipodo](12-enigmistica-classica/321-antipodo/README.md) · —
-322. [Falso accrescitivo, falso diminutivo](12-enigmistica-classica/322-falso-accrescitivo-falso-diminutivo/README.md) · —
+318. [Scambio](12-enigmistica-classica/318-scambio/README.md) · fatta
+319. [Spostamento](12-enigmistica-classica/319-spostamento/README.md) · fatta
+320. [Metatesi](12-enigmistica-classica/320-metatesi/README.md) · fatta
+321. [Antipodo](12-enigmistica-classica/321-antipodo/README.md) · fatta
+322. [Falso accrescitivo, falso diminutivo](12-enigmistica-classica/322-falso-accrescitivo-falso-diminutivo/README.md) · fatta
 323. [Sciarada](12-enigmistica-classica/323-sciarada/README.md) · —
 324. [Sciarada alterna](12-enigmistica-classica/324-sciarada-alterna/README.md) · —
 325. [Sciarada incatenata](12-enigmistica-classica/325-sciarada-incatenata/README.md) · —
