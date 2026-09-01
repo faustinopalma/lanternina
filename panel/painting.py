@@ -17,7 +17,7 @@ from __future__ import annotations
 import os
 import random
 import secrets
-from collections.abc import Callable
+from collections.abc import Callable, Mapping, Sequence
 
 from shared.ids import new_id
 from shared.manner import a_manner
@@ -44,8 +44,28 @@ PICTURE_PROMPT = SAYS.text("picture").rstrip("\n")
 DECORATION_PROMPT = SAYS.text("decoration").rstrip("\n")
 
 
-def choose_theme(labels: list[str]) -> str:
-    return random.choice(labels or list(FALLBACK_THEMES))
+def choose_theme(
+    labels: list[str],
+    *,
+    elsewhere: Sequence[str] = (),
+    last_used: Mapping[str, float] | None = None,
+) -> str:
+    """Which subject this display gets next.
+
+    One rule in two halves. A subject already hanging on another display is not chosen,
+    so two frames in the same room are never about the same thing. Of what is left, the
+    subject painted longest ago wins, ties broken at random — which is what makes every
+    subject come round in turn rather than a coin landing the same way all day.
+
+    With fewer subjects than displays the first half would leave nothing to choose from.
+    Then it is dropped, and the last display repeats whichever subject is oldest.
+    """
+    choices = list(labels or FALLBACK_THEMES)
+    taken = set(elsewhere)
+    free = [one for one in choices if one not in taken] or choices
+    when = last_used or {}
+    random.shuffle(free)  # `min` keeps the first of equals, so the shuffle breaks the tie
+    return min(free, key=lambda one: when.get(one, 0.0))
 
 
 def identity_claims() -> dict[str, str]:

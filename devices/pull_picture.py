@@ -29,6 +29,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -143,8 +144,8 @@ def install(screen_file: Path, image: bytes) -> None:
     temporary.replace(screen_file)
 
 
-def picture_file(shared: Path, jobs_file: Path) -> Path:
-    """Where the picture goes: the file of one of the displays that hold that job.
+def picture_target(shared: Path, jobs_file: Path) -> tuple[str, Path]:
+    """Which display this picture is for, and the file it goes in.
 
     Writing to the shared file was what made the defect of 19 August 2026 permanent. One
     press created `screen-<id>.bmp` for a display, that file took the display over for
@@ -159,8 +160,11 @@ def picture_file(shared: Path, jobs_file: Path) -> Path:
     rather than one per spacing, which is what a parent asking for two picture frames is
     asking for.
 
-    With no answer from the panel the shared file is still the target, which is what the
-    house did before anybody could say which display was which.
+    The name is returned with the file because the panel needs it: it is what lets the
+    subject be chosen against what the other frames already hold.
+
+    With no answer from the panel the shared file is still the target, under no name,
+    which is what the house did before anybody could say which display was which.
     """
     import random
 
@@ -168,14 +172,14 @@ def picture_file(shared: Path, jobs_file: Path) -> Path:
     from devices.trmnl_byos import picture_for
 
     chosen = [
-        picture_for(shared, str(thing.get("label") or ""))
+        (str(thing.get("label")), picture_for(shared, str(thing.get("label"))))
         for thing in holders(load_jobs(jobs_file), "picture")
         if thing.get("label")
     ]
     if not chosen:
-        return shared
+        return "", shared
     random.shuffle(chosen)
-    return min(chosen, key=_painted_at)
+    return min(chosen, key=lambda pair: _painted_at(pair[1]))
 
 
 def _painted_at(screen_file: Path) -> float:
@@ -290,7 +294,7 @@ def main() -> int:
     # Which display this is going to is decided here, once: the spacing is measured on the
     # file the picture will land in, so a display that has just been given the job is not
     # made to wait out the last one's hour.
-    target = picture_file(screen_file, jobs_file)
+    label, target = picture_target(screen_file, jobs_file)
     saved = load_rhythm(rhythm_file)
     if saved is None:
         start, end, cadence = read_rhythm(panel, household, key, (start, end, cadence))
@@ -327,7 +331,7 @@ def main() -> int:
         return 0
 
     request = urllib.request.Request(
-        f"{panel}/api/device/{household}/paint",
+        f"{panel}/api/device/{household}/paint?display={urllib.parse.quote(label)}",
         data=b"",
         headers={"X-Device-Key": key, "Content-Type": "application/json"},
         method="POST",

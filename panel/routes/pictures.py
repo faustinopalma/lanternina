@@ -25,6 +25,7 @@ class ShownPicture(BaseModel):
     id: str
     theme: str = ""
     kind: str = "ok"
+    display: str = ""
     createdAt: float = 0.0
     imageBase64: str
 
@@ -42,6 +43,7 @@ def archive_picture(
             theme=shown.theme,
             created_at=shown.createdAt or time.time(),
             kind=shown.kind,
+            display=shown.display,
         ),
         base64.b64decode(shown.imageBase64),
     )

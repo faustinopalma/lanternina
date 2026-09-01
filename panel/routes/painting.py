@@ -21,7 +21,7 @@ from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 
 from ..config import Settings
 from ..gate import DeviceKey
-from ..pictures import PictureArchive, PictureRecord
+from ..pictures import PictureArchive, PictureRecord, last_used, on_other_displays
 from ..themes import ThemeStore
 from ..usage import (
     FAILED,
@@ -38,13 +38,17 @@ router = APIRouter()
 
 @router.post("/api/device/{household_id}/paint")
 async def paint_picture(
-    household_id: str, _: DeviceKey, request: Request, theme: str = ""
+    household_id: str, _: DeviceKey, request: Request, theme: str = "", display: str = ""
 ) -> Any:
     """Paint one picture now, and hand back the bitmap ready for the panel.
 
     The home server calls this when it wants a new picture. Nothing here is scheduled:
     the cadence belongs to the house, which is the only place that knows what is
     happening in the room.
+
+    ``display`` is which frame the picture is for. It is what lets the subject be chosen
+    against the other frames instead of on its own; a house that does not say leaves the
+    choice to the history alone.
     """
     from devices.epaper import render_picture_bytes
     from shared.ids import new_id
@@ -58,7 +62,13 @@ async def paint_picture(
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     themes: ThemeStore = request.app.state.themes
-    chosen = theme or choose_theme([row.label for row in themes.list(household_id)])
+    archive: PictureArchive = request.app.state.pictures
+    shown = archive.list(household_id)
+    chosen = theme or choose_theme(
+        [row.label for row in themes.list(household_id)],
+        elsewhere=on_other_displays(shown, display),
+        last_used=last_used(shown),
+    )
 
     reported: list[Any] = []
     outcome = FAILED
@@ -88,13 +98,13 @@ async def paint_picture(
             logging.getLogger(__name__).warning("usage not recorded: %s", exc)
 
     bitmap = render_picture_bytes(image_b64)
-    archive: PictureArchive = request.app.state.pictures
     archive.save(
         PictureRecord(
             id=picture_id,
             household_id=household_id,
             theme=chosen,
             created_at=time.time(),
+            display=display,
         ),
         bitmap,
     )

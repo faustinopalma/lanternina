@@ -128,7 +128,7 @@ def test_the_picture_goes_to_the_display_that_holds_the_job(tmp_path: Path) -> N
     written into the display's shared file, a picture outlived the job that made it.
     """
     from devices.inventory import save_jobs
-    from devices.pull_picture import picture_file
+    from devices.pull_picture import picture_target
 
     shared = tmp_path / "screen.bmp"
     jobs = tmp_path / "jobs.json"
@@ -140,7 +140,10 @@ def test_the_picture_goes_to_the_display_that_holds_the_job(tmp_path: Path) -> N
         ],
     )
 
-    assert picture_file(shared, jobs) == shared.with_name("screen-CF7D04-picture.bmp")
+    assert picture_target(shared, jobs) == (
+        "CF7D04",
+        shared.with_name("screen-CF7D04-picture.bmp"),
+    )
 
 
 def test_with_nobody_holding_the_job_the_picture_goes_where_it_always_did(
@@ -149,11 +152,41 @@ def test_with_nobody_holding_the_job_the_picture_goes_where_it_always_did(
     """An unreachable panel leaves the house working to what it knew, and a house that has
     never reached the panel keeps behaving as it did before there was one."""
     from devices.inventory import save_jobs
-    from devices.pull_picture import picture_file
+    from devices.pull_picture import picture_target
 
     shared = tmp_path / "screen.bmp"
-    assert picture_file(shared, tmp_path / "absent.json") == shared
+    assert picture_target(shared, tmp_path / "absent.json") == ("", shared)
 
     jobs = tmp_path / "jobs.json"
     save_jobs(jobs, [{"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": ""}])
-    assert picture_file(shared, jobs) == shared
+    assert picture_target(shared, jobs) == ("", shared)
+
+
+def test_the_panel_is_told_which_display_the_picture_is_for(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without the name the panel cannot keep two frames off the same subject: it would
+    be choosing for a house it can only see one picture of at a time."""
+    from devices.inventory import save_jobs
+
+    screen = tmp_path / "screen.bmp"
+    save_jobs(
+        tmp_path / "jobs.json",
+        [
+            {"id": "94:A9:90:CF:7D:04", "label": "CF7D04", "job": "picture"},
+            {"id": "E8:3D:C1:FB:9F:18", "label": "FB9F18", "job": "picture"},
+        ],
+    )
+    _environment(monkeypatch, tmp_path, screen)
+
+    asked: list[str] = []
+
+    def answer(request: object, timeout: int = 0) -> object:
+        asked.append(str(getattr(request, "full_url", "")))
+        raise urllib.error.URLError("no panel reachable in a test")
+
+    monkeypatch.setattr(pull_picture.urllib.request, "urlopen", answer)
+    assert pull_picture.main() == 0
+
+    painting = [url for url in asked if "/paint" in url]
+    assert painting and painting[0].endswith(("/paint?display=CF7D04", "/paint?display=FB9F18"))

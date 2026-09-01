@@ -13,6 +13,7 @@ storage account, and should not have a key that would let it.
 from __future__ import annotations
 
 import threading
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
@@ -32,6 +33,9 @@ class PictureRecord:
     # "ok", "low" or "critical": pictures the panel showed about its own battery are kept
     # too, so the history explains itself.
     kind: str = "ok"
+    # Which display this went to, as the house names it. Empty when the house cannot say,
+    # which is the state of every row written before 1 September 2026.
+    display: str = ""
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -39,7 +43,34 @@ class PictureRecord:
             "theme": self.theme,
             "createdAt": self.created_at,
             "kind": self.kind,
+            "display": self.display,
         }
+
+
+def on_other_displays(records: Sequence[PictureRecord], display: str) -> list[str]:
+    """The subjects hanging on the other displays right now: the newest row of each.
+
+    Rows that do not name a display say nothing about any of them and are left out, so a
+    household whose archive predates this simply has nothing to avoid.
+    """
+    newest: dict[str, PictureRecord] = {}
+    for record in records:
+        if record.kind != "ok" or not record.display or record.display == display:
+            continue
+        held = newest.get(record.display)
+        if held is None or record.created_at > held.created_at:
+            newest[record.display] = record
+    return [record.theme for record in newest.values() if record.theme]
+
+
+def last_used(records: Sequence[PictureRecord]) -> dict[str, float]:
+    """When each subject was last painted, anywhere in the house."""
+    when: dict[str, float] = {}
+    for record in records:
+        if record.kind != "ok" or not record.theme:
+            continue
+        when[record.theme] = max(when.get(record.theme, 0.0), record.created_at)
+    return when
 
 
 @runtime_checkable
@@ -112,6 +143,7 @@ class BlobPictureArchive:
                 "theme": record.theme,
                 "createdAt": str(record.created_at),
                 "kind": record.kind,
+                "display": record.display,
             },
             content_type="image/bmp",
         )
@@ -149,6 +181,7 @@ class BlobPictureArchive:
                 theme=str(metadata.get("theme") or ""),
                 created_at=float(metadata.get("createdAt") or 0.0),
                 kind=str(metadata.get("kind") or "ok"),
+                display=str(metadata.get("display") or ""),
             ),
             bytes(image),
         )
@@ -163,4 +196,5 @@ def _to_record(household_id: str, blob: Any) -> PictureRecord:
         theme=str(metadata.get("theme") or ""),
         created_at=float(metadata.get("createdAt") or 0.0),
         kind=str(metadata.get("kind") or "ok"),
+        display=str(metadata.get("display") or ""),
     )
