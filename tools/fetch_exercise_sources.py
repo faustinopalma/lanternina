@@ -1511,6 +1511,25 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("it-mandala", "https://it.wikipedia.org/wiki/Mandala"),
         ("it-arte-effimera", "https://it.wikipedia.org/wiki/Arte_effimera"),
     ],
+    "enigmistica, capitolo 12, blocco 312-317": [
+        ("levenshtein-distance", "https://en.wikipedia.org/wiki/Levenshtein_distance"),
+        ("hamming-distance", "https://en.wikipedia.org/wiki/Hamming_distance"),
+        ("edit-distance", "https://en.wikipedia.org/wiki/Edit_distance"),
+        ("syllable", "https://en.wikipedia.org/wiki/Syllable"),
+        ("syllabification", "https://en.wikipedia.org/wiki/Syllabification"),
+        ("phonotactics", "https://en.wikipedia.org/wiki/Phonotactics"),
+        ("minimal-pair", "https://en.wikipedia.org/wiki/Minimal_pair"),
+        ("metathesis-linguistics", "https://en.wikipedia.org/wiki/Metathesis_(linguistics)"),
+        ("epenthesis", "https://en.wikipedia.org/wiki/Epenthesis"),
+        ("apocope", "https://en.wikipedia.org/wiki/Apocope"),
+        ("spoonerism", "https://en.wikipedia.org/wiki/Spoonerism"),
+        ("it-sillaba", "https://it.wikipedia.org/wiki/Sillaba"),
+        ("it-divisione-in-sillabe", "https://it.wikipedia.org/wiki/Divisione_in_sillabe"),
+        ("it-coppia-minima", "https://it.wikipedia.org/wiki/Coppia_minima"),
+        ("it-metatesi", "https://it.wikipedia.org/wiki/Metatesi"),
+        ("it-distanza-di-levenshtein", "https://it.wikipedia.org/wiki/Distanza_di_Levenshtein"),
+        ("it-bifronte-vero", "https://it.wikipedia.org/wiki/Bifronte"),
+    ],
 }
 
 

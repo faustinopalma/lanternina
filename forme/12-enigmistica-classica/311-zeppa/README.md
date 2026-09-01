@@ -94,4 +94,4 @@ La costruzione è di chi gioca, quindi la verifica è nel vocabolario e non nel 
 
 **La nomenclatura anomala vale come avvertimento.** La fonte stessa nota che non c'è nessun motivo perché il gioco cambi nome secondo la posizione della lettera, e che si mantiene per tradizione. Vale la pena ricordarlo ogni volta che si prende in prestito un vocabolario tecnico: porta dentro anche le sue incoerenze.
 
-Da verificare: la paternità dei *doublets* di Carroll (1877), che resta a memoria — `word-ladder.txt` è ora scaricata e non l'ho ancora letta.
+La paternità dei *doublets* di Carroll, che qui restava a memoria, è stata verificata il 1 settembre 2026 su `word-ladder.txt`: gioco inventato a Natale del 1877, primo cenno nel diario il 12 marzo 1878 con il nome *Word-links*, pubblicato come *Doublets* su *Vanity Fair* dal 29 marzo 1879. Le date e il seguito stanno nella voce 316, cambio di lettera.

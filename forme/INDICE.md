@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 316 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 322 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -349,12 +349,12 @@
 ## 12. Enigmistica classica
 
 311. [Zeppa](12-enigmistica-classica/311-zeppa/README.md) · fatta
-312. [Zeppa sillabica](12-enigmistica-classica/312-zeppa-sillabica/README.md) · —
-313. [Zeppa iniziale, centrale, finale](12-enigmistica-classica/313-zeppa-iniziale-centrale-finale/README.md) · —
-314. [Scarto](12-enigmistica-classica/314-scarto/README.md) · —
-315. [Scarto sillabico](12-enigmistica-classica/315-scarto-sillabico/README.md) · —
-316. [Cambio di lettera](12-enigmistica-classica/316-cambio-di-lettera/README.md) · —
-317. [Cambio di vocale, di consonante, di sillaba](12-enigmistica-classica/317-cambio-di-vocale-di-consonante-di-sillaba/README.md) · —
+312. [Zeppa sillabica](12-enigmistica-classica/312-zeppa-sillabica/README.md) · fatta
+313. [Zeppa iniziale, centrale, finale](12-enigmistica-classica/313-zeppa-iniziale-centrale-finale/README.md) · fatta
+314. [Scarto](12-enigmistica-classica/314-scarto/README.md) · fatta
+315. [Scarto sillabico](12-enigmistica-classica/315-scarto-sillabico/README.md) · fatta
+316. [Cambio di lettera](12-enigmistica-classica/316-cambio-di-lettera/README.md) · fatta
+317. [Cambio di vocale, di consonante, di sillaba](12-enigmistica-classica/317-cambio-di-vocale-di-consonante-di-sillaba/README.md) · fatta
 318. [Scambio](12-enigmistica-classica/318-scambio/README.md) · —
 319. [Spostamento](12-enigmistica-classica/319-spostamento/README.md) · —
 320. [Metatesi](12-enigmistica-classica/320-metatesi/README.md) · —

@@ -2015,6 +2015,97 @@ Le voci 305-310 chiudono il capitolo 11. Sei scritte, undici in tutto. Come per 
 
 **Il capitolo 11 si chiude con un bilancio che vale una riga.** Undici forme, tutte su come si sa che è finita. Quelle che il progetto costruisce senza ripieghi sono la voce 300, finisce quando è finita, la voce 301, finisce quando si smette, la voce 302, finisce con un oggetto, la voce 304, finisce con una scoperta, la voce 305, finisce con un cambiamento nella stanza, la voce 306, finisce aperta, la voce 307, finisce con un esito giusto o sbagliato, la voce 308, finisce con un punteggio e la voce 310, non finisce — **nove su undici.** Quelle che chiedono una seconda persona sono la voce 303, finisce con una consegna e la voce 309, finisce con un confronto, e solo per la seconda la via d'uscita costa qualcosa. **Nove su undici è più di sette su tredici**, che è il bilancio scritto poche righe sopra per il capitolo 10; gli altri capitoli non sono stati contati così e il confronto si ferma qui. Se la ragione sia che un finale è una riga scritta più spesso che una cosa da fare, lo dirà la rassegna.
 
+## Il censimento del controllo dell'errore
+
+Su tutte e 316 le voci scritte al 1 settembre 2026 si è cercato **dove sta la verifica** di quello che ha prodotto chi risponde. Cinque classi: nel materiale, in una risposta stampata, in una persona, nel mondo, o da nessuna parte. Gli script sono `build/censimento_verifica.py`, `build/censimento_due_unita.py`, `build/censimento_precisione.py`, `build/censimento_mano_conti.py` e `build/blocco_censimento.py`.
+
+**Il censimento a macchina non funziona, ed è questa la prima cosa che ha detto.** Lo script cerca per parola intera, con le forme flesse elencate, una spia di ognuna delle cinque classi dentro un pezzo di testo che contenga anche una parola della verifica; la formula «va verificato» è esclusa perché riguarda la provenienza di una fonte e non la forma. Sono state provate tre unità di lettura — la frase, il paragrafo, e le sole frasi di commento sotto «Una nostra versione» — e su venti voci prese a passo 16 sull'ordine dell'elenco, scelte prima di guardare che cosa dicesse lo script, le tre unità hanno indovinato **2, 5 e 1 volta su 20**. Le due unità che coprono tutto il testo concordano fra loro sul 78,6% delle 126 voci che tutte e due assegnano a una classe sola: **l'accordo fra due varianti dello stesso strumento sovrastima la sua precisione di un fattore tre**, ed è una trappola nuova.
+
+**La ragione dello sbaglio ha un nome, e vale oltre questo censimento: una classe definita da un'assenza non ha spie di testo.** Se non c'è niente da verificare, la voce non lo dice con una parola: lo dice non dicendo niente, oppure lo dice con una frase intera — «niente da sbagliare», «l'ultima riga chiede un giudizio che non ha risposta». Lo script mette «da nessuna parte» all'1,6%, al 5,4% o al 5,7% secondo l'unità; la lettura a mano la mette fra il 36% e il 60%. Il rapporto più favorevole allo script è **6,4 volte.**
+
+Il primo blocco è quello che dicono le parole, capitolo per capitolo, con l'unità «frase», che è la più stretta. «muta» sono le voci in cui nessuna spia si accende sommate a quelle in cui due classi pareggiano. **Va letto per quello che è: una tabella del vocabolario delle voci, non delle forme.**
+
+```
+capitolo                              voci  mater  stamp  pers  mondo  niente  muta
+Come e fatta la domanda                 49      5      2     6      3       3    30
+Che cosa mette in moto la risposta      23      3      2     2      2       4    10
+Su che cosa arriva la domanda           10      3      1     0      1       0     5
+Come e impacchettata                    27      6      1     1      1       1    17
+Enigmi                                  83     34      8     3      3       3    32
+Cacce, percorsi, mondi                  16      2      3     1      1       2     7
+Vincoli formali                         18      1      2     0      1       2    12
+Forme che vengono dalla didattica       29      2      2     6      5       0    14
+Meccaniche di gioco                     31      5      3     1      1       1    20
+Chi assegna, e chi giudica              13      2      0     5      0       1     5
+Come finisce                            11      1      0     3      1       0     6
+Enigmistica classica                     6      1      3     0      0       0     2
+tutte                                  316     65     27    28     19      17   160
+```
+
+Le **diciotto voci in cui nessuna spia si accende**, con l'unità «paragrafo», che è quella che ne lascia mute meno: 8, scala di accordo (Likert), 14, elenco, 18, parafrasi, 24, titolo, 25, dialogo scritto, 27, descrizione tecnica, 32, controesempio, 33, disegno dal vero, 46, modello in scala, 49, fotografia, 54, misurare, 74, display, 88, sfida contro un tempo, 104, gioco da tavolo, 183, percorso aperto, 237, webquest, 257, livelli e 341, crittografia pura. **Quattro di queste sono state lette a mano, e tutte e quattro stanno in «da nessuna parte»**: le voci che lo strumento non sa classificare sono quelle in cui non c'è niente da verificare. Con l'unità «frase» le mute salgono a 106 su 316, e con quella «commento» a 18.
+
+Il secondo blocco è la lettura a mano, con una regola scritta prima di leggere: la classe è il posto in cui si può fare un controllo su quello che ha prodotto chi risponde, come lo descrive la sezione «Una nostra versione»; «da nessuna parte» quando non c'è niente da controllare. Tre campioni, 39 voci distinte: venti a passo 16, e i capitoli 3 e 11 per intero — due capitoli interi perché **i conteggi si pesano per capitolo e non per voce**, e un campione a passo fisso pesa per voce.
+
+```
+campione               voci  mater  stamp  pers  mondo  niente
+passo 16 su tutte        20      6      1     2      3       8
+capitolo 3, intero       10      1      0     2      1       6
+capitolo 11, intero      11      3      0     1      3       4
+```
+
+**La verifica non sta da nessuna parte in circa metà delle forme, ed è la classe più numerosa in tutti e tre i campioni.** Sul campione a passo 16 è 8 su 20, cioè il 40%, con l'intervallo di Wilson al 95% fra 21,9% e 61,3% e l'intervallo esatto fra 19,1% e 63,9% — i due intervalli sono stati calcolati per strade diverse, l'approssimazione normale e la ricerca binaria sulla coda binomiale esatta, e stanno entro otto punti l'uno dall'altro. Pesando i due capitoli letti per intero uno per uno, come vuole la regola dei conteggi, viene: da nessuna parte 48,2%, nel materiale 18,6%, nel mondo 18,6%, in una persona 14,5%, in una risposta stampata 0%. **Due capitoli non sono i capitoli, e questo numero è una delimitazione e non una misura.**
+
+**La risposta stampata, che è il modo predefinito della scuola, non c'è quasi.** Una voce su 39 lette a mano, e zero nei due capitoli letti per intero. L'enciclopedia si è riempita di forme che si controllano da sole, di forme che chiedono al mondo, e soprattutto di forme che non si controllano affatto — e nessuno l'ha deciso, perché il foglio delle soluzioni non è mai stato nominato come cosa da evitare. **È l'osservazione che vale di più fra quelle di questo censimento, ed è arrivata da un conteggio che serviva a misurare altro.**
+
+**Che cosa questo lascia alla rassegna.** `COME-SI-LAVORA.md §9` dice che una forma sta nel formato quando la verifica è dentro il materiale, e lo dà per il terzo dei tre criteri, quello che spiega gli altri due. Il censimento dice che le forme raccolte fin qui lo soddisfano una volta su cinque, e che la classe più grande non è coperta dal criterio: **quando non c'è niente da verificare, il criterio non si applica invece di essere superato**, e una forma senza verdetto non è una forma senza controllo dell'errore — è una forma a cui la domanda non si pone. Alla rassegna le cinque classi vanno ridotte a due domande separate: *c'è qualcosa da controllare?* e solo dopo *dove sta il controllo?*
+
+## Il ventiquattresimo scarico di fonti, 1 settembre 2026
+
+Per il blocco 312-317 sono state scaricate **17 pagine nuove** — il gruppo «enigmistica, capitolo 12, blocco 312-317» in `tools/fetch_exercise_sources.py`. Le pagine di testo sono passate da 1 175 a **1 192**. **Zero 404 su diciassette indirizzi, dodicesima sessione di fila.**
+
+Il controllo dei nomi già presenti nello script, fatto su trentaquattro candidati in un ciclo solo, ne ha trovati nove già in casa: `Word_ladder`, `Anagram`, `Word_game`, `Zeppa`, `Scarto_(enigmistica)`, `Cambio_(enigmistica)`, `Bifronte`, `Crittografia_(enigmistica)` ed `Enigmistica`. Un titolo candidato non esiste, `Doublets_(word_game)`. Rimando nuovo da dichiarare: `Damerau-Levenshtein_distance` porta a `Damerau–Levenshtein distance`, con il trattino lungo.
+
+`it-metatesi.txt` è **2 022 byte ed è una pagina di disambiguazione**, sotto la soglia dei due kilobyte e mezzo che la regola dà: non è stata usata, e il titolo che serviva era `Metatesi_(linguistica)`.
+
+## Trappole nuove, pagate il 1 settembre 2026, sedicesimo giro
+
+**L'accordo fra due varianti dello stesso strumento sovrastima la sua precisione, e di un fattore tre.** Il censimento del controllo dell'errore è stato letto con due unità diverse — la frase e il paragrafo — e le due concordano sul 78,6% delle voci che tutte e due assegnano. Contro una lettura a mano di venti voci scelte prima, le stesse due unità prendono 2 e 5 su 20. **Due versioni dello stesso strumento sbagliato sbagliano insieme**, e la loro concordanza non misura niente. La misura serve un secondo lettore, non una seconda impostazione.
+
+**Una classe definita da un'assenza non ha spie di testo, e un censimento a spie la fa sparire.** Se una forma non ha niente da verificare, la voce non lo dice con una parola. Lo script mette «da nessuna parte» fra l'1,6% e il 5,7%; a mano è fra il 36% e il 60%. Il rimedio non è aggiungere spie: è porre la domanda in due tempi, prima se ci sia qualcosa da controllare e poi dove stia.
+
+**Un indirizzo sbagliato in `fetch_exercise_sources.py` fallisce in silenzio e resta lì.** `Bifronte_(enigmistica)` non esiste — il titolo giusto è `Bifronte` — e il file `it-bifronte.txt` non è mai stato creato. La voce 333, bifronte è stata scritta dichiarando «nessuna fra le pagine locali», che era vero e sembrava una constatazione invece che un guasto. **L'unico posto in cui il buco si vede è il conteggio finale dello script**, e quattro mancanti su milleduecentocinque non si notano. Da fare: leggere quel conteggio a ogni scarico, e trattare un mancante come una riga da guardare.
+
+**Il prompt di sessione elencava tre fonti «già in casa» e nessuna delle tre esisteva con quel nome.** `it-bifronte.txt` non c'era affatto; `it-crittografia.txt` è `it-crittografia-gioco.txt`; `word-play.txt` è `forms-of-wordplay.txt`. Il controllo con `build/check_fonti_<n>.py` le ha prese tutte e tre al primo colpo, e a costo zero. Terza conferma che il prompt è la fonte meno verificata del repository.
+
+**Una frase di commento accanto a un numero giusto non è controllata da niente.** In `build/check_312.py` la riga su *carta / casta* stampava «lunghezze diverse: Hamming non si applica» mentre le due parole hanno cinque lettere tutte e due; il numero stampato accanto era corretto, e nessuna asserzione toccava la frase. **Il rimedio è mettere un'asserzione anche sotto la parte in prosa** — qui `leven == hamming == 1` —, perché una spiegazione sbagliata accanto a un dato giusto sopravvive a qualunque rilettura.
+
+**Il tetto della riga non ha morso, per la prima volta in sette sessioni**, e la ragione è che è stato scritto nell'asserzione prima del testo dei blocchi. La regola era già scritta; questa è la prima volta che è stata applicata nell'ordine giusto.
+
+## Quello che ha detto il primo blocco pieno del capitolo dell'enigmistica
+
+Le voci 312-317 sono le prime sei scritte di seguito nel capitolo 12, con il contratto ridotto: voce breve, dichiarata nell'intestazione con la riga **Contratto**. Dodici su quarantotto.
+
+**Il termine di paragone scritto per primo ha funzionato per la quinta volta, e le quattro precedenti sono elencabili.** La voce 287, assegnata dal sistema, la voce 298, non corretta, la voce 300, finisce quando è finita e la voce 310, non finisce; adesso la voce 314, scarto, dove si toglie e basta e non si sceglie che cosa mettere. **Novità di questo blocco: la riga di differenza è stampata dentro le voci**, in fondo alla sezione della rassegna, e le cinque voci che non sono il termine di paragone portano tutte la stessa riga con un contenuto diverso. Serve a chi apre una voce sola, che è la condizione normale di lettura, e costa una riga.
+
+**Zeppa, scarto e cambio sono tre operazioni di distanza di edit 1; lo scambio non lo è.** La distanza di Levenshtein, definita nel 1965, ammette inserzione, cancellazione e sostituzione, e non la trasposizione: portare *arte* in *atre* costa due modifiche, mentre *oro / orco*, *porzione / pozione* e *carta / casta* ne costano una. Verificato ricalcolando le quattro distanze in `build/check_312.py`. **Ne segue un confine dentro il capitolo che nessuna fonte enigmistica traccia**: le sei voci di questo blocco stanno in una famiglia misurabile, e la voce 318, scambio, la voce 319, spostamento, la voce 320, metatesi e la voce 321, antipodo stanno fuori. Alla rassegna vanno separate.
+
+**Lo spazio di ricerca di uno scarto è lineare nella lunghezza della parola, quindi si stampa per intero e non c'è più niente da generare.** Su *porzione* le stringhe candidate sono otto, contro le 181 della zeppa sulla stessa parola: ventidue volte. Otto righe coprono tutto, e allora **il limite dominante del capitolo — il sistema non sa manipolare le lettere dentro le parole — smette di contare**, perché non gli si chiede né di costruire né di verificare. È la seconda via d'uscita trovata per questo capitolo dopo «girare il gioco dalla parte dell'autore», e a differenza di quella non sposta il lavoro su chi legge. Vale solo dove lo spazio di ricerca è piccolo: la stessa mossa sulla zeppa darebbe 181 righe. — voce 314, scarto, `build/blocco_312.py`.
+
+**Restringere una regola allarga quello che si riesce a fare.** Un cambio di lettera su *carta* ha cento risposte candidate e non si esaurisce; ristretto alle vocali ne ha otto e si esaurisce in una riga. Il caso limite è la successione *pazzo, pezzo, pizzo, pozzo, puzzo*: fissando insieme la posizione e il tipo, lo spazio di ricerca vale esattamente cinque, perché le vocali grafiche italiane sono cinque. È la seconda occorrenza del vincolo che aiuta invece di ostacolare, dopo la voce 124, lipogramma, dove la difficoltà si regola con una tabella di frequenze. — voce 317, cambio di vocale, di consonante, di sillaba.
+
+**Una soglia calcolabile a mano vale più di una risposta verificabile a macchina.** Il numero minimo di passi di una scala di parole è la distanza di Hamming fra le due parole, e si ottiene contando in quante posizioni differiscono: esatto, immediato, e senza vocabolario né sistema. Chi lo calcola sa qualcosa di vero sul problema prima di averlo risolto. È l'unico numero certo che questo blocco produca su un foglio. — voce 316, cambio di lettera, `word-ladder.txt`.
+
+**La sillaba è l'unica unità del blocco su cui due fonti competenti non concordano, e questo produce un compito migliore di uno con la regola stabilita.** `it-divisione-in-sillabe.txt` dichiara che le norme italiane sono «completate da alcune convenzioni in parte arbitrarie», che sui sintagmi con apostrofo «le fonti non concordano affatto», e porta due dizionari che dividono *subacqueo* in tre sillabe e in quattro. Ne segue che uno scarto sillabico su quella parola ha tre candidati o quattro secondo chi ha ragione: **il conteggio è esatto e la risposta è doppia, e la causa è nominabile invece di essere l'ignoranza di chi risponde.** — voce 315, scarto sillabico e voce 312, zeppa sillabica.
+
+**Un riquadro che resta vuoto per una ragione strutturale vale più di uno pieno.** Su *orto*, aggiungere una lettera davanti dà cinque parole su ventuno tentativi; aggiungerne una in fondo non ne dà nessuna, e non per difficoltà ma perché le parole italiane finiscono quasi sempre per vocale — osservazione nostra, da verificare, coerente con il fatto che l'unico esempio di aggiunta finale della fonte, *sport / sporta*, parte da un prestito. Il vuoto garantito è la sola parte di quel foglio che produca una scoperta. — voce 313, zeppa iniziale, centrale, finale.
+
+**Il gioco enigmistico e il metodo scientifico sono la stessa operazione con due scopi.** Un cambio di lettera è una coppia minima, cioè lo strumento con cui la fonologia stabilisce l'inventario dei fonemi di una lingua: *balla / palla*, *detto / tetto*. È la terza volta che la spiegazione storica o scientifica costa tre righe e fa il lavoro meglio dell'enunciato della regola, dopo la voce 333, bifronte e la voce 346, rebus. — voce 316, cambio di lettera, `it-coppia-minima.txt`.
+
+**Quasi nove parole su dieci hanno un vicino, e la decima non ne ha nessuno.** Donald Knuth ha studiato al calcolatore le scale di parole di cinque lettere su una raccolta di 5 757 parole inglesi comuni e ne ha trovate 671 senza nemmeno un vicino a una lettera di distanza — l'11,66%, ricalcolato perché la fonte dà i due interi e non il rapporto. Chiamò quelle parole *aloof*, notando che *aloof* è una di loro. Il dato è inglese e su quella lista: in italiano nessuno l'ha contato, e dirlo è parte del dato. — voce 316, cambio di lettera, `word-ladder.txt`.
+
+**La domanda del censimento, posta su queste sei voci, dà una risposta che il censimento non ha in elenco.** Per tutte e sei la verifica è la stessa: che venga fuori una parola italiana. Quella verifica non sta nel materiale, non sta in una persona, non sta nel mondo e non è assente — **sta in un vocabolario, cioè in un'opera di consultazione che si presume in casa e che nessuna voce dell'elenco ha mai nominato.** Alle cinque classi del censimento ne manca una sesta, ed è saltata fuori al primo blocco scritto dopo che il censimento era stato fatto, che è il modo in cui una rassegna si corregge da sé. Da guardare alla rassegna insieme alla domanda pratica: che cosa cambia se in casa il vocabolario non c'è.
+
+
 
 
 

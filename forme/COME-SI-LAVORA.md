@@ -20,6 +20,10 @@ Da leggere insieme a `forme/README.md`, che è il contratto di una voce, e alla 
 
 Le voci dei capitoli 12 (enigmistica classica), 13 (giochi matematici e ricreativi) e 14 (percezione e inganno dell'occhio) hanno un **contratto ridotto: voce breve, dichiarata come tale nell'intestazione.** Differiscono nell'enigma e non nel modo di chiedere, e la profondità piena lì produce riempitivo. Le sette sezioni restano, e restano nell'ordine; quello che cambia è la lunghezza attesa di ognuna.
 
+Si dichiara con la riga `- **Contratto** voce breve`, **subito dopo «In una riga»**. Le righe di intestazione diventano sei, quindi il comando del §8 va lanciato con `-TotalCount 8`. `forme_check.py` non guarda l'intestazione e passa comunque.
+
+**Quando un blocco è fatto di forme che si somigliano, si scrive per primo il termine di paragone** — la voce in cui la variabile del blocco prende il valore più povero — e le altre si descrivono per differenza da lei. La regola ha funzionato cinque volte: voci 287, 298, 300, 310 e 314. **La riga di differenza va stampata dentro ogni voce**, in fondo alla sezione della rassegna, perché chi apre una voce sola non ha in mente le altre.
+
 ## 3. Ambiente
 
 - Python nel venv: `.\.venv\Scripts\python.exe`. **Il `python` di sistema non ha né pytest né ruff.**
@@ -43,6 +47,10 @@ Le voci dei capitoli 12 (enigmistica classica), 13 (giochi matematici e ricreati
 La ricerca a testo pieno su `https://en.wikipedia.org/w/index.php?search=<parole>&title=Special:Search&fulltext=1` resta utile per un'altra cosa: fa emergere pagine che nessuno cercava e che servono.
 
 Per aggiungere fonti: gli indirizzi vanno in `tools/fetch_exercise_sources.py` (i gruppi in fondo sono i più recenti), si rilancia — salta quelle già prese — e poi `.\.venv\Scripts\python.exe tools\forme_text.py`. **Gli indirizzi con lettere accentate vanno scritti percentuali** (`Serendipit%C3%A0`): un solo accento fa fallire tutto lo scaricamento con `UnicodeEncodeError`. Lo stesso per gli apostrofi (`Conway%27s_Game_of_Life`) e per il trattino lungo (`Dunning%E2%80%93Kruger_effect`).
+
+**Un indirizzo sbagliato nello script fallisce in silenzio e resta lì per sempre.** `Bifronte_(enigmistica)` non esiste, il file `it-bifronte.txt` non è mai stato creato, e la voce che ne aveva bisogno ha scritto «nessuna fra le pagine locali» come se fosse una constatazione. **L'unico posto in cui il buco si vede è il conteggio finale dello scaricamento** — `1201/1205` —, e va letto a ogni scarico: un mancante è una riga da guardare, non un residuo.
+
+**Le fonti nominate nel prompt di sessione si controllano prima di citarle.** Un prompt ne ha elencate tre come «già in casa» e nessuna delle tre esisteva con quel nome; `build/check_fonti_<n>.py` le ha prese tutte e tre al primo colpo.
 
 Quando nessuna pagina copre una cosa, la si cerca fuori: `fetch_webpage` su una ricerca e poi sulla pagina vera funziona. **Una fonte primaria fuori da Wikipedia può essere una pagina di vendita**, e allora va presa per quello che è e dichiarata.
 
@@ -93,6 +101,9 @@ Lettura: la ricerca testuale nel workspace salta le cartelle gitignored, quindi 
 - **Una costante presa dal codice non si ricopia: si legge**, con una regex, così che un cambiamento nel codice faccia fallire lo script invece di smentire la voce in silenzio.
 - **Una controprova scritta a mano dentro uno script è una controprova finta.** Quando due metodi discordano, il primo sospettato è quello scritto per ultimo, e il secondo è il dominio.
 - **Uno strumento di controllo può essere incompleto e dire di sì.** Quando un controllo segnala un falso allarme, la prima cosa da guardare è il controllo.
+- **L'accordo fra due varianti dello stesso strumento non ne misura la precisione.** Due impostazioni dello stesso classificatore concordavano al 78,6% e prendevano il 10% e il 25% contro una lettura a mano: due versioni della stessa idea sbagliata sbagliano insieme. Per misurare uno strumento serve un secondo lettore, non una seconda impostazione, e il campione va scelto **prima** di guardare che cosa dica lo strumento.
+- **Una classe definita da un'assenza non ha spie di testo.** Un classificatore a parole chiave la fa sparire — 1,6% contro il 36% letto a mano. Il rimedio non è aggiungere spie: è porre la domanda in due tempi, prima se la cosa esista e poi dove stia.
+- **Una frase di commento accanto a un numero giusto non è controllata da niente.** Un'asserzione va messa anche sotto la parte in prosa: una spiegazione sbagliata accanto a un dato corretto sopravvive a qualunque rilettura.
 - **I blocchi stampati si generano con uno script e si incolla l'output**, e lo script verifica da sé che le colonne coincidano. **La larghezza di una colonna si prende sul massimo fra intestazione e ogni riga di dati, più due.**
 - **L'allineamento si controlla con due strumenti**: `build/check_colonne.py <numero>` guarda solo i blocchi con barre verticali, `build/check_stacchi.py <numero>` stampa lunghezza di ogni riga e posizione di ogni stacco. Nessuno dei due sostituisce l'asserzione dentro `blocco_<numero>.py`. Quando le etichette hanno lunghezze diverse, `check_stacchi.py` segnala «forme di riga distinte» anche se le colonne sono incolonnate.
 - **`show_blocks.py` toglie gli spazi in testa alla riga**, quindi non serve a controllare l'allineamento.
