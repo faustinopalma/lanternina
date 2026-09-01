@@ -1665,6 +1665,19 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("sator-square", "https://en.wikipedia.org/wiki/Sator_Square"),
         ("punctuation", "https://en.wikipedia.org/wiki/Punctuation"),
     ],
+    "enigmistica, capitolo 12, blocco 352-358": [
+        ("cross-figure", "https://en.wikipedia.org/wiki/Cross-figure"),
+        ("kakuro", "https://en.wikipedia.org/wiki/Kakuro"),
+        ("it-kakuro", "https://it.wikipedia.org/wiki/Kakuro"),
+        ("crossword-abbreviations", "https://en.wikipedia.org/wiki/Crossword_abbreviations"),
+        ("exact-cover", "https://en.wikipedia.org/wiki/Exact_cover"),
+        ("dancing-links", "https://en.wikipedia.org/wiki/Dancing_links"),
+        (
+            "constraint-satisfaction-problem",
+            "https://en.wikipedia.org/wiki/Constraint_satisfaction_problem",
+        ),
+        ("it-zigzag", "https://it.wikipedia.org/wiki/Zigzag"),
+    ],
 }
 
 

@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 351 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 358 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -389,13 +389,13 @@
 349. [Acrostico](12-enigmistica-classica/349-acrostico/README.md) · fatta
 350. [Mesostico, telestico](12-enigmistica-classica/350-mesostico-telestico/README.md) · fatta
 351. [Frase bipartita](12-enigmistica-classica/351-frase-bipartita/README.md) · fatta
-352. [Cruciverba](12-enigmistica-classica/352-cruciverba/README.md) · —
-353. [Cruciverba senza schema](12-enigmistica-classica/353-cruciverba-senza-schema/README.md) · —
-354. [Cruciverba crittografato](12-enigmistica-classica/354-cruciverba-crittografato/README.md) · —
-355. [Crucintarsio](12-enigmistica-classica/355-crucintarsio/README.md) · —
-356. [Crucipuzzle](12-enigmistica-classica/356-crucipuzzle/README.md) · —
-357. [Parole incrociate a schema libero](12-enigmistica-classica/357-parole-incrociate-a-schema-libero/README.md) · —
-358. [Zigzag, kakuro, crossnumber](12-enigmistica-classica/358-zigzag-kakuro-crossnumber/README.md) · —
+352. [Cruciverba](12-enigmistica-classica/352-cruciverba/README.md) · fatta
+353. [Cruciverba senza schema](12-enigmistica-classica/353-cruciverba-senza-schema/README.md) · fatta
+354. [Cruciverba crittografato](12-enigmistica-classica/354-cruciverba-crittografato/README.md) · fatta
+355. [Crucintarsio](12-enigmistica-classica/355-crucintarsio/README.md) · fatta
+356. [Crucipuzzle](12-enigmistica-classica/356-crucipuzzle/README.md) · fatta
+357. [Parole incrociate a schema libero](12-enigmistica-classica/357-parole-incrociate-a-schema-libero/README.md) · fatta
+358. [Zigzag, kakuro, crossnumber](12-enigmistica-classica/358-zigzag-kakuro-crossnumber/README.md) · fatta
 
 ## 13. Giochi matematici e ricreativi
 
