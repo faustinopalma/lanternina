@@ -1678,6 +1678,29 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ),
         ("it-zigzag", "https://it.wikipedia.org/wiki/Zigzag"),
     ],
+    "giochi matematici, capitolo 13, blocco 359-364": [
+        ("enrico-fermi", "https://en.wikipedia.org/wiki/Enrico_Fermi"),
+        ("order-of-magnitude", "https://en.wikipedia.org/wiki/Order_of_magnitude"),
+        (
+            "back-of-the-envelope",
+            "https://en.wikipedia.org/wiki/Back-of-the-envelope_calculation",
+        ),
+        ("it-problema-di-fermi", "https://it.wikipedia.org/wiki/Problema_di_Fermi"),
+        ("sam-loyd", "https://en.wikipedia.org/wiki/Sam_Loyd"),
+        ("it-rompicapo", "https://it.wikipedia.org/wiki/Rompicapo"),
+        ("it-matematica-ricreativa", "https://it.wikipedia.org/wiki/Matematica_ricreativa"),
+        ("luoshu-square", "https://en.wikipedia.org/wiki/Luoshu_Square"),
+        (
+            "durer-magic-square",
+            "https://en.wikipedia.org/wiki/Albrecht_D%C3%BCrer%27s_magic_square",
+        ),
+        ("melencolia-i", "https://en.wikipedia.org/wiki/Melencolia_I"),
+        ("magic-constant", "https://en.wikipedia.org/wiki/Magic_constant"),
+        ("it-quadrato-magico", "https://it.wikipedia.org/wiki/Quadrato_magico"),
+        ("parity-mathematics", "https://en.wikipedia.org/wiki/Parity_(mathematics)"),
+        ("parity-permutation", "https://en.wikipedia.org/wiki/Parity_of_a_permutation"),
+        ("mu-puzzle", "https://en.wikipedia.org/wiki/MU_puzzle"),
+    ],
 }
 
 

@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 358 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 364 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -399,12 +399,12 @@
 
 ## 13. Giochi matematici e ricreativi
 
-359. [Problema di Fermi](13-giochi-matematici-e-ricreativi/359-problema-di-fermi/README.md) · —
-360. [Rompicapo classico](13-giochi-matematici-e-ricreativi/360-rompicapo-classico/README.md) · —
-361. [Crittarismo (alfametica)](13-giochi-matematici-e-ricreativi/361-crittarismo-alfametica/README.md) · —
-362. [Quadrato magico](13-giochi-matematici-e-ricreativi/362-quadrato-magico/README.md) · —
-363. [Problema di parità](13-giochi-matematici-e-ricreativi/363-problema-di-parita/README.md) · —
-364. [Invariante](13-giochi-matematici-e-ricreativi/364-invariante/README.md) · —
+359. [Problema di Fermi](13-giochi-matematici-e-ricreativi/359-problema-di-fermi/README.md) · fatta
+360. [Rompicapo classico](13-giochi-matematici-e-ricreativi/360-rompicapo-classico/README.md) · fatta
+361. [Crittarismo (alfametica)](13-giochi-matematici-e-ricreativi/361-crittarismo-alfametica/README.md) · fatta
+362. [Quadrato magico](13-giochi-matematici-e-ricreativi/362-quadrato-magico/README.md) · fatta
+363. [Problema di parità](13-giochi-matematici-e-ricreativi/363-problema-di-parita/README.md) · fatta
+364. [Invariante](13-giochi-matematici-e-ricreativi/364-invariante/README.md) · fatta
 365. [Principio dei cassetti](13-giochi-matematici-e-ricreativi/365-principio-dei-cassetti/README.md) · —
 366. [Problema di grafi](13-giochi-matematici-e-ricreativi/366-problema-di-grafi/README.md) · —
 367. [Gioco combinatorio imparziale](13-giochi-matematici-e-ricreativi/367-gioco-combinatorio-imparziale/README.md) · —
