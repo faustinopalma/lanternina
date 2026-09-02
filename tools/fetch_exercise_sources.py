@@ -1807,6 +1807,93 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("catenary", "https://en.wikipedia.org/wiki/Catenary"),
         ("it-bolla-di-sapone", "https://it.wikipedia.org/wiki/Bolla_di_sapone"),
     ],
+    # percezione, capitolo 14, blocco 378-384.
+    # optical-illusion, impossible-object, anamorphosis, pareidolia, camouflage,
+    # multistable-perception, change-blindness, moire-pattern, spot-the-difference,
+    # visual-search, hidden-object-game e visual-memory sono gia in casa.
+    # Hidden_picture e un rimando a Hidden object game: non si chiede due volte.
+    "percezione, capitolo 14, blocco 378-384": [
+        (
+            "muller-lyer-illusion",
+            "https://en.wikipedia.org/wiki/M%C3%BCller-Lyer_illusion",
+        ),
+        ("ponzo-illusion", "https://en.wikipedia.org/wiki/Ponzo_illusion"),
+        ("cafe-wall-illusion", "https://en.wikipedia.org/wiki/Caf%C3%A9_wall_illusion"),
+        ("poggendorff-illusion", "https://en.wikipedia.org/wiki/Poggendorff_illusion"),
+        ("ebbinghaus-illusion", "https://en.wikipedia.org/wiki/Ebbinghaus_illusion"),
+        (
+            "vertical-horizontal-illusion",
+            "https://en.wikipedia.org/wiki/Vertical%E2%80%93horizontal_illusion",
+        ),
+        (
+            "geometrical-optical-illusions",
+            "https://en.wikipedia.org/wiki/Geometrical-optical_illusions",
+        ),
+        ("grid-illusion", "https://en.wikipedia.org/wiki/Grid_illusion"),
+        ("ambiguous-image", "https://en.wikipedia.org/wiki/Ambiguous_image"),
+        ("necker-cube", "https://en.wikipedia.org/wiki/Necker_cube"),
+        ("rubin-vase", "https://en.wikipedia.org/wiki/Rubin_vase"),
+        (
+            "rabbit-duck-illusion",
+            "https://en.wikipedia.org/wiki/Rabbit%E2%80%93duck_illusion",
+        ),
+        (
+            "figure-ground-perception",
+            "https://en.wikipedia.org/wiki/Figure%E2%80%93ground_(perception)",
+        ),
+        ("gestalt-psychology", "https://en.wikipedia.org/wiki/Gestalt_psychology"),
+        ("impossible-trident", "https://en.wikipedia.org/wiki/Impossible_trident"),
+        ("penrose-triangle", "https://en.wikipedia.org/wiki/Penrose_triangle"),
+        ("penrose-stairs", "https://en.wikipedia.org/wiki/Penrose_stairs"),
+        ("mc-escher", "https://en.wikipedia.org/wiki/M._C._Escher"),
+        (
+            "oscar-reutersvard",
+            "https://en.wikipedia.org/wiki/Oscar_Reutersv%C3%A4rd",
+        ),
+        ("trompe-loeil", "https://en.wikipedia.org/wiki/Trompe-l%27%C5%93il"),
+        ("ames-room", "https://en.wikipedia.org/wiki/Ames_room"),
+        (
+            "the-ambassadors-holbein",
+            "https://en.wikipedia.org/wiki/The_Ambassadors_(Holbein)",
+        ),
+        ("apophenia", "https://en.wikipedia.org/wiki/Apophenia"),
+        ("rorschach-test", "https://en.wikipedia.org/wiki/Rorschach_test"),
+        ("face-perception", "https://en.wikipedia.org/wiki/Face_perception"),
+        (
+            "disruptive-coloration",
+            "https://en.wikipedia.org/wiki/Disruptive_coloration",
+        ),
+        ("countershading", "https://en.wikipedia.org/wiki/Countershading"),
+        ("crypsis", "https://en.wikipedia.org/wiki/Crypsis"),
+        ("mimicry", "https://en.wikipedia.org/wiki/Mimicry"),
+        ("dazzle-camouflage", "https://en.wikipedia.org/wiki/Dazzle_camouflage"),
+        ("military-camouflage", "https://en.wikipedia.org/wiki/Military_camouflage"),
+        (
+            "abbott-handerson-thayer",
+            "https://en.wikipedia.org/wiki/Abbott_Handerson_Thayer",
+        ),
+        ("visual-perception", "https://en.wikipedia.org/wiki/Visual_perception"),
+        ("depth-perception", "https://en.wikipedia.org/wiki/Depth_perception"),
+        ("illusory-contour", "https://en.wikipedia.org/wiki/Illusory_contour"),
+        ("missing-square-puzzle", "https://en.wikipedia.org/wiki/Missing_square_puzzle"),
+        ("schroeder-stairs", "https://en.wikipedia.org/wiki/Schroeder_stairs"),
+        ("it-illusione-ottica", "https://it.wikipedia.org/wiki/Illusione_ottica"),
+        ("it-anamorfismo", "https://it.wikipedia.org/wiki/Anamorfismo"),
+        (
+            "it-triangolo-di-penrose",
+            "https://it.wikipedia.org/wiki/Triangolo_di_Penrose",
+        ),
+        ("it-cubo-di-necker", "https://it.wikipedia.org/wiki/Cubo_di_Necker"),
+        ("it-mimetismo", "https://it.wikipedia.org/wiki/Mimetismo"),
+        (
+            "it-psicologia-della-gestalt",
+            "https://it.wikipedia.org/wiki/Psicologia_della_Gestalt",
+        ),
+        (
+            "it-illusione-di-muller-lyer",
+            "https://it.wikipedia.org/wiki/Illusione_di_M%C3%BCller-Lyer",
+        ),
+    ],
 }
 
 

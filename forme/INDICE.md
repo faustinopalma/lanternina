@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 377 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 384 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -421,13 +421,13 @@
 
 ## 14. Percezione e inganno dell'occhio
 
-378. [Illusione ottica geometrica](14-percezione-e-inganno-dell-occhio/378-illusione-ottica-geometrica/README.md) · —
-379. [Ambiguità figura-sfondo](14-percezione-e-inganno-dell-occhio/379-ambiguita-figura-sfondo/README.md) · —
-380. [Figura reversibile](14-percezione-e-inganno-dell-occhio/380-figura-reversibile/README.md) · —
-381. [Impossibile geometrico](14-percezione-e-inganno-dell-occhio/381-impossibile-geometrico/README.md) · —
-382. [Anamorfosi](14-percezione-e-inganno-dell-occhio/382-anamorfosi/README.md) · —
-383. [Pareidolia](14-percezione-e-inganno-dell-occhio/383-pareidolia/README.md) · —
-384. [Mimetismo e camuffamento](14-percezione-e-inganno-dell-occhio/384-mimetismo-e-camuffamento/README.md) · —
+378. [Illusione ottica geometrica](14-percezione-e-inganno-dell-occhio/378-illusione-ottica-geometrica/README.md) · fatta
+379. [Ambiguità figura-sfondo](14-percezione-e-inganno-dell-occhio/379-ambiguita-figura-sfondo/README.md) · fatta
+380. [Figura reversibile](14-percezione-e-inganno-dell-occhio/380-figura-reversibile/README.md) · fatta
+381. [Impossibile geometrico](14-percezione-e-inganno-dell-occhio/381-impossibile-geometrico/README.md) · fatta
+382. [Anamorfosi](14-percezione-e-inganno-dell-occhio/382-anamorfosi/README.md) · fatta
+383. [Pareidolia](14-percezione-e-inganno-dell-occhio/383-pareidolia/README.md) · fatta
+384. [Mimetismo e camuffamento](14-percezione-e-inganno-dell-occhio/384-mimetismo-e-camuffamento/README.md) · fatta
 385. [Cecità al cambiamento](14-percezione-e-inganno-dell-occhio/385-cecita-al-cambiamento/README.md) · —
 386. [Trova le differenze](14-percezione-e-inganno-dell-occhio/386-trova-le-differenze/README.md) · —
 387. [Aguzza la vista](14-percezione-e-inganno-dell-occhio/387-aguzza-la-vista/README.md) · —

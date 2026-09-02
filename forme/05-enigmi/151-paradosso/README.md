@@ -161,7 +161,7 @@ Sul pannello da quattro righe da 44 caratteri ci sta un paradosso per volta, e c
 
 **Una consegna la cui risposta corretta è una casella vuota.** Non è il vuoto autorizzato raccolto dieci volte — «se non ti viene, lasciala vuota» —: qui il vuoto è **la risposta**, e chi scrive qualcosa ha sbagliato. È la prima occorrenza nell'elenco, e vale la pena cercarne altre, perché è un modo di consegnare l'idea che certe domande non abbiano seguito senza doverlo spiegare.
 
-**Il paradosso può stare in un'immagine, e l'immagine è l'unica versione che il sistema stamperebbe senza parole.** Le scale di Escher fanno il lavoro di «questa frase è falsa» su un canale diverso. Da guardare insieme alla voce 378, illusione ottica geometrica, che sta nel capitolo 13 e che con questa condivide più di quanto la divisione dei capitoli suggerisca.
+**Il paradosso può stare in un'immagine, e l'immagine è l'unica versione che il sistema stamperebbe senza parole.** Le scale di Escher fanno il lavoro di «questa frase è falsa» su un canale diverso. Da guardare insieme alla voce 378, illusione ottica geometrica e alla voce 381, impossibile geometrico, che stanno nel capitolo 14 e che con questa condividono più di quanto la divisione dei capitoli suggerisca.
 
 **Un termine che due tradizioni usano al contrario.** In matematica italiana il paradosso è la proposizione vera e controintuitiva, e la contraddizione vera si chiama antinomia; in inglese sono tutti e due *paradox*. È la seconda volta che l'enciclopedia trova due tradizioni in disaccordo su un punto verificabile — la prima è alla voce 114, indovinello dell'anno — e in tutti e due i casi la parola italiana è la più stretta. Da guardare alla rassegna come questione di lingua e non di forma.
 
