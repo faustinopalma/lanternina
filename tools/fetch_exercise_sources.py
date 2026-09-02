@@ -1701,6 +1701,39 @@ SOURCES: dict[str, list[tuple[str, str]]] = {
         ("parity-permutation", "https://en.wikipedia.org/wiki/Parity_of_a_permutation"),
         ("mu-puzzle", "https://en.wikipedia.org/wiki/MU_puzzle"),
     ],
+    "giochi matematici, capitolo 13, blocco 365-370": [
+        ("ramsey-theory", "https://en.wikipedia.org/wiki/Ramsey_theory"),
+        (
+            "friends-and-strangers",
+            "https://en.wikipedia.org/wiki/Theorem_on_friends_and_strangers",
+        ),
+        ("it-principio-dei-cassetti", "https://it.wikipedia.org/wiki/Principio_dei_cassetti"),
+        ("graph-theory", "https://en.wikipedia.org/wiki/Graph_theory"),
+        ("eulerian-path", "https://en.wikipedia.org/wiki/Eulerian_path"),
+        ("knights-tour", "https://en.wikipedia.org/wiki/Knight%27s_tour"),
+        ("handshaking-lemma", "https://en.wikipedia.org/wiki/Handshaking_lemma"),
+        ("it-teoria-dei-grafi", "https://it.wikipedia.org/wiki/Teoria_dei_grafi"),
+        (
+            "sprague-grundy",
+            "https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem",
+        ),
+        ("impartial-game", "https://en.wikipedia.org/wiki/Impartial_game"),
+        ("chomp", "https://en.wikipedia.org/wiki/Chomp"),
+        ("it-nim", "https://it.wikipedia.org/wiki/Nim"),
+        ("fibonacci-sequence", "https://en.wikipedia.org/wiki/Fibonacci_sequence"),
+        ("collatz-conjecture", "https://en.wikipedia.org/wiki/Collatz_conjecture"),
+        ("look-and-say", "https://en.wikipedia.org/wiki/Look-and-say_sequence"),
+        (
+            "it-successione-di-fibonacci",
+            "https://it.wikipedia.org/wiki/Successione_di_Fibonacci",
+        ),
+        ("triangular-number", "https://en.wikipedia.org/wiki/Triangular_number"),
+        (
+            "squared-triangular-number",
+            "https://en.wikipedia.org/wiki/Squared_triangular_number",
+        ),
+        ("ostomachion", "https://en.wikipedia.org/wiki/Ostomachion"),
+    ],
 }
 
 

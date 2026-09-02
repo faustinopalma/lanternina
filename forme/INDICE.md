@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 364 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 370 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -405,12 +405,12 @@
 362. [Quadrato magico](13-giochi-matematici-e-ricreativi/362-quadrato-magico/README.md) · fatta
 363. [Problema di parità](13-giochi-matematici-e-ricreativi/363-problema-di-parita/README.md) · fatta
 364. [Invariante](13-giochi-matematici-e-ricreativi/364-invariante/README.md) · fatta
-365. [Principio dei cassetti](13-giochi-matematici-e-ricreativi/365-principio-dei-cassetti/README.md) · —
-366. [Problema di grafi](13-giochi-matematici-e-ricreativi/366-problema-di-grafi/README.md) · —
-367. [Gioco combinatorio imparziale](13-giochi-matematici-e-ricreativi/367-gioco-combinatorio-imparziale/README.md) · —
-368. [Successione con regola dichiarata](13-giochi-matematici-e-ricreativi/368-successione-con-regola-dichiarata/README.md) · —
-369. [Dimostrazione senza parole](13-giochi-matematici-e-ricreativi/369-dimostrazione-senza-parole/README.md) · —
-370. [Dissezione geometrica](13-giochi-matematici-e-ricreativi/370-dissezione-geometrica/README.md) · —
+365. [Principio dei cassetti](13-giochi-matematici-e-ricreativi/365-principio-dei-cassetti/README.md) · fatta
+366. [Problema di grafi](13-giochi-matematici-e-ricreativi/366-problema-di-grafi/README.md) · fatta
+367. [Gioco combinatorio imparziale](13-giochi-matematici-e-ricreativi/367-gioco-combinatorio-imparziale/README.md) · fatta
+368. [Successione con regola dichiarata](13-giochi-matematici-e-ricreativi/368-successione-con-regola-dichiarata/README.md) · fatta
+369. [Dimostrazione senza parole](13-giochi-matematici-e-ricreativi/369-dimostrazione-senza-parole/README.md) · fatta
+370. [Dissezione geometrica](13-giochi-matematici-e-ricreativi/370-dissezione-geometrica/README.md) · fatta
 371. [Costruzione con riga e compasso](13-giochi-matematici-e-ricreativi/371-costruzione-con-riga-e-compasso/README.md) · —
 372. [Aritmetica in altra base](13-giochi-matematici-e-ricreativi/372-aritmetica-in-altra-base/README.md) · —
 373. [Paradosso probabilistico](13-giochi-matematici-e-ricreativi/373-paradosso-probabilistico/README.md) · —
