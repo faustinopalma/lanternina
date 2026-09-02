@@ -19,6 +19,8 @@ The order inside each file runs from most useful to least, by one criterion only
 | [07-catalogue.md](07-catalogue.md) | Experiences designed once, for every house |
 | [08-experience.md](08-experience.md) | An experience devised and run in the house, over an afternoon |
 | [09-a-game-that-ends.md](09-a-game-that-ends.md) | The same afternoon designed further: weights, a way out of every moment, checks before saving. §20 is what of it was built |
+| [10-the-page.md](10-the-page.md) | What a printed page is allowed to be, defined before the code |
+| [11-the-methods.md](11-the-methods.md) | A child of the encyclopedia: which of the 395 forms can actually be run, and how one reaches a prompt |
 
 ## Where to start
 
