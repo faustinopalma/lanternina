@@ -46,7 +46,7 @@ Il fantasma di Pepper prende il nome da **John Henry Pepper**, che rese celebre 
 - **Voce 137, specchio** — lo specchio come decifratore di un testo. Confine dichiarato sopra.
 - **Voce 138, testo capovolto o ruotato** e **voce 140, sovrapposizione di due fogli** — le altre due operazioni fisiche su una pagina già raccolte in questo capitolo.
 - **Voce 382, anamorfosi** — l'immagine che si compone solo da un punto o in uno specchio. È del capitolo 14 e non viene presa qui.
-- **Voce 389, moiré** e **voce 390, immagine da comporre in controluce** — due trame sovrapposte e due fogli in controluce; anche quelle sono del capitolo 14 e del capitolo 5 rispettivamente, e nessuna delle due è questa.
+- **Voce 389, moiré** e **voce 390, immagine da comporre in controluce** — due trame sovrapposte e due fogli in controluce; sono tutte e due del capitolo 14, e nessuna delle due è questa.
 - **Voce 393, sezione e proiezione** — dato un solido, che ombra fa. È il contenuto geometrico dell'ombra, e sta nel capitolo 14.
 - **Voce 54, misurare** — la misura indiretta, che quella voce aveva indicato come il filone più bello e meno praticato. L'esempio qui sotto è un caso di misura indiretta.
 - **Voce 65, provare** — prevedere prima di guardare, che è la struttura dell'esempio.

@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 384 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 390 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -428,12 +428,12 @@
 382. [Anamorfosi](14-percezione-e-inganno-dell-occhio/382-anamorfosi/README.md) · fatta
 383. [Pareidolia](14-percezione-e-inganno-dell-occhio/383-pareidolia/README.md) · fatta
 384. [Mimetismo e camuffamento](14-percezione-e-inganno-dell-occhio/384-mimetismo-e-camuffamento/README.md) · fatta
-385. [Cecità al cambiamento](14-percezione-e-inganno-dell-occhio/385-cecita-al-cambiamento/README.md) · —
-386. [Trova le differenze](14-percezione-e-inganno-dell-occhio/386-trova-le-differenze/README.md) · —
-387. [Aguzza la vista](14-percezione-e-inganno-dell-occhio/387-aguzza-la-vista/README.md) · —
-388. [Oggetto nascosto in piena vista](14-percezione-e-inganno-dell-occhio/388-oggetto-nascosto-in-piena-vista/README.md) · —
-389. [Moiré](14-percezione-e-inganno-dell-occhio/389-moire/README.md) · —
-390. [Immagine da comporre in controluce](14-percezione-e-inganno-dell-occhio/390-immagine-da-comporre-in-controluce/README.md) · —
+385. [Cecità al cambiamento](14-percezione-e-inganno-dell-occhio/385-cecita-al-cambiamento/README.md) · fatta
+386. [Trova le differenze](14-percezione-e-inganno-dell-occhio/386-trova-le-differenze/README.md) · fatta
+387. [Aguzza la vista](14-percezione-e-inganno-dell-occhio/387-aguzza-la-vista/README.md) · fatta
+388. [Oggetto nascosto in piena vista](14-percezione-e-inganno-dell-occhio/388-oggetto-nascosto-in-piena-vista/README.md) · fatta
+389. [Moiré](14-percezione-e-inganno-dell-occhio/389-moire/README.md) · fatta
+390. [Immagine da comporre in controluce](14-percezione-e-inganno-dell-occhio/390-immagine-da-comporre-in-controluce/README.md) · fatta
 391. [Unisci i puntini](14-percezione-e-inganno-dell-occhio/391-unisci-i-puntini/README.md) · —
 392. [Rotazione mentale](14-percezione-e-inganno-dell-occhio/392-rotazione-mentale/README.md) · —
 393. [Sezione e proiezione](14-percezione-e-inganno-dell-occhio/393-sezione-e-proiezione/README.md) · —
