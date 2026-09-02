@@ -2,7 +2,7 @@
 
 Lanternina is a home system that offers activities to an adolescent, with a parent steering. It is for adolescents, without asking which ones: interest, appetite for novelty and comfort with text on a page vary across the whole range of cognitive ability, and none of that is recorded here as a property of anybody.
 
-**The design rules are being rewritten from scratch.** The ones that used to live in this file were written before anybody had run an afternoon, and several of them turned out to forbid things nobody meant to forbid. They have been taken out rather than patched. What replaces them will come from the research in `forme/`, which is compiling every way a thing to do can be put to somebody — deliberately without applying any rule while it compiles, because filtering while listing means listing only what had already been thought of.
+**The design rules are being rewritten from scratch.** The ones that used to live in this file were written before anybody had run an afternoon, and several of them turned out to forbid things nobody meant to forbid. They have been taken out rather than patched. What replaces them will come from the research in `enciclopedia/` — 395 entries compiling every way a thing to do can be put to somebody, deliberately without applying any rule while it compiled, because filtering while listing means listing only what had already been thought of.
 
 Until that research has been reviewed, **nothing here constrains what may be proposed or built.** Propose the thing that makes the afternoon better, say why, and write the reasoning in `ideas/`. `docs/EVIDENCE.md` is where the reading behind a decision goes when there is one.
 

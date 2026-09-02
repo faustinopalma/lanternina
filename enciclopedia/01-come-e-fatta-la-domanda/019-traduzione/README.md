@@ -1,0 +1,78 @@
+# Traduzione
+
+- **Numero** 19 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** traduzione, versione, trasposizione, traduzione intersemiotica
+- **In una riga** da una lingua a un'altra, o da un registro a un altro.
+- **Fonti** nessuna trattazione dedicata
+
+## Che cos'è
+
+Portare un testo da un sistema a un altro. Il caso ovvio è fra due lingue; i casi utili qui sono altri tre: fra due registri, fra due epoche, fra due media.
+
+La parte mobile è **quanto il sistema di arrivo è conosciuto**. Tradurre verso una lingua che si sa è un esercizio; verso una lingua che non si sa è impossibile; verso un sistema **inventato sul momento** — un codice, un modo di dire le cose — è un gioco, e non richiede di sapere niente.
+
+## Da dove viene
+
+Dal mestiere più antico che ci sia dopo lo scriba. Nella didattica delle lingue classiche la *versione* è stata per secoli la forma d'esame principale, ed è anche una delle più dure che esistano: un errore in una parola può far crollare un periodo intero.
+
+La **traduzione intersemiotica** — Jakobson, 1959 — è il nome della versione che interessa di più: dire la stessa cosa in un altro sistema di segni. Descrivere un suono, disegnare una frase, mettere in gesti un testo.
+
+## Varianti e parenti
+
+- **Codice inventato** — costruire il sistema invece di applicarlo.
+- **Legenda data** — la tavola stampata accanto.
+- **Parafrasi** (18) — la traduzione dentro la stessa lingua.
+- **Traduzione intersemiotica** — dire la stessa cosa in un altro sistema di segni.
+- **Partitura grafica** — un suono disegnato invece che scritto in note.
+- **Cifrari** (129, 130, 131) — la famiglia che chiede di cifrare invece che di decifrare.
+
+## Che cosa se ne sa
+
+Nelle fonti prese il 30 agosto 2026 non c'è una trattazione dedicata a questa forma come esercizio.
+
+Quello che si sa e che conta non viene dalle fonti ma dal supporto: **un testo cifrato stampato su un foglio deve essere giusto la prima volta**, perché nessuno lo verifica dopo. Una conversione lettera per lettera fatta da chi scrive il foglio è quindi un rischio. Quello che il foglio può fare senza rischio è stampare una **legenda** e lasciare che sia chi legge a fare la conversione — è la conclusione della scheda 005, e qui torna.
+
+La direzione conta: **far decifrare è sicuro, cifrare no.** Se la legenda è sul foglio e il testo cifrato è già stampato, qualcuno deve averlo prodotto correttamente, ed è lì che si rompe. Se invece è chi legge a cifrare, il foglio non deve verificare niente.
+
+## Esempi trovati
+
+Scolastico: la versione di latino.
+
+Da gioco: i codici delle escape room con la tabella accanto.
+
+Intersemiotico: la partitura grafica — un suono disegnato invece che scritto in note — usata nella musica del Novecento e nelle scuole per far comporre a chi non legge la musica.
+
+Da mestiere: la **traduzione in lingua dei segni** di un testo scritto, che non è parola per parola e costringe a decidere che cosa una frase stia davvero dicendo.
+
+Storico: la stele di Rosetta, che è una legenda lunga duemila anni.
+
+## Un esempio giocabile
+
+> **Il codice della finestra**
+>
+> Due che abitano in due palazzi di fronte non possono parlarsi. Hanno una tapparella per uno.
+>
+> Con una tapparella si può fare poco: alzarla tutta, abbassarla tutta, lasciarla a metà, muoverla. Basta per mettersi d'accordo su alcune cose e non su tutte.
+>
+> Inventa il loro codice. Scrivilo qui come una legenda, così che se lo trovasse un terzo capirebbe:
+>
+> ```
+>  ────────────────────  vuol dire  ────────────────────
+>  ────────────────────  vuol dire  ────────────────────
+>  ────────────────────  vuol dire  ────────────────────
+>  ────────────────────  vuol dire  ────────────────────
+> ```
+>
+> Poi scrivi la cosa che con questo codice **non** si riesce a dire, e che a loro servirebbe.
+
+Nessun codice è stampato: lo inventa chi legge, e quindi non c'è niente da verificare. Le quattro righe sono un tetto, non un obiettivo. L'ultima domanda è la parte che rende la cosa una riflessione sulla traduzione invece che un gioco di segni: **ogni codice perde qualcosa**, e accorgersi di che cosa è il contenuto vero.
+
+## Che cosa la rende interessante
+
+**Aperta nella direzione giusta, chiusa nell'altra.**
+
+Da tenere come limite: *un foglio non stampa mai un testo che ha cifrato da sé.* Un cifrato sbagliato è un vicolo cieco senza uscita, ed è la peggiore cosa che un foglio possa produrre.
+
+Quello che invece regge, e che vale la pena usare più spesso di quanto si faccia: **far costruire il codice a chi legge**. È la stessa attività mentale della decifrazione, non chiede niente a chi ha stampato il foglio, e produce un oggetto — una legenda scritta a mano — che resta.
+
+E una domanda da riusare ovunque: **che cosa un codice non riesce a dire.** Vale per una lingua, per un modulo, per una mappa. È la voce 63, inferire da un'assenza, in una riga sola.

@@ -1,0 +1,83 @@
+# Domanda
+
+- **Numero** 30 nell'enciclopedia, capitolo 1 — Come è fatta la domanda, sezione «Risposta prodotta»
+- **Si chiama anche** formulare domande, «che cosa chiederesti», question formulation, intervista
+- **In una riga** la richiesta è di formularne una, non di risponderne una. È una delle forme più forti e meno usate.
+- **Fonti** nessuna fonte letta; per la Question Formulation Technique, il sito del Right Question Institute, letto il 30 agosto 2026
+
+## Che cos'è
+
+La richiesta è di formulare una domanda, non di risponderne una. È la forma più rovesciata dell'elenco e una delle poche in cui il prodotto è un punto interrogativo.
+
+Parti mobili:
+
+- **A chi è rivolta la domanda**: a chi ha scritto il testo, a una persona vera, a un morto, a nessuno.
+- **Se è rispondibile.** Una domanda a cui non si può rispondere è una cosa diversa e altrettanto legittima.
+- **Quante.** Una chiede la migliore; dieci chiedono di sfondare il muro delle ovvie.
+- **Se si chiede anche perché quella domanda.** È il passo che rende visibile il ragionamento.
+
+## Da dove viene
+
+Ha una tecnica formalizzata: la **Question Formulation Technique**, di **Dan Rothstein e Luz Santana**, fondatori del Right Question Institute, presentata al pubblico con *Make Just One Change: Teach Students to Ask Their Own Questions*, Harvard Education Press, **2011**. I passi sono **sei**: si progetta uno stimolo — il *Question Focus*, che non può essere una domanda; si introducono le regole; si producono domande; si migliorano; si sceglie a quali dare la precedenza; si riflette. Le **quattro regole** sono queste: fanne quante puoi; non fermarti a discutere, giudicare o rispondere; scrivi ogni domanda esattamente com'è stata detta; trasforma ogni affermazione in domanda. Nel passo «migliora» si classificano le domande in aperte e chiuse, e poi si converte una domanda per tipo nell'altro tipo.
+
+Prima e altrove: il metodo socratico rovesciato, il giornalismo (le domande sono il mestiere), la ricerca (una tesi si giudica dalla domanda più che dalla risposta), e la tradizione ebraica dello studio a coppie, dove domandare è la forma dello studio.
+
+## Varianti e parenti
+
+- **Intervista** — domande a qualcuno che risponderà.
+- **Question Formulation Technique** — il protocollo in sei passi, con quattro regole per la sola produzione.
+- **Domande a un oggetto** — che cosa chiederesti a questa sedia se potesse rispondere.
+- **Domande che non hanno risposta** — il genere che confina con il koan (voce 118, koan).
+- **Domande per restringere** — come nel gioco delle venti domande, dove ogni domanda deve dimezzare.
+- **Domanda di ricerca** — una domanda formulata in modo da poter essere indagata.
+- **Domanda nascosta** — dato un testo, trovare la domanda a cui rispondeva.
+
+## Che cosa se ne sa
+
+Nelle 74 fonti prese il 30 agosto 2026 la Question Formulation Technique non compare; è stata verificata lo stesso giorno sul sito del Right Question Institute (https://rightquestion.org/what-is-the-qft/). Origine dichiarata: un gruppo di genitori di una comunità povera del Massachusetts, che spiegò ai due fondatori che «non sapere che cosa chiedere» li teneva fuori dalla scuola dei figli. Il dettaglio che vale più delle regole: prima di cominciare si chiede al gruppo **quale regola sarà la più difficile da seguire**, e chi conduce non deve dire quali siano le difficoltà né il valore delle regole. Il sito non riporta nessuna misura di efficacia: dice che la tecnica è usata in più di un milione di aule, che è un dato di diffusione.
+
+Quello che si osserva e regge da sé: **una domanda non può essere sbagliata**. Può essere banale, già risposta, mal posta, ma non c'è modo di segnarla con una croce. È la forma più sicura dell'intero elenco, e nello stesso tempo una delle più esigenti, perché formulare una buona domanda richiede di sapere abbastanza da sapere che cosa non si sa.
+
+Questa tensione — sicurissima e difficilissima — non l'ho vista risolta da nessuna parte, e sembra il punto interessante della forma.
+
+## Esempi trovati
+
+Da QFT: si mostra una fotografia e si chiede di produrre domande per quattro minuti, senza fermarsi a rispondere.
+
+Da museo: le schede che chiedono «che cosa vorresti chiedere a chi ha fatto questo oggetto?»
+
+Da gioco: le venti domande, dove la qualità di una domanda si misura in quanto restringe.
+
+Da giornalismo: l'esercizio di preparare dieci domande per un'intervista e poi scegliere la prima, che è la sola che conta davvero.
+
+Da storia orale: la lista di domande da fare a un nonno, che è anche un genere in sé e circola in molte versioni.
+
+## Un esempio giocabile
+
+> **Le domande che non hai fatto**
+>
+> C'è in casa qualcuno che era già grande quando tu non c'eri.
+>
+> Prepara **sette domande** da fargli. Non su di te: su di lui, e su un momento preciso — un giorno, una stanza, un lavoro, una paura.
+>
+> ```
+>  1. ───────────────────────────────────────
+>  ...
+>  7. ───────────────────────────────────────
+> ```
+>
+> Le prime due verranno subito e saranno le domande che farebbero tutti. Dalla terza in poi devi conoscerlo.
+>
+> Segna con una crocetta quella che hai paura di fare. Poi decidi tu se fargliela.
+
+Non si chiede di intervistare nessuno: si chiede di preparare, e preparare è un lavoro finito anche se l'intervista non avviene mai. L'ultima riga nomina una cosa vera — che alcune domande costano — e poi lascia la decisione a chi scrive, senza chiederne conto.
+
+## Che cosa la rende interessante
+
+**È la forma più sicura dell'elenco**, se «sicuro» vuol dire che non c'è modo di sbagliarla. Insieme alla 9 e alla 14, è fra quelle da guardare per prime.
+
+**La tensione fra sicurezza e difficoltà** è il punto aperto: formulare una domanda richiede di sapere che cosa non si sa. Le forme che aggirano la difficoltà sono quelle in cui c'è un oggetto o una persona davanti, e non un argomento.
+
+**Domandare invece che rispondere** è una trasformazione applicabile a quasi tutte le voci del capitolo 1: presa una forma qualsiasi, che cosa diventa se si chiede la domanda invece della risposta.
+
+Verificato il 30 agosto 2026: la Question Formulation Technique è di Rothstein e Santana, del Right Question Institute, e i passi sono sei e non quattro. La mossa più economica del protocollo è chiedere in anticipo *quale regola sarà la più difficile* senza dire la risposta.

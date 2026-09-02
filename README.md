@@ -67,7 +67,7 @@ No decision is taken on the parent's behalf. Convenience is allowed and is often
 
 Nothing here optimises for engagement: no streaks, no daily goals, no variable rewards, no nudge triggered by inactivity, no "time spent" anywhere. Engagement optimisation is easy to add to a system like this and would do harm, which is why it is a written rule rather than a matter of judgement.
 
-[docs/NON-GOALS.md](docs/NON-GOALS.md) is where the lines this project will not cross are written down. It is empty at the moment: they are being worked out again from the compilation in `forme/`.
+[docs/NON-GOALS.md](docs/NON-GOALS.md) is where the lines this project will not cross are written down. It is empty at the moment: they are being worked out again from the 395-entry compilation in [enciclopedia/](enciclopedia/README.md), which is readable on its own.
 
 ### The dashboard is inert
 

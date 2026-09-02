@@ -4,9 +4,9 @@ Un elenco di tutti i modi in cui si può chiedere a un adolescente di fare qualc
 
 Non è una raccomandazione ed è anche il contrario di un catalogo di cose ammesse. È una mappa. `docs/EVIDENCE.md` dice che cosa dice la ricerca su alcune di queste forme. Qui non si decide niente: si nomina.
 
-**Come si legge.** Ogni voce ha un nome e una frase su come funziona. Le schede in `forme/` sviluppano una voce per volta — che cos'è, da dove viene, varianti e parenti, che cosa se ne sa con la fonte e la data, esempi trovati, una nostra versione — e raccolgono in `forme/OSSERVAZIONI.md` quello che si nota strada facendo. La rassegna, cioè il momento in cui si decide che cosa si tiene, viene quando l'elenco è completo.
+**Come si legge.** Ogni voce ha un nome e una frase su come funziona. Le voci in [`enciclopedia/`](../enciclopedia/README.md) sviluppano una voce per volta — che cos'è, da dove viene, varianti e parenti, che cosa se ne sa con la fonte e la data, esempi trovati, un esempio giocabile, che cosa la rende interessante. La rassegna, cioè il momento in cui si decide che cosa si tiene, viene adesso che l'elenco è completo.
 
-Le fonti consultate sono in `_reference/esercizi-e-sfide/SOURCES.md`, con la data. Non sono nel repository: sono testi di altri, e quello che entra qui è la tassonomia che se ne ricava.
+Le fonti consultate sono citate una per una dentro le voci, con l'indirizzo e la data: 1 304 pagine di Wikipedia, 1 129 in inglese e 175 in italiano.
 
 ---
 
@@ -547,4 +547,4 @@ Quattro cose, dette qui invece che scoperte dopo.
 
 **Non c'è una gerarchia e non è un errore.** Bloom mette «creare» in cima e «ricordare» in fondo, e trent'anni di uso hanno mostrato che la scala viene letta come una scala di valore. Qui l'ordine è per famiglia.
 
-**L'elenco non giudica.** Le annotazioni su che cosa costa e che cosa non si riesce a fare stanno nelle schede in `forme/`, dove c'è lo spazio per dire perché e per citare una fonte. Qui una forma c'è perché esiste, e basta quello.
+**L'elenco non giudica.** Le annotazioni su che cosa costa e che cosa non si riesce a fare stanno nelle voci in [`enciclopedia/`](../enciclopedia/README.md), dove c'è lo spazio per dire perché e per citare una fonte. Qui una forma c'è perché esiste, e basta quello.
