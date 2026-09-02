@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 390 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 395 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -434,8 +434,8 @@
 388. [Oggetto nascosto in piena vista](14-percezione-e-inganno-dell-occhio/388-oggetto-nascosto-in-piena-vista/README.md) · fatta
 389. [Moiré](14-percezione-e-inganno-dell-occhio/389-moire/README.md) · fatta
 390. [Immagine da comporre in controluce](14-percezione-e-inganno-dell-occhio/390-immagine-da-comporre-in-controluce/README.md) · fatta
-391. [Unisci i puntini](14-percezione-e-inganno-dell-occhio/391-unisci-i-puntini/README.md) · —
-392. [Rotazione mentale](14-percezione-e-inganno-dell-occhio/392-rotazione-mentale/README.md) · —
-393. [Sezione e proiezione](14-percezione-e-inganno-dell-occhio/393-sezione-e-proiezione/README.md) · —
-394. [Prospettiva forzata](14-percezione-e-inganno-dell-occhio/394-prospettiva-forzata/README.md) · —
-395. [Stereogramma](14-percezione-e-inganno-dell-occhio/395-stereogramma/README.md) · —
+391. [Unisci i puntini](14-percezione-e-inganno-dell-occhio/391-unisci-i-puntini/README.md) · fatta
+392. [Rotazione mentale](14-percezione-e-inganno-dell-occhio/392-rotazione-mentale/README.md) · fatta
+393. [Sezione e proiezione](14-percezione-e-inganno-dell-occhio/393-sezione-e-proiezione/README.md) · fatta
+394. [Prospettiva forzata](14-percezione-e-inganno-dell-occhio/394-prospettiva-forzata/README.md) · fatta
+395. [Stereogramma](14-percezione-e-inganno-dell-occhio/395-stereogramma/README.md) · fatta
