@@ -1,6 +1,6 @@
 # Indice delle forme
 
-395 forme, 370 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
+395 forme, 377 con la ricerca fatta. Generato da `tools/forme_scaffold.py --index`; non si modifica a mano.
 
 
 ## 1. Come è fatta la domanda
@@ -411,13 +411,13 @@
 368. [Successione con regola dichiarata](13-giochi-matematici-e-ricreativi/368-successione-con-regola-dichiarata/README.md) · fatta
 369. [Dimostrazione senza parole](13-giochi-matematici-e-ricreativi/369-dimostrazione-senza-parole/README.md) · fatta
 370. [Dissezione geometrica](13-giochi-matematici-e-ricreativi/370-dissezione-geometrica/README.md) · fatta
-371. [Costruzione con riga e compasso](13-giochi-matematici-e-ricreativi/371-costruzione-con-riga-e-compasso/README.md) · —
-372. [Aritmetica in altra base](13-giochi-matematici-e-ricreativi/372-aritmetica-in-altra-base/README.md) · —
-373. [Paradosso probabilistico](13-giochi-matematici-e-ricreativi/373-paradosso-probabilistico/README.md) · —
-374. [Automa cellulare](13-giochi-matematici-e-ricreativi/374-automa-cellulare/README.md) · —
-375. [Topologia ricreativa](13-giochi-matematici-e-ricreativi/375-topologia-ricreativa/README.md) · —
-376. [Impacchettamento e tassellazione](13-giochi-matematici-e-ricreativi/376-impacchettamento-e-tassellazione/README.md) · —
-377. [Problema di ottimizzazione con vincoli fisici](13-giochi-matematici-e-ricreativi/377-problema-di-ottimizzazione-con-vincoli-fisici/README.md) · —
+371. [Costruzione con riga e compasso](13-giochi-matematici-e-ricreativi/371-costruzione-con-riga-e-compasso/README.md) · fatta
+372. [Aritmetica in altra base](13-giochi-matematici-e-ricreativi/372-aritmetica-in-altra-base/README.md) · fatta
+373. [Paradosso probabilistico](13-giochi-matematici-e-ricreativi/373-paradosso-probabilistico/README.md) · fatta
+374. [Automa cellulare](13-giochi-matematici-e-ricreativi/374-automa-cellulare/README.md) · fatta
+375. [Topologia ricreativa](13-giochi-matematici-e-ricreativi/375-topologia-ricreativa/README.md) · fatta
+376. [Impacchettamento e tassellazione](13-giochi-matematici-e-ricreativi/376-impacchettamento-e-tassellazione/README.md) · fatta
+377. [Problema di ottimizzazione con vincoli fisici](13-giochi-matematici-e-ricreativi/377-problema-di-ottimizzazione-con-vincoli-fisici/README.md) · fatta
 
 ## 14. Percezione e inganno dell'occhio
 
