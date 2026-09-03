@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "a-letter-that-asks-what-its-writer-cannot-know",
+  "kind": "form",
+  "name": "a letter asking for what its writer cannot know",
+  "also": [
+    "lettera ricevuta",
+    "missiva",
+    "posta in arrivo",
+    "missione",
+    "quest",
+    "serve il tuo aiuto",
+    "curatore fittizio"
+  ],
+  "one_line": "A letter from one person to one person, which knows something the reader does not, and asks in return for something its writer could not possibly know.",
+  "from_entries": [
+    90,
+    92
+  ],
+  "how": "Write it as a letter and not as a task: no heading, no instructions, a first name or a single initial at the foot, and a small reason for writing. Give the writer one thing the reader has not got — a mark that used to be on a wall, a method that does not work, a count they cannot settle — and do not explain it. Ask for little, and say so: «even three lines», with five ruled lines underneath saying the same thing without words. Then the request that pays for the page: something the writer could not know — a thing that happened after they left, a case where their method fails. Somewhere put one line saying who found this letter and put it on the table, because there is no postman and pretending otherwise is a lie the reader will find.",
+  "knobs": [
+    {
+      "knob": "what the writer wants",
+      "effect": "Somebody who knows something and withholds it produces a question worth answering. Somebody who needs something they cannot do produces a task with a reason. Authority produces neither: an office that orders is a module."
+    },
+    {
+      "knob": "whether a reply is expected",
+      "effect": "A letter that expects one and gets none is a small betrayal. Naming whoever found the letter and put it there costs one line, keeps the asymmetry and promises no postman."
+    },
+    {
+      "knob": "how much is asked for",
+      "effect": "«Even three lines» with five printed rules gets three lines written. A blank half page asks for an essay and comes back empty, and it was the letter that set that, not the reader."
+    },
+    {
+      "knob": "how much is explained",
+      "effect": "Nothing explained is a letter, and the gaps are what there is to answer. Everything explained is a briefing with a signature at the bottom, and there is nothing left to reconstruct."
+    }
+  ],
+  "where_the_work_is": "In the last request. Everything else on the page could be answered by anybody; the line asking for what the writer cannot know makes the reader the only possible source, which is the reverse of a school question.",
+  "breaks": "There is no sender, so the reply goes nowhere; the honest repair is naming whoever put the letter on the table, and it costs half the effect. On 800x480 a letter cannot be read at all — it is prose, and prose in one bit at that size is four sentences. A display can say one has arrived; the letter has to be paper, folded, in a hand.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    20,
+    21,
+    25,
+    82,
+    100
+  ]
+}

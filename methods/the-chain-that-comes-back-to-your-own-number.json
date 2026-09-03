@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "the-chain-that-comes-back-to-your-own-number",
+  "kind": "form",
+  "name": "a chain of steps ending on a number only you know",
+  "also": [
+    "finisce con un esito giusto o sbagliato",
+    "la catena che torna a casa",
+    "trucco aritmetico",
+    "identità che torna al punto di partenza",
+    "number trick",
+    "think of a number"
+  ],
+  "one_line": "Five arithmetic steps starting from a number nobody is told, whose result is that same number, so the check needs no key at all.",
+  "from_entries": [
+    307
+  ],
+  "how": "Ask for a number that is written nowhere — the day of the month, kept in the head. Print five steps that leave it unchanged: multiply by four, add twelve, halve, subtract the number you started from, subtract six. Beside every step, a blank and a property the result must have, so a slip is caught at the step it happened. The right answer is the starting number, so the sheet has an outcome that is right or wrong, no key exists anywhere, and nothing about anybody is recorded or could be. Check the identity over every legal starting value before printing — all thirty-one here, by hand — because one that fails on one day of the month is a sheet that accuses whoever did the arithmetic correctly. End with the question the arithmetic invites: run it from an enormous number and watch where the starting value goes.",
+  "knobs": [
+    {
+      "knob": "what the private number is",
+      "effect": "The day of the month gives thirty-one cases that can all be checked by hand before printing. A freely chosen number gives infinitely many, and then the identity has to be argued instead of enumerated."
+    },
+    {
+      "knob": "how many steps",
+      "effect": "Five is enough for the return to be a surprise and short enough to hold in one column. Fewer and the identity is visible from the page; more and the arithmetic becomes the exercise."
+    },
+    {
+      "knob": "whether the last step returns the start",
+      "effect": "Returning to the start needs no key at all. Ending on a fixed number, the same for everybody, is easier to build and puts an answer on the page that can be read off without doing anything."
+    },
+    {
+      "knob": "whether the why is asked",
+      "effect": "Asking why it works turns a trick into something with a reason and has no right answer to mark. Left out, the sheet is over in two minutes and nothing remains of it."
+    }
+  ],
+  "where_the_work_is": "In the identity holding for every legal starting value, and in the five printed properties holding too. Both are enumerated by hand before anything goes on the page.",
+  "breaks": "A five-row table of digits prints. Scanned back, handwritten digits in narrow cells read badly, and nothing here needs reading, because the check happened in the room. On 800x480 five rows of three short fields sit at the edge of legibility. Nobody else can correct it, since nobody knows the starting number — which is the property that makes it usable here.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    181,
+    227,
+    295,
+    361,
+    368
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "the-seventh-word-down-a-printed-list",
+  "kind": "form",
+  "name": "replace every noun with the seventh word further down",
+  "also": [
+    "S+7",
+    "N+7",
+    "metodo di sostituzione",
+    "S+dé",
+    "Oulipo",
+    "letteratura combinatoria",
+    "N+7 machine"
+  ],
+  "one_line": "A small printed dictionary, a fixed step, and a text whose nouns are replaced by counting instead of by choosing.",
+  "from_entries": [
+    212
+  ],
+  "how": "Print a numbered dictionary of about fifty-five common nouns in alphabetical order, checked line by line once and then reused. Without a declared dictionary the rule is not defined at all, and a list rebuilt each time gets the order wrong somewhere and every substitution below that point with it. Print three short sentences using eight of those nouns. Print a working table of three columns — the word, its number, that number plus seven — so that anybody redoing the arithmetic arrives at the same text. Then ask the two things the rule does not cover: what was done with an article that no longer agrees, and whether the new text means more or less than the old. Last, ask for the same three sentences again at a step of two, and which of the two is stranger.",
+  "knobs": [
+    {
+      "knob": "how big the dictionary is",
+      "effect": "Fifty-five words means a step of seven crosses whole families of things and the result is unrecognisable. A real dictionary keeps the substitute nearby and the joke close to home. The material sets the difficulty and the rule never changes."
+    },
+    {
+      "knob": "how big the step is",
+      "effect": "A small step lands in the same region of the alphabet and stays near the meaning; a large one lands anywhere. Printing the same passage at two steps returns a comparison instead of a result, and costs half a page."
+    },
+    {
+      "knob": "whether the row numbers are written down",
+      "effect": "Written, a second person redoes the count and reaches the same text without trusting anybody — which nothing else in this chapter allows. Left out, the result cannot be contradicted and the arithmetic might as well not have happened."
+    },
+    {
+      "knob": "which class of word is moved",
+      "effect": "Nouns keep the sentence standing while its subject matter leaves. Verbs break the sentence far more often, and adjectives change almost nothing, so nouns are the setting worth fixing before anything is printed."
+    }
+  ],
+  "where_the_work_is": "In the dictionary being a printed object with a fixed order. Everything else is counting, which is why this is the one constraint here that composes reliably and can be checked by anybody who can count.",
+  "breaks": "It prints, it comes back, and every claim on it is checkable. The rule stops at grammatical agreement — a masculine substitute under a feminine article — and somebody has to decide what to do, which is the part worth asking about rather than a defect. On 800x480 a fifty-five word dictionary does not fit; ten words and one sentence do, and that is a demonstration and not the exercise.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    210,
+    215,
+    219,
+    223
+  ]
+}

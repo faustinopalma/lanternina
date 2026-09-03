@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-box-ticked-in-the-moment",
+  "kind": "move",
+  "name": "a box in the margin, ticked the moment you stop",
+  "also": [
+    "protocollo di pensiero ad alta voce",
+    "pensiero ad alta voce concorrente parziale",
+    "segno di memoria",
+    "think aloud protocol",
+    "concurrent protocol",
+    "PCTA",
+    "memory marker"
+  ],
+  "one_line": "An empty box beside every numbered step, ticked the instant somebody stops, and written about only after the thing is finished.",
+  "from_entries": [
+    241
+  ],
+  "how": "Put a small empty box beside every numbered step of something being done, and print one instruction: every time you stop — half a second, even only to think «and now?» — put a tick in the box beside that line, and do not think about why. Not now. When the thing is finished, go back to the ticked lines only and fill three columns: I stopped here, what I was about to do, what I decided. The mark costs half a second and no words; the words come afterwards. For it to find anything the task needs places where something is decided, and the cheapest way of putting them there is to print instructions that can be carried out in more than one way, and say at the end which ones those were.",
+  "knobs": [
+    {
+      "knob": "when the words are asked for",
+      "effect": "Speaking or writing while working changes the working: people shorten sentences, drop grammatical complexity and say less per second to free working memory, and how much this changes the content is not known. A tick changes nothing, because it has no words in it."
+    },
+    {
+      "knob": "whether the task has decisions in it",
+      "effect": "With nothing to decide there is nothing to mark and the sheet comes back blank. Eight drawing instructions of which three can be carried out more than one way — which half of the circle, which corner counts as the top — give twenty-four correct drawings from one page."
+    },
+    {
+      "knob": "what a missing tick means",
+      "effect": "A line with a decision in it and no tick beside it is the interesting case: a choice made with no word accompanying it. That is what this whole method exists to find, and it is why the ambiguous lines are revealed at the end and not flagged in advance."
+    },
+    {
+      "knob": "a mark or a clock",
+      "effect": "A sheet does not measure time. A mark in the margin of a numbered step records where in the work somebody was, and on paper where is a serviceable substitute for when, at the cost of one box per line."
+    }
+  ],
+  "where_the_work_is": "In the distance between the tick and the words. Noticing and recounting get in each other's way when they are asked for together, and separating them into a mark now and a column later is what makes both possible.",
+  "breaks": "Nobody listens and nothing records, so of what would have been said aloud nothing survives: the mark says where, never what. Whoever writes the sheet has to build the ambiguity in and then work out by hand how many readings each line has, which cannot be handed to a model that will cheerfully invent them. On a display eight numbered lines with a box each fit, and the three-column table afterwards does not.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    26,
+    30,
+    242,
+    246,
+    247
+  ]
+}

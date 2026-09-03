@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "a-record-read-against-itself",
+  "kind": "form",
+  "name": "read a filled-in record against itself",
+  "also": [
+    "scheda d'archivio",
+    "inferire da un'assenza",
+    "scheda catalografica",
+    "il cane che non ha abbaiato",
+    "finding aid",
+    "accession record",
+    "argumentum ex silentio"
+  ],
+  "one_line": "An archive card filled in by somebody in a hurry: two boxes left empty, five lines that cannot both be true, and the count of the faults printed.",
+  "from_entries": [
+    63,
+    98
+  ],
+  "how": "Print a card somebody else completed: a fund with dates, an accession number, a date of entry, four items each with what it is, where it was found, where it came from, and a note. Put five faults in it that need no outside knowledge — a date of entry before the accession year, a letter written after the owner died, a 1966 ticket inside a 1912 notebook on a page that is recorded as torn out, «found in» and «came from» swapped on one item, access declared open while one item is restricted until 2030. Print how many there are. Leave two boxes empty and ask, for each, the historian's question in plain words: did the thing not exist, or did nobody write it down. Last and hardest: which box does this card not have, and should?",
+  "knobs": [
+    {
+      "knob": "where the faults are",
+      "effect": "Faults contradicting each other on the card are found by rereading and need nothing at all. Faults contradicting the world need somebody who knows the world, and then it is a quiz about facts instead of a card."
+    },
+    {
+      "knob": "whether the count is printed",
+      "effect": "Five printed means somebody who has found four keeps reading and somebody who has found five knows they are done without being told. Left out, the card comes back with two and no way to know that was short."
+    },
+    {
+      "knob": "an empty box or a missing box",
+      "effect": "An empty box is seen, being a hole in a grid. A missing box has to be noticed against an idea of what ought to have been asked, which is a step harder and is the one question an adult also finds hard."
+    },
+    {
+      "knob": "whether a blank is given two readings",
+      "effect": "One printed line — was it not there, or was it not written down — is the difference between a card as a set of facts and a card as somebody's work. It costs two alternatives and has no certain answer."
+    }
+  ],
+  "where_the_work_is": "In building each fault as a pair of lines that cannot both be true. That is what lets the sheet be marked with no key and no marker, and it is the only part of the card that has to be got exactly right.",
+  "breaks": "It is ink and it prints, and the card has to be seen at once: a grid is read by contrast, and a missing box cannot be noticed on a screen showing four lines at a time. Scanned back, the listed faults read if the answer lines are set well apart. Written by a model the faults come out merely odd rather than impossible, so every pair has to be checked by hand.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    93,
+    96,
+    97,
+    340
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-sender-with-a-reason-to-ask-you",
+  "kind": "move",
+  "name": "give the task a sender who says why they ask you",
+  "also": [
+    "assegnata da un personaggio dentro la storia",
+    "mittente inventato",
+    "missione",
+    "incarico narrativo",
+    "il biglietto trovato",
+    "documento ritrovato",
+    "quest",
+    "false document"
+  ],
+  "one_line": "The same sheet with one line more: somebody inside the fiction who wants this, and who cannot get it for themselves.",
+  "from_entries": [
+    287,
+    288
+  ],
+  "how": "Take a sheet that already asks for something and put a sender on it. A role is enough and a proper name is worse, because a name asks to be remembered: the archivist, the central beam, the neighbour of 1912. The line that does the work is why they are asking you, and it has to follow from something the sender cannot do — the beam feels the weight and never sees the shape, so the column asking why stops being a demand to justify and becomes an answer to a stated gap. Add one line saying how the sheet arrived, because that is the first question a reader asks. Do not let the sender expect a reply: that is a letter and somebody has to write one. Measured on the encyclopedia's own pair, the sender costs between 36.9% and 45.0% of the page, the two counts differing because prose does not reach the margin and a grid does.",
+  "knobs": [
+    {
+      "knob": "a role or a proper name",
+      "effect": "A role costs nothing to hold in mind and states its own limit. A proper name asks to be remembered for the rest of the afternoon and buys nothing the role did not already give."
+    },
+    {
+      "knob": "whether the sender says why you",
+      "effect": "Without that line the sender is a costume and the task is the one it was before. With it, every question on the page is filling a gap the sender declared, which changes what the answers are for."
+    },
+    {
+      "knob": "whether the sheet says how it arrived",
+      "effect": "The frame answers a question the reader asks anyway, in one line. Left out, the sheet works and the question stays open, and somebody usually asks it aloud."
+    },
+    {
+      "knob": "whether the sender waits for an answer",
+      "effect": "Waiting makes it a letter that needs a reply, and then somebody has to write the reply. Not waiting keeps it a task and lets the sheet close on its own."
+    }
+  ],
+  "where_the_work_is": "In the sender's limit. Everything the page may ask follows from what the sender cannot do, so choose the limit first and write the questions out of it.",
+  "breaks": "It is prose and it prints. Scanned back it needs nothing read, because the sender only changes what was asked. On 800x480 in one bit the letter does not fit; what fits is the one line about what the sender cannot do, and then the grid has to be on paper and the premise on a screen that lasts minutes against a sheet that stays out for three quarters of an hour.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    91,
+    92,
+    96,
+    290,
+    303
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "method_id": "describe-it-without-its-name",
+  "kind": "form",
+  "name": "make an object talk without saying what it is",
+  "also": [
+    "indovinello",
+    "enigma",
+    "enimma",
+    "riddle",
+    "perifrasi",
+    "crittografia perifrastica",
+    "crittografia mnemonica",
+    "macrologia",
+    "doppio soggetto"
+  ],
+  "one_line": "Four lines in the first person about a thing that never says its name, and the check is that the name appears nowhere in them.",
+  "from_entries": [
+    337,
+    338,
+    342,
+    343
+  ],
+  "how": "Ask for an object in the house that nobody looks at, and for four lines in which it speaks about itself and never says what it is called. Say what makes it work: somebody reading should think of a person before they realise it is a thing. Then print the one check that can be made alone and with certainty — read the four lines back and look for the object's name, including inside another word. If it is there the game is already over, and that fault has had a name since about 1880. Ask for the answer to be written upside down on the back, so the sheet can be handed to somebody else and still be answerable.",
+  "knobs": [
+    {
+      "knob": "how far apart the two readings are",
+      "effect": "Close, and the thing is nearly named and the sheet is flat; the tradition calls that fault descrittivismo. Far, and it is hard and worth reading, with no way to know in advance which side a draft has landed on."
+    },
+    {
+      "knob": "four lines or eight",
+      "effect": "Four is a joke and it finishes. Eight buys a scene with another person in it and buys nothing else: length adds context, not difficulty, and every one of the eight has to stand up on its own."
+    },
+    {
+      "knob": "whether it is read aloud to somebody",
+      "effect": "Read aloud, the right level shows itself: guessed at once is too easy, never guessed is too hard, guessed at the second try is the measure. On paper alone none of that can be known."
+    },
+    {
+      "knob": "whether the answer is on the sheet",
+      "effect": "Upside down on the back, the sheet can be given away and comes back answerable. Absent, only the writer can say whether an answer was right, and the sheet does not leave the room."
+    }
+  ],
+  "where_the_work_is": "In the surface reading, not in the disguise. The four lines have to describe a scene that stands up without the answer, and that is the whole of the craft and the part most drafts skip.",
+  "breaks": "The answer on the back shows through thin paper, so use ordinary weight or a second sheet. On 800x480 four lines of fifty characters do not fit and one does, so it is paper. This is the one form in its chapter a model can write, because it never counts letters — the risk is not failure but a surface that does not stand up, which is the easiest thing to produce and the least worth reading.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    335,
+    339,
+    346,
+    351
+  ]
+}

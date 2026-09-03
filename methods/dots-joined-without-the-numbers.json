@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "dots-joined-without-the-numbers",
+  "kind": "form",
+  "name": "join the dots when nobody has numbered them",
+  "also": [
+    "unisci i puntini",
+    "unisci i punti",
+    "punto a punto",
+    "connect the dots",
+    "dot to dot",
+    "join the dots"
+  ],
+  "one_line": "The same eight dots printed twice, once numbered and once not, and the second time the order has to be found instead of followed.",
+  "from_entries": [
+    391
+  ],
+  "how": "Print a grid of dots with eight of them marked, numbered so that joining 1 to 8 and back to 1 draws something nameable — a fish takes twenty seconds. Print the same field again with the numbers gone. Eight dots close in 2 520 orders, 57 of those draw a figure that does not cross itself, and one of the 57 is the fish. Give one rule to try: join them by the shortest route you can find. On these eight it works, and it was checked by trying all 2 520. Then ask whether the rule always works, and for eight dots on which it fails to be drawn. It does fail, on any shape with a deep notch, because the shortest route cuts across the mouth of it.",
+  "knobs": [
+    {
+      "knob": "whether the numbers are printed",
+      "effect": "numbered, the sheet is finished in twenty seconds and nothing was decided by anybody; unnumbered, the order is the exercise, and the same two grids of dots stop being a sheet for small children without costing a line of ink."
+    },
+    {
+      "knob": "how many dots",
+      "effect": "eight close in 2 520 ways, a number that can be printed because it was counted; nine give twenty thousand, and a sheet printing a figure nobody worked out is claiming something instead of stating it."
+    },
+    {
+      "knob": "whether the shortest route is the intended figure",
+      "effect": "on a rounded scatter it is, and the rule feels like a law; on a shape with a deep notch the shortest tour cuts the opening — 38.49 cells against the 48.00 of the figure meant — and finding such a shape is why numbers exist."
+    },
+    {
+      "knob": "whether the tour is closed",
+      "effect": "closing it gives an outline and makes the shortest-route rule askable at all; leaving the path open gives a line, and the count of possible orders changes with it."
+    }
+  ],
+  "where_the_work_is": "In the eight positions, which decide both halves of the sheet. They have to make something nameable and, for the second half to have an answer, be rounded enough that the shortest closed route is the figure meant.",
+  "breaks": "Two grids of dots: there is nothing here a printer, a scanner or a wrong scale can spoil, and it is the cheapest thing in the manual. It breaks upwards instead. Past eight dots nobody has counted the orders, so the printed 2 520 and 57 become a claim rather than a fact, and a sheet stating a number it did not count is worse than one stating none. The display carries the dot field at 800×480 in one bit and offers nothing to draw with, so what comes back is a description of an order rather than a figure.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    379,
+    383,
+    392,
+    393
+  ]
+}

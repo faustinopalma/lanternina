@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "axis-printed-scale-chosen",
+  "kind": "form",
+  "name": "print the axis and let the scale be chosen",
+  "also": [
+    "grafico",
+    "diagramma cartesiano",
+    "istogramma",
+    "linea del tempo",
+    "cronologia",
+    "timeline",
+    "chart"
+  ],
+  "one_line": "An axis printed with no numbers on it, filled in by whoever collects the data once they know what range they are in.",
+  "from_entries": [
+    38,
+    40
+  ],
+  "how": "Print the axis and never the scale: the numbers up the side get written after the counting, which is the first moment they can be known. Choose something to count that matters to nobody — how often the house telephone rings, when the light comes on in the building opposite — because a count with an expected result has something to betray. Once a day at the same hour, five days, one point each. Print a second lane parallel to the first over the same span: the world above, this house below. Last line, a real question with no single answer: join the points or do not, and write in one line why you decided that.",
+  "knobs": [
+    {
+      "knob": "who writes the scale",
+      "effect": "Printed, the numbers are decided before anything is counted and half the sheet ends up empty or off the top; left blank, the range is chosen once the data are in, and that is the decision the form exists for."
+    },
+    {
+      "knob": "one lane or two",
+      "effect": "One lane is a series; two parallel lanes over the same span — the world and the house, the street and the kitchen — produce coincidences nobody arranged, and the second lane costs one printed rule."
+    },
+    {
+      "knob": "whether the points get joined",
+      "effect": "Joining them asserts that something continuous happened between two readings, which is sometimes false; asking for the decision and its reason is the only place on a printed sheet where that gets asked at all."
+    },
+    {
+      "knob": "how a gap is written",
+      "effect": "Left blank, a missing reading reads as an omission by whoever was counting; marked with a question mark, the notation Priestley used where a date was not known, it becomes a way of writing «not known» that is not an empty space."
+    }
+  ],
+  "where_the_work_is": "In what gets counted. It has to be countable in under a minute, available at the same hour every day, and of no importance to anybody, or days two to five never happen.",
+  "breaks": "A form in two parts across five days, and nothing makes the later days arrive; a sheet with one point on it is not a fifth of a result. Printed axes scan back well and pencil dots on them do not, so ask for crosses. Two lanes with a few labels are the one graphic thing in this chapter a display can carry whole.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    28,
+    39,
+    54,
+    359
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-table-that-names-the-last-word-of-each-line",
+  "kind": "form",
+  "name": "a table saying which word has to end each line",
+  "also": [
+    "sestina",
+    "retrogradatio cruciata",
+    "forma fissa",
+    "vincolo di forma",
+    "villanella",
+    "fixed verse form",
+    "end-word rotation"
+  ],
+  "one_line": "The rotation of a fixed form printed as a grid of numbers, so that nobody has to remember it or work it out.",
+  "from_entries": [
+    215
+  ],
+  "how": "Print the rotation as a table and never as a rule. Three words is the size that gets finished: three rows and three columns holding 1 2 3, then 3 1 2, then 2 3 1, so each word ends each position exactly once. Ask for three nouns, not adjectives, at least one of them a thing in the room. Then nine ruled lines in three blocks, with the number of its end word printed beside each line, and a tenth line containing all three words. Print the six-word table above as well, unused, so the pattern can be seen — every number once in every row and once in every column — and so it is plain the machine keeps going. Then the question that carries the content: which of the three words was most in the way the third time round.",
+  "knobs": [
+    {
+      "knob": "how many words",
+      "effect": "Six words is thirty-nine lines and does not get finished in an afternoon. Three is nine lines and the same machine with one cog fewer: every property survives, and it costs a quarter as much."
+    },
+    {
+      "knob": "printed as a table or stated as a rule",
+      "effect": "«The last and the first, then the last but one and the second» has to be learned before a line can be written. The same thing as a grid is looked at, and whoever writes obeys without ever performing the permutation."
+    },
+    {
+      "knob": "what the three words are",
+      "effect": "Nouns can take a different job each time they come round, which is the exercise. Adjectives cannot, and the second block dies. One word taken from the room keeps the nine lines from being about nothing in particular."
+    },
+    {
+      "knob": "a form with a turn instead of a rotation",
+      "effect": "A sonnet says where something must change and lets any content in anywhere. A rotation decides where every line ends and the writer obeys. Only the second can be handed over whole as a printed table."
+    }
+  ],
+  "where_the_work_is": "In the schedule being arithmetic on positions and nothing else. No letters, no counting of syllables, and the table can be generated for any number of words and then checked row by row and column by column.",
+  "breaks": "It prints and comes back whole, and the constraint is checked by reading the last word of nine lines. Nothing checks whether the nine lines are worth anything, and nothing should. On 800x480 the three-by-three table fits and the nine ruled lines do not, so a panel can carry the schedule while the writing happens on paper.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    214,
+    216,
+    220,
+    223
+  ]
+}

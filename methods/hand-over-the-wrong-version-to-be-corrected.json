@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "hand-over-the-wrong-version-to-be-corrected",
+  "kind": "move",
+  "name": "give them a wrong version and ask for corrections",
+  "also": [
+    "mappa",
+    "pianta vecchia da correggere",
+    "rilevata nel 1974",
+    "documento sbagliato",
+    "wrong map",
+    "correct the record"
+  ],
+  "one_line": "Print the document the form would ask somebody to produce, wrong, with a date: correcting is easier than making, and each correction is an observation.",
+  "from_entries": [
+    95
+  ],
+  "how": "Take the document the form would have asked for — a plan of the house, a list, a timetable, a table of what is where — and print a wrong one instead. Give the wrongness a reason inside the fiction and a date: surveyed in 1974, the arrangement may since have changed. Then print the corrections as numbered instructions rather than as a request: cross out every room that is here and not there, draw in the ones that are there and missing, put the north arrow where it really is, mark where you are standing with the word HERE. Authorise «I don't know» in writing for the one question that has a true answer, or the page stops at that line. Close with the question that changes sides: if you drew one, what would you leave out first?",
+  "knobs": [
+    {
+      "knob": "where the wrongness is caught",
+      "effect": "In the house, and somebody has to get up, and every correction is a thing looked at. On the page, as lines that cannot both be true, it is caught sitting down and needs no knowledge at all. Two afternoons from one trick."
+    },
+    {
+      "knob": "whether the errors are counted",
+      "effect": "«At least five things do not add up» says when to stop and lets somebody know they were right with nobody telling them. Uncounted, the reading has no end and the sheet comes back with two of them."
+    },
+    {
+      "knob": "why it is wrong",
+      "effect": "A date and a surveyor explain the errors without apologising for them. With no reason given, the document reads as carelessness, and carelessness in one part makes the rest not worth reading closely."
+    },
+    {
+      "knob": "whether «I don't know» is printed as an answer",
+      "effect": "Printed, the one question with a true answer gets attempted. Not printed, it is skipped in silence, and afterwards nothing distinguishes a skip from a blank."
+    }
+  ],
+  "where_the_work_is": "In making the errors findable without outside knowledge. Either they contradict each other on the page, or they contradict a room that can be walked into; anything needing a fact from elsewhere is not an error but a trap.",
+  "breaks": "A wrong document is harder to write than a right one: every error has to be findable and none may be undetectable, and that cost falls entirely on whoever prepares it. It survives bad printing, since a plan at the wrong scale is still correctable. On 800x480 nothing of a plan survives and no correction can be made in pencil.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    37,
+    46,
+    63,
+    96,
+    98
+  ]
+}

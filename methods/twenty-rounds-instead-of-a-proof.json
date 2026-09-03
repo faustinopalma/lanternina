@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "twenty-rounds-instead-of-a-proof",
+  "kind": "form",
+  "name": "count twenty rounds of a thing that cannot be argued",
+  "also": [
+    "paradosso probabilistico",
+    "paradosso veridico",
+    "problema delle tre porte",
+    "Monty Hall problem",
+    "veridical paradox",
+    "problema dei compleanni",
+    "paradosso di Simpson"
+  ],
+  "one_line": "A situation whose right answer is provable in three lines and goes on looking wrong, settled instead by playing it twenty times and counting.",
+  "from_entries": [
+    373
+  ],
+  "how": "Three upturned cups and a coin the other person hides. One cup is pointed at; the other person lifts one of the remaining two and always lifts an empty one, then offers the swap. Print that rule in the heaviest type on the page, because it is the only rule that changes the answer if it slips. Do not ask for a decision and do not print the proof. Print twenty boxes with one letter to go in each — C if swapping would have won, T if keeping would — and two totals at the foot. Say that twenty rounds land on the right answer about nine times in ten, and that if the totals come out level the thing to do is play twenty more.",
+  "knobs": [
+    {
+      "knob": "how many rounds",
+      "effect": "twenty rounds show the right answer about ninety-one times in a hundred and fifty rounds about ninety-nine; under ten the tally can come out backwards, and then the sheet has taught the opposite of the truth."
+    },
+    {
+      "knob": "whether the proof is printed",
+      "effect": "the nine cases fit in three lines, are correct, and failed to convince ten thousand readers of a magazine; printed above the boxes they make the counting look like homework, so they go afterwards or not at all."
+    },
+    {
+      "knob": "how tightly the situation is stated",
+      "effect": "with the other person's rule written down the answer is one number; with it left out the problem genuinely has more than one answer, and the argument afterwards is about what was meant."
+    },
+    {
+      "knob": "which of these situations",
+      "effect": "three cups can be played and the tally settles it; the one about two children cannot be played and rewards guessing the writer's intention; the one about aggregated percentages is the useful one and needs real tables."
+    }
+  ],
+  "where_the_work_is": "In the twenty boxes, and in the sentence saying what the other person must do every single time. All of this form's value comes from repeating it enough times, so the number of boxes is a design decision and not a matter of layout.",
+  "breaks": "It needs a second person for twenty rounds who must not slip once, and nothing on the sheet can check that they did not. None of it works on a display. On paper the twenty boxes take the page — a smaller grid fits comfortably and is the version that teaches the wrong answer.",
+  "adult_cost": "take_part",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    359,
+    363,
+    366,
+    367,
+    371
+  ]
+}

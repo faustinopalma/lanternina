@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "fourteen-rows-that-lead-nowhere",
+  "kind": "move",
+  "name": "verify with twenty printed rows, fourteen of them decoys",
+  "also": [
+    "elenco di esche",
+    "righe esca",
+    "verifica senza risponditore",
+    "decoy list",
+    "Herald Hunt",
+    "puzzle hunt"
+  ],
+  "one_line": "Every answer reduced to a number, twenty rows printed, six of them true: a wrong answer picks a row that plainly does not belong.",
+  "from_entries": [
+    206
+  ],
+  "how": "Make every task answer with a whole number between one and twenty, all six different — how many squares in a three by three grid, how many diagonals in a hexagon, how many matches in a knockout of seventeen. Take the instruction to be delivered and split it across those six numbered rows, so that read in order of number they form one sentence. Fill the other fourteen with fragments in the same register that go nowhere: «wait until Sunday», «only with your left hand», «and tell nobody». Print all twenty on the first sheet and say what they are for — six are real, and a row that reads as nonsense probably means the answer was wrong. Check by hand that no answer wrong by one lands on a true row, and that the six really do read as a sentence.",
+  "knobs": [
+    {
+      "knob": "how many decoys",
+      "effect": "Fourteen against six means a wrong answer lands on nonsense seven times in ten and on a true row three, which is a check and not a proof. Fewer, and a wrong answer often looks right; many more, and the page stops being scannable."
+    },
+    {
+      "knob": "what the true rows say",
+      "effect": "Fragments that make a sentence only in numerical order make the check and the reward the same object. Rows that stand alone can be recognised one at a time, and then the arithmetic stops mattering."
+    },
+    {
+      "knob": "whether it says where the error is",
+      "effect": "It cannot, and that is the cost: it says no and never which. That is the poorest error signal there is, and the only one that does not require somebody awake on the other end for two days."
+    },
+    {
+      "knob": "how wide the range is",
+      "effect": "One to twenty fits a page and covers the counting problems that have unambiguous answers. A wider range needs a longer list, stops being scannable at a glance, and the decoys start to look like padding."
+    }
+  ],
+  "where_the_work_is": "In the decoys reading like the true rows. One that is obviously silly gets skipped and checks nothing; one that could plausibly have been the instruction is what makes a wrong answer feel wrong.",
+  "breaks": "It prints, and six numbers come back that scan and photograph better than prose. It stands in for a person saying yes or no and is much worse than one: no partial credit, no hint, and nothing said about where it went wrong. On 800x480 twenty rows do not fit and six answers do, so a panel can collect them while the list stays on paper from the first day to the last.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    180,
+    184,
+    187,
+    358
+  ]
+}

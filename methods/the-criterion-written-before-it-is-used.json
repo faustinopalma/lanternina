@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "the-criterion-written-before-it-is-used",
+  "kind": "move",
+  "name": "write the rule you will judge by, before you look",
+  "also": [
+    "decidere",
+    "valutare",
+    "dichiarare l'unità prima",
+    "due criteri in disaccordo",
+    "rubrica costruita da chi valuta",
+    "rubric written first"
+  ],
+  "one_line": "The definition, or the two criteria that must disagree, printed at the top of the page — and the counting, choosing or judging underneath it.",
+  "from_entries": [
+    53,
+    70,
+    71
+  ],
+  "how": "Print blanks for the rule that will be used, and make them come first on the page. For a count: what counts as one, and what is not being counted. For a choice: two criteria that must pull in different directions, because criteria that agree give a ranking and not a decision. For a judgement: three criteria and a scale of four, not five — five collects everything in the middle — with a blank beside each score for the line of the thing that made you say it. Then two questions at the foot: the criterion that only arrived once you had looked, and whether any choice broke the rule at the top. Print the awkward box beside the easy one, so ticking it is one of two expected answers and not a confession.",
+  "knobs": [
+    {
+      "knob": "how many criteria",
+      "effect": "One is a ranking read off an axis and needs no deciding. Two that disagree is the shortest thing that is a decision. Three gives a profile, and three almost never agree, which is the part worth having."
+    },
+    {
+      "knob": "whether they must disagree",
+      "effect": "Required to disagree, the page produces a decision with a cost written beside it. Free to agree, it produces a preference dressed as a decision, and afterwards nothing on the sheet can tell the two apart."
+    },
+    {
+      "knob": "how many levels on the scale",
+      "effect": "Four has no middle and forces a side. Five has one and collects everything there, so a page of threes comes back having said nothing about anything."
+    },
+    {
+      "knob": "whether a later criterion is asked for",
+      "effect": "Asking for the one that arrived only on seeing the thing shows that criteria are formed by looking, which is true and is never printed. It costs a line and cannot be got any other way."
+    }
+  ],
+  "where_the_work_is": "In the order on the page. The same words written after the task are a justification, shaped to fit what was already done; written before it, they are a commitment, and the last line can ask whether it was kept.",
+  "breaks": "Nothing stops somebody filling the top in afterwards — asking for pen rather than pencil is the only help, and it is weak. On 800x480 two criteria fit and the task underneath does not, so a display can only ever carry the first half of a page whose whole point is which half comes first.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    8,
+    9,
+    15,
+    45,
+    47
+  ]
+}

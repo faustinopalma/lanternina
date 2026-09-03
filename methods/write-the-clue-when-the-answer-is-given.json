@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "write-the-clue-when-the-answer-is-given",
+  "kind": "form",
+  "name": "print the answer and ask for the clue that finds it",
+  "also": [
+    "cruciverba",
+    "cruciverba crittico",
+    "monoverbo",
+    "definizione crittica",
+    "cryptic crossword",
+    "crossword clue"
+  ],
+  "one_line": "The word is given and the clue is not, and a clue that says the word twice can be checked by whoever wrote it.",
+  "from_entries": [
+    125,
+    126
+  ],
+  "how": "Print one compound Italian word made of two whole words — portafoglio, asciugamano, spazzaneve, capolavoro — and ask for a single clue in the cryptic manner: it must say what the word means, and separately how to build it from its two halves, and nothing else. Above it print six clues already taken apart, both readings written out under each, and print no rule anywhere. Print the check as three questions with yes and no boxes: is there a way of saying what it is, is there a way of building it from the two pieces, is there anything serving neither — and if so cross that out and write it again. Three yeses and the clue works, with nobody to confirm it. Under them print Azed's rule: a precise definition, a fair subsidiary indication, and nothing else.",
+  "knobs": [
+    {
+      "knob": "cryptic or plain",
+      "effect": "A cryptic clue describes the answer twice, so whoever wrote it knows on their own that it is right. A plain definition can only be tested by handing it to somebody and watching, which costs a second person and half an hour."
+    },
+    {
+      "knob": "how the word is split",
+      "effect": "Two whole words joined is the easiest of the seven mechanisms and Italian has hundreds. Anagram, container, deletion, hidden word, homophone and reversal all need letters counted inside a word and cannot be composed safely."
+    },
+    {
+      "knob": "whether a grid comes with it",
+      "effect": "One clue and no grid is the Italian monoverbo and fits a page. A whole cryptic grid needs twenty or thirty correct clues, which nothing here can write and nothing here can check."
+    },
+    {
+      "knob": "whether the six worked clues are printed",
+      "effect": "Without them the form is opaque, and opaque does not give the useful kind of not-understanding: it gives somebody putting the sheet down. This is the one sheet on which explaining first is right."
+    }
+  ],
+  "where_the_work_is": "In the surface reading, which has to say something ordinary and untrue while both real readings survive underneath it. The three checking questions test the readings and cannot test the surface.",
+  "breaks": "Text on both sides, so it prints and scans. On 800x480 one clue fits and its decomposition does not, and without the decomposition the panel is opaque again, which is worse than empty. Composing is the danger: a model asked for a cryptic clue returns a sentence of the right shape whose subsidiary indication does not build the answer, and the three questions catch it only if somebody actually answers them. Settle the split of the compound word by hand before printing.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    5,
+    15,
+    128,
+    142,
+    326
+  ]
+}

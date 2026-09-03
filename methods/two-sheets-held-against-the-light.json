@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "two-sheets-held-against-the-light",
+  "kind": "form",
+  "name": "lay one printed sheet on another and read the third thing",
+  "also": [
+    "moiré",
+    "frange di moiré",
+    "battimento ottico",
+    "crittografia visuale",
+    "immagine da comporre in controluce",
+    "moiré pattern",
+    "visual cryptography",
+    "visual secret sharing"
+  ],
+  "one_line": "Two sheets that each carry nothing worth looking at, and a figure that exists only in the pair when one is laid over the other.",
+  "from_entries": [
+    389,
+    390
+  ],
+  "how": "Print two identical sheets covered in fine parallel lines, one every 1.016 mm — twenty-four dots at six hundred to the inch, the pitch nearest a millimetre a printer can hold. Each alone is lines and nothing else. Held together against a window, with the top one turned slowly, broad pale and dark bands appear that are on neither sheet. Ask for five turns: at each, stop the hand, measure the spacing between two pale bands with a ruler, and work the angle out as 58 divided by that spacing in millimetres. At one degree the bands sit 58 mm apart, at five degrees 12 mm. Then ask for the same angle measured with a protractor, and which number they trust.",
+  "knobs": [
+    {
+      "knob": "whether the two sheets must be registered",
+      "effect": "with ruled lines, no: sliding them moves the bands and never kills them. With half-blackened 8 mm cells carrying a hidden picture, registration is everything — a millimetre out costs a third of the contrast and 2.7 mm leaves nothing."
+    },
+    {
+      "knob": "difference of pitch or difference of angle",
+      "effect": "two pitches slightly apart magnify by at most eighty-three times, and the ceiling is the printer's resolution; the same two sheets turned by a tenth of a degree magnify five hundred and seventy-three times, limited only by the paper."
+    },
+    {
+      "knob": "what the two sheets carry",
+      "effect": "parallel lines turn an angle too small to see into a distance in millimetres, which is what the trade uses this for; half-blackened cells carry a picture that neither sheet holds, chosen by whoever filled the second one."
+    },
+    {
+      "knob": "what the paper is",
+      "effect": "ordinary paper against a window passes little light and the lines on the lower sheet read badly; tracing paper or acetate is better, and how much better has not been measured."
+    }
+  ],
+  "where_the_work_is": "In the line pitch, which fixes the constant 58 and therefore every angle read off the sheet. It has to be an exact number of printer dots, and it is the one number to settle before anything is printed.",
+  "breaks": "The pitch is the method. Printed at 94% to fit the margins, 1.016 mm becomes 0.955 mm, the constant is no longer 58, and every angle read off the sheet is wrong by that factor while the bands appear exactly as promised — the protractor is the only thing that catches it, which is why it is asked for. Print at 100% and count twenty-four lines against 24.4 mm of ruler first. Two sheets of ordinary paper against a window are dim. On the display the pattern draws, but the second sheet has to be physical, so a panel is only ever half the pair.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    140,
+    378,
+    388,
+    395
+  ]
+}

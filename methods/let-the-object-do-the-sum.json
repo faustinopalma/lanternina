@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "let-the-object-do-the-sum",
+  "kind": "form",
+  "name": "let a physical object work out the shortest answer",
+  "also": [
+    "problema di ottimizzazione con vincoli fisici",
+    "albero di Steiner",
+    "Steiner tree problem",
+    "lamina di sapone",
+    "soap film",
+    "catenaria",
+    "calcolatore analogico"
+  ],
+  "one_line": "A shortest-path question answered by pulling string across card instead of by calculating, where the best answer uses points that were not given.",
+  "from_entries": [
+    377
+  ],
+  "how": "Four pins at the corners of a twenty-centimetre square drawn on card, and a length of string. Ask for all four to be joined — any route from each to each will do — and for the total to be measured with a ruler and written down. Then the second question, which is the form itself: do it again, this time allowed to add junctions out in the middle of the square where paths meet. Print both numbers, sixty centimetres for the best route through the pins alone and under fifty-five once two junctions are added, because on card a good answer and the best one look the same. Last, ask for the angle at each added junction, measured.",
+  "knobs": [
+    {
+      "knob": "whether extra points may be added",
+      "effect": "restricted to the four pins there are sixteen routes and the best is found by trying them; allowed to invent junctions, the best answer is not among the sixteen at all, and that is the only thing this form has to say."
+    },
+    {
+      "knob": "whether the target number is printed",
+      "effect": "printed, a measurement can be judged and the nine per cent is worth chasing; withheld, every stretched string looks taut and finished and there is no telling a worse answer from the best one."
+    },
+    {
+      "knob": "string or soap film",
+      "effect": "string measures, costs nothing and is read with a ruler; a film between two plates finds the same figure in a second and needs a basin, two plates and pins. The sheet must work whole with the string, and the film goes on as an extra."
+    },
+    {
+      "knob": "how many points",
+      "effect": "four at the corners of a square give a figure with two junctions and a symmetry worth noticing; five or more give a figure nobody can judge by eye, and then the measurement means nothing."
+    }
+  ],
+  "where_the_work_is": "In the second question. The first is a measuring exercise; the second is where the answer turns out to lie outside the list of possibilities the sheet appeared to be offering, and that is what the evening is for.",
+  "breaks": "The object settles wherever it was nudged and has no way of knowing a shorter arrangement exists, so a wrong answer arrives looking as finished as a right one — which is why the number has to be printed. It needs card, pins, string and a ruler, and none of it can be shown on a display.",
+  "adult_cost": "prepare",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    359,
+    366,
+    371,
+    375,
+    376
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "rungs-to-beat-declared-invented",
+  "kind": "move",
+  "name": "print three rungs to beat and say you made them up",
+  "also": [
+    "classifica dei tempi",
+    "tabellone dei record",
+    "punteggi predefiniti",
+    "leaderboard",
+    "high score",
+    "ladder tournament"
+  ],
+  "one_line": "Three figures to beat, stated to have been invented by whoever printed the sheet, and above them a ceiling that is a fact.",
+  "from_entries": [
+    190
+  ],
+  "how": "Use it where a result is a number and there is nobody to compare with. Print three rungs — eleven, fifteen, nineteen — and one line saying they belong to nobody and were chosen by whoever wrote the sheet, the way arcade machines shipped with invented scores so there was always something to beat. It keeps working after being declared and asks nobody to believe anything. Above them print the ceiling, and make it a fact rather than an ambition: there are exactly twenty-five primes below a hundred, so nobody can pass it and whoever reaches it has finished. Below, one line for today, and a row for a prediction written before each attempt.",
+  "knobs": [
+    {
+      "knob": "whose the rungs are",
+      "effect": "Somebody else's, and the comparison is with a person, which lifts whoever is having a good day and flattens whoever has just failed at something. Declared invented, they do the same job and carry none of that."
+    },
+    {
+      "knob": "whether the ceiling is a fact",
+      "effect": "Twenty-five primes below a hundred, or twenty moves as the shortest solution: a fact about the material means the task can be finished and nobody set the bar. A chosen ceiling is one person's opinion of what counts as good."
+    },
+    {
+      "knob": "whether a prediction is asked for first",
+      "effect": "It gives a comparison that is neither a person nor a table, and produces the one figure nothing else records: by how much, and in which direction, somebody misjudges themselves."
+    },
+    {
+      "knob": "whether it is used at all",
+      "effect": "Where the result is already an objective number, a ranking adds social comparison to a situation that did without it, and adds the fourth condition of stress to a task that may need a change of method. On anything needing a new idea, leave it off."
+    }
+  ],
+  "where_the_work_is": "In the ceiling. A number that is a fact about the material turns a scoreboard that never ends into a task that can be finished, and it costs one line to look up.",
+  "breaks": "The rungs and the row of days print in six lines and fit 800x480 whole; the twenty-five blanks do not. It wants the same sheet three days running, which suits a household printing one a day and suits nothing else. The ticks and predictions cannot be verified by construction, which is fine, because they are for whoever wrote them.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    9,
+    88,
+    89,
+    189
+  ]
+}

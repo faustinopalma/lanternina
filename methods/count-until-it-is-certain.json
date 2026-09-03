@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "method_id": "count-until-it-is-certain",
+  "kind": "form",
+  "name": "reach a certainty by counting, not by finding",
+  "also": [
+    "problema di parità",
+    "argomento di parità",
+    "parity argument",
+    "scacchiera mutilata",
+    "mutilated chessboard",
+    "principio dei cassetti",
+    "pigeonhole principle",
+    "principio di Dirichlet",
+    "ponti di Königsberg",
+    "cammino euleriano"
+  ],
+  "one_line": "A task that invites trying and then cannot come out, closed by counting one quantity the moves never change.",
+  "from_entries": [
+    363,
+    365,
+    366
+  ],
+  "how": "Print the object as a list and not as a picture: four zones and seven bridges written as five lines of «this to that» need no draughtsman and read the same on a screen. Ask for the attempt first and mean it, because somebody who has not tried does not care that it cannot be done. Then, below a rule across the page, put the counting in three or four blanks — how many bridges touch each zone, how many cells of each colour, how many of five boxes have to match. Print no answer anywhere. The last blank is the conclusion, and whoever writes it has proved it. Never put the counting above the attempt: there it stops explaining and becomes an instruction.",
+  "knobs": [
+    {
+      "knob": "where the help sits on the page",
+      "effect": "above the task it removes the trying and reads as a method to follow; below the rule, after the giving up, it removes not one possibility — the impossible stays impossible — and it is the only thing that makes it understood."
+    },
+    {
+      "knob": "whether a case that works comes first",
+      "effect": "a small version that can be done makes the large one believable and keeps somebody at it; going straight to the impossible one reads as a trick and is put down inside two minutes."
+    },
+    {
+      "knob": "asking «can you» or «why not»",
+      "effect": "«can you» is answered by a shrug after twenty minutes; «why not» is answered in one line and is the only version that leaves anything behind when the paper is thrown away."
+    },
+    {
+      "knob": "whether the second question turns it round",
+      "effect": "with two opposite corners gone there is no covering at all; with two cells of different colours gone there are five hundred and eighty, and the same sheet becomes a search. Printed after the first, that is the half that can be marked."
+    }
+  ],
+  "where_the_work_is": "In finding the quantity the moves leave alone — a colour, a remainder, a count of ends. No object hands it over and no amount of trying produces it; choosing it is the design and the rest is layout.",
+  "breaks": "Nothing markable comes back: whoever gets there stops, and a sheet with an empty last line looks the same as one nobody understood. Two-colour boards must be printed as hatching or dots, since grey on grey scans to one grey. On the display the list of links fits and no grid does, which is the reason to write the object as text from the start.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    152,
+    359,
+    364,
+    367,
+    373
+  ]
+}

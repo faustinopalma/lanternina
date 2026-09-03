@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "ask-how-many-not-what-you-see",
+  "kind": "move",
+  "name": "ask how many, when what you see has no answer",
+  "also": [
+    "girare la consegna al contrario",
+    "chiedere un conteggio",
+    "domanda rovesciata",
+    "turned question",
+    "ask for a count"
+  ],
+  "one_line": "A question that has no answer for anybody is replaced by a count against a rule written on the page before the field is looked at.",
+  "from_entries": [
+    383,
+    391,
+    393,
+    395
+  ],
+  "how": "Applies to any form built on something the eye does by itself, where the honest question — what do you see in this? — has no answer for anybody, so nothing comes back and nothing can be responded to. Put a count in its place. Write the rule out in full above the field, before it has been looked at, and do the count by hand before printing. Random dots become how many triples fit this rule; a scatter of points becomes which order round them is shortest; a raised image becomes how long the repeat is, counted flat with a pencil. Then say what it cost, because it costs something: the surprise moves out of the looking and into the number.",
+  "knobs": [
+    {
+      "knob": "whether the rule sits above or below the field",
+      "effect": "above, a rule is applied and the count is a search; below, an impression has already formed and the count reads as a correction of it, which is a different afternoon and a worse one."
+    },
+    {
+      "knob": "whether the turned question can be done without the effect",
+      "effect": "when the count is done on the flat page it works for somebody who cannot see the effect at all, which matters where a fifth of readers cannot; when it needs the effect first, the turn has saved nothing for them."
+    },
+    {
+      "knob": "whether the phenomenon survives the count",
+      "effect": "counting bands to get an angle is what the trade does with the thing, so nothing is lost; counting triples that fit a face rule leaves arithmetic where the looking was, and that has to be said rather than hidden."
+    },
+    {
+      "knob": "turning it or leaving the form out",
+      "effect": "leaving it out costs nothing and loses a whole family; the turn keeps the material at the price of changing what is asked, and which is right depends on whether what remains is the thing or the exercise that replaced it."
+    }
+  ],
+  "where_the_work_is": "In doing the count first. A rule whoever wrote the sheet has not applied by hand produces a question with no answer wearing the grammar of one, which is worse than the question it was brought in to replace.",
+  "breaks": "It makes nothing on its own, so it can never be the point of a moment, only an addition to one. Used on a form whose whole content is in the looking, it hands back a counting exercise with the phenomenon standing unused beside it, and whether that is still the same activity is open rather than settled. It also costs the count, done by hand, every time the sheet is made.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    372,
+    374,
+    386,
+    389
+  ]
+}

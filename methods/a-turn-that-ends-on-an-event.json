@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-turn-that-ends-on-an-event",
+  "kind": "move",
+  "name": "let a turn end on an event instead of on a time",
+  "also": [
+    "turno",
+    "mossa",
+    "round",
+    "tornata",
+    "uno alla volta",
+    "turn",
+    "game turn",
+    "tick",
+    "turno definito da un evento"
+  ],
+  "one_line": "Time gets into a sheet that has no clock by being cut into turns that end when a named thing happens, chosen by whoever holds the sheet.",
+  "from_entries": [
+    280
+  ],
+  "how": "A printed sheet cannot measure time, so anything shaped like a clock has to become a count of events. Ask for the event to be named on the sheet before anything begins: a turn ends when a certain thing happens, and it must happen by itself, cannot be hurried, and can be seen or heard from where somebody is sitting. Then print the turns as a short row of boxes with one thing to be done per turn, chosen from four printed options. Add the repair line, because without it the form fails in silence: if it still has not happened after a while, change the thing and write down what you changed it to. This does not bring back a quota that resets every day, and must not be used to.",
+  "knobs": [
+    {
+      "knob": "who names the event",
+      "effect": "Whoever wrote the sheet cannot: they do not know what is audible in that house. Naming it belongs to the reader, and it is the one decision that fixes the pace of everything printed after it."
+    },
+    {
+      "knob": "how many turns and how many options",
+      "effect": "Six turns and four options give 4 096 orders, of which 38% use all four, so variety is neither guaranteed nor demanded. Fewer options and the sheet is prescribing; more and choosing becomes the work."
+    },
+    {
+      "knob": "whether a repair line is printed",
+      "effect": "Without it an event that never happens stops the afternoon at turn one and nobody notices. One line telling the reader to change it is the difference between a form that fails loudly and one that fails quietly."
+    },
+    {
+      "knob": "whether the turns are meant to be equal",
+      "effect": "They are not, and saying so removes a false expectation. Turns of equal length need a clock; turns of equal content need only the same list of options printed against each of them."
+    }
+  ],
+  "where_the_work_is": "In the event being outside anybody's control. An event somebody can cause is a decision dressed as a clock, and then the turn is measuring willingness rather than anything that actually passed.",
+  "breaks": "It does nothing for the family it looks as though it might rescue: a daily quota, a run of days and a reminder all need to know what day it is, and an event-shaped turn tells nobody that. It adds a row of boxes and a named event, and nothing anybody can check. An event chosen badly — one that happens every thirty seconds, or once — makes the whole sheet useless without saying so. On 800x480 six boxes and four one-line options fit whole.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    88,
+    95,
+    109,
+    189,
+    267
+  ]
+}

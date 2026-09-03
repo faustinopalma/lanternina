@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-manual-for-a-thing-that-is-never-named",
+  "kind": "form",
+  "name": "instructions for a thing that is never named",
+  "also": [
+    "manuale",
+    "libretto di istruzioni",
+    "avvertenze e uso",
+    "foglio illustrativo",
+    "owner's manual",
+    "safety warnings"
+  ],
+  "one_line": "A booklet that describes an appliance completely without ever saying what it is, and a box in which to draw what the reader thinks it looks like.",
+  "from_entries": [
+    94
+  ],
+  "how": "Write a real booklet and never state the object: before first use, warnings, normal use, maintenance. Keep the register flat and unhelpful, because a manual does not explain itself and does not argue, and that is what makes it readable as evidence. Put the work into the warnings, since a prohibition names a capability: «do not fill above the line» says it is hollow, «wait until it stops before moving it» says it moves, «do not open while the lamp is lit» says there is a door and a lamp. Seven of them, and one that could belong to no object at all. Then the page turns: draw it, marking where the knob, the lamp, the door and the container are; say what it is for; say which warning told you most; and say which of the seven does not belong.",
+  "knobs": [
+    {
+      "knob": "whether the object is ever named",
+      "effect": "Named, the text is a manual and gets consulted for one line. Never named, the same words become the only evidence for a thing nobody has seen, and not a sentence has to be rewritten to make the change."
+    },
+    {
+      "knob": "prohibitions or descriptions",
+      "effect": "«The tank holds two litres» is one fact. «Do not fill above the line» is that fact plus a shape plus a consequence, and it arrives in the voice the genre already uses, so nothing sounds like a puzzle."
+    },
+    {
+      "knob": "whether one warning is an intruder",
+      "effect": "One that fits no object gives a second question inside the first and something to argue about. Two, and the list reads as nonsense; then none of it is treated as evidence and the drawing box comes back empty."
+    },
+    {
+      "knob": "whether two people draw it",
+      "effect": "One drawing can be checked against nothing. Two drawings from the same booklet either resemble each other or do not, and that resemblance is the only measure of whether the text was coherent."
+    }
+  ],
+  "where_the_work_is": "In the seven warnings. They carry the entire object, and each has to be a real restriction with a real consequence — a warning that forbids nothing describes nothing, and then there is nothing to draw.",
+  "breaks": "There is no right answer for what the thing is; what can be settled is the intruder warning, and its answer has to be printed at the foot or decided by whoever wrote the booklet, because nothing later will catch it. On 800x480 four sections of small print are impossible: this form needs a page held whole, since the reader goes back and forth between the warnings and the drawing.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    16,
+    26,
+    27,
+    63,
+    93
+  ]
+}

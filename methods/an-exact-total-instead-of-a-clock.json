@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "an-exact-total-instead-of-a-clock",
+  "kind": "move",
+  "name": "make them stop at an exact total, not at a time",
+  "also": [
+    "budget di punti",
+    "tetto di punti",
+    "gettoni",
+    "economia di gettoni",
+    "points budget",
+    "token budget",
+    "spending cap"
+  ],
+  "one_line": "A printed sheet cannot measure time, so the scarcity is carried by a number of points that has to be reached exactly.",
+  "from_entries": [
+    194,
+    207
+  ],
+  "how": "Price every row on the sheet, then print a total smaller than their sum that has to be hit exactly — twenty, not «about twenty». Count by hand that the target is reachable and by many routes: fourteen rows summing to forty-six reach twenty in eight hundred and eighty-five ways, and a target reachable in one way is a search for the one admissible set pretending to be a choice. Price the rows that cost a walk high and the ones done from the chair low, so that the cheap route is the dull one. Print that stopping at the total is the end of it. Then ask, at the foot, which price was wrong: the prices were guessed by somebody who has never watched anybody do any of it, and that is the only way of finding out.",
+  "knobs": [
+    {
+      "knob": "an exact total or a ceiling",
+      "effect": "«Exactly twenty» forces a chosen row to be given back and the arithmetic done again, which is the whole point. «Up to twenty» is satisfied by stopping early and nothing is ever given up."
+    },
+    {
+      "knob": "declared prices or a measured clock",
+      "effect": "Printed prices are a guess made before anybody began; a clock measures what happened. On paper only the guess is available, and asking at the end which price was wrong buys back most of what the guess costs."
+    },
+    {
+      "knob": "how far the total sits below the sum",
+      "effect": "Near the sum, everything is affordable and the budget is decoration. At around forty per cent of it most rows have to be left behind, which is what a time limit does and what this is for."
+    },
+    {
+      "knob": "points or nothing",
+      "effect": "Without a number the same list is a menu and every unfinished row reads as failure. With it, what was left out is a decision that stays on the page and can be asked about afterwards."
+    }
+  ],
+  "where_the_work_is": "In the target being reachable many ways rather than one. That is a count somebody does before printing, and it is what makes the choosing real instead of a puzzle with a single solution.",
+  "breaks": "It measures nothing. A total on a returned sheet says the arithmetic was done, not that any of it happened: a consistency check over unverifiable claims. What it cannot buy back is urgency, which is the one thing a clock was for. On 800x480 the total and the rule fit and the priced rows do not, and without the prices the total says nothing at all.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    189,
+    190,
+    194,
+    207
+  ]
+}

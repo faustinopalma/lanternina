@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "four-words-into-an-empty-frame",
+  "kind": "form",
+  "name": "place given words in a grid with no clues at all",
+  "also": [
+    "crucintarsio",
+    "parole incastrate",
+    "fill-in",
+    "kriss kross",
+    "cruciverba crittografato",
+    "cipher crossword",
+    "codeword"
+  ],
+  "one_line": "The words are printed and the clues are not, so what is left to do is make the letters agree wherever two words cross.",
+  "from_entries": [
+    354,
+    355
+  ],
+  "how": "Print a square frame of four words of four letters — the outer ring of a four-by-four grid with the middle blacked out — and the four words beside it in alphabetical order: AREA, ERBA, RETE, ROSA. Say which one goes across the top. Then say why that line is there: without it two arrangements fit, each the other reflected in the diagonal, and the puzzle has two answers instead of one. The corners are the entire check, since a corner letter has to serve both words through it, and no dictionary is needed. Check the frame by hand first; four words is small enough to walk all twenty-four orders.",
+  "knobs": [
+    {
+      "knob": "whether one word is given",
+      "effect": "Given, the twenty-four orders come down to one and the puzzle is well posed. Withheld, two survive and both are right, which is the reason a puzzle of this kind always gives one word away."
+    },
+    {
+      "knob": "how many different lengths the words have",
+      "effect": "All one length is harder, because length then tells you nothing: twelve words of one length leave about ten times as many placements as eighteen words of four lengths. Sameness removes free information."
+    },
+    {
+      "knob": "letters or numbers in the cells",
+      "effect": "Letters, and every crossing is checked against a word. Numbers standing for letters, and nothing has to be known at all — but a small grid then has several solutions, and only crossings close it."
+    },
+    {
+      "knob": "how much is given away",
+      "effect": "A whole word in bold is the Italian habit and one letter the English one. One letter removes twenty possibilities out of twenty-one and still does not finish it; what finishes it is the number of crossings."
+    }
+  ],
+  "where_the_work_is": "In the four words and their corners, which have to admit one arrangement and not two. Twenty-four orders is few enough to walk by hand, and walking them is the only thing that says which it is.",
+  "breaks": "The grid must be ruled with cells large enough for a written capital, or a scanned page loses the corners, which are the only thing being checked. On 800x480 the four words fit and the frame does not, and the words without the frame are nothing. A model cannot build a frame or say whether four strings are words; build this one by hand and it works from then on.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    311,
+    352,
+    353,
+    356,
+    362
+  ]
+}

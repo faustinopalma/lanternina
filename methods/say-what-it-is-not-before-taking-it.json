@@ -1,0 +1,47 @@
+{
+  "format_version": 1,
+  "method_id": "say-what-it-is-not-before-taking-it",
+  "kind": "move",
+  "name": "declare in one line what the sheet is not",
+  "also": [
+    "dichiarazione d'apertura",
+    "questo non e un koan",
+    "il braille non e un cifrario",
+    "prestito dichiarato",
+    "borrowing declared"
+  ],
+  "one_line": "One printed line saying that this is not the practice it is borrowed from, after which the borrowing is honest and the piece can be used.",
+  "from_entries": [
+    118,
+    133
+  ],
+  "how": "When a form is taken from somebody else's living practice — a Chan case, braille, a liturgy, the notation of a trade — print one line before anything else saying what it is not and whose it is. «This is not a koan, and this sheet is not a Zen master.» «Braille is not a code: it is how blind people read and write, in a hundred and thirty-three languages.» One sentence, factual, with no apology and no reverence in it. Then take exactly the piece that is portable and leave the rest where it was. Do not soften it into «inspired by», which hides the borrowing rather than declaring it. The line goes at the top, where it is read first, and never in a footnote.",
+  "knobs": [
+    {
+      "knob": "whether the line is there at all",
+      "effect": "With it, the material can be used and whoever reads knows what they are holding. Without it the sheet claims to be the practice, and anybody who knows the practice stops at the first line."
+    },
+    {
+      "knob": "how much is said",
+      "effect": "One sentence naming the practice and the people it belongs to is enough. A paragraph of history turns the declaration into the lesson and pushes the thing to be done off the page."
+    },
+    {
+      "knob": "what is then borrowed",
+      "effect": "The portable piece carries over: a printed collection of responses, the geometry of a six-dot cell. The part that is a relationship — an authorised teacher, a lifetime of reading by touch — does not, and no declaration makes it."
+    }
+  ],
+  "where_the_work_is": "In writing the sentence that says what the sheet is not, which no template supplies. It is also the test of whether to borrow at all: if the line cannot be written without embarrassment, leave the material alone.",
+  "breaks": "It adds a line and takes nothing away, so on paper it costs one row and scans like any other. On 800x480 four rows are the whole surface and spending one on a disclaimer nobody acts on is a quarter of the panel, so this belongs to the sheet. It also cannot repair a borrowing that should not happen: declaring that a sheet is not a funeral rite does not make it usable.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    93,
+    97,
+    102,
+    105,
+    108
+  ]
+}

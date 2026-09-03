@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "method_id": "the-ending-is-how-many-times-you-chose",
+  "kind": "form",
+  "name": "let the ending be how many times you chose one way",
+  "also": [
+    "ramificazione",
+    "libro-gioco",
+    "storia a bivi",
+    "scelta con conseguenza",
+    "bivio",
+    "branching narrative",
+    "gamebook",
+    "CYOA",
+    "multiple endings",
+    "struttura a somma"
+  ],
+  "one_line": "Five either-or questions and six endings, where the ending is the count of one kind of answer instead of the path that was taken.",
+  "from_entries": [
+    268,
+    269
+  ],
+  "how": "Write five questions with two answers each, A or B, and six endings numbered by how many A's. Print the five, a row of five blanks, and a table sending 0 A to one paragraph, 1 A to the next, up to 5. That is eleven pieces of writing. The full tree of the same five choices is thirty-two endings and sixty-three paragraphs, of which one reading sees six: ninety per cent of what gets written is never read. Then the check that makes the form: change any one answer and the ending changes, every time, whichever one it is. Ask for two or three to be tried. Last line, and it cannot be marked: was there one you answered thinking about which ending you wanted rather than about what you would do.",
+  "knobs": [
+    {
+      "knob": "sum against tree",
+      "effect": "The tree gives thirty-two endings for sixty-three paragraphs. The sum gives six for eleven. In both, changing any one choice changes the ending; only one of the two fits on a sheet of paper."
+    },
+    {
+      "knob": "how many choices",
+      "effect": "Five gives six endings and eleven paragraphs. Three gives four and seven, and a single reversal is too visible. Seven gives eight and fifteen, and the questions begin to outrun the page."
+    },
+    {
+      "knob": "whether the endings are ranked",
+      "effect": "Endings that are simply different can all be arrived at. One ending marked as the successful one turns the sheet into a puzzle with a right set of answers, and the questions stop being about the person."
+    },
+    {
+      "knob": "whether the paragraphs share the sheet",
+      "effect": "All six printed together can all be read, and nothing is lost by choosing. Hiding them takes a fold or an envelope, which is one more thing somebody folds by hand before the afternoon."
+    }
+  ],
+  "where_the_work_is": "In the five questions being ones somebody actually has an opinion about. The structure guarantees each one moves the ending; nothing guarantees any of them is worth asking, and that half is written by hand.",
+  "breaks": "The six paragraphs are on the sheet, so all of them can be read and nothing is really lost by choosing. Nor are these really choices: nothing happens in the world for having made one, and the world here is a sheet that does not change. On 800x480 five questions with two answers each do not fit; five one-line prompts, the blanks and the tally rule do.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    43,
+    107,
+    224,
+    263,
+    286
+  ]
+}

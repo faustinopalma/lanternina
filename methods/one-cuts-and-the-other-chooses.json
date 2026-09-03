@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "one-cuts-and-the-other-chooses",
+  "kind": "form",
+  "name": "one cuts the day in two and the other picks",
+  "also": [
+    "negoziare",
+    "taglia e scegli",
+    "spartizione",
+    "il sabato tagliato in due",
+    "divide and choose",
+    "fair division"
+  ],
+  "one_line": "Something actually contended is divided into two blocks by whoever has more power, and the other side chooses one — so nobody has to be trusted.",
+  "from_entries": [
+    72
+  ],
+  "how": "Take something in the house that is really contended — a Saturday, the television, who decides what happens — and print it as two blocks to fill in. The one with more power writes the division: two blocks, each described in three lines, written so that either would do, because whichever is chosen is the one they lose. The other side ticks A or B. Print the roles that way round and say why on the page: the rule binds whoever did not need binding, and a procedure that only works when the stronger side is generous is not a procedure. Afterwards, two lines each — the cutter says which block they hoped would not be taken and why, the chooser says why they took theirs — and one box: were those the same reason?",
+  "knobs": [
+    {
+      "knob": "who cuts",
+      "effect": "The stronger side cutting is what makes this worth using at home: it binds the person who was not at risk. The other way round it is elegant and does nothing, because the weaker side was already exposed."
+    },
+    {
+      "knob": "measured or described",
+      "effect": "Measured in hours the halves are equal by construction and it is arithmetic. Described by what is in them, the cutter has to weigh things they value unequally, and that is where the whole difficulty lives."
+    },
+    {
+      "knob": "whether the two reasons are asked for",
+      "effect": "The split works without them. Written separately and then compared, they are the only part that says whether each side knew what the other wanted — and they almost never turn out to be the same reason."
+    },
+    {
+      "knob": "whether it is signed before the choice",
+      "effect": "Signed before anybody knows which half they get, the page works as a contract and the rule is fixed before the interest is. Unsigned it is a suggestion, and gets renegotiated at the first disagreement."
+    }
+  ],
+  "where_the_work_is": "In assigning the roles, not in the halving. Divide and choose punishes a bad cut all by itself; the decision that makes it useful in a house is which of the two people is made to cut.",
+  "breaks": "It needs two people who both accept the outcome, and paper cannot produce that — it can only fix the rule before either side knows who gains. Nothing afterwards can be checked, because an honest cut and a lucky one look identical on the page. On 800x480 the two blocks do not fit; the rule, in one line, does.",
+  "adult_cost": "take_part",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    70,
+    81,
+    86,
+    91,
+    284
+  ]
+}

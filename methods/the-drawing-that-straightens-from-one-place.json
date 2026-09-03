@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "the-drawing-that-straightens-from-one-place",
+  "kind": "form",
+  "name": "put the eye where the drawing straightens out",
+  "also": [
+    "anamorfosi",
+    "anamorfismo",
+    "prospettiva depravata",
+    "prospettiva forzata",
+    "anamorphosis",
+    "forced perspective",
+    "false perspective"
+  ],
+  "one_line": "A drawing stretched so that it is right from one point and nowhere else, and eleven rungs that are one width seen from there.",
+  "from_entries": [
+    382,
+    394
+  ],
+  "how": "Mark a cross on the short edge of an A4; every distance is measured from it. Print eleven horizontal bars centred on the middle of the sheet, each a quarter as long as its distance from the cross — the nearest 30 mm long at 120 mm, the furthest 60 mm long at 240 mm, the gaps widening as they go. From above it is a crooked ladder. Then: sheet flat on the table, chin over the cross, eye lowered to 4 cm from the paper, looking along it. From there the rungs are one width and evenly spaced, and half a centimetre higher they are not. Then ask for one of their own: any drawing 2 cm tall, cut into ten rows, each row carried out to the printed distances.",
+  "knobs": [
+    {
+      "knob": "how high the eye is held",
+      "effect": "four centimetres above the paper with the first bar at 120 mm makes 23.8 mm the tallest straight picture that fits on an A4; lower and the sheet needed runs off towards infinity, higher and the stretch is too mild to surprise."
+    },
+    {
+      "knob": "whether the viewpoint is an eye or a camera",
+      "effect": "with an eye at the mark the effect lives in the room and a photograph of the sheet destroys it, since the camera records the smear. With a camera and two real things at the same height-over-distance ratio, the photograph is the only place it exists."
+    },
+    {
+      "knob": "whether the viewpoint is marked",
+      "effect": "a printed cross hands over the answer and leaves only the looking; no mark makes finding the point the exercise, and on a stretch this steep it is found by trial in about a minute."
+    },
+    {
+      "knob": "whether they build one themselves",
+      "effect": "copying eleven numbers teaches nothing about why they are those numbers; carrying a small drawing of their own out to the same distances is the only part that comes back on a sheet and can be checked."
+    }
+  ],
+  "where_the_work_is": "In the ratio between each bar's length and its distance from the cross, which is constant and is the whole construction. A bar 2 mm wrong is invisible from above, where everything is a smear, and unmissable from the mark.",
+  "breaks": "The eye cannot be scaled and the sheet can. Everything is set against an eye 4 cm above the paper, so a page printed at 94% to fit the margins puts the viewpoint where no chin goes, the rungs never line up, and nothing says why. Print at 100% and check that the first bar sits 120 mm from the cross. A photograph of the finished sheet carries none of it, because the effect is not in the plane photographed; what comes back is the reader's own construction. None of it exists on a display, which is flat and already in front of the eye.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    378,
+    381,
+    390,
+    393,
+    395
+  ]
+}

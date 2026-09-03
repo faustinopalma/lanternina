@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "five-cards-and-a-move-that-shifts-three",
+  "kind": "form",
+  "name": "find a sequence of moves that leaves two cards alone",
+  "also": [
+    "cubo di Rubik",
+    "twisty puzzle",
+    "combination puzzle",
+    "rompicapo a mosse sequenziali",
+    "algoritmo",
+    "torre di Hanoi",
+    "speedcubing"
+  ],
+  "one_line": "Five cards, two moves that each rotate three of them, and the task of building a sequence whose effect is small and known in advance.",
+  "from_entries": [
+    172
+  ],
+  "how": "Cut five cards, write A to E, lay them in five fixed positions. Two moves, each turning three cards at once: S cycles positions 1 2 3, D cycles 3 4 5. Position 3 belongs to both and is what holds the thing together. S' and D' are the same turned back. Three tasks. Put the cards in E D C B A and restore the order — five moves, and print the five so nobody grinds past it. Then repeat S then D and count the repetitions that bring them home: five — and any sequence comes home eventually, so this cannot be failed. Then the real one: find a sequence leaving positions 1 and 3 untouched and moving only the other three. S D S' does it, and that is what a cube solver calls an algorithm.",
+  "knobs": [
+    {
+      "knob": "how many cards",
+      "effect": "Five gives 120 arrangements, sixty reachable, and the furthest sits six moves away, so every claim on the sheet is checkable by hand. Six or more and whoever printed it is asserting things they never verified."
+    },
+    {
+      "knob": "how many positions the two moves share",
+      "effect": "Sharing one position makes the moves interact and makes the puzzle exist. Sharing none splits it into two puzzles that never meet, and nothing becomes reachable that was not reachable separately."
+    },
+    {
+      "knob": "what the tasks ask for",
+      "effect": "Restoring an order can be failed. Repeating a sequence until it returns cannot be failed at all, only miscounted, and it is still not trivial because the number cannot be guessed. Both belong on one sheet."
+    },
+    {
+      "knob": "cards or an object",
+      "effect": "A real cube turns eight pieces at once and the hand feels it happen. Five cards are moved one at a time, which is slower and more exact, and the rule that pieces are never lifted becomes a promise instead of a fact."
+    }
+  ],
+  "where_the_work_is": "In the third task, where a sequence is built by moving something out of the way, acting, and putting it back. That is how the sequences for a real cube are made, and it is the part that carries over.",
+  "breaks": "The sheet prints five labels and four paragraphs, and a filled one scans back as short strings of S and D. On 800x480 the rules and one task fit, and the five positions need no drawing, which is nearly enough. The break is physical: five cards can be picked up and put anywhere, so the constraint that defines the whole family is honour rather than mechanics, and nothing on the page can enforce it.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    157,
+    163,
+    171,
+    364
+  ]
+}

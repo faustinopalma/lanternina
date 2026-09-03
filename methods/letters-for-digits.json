@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "letters-for-digits",
+  "kind": "form",
+  "name": "work out which digit each letter stands for",
+  "also": [
+    "crittarismo",
+    "alfametica",
+    "aritmetica verbale",
+    "verbal arithmetic",
+    "cryptarithm",
+    "alphametic",
+    "somma di parole"
+  ],
+  "one_line": "An addition written with letters instead of digits, one digit to each letter, and only one assignment makes the sum come out.",
+  "from_entries": [
+    361
+  ],
+  "how": "Compose it backwards: choose the digits first, then look for words that fit them. Fix the operation at a word added to itself — NOTTE + NOTTE = SOGNO — because the units column becomes twice one digit and halves the search on the first line, which is the help the sheet gives without saying it does. Print the three rules: different letters are different digits, no number starts with zero, there is one answer. Print a box with one blank per letter. Do the addition yourself before printing, and if it does not come out change a word, not a rule. Give no digit away: one given digit turns finding into checking.",
+  "knobs": [
+    {
+      "knob": "whether the letters spell something",
+      "effect": "words somebody recognises make it a thing to be solved and make it slow to compose, because the words have to be searched for; arbitrary letters compose in a minute and read as homework."
+    },
+    {
+      "knob": "whether a digit is given",
+      "effect": "with one digit given the case work collapses and what is left is verifying somebody else's answer; with none, the rightmost column is the whole opening and is where the sheet is won."
+    },
+    {
+      "knob": "how many letters",
+      "effect": "five or six letters is an evening and about a hundred and fifty thousand assignments, which is far more than can be tried and few enough to reason about; at eight the case work leaves what a person can hold."
+    },
+    {
+      "knob": "the operation",
+      "effect": "an addition gives a column of carries to walk down; a multiplication or a long division gives a much longer chain and a much longer afternoon, and neither can be checked as fast as a sum."
+    }
+  ],
+  "where_the_work_is": "In the rightmost column, not in the alphabet. One column with a carry to reason about settles most of the letters and the rest follows, so the words are chosen to make that column tight.",
+  "breaks": "It is ink and nothing else and prints perfectly. On the display the box of blanks does not fit; the operation and the three rules do. The risk is at composing, not at solving: a word picked for its look gives a sum with no answer or with several, and the only thing that catches it is doing the addition before it is printed.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    355,
+    359,
+    360,
+    363,
+    372
+  ]
+}

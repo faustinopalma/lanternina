@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "say-the-sheet-itself-can-be-wrong",
+  "kind": "move",
+  "name": "print that the sheet may be wrong and noticing counts",
+  "also": [
+    "problema cotto",
+    "dual",
+    "bonus per confutazione",
+    "fallimento silenzioso",
+    "cooked problem",
+    "unsolvable puzzle"
+  ],
+  "one_line": "One printed sentence saying the task may have no answer and that showing so is a win, on forms that otherwise fail without saying anything.",
+  "from_entries": [
+    156,
+    159,
+    164,
+    167
+  ],
+  "how": "Use it on anything that can be wrong in silence: cut-out pieces that will not close, a maze with no way through, a grid with two answers, a mate in two that is not one. The sentence is short — if the last line stays empty the task is not hard, it is broken, and finding that out is worth more than solving it. Give the test with it, because a licence without a test is only comfort: list every legal reply and answer each; walk the maze marking each entrance and stop when everything is marked twice; count the pieces. Then print a place to write which of the two it was. Whoever cannot finish then has two possibilities instead of one, and one of them is not about them.",
+  "knobs": [
+    {
+      "knob": "whether a test comes with the sentence",
+      "effect": "With one — every legal reply listed, every passage marked twice — the claim that the sheet is wrong can be made and defended. Without one it is permission to stop, which is a different and worse thing to hand over."
+    },
+    {
+      "knob": "how often it is used",
+      "effect": "On a form somebody verified, it costs a line and reassures. On every sheet it says the household prints things it has not checked, which may be true and is still not worth saying twice a week."
+    },
+    {
+      "knob": "whether the fault is given a name",
+      "effect": "Chess composition calls a problem with two keys cooked and throws it out, and a choice of second moves a dual and tolerates it. Two words separate a fatal fault from a bearable one; «it does not work» covers both."
+    },
+    {
+      "knob": "who checks the claim",
+      "effect": "Nobody, when the test is exhaustive and printed: a full list of the opponent's replies is a proof and needs no reader. Somebody, when the claim is that a maze has no exit and the marking was never done."
+    }
+  ],
+  "where_the_work_is": "In the test that comes with the sentence. Saying a sheet may be wrong is free; giving somebody the means to show it has to be built again for every form it is used on.",
+  "breaks": "It produces nothing on its own and is only ever an addition. The sentence fits anywhere, 800x480 included. Where it fails is on forms whose test is not exhaustive: with squares cut out by scissors, a piece in the wrong place still rests there, so «it does not close» is evidence and not proof, and the sheet should say which of the two it is offering.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    128,
+    142,
+    155,
+    171
+  ]
+}

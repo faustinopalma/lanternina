@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "draw-with-one-thing-taken-away",
+  "kind": "form",
+  "name": "draw an object with one thing taken away",
+  "also": [
+    "disegno dal vero",
+    "disegno a memoria",
+    "disegno alla cieca",
+    "blind contour drawing",
+    "penny task",
+    "life drawing"
+  ],
+  "one_line": "An object drawn either without looking at the paper or without the object in the room, and the question underneath is what got missed.",
+  "from_entries": [
+    33,
+    34
+  ],
+  "how": "Fix which of the two supports goes and take that one. Remove the paper: eye stays on the object, the pencil moves, and looking down means starting again. Or remove the object: look at a one-euro coin, carry it into another room, then draw both faces. Print, before the drawing and not after, that it will come out wrong and that it does for everybody, which is the difference between finding something out and being embarrassed. Let the object be chosen and small — the ugliest thing in the house has no expectation to disappoint. One rule underneath: what you saw only while drawing, or the three things you had missed.",
+  "knobs": [
+    {
+      "knob": "which support is removed",
+      "effect": "Without sight of the paper the line comes out wrong for a reason anybody can name, and looking is what happened; without the object, what comes back is a record of how it was looked at over years, and the surprise arrives reliably."
+    },
+    {
+      "knob": "whether it can be checked afterwards",
+      "effect": "Fetching the coin turns the drawing into a comparison and produces a list of what was missed; leaving it in the other room keeps it a drawing and leaves nothing to write on the line below."
+    },
+    {
+      "knob": "whether likeness counts",
+      "effect": "If likeness counts, half the people stop after the first line; with a technique that makes likeness impossible, nothing has been promised and nobody has failed at anything."
+    },
+    {
+      "knob": "who chooses the object",
+      "effect": "Chosen by whoever draws, and better if declared ugly in the instruction, there is nothing to live up to; supplied, it arrives carrying somebody else's idea of what a good drawing of it would look like."
+    }
+  ],
+  "where_the_work_is": "In the sentence printed under the box, which is what the drawing was for. The drawing is a way of looking at something for four minutes; the line written afterwards is what stays.",
+  "breaks": "A pencil drawing scans back faint and a blind contour scans back as a tangle, so no machine can read any of it — only the written line underneath. A box on A4 is enough paper. On a one-bit display the instruction fits and nothing that gets drawn does, so the display can start it and never hold it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    35,
+    41,
+    44,
+    46,
+    49
+  ]
+}

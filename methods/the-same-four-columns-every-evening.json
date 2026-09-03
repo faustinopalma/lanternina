@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "the-same-four-columns-every-evening",
+  "kind": "form",
+  "name": "the same four columns, once an evening, for a week",
+  "also": [
+    "registro",
+    "catalogo",
+    "giornale di bordo",
+    "inventario",
+    "zibaldone",
+    "logbook",
+    "registro della prima luce"
+  ],
+  "one_line": "A row whose shape is fixed before there is anything to put in it, repeated seven times, with a blank row printed as a right answer.",
+  "from_entries": [
+    96
+  ],
+  "how": "Choose four columns and a moment that recurs by itself — the first light switched on, the first door after six, the last thing put away. Print seven rows and the four headings. Choose the columns knowing that no register answers a question its columns did not anticipate, and make one of them a word rather than a number. Print, in as many words, that a blank row is a right row: without that line the seventh evening gets spent inventing the six that were missed, which is how a register dies. Then, on the seventh evening and not before, three questions: how much the time moved between the first row and the last, which column turned out to be useless, and which column you wish had been there. Add one line to sign when it was really done.",
+  "knobs": [
+    {
+      "knob": "what fixes the moment",
+      "effect": "A clock time gets missed and the row is never written. An event that happens anyway — the first light, the first door — carries the register on the household's own schedule and needs nothing to remember it by."
+    },
+    {
+      "knob": "whether a blank row is allowed",
+      "effect": "Allowed in writing, a gap stays a gap and means something. Not allowed, the gaps get filled in at the end from memory, and then no two rows are comparable and the week is worth nothing."
+    },
+    {
+      "knob": "how many columns",
+      "effect": "Three is thin and the week says little. Four is the most that gets written every evening without the writing becoming the task. Six is filled in on the first evening and abandoned on the third."
+    },
+    {
+      "knob": "who counts the days",
+      "effect": "Not the sheet: it looks the same on day one and day six. Something that says «row four of seven» is what makes it a series instead of a page, and that is the one thing a display does better than paper."
+    }
+  ],
+  "where_the_work_is": "In the four columns, chosen before anybody knows what will happen. They decide what can be asked at the end, which is why the two closing questions are about the columns and not about the week.",
+  "breaks": "It needs seven evenings and nothing on the page makes the second one happen; if it does not, what is left is one row and no register. On 800x480 the grid does not fit, but the count of days does, and that is precisely the half the paper cannot hold.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    80,
+    89,
+    98,
+    100
+  ]
+}

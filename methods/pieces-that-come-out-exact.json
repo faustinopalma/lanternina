@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "method_id": "pieces-that-come-out-exact",
+  "kind": "form",
+  "name": "cut the pieces and make them come out exact",
+  "also": [
+    "dissezione geometrica",
+    "dissection puzzle",
+    "equiscomponibilità",
+    "tangram",
+    "pentamini",
+    "pentomino",
+    "impacchettamento",
+    "tassellazione",
+    "packing problem",
+    "tiling"
+  ],
+  "one_line": "A shape is cut into pieces and those same pieces have to make another shape, with no gap, no overlap and nothing left over.",
+  "from_entries": [
+    370,
+    376
+  ],
+  "how": "Squared paper, and a cut that whoever plays makes for themselves: a nine by four rectangle printed already divided into two pieces, copied, cut out, and made into a square. Two pieces is what fits an evening — twelve have to be cut by an adult first and that takes longer than solving it. Put one question between the halves: how did you know the side of the square before you tried? The area is the only thing knowable in advance and asking for it is what turns cutting into arithmetic. Then a second figure that cannot be done in two pieces, and ask why. Do not say how many it needs.",
+  "knobs": [
+    {
+      "knob": "how many pieces",
+      "effect": "two are copied and cut in five minutes and the whole evening is the fitting; twelve are half an hour of scissors falling on one person, and then the cutting costs more than the puzzle it makes."
+    },
+    {
+      "knob": "given the pieces or given the cut",
+      "effect": "given the pieces and asked for the shape, it is a search with a visible end; given two shapes and asked where to cut, it is the real problem, and one of these took a hundred and twenty-two years."
+    },
+    {
+      "knob": "asking whether it can be done or with how few",
+      "effect": "«can you» is settled by doing it and is usually easy; «with how few pieces» cannot be settled by anybody holding the paper, and it is where this whole family has actually lived."
+    },
+    {
+      "knob": "whether pieces may be turned over",
+      "effect": "allowing the flip changes which fittings exist and how many there are, so it has to be written down; left unsaid it produces two people solving different puzzles, one of them wrongly."
+    }
+  ],
+  "where_the_work_is": "In the area, which is settled before a single cut and says what the answer has to be. A sheet that does not ask for it has handed over a jigsaw; one that does has handed over a reason to expect that particular square.",
+  "breaks": "The page with the shapes on it is destroyed by the task, so nothing can be written on it and the questions belong on another. Printed at five millimetres a square the lines cannot be cut on. None of it exists on a display, and the pieces have to be squared or they cannot be copied at all.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    162,
+    359,
+    362,
+    366,
+    371
+  ]
+}

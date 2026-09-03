@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "conditions-true-or-false-not-quantities",
+  "kind": "move",
+  "name": "print conditions that are true or false, not quantities",
+  "also": [
+    "distintivi",
+    "badge",
+    "coccarde",
+    "bollini",
+    "stelline",
+    "obiettivo giornaliero",
+    "obiettivo di apprendimento",
+    "achievement",
+    "open badge",
+    "learning goal"
+  ],
+  "one_line": "Nine one-line conditions beside an afternoon, each of them either true of it or not, and three ruled lines left blank for whoever did it.",
+  "from_entries": [
+    258,
+    261
+  ],
+  "how": "Beside work that already exists, print nine one-line conditions with a box each, and three ruled lines with no condition on them. Every printed condition has to be true or false about this afternoon and nothing else: no counts, no «again», no dates, because a date needs something that remembers and a sheet remembers nothing. Make them ask for the same thing done another way rather than for more of it — without lifting the pencil, using only green objects, wrong on purpose every time. Say there is no score and that nobody has to do them all. The three blank lines are the half worth having: whoever writes a condition decides what counts. A photograph of the ticked sheet is the proof.",
+  "knobs": [
+    {
+      "knob": "another way against more of the same",
+      "effect": "«Do three» is a quantity and a quantity can be totalled. «Find three ways to do it» costs the same line, cannot be met by volume, and is the setting fixed here for that reason."
+    },
+    {
+      "knob": "whether the conditions are known first",
+      "effect": "Printed at the start they are things somebody can aim at. Revealed at the end they are a surprise, and a surprise is a verdict passed on an afternoon that is already over."
+    },
+    {
+      "knob": "how many lines are left blank",
+      "effect": "None, and the sheet only ever says what the house thought of. Three, and the person is on the side that issues the condition instead of the side that meets it, which is the side no system of achievements gives away."
+    },
+    {
+      "knob": "whether a condition carries a date",
+      "effect": "«Today» works on a sheet. «Again», «two days running», or an actual date needs something that remembers the last time; those conditions are left out rather than approximated with a line asking somebody to recall."
+    }
+  ],
+  "where_the_work_is": "In each condition being one fact about one afternoon, so that the ticked sheet can be photographed and read by somebody who was not there. A condition needing memory cannot be.",
+  "breaks": "Nobody issues it. A house is not an issuing body, so what is left is the fact and a photograph of it, which is less than a badge and more than a memory. Kept between afternoons it becomes a tally, which is why nothing here counts anything. Twelve lines with boxes print and scan well provided the boxes sit at the right margin and are at least 6 mm. On 800x480 twelve lines of thirty characters fit, and this is the one thing here a display carries whole.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    15,
+    25,
+    224,
+    245
+  ]
+}

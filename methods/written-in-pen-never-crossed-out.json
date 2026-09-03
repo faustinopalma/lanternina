@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "written-in-pen-never-crossed-out",
+  "kind": "move",
+  "name": "write the rule in pen and never cross anything out",
+  "also": [
+    "legacy",
+    "gioco che si consuma",
+    "non si torna indietro",
+    "regola che resta",
+    "scrivere a penna",
+    "legacy game",
+    "keepsake game",
+    "irreversibile"
+  ],
+  "one_line": "A rule added part-way through binds the rest of the afternoon, cannot be rubbed out, and is overridden only by a later line written beside it.",
+  "from_entries": [
+    286
+  ],
+  "how": "Print a short numbered column on a sheet an afternoon already uses: what happened, and one rule that holds from here on. It goes in pen. Three constraints on the rule, and they are the difficult part — it fits on one line; it takes something away or requires something, never advises; and if it contradicts a rule above, that rule is not crossed out, the new one is written with «instead» beside it, and both stand with the later one winning. At the end, one question: which rule would you not write again? Do not cross it out, write it underneath. What has been removed is the campaign — twelve afternoons and a card carried between them. Nothing here is worth more for being finished.",
+  "knobs": [
+    {
+      "knob": "how many lines",
+      "effect": "Enough for one afternoon and no more. A column outliving the sheet needs somebody to keep the sheet and to produce it again, and by then the afternoon has become an instalment of something."
+    },
+    {
+      "knob": "advise or oblige",
+      "effect": "«Try to work quietly» changes nothing and cannot be broken. «No talking until the third turn» takes something away, and it is the only kind of rule for which not being able to cross it out means anything."
+    },
+    {
+      "knob": "whether contradictions are struck out",
+      "effect": "Struck out, the column is only the rules now in force and the history has gone. Kept with «instead», a rule that turned out wrong stays legible beside the one that replaced it, which is what the pen buys."
+    },
+    {
+      "knob": "what the last question does",
+      "effect": "Asking which rule you would not write again collects a judgement on your own rule. Letting it then be crossed out would undo the only mechanism this has."
+    }
+  ],
+  "where_the_work_is": "In the ban on rubbing out. Ink that cannot be removed is the cheapest irreversibility there is, and a line added later is visibly a line added later, so the material keeps the order of events by itself.",
+  "breaks": "It can be ignored: a pencil, or a second copy, and nothing has happened. A rule written badly holds for the rest of the afternoon, which is the point and also the risk, and a short column bounds the damage where a long one would not. Scanned in one bit, pen reads and pencil often does not, which happens to work in its favour here. On 800x480 a column of six such lines fits.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    26,
+    49,
+    245,
+    255
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "a-line-on-it-saying-what-and-until-when",
+  "kind": "move",
+  "name": "write on the thing what it is and until when",
+  "also": [
+    "finisce con un oggetto",
+    "finisce con un cambiamento nella stanza",
+    "oggetto-ricordo",
+    "cartellino",
+    "etichetta",
+    "arte effimera",
+    "souvenir"
+  ],
+  "one_line": "The thing that stays gets a written line: what it is, who made it, and how long it stays where it is.",
+  "from_entries": [
+    302,
+    305
+  ],
+  "how": "Whatever is left at the end — a folded box, a chair moved, something hung up — carries a line saying what it is. Without one it lasts exactly as long as the memory of whoever made it. Where the line can go on the object, write it before the object closes: three ruled lines on the inside of a sheet about to be folded, filled in first because afterwards they cannot be reached, and then the outside is clean and reading them means undoing the thing. Where the object is the room and nothing can be written on it, print a small tag to cut out and set beside the changed point, not on top of it. On a tag the line that does the work is «until when»: a date, or the words «until somebody takes it down». Both are fine and leaving it blank is not, because an ending in a room belonging to other people is otherwise an obstruction they did not agree to.",
+  "knobs": [
+    {
+      "knob": "on the object or beside it",
+      "effect": "On it, the line travels with the thing and cannot be separated from it. Beside it, the line is a second piece of paper, and whoever tidies up may take away one and leave the other."
+    },
+    {
+      "knob": "hidden inside or in sight",
+      "effect": "Written before a fold, the line is inside, the object is plain from outside, and getting at it means undoing the thing. In sight, anybody entering reads it and nobody has to be told."
+    },
+    {
+      "knob": "whether there is an expiry",
+      "effect": "An expiry is what makes this possible in somebody else's room. Without one, whoever wants the room back has to undo something without knowing whether they are allowed to."
+    },
+    {
+      "knob": "how hard it is to undo",
+      "effect": "A magnet costs nothing to remove, cork keeps the holes, a nail is not up for discussion. For anything ending in a shared room, what it costs to undo matters more than what it cost to do."
+    }
+  ],
+  "where_the_work_is": "In writing the line before it stops being possible. On a folded object that is a moment that passes; a tag can always be written later, and later it usually is not.",
+  "breaks": "Ruled lines and a rectangle to cut out print and scan. What can come back is a photograph of the tag, or of the flat sheet before folding — never of the room, and never of what went inside the fold. On 800x480 the three fields fit and cannot be written on, so a display can say the line is wanted and can never hold it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    44,
+    46,
+    249,
+    298
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-real-letter-under-a-positional-rule",
+  "kind": "form",
+  "name": "write a real letter whose margin says something else",
+  "also": [
+    "acrostico",
+    "telestico",
+    "steganografia",
+    "cifra nulla",
+    "null cipher",
+    "acrostic",
+    "lettera rebus"
+  ],
+  "one_line": "A short letter to somebody in the house that has to stand on its own, and a second thing said by the first word of every line.",
+  "from_entries": [
+    119,
+    122,
+    135
+  ],
+  "how": "Print two halves. First, six capitals down the left margin with a ruled line beside each, and ask for a line about today beside every one — real lines that hold on their own. Print that a line which will not come may be left blank: Psalm 145 is missing a letter of the alphabet and nobody has added it in twenty-five centuries. Second, eight numbered blank lines and one rule: decide a message of seven or eight words for one named person in the house, write it in pencil at the top, and begin each line with the next word of it. The letter must be about something else and must not read as odd. Say to read it aloud once, because a line beginning with a forced word always sounds slightly wrong and that is what gives it away. Then hand it over and say nothing.",
+  "knobs": [
+    {
+      "knob": "whether the vertical is given or chosen",
+      "effect": "Given, the sheet does the hard half and the check is a glance down the margin. Chosen and unsaid, whoever receives it does not know there is anything to find, which is the form as it exists and the version nobody can verify."
+    },
+    {
+      "knob": "first letters or first words",
+      "effect": "First letters of six lines is an operation on a boundary and the cheapest thing here. First words of eight lines is easier to write and hides worse, because a forced first word bends the sentence after it."
+    },
+    {
+      "knob": "whether the reader is told",
+      "effect": "Told, the sheet is a cipher with an odd rule and nothing is hidden. Not told, it is what it claims to be, and the sheet has no way of knowing whether it worked."
+    },
+    {
+      "knob": "drawings instead of positions",
+      "effect": "Replacing words with drawings makes the same letter a rebus, read aloud rather than read. It needs every drawing to have exactly one name, which is the opposite of what a picture usually wants."
+    }
+  ],
+  "where_the_work_is": "In the letter having a real reason to exist. A cover text written to carry a message reads as a cover text; a note somebody meant to send carries one with no effort at all.",
+  "breaks": "Ruled lines with capitals down the margin are the cheapest sheet in this chapter and they scan cleanly. On 800x480 six letters down a margin do not fit, since four rows are the whole surface, so a panel carries the rule and never the frame. Composing is where it fails: a machine asked for eight lines each starting with a given word returns lines that start with something else, and reading aloud is the only check there is. Write the letter by hand.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    82,
+    92,
+    346,
+    349,
+    350
+  ]
+}

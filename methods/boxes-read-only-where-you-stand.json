@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "boxes-read-only-where-you-stand",
+  "kind": "form",
+  "name": "eight boxes printed out of the order they are read in",
+  "also": [
+    "caccia al tesoro",
+    "caccia agli indizi",
+    "gioco della pista",
+    "percorso a biglietti",
+    "treasure hunt",
+    "clue chain",
+    "X marks the spot"
+  ],
+  "one_line": "A chain of places, each box naming the next, printed shuffled so that reading ahead tells nobody which box comes after this one.",
+  "from_entries": [
+    193
+  ],
+  "how": "Write eight boxes. Each carries a place at the top, one thing to do there that takes ten seconds — count the keys, count the roofs, count the pockets — and then, in capitals, the name of the next place. Name every place by what happens there and never by furniture, so that none of the eight depends on this house. Print them in an order that is not the walking order and say which one to start from. That is the whole lock: reading ahead is allowed and useless, because knowing which box comes next means having been where the last one sent you. One box ends the chain instead of naming a place. Under the eight, two lines for whoever hides: put something small under a piece of furniture nobody looks under, say neither which nor what. That is one minute and it is the only cost.",
+  "knobs": [
+    {
+      "knob": "printed in walking order or shuffled",
+      "effect": "In order the sheet is a route and can be read through from the sofa. Shuffled it can still be read from the sofa and yields nothing, because the boxes are only linked by having stood somewhere. Shuffling costs nothing and closes it."
+    },
+    {
+      "knob": "how long the chain is",
+      "effect": "Eight fits one side of A4 and survives one wrong turn. Three is over before anybody has settled into it. Past twelve, a single station that cannot be found makes everything after it unreachable, and there is no repair available on paper."
+    },
+    {
+      "knob": "what the ten-second task is",
+      "effect": "Counting something makes somebody stop and look, which is the only difference between this and walking quickly between eight places. Nobody can check the counts and they are not there to be checked."
+    },
+    {
+      "knob": "whether anything is really hidden",
+      "effect": "Without the two lines the chain still runs and ends on an empty box, which reads as a mistake. With them it ends on an object and one person has spent a minute. The two lines say what to hide, never where."
+    }
+  ],
+  "where_the_work_is": "In the boxes being unreadable forward while every word of them is printed. Nothing is concealed and nothing is sealed: the order of the paper does the work a lock would do.",
+  "breaks": "The chain is held shut by good faith. Anybody who wants to reads all eight in two minutes and goes to the last one, and a printed sheet cannot notice, nor tell whether anybody stood up at all. The station names have to fit a house nobody has seen, so in a small flat two boxes can point at the same corner and the chain closes on itself. On 800x480 one box fits and eight do not, so a panel carries the start and never the chain.",
+  "adult_cost": "prepare",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    181,
+    185,
+    194,
+    302
+  ]
+}

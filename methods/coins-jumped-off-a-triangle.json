@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "coins-jumped-off-a-triangle",
+  "kind": "form",
+  "name": "jump coins off a triangle and write every jump down",
+  "also": [
+    "gioco solitario",
+    "solitario a pioli",
+    "triangolo dei quindici",
+    "pazienza",
+    "peg solitaire",
+    "solitaire",
+    "single-player",
+    "cracker barrel puzzle"
+  ],
+  "one_line": "Fifteen coins on a drawn triangle, one legal move, and a table of fourteen rows that a won game fills exactly and a lost one does not.",
+  "from_entries": [
+    277
+  ],
+  "how": "Draw fifteen circles in a triangle of five rows, number them, put a coin on each and take the top one off. One rule: a coin jumps an adjacent coin in a straight line into the empty circle beyond, and the jumped coin comes off. Play until no jump is left. Then print a table of fourteen rows and three columns — from, over, to — and ask for a second game to be written down as it goes. Fourteen rows because fourteen coins have to come off, so a filled table is a win and there is nothing else to mark. The material is coins and a sheet, and the check is physical and immediate: either a jump exists or it does not, and nobody has to agree about it.",
+  "knobs": [
+    {
+      "knob": "which circle starts empty",
+      "effect": "The apex is the standard opening and can be finished with one coin. Other starts change what is reachable and some cannot be finished at all, so which one is being printed has to be settled before printing."
+    },
+    {
+      "knob": "whether the jumps are written down",
+      "effect": "Written, a won game is a filled sheet somebody can photograph, reread, or hand on as a starting position. Unwritten, a finished game leaves nothing at all behind it."
+    },
+    {
+      "knob": "how far the person is told they got",
+      "effect": "Random play stops at four coins nearly half the time, so being close is not evidence of having played well. A sheet praising a near miss would be praising luck, which is why this one does not."
+    },
+    {
+      "knob": "how many play",
+      "effect": "One person against a disposition that resists is the whole form and not a fallback. Two taking alternate jumps changes no rule at all, and the first recorded version of this was played by two."
+    }
+  ],
+  "where_the_work_is": "In the fourteen rows. The game settles by itself who won, without anybody's help; the table is what turns a won game into an object rather than a memory, and it costs fourteen lines of ink.",
+  "breaks": "It needs fifteen coins small enough to sit inside a drawn circle and a table they will not roll off. Written down mid-game, the rows get out of step with the coins, and then the sheet and the board disagree with nothing able to say which is right. Scanned, three columns of small handwritten numbers read only if set well apart. On 800x480 the triangle draws well and fourteen rows of three numbers do not.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    144,
+    145,
+    146,
+    286
+  ]
+}

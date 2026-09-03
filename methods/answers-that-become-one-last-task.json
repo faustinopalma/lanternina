@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "answers-that-become-one-last-task",
+  "kind": "move",
+  "name": "make five answers into the data of one last task",
+  "also": [
+    "metaenigma",
+    "meta",
+    "percorso a imbuto",
+    "serratura a combinazione",
+    "combinazione da comporre",
+    "feeder puzzles",
+    "metapuzzle",
+    "estrazione"
+  ],
+  "one_line": "Small tasks whose answers are not read but used, and a last one whose shape says by itself whether all of them were right.",
+  "from_entries": [
+    170,
+    180,
+    182,
+    184
+  ],
+  "how": "Choose what the last task produces first, then write the small ones that feed it, never the other way round. Make the last thing a figure and not a number and not a word: five problems each answering one digit from 1 to 9, all different, and a three-by-three grid whose cells are numbered one to nine. Blacken the five cells named. If the five are right it is a letter; if one is wrong it is five smudges, and nobody has to say which. That is the point: it says no without saying where, which is all a printed page can do alone. Then ask, in the last line, how many digits would have fitted if one problem had been skipped. It is one, always, and printing that is better than pretending otherwise.",
+  "knobs": [
+    {
+      "knob": "what the last task is",
+      "effect": "A number lets exactly one candidate through for a missing feeder, always, so the last small task is a gift. A figure on a grid lets about five through by arithmetic and one by eye, because a half-drawn letter is recognised. A word cannot be counted and needs a reader."
+    },
+    {
+      "knob": "whether it says which answer is wrong",
+      "effect": "Saying nothing but no costs nothing and sends somebody back over everything they did, which is the behaviour wanted. Saying which one is wrong needs a key, and a key printed on the sheet is not a check."
+    },
+    {
+      "knob": "how many small tasks",
+      "effect": "Three to about ten. Beyond that the last one becomes transcription. Below three there is nothing to combine, and the check degenerates into a second opinion about a single answer."
+    },
+    {
+      "knob": "whether the slack is printed",
+      "effect": "Printing how many values would still have worked teaches what a check catches and what it does not: four digits sum the same in all twenty-four orders, so a sum sees arithmetic errors and never sees order."
+    }
+  ],
+  "where_the_work_is": "In the last task being recognisable without a key. A letter, a strip walked to a marked notch, a shape: whoever built it needs nobody to confirm it, and neither does whoever finished it.",
+  "breaks": "It prints and comes back whole, and five blackened cells photograph better than five handwritten digits. On 800x480 one small task fits per screen and the grid does not, so the convergence — the point of the thing — is exactly the part that will not go on a panel. And a check over all the answers at once is deliberately poor: somebody who got one wrong sees precisely what somebody who got all five wrong sees.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    179,
+    186,
+    190,
+    358
+  ]
+}

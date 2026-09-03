@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "where-it-went-wrong-not-whether",
+  "kind": "move",
+  "name": "turn the verdict from whether into where",
+  "also": [
+    "finisce con un esito giusto o sbagliato",
+    "verificata dal mondo",
+    "verdetto locale",
+    "controllo dell'errore nel materiale",
+    "analisi del guasto",
+    "failure analysis",
+    "spia accanto al passo"
+  ],
+  "one_line": "A verdict of one bit is made local: a column saying what each step must be, or three named ways the thing could have failed.",
+  "from_entries": [
+    299,
+    307
+  ],
+  "how": "Where a form ends in right or wrong, look for the question that says where, and print it. Two shapes cover most cases. Down a chain of steps, print a column beside each one giving a property the result must have — divisible by four, even, greater than six — so a slip is caught at the step where it happened; on the worked chain in the research the column catches 59.1% of the modelled slips before the last step, and the cost of one is a step redone instead of the afternoon. After a physical test, ask which of three named ways it failed: it bent, it crushed, it slid off one of the supports. Those are buckling, material failure and too little friction, and they send somebody to three different repairs. A verdict that says only no makes people start again at random.",
+  "knobs": [
+    {
+      "knob": "a column of properties or a question afterwards",
+      "effect": "A column catches a slip while it is one step old and needs the steps written down. A question afterwards costs one line and works where nothing was written down, which is most physical things."
+    },
+    {
+      "knob": "how sharp each printed property is",
+      "effect": "«Even» throws out half the wrong values; «the number you started from» throws out nearly all of them. Sharper catches more and takes longer to find, and every property has to hold for every legal case."
+    },
+    {
+      "knob": "whether the failure modes are named",
+      "effect": "Three named ways get an answer that is a fact. «What went wrong» over a blank line gets the failure restated, because naming it was the hard part and it has just been handed back."
+    },
+    {
+      "knob": "whether it may be retried",
+      "effect": "A verdict arriving when nothing more can be done is a judgement. The same words while the work is still open are information, and the difference is where on the page it is printed."
+    }
+  ],
+  "where_the_work_is": "In the printed property holding for every legal case. It has to be checked across all of them — thirty-one starting numbers in the worked example — or it sends somebody hunting an error they never made.",
+  "breaks": "A narrow column of short phrases prints, and scans back so long as the rules stay in the same columns on every row. On 800x480 five rows of two short fields fit and a sixth does not. It cannot be composed carelessly: a property false for one legal case in thirty-one is worse than no column, because it accuses somebody who did the work correctly.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    44,
+    178,
+    181,
+    182,
+    295
+  ]
+}

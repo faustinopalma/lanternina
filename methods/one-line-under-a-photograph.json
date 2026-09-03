@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "one-line-under-a-photograph",
+  "kind": "form",
+  "name": "print a photograph and ask for one line about it",
+  "also": [
+    "didascalia",
+    "caption",
+    "segno su un'immagine",
+    "cerchiare",
+    "confronto a coppie",
+    "paired comparison",
+    "hotspot"
+  ],
+  "one_line": "A picture printed on the sheet, and what comes back is a mark on it or one line under it, never an account of what is there.",
+  "from_entries": [
+    9,
+    23,
+    41
+  ],
+  "how": "Print one photograph large, or six of them small. Ask for the smallest possible response: one circle, or one line each. Fix the number in the instruction — one circle only — because a limit of one forces a choice and five turn the page into annotation. Then ask about the method rather than the result: how did you spot it; if you found two, ring the one you are surer of and cross the other. With two pictures of the same place taken forty years apart, ask for three things present in both, never the differences, which are seen without looking. Never ask what is in the picture.",
+  "knobs": [
+    {
+      "knob": "how many marks are allowed",
+      "effect": "One circle makes somebody decide, and a decision can be described afterwards; five marks produce an annotated page, which is easier to make and leaves nothing to say about it."
+    },
+    {
+      "knob": "asking what was seen or how",
+      "effect": "«What is wrong here» has an answer, and a wrong answer ends the sheet; «how did you spot it» survives a wrong circle, because the method can be told either way."
+    },
+    {
+      "knob": "differences or what stayed",
+      "effect": "Two pictures asked for their differences answer themselves in ten seconds; asked for what is in both, they need minutes of looking, and two people produce different lists without either being wrong."
+    },
+    {
+      "knob": "one image or six",
+      "effect": "One image and one mark is the lowest doorway here: no writing, no starting, no tool. Six images with a line each are six independent requests, and stopping at the second has still produced two."
+    }
+  ],
+  "where_the_work_is": "In the picture, which the sheet has to carry and cannot ask for. It must hold something findable without knowing anything, and be printed large enough that the finding is not a test of eyesight.",
+  "breaks": "This is the one form in the chapter whose material must be printed and cannot be described in words. A home printer loses whatever sits in a shadow, so the thing to be circled has to survive that, and a pencil ring over a dark area vanishes when the page is scanned back. On a one-bit display no photograph reads at all, which leaves the display holding the instruction and none of the material.",
+  "adult_cost": "prepare",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    14,
+    33,
+    49,
+    63,
+    122
+  ]
+}

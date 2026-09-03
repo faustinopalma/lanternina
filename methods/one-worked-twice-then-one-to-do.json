@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "one-worked-twice-then-one-to-do",
+  "kind": "form",
+  "name": "one worked twice, then one to do beside it",
+  "also": [
+    "esempio svolto",
+    "esercizio guidato",
+    "coppia esempio–esercizio",
+    "alternanza esempio-problema",
+    "worked example",
+    "example-problem pair",
+    "worked-example effect"
+  ],
+  "one_line": "One problem solved in full on the page, then the same kind of problem blank underneath, and one line asking how it was done.",
+  "from_entries": [
+    227,
+    228
+  ],
+  "how": "Two pairs on one side of the sheet. Work the first example in full and by two roads that reach the same number — 750 g is three quarters of a kilo so the kilo costs a third more, 3,45 + 1,15 = 4,60; and 3,45 : 0,750 = 4,60 — because the second road is what lets the exercise underneath be checked with no answer key. Under it the same kind of problem with other numbers, blank, and one ruled line: how did you do it. Then the second pair. Keep the example on the same side, not the back. End with a third instance whose numbers are not printed: go to the kitchen and find two packets of the same thing in different sizes.",
+  "knobs": [
+    {
+      "knob": "which comes first inside the pair",
+      "effect": "Example then problem is the order that was measured. Problem first and example after finishes level with having had no example at all, which contradicts the idea that trying first makes anybody more receptive."
+    },
+    {
+      "knob": "where the example sits while the exercise is done",
+      "effect": "On the same side it can be copied and the sheet favours understanding; on the back nothing can be copied and it favours remembering. No source says which is better, and this record fixes the first, because a sheet that hides what it just asked for works against itself."
+    },
+    {
+      "knob": "whether the example is worked by two roads",
+      "effect": "One road gives a method and no way of settling the blank underneath. Two roads reaching the same number hand over a second way of checking it, and cost three printed lines. This is the knob that pays."
+    },
+    {
+      "knob": "how much the reader already knows",
+      "effect": "A worked example loses its effect, and can do harm, for somebody who already knows — the expertise reversal effect, documented across three studies. Whoever prints cannot know that, so make the example visibly skippable rather than compulsory."
+    }
+  ],
+  "where_the_work_is": "In the ruled line that asks how it was done. Watching a solution is what lowers the load; what produces the learning is the explanation somebody gives themselves, and almost nobody gives it unprompted. One printed line buys it.",
+  "breaks": "Nothing breaks on paper: this is the form a sheet holds better than any other, because the integration of text and table that the sources give as the condition of the effect is got by putting them on one page. What a sheet cannot do is notice that whoever is reading knows all this already. On a display the worked example does not fit; the exercise and the line asking how it was done do.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    229,
+    230,
+    234,
+    243,
+    37
+  ]
+}

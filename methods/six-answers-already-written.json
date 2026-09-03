@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "six-answers-already-written",
+  "kind": "move",
+  "name": "print six of them already done instead of a rule",
+  "also": [
+    "esempi gia risolti",
+    "frasi di suggello",
+    "jakugo",
+    "macchina delle domande",
+    "worked examples",
+    "raccolta di risposte possibili"
+  ],
+  "one_line": "Six worked instances printed at the top of the page, and no statement of the rule anywhere on it.",
+  "from_entries": [
+    111,
+    118,
+    126,
+    142
+  ],
+  "how": "Take a form whose rule reads as nonsense until it has been seen working: a cryptic clue, a grid of clues about who lives where, a two-column formula that makes absurd scenes. Print six of them already done, with the working written out under each, and print no rule at all. Then one blank frame of the same shape. Where the form has a right answer, the six teach it, and six cryptic clues with both readings spelled out teach more than any definition. Where it has none, print six candidate responses instead and ask which one fits and why, in two lines: choosing is far cheaper than composing, which is why sealing phrases exist in collections. Six is enough and three is not.",
+  "knobs": [
+    {
+      "knob": "whether the rule is stated as well",
+      "effect": "Stated first, the six read as illustrations and are skipped. Left out, they are the only thing on the page and the rule is assembled from them, which is the state the form was built to produce."
+    },
+    {
+      "knob": "worked examples or candidate answers",
+      "effect": "Worked examples open a form that has a right answer and are discarded once it is understood. Candidate answers replace composing where there is no right answer, and they are the whole task."
+    },
+    {
+      "knob": "how many",
+      "effect": "Three is too few to show which part varies. Six shows the axis. Past ten the page is a catalogue and the blank frame at the foot stops being the point of it."
+    },
+    {
+      "knob": "where they sit on the page",
+      "effect": "At the top they are the brief. At the foot, under a fold, they are help for whoever is stuck and cost nothing to whoever is not."
+    }
+  ],
+  "where_the_work_is": "In choosing six that differ along one axis and agree on everything else. Six of a kind teach one kind; six that vary teach the rule, and only trying them out says which set has been printed.",
+  "breaks": "It costs half a page. On a form that is merely hard rather than opaque it does damage: a riddle explained before it is met has no effect left, which Auble, Franks and Soraci measured on sentences rather than riddles. The test is whether the rule reads as nonsense on first contact; if it reads as difficult, print nothing. On 800x480 one worked example fits and six do not, so a panel can carry the brief and never the opening.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    105,
+    110,
+    147,
+    341
+  ]
+}

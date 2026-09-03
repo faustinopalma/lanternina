@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "legend-given-not-guessed",
+  "kind": "form",
+  "name": "hand over the key and ask what the entry says",
+  "also": [
+    "corrispondenza",
+    "abbinamento",
+    "matching",
+    "legenda data",
+    "cifrario",
+    "extended matching question"
+  ],
+  "one_line": "A table of signs and meanings printed in full, and dated lines written in those signs that somebody has to tell as a story.",
+  "from_entries": [
+    5
+  ],
+  "how": "Print the key first — six signs, six meanings, two columns — and say whose it was: a lighthouse keeper, a fisherman, somebody who counted the days their own way. Then three dated lines written only in the signs. Ask for one of the three to be told aloud the way the person who wrote it would have told it. Never ask for the signs to be joined to their meanings: that is the marked version, it has a right answer, and the last pair comes free when the two columns run out. Put one line in that uses the same sign three times over. The key says nothing about repetition, so whoever reaches that line has to invent, and inventing is the answer.",
+  "knobs": [
+    {
+      "knob": "key given or key to be found",
+      "effect": "Given, no converted text has to be printed and there is nothing to mark; withheld, it is a matching item with one correct pairing, and elimination does most of it without anybody reading."
+    },
+    {
+      "knob": "whether one line goes past the key",
+      "effect": "With every line covered, it is decoding and it stops when decoded; with one line the key cannot account for, that line is the only part anybody remembers, and it costs six characters."
+    },
+    {
+      "knob": "how many lines are written in the signs",
+      "effect": "Three lines is a reading; ten is a search back and forth through the key and measures how long six symbols can be held in the head, which was not what was wanted."
+    },
+    {
+      "knob": "how far the signs are from letters",
+      "effect": "Marks and shapes make the key genuinely necessary; initials of the meanings make it decorative, and the whole thing is read straight off without the key ever being used."
+    }
+  ],
+  "where_the_work_is": "In the key being printed and never in question. Everything the form buys — nothing to convert, nothing to publish, nothing to mark — comes from that, and the line the key cannot explain is what it is all for.",
+  "breaks": "The signs have to survive a print and a scan, so they must be characters a display can also hold; a hand-drawn glyph read back at low contrast turns into a different glyph. Six signs and three dated lines fit on eight hundred by four-eighty. The story to be told does not, and neither does anywhere to write it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    19,
+    47,
+    63,
+    132,
+    134
+  ]
+}

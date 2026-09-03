@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "print-the-table-empty",
+  "kind": "move",
+  "name": "print the table with nothing in it",
+  "also": [
+    "tabella stampata vuota",
+    "legenda da riempire",
+    "griglia di Cardano",
+    "chiave costruita da chi legge",
+    "empty key table",
+    "blank legend"
+  ],
+  "one_line": "The sheet carries the frame of a correspondence and none of its content, so nothing that printed it ever touched a letter.",
+  "from_entries": [
+    129,
+    131,
+    134,
+    140,
+    141
+  ],
+  "how": "Whenever a form needs a key — a cipher alphabet, a legend, a table of signals, a mask, a grid — print the rows and the rule and leave every value blank. Twenty-one lettered rows with a rule for the shape of the signs. A grid of numbered cells with one line saying each number is used once. A sheet of randomly half-blacked cells and a second sheet of the same cells empty. Print how many rows there are and what makes a filled row legal, and print nothing that could only have been produced by doing the work. The gain is exact: the content does not exist until a hand writes it, so it cannot be wrong, and whoever printed the sheet cannot read what comes back on it.",
+  "knobs": [
+    {
+      "knob": "empty or given",
+      "effect": "Empty, the sheet is a machine and the secret belongs to whoever fills it. Given, the sheet is a legend to be applied, which is an easier task and one that can already be wrong before it leaves the printer."
+    },
+    {
+      "knob": "whether a legal row is defined",
+      "effect": "«Each number once» or «one sign per letter» makes the filled table check itself. Without such a rule the table can be filled in a way that does not work, and the failure only appears later, in use."
+    },
+    {
+      "knob": "who holds the second copy",
+      "effect": "Kept, it is a private notation. Given to somebody else it is a lock with two keys: neither person can read alone, and neither has to trust the other."
+    },
+    {
+      "knob": "how many rows",
+      "effect": "Twenty-one rows are an alphabet and fill a page. Nine cells are a mask. Sixty-four cells are a sheet of half-blacked squares. Past that the filling is the whole afternoon and nothing is left for the use."
+    }
+  ],
+  "where_the_work_is": "In the rule that makes a filled table legal. It is the only thing printed and the only thing that can be wrong before anybody has a pen in hand, and it is usually one line long.",
+  "breaks": "Empty rows print, and hand-filled rows scan if they sit eight millimetres apart or more. On 800x480 no table of twenty-one rows fits; the one-line rule and the count do. The move removes a whole class of silent failure — no key, no mask, nothing enciphered ever comes off a machine — and buys nothing at all where the difficulty is composing prose rather than filling in a correspondence.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    5,
+    19,
+    36,
+    116,
+    349
+  ]
+}

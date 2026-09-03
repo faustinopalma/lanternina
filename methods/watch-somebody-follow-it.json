@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "method_id": "watch-somebody-follow-it",
+  "kind": "form",
+  "name": "write it down and watch somebody else follow it",
+  "also": [
+    "istruzioni",
+    "procedura",
+    "manuale del gesto",
+    "schizzo tecnico",
+    "vista esplosa",
+    "composizione fisica",
+    "instructions",
+    "exploded view",
+    "knolling"
+  ],
+  "one_line": "A description of something done without thinking, handed to somebody who has never seen it, where every failure belongs to the description.",
+  "from_entries": [
+    26,
+    35,
+    45,
+    48
+  ],
+  "how": "Ask for something done with the hands and never explained to anybody: the drawer that sticks, the knack with the key that will not turn, seven objects laid out in an order that means something. Five numbered rules on the page, one step each, written for somebody who has not seen the object. Then hand it over, and print the line that does the work: say nothing while they follow it, and least of all when it goes wrong. Afterwards repair the step that broke. Print the note that the thing done longest is the hardest to write, because it is true and it is discovered around the fourth step.",
+  "knobs": [
+    {
+      "knob": "words or a drawing",
+      "effect": "Five written steps ask for writing and shut out whoever will not; the same thing drawn as separated parts, numbered along the direction they assemble, needs no ruler and no skill — proportions that look right are enough — and opens the form to whoever draws instead."
+    },
+    {
+      "knob": "whether the writer may speak",
+      "effect": "Silent, the failure lands on the sentence and the sentence gets repaired; talking, the drawer gets opened, the instructions stay as they were, and the whole reason for handing them over is gone."
+    },
+    {
+      "knob": "what is being described",
+      "effect": "A gesture is checked by somebody performing it; a line of seven objects is checked by somebody rebuilding it from the written rule alone, which is harder to write and settles just as cleanly."
+    },
+    {
+      "knob": "how many steps",
+      "effect": "Five is short enough to write and long enough to hide an assumption; three usually leaves out the step nobody knows they take, and that step is what the form exists to find."
+    }
+  ],
+  "where_the_work_is": "In what is taken for granted, which stays invisible until somebody follows the page literally. That is why the check has to be a second person doing it and never a rereading by whoever wrote it.",
+  "breaks": "It needs a second person for a few minutes; without one the sheet is five untested steps and the afternoon has no result. The steps print and scan cleanly, and a drawing of separated parts scans back faintly. On a display five steps fit, and the handing over does not, which is the half that makes it work.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    15,
+    42,
+    44,
+    46,
+    299
+  ]
+}

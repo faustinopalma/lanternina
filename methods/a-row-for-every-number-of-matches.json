@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-row-for-every-number-of-matches",
+  "kind": "form",
+  "name": "fill a row for every number until the pattern shows",
+  "also": [
+    "Nim",
+    "gioco di sottrazione",
+    "posizioni vincenti e perdenti",
+    "strategia vincente",
+    "gioco risolto",
+    "subtraction game",
+    "solved game"
+  ],
+  "one_line": "A two-player game small enough to be settled entirely, and a sixteen-row table that decides every game that could ever be played.",
+  "from_entries": [
+    157
+  ],
+  "how": "Fifteen matches in a row; each player takes one, two or three; whoever takes the last one wins. Play it twice with somebody, then put the matches away: the question is not who won. Print sixteen rows, one for each number of matches left, with the first already filled in: zero loses. The rule for the rest is one sentence: if any of the three rows above says LOSES then this row WINS, and if all three say WINS then this row LOSES. Ask what the losing rows have in common; they are the multiples of four. Then change one thing, one to four instead of one to three, and ask for the table again: the losing rows become multiples of five, and the third case gets written without being worked out.",
+  "knobs": [
+    {
+      "knob": "how many may be taken",
+      "effect": "One to three gives multiples of four, one to four gives multiples of five, one to nine gives multiples of ten. Two tables are enough for anybody to state the third without filling it in, which is why the sheet asks twice."
+    },
+    {
+      "knob": "who wins by taking the last one",
+      "effect": "Normal play keeps the table short and the pattern clean. Reverse it and the theory that worked stops working: the last few rows go the other way and the rule has to be found again from nothing."
+    },
+    {
+      "knob": "how many matches to start with",
+      "effect": "Fifteen puts whoever starts on a winning position, so the games played beforehand favour nobody in particular. Sixteen hands the win to whoever answers, which makes those games misleading."
+    },
+    {
+      "knob": "whether the table is printed or asked for",
+      "effect": "Printed, it is a fact to read. Printed empty with the filling rule beside it, each row is justified by the ones above, and whoever reaches the bottom has proved something about far more games than sixteen."
+    }
+  ],
+  "where_the_work_is": "In the chain and not in the rows. Each row is settled by the three above it and the first is settled by itself, which is how sixteen lines decide a number of games nobody could count.",
+  "breaks": "Sixteen short rows and a rule fit one side of A4 and scan back readable. On 800x480 the game and the question go whole — fifteen matches, take one to three, who wins — and the table does not. Nothing catches a wrong row except the pattern failing to appear at the foot, which is a real check and a late one. The matches are not needed at all, and a table filled without playing first leaves nobody caring about the answer.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    146,
+    148,
+    149,
+    156
+  ]
+}

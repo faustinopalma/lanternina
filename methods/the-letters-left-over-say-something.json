@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "the-letters-left-over-say-something",
+  "kind": "form",
+  "name": "circle the hidden words and read what is left over",
+  "also": [
+    "crucipuzzle",
+    "parole intrecciate",
+    "parole nascoste",
+    "word search",
+    "sopa de letras",
+    "chiave del crucipuzzle"
+  ],
+  "one_line": "A grid of letters with words hidden in it, and the letters nobody circles spell a sentence that says whether the circling was right.",
+  "from_entries": [
+    356
+  ],
+  "how": "Build a six-by-six grid holding five words placed across, down or on a diagonal, and choose the words so that the cells they leave alone come to exactly the length of a short sentence: five words in twenty-four cells leave twelve. Fill those twelve, in reading order, with the sentence. Print the five words under the grid and one line saying to read what is left over. That sentence is the check and it needs nobody: a word circled in the wrong place leaves nonsense behind it. Impose the leftover count while building and never go looking for it afterwards. Say nothing about where the words are.",
+  "knobs": [
+    {
+      "knob": "whether the leftover letters spell anything",
+      "effect": "Spelling a sentence, the sheet says when it is finished and when it was done wrong, with no solution page and without telling anybody who is still looking. Spelling nothing, it ends when somebody stops."
+    },
+    {
+      "knob": "how many directions",
+      "effect": "Across and down only is a short search and suits a small grid. Adding the diagonals and the reversals makes eight, which is the usual printed grid and several times the looking."
+    },
+    {
+      "knob": "whether the word list is printed",
+      "effect": "Printed, it is a search and it finishes. Withheld with only a theme given, the words have to be recognised rather than checked, and there is no way to know how many were missed."
+    },
+    {
+      "knob": "whether words may bend",
+      "effect": "Straight words are found by scanning lines. Words that turn ninety degrees at any letter can go nearly anywhere, and the grid stops being scannable and becomes a maze."
+    }
+  ],
+  "where_the_work_is": "In the arithmetic of the grid, before a single letter is placed. The words have to leave exactly as many cells as the sentence has letters, and that is imposed while building or it never happens.",
+  "breaks": "Letters must be evenly spaced in both directions or the diagonals cannot be seen, so set it as a monospaced block. Scanned back, circles drawn over letters read. On 800x480 six columns fit and six rows do not, so it takes two screens and loses the diagonals. A grid produced by a model holds words broken or missing, and somebody will search it for an hour before finding that out.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    311,
+    331,
+    349,
+    352,
+    358
+  ]
+}

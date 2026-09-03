@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "define-until-somebody-guesses",
+  "kind": "form",
+  "name": "define a word you chose until somebody guesses",
+  "also": [
+    "definizione",
+    "genere e differenza",
+    "spiegare una parola",
+    "definition",
+    "genus and differentia",
+    "taboo"
+  ],
+  "one_line": "Three words picked by whoever writes, each described without using it, then read aloud to somebody who tries to name the thing.",
+  "from_entries": [
+    15
+  ],
+  "how": "Do not supply the words. Say where to look for them — things in the kitchen, in the bathroom, in the cellar — and let three be chosen, because a word handed down turns this into a test and it fails whoever has the word in their mouth and not in their head. Print the skeleton and not an example: «___ is a ___ that is for ___». Those two rules hand over genus and difference without naming either. Write the ban with a concrete case, since in the abstract it is not followed: if the word is colander, you may not write pasta. Last line: read the first one out to somebody in the house and see whether they get there.",
+  "knobs": [
+    {
+      "knob": "who picks the words",
+      "effect": "Picked by whoever writes, there is no way not to know them and the task is precision; handed down, it is a vocabulary test in disguise and it fails exactly the people who use the word every day."
+    },
+    {
+      "knob": "whether the frame is printed",
+      "effect": "The two half-sentences give the shape of a definition to somebody who has never written one; a blank line asks for the definition and for the form it takes at once, and the second is what stops people."
+    },
+    {
+      "knob": "whether it is read to somebody",
+      "effect": "Read aloud, a listener either names the thing or does not and nobody has marked anything; kept on the page, three definitions come back with no way of knowing whether any of them works."
+    },
+    {
+      "knob": "how the ban is written",
+      "effect": "Stated as a principle — no self-reference — it is not understood and gets broken without anybody noticing; stated as «if the word is colander you may not write pasta», it is followed from the first line."
+    }
+  ],
+  "where_the_work_is": "In the ban on using the word, which is the whole difficulty. Without it the definition gets written with the word inside it in four seconds; with it, the thing has to be looked at before anything can be said.",
+  "breaks": "The check needs a second person in the room and a minute of their attention, so an afternoon spent alone ends with three definitions and no result. The skeleton and its rules print and scan without trouble, and the whole instruction fits on a display, which is unusual for anything in this chapter.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    25,
+    26,
+    27,
+    39,
+    224
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "fill-a-grid-then-take-one-clue-away",
+  "kind": "form",
+  "name": "fill a grid, then rub out clues until it stops being one",
+  "also": [
+    "sudoku",
+    "Number Place",
+    "giochi Nikoli",
+    "nonogramma",
+    "picross",
+    "logimmagini",
+    "hanjie",
+    "griddler"
+  ],
+  "one_line": "The grid is filled first and the puzzle made by erasing, and re-solving what is left is the same act as proving it has one answer.",
+  "from_entries": [
+    154,
+    155
+  ],
+  "how": "Do it at four by four and not nine by nine: four rows, four columns, four two-by-two boxes, the digits 1 to 4, and 288 filled grids to choose from. Fill one completely; that is now the answer. Copy it, rub out one cell, and re-solve from the holes as if a stranger had made it, filling only cells where a single digit fits. The moment you get stuck, that erasure was one too many — put the digit back. Never rub out two before re-solving. Then the five-by-five picture version on the same sheet, clues as run lengths along the edges, and do not name the picture: somebody told what it will be draws that instead of what the counts allow.",
+  "knobs": [
+    {
+      "knob": "how big",
+      "effect": "Four by four can be built and proved by hand; nine by nine cannot, because uniqueness is a claim about every possible grid. Five by five is the largest picture grid checkable by hand, and twenty by twenty needs a program."
+    },
+    {
+      "knob": "whether the picture is named",
+      "effect": "Naming it looks like help and is the one thing that makes people fill in what they expect. Unnamed, the only guide is the arithmetic, which is the exercise. The source treats the picture as able to mislead."
+    },
+    {
+      "knob": "erasing one at a time or several",
+      "effect": "One at a time, the erasure that broke it is known exactly and goes back. Several at once, the grid has two answers and nothing says which erasure did it, so the whole thing starts again."
+    },
+    {
+      "knob": "whether a starting rule is printed",
+      "effect": "Push each run to one end, push it to the other, and cells filled both ways are certain. Without that, a beginner guesses, and a wrong guess spreads in silence and surfaces far from where it began."
+    }
+  ],
+  "where_the_work_is": "In re-solving your own grid as a stranger would. That one act both makes the puzzle and proves it has a single answer, and there is no other way to know.",
+  "breaks": "It is ink and it prints, and a filled grid scans back. On 800x480 four rows of four fit and five rows plus two lines of clue headers do not, so a panel carries the rule and never the grid. The real break is size: past about five cells a side nobody settles uniqueness by hand, and a grid printed with two answers fails in complete silence — whoever solves it has no way of knowing.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    142,
+    148,
+    353,
+    357
+  ]
+}

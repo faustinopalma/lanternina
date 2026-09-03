@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "three-reasons-each-way-and-the-crossing",
+  "kind": "form",
+  "name": "three reasons each way, and the sentence between",
+  "also": [
+    "dibattito",
+    "dibattito turncoat",
+    "voltagabbana",
+    "contraddittorio",
+    "turncoat debating",
+    "public forum debate",
+    "stile di Oxford"
+  ],
+  "one_line": "One person argues both sides of a motion in turn, three reasons each, and is judged on the sentence they cross over on.",
+  "from_entries": [
+    254
+  ],
+  "how": "A motion written as a statement and not a question, starting with «That» — something this house does not agree about. Somebody reads it and marks now whether they agree. Then three reasons for and three against, three and three, written by the same person: this is a documented solo format and not an improvisation. In the column that is not yours, put the strongest reasons rather than the easiest to knock down, tested line by line — would somebody who really thinks this recognise themselves here? Read all six aloud. Then write the sentence you cross over on, which is what the real format is judged on. Then the same listener marks again.",
+  "knobs": [
+    {
+      "knob": "who assigns the side",
+      "effect": "Assigned from outside is what this format has been argued about for seventy years and defended for as long: taking a position inside a turn that exists to interrogate arguments is not taking it in public. Here one person writes both columns and nobody assigned anything."
+    },
+    {
+      "knob": "how the winner is decided",
+      "effect": "By where the vote ends, or by how far it moved. Across every pair of before-and-after votes from five listeners the two criteria disagree 37.3 per cent of the time and point at opposite sides in 130 cases out of 1024. Movement is fairer towards whoever started further back."
+    },
+    {
+      "knob": "what the judge has to know",
+      "effect": "Nothing. One competitive format was built precisely so that anybody can judge it, while others need experience before they can be judged at all. The listener's ignorance is a design specification here rather than an excuse for one."
+    },
+    {
+      "knob": "one listener or several",
+      "effect": "With one listener the before-and-after vote has four outcomes and only two of them say anything. An unchanged vote is not a loss: it means the sheet could not measure what happened, and saying so on the page is better than reading it as a draw."
+    }
+  ],
+  "where_the_work_is": "In the sentence written between the two columns. In a contest it is spoken and gone; on a sheet it stays written, and it is the thing the format declares it judges — not the two speeches, the crossing.",
+  "breaks": "It needs a second person for two ticks and a reading, and cannot be done alone. Lost with the opponent are the interruptions, which is where an argument actually breaks. The clock goes too, and with it the pressure to be concise rather than complete — which the sources give as a fault, so losing it is not all loss. Judgement is measurably biased: across 125 087 school rounds, teams of two girls won 17.1 per cent less often. On a display the motion and the two votes fit.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    30,
+    224,
+    233,
+    239,
+    253
+  ]
+}

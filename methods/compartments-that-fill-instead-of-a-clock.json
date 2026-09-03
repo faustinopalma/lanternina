@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "compartments-that-fill-instead-of-a-clock",
+  "kind": "form",
+  "name": "five compartments that fill instead of ticking",
+  "also": [
+    "ripasso distanziato",
+    "ripetizione dilazionata",
+    "sistema Leitner",
+    "scatola di Leitner",
+    "spaced repetition",
+    "Leitner system",
+    "flashcard"
+  ],
+  "one_line": "Cards moving through five compartments of different depths, where what triggers a review is a compartment filling up and never a date.",
+  "from_entries": [
+    242
+  ],
+  "how": "Half a sheet cut into eight makes the cards: question on the front, answer on the back. Then five compartments in a row — card pockets glued to a sheet, pegs on a line, a drawer with dividers. Leitner's depths are 1, 2, 5, 8 and 14 centimetres of cards. Three rules and no others: a new card enters compartment one; when a compartment is full, and only then, take its cards out and try them, forward if you knew it and straight back to one if you did not; a card leaving five is finished. No date is written anywhere. For one afternoon read the same five numbers as counts of cards instead of centimetres, thirty in all, and change nothing else.",
+  "knobs": [
+    {
+      "knob": "what makes a review happen",
+      "effect": "A calendar needs somebody who knows the date. A compartment filling does not: the narrow one fills fast, so cards you got wrong come round quickly, and the wide one is thirteen times deeper, so what you know is seen rarely. The interval is built rather than measured."
+    },
+    {
+      "knob": "spaced against all in one go",
+      "effect": "Distributed practice beat massed practice in 259 of the 271 comparisons collected by Cepeda and others in 2006. That is a count of comparisons and not a size of effect, and it is still the plainest number in this chapter."
+    },
+    {
+      "knob": "how the box fits itself to a person",
+      "effect": "It treats every card differently while knowing nothing about whoever uses it, because what it needs comes from the cards sent back rather than from an estimate of anybody. Nothing is recorded about a person and the schedule still changes."
+    },
+    {
+      "knob": "the scale of the whole thing",
+      "effect": "1+2+5+8+14 centimetres is 30, and the long side of A4 is 29.7, so the last partition on a printed sheet is 13.7. At thirty cards a card crosses all five compartments within an hour and the spacing becomes minutes; nothing read says what is left of the effect there."
+    }
+  ],
+  "where_the_work_is": "In rule two. The rest is a card index; the review being triggered by a compartment filling is what lets a form defined by an interval exist where nothing measures time, and it answers the limit that bites hardest in this chapter.",
+  "breaks": "The full form is made of days and an afternoon has none: thirty cards run the whole box in an hour, which demonstrates the mechanism and does not use it. It becomes the real thing only by being built once and left where it is, because the days get counted by whoever walks past. Cards print and scan; the box is not a sheet and nothing brings it back. On a display the three rules fit and the box does not.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    54,
+    84,
+    230,
+    243
+  ]
+}

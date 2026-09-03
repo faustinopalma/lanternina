@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "written-in-another-base",
+  "kind": "form",
+  "name": "read numbers written in a base nobody told you",
+  "also": [
+    "aritmetica in altra base",
+    "cambio di base",
+    "sistema binario",
+    "base cinque",
+    "numerazione posizionale",
+    "positional notation",
+    "number base",
+    "radix"
+  ],
+  "one_line": "A short list of sums that do not come out in ten and do come out in some other base, with the base left off the page.",
+  "from_entries": [
+    372
+  ],
+  "how": "Compose it backwards: pick the base, write two items and a total that works, add one small product at the foot, then delete the base. Keep the whole thing to six lines and dress it as somebody else's shopping list. Ask for the base and for nothing else. Print two hints that are themselves work rather than answers — look at the highest digit that appears anywhere, and redo the addition in a column watching where the carry falls. Then one line telling them to rewrite the three numbers in ten and check the total comes out. That is the entire verification and it needs nobody.",
+  "knobs": [
+    {
+      "knob": "asking to translate or asking for the base",
+      "effect": "translating is a procedure with a right answer and it is homework; finding the base is a search over about a dozen candidates that both hints cut down, and the same six lines carry either."
+    },
+    {
+      "knob": "which base",
+      "effect": "under ten the digits are all familiar and only their weight has changed; above ten new signs have to be invented and explained, and the explaining runs longer than the puzzle it serves."
+    },
+    {
+      "knob": "how many lines are given",
+      "effect": "one sum can be true in several bases and then the answer is not unique; a sum plus one product pins it to one, and pinning it is what makes «check it yourself» mean anything at all."
+    },
+    {
+      "knob": "how high the digits go",
+      "effect": "if the largest digit written is a four, every base below five is gone at a glance and the search is halved; numbers built out of ones and twos remove that step and leave nothing but trying each base in turn."
+    }
+  ],
+  "where_the_work_is": "In deleting the base, which costs nothing and turns applying a rule into finding one. Everything else on the page is an addition in a column, which anybody who can add can do.",
+  "breaks": "Nothing found: six lines of digits, they print, they scan, and this is the one form of its chapter that fits whole on eight hundred by four-eighty pixels. It is also the one where a right answer can be reached by trying all ten bases with no idea at all, and the sheet cannot tell that from having understood.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    358,
+    359,
+    365,
+    371,
+    374
+  ]
+}

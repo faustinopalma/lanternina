@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "blank-at-the-end-of-the-line",
+  "kind": "form",
+  "name": "leave the blank at the end of every line",
+  "also": [
+    "completamento cloze",
+    "testo bucato",
+    "riempi gli spazi",
+    "cloze test",
+    "fill in the blank",
+    "cloze guidato",
+    "banked cloze"
+  ],
+  "one_line": "A short text with its line-ends missing, where no ending is the right one and whatever gets written there becomes the text.",
+  "from_entries": [
+    12,
+    13
+  ],
+  "how": "Three or four lines, each a whole readable sentence up to the point where it stops, and the gap at the end of the line and never inside it: a gap in the middle breaks the sentence in two and the far side has to be started again. Frame the missing words as gone rather than hidden — the corner of the page tore off, the last words went with it — which removes the key in four words. Print no word list. A list as long as the gaps is finished by elimination, and a longer one holds distractors whatever it is called. If a list is used at all, the rule is that every word must go somewhere and several arrangements work.",
+  "knobs": [
+    {
+      "knob": "where the gap sits",
+      "effect": "At the end of the line each sentence stays readable and what came before narrows the choice by itself; in the middle the reading is cut in two, which is exactly what the guidance on plain text asks nobody to do."
+    },
+    {
+      "knob": "whether a word list is printed",
+      "effect": "With none, every ending is good and there is nothing to mark; with one as long as the gaps, the last two are free; with one that must all be used and fits several ways, it stops being a cloze and becomes a combinatorial constraint."
+    },
+    {
+      "knob": "how the missing words are explained",
+      "effect": "«Fill in the gaps» sends somebody looking for what was intended and there is nothing to find; «they are gone, nobody has them» turns the same page into writing rather than guessing."
+    },
+    {
+      "knob": "how many lines",
+      "effect": "Three lines make something somebody wrote; ten make an exercise, and by the sixth the endings are being produced to reach the bottom rather than to say anything."
+    }
+  ],
+  "where_the_work_is": "In the part of each line that is printed. It has to be enough to lean on and stop short of deciding what follows, which means writing the sentence whole and cutting it where more than one continuation is honest.",
+  "breaks": "The gaps need long printed rules or the handwriting runs off and the scan clips it. Nothing checks anything: a sheet where every ending is thoughtless looks exactly like one where they are good, which is the form working rather than failing. On a display three broken lines fit and read as a poem, which is not a problem and is not the exercise either.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    10,
+    17,
+    21,
+    25,
+    223
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "names-that-say-what-never-why",
+  "kind": "form",
+  "name": "six names for what it does, and the ticks must add up",
+  "also": [
+    "osservazione strutturata",
+    "osservazione sistematica",
+    "griglia di osservazione",
+    "etogramma",
+    "structured observation",
+    "ethogram",
+    "campionamento a evento"
+  ],
+  "one_line": "Six names written for what something does, never for why, and twenty event-triggered glances whose ticks have to come to twenty.",
+  "from_entries": [
+    247
+  ],
+  "how": "Choose something that moves and does not depend on you: an animal, somebody cooking, the street from a window, the queue at a till. Watch five minutes writing nothing. Then write six names for things it does, under one rule — the name says what, never why. «Scratches its ear» is a name; «scratches because it itches» is not. The test is mechanical and gets printed: if the name contains a waits, a wants, a looks for or a because, rewrite it. The six must also be exclusive, so that at any instant exactly one holds. Then twenty glances, each triggered by something happening rather than by a clock, one tick each. Then add the ticks up.",
+  "knobs": [
+    {
+      "knob": "what a name is allowed to contain",
+      "effect": "A name carrying a function can be wrong about the function: what looks like courtship may do something else entirely, and the same movement means opposite things in a cat and a dog. Describing the movement and nothing else is what lets a second person use the same list."
+    },
+    {
+      "knob": "what triggers a glance",
+      "effect": "Sampling by the clock needs a clock and misses whatever is rare. Sampling by event — every time it moves, every time a car goes past — needs nothing at all, and is the only version available on paper."
+    },
+    {
+      "knob": "whether an arbitrary number may go inside a name",
+      "effect": "«Licks the bars more than five times in thirty seconds» has no justification for the five and satisfies repeatability anyway, because the five is written down. A threshold that is declared is worth as much as a threshold that is right."
+    },
+    {
+      "knob": "whether the ticks are made to add up",
+      "effect": "Twenty glances must give twenty ticks. More than twenty means two categories overlap; fewer means something happened that was not on the list, and the second is the most interesting thing the sheet produces."
+    }
+  ],
+  "where_the_work_is": "In the arithmetic at the bottom. The total finds a fault in the grid rather than a mistake by whoever filled it in, and the two ways of being wrong have opposite signs, so the number says which fault it was.",
+  "breaks": "The sheet cannot say what to observe, because it does not know where the reader is; the first line is where they declare it, and everything after works on whatever that was. Out of reach is agreement between observers, the stated reason the naming rules exist — and it costs nothing if a second person is around: hand them a copy and compare the two totals. Whoever counts finds what they expect, and the estimate is that observer bias can inflate an effect by a third to two thirds.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    39,
+    53,
+    248,
+    250
+  ]
+}

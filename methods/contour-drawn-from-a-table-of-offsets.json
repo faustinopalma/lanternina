@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "contour-drawn-from-a-table-of-offsets",
+  "kind": "form",
+  "name": "draw a contour from offsets and black out the rest",
+  "also": [
+    "ambiguità figura-sfondo",
+    "vaso di Rubin",
+    "inversione figura-sfondo",
+    "spazio negativo",
+    "Rubin vase",
+    "figure–ground reversal",
+    "edge assignment"
+  ],
+  "one_line": "The sheet prints twelve offsets and no picture; what gets drawn has two readings, and only somebody else finds the second.",
+  "from_entries": [
+    379
+  ],
+  "how": "Have a vertical line ruled down the middle of the sheet: it is the centre, and by the end it will not be visible. Print twelve rows 8 mm apart and beside each one a distance — 6, 7, 9, 11, 13, 15, 15, 13, 11, 9, 7, 11 mm. Ask for each distance to be measured out from the centre to the left and to the right and marked, for the left marks to be joined with one soft curve and the right marks with another, and then for everything outside the two curves to be blacked in, right out to the edges of the paper. Then ask what has been drawn. Then ask somebody else, cold, and if they say the same thing, ask them: and the other one?",
+  "knobs": [
+    {
+      "knob": "whether the sheet prints the picture or the numbers",
+      "effect": "printed, the figure is somebody else's and arrives in a second; printed as twelve numbers, ten minutes of pencil buy a thing that came out of their own hand, and the second reading is found in something they made."
+    },
+    {
+      "knob": "how far the black runs",
+      "effect": "out to the edges of the paper the outer region has no shape of its own and can be a background; stopped short of them it keeps a border, becomes a thing, and the two readings stop being level."
+    },
+    {
+      "knob": "whether the two sides are symmetric",
+      "effect": "symmetric, neither reading is pushed and only the smaller area tilts it towards the vase; lopsided, one side reads as an object at once and the other never gets a turn."
+    },
+    {
+      "knob": "whether a second person is asked",
+      "effect": "asked without being told anything, they arrive at one of the two readings on their own and that settles that both are there; not asked, the only eye available already knows what it drew."
+    }
+  ],
+  "where_the_work_is": "In the profile, which has to be a nameable thing read from either side; the rest is measuring. A curve that makes a vase and no face leaves one region with no name, and then there is nothing to notice.",
+  "breaks": "Nothing rides on the print scale: the numbers are printed and laid out with the reader's own ruler, so a page shrunk to fit still works. What it depends on is a second pair of eyes, and what comes back is a drawing and one word that nobody absent can mark. Blacking in a third of an A4 takes ten minutes and a soft pencil; a ballpoint leaves a grey that reads as texture, which decides the background by itself. On the display the numbers fit and the drawing has nowhere to happen.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    378,
+    380,
+    383,
+    391
+  ]
+}

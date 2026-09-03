@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "count-where-the-explaining-stalls",
+  "kind": "form",
+  "name": "explain it aloud and mark every place you stall",
+  "also": [
+    "insegnamento fra pari",
+    "imparare insegnando",
+    "tecnica di Feynman",
+    "papera di gomma",
+    "learning by teaching",
+    "rubber duck debugging",
+    "Lernen durch Lehren"
+  ],
+  "one_line": "Something known well explained out loud from start to finish, with every stall written down as it happens and one of them gone back over.",
+  "from_entries": [
+    240
+  ],
+  "how": "Pick something you know and could explain in a minute — nothing difficult, something you know well. Print two ways of choosing a listener, as equals: a person in the house who does not know it, or an object put on the table in front of you, which is what programmers call the rubber duck and is not a fallback. Then one rule: say it out loud, whole, from the beginning, as though the listener knew nothing, and do not skip the obvious parts. Every time you stop, every time you say «I mean», every time you find you cannot say something you thought you knew — stop and write it on one of five numbered lines. Then go back on one, the most annoying, find out, and say that part again.",
+  "knobs": [
+    {
+      "knob": "who listens",
+      "effect": "A person asks questions and finds the holes the explainer cannot see. An object asks nothing, and the sources claim it works anyway; that claim rests on a popular article naming no study, and it is the thing here most worth checking before building on it."
+    },
+    {
+      "knob": "whether the stalls are written as they happen",
+      "effect": "Written in the moment, the list records where the explanation actually broke. Recalled at the end it is a list of what somebody thinks they found hard, which is a different and softer thing, and the hard parts get tidied out of it."
+    },
+    {
+      "knob": "whether anybody may interrupt",
+      "effect": "In the classroom version whoever teaches steps in when the explainer jams or the listener is lost. Here nothing steps in: the jam gets written down and the explaining carries on, and one of the two people is doing less than the form asks of them."
+    },
+    {
+      "knob": "what a count of zero means",
+      "effect": "Zero stalls is a symptom and not a result: either the thing was known too well or it went too fast. The two are told apart by doing it again and explaining the reason for every step, not only the move."
+    }
+  ],
+  "where_the_work_is": "In having to hold up in front of somebody who does not know. Teaching forces the material to be clarified and rebuilt, which is a claim about the material rather than about the listener — and that is why it survives when the listener is a saucepan.",
+  "breaks": "Nothing comes back but five lines and a number, and a sheet with zero on it looks the same as a sheet nobody used. Speaking is where it lives and a sheet cannot hear: only what somebody chooses to write down survives, and the stall that went by unnoticed is exactly what gets left out. On a display the two rules and the five lines fit. It is the one form in this chapter whose sources declare it works with nobody else present.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    16,
+    26,
+    232,
+    235,
+    241
+  ]
+}

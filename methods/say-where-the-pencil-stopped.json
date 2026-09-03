@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "say-where-the-pencil-stopped",
+  "kind": "move",
+  "name": "ask for it to be run, and for where it stopped",
+  "also": [
+    "corretta da un pari",
+    "valutazione fra pari",
+    "riscontro che è un tentativo",
+    "peer assessment",
+    "peer feedback",
+    "corrective feedback",
+    "non dirmi se è bello, provalo"
+  ],
+  "one_line": "Feedback that is the report of an attempt: not whether the thing is good, but the step at which it could not be followed any further.",
+  "from_entries": [
+    297
+  ],
+  "how": "Where something on the page can be carried out — instructions, a map, a table, a kit — do not ask whether it is good. Ask for it to be executed with a pencil, stopping at the exact step where it cannot go on, and for three lines: the step, what it did not say, how it would be rewritten. That removes the door that shuts most often, because nobody has to find the courage to say an unpleasant thing. Put two faults in on purpose and of two kinds. One arithmetic, found only by doing: six moves that sum to one square across instead of closing, repaired by changing a single digit. One found by reading: a step naming a thing the earlier steps never made. Print that the instructions are bad and were written bad on purpose, and that nobody in the house wrote them, so the report is about a page.",
+  "knobs": [
+    {
+      "knob": "whether the reviewer executes or reads",
+      "effect": "Executing produces a report. Reading produces an opinion, and the literature calls opinion without criteria scattered and meaningless. The pencil stopped where it stopped, so severity is nobody's decision."
+    },
+    {
+      "knob": "who wrote the thing being run",
+      "effect": "Printed by the sheet, nobody can be hurt and the reciprocity that makes this worth doing in a class is gone. A person in the house restores it and puts the cost of a failure on somebody who received no task."
+    },
+    {
+      "knob": "how many faults and of what kind",
+      "effect": "One found by doing and one found by reading cover both routes. Past two, the page stops reading as faulty in a locatable way and starts reading as untrustworthy, which is a different afternoon."
+    },
+    {
+      "knob": "how long it may sit before being run",
+      "effect": "The one checked figure on speed says the effect disappears beyond twenty-four hours, which rules out any version that waits for a next occasion to be picked up again."
+    }
+  ],
+  "where_the_work_is": "In the arithmetic fault. It has to be real and small — one digit — so that running it fails at a definite step while reading it does not, which is what forces the execution.",
+  "breaks": "A numbered list and three ruled lines print and scan. On 800x480 the instructions fit and squared paper does not, and this needs squared paper. It gives up the reciprocity it has in a classroom: nobody will look at the work of whoever is looking. That is not a merit of the design — there is nobody here to damage — and it counts as a loss.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    26,
+    32,
+    37,
+    39,
+    109
+  ]
+}

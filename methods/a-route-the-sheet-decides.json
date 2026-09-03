@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-route-the-sheet-decides",
+  "kind": "form",
+  "name": "walk a route the sheet chooses and write what was new",
+  "also": [
+    "esplorazione",
+    "perlustrare",
+    "andare in giro senza una meta",
+    "deriva",
+    "nebbia di guerra",
+    "exploration",
+    "free roaming",
+    "fog of war",
+    "open world"
+  ],
+  "one_line": "Ten turns printed in advance, a walk that follows them, and six blank rows for things nobody knew were there.",
+  "from_entries": [
+    273
+  ],
+  "how": "Print ten instructions — right, straight, left, left, straight, and so on — one for each junction, with two lines of repair: if that turn is not there take the next one on the list, and a dead end means turn back and carry on from the following junction. That removes the thing that stops most people at the door, which is deciding where to go. Then six ruled rows: where I was, what I saw. Say they are rows for things you did not know were there, not for things on a list, because a list can be ticked off and this cannot be marked by anybody. Ask for a map of the route drawn on the back from memory, not to scale and not correct. Ask for six rows and expect fewer.",
+  "knobs": [
+    {
+      "knob": "a list to find or blanks to fill",
+      "effect": "«Find the three things named here» is an errand and it can be marked. «Write what you did not know was there» cannot be marked by anybody, which is the only reason it collects anything real."
+    },
+    {
+      "knob": "how many junctions",
+      "effect": "Ten turns is a walk of a few streets and the printed list stays short enough to hold in one hand. Twenty is a different afternoon and wants a second sheet just for the turns."
+    },
+    {
+      "knob": "how many blank rows",
+      "effect": "Six is deliberately fewer than what will be seen, so the rows are a sample and not a quota. Twelve rows read as a target, and the last ones get filled with whatever was to hand."
+    },
+    {
+      "knob": "whether the map is asked for",
+      "effect": "A map drawn from memory is the part that comes back, and it says what stayed rather than where the feet went. Without it what returns is six lines of list, which is not much."
+    }
+  ],
+  "where_the_work_is": "In the printed turns removing the choice of direction. What is being bought is not randomness but the cost of deciding, and that cost is what keeps most people indoors.",
+  "breaks": "Whoever printed the sheet does not know what streets exist, so the turns are a rule and not a route, and a rule can walk somebody round the same block twice. The sheet cannot tell that nobody went out: it registers and does not check. Rain, dark, and how far is too far are settled in the house and not here. Scanned in one bit, a memory map drawn in pencil often disappears, so ink is worth asking for on the sheet.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    95,
+    200,
+    236,
+    274,
+    278
+  ]
+}

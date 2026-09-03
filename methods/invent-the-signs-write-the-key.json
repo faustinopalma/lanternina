@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "invent-the-signs-write-the-key",
+  "kind": "form",
+  "name": "invent a set of signs and write down the key",
+  "also": [
+    "traduzione",
+    "codice inventato",
+    "cifrario",
+    "notazione inventata",
+    "partitura grafica",
+    "paesaggio sonoro",
+    "invented notation",
+    "graphic score"
+  ],
+  "one_line": "A channel too narrow to say much, a set of signs made up to use it, and the key written out so that a stranger finding it could read it.",
+  "from_entries": [
+    19,
+    47
+  ],
+  "how": "Name a channel with almost no capacity: a roller blind that goes up, down, halfway or moves, between two flats that face each other. Print four ruled pairs, «___ means ___», and no signs of your own — the moment one is printed the task becomes decoding and has a right answer. One rule: the same thing always gets the same sign. Then ask what this code cannot say and would need to, which is what makes it about translation rather than about symbols. Four pairs is a ceiling and not a target; two signs and a key is a key.",
+  "knobs": [
+    {
+      "knob": "whether any signs are supplied",
+      "effect": "None supplied, nothing can be got wrong and what comes back is an object that did not exist before; supplied, it is decoding, there is a correct reading, and whoever misreads it is stuck with no way out."
+    },
+    {
+      "knob": "what the code is for",
+      "effect": "For a message between two windows, the key is a plan and the difficulty is choosing what deserves a sign; for six minutes of sitting still and marking every sound on one line, the key is written afterwards and the difficulty is having kept the marks consistent."
+    },
+    {
+      "knob": "whether what it cannot say is asked for",
+      "effect": "Without that question an invented alphabet is a game with marks; with it, the loss is the thing written down, and every code loses something, which is the content."
+    },
+    {
+      "knob": "how many pairs are printed",
+      "effect": "Four ruled pairs read as room to work in; twelve read as twelve to be filled, and by the eighth signs are being invented for things that never needed one."
+    }
+  ],
+  "where_the_work_is": "In the channel being genuinely poor. A blind with four positions, or one minute of listening, forces choices; a channel that can say anything makes the key arbitrary and leaves the last question with no answer.",
+  "breaks": "Nothing comes back but the key, and for the listening version a line of marks; a scan reads pencil on a printed rule only when it is drawn firmly, and light marks disappear. The instruction fits on a display in four lines. The signs themselves are handwritten and never have to be recognised by anything except a person.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    5,
+    45,
+    63,
+    132,
+    134
+  ]
+}

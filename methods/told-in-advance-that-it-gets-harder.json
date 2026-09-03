@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "told-in-advance-that-it-gets-harder",
+  "kind": "move",
+  "name": "print the part that will feel like failing, before it does",
+  "also": [
+    "dire prima che non verrà",
+    "avvertire in anticipo",
+    "i primi tre minuti sembreranno vuoti",
+    "dalla nona vengono le migliori",
+    "declared difficulty",
+    "warned in advance"
+  ],
+  "one_line": "One line, before the task, naming the stretch of it that will feel empty or wrong — because it will, and saying so keeps somebody in it.",
+  "from_entries": [
+    50,
+    52,
+    58,
+    65,
+    67
+  ],
+  "how": "Take a form with a stretch where people stop, and print one line before that stretch saying so. Name it by number, never by feeling: «the first three minutes will look empty», «the seventh is the hardest, because by then everything looks out of place», «from the ninth on the good ones come». Put it where it is read before the stretch and not after — at the foot, the same words console a failure that has already happened; at the head they prevent one. State the fact, not the reassurance: «two measurements of the same thing never come out the same» licenses the second reading; «don't worry» licenses nothing. One warning to a sheet, and it should be true.",
+  "knobs": [
+    {
+      "knob": "where the line sits",
+      "effect": "Before the hard stretch it stops somebody leaving. After it, the same words console a failure already had. Only the first is worth the line, and moving it costs nothing."
+    },
+    {
+      "knob": "named by number or by feeling",
+      "effect": "«The first three minutes look empty» can be held against a clock and got through. «This may feel hard» cannot be held against anything, and reads as the sheet apologising for itself."
+    },
+    {
+      "knob": "declaring a failure or declaring a shape",
+      "effect": "«One of these four memories will be wrong» promises a discovery and makes the wrong one the interesting one. «You may get one wrong» promises a mistake, and nobody wants the fourth line."
+    },
+    {
+      "knob": "how many per sheet",
+      "effect": "One reads as knowledge of the task. Two or more read as the sheet not trusting whoever is holding it, and then every instruction on the page is heard as a warning."
+    }
+  ],
+  "where_the_work_is": "In naming the exact stretch. A warning covering the whole task is an apology for the task; one that says which minute, which item, which attempt, is a prediction, and a prediction that comes true buys the next one.",
+  "breaks": "It adds nothing that can come back on a sheet, so it can never be the reason a moment exists. It is also only worth anything beside the stretch it names: on 800x480 it fits easily and lands at the wrong moment, before the sheet has been picked up. Printed on the paper, immediately above the hard part, it lands where it should.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    11,
+    14,
+    22,
+    89,
+    190
+  ]
+}

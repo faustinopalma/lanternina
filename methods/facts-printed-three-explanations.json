@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "facts-printed-three-explanations",
+  "kind": "form",
+  "name": "print every fact, then ask for three explanations",
+  "also": [
+    "spiegazione",
+    "ipotesi",
+    "congettura",
+    "abduzione",
+    "diagnosi differenziale",
+    "explanation",
+    "hypothesis",
+    "abduction"
+  ],
+  "one_line": "A small event with every fact it needs printed under it, three accounts of what caused it, and what would have to be seen to tell them apart.",
+  "from_entries": [
+    16,
+    29
+  ],
+  "how": "Write the event in three lines — at ten past nine the lights went out in the whole house and came back on their own after a minute. Under it, five facts in no order, all of them on the page: a «why» whose answer sits in what somebody already knew is an examination, and whoever printed it cannot know what the reader has. Ask for three explanations and add that they must differ from each other, or the same one gets written out three times. Then the step almost nobody asks for: what would you have to see tomorrow to know which of the three it was. Put two facts among the five that lead nowhere and offer crossing them out as the low rung.",
+  "knobs": [
+    {
+      "knob": "where the facts live",
+      "effect": "Printed under the event, the work starts from nothing and depends on no prior knowledge; assumed, it is an interrogation, and it is failed by the reader rather than by the page."
+    },
+    {
+      "knob": "one explanation or three",
+      "effect": "One is always the first that came and it gets kept; three force the first to be let go, and the rule that they must differ is what stops the same one being written out in three ways."
+    },
+    {
+      "knob": "asking what would tell them apart",
+      "effect": "Without it, three explanations are three stories and the sheet ends there; with it, each one has to name something observable, and that is the whole line between a hypothesis and an opinion."
+    },
+    {
+      "knob": "the facts that lead nowhere",
+      "effect": "Two irrelevant facts with «cross out the ones that do not matter» give finished work to whoever cannot write the explanation, and crossing out is easier than explaining. Missing them costs nothing, which is what separates this from a false trail."
+    }
+  ],
+  "where_the_work_is": "In the case being underdetermined. If the five facts admit one account it is a deduction and the second and third lines stay empty; there have to be several honest readings and no way to settle between them from the page.",
+  "breaks": "Nothing settles which explanation is right, on purpose, so an empty third line looks the same as a case that only admitted two. Five facts and three ruled lines print and scan cleanly. On a display the event and its five facts fit as text, which is the reason to write the case as lines and never draw it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    30,
+    31,
+    65,
+    299
+  ]
+}

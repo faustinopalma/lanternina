@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "say-nobody-checks-and-print-where-it-goes",
+  "kind": "move",
+  "name": "say nobody will check it, and print where it goes",
+  "also": [
+    "non corretta",
+    "senza correzione",
+    "nessuno la guarda",
+    "questo foglio non torna indietro",
+    "ungrading",
+    "destinazione dell'oggetto",
+    "il foglio resta a chi lo ha scritto"
+  ],
+  "one_line": "Two things on any sheet that asks for nothing back: that no verdict is coming, and the three places the thing may end up.",
+  "from_entries": [
+    298,
+    300
+  ],
+  "how": "When nothing will come back, write it on the page: «nobody will tell you whether you found it — not this sheet, not the screen, not tomorrow». An undeclared absence is not a choice, it is a silence, and whoever finished stands waiting for a verdict that is not on its way. If a right answer exists, say that too in the line above, because without it the task reads as an invitation to write anything down; the answer existing and somebody judging it are separable, and only the second is being removed. Then print three destinations as boxes to tick — a drawer, a wall, the waste paper — and say they are worth the same. That is the act that closes, and with the verdict gone there is no other. The third box is the easiest part to cut and the least replaceable: if throwing it away is not allowed, a judgement was there after all.",
+  "knobs": [
+    {
+      "knob": "whether the absence is declared",
+      "effect": "Declared, it is a decision and the sheet is closed by it. Undeclared, whoever filled it in waits for something that never arrives, which is worse than any verdict would have been."
+    },
+    {
+      "knob": "whether a right answer exists",
+      "effect": "The two are separable. A puzzle can have one solution and nobody to say it was found: the answer exists, the judgement does not, and what costs anything is the second."
+    },
+    {
+      "knob": "whether the bin is one of the three",
+      "effect": "With it, the ending is open and costs nothing. Without it, keeping is compulsory, and a compulsory keeping is a judgement written in the grammar of an instruction."
+    },
+    {
+      "knob": "whether somebody sees it anyway",
+      "effect": "A drawing on a wall gets looked at. That is a correction nobody asked for, given by somebody who does not know they are giving one, and the wall box is where it comes from."
+    }
+  ],
+  "where_the_work_is": "In the third box. Whether the waste paper is printed beside the drawer and called equal to it decides whether the absence of a verdict is real or merely unstated.",
+  "breaks": "Two sentences and three boxes print, and a ticked box scans back cleanly. On 800x480 the two sentences fit and the boxes do not, and a destination shown on a screen that clears is not a destination. Nothing here can be verified: whether the thing went where the box says is not on the sheet, and nobody is going to look.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    14,
+    32,
+    245,
+    246,
+    302
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "fold-a-square-into-three-equal-strips",
+  "kind": "form",
+  "name": "fold a square into three and let the edges settle it",
+  "also": [
+    "puzzle di piegatura",
+    "origami matematico",
+    "teorema di Haga",
+    "piega-e-taglia",
+    "fold puzzle",
+    "paper folding"
+  ],
+  "one_line": "One printed square, no ruler and no answer: fold it into three equal strips, and the check is whether the three edges meet.",
+  "from_entries": [
+    162
+  ],
+  "how": "Print a square and nothing else, and make sure it prints square — a millimetre out makes the task insoluble in a way nobody can see. The brief is a property and not a shape: three equal strips, exact, not by eye. Print the check beside it, because the check is the method: concertina the three strips onto one another and look at the edges, and if one sticks out they are not equal, at a millimetre. Give two things that narrow the search and give nothing away — that halving works and thirding does not, and that the crease needed is not parallel to any side. Then ask how they know the strips are equal and not nearly equal. An exact route exists, Haga's, and the sheet does not print it.",
+  "knobs": [
+    {
+      "knob": "whether the creases are printed",
+      "effect": "Printed, it is execution and the hands do all of it. A blank square is the puzzle. The difference is not difficulty but which question is being asked, and both are worth printing on different days."
+    },
+    {
+      "knob": "a shape or a property",
+      "effect": "«Make this figure» has to be drawn and can be traced. «Three equal strips» is a condition, and it carries its own test, which is why the brief and the check sit one line apart."
+    },
+    {
+      "knob": "how much of the shape of the answer is given",
+      "effect": "Saying the crease is not parallel to a side removes the one way of never starting and gives nothing away, because it is the shape of the answer. Saying where it crosses the edge ends the exercise."
+    },
+    {
+      "knob": "how many folds are allowed",
+      "effect": "Unlimited, it can be crept up on by halving and halving again and never comes out exact. Capped at three or four, the exact construction is the only route left and the cap does the teaching."
+    }
+  ],
+  "where_the_work_is": "In the check by superposition and not in the fold. Edges meet or they do not, nobody needs to know the answer, and it is exact to a millimetre with no instrument at all.",
+  "breaks": "The square has to print at 100%: a rectangle by one millimetre is insoluble and looks exactly like a soluble one. Nothing comes back on a sheet, since a folded square is an object, so the return is a photograph — and a photograph of three met edges does read. On 800x480 none of this exists, because a panel cannot be folded. And if the square is not cut out, the afternoon never starts.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    42,
+    43,
+    149,
+    161
+  ]
+}

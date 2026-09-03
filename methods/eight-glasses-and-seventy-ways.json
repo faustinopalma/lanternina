@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "method_id": "eight-glasses-and-seventy-ways",
+  "kind": "form",
+  "name": "eight glasses, four each, and a table of seventy",
+  "also": [
+    "esperimento controllato",
+    "prova equa",
+    "una variabile alla volta",
+    "gruppo di controllo",
+    "controlled experiment",
+    "fair test",
+    "lady tasting tea"
+  ],
+  "one_line": "Two versions of one thing differing in one respect, eight glasses shuffled four and four, and the printed odds of getting them right by luck.",
+  "from_entries": [
+    248
+  ],
+  "how": "Two versions of one thing differing in exactly one respect: tap water against boiled and cooled, sugar in first against sugar after, two brands of the same item. Before anything is poured, five things that have to stay the same, written on the sheet — the glass, the amount, the temperature, who pours, the order of tasting. Somebody else prepares eight glasses, four of each, shuffled, and writes the order on a slip that goes in their pocket; the taster is told it is four and four, as Fisher told Bristol. Pick four, then read the slip. Then print the table of the seventy ways of choosing four from eight, and how often each score happens by luck alone.",
+  "knobs": [
+    {
+      "knob": "how many have to be right",
+      "effect": "Four out of four by chance happens once in seventy, 1.4 per cent. At least three happens seventeen times in seventy, 24.3 per cent — nearly one time in four. Three out of four proves nothing, which is why Fisher demanded all eight."
+    },
+    {
+      "knob": "whether the distribution is printed",
+      "effect": "Without it a good-looking score is convincing and there is nothing to argue with. With it the seventy cases can be counted by whoever doubts them, and the difference between seeming and being is on the page instead of in somebody's assurance."
+    },
+    {
+      "knob": "whether the five constants are written first",
+      "effect": "Written afterwards they are an account of what went wrong; written first they are the design. Preparing is itself a variable: driving a tractor over a field to spread fertiliser compares fertiliser-plus-tractor against nothing, unless the tractor also crosses bare plots."
+    },
+    {
+      "knob": "how many things are held constant",
+      "effect": "Holding more things still is not holding them better. A variable that the treatment itself affects introduces a bias when it is fixed rather than removing one, and it is the sort of mistake made out of care."
+    },
+    {
+      "knob": "who carries the glasses",
+      "effect": "Whoever poured knows which is which, and knowing the answer leaks: Clever Hans got the sums right only when his owner knew them. With three people in the house the repair costs nothing — whoever brings the glasses is not whoever prepared them."
+    }
+  ],
+  "where_the_work_is": "In the five things that have to stay the same, and in the closing question asking which of them did not and which one was missing. That is where it lives or dies, and it is asked before rather than after for exactly that reason.",
+  "breaks": "It needs a second person to prepare and say nothing, which is the smallest job in this chapter and cannot be skipped. Eight glasses are one trial and not a repetition; the shuffling is done however it comes rather than at random; and whoever pours is not blind. On a display the table of seventy fits, and it is the half worth putting there, since the glasses are in the kitchen anyway.",
+  "adult_cost": "take_part",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    29,
+    54,
+    236,
+    247
+  ]
+}

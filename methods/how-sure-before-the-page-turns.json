@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "how-sure-before-the-page-turns",
+  "kind": "form",
+  "name": "say how sure you are before turning the page",
+  "also": [
+    "effetto test",
+    "pratica di recupero",
+    "richiamo attivo",
+    "ripetizione attiva",
+    "testing effect",
+    "retrieval practice",
+    "active recall",
+    "generazione con errore"
+  ],
+  "one_line": "Eight questions with the answers on the back, every line filled before the page turns, and how sure declared before anything is checked.",
+  "from_entries": [
+    243
+  ],
+  "how": "Eight questions on the front about something done or read earlier, eight ruled lines, the eight answers printed on the back. Two printed rules. First: nothing is turned over until every line has something on it — «I don't know» counts, and so does an answer you know is wrong, because writing it is already retrieval and the right answer on the back hooks onto it. Second: before turning, a short column where each answer is marked certain, I think, guessing, or nothing. Then turn, mark each one right, nearly or wrong, and take two counts — how many «certain» were wrong, and how many «guessing» were right.",
+  "knobs": [
+    {
+      "knob": "ruled lines or options to choose from",
+      "effect": "Eight questions with four options each hand two right answers to somebody who knows nothing, by arithmetic. Eight ruled lines hand over none. The stronger reason is not the score: what teaches is the effort of pulling something out, and from a list of four nothing is pulled out."
+    },
+    {
+      "knob": "whether how-sure is asked before the answers are seen",
+      "effect": "Without it the sheet reports how many were right, which is a mark. With it the sheet reports where somebody's estimate and their memory came apart, and the row that says certain and wrong is the only thing on the page they did not already know."
+    },
+    {
+      "knob": "whether the feedback arrives at all",
+      "effect": "Writing an answer you believe is wrong helps, and the sources are exact about the condition: only if the right answer follows. Without the back of the sheet the same instruction plants an error rather than hooking one, and the sheet has made things worse."
+    },
+    {
+      "knob": "reading again against pulling out",
+      "effect": "Rereading looks better when the check comes immediately and worse as time passes; the two lines cross. It is a direction and not a size, and the inversion inside it is what makes it worth printing."
+    }
+  ],
+  "where_the_work_is": "In the short column, filled before the page turns. Without it the sheet gives back a score. With it the sheet gives back a gap between two numbers the same person produced minutes apart, and nobody has judged anything.",
+  "breaks": "A sheet cannot know whether it was turned over first, and there is no way round that except asking; in the classroom form somebody else closed the book. Of the ten benefits the sources list, three show on the page — gaps found, recall of what was not asked, the check on your own confidence — five happen and are invisible, two are out of reach. On a display eight questions do not fit, and one question has no back to it.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    12,
+    84,
+    86,
+    242,
+    244
+  ]
+}

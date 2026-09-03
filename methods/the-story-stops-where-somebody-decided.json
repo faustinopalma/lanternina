@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "the-story-stops-where-somebody-decided",
+  "kind": "form",
+  "name": "stop the story where somebody had to decide",
+  "also": [
+    "studio di caso",
+    "metodo dei casi",
+    "caso che forza una decisione",
+    "narrazione interrotta",
+    "case method",
+    "decision-forcing case",
+    "casebook method"
+  ],
+  "one_line": "Something that really happened, told with its mess intact and stopped at the moment somebody had to choose, with the ending kept out of sight.",
+  "from_entries": [
+    252
+  ],
+  "how": "Write out something that really happened, near the house, with the mess still in it: three people disagreeing about a washing machine that leaks a little, a constraint — relatives on Saturday — and no obvious answer. Stop the telling at the moment somebody had to decide, and say on the page that you are stopping. Ask what they would do and why. Then three questions that go beside any case: what is not written here that you would need; who loses most if you are wrong; and whether the third person's proposal is a solution or a way of not deciding. Then the rest of the story, on the back or under a fold, with the warning that what happened is not the right answer.",
+  "knobs": [
+    {
+      "knob": "whether the ending is given at all",
+      "effect": "Given, it is a yardstick for your own decision, and the printed warning that it is not the right answer is what keeps it one. Withheld, the case has no second half and needs no page-turn, and one teacher quoted says the analysis can be stronger when what happened stays unsaid."
+    },
+    {
+      "knob": "which case is chosen",
+      "effect": "A representative, average, typical case is usually the least informative one. Choosing something unusual or particularly revealing is what makes a story worth taking apart, and it goes against the instinct of picking a normal example so as to unsettle nobody."
+    },
+    {
+      "knob": "where the cut falls",
+      "effect": "A story with five points where somebody decided yields thirty-one different cases depending on which of them are made into problems. The story is not the case: the cut is, and it is the only thing whoever writes one actually designs."
+    },
+    {
+      "knob": "whether the reader cuts one too",
+      "effect": "Naming the five decision points and asking for a different cut turns somebody who has just answered a case into somebody who has written one. Nothing in the sources does this, and it is what makes the choice of cut visible at all."
+    }
+  ],
+  "where_the_work_is": "In separating the quality of a decision from how it turned out. Asking who would have been right if it had been the motor instead of the seal is what stops the ending being read as the answer, and no account of how something went teaches that on its own.",
+  "breaks": "The ending has to sit out of sight and a sheet cannot stop anybody turning it over; the honest version is the one with no ending at all, which also removes the need for an interval. Missing against the real method is the discussion — a room where readings are put to other people and whoever teaches never gives theirs. And the case is written rather than lived, so it belongs to nobody: a true story from the house would beat any printed one, and the sheet can only ask somebody to tell it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    233,
+    234,
+    251,
+    253,
+    254
+  ]
+}

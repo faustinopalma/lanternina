@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "paper-that-has-to-hold",
+  "kind": "form",
+  "name": "build something from paper that has to hold",
+  "also": [
+    "costruzione",
+    "montaggio",
+    "prototipo",
+    "ponte di carta",
+    "torre di spaghetti",
+    "spaghetti tower",
+    "structural challenge"
+  ],
+  "one_line": "Paper and tape and nothing else, a gap to span, and a load chosen and written down by whoever builds, before they start.",
+  "from_entries": [
+    44
+  ],
+  "how": "Restrict the materials in the first line: only paper and tape, no string, no glue, scissors only for cutting the paper. A restriction produces more invention than «whatever you like», and it is one sentence. Set the gap in centimetres — thirty, between two chairs. Have the load declared on a printed rule before anything is built, so the standard is theirs and cannot be revised halfway through. Print one worked sentence and no more: flat paper holds nothing, folded paper holds a lot, and folded one way it holds much more than folded another. Write «when it falls», not «if», and ask where it gave way before it is built again.",
+  "knobs": [
+    {
+      "knob": "who sets the criterion",
+      "effect": "Declared by whoever builds and written down first, the standard belongs to them and no outside judgement is left anywhere in the afternoon; set by the sheet, it is a target somebody else picked, and failing it means failing somebody."
+    },
+    {
+      "knob": "how tight the materials are",
+      "effect": "Paper and tape alone force the discovery that shape carries load; an open cupboard produces whatever comes to hand first, and the folding never gets found."
+    },
+    {
+      "knob": "whether a design comes first",
+      "effect": "Drawing it first makes two activities and the second may not happen; building straight away is far easier to begin, and the design gets discovered in what falls down."
+    },
+    {
+      "knob": "whether it can be rebuilt",
+      "effect": "One attempt makes the collapse the end of the afternoon; «when it falls, look at where before you build it again» makes the collapse the middle, and that sentence is most of what the form does."
+    }
+  ],
+  "where_the_work_is": "In the load being declared before anything is built. It puts the criterion outside anybody's judgement, and it is written by the person who will be measured against it.",
+  "breaks": "Nothing about it comes back on paper: the bridge holds or it does not, and only the declared load and the note of where it gave way are written down. It needs tape, which is the one material this record assumes is in the house. On a display the restriction, the span and the sentence about folded paper all fit, which is unusually most of it.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    26,
+    42,
+    46,
+    54,
+    299
+  ]
+}

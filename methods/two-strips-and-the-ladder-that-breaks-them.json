@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "two-strips-and-the-ladder-that-breaks-them",
+  "kind": "form",
+  "name": "cut a cipher wheel, then break it in twenty-one rows",
+  "also": [
+    "cifrario di Cesare",
+    "cifrario a scorrimento",
+    "disco cifrante",
+    "Caesar cipher",
+    "shift cipher",
+    "completare la componente in chiaro"
+  ],
+  "one_line": "Two paper strips that shift an alphabet with nobody counting, and a ladder of twenty-one rows that reads the result without them.",
+  "from_entries": [
+    130
+  ],
+  "how": "Print two strips to be cut out. The short one carries the twenty-one Italian letters once; the long one carries them twice in a row, and that is the whole trick, because sliding off the end lands back at the start and nobody has to count past Z. Print a line for the shift, one for the message and one for the enciphered version. Then print the second half on the same sheet: a grid eight columns wide and twenty-one rows deep. Write the first eight enciphered letters across the top, then under each write the alphabet downwards, wrapping at the end. One of the twenty-one rows reads as Italian. Print that this is called completing the plain component and dates from the eighteenth century, and print the question at the foot: how long did the secret last.",
+  "knobs": [
+    {
+      "knob": "one strip or two",
+      "effect": "One strip means counting to the end of the alphabet and back, which is where every mistake happens. The long strip written twice makes the wrap physical and removes the only hard operation there was."
+    },
+    {
+      "knob": "whether the sheet also breaks it",
+      "effect": "Twenty-one rows cost half a page and end with a conviction gone: a secret that falls to writing out twenty-one rows was never one. Without them the sheet teaches a cipher and leaves it looking sound."
+    },
+    {
+      "knob": "how wide the ladder is",
+      "effect": "Eight columns is enough for one Italian word to stand out of the noise. Four is not, and sixteen is a page of writing before anything can be read at all."
+    },
+    {
+      "knob": "whether the shift changes along the text",
+      "effect": "A fixed shift is what the ladder breaks. A shift changing with a repeated keyword is Vigenere and does not fall to counting. A key as long as the message, never reused, cannot be broken, and the difficulty moves to handing the key over."
+    }
+  ],
+  "where_the_work_is": "In the second alphabet on the long strip, which is what makes the arithmetic disappear. The ladder is the other half, and it is the reason to print this cipher rather than one that holds.",
+  "breaks": "Strips print and are cut in two minutes, but the two rows must share a letter pitch: print at 100% and check that twenty-one letters on the short strip line up with the first twenty-one on the long one. Twenty-one rows of eight hand-written letters scan poorly unless the rows are well apart. On 800x480 one short enciphered line and the shift number fit and the ladder cannot. Nothing may print a message already enciphered — the strips do that, and a wrong one would look right.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    129,
+    131,
+    135,
+    341,
+    349
+  ]
+}

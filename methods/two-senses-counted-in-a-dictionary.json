@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "two-senses-counted-in-a-dictionary",
+  "kind": "form",
+  "name": "count how many times a word appears in a dictionary",
+  "also": [
+    "bisenso",
+    "doppio senso",
+    "polisenso",
+    "omonimia",
+    "polisemia",
+    "homonym",
+    "polysemy",
+    "parola a due sensi"
+  ],
+  "one_line": "Words with two meanings come in two kinds, the difference is invisible in the word, and the dictionary shows it in how it lays them out.",
+  "from_entries": [
+    335
+  ],
+  "how": "Print six words that carry two meanings — canto, lira, fattore, squadra, miglio, verso — with a box beside each. Explain what a dictionary does without saying it does: two words that only sound alike get two entries with a small number beside them, riso and riso, while two meanings from one origin sit under one entry with the senses listed below. Ask for the dictionary in the house to be opened and the number of entries written in each box. Then ask for three more found by the person and checked the same way. Say in one line that most people offer one origin believing they have found two, and that the mistake is the interesting part.",
+  "knobs": [
+    {
+      "knob": "whether the dictionary is opened",
+      "effect": "Opened, the answer is a count anybody can make and the sheet needs no solution. Answered from memory, it is a guess about the history of a word, and nothing on the page can say whether it is right."
+    },
+    {
+      "knob": "how many the person finds themselves",
+      "effect": "Three of their own is where the mistake happens, and the mistake is the content. None of their own leaves six lookups, which is an exercise and is over when the six are done."
+    },
+    {
+      "knob": "how fine the distinction is",
+      "effect": "Asked coarsely — two meanings or one — people agree. Asked finely, agreement falls to about 85 per cent among people who do this for a living, so an unexpected answer to a fine question is not a wrong one."
+    },
+    {
+      "knob": "whether a difference in sound is allowed",
+      "effect": "Same spelling and same sound is the form. Allowing the stress to move brings in botte and botte, which is a different game with its own name and makes the rule printed on the sheet false."
+    }
+  ],
+  "where_the_work_is": "In the dictionary, and the sheet's job is to say what to look at once it is open. Which words carry two senses is easy; which of the two kinds each one is cannot be seen at all.",
+  "breaks": "A house with no dictionary has nothing to check against, so look at the shelf before printing rather than assuming. On 800x480 two words and two boxes fit and the explanation of what the small numbers beside an entry mean does not. Nobody is asked to look inside a word here, so a model can write the sheet; it cannot say what the dictionary will show.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    322,
+    337,
+    342,
+    352
+  ]
+}

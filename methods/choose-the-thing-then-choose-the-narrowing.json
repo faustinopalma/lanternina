@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "choose-the-thing-then-choose-the-narrowing",
+  "kind": "move",
+  "name": "let them pick the thing and pick the narrowing",
+  "also": [
+    "autoassegnata con vincolo",
+    "patto con sé stessi",
+    "strettoia scelta",
+    "intenzione d'attuazione",
+    "se succede X allora faccio Y",
+    "implementation intention",
+    "commitment device"
+  ],
+  "one_line": "The sheet prints four narrowings and no object: the object is chosen in the room and the pact is written before anything is done.",
+  "from_entries": [
+    294
+  ],
+  "how": "Print four narrowings and no object. Whoever reads picks something in the room that fits in one hand, then circles one narrowing: only one hand, never resting it on the table, in eight moves counted aloud, eyes shut after the third move. Count events and never minutes — paper does not know when twenty minutes have passed, and a narrowing that counts moves is checked by the person counting them. Then one line in the exact form «when ..., then I ...», written before anything is done: that is the shape of pact the evidence is about, and the only one nobody has to enforce. Leave the penalty out. Every result on commitment contracts concerns contracts that carry a consequence, and there is none here — nobody checks, nobody punishes, nothing is recorded. Finish by asking where the narrowing made the hand do something it would not have done.",
+  "knobs": [
+    {
+      "knob": "who picks the object",
+      "effect": "Picked in the room, the sheet never has to know what is in the house. Named on the sheet, the sheet is guessing at a room it cannot see, and is wrong often enough to matter."
+    },
+    {
+      "knob": "how tight the narrowing is",
+      "effect": "No narrowing produces nothing. Among people who took the hard commitments, 55% did not keep them. Neither end is where to sit, and four narrowings of one clause each is the middle."
+    },
+    {
+      "knob": "whether there is a penalty",
+      "effect": "With one, the whole documented literature applies and somebody has to enforce it. Without, what remains is a soft private commitment: the least studied case, and not obviously the worse one."
+    },
+    {
+      "knob": "whether the last question is asked",
+      "effect": "Asking where the narrowing deflected the hand makes the constraint the content. Left out, the constraint stays a rule and the sheet comes back with nothing written on it."
+    }
+  ],
+  "where_the_work_is": "In the four narrowings counting events. That is what lets a sheet with no clock hold a constraint that runs over time, and it settles how all four are worded.",
+  "breaks": "Four lines and two blanks print and scan. Any version saying «for twenty minutes» is out of reach: the paper cannot measure it and cannot know it has passed. On 800x480 the four narrowings fit in one bit and the pact line will not fit legibly beside them. Whether the pact was written before or after cannot be told from the sheet, and nothing here is built on it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    6,
+    7,
+    66,
+    69,
+    250
+  ]
+}

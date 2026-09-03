@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "the-real-question-at-the-foot",
+  "kind": "move",
+  "name": "put an errand at the top and the real question at the foot",
+  "also": [
+    "scoperta",
+    "serendipità",
+    "consegna vera in fondo",
+    "trovare senza cercare",
+    "emergenza non intenzionale",
+    "serendipity",
+    "discovery",
+    "easter egg"
+  ],
+  "one_line": "The task announced at the top is what makes somebody move; the question actually wanted is printed at the very bottom of the page.",
+  "from_entries": [
+    273,
+    274,
+    275
+  ],
+  "how": "Print a plain errand at the top — mark the three things in this kitchen older than you, from a list of thirty — and put what is actually wanted at the foot, under everything: the strangest thing you saw that had nothing to do with what you were looking for, and how you had never noticed it. Asking for three rather than one is the lever and it can be counted: three out of thirty passes about 13.3 objects through somebody's hands, one passes 4.4. The order is not decoration. A question about noticing, printed at the top, makes somebody hunt for strange things instead of meeting one, and then there is nothing left to notice.",
+  "knobs": [
+    {
+      "knob": "top or foot",
+      "effect": "At the foot, the errand happens first and the noticing is a by-product. At the top, the noticing becomes the errand, and the sheet has asked for exactly the thing that cannot be asked for."
+    },
+    {
+      "knob": "how many the errand asks for",
+      "effect": "One of thirty passes 4.4 objects under the eyes, three passes 13.3, five passes 20.7. The number in the errand is the whole of the lever and it costs one character to change."
+    },
+    {
+      "knob": "which closing question",
+      "effect": "What you saw and were not looking for collects an accident. What you did that was not written collects a departure from the rules. Where you wanted to stop collects the moment the sheet became tiresome, and is the only one somebody who did nothing can still answer."
+    }
+  ],
+  "where_the_work_is": "In the errand being doable without thinking. It has to be dull enough to be got through on the way to something else, because whatever it costs in attention is taken out of what the sheet is really for.",
+  "breaks": "It rests entirely on the page not being read to the bottom first, and a printed sheet is one object anybody can read in any order; it works once, with somebody who wants it to. It adds nothing markable and nothing checkable, and a blank last line is indistinguishable from an afternoon in which nothing was noticed. On a display the two halves cannot be far enough apart to matter.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    17,
+    49,
+    63,
+    236,
+    245
+  ]
+}

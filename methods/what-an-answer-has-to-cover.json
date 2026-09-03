@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "what-an-answer-has-to-cover",
+  "kind": "move",
+  "name": "print what an answer has to cover, not the answer",
+  "also": [
+    "impalcatura",
+    "scaffolding",
+    "sostegno",
+    "ponteggio",
+    "instructional scaffolding",
+    "sostegno incorporato",
+    "hard scaffolding"
+  ],
+  "one_line": "Where a form would hand over a piece of the solution, it hands over the questions the solution has to answer instead.",
+  "from_entries": [
+    231
+  ],
+  "how": "Print, beside the task, the questions a good answer has to reach. Six is enough: what is needed before starting; the first move somebody who has never done it would not guess; how many steps in all; where it can go wrong and how you notice; how you know it is finished; who you are telling and what they know already. Then the test that says whether what you printed is support and not a worked example in disguise — set it beside a sample answer to the same task and count the content words the two share. Six questions like these share none; a worked example of the same task shares 20 out of 24. Close with a line asking which two are still wanted and which four are not.",
+  "knobs": [
+    {
+      "knob": "prepared beforehand or invented on the spot",
+      "effect": "A sheet can only do the prepared kind, because it does not see how it is going. The sources give contingency as one of the two conditions of good support; a sheet has the other one, the planned withdrawal, and not this."
+    },
+    {
+      "knob": "how much guidance",
+      "effect": "More guidance has a larger effect and is not a guarantee. Guidance that is well aimed and interacts with what is being learnt beats little guidance; guidance that is not swamps somebody with what they did not need and makes performance worse."
+    },
+    {
+      "knob": "how hard the task is",
+      "effect": "Wass and Golding: the largest gains come from the hardest tasks that can be done with support. Not a little above what somebody manages alone — the most that holds. It is the opposite of lowering the bar so nobody gets anything wrong."
+    },
+    {
+      "knob": "who says when the support comes off",
+      "effect": "A closing line asking which two of the questions are still wanted and which four are not hands the withdrawal to whoever used them. It is not contingency, it is contingency delegated, and it is the only version available to a sheet that cannot watch."
+    }
+  ],
+  "where_the_work_is": "In the count of shared words. An aid that shares half its words with the answer is a worked example wearing a disguise, which is a different form with a different effect; counting takes a minute and settles which of the two got printed.",
+  "breaks": "It cannot see how somebody is doing, so the questions arrive at the same strength whether or not they were needed. It also does nothing alone: printed beside no task, six questions are six questions. The count of shared words has to be done by whoever writes the sheet, because nothing afterwards will catch a support that was secretly an answer. On a display six lines fit, and they are the half of it that does.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    26,
+    39,
+    227,
+    230,
+    240
+  ]
+}

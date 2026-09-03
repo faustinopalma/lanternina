@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "strips-to-reorder",
+  "kind": "form",
+  "name": "put a cut-up text back in order",
+  "also": [
+    "riordino di un testo tagliato a pezzi",
+    "riordino di strisce",
+    "jumbled paragraphs",
+    "text reconstruction"
+  ],
+  "one_line": "A text is cut into strips and shuffled, and goes back together by its seams rather than by its subject.",
+  "from_entries": [
+    10,
+    6
+  ],
+  "how": "Write the text first and cut it afterwards, never the reverse: a text written to be cut comes out as a list. Cut at the sentence — mid-line makes it mechanical, at the paragraph it stops being solvable. Six or seven strips is the whole exercise. Print them at the foot of the sheet, in a scrambled order that is not the reverse order, with the instructions above the cut line so that the page can be taken apart without losing what it asked for. Add one strip that belongs to a different text, and one line saying it is not a mistake and should be kept.",
+  "knobs": [
+    {
+      "knob": "where the cut falls",
+      "effect": "mid-line makes it almost mechanical, the seams do the work by themselves; at the sentence it is the exercise; at the paragraph it is nearly impossible, because the seams stop being visible."
+    },
+    {
+      "knob": "whether a strip does not belong",
+      "effect": "with an intruder there is a second, harder question inside the first, and a natural rung of help: find the order, then find the one that is wrong."
+    },
+    {
+      "knob": "whether the text is already known",
+      "effect": "a known text is reassembled from memory and the reading never happens; an unknown one has to be read, which is the point."
+    },
+    {
+      "knob": "whether a strip is missing",
+      "effect": "asking for the missing line to be written turns a task with one right answer into one that cannot be marked, and it is the part worth having."
+    }
+  ],
+  "where_the_work_is": "In the seams between strips, not in their content: a pronoun picking up a name, a «then», a comma left open. That is what to write carefully and what to cut across.",
+  "breaks": "The sheet with the strips is a page of a different kind — it is not read, it is taken apart — so it cannot also be the page anything is written on. On a display the strips do not fit; what fits is the sentence that says how many there are and that one of them is a stranger.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    6,
+    10,
+    12,
+    17,
+    22
+  ]
+}

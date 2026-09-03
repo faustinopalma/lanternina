@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "cut-where-the-counting-stops",
+  "kind": "move",
+  "name": "cut the printed part where the counting stops",
+  "also": [
+    "problema a completamento",
+    "problema mezzo svolto",
+    "soluzione parziale",
+    "esercizio da finire",
+    "completion problem",
+    "completion strategy"
+  ],
+  "one_line": "Part of a solution printed and the rest blank, with the cut placed exactly where the arithmetic hands a decision back to a person.",
+  "from_entries": [
+    229
+  ],
+  "how": "Take a table or a procedure and print part of it filled in — first row done, the rest empty — then choose where to stop printing by one test: find the step where the arithmetic stops being enough and hands a judgement back to a person, and cut there. A recipe for four scaled to seven gives 560 g of pasta, 875 g of tomato and seven halves of an egg, and an egg does not halve; two tins of 400 and 500 g make 900, twenty-five over. Print the numeric results of the rows that are pure arithmetic, so the sheet still checks itself, and leave unprinted only the row where somebody has to decide. Never say which row that is.",
+  "knobs": [
+    {
+      "knob": "which end is given",
+      "effect": "Start given asks for continuing, end given asks for reconstructing, holes in the middle ask for recognising. No source read compares the three, and they are three different afternoons on the same page."
+    },
+    {
+      "knob": "whether the final answer is printed",
+      "effect": "Printed, the sheet settles itself and the surprise goes: seven halves of an egg stops being a surprise if the answer already says so. Left out entirely, nobody can settle anything. This move fixes the middle — arithmetic rows printed, decision row not."
+    },
+    {
+      "knob": "how much is already there",
+      "effect": "Half is the studied case and the fraction is free. More printed and it is a worked example with gaps in it; less and it is an ordinary exercise with a decoration on top."
+    },
+    {
+      "knob": "whether the blanks are numbered",
+      "effect": "A numbered blank says how many steps are missing. An empty space does not, and then working out how many steps there are becomes part of the problem, which is a harder task and a different one."
+    }
+  ],
+  "where_the_work_is": "In choosing the cut. Everything on either side of it is layout. The step where a procedure stops being enough is the whole design, and finding it means working the problem out yourself first.",
+  "breaks": "It returns nothing on its own and can never be a moment by itself. Finishing costs more effort than watching for the same result — the sources measure equal performance and lower efficiency — so it is the move for when somebody has to do, not for when somebody has to understand. On a display a part-filled table does not fit at all, and the rows are the whole point of it.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    227,
+    230,
+    212,
+    39,
+    243
+  ]
+}

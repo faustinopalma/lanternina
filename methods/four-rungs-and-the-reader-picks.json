@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "four-rungs-and-the-reader-picks",
+  "kind": "move",
+  "name": "print four rungs and let the reader pick one",
+  "also": [
+    "apprendimento per indagine",
+    "scala di Banchi e Bell",
+    "indagine di conferma",
+    "indagine strutturata",
+    "indagine guidata",
+    "inquiry-based learning",
+    "levels of inquiry"
+  ],
+  "one_line": "The same task printed at four strengths, with a table naming them, and the choice of which one to start from left to whoever is reading.",
+  "from_entries": [
+    236
+  ],
+  "how": "Print the task four times at four strengths, with a small table naming them and saying what each hands over. Rung one gives the question, the method and the result — the result too, so all that is left is watching and writing down. Rung two gives the question and the method and not the result. Rung three gives only the question. Rung four gives nothing: write a question you cannot answer and go and look. Underneath all four, one set of five lines that works from any rung — my question, what I did to look, what I saw, what I think it means, what would change my mind. Add one line saying the rung can be changed halfway, and to write it down when it is.",
+  "knobs": [
+    {
+      "knob": "how much is handed over",
+      "effect": "Three things can be given — the question, the method, the result — and across the four rungs they are given six times out of twelve, three then two then one then none. Exactly half the sheet is given away, and which half is the reader's choice."
+    },
+    {
+      "knob": "whether the bottom rung gives the result away",
+      "effect": "It looks pointless and it is what makes the ladder usable: knowing what should happen removes the weight of not knowing what to expect and leaves only learning to watch and to record. Schwab's three levels lacked it; Banchi and Bell added it underneath."
+    },
+    {
+      "knob": "who picks the rung",
+      "effect": "Printed and chosen, the sheet fits itself to somebody without knowing anything about them and without recording anything about them. Chosen by whoever prints, it is a guess about a reader they have never met and cannot see."
+    },
+    {
+      "knob": "the top rung",
+      "effect": "Open enquiry works only with an interest of one's own and the skill to run a search alone, and a sheet produces neither. Guided discovery beat pure discovery in all three waves Mayer reviewed, which puts rungs two and three above rung four rather than below it."
+    }
+  ],
+  "where_the_work_is": "In the five lines printed under all four rungs. They are what lets one page carry four different tasks: whatever was given away above, the same five things are asked below, and the sheet never needs to know which rung was taken.",
+  "breaks": "Choosing a rung is a question about yourself asked cold, and it is hard. Somebody watching would move it halfway through and a sheet cannot, so the printed invitation to change rung mid-way is the only repair there is. Four versions of one task cost most of a page. On a display the four-row table saying what each rung hands over fits, and the four tasks do not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    227,
+    234,
+    242,
+    248,
+    250
+  ]
+}

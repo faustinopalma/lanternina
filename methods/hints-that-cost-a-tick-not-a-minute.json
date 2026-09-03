@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "hints-that-cost-a-tick-not-a-minute",
+  "kind": "move",
+  "name": "print four hints and charge a tick for each one",
+  "also": [
+    "indizio a scaglioni",
+    "aiuto a livelli",
+    "suggerimento graduato",
+    "scala di indizi",
+    "hint system",
+    "fading",
+    "instructional scaffolding"
+  ],
+  "one_line": "Four graded hints on the same sheet, none of them containing the answer, and a box to tick that records how far up somebody went.",
+  "from_entries": [
+    187
+  ],
+  "how": "Four rungs and no more: say where to look, say what kind of thing it is, give the structure, give the procedure. Write each so that something is still left to do — the fourth says try y equal to one, then two, then three, working out x and the product each time, which leaves five multiplications. No rung says the answer, which is the only rule here. Print a box beside each. The price is not time, because a sheet has no clock: the price is the tick. Then three lines at the foot — how far you went, which rung restarted you, and what you were trying to do before you opened it. Put the rungs behind a fold or a tear-off tab: printed in the open they are read whether or not anybody meant to.",
+  "knobs": [
+    {
+      "knob": "how many rungs",
+      "effect": "Under three it is not a ladder but a hint. Over five the rungs resemble one another and choosing which to open becomes the exercise. Four is where the named jobs are: where, what kind, the structure, the procedure."
+    },
+    {
+      "knob": "what the last rung gives",
+      "effect": "The procedure and not the result, so whoever reads it still has arithmetic to do. If any rung prints the answer the ladder has one rung and the other three are decoration."
+    },
+    {
+      "knob": "what opening costs",
+      "effect": "Minutes, in a room with a clock, which a sheet has not got. A tick, which costs nothing and is worth more: a finished sheet then carries how much it cost to finish, and two identical results stop being identical."
+    },
+    {
+      "knob": "whether the ladder is hidden",
+      "effect": "In the open it is read involuntarily and the first rung fires before anybody was stuck. Behind a fold or a tab, opening is a movement and therefore a decision, which is the whole mechanism."
+    }
+  ],
+  "where_the_work_is": "In writing four rungs of which none is the answer. That is the single rule, it has to be done again for every task it is attached to, and the fourth rung is where it usually gets broken.",
+  "breaks": "The hints are ink on the same sheet and can be read without deciding to; a fold or a tear-off tab fixes that for the price of one crease. On 800x480 the form improves, because one rung at a time is what four lines do well and asking for the next is a gesture rather than a glance — but the panel records nothing, and the ticks are exactly what was worth having. No printed rung can respond to what is actually happening, which is the condition the teaching literature puts on support of this kind.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    227,
+    229,
+    230,
+    231
+  ]
+}

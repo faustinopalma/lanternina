@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "method_id": "a-parts-list-with-no-part-named",
+  "kind": "form",
+  "name": "list a thing's parts by number and never by name",
+  "also": [
+    "indovinello per enumerazione",
+    "indovinello classico",
+    "indovinello per negazione",
+    "indovinello dell'anno",
+    "indovinello dell'oggetto che scrive",
+    "riddle",
+    "Four Hang; Two Point the Way",
+    "featherless bird riddle",
+    "writing-riddle"
+  ],
+  "one_line": "A thing is taken apart and each part given only as a number and what it does, so the description is true, complete and opaque.",
+  "from_entries": [
+    110,
+    112,
+    113,
+    114,
+    116
+  ],
+  "how": "Print two columns, HOW MANY and WHAT THEY DO, four blank rows, and a fifth whose left cell already reads UNO. Above them print one worked example: four hang, four walk, two point the way, two drive off dogs, one behind always dirty. It is a cow and it is eight hundred years old. Say once that the name of a part is never written, and let the two columns carry the rest of the instruction: there is nowhere on the sheet to put a name. The odd last row is a single one and in the old versions it is the worst part, so it is kept for last. Then one line saying to count the parts against the real thing, because a wrong count makes the riddle false rather than hard, and whoever reads it finds that by counting.",
+  "knobs": [
+    {
+      "knob": "which frame is printed",
+      "effect": "Counting gives an inventory that is checked by counting. Privation, four «it has no» and one «but», needs no vocabulary at all. A metaphor of place needs one impossible pair. Nested numbers give a calendar. A two-column correspondence gives a machine that keeps producing."
+    },
+    {
+      "knob": "how many rows",
+      "effect": "Three or four rows is a riddle. Six or seven turns into a rhyme that is learned rather than solved, which lasts longer and hides nothing."
+    },
+    {
+      "knob": "whether the odd row is printed",
+      "effect": "Printing UNO on the last row forces the asymmetric line that makes the thing memorable. Left off, five equal rows come back and the sheet reads as a list."
+    },
+    {
+      "knob": "whether the count is asked for",
+      "effect": "Asking for it puts the check on the page: wrong numbers make the riddle false, and anyone who counts finds it. Without it the sheet cannot be answered by anybody, including whoever wrote it."
+    }
+  ],
+  "where_the_work_is": "In naming each part by what it does and never by the word that holds them together. That word is the whole disguise, and the two printed columns are what stops it being written down.",
+  "breaks": "Two columns of short lines print and scan. On 800x480 this is the one riddle here that fits whole: five rows of a number and four words sit inside forty columns. Composing is safe because no letter is touched, but the count is not. A model asked for the inventory returns numbers that do not add up, and a wrong count makes the riddle false rather than hard while looking exactly the same. Count the parts against the real object by hand before printing.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    39,
+    63,
+    111,
+    118,
+    337
+  ]
+}

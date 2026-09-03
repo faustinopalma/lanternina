@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "method_id": "a-budget-and-what-each-unit-earned",
+  "kind": "form",
+  "name": "spend a fixed budget, then write what each unit earned",
+  "also": [
+    "punti",
+    "punteggio",
+    "tariffario",
+    "listino",
+    "risorse da spendere",
+    "gettoni",
+    "punti azione",
+    "costo opportunità",
+    "opportunity cost",
+    "resource management",
+    "budget"
+  ],
+  "one_line": "A fixed number of tokens, three uses that pay differently and are capped, and afterwards a line saying what every single token brought in.",
+  "from_entries": [
+    256,
+    270
+  ],
+  "how": "Print three uses with a yield and a cap — five a token up to four tokens, three up to six, two up to ten — and hand over twelve tokens. Ask for the distribution and its total first. Only underneath print the counts: thirty-two distributions exist, the best is 42, the worst 26, and half of them reach 34. Then the line that carries the sheet: write what each of the twelve tokens earned, in order. It comes out 5 5 5 5 3 3 3 3 3 3 2 2, and that falling row is opportunity cost with no definition and no arithmetic past subtraction. The caps are fixed here: without them the answer is put everything on the best one, and the row never falls.",
+  "knobs": [
+    {
+      "knob": "whether the uses pay differently",
+      "effect": "Three uses that pay the same turn thirty-two distributions into one outcome, and the resource is still printed but has stopped existing. Unequal yields with caps are what make the sheet a decision rather than a rite."
+    },
+    {
+      "knob": "an exact total or the largest one",
+      "effect": "«Reach exactly ten» produces a choice; «score as much as you can» produces volume and reads as a score. The first is fixed here, because a total nobody is trying to maximise cannot turn into a running tally."
+    },
+    {
+      "knob": "what a token buys",
+      "effect": "Numbers on the page make it arithmetic and cost nobody anything. Tokens that buy real pieces of the afternoon make it a resource, and then somebody in the house has to have something to give."
+    },
+    {
+      "knob": "where the printed counts go",
+      "effect": "Above the blanks they are the answer and the distribution gets copied off them. Below, they are a term of comparison for something already written, and nothing on the page can be worked backwards."
+    }
+  ],
+  "where_the_work_is": "In the price list. A number beside a thing says what counts more plainly than a sentence does, and leaves it open to being disagreed with, which a line of encouragement does not.",
+  "breaks": "The paper cannot stop anybody writing thirteen tokens; it registers and does not forbid, and this record leans on that instead of pretending otherwise. Nothing carries to the next afternoon and nothing here asks it to. Scanned back, a column of single digits reads only if the rows are set well apart. On 800x480 the four-column table does not fit; the row of twelve numbers does, and it is the half worth showing.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    54,
+    244,
+    255,
+    265
+  ]
+}

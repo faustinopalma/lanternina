@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "fold-the-word-in-half",
+  "kind": "form",
+  "name": "check a word against itself, letter against letter",
+  "also": [
+    "palindromo",
+    "palindrome",
+    "verso sotadico",
+    "bifronte",
+    "parola rovesciabile",
+    "semordnilap",
+    "frase speculare",
+    "scrittura speculare"
+  ],
+  "one_line": "A word that reads the same both ways is settled by matching the first letter with the last and working inwards, and by nothing else.",
+  "from_entries": [
+    333,
+    334
+  ],
+  "how": "Print one word with its positions numbered underneath — AMORE ROMA, nine letters — and the four comparisons written out: 1 with 9, 2 with 8, 3 with 7, 4 with 6. Say that position 5 has nobody to compare with because it sits in the middle. Then print eight words, five of them palindromes: anilina, onorarono, arena, ossesso, livello, ingegni, essere, aerea. Ask for the number of comparisons made on each and for the palindromes to be circled, and print that five of the eight are. Check the eight yourself first. The count of comparisons is exact: a word of n letters costs n halved and rounded down, so nine letters cost four.",
+  "knobs": [
+    {
+      "knob": "whether the comparisons are counted",
+      "effect": "Counted, the sheet shows that checking is cheap — nine letters, four comparisons — which is why the records for this form run to tens of thousands of letters. Uncounted, it is eight yes-or-no answers."
+    },
+    {
+      "knob": "whether a mirror is used instead",
+      "effect": "A line written to be read in a mirror moves the check into an object that has no opinion: it is right or it is not, and it shows at once. It costs a mirror and gives up the counting."
+    },
+    {
+      "knob": "whether spaces and accents count",
+      "effect": "Saying that spaces, capitals and punctuation are ignored is what lets phrases in at all. Leaving it unsaid makes half the good examples arguable and makes the count of comparisons wrong."
+    },
+    {
+      "knob": "one word or a phrase",
+      "effect": "A word is checked in seconds and read at once. A phrase of twenty-five thousand letters costs twelve thousand comparisons, which is nothing for a machine and too much for an evening."
+    }
+  ],
+  "where_the_work_is": "In the eight words, which have to be checked one by one before printing, and in the claim that five of them are palindromes. What the person does afterwards is mechanical and cannot go wrong unseen.",
+  "breaks": "It prints, and the numbered positions have to sit directly under the letters or the comparisons cannot be read off. Scanned back it survives. On 800x480 one nine-letter word with its numbers fits and the list of eight does not. A model cannot produce the eight words or say how many are palindromes; prepare them once by hand and the sheet then runs without anybody.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "both",
+  "goes_with": [
+    311,
+    316,
+    321,
+    331,
+    349
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "method_id": "show-the-pair-ask-the-operation",
+  "kind": "move",
+  "name": "give both words and ask what was done to them",
+  "also": [
+    "scambio",
+    "metatesi",
+    "contrepeterie",
+    "spoonerism",
+    "trasposizione",
+    "di che gioco si tratta"
+  ],
+  "one_line": "Both words are printed, so nothing has to be found; what is asked for is the name of the operation that turns the one into the other.",
+  "from_entries": [
+    318,
+    320
+  ],
+  "how": "Take a form that turns one word into another and print both. Ask which letters moved and what that operation is called. Print the names as a list with one box each and exactly as many boxes as pairs, each name used once, so that a box left over says a mistake happened earlier without anybody having to say it. Use pairs that are attested rather than invented: crocodilus became coccodrillo and semper became sempre, and in seven such pairs out of eight the letter that moved is an R or an L. Ask which one is the eighth and what makes it different. The eighth is what turns a regularity into a question.",
+  "knobs": [
+    {
+      "knob": "invented pairs or attested ones",
+      "effect": "Invented pairs must be searched for inside words and each checked by hand. Attested pairs are facts that can be cited, cost nothing to verify, and carry a second question: what the exception has that the others do not."
+    },
+    {
+      "knob": "whether the names are a one-to-one match",
+      "effect": "Five names for five pairs, each used once, carries its own check: a box left over means an error further up. Naming freely takes that away and leaves a sheet somebody has to mark."
+    },
+    {
+      "knob": "asking for the result instead",
+      "effect": "Asking what the second word is puts the whole weight on a dictionary and on whoever composed it. Asking what the operation is keeps both words on the page and the checking with them."
+    }
+  ],
+  "where_the_work_is": "In the pairs, which are the half that costs. Finding five words related by one swap is a search inside words; taking eight from the history of a language is a lookup with a source.",
+  "breaks": "Applied to a form whose operation has no name, the question has no answer and the sheet stops there. Used with invented pairs the composing cost comes back in full, which is why this fixes it at attested ones. On 800x480 one pair and one box fit at a time, and the one-to-one match that makes the sheet check itself needs all of them at once, so it belongs on paper.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    311,
+    314,
+    316,
+    319,
+    321
+  ]
+}

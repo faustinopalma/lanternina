@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "three-sheets-that-never-say-they-are-one",
+  "kind": "form",
+  "name": "three sheets on three days that never say they are one",
+  "also": [
+    "ARG",
+    "alternate reality game",
+    "gioco pervasivo",
+    "pervasive game",
+    "narrazione a puntate",
+    "gioco che non finisce",
+    "cerchio magico esteso"
+  ],
+  "one_line": "Pieces delivered on separate days, none declaring itself part of anything, and one question at the end about when it became one thing.",
+  "from_entries": [
+    203,
+    204
+  ],
+  "how": "Make the first sheet the most anonymous document there is — an inventory, a register, a list of contents — and put in it one line that admits it does not know something: «a tin box, closed, contents not verified». Make the second a note from inside the story whose arithmetic does not close: five doors that lock, six keys on the ring, and the line «I did not write number seven». Make the third go out into the real house, naming the thing by function — the box that is here and whose contents nobody knows — and forbid opening it: ask instead for three things that can be told from outside. Explain nothing anywhere, and never say this is a game. Ask at the end on which day the three became one thing, and what made it obvious.",
+  "knobs": [
+    {
+      "knob": "one sheet a day or all three at once",
+      "effect": "Together they read as a puzzle in three parts and the mechanism is gone. On separate days with nothing said, the reader has to decide they belong together, which is the only thing this form asks of anybody."
+    },
+    {
+      "knob": "which way the fiction breaks",
+      "effect": "«I did not write number seven» is said to somebody else inside the story and the reader overhears. Addressed to the reader it becomes an instruction, and the document stops being a document at the moment it is most needed."
+    },
+    {
+      "knob": "whether the box may be opened",
+      "effect": "Forbidding it leaves the house as it was and still returns an observation — three things told from outside. Allowing it costs a rummage and ends the thing in an object, which paper cannot supply anyway."
+    },
+    {
+      "knob": "a standing rule instead of three sheets",
+      "effect": "The same expansion of time comes free from one sheet left in sight carrying one rule for the week. It measures habit rather than assembling a story, and it charges for it: writing the day's marks down returns the game to a declared moment."
+    }
+  ],
+  "where_the_work_is": "In nothing declaring itself. An inventory that admits a gap and a count that will not close are the whole engine; one line explaining that this is a game turns three days into one afternoon.",
+  "breaks": "It needs three deliveries on three days and does not compress into one. Nothing can be checked: not the arithmetic, which is done against the reader's own house, and not whether the box was left shut. The standing-rule version pays a price that cannot be avoided — a game one writes down each evening is less pervasive than one that is forgotten about. On 800x480 each sheet fits and would be read as three unrelated screens, which is right.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    184,
+    188,
+    193,
+    301,
+    310
+  ]
+}

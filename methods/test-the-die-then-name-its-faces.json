@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "test-the-die-then-name-its-faces",
+  "kind": "form",
+  "name": "test the die for fairness, then name its six faces",
+  "also": [
+    "casualità dichiarata",
+    "dado",
+    "sorteggio",
+    "tirare a sorte",
+    "alea",
+    "tabella scritta prima del tiro",
+    "declared randomness",
+    "dice roll",
+    "randomization"
+  ],
+  "one_line": "Sixty throws with an interval printed against them, and six lines of meaning written down before the die is thrown for anything real.",
+  "from_entries": [
+    281
+  ],
+  "how": "Ask for a six-way source of chance — a die, six folded slips in a glass, a hexagonal pencil with numbers on it — and for it to be named on the sheet. First, sixty throws, tallied face by face. Print that a fair source gives ten each and almost always between five and sixteen, and that a fair source falls outside that range about one time in five, so one odd count on its own proves nothing. Then six ruled lines: what each face means, all six written before a single throw for real, and each of them something the writer would actually do. Then three throws, and the three things in the order they came up. The table existing before the throw is what makes the chance declared instead of imposed.",
+  "knobs": [
+    {
+      "knob": "whether the six lines are printed or written",
+      "effect": "Written by the reader, the table cannot be disputed and nobody has to trust anybody. Printed by the house it becomes a table to be taken on faith, and the chance stops being declared and becomes a verdict."
+    },
+    {
+      "knob": "whether the false-alarm rate is printed",
+      "effect": "Without it the sixty throws teach the wrong thing, because one face out of range reads as proof of a crooked die. With the one-in-five printed, the test has a stated cost and is a real measurement."
+    },
+    {
+      "knob": "how many faces",
+      "effect": "Six is what a house has. Two coins or two dice give a bell instead of a flat spread, which is a different sheet: many small chances rather than one large one, and outcomes far from the middle become rare."
+    },
+    {
+      "knob": "throw first or choose first",
+      "effect": "Throwing and then choosing among what came up opens roads. Choosing and then throwing closes them, and the second is what turns the sheet into a commitment rather than a menu."
+    }
+  ],
+  "where_the_work_is": "In the order: all six meanings written down, then the throw. It is a key written before the cipher — the table is on the page and the die is seen to fall, so neither side has to be believed.",
+  "breaks": "Nothing stops somebody writing on face six a thing they would never do, and the sheet cannot tell; the closing question — which line did you write hoping it would not come up — collects that case rather than ignoring it. Sixty draws from folded slips is slow and the slips wear out. Scanned, a tally of five-bar gates reads badly and boxes with digits read well. On 800x480 a six-column tally and six one-line meanings both fit.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    19,
+    47,
+    54,
+    250,
+    262
+  ]
+}

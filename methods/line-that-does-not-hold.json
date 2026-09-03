@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "line-that-does-not-hold",
+  "kind": "form",
+  "name": "point at the line that does not hold and repair it",
+  "also": [
+    "vero o falso",
+    "obiezione",
+    "confutazione",
+    "controesempio",
+    "true or false",
+    "counterexample",
+    "refutation"
+  ],
+  "one_line": "Something printed that does not hold — three short rules, or one paragraph of reasoning — with the failure to be located and then written out again.",
+  "from_entries": [
+    2,
+    31,
+    32
+  ],
+  "how": "Print three short rules that sound true, or one paragraph of reasoning six lines long. The defect has to be real, and a rule broken just enough is harder to write than a correct one, so write the broken version first and check it stayed broken. Two boxes under it: where it breaks, and how you would write it so that it holds. Print the line saying the conclusion may still be right, because separating an objection from disagreeing is the hard part and nobody arrives at it alone. Last line, the way out: whoever finds nothing writes instead how the rule should read to be true, and that is finished work and not a fallback.",
+  "knobs": [
+    {
+      "knob": "one argument or three rules",
+      "effect": "One paragraph is a single hard task and somebody who cannot see the jump has nothing at all; three short rules of different kinds — one physical, one logical, one about words — give three tries, and the third is the one that teaches."
+    },
+    {
+      "knob": "whether the repair is asked for",
+      "effect": "Asked, the sheet ends with a version that holds and the afternoon was not spent only taking something apart; left out, it teaches dismantling, which is the habit this form is usually blamed for."
+    },
+    {
+      "knob": "how buried the defect is",
+      "effect": "A plain jump is seen in ten seconds and nothing happens after that; an unstated premise is the case worth printing, and it is the one that needs the escape route underneath it."
+    },
+    {
+      "knob": "who signs the printed text",
+      "effect": "Unsigned, it is a text and objecting to it costs nothing; put in the mouth of somebody in the house, it becomes disagreeing with a person, and that is a different afternoon with a social price in it."
+    }
+  ],
+  "where_the_work_is": "In writing something that fails in one place only. A rule broken everywhere is noise and a correct one is a trap; the defect has to be single, real, and reachable from what is on the page.",
+  "breaks": "No answer is printed, so a wrong but reasoned repair comes back looking exactly like a right one, and nothing on the sheet can tell them apart. On a display three rules fit as three lines and the two boxes do not, so the display can pose it and never receive it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    16,
+    29,
+    30,
+    36,
+    297
+  ]
+}

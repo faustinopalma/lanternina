@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-comma-in-every-position",
+  "kind": "form",
+  "name": "try a comma in each place and find the two that work",
+  "also": [
+    "frase bipartita",
+    "ibis redibis",
+    "responso oracolare",
+    "anfibologia",
+    "frase sibillina",
+    "doppia lettura"
+  ],
+  "one_line": "Six words that never change, five places a pause could fall, and two of those places give sentences that say opposite things.",
+  "from_entries": [
+    351
+  ],
+  "how": "Print a sentence with no punctuation and a word-for-word gloss directly under it: IBIS REDIBIS NON MORIERIS IN BELLO, «andrai tornerai non morirai in guerra». Number the five gaps between the words. Say that two of the five give a sentence that means something and that those two mean opposite things, and leave two lines for them. Nobody can get stuck, because all five places are on the page. Then ask whether the oracle told the truth, which has no answer and is why the sentence was built that way. Then ask for six Italian words of their own that read two ways depending on where the breath falls.",
+  "knobs": [
+    {
+      "knob": "whether every position is printed",
+      "effect": "Printed, five numbered gaps are worked through in a minute by trying them all. Unprinted, the same question becomes «find where the pause goes», which is the same problem with nothing to hold on to."
+    },
+    {
+      "knob": "opposite or merely different",
+      "effect": "Opposite readings make the second one worth finding and are hard to build. Merely different readings are easy to build, and nobody notices that a second one is there at all."
+    },
+    {
+      "knob": "whether the answer can be checked",
+      "effect": "An oracle that cannot be shown wrong is not a broken oracle but a working one, and noticing that is the content. Adding a right answer to a form whose point is that it has none removes the form."
+    },
+    {
+      "knob": "a pause or a stress",
+      "effect": "A comma separates only some readings and needs a gap between words. A stress mark separates every position and works inside one word. Two different tools with one everyday name."
+    }
+  ],
+  "where_the_work_is": "In the sentence, which has to carry two readings that are opposite using the same words in the same order. The five positions cost nothing to print; the sentence is the whole of it.",
+  "breaks": "The gloss has to sit directly under the Latin, word above word, or the numbering cannot be read. This is the only thing in its section that survives 800x480: «Aspetta, Marco, che arriva fra poco.» is 36 characters, and four short lines carry the sentence, both readings and the question. Nothing moves inside a word, so a model can write this one and check it.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    337,
+    340,
+    345,
+    346
+  ]
+}

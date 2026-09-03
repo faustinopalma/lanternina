@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-name-drawn-as-its-sounds",
+  "kind": "form",
+  "name": "draw a name as pictures of what it sounds like",
+  "also": [
+    "rebus",
+    "cifra figurata",
+    "scrittura per immagini",
+    "principio del rebus",
+    "rebus stereoscopico",
+    "stereorebus",
+    "rebus descritto",
+    "verbis"
+  ],
+  "one_line": "A name written the way names were written before letters existed: pictures of things that sound like its pieces, and nothing else on the page.",
+  "from_entries": [
+    346,
+    347
+  ],
+  "how": "Say the historical thing first, because it does the work the rule cannot: before there were letters, a name was written by drawing things that sounded like it, so a picture of a bee did not mean bee, it meant the sound. Then an empty rectangle and one line: draw your own name, or somebody's in the house, in pictures only. Under each drawing ask for the name of the thing drawn, so whoever looks knows what to read. Add the way out: if a syllable has no object that sounds like it, draw something near it and put a question mark, because that happened to them too. The pencil belongs to whoever answers.",
+  "knobs": [
+    {
+      "knob": "who holds the pencil",
+      "effect": "Given to whoever answers, both the letter work and the drawing leave the composer, and the sheet is a rectangle and three lines of history. Kept, both come back, and neither can be done without a person."
+    },
+    {
+      "knob": "one scene or two",
+      "effect": "One scene names things. Two side by side, the second the same as the first but later, ask for the word between them — poi, mentre, appena — which cannot be drawn, and that is why the two-scene version exists."
+    },
+    {
+      "knob": "whether a drawing has one name",
+      "effect": "A drawing that reads as cane or as bracco is the real difficulty of this form and also the fastest way to make it unsolvable. Printing the name of the thing under it removes both at once."
+    },
+    {
+      "knob": "whether somebody else reads it",
+      "effect": "Shown to somebody, a word different from the one intended means the drawing carries two readings, and that is a result rather than a failure. Kept, nothing is learnt and the sheet is only decorated."
+    }
+  ],
+  "where_the_work_is": "In deciding what counts as a picture of a sound, which whoever answers has to work out and cannot be told. The rectangle is empty on purpose, and the historical note is the only instruction that lands.",
+  "breaks": "It needs a rectangle big enough to draw in, so a small sheet is worse than a large one, and 800x480 in one bit carries the history and no drawing. Scanned back, a pencil drawing with the names written underneath reads. Nothing here is composed by a machine: the sheet is a rectangle, and both the letters and the picture are made by whoever holds the pencil.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_solve",
+  "goes_with": [
+    311,
+    341,
+    345,
+    348,
+    351
+  ]
+}

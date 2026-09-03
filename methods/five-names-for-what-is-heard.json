@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "five-names-for-what-is-heard",
+  "kind": "form",
+  "name": "five stops, and every sound gets one of five names",
+  "also": [
+    "passeggiata sonora",
+    "camminata d'ascolto",
+    "ecologia acustica",
+    "paesaggio sonoro",
+    "soundwalk",
+    "soundscape",
+    "keynote sound"
+  ],
+  "one_line": "Paper carries no sound, so it carries five names instead, and what comes back is a classification anybody can read.",
+  "from_entries": [
+    201
+  ],
+  "how": "Print five names and what each one means: the ground, always there and no longer heard — a fridge, distant traffic; the mark, which tells you where you are because only this place makes it; the signal, which wants something; the object, the smallest thing recognised, a click, a step, a drop; the hidden, heard without seeing what makes it. Then five stops anywhere — the flat, the landing, the doorway, the street — and at each one the instruction that does the work: stand still and count to sixty before writing anything, because sounds arrive loudest first and the ground arrives last. Two ruled lines per stop, each with the sound, its name, and where it came from. Then ask what the ground of this house is, and send one hidden sound to be gone and looked at.",
+  "knobs": [
+    {
+      "knob": "with a legend or without",
+      "effect": "Without names, listening returns a list of noises and nothing readable. With five names it returns a classification, and a classification can be read by somebody who heard none of it, which is the only way sound gets onto paper."
+    },
+    {
+      "knob": "the sixty seconds standing still",
+      "effect": "It is what makes the discovery happen at all: the sound that is always there is the last to arrive. Nobody can check it was counted, and dropping it costs the best row on the sheet."
+    },
+    {
+      "knob": "whether one hidden sound is chased",
+      "effect": "Going to look at what made it turns one row into a guess with an outcome, and it is the only line here with a right answer. It costs a short walk and buys the sheet its single check."
+    },
+    {
+      "knob": "standing still against walking further",
+      "effect": "Five stops in one flat return about as much as five across a town, because stillness changes what is heard more than distance does. Choosing distance costs an outing and adds little."
+    }
+  ],
+  "where_the_work_is": "In the five printed names. They are somebody else's vocabulary, fifty years old, and they are what turns a channel the paper does not have into something that can be written down and read back.",
+  "breaks": "Whoever reads the returned sheet heard nothing and can check none of the eleven rows beyond their having been filled. What can be read is which names were used, how often, and which was never used: a table with no ground in it says something definite about how the afternoon went. On 800x480 the five names fit and the eleven rows do not, so a panel carries the legend and the paper carries the table.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    5,
+    49,
+    79,
+    189
+  ]
+}

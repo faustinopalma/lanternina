@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "the-last-step-printed-before-anyone-starts",
+  "kind": "move",
+  "name": "print the last step before anybody has begun",
+  "also": [
+    "finisce quando è finita",
+    "ultimo passo",
+    "definizione di finito",
+    "criterio di completamento",
+    "lista di chiusura",
+    "definition of done",
+    "e a quel punto hai finito"
+  ],
+  "one_line": "What counts as finished is on the sheet from the start, and every condition can be checked by whoever is doing the thing.",
+  "from_entries": [
+    300
+  ],
+  "how": "Write what counts as finished and print it with everything else, so it has been read before anything is done. A last step handed over afterwards is a judgement dressed as an instruction. Every condition has to be checkable by the person alone: «it stands up without being held», «no holes against the light», «you set it down, count to twenty, and underneath is dry». If a condition needs somebody to say yes, this is not the move to use and the form belongs with the ones about who judges. Use no minutes — a sheet cannot measure two minutes and cannot know they have gone — and use a count the person makes. Five conditions give a rich ending that is missed roughly two thirds of the time on plausible odds; one gives a certain and thin one. If five are printed, print how many are enough, and print it first.",
+  "knobs": [
+    {
+      "knob": "how many conditions",
+      "effect": "One ends the thing certainly and says little. Five, on plausible odds, come out about a third of the time. Neither is wrong, and which one it is has to be on the page before the first tick."
+    },
+    {
+      "knob": "whether a partial count is allowed",
+      "effect": "«Three of the five is a finish» is an ending when the sheet says so first. Said afterwards it is a consolation and is read as one, which is the same sentence doing the opposite job."
+    },
+    {
+      "knob": "whether a condition can be met unnoticed",
+      "effect": "A condition satisfiable without noticing ends nothing: nobody was told they could stop, so they carry on, and the printed ending was never reached even though it happened."
+    },
+    {
+      "knob": "whether it needs a clock",
+      "effect": "Counting to twenty is done by the person and stays on paper. Two minutes needs a clock the sheet does not have, and then the ending depends on something outside the sheet entirely."
+    }
+  ],
+  "where_the_work_is": "In each condition being observable by whoever is doing the thing. That one test settles which conditions may be written, and it throws out every condition about quality.",
+  "breaks": "A box of five tickable lines prints and scans well. On 800x480 the five lines fit in one bit and the task above them does not, and splitting the two puts the premise on a screen that lasts minutes against a sheet that stays on the table for three quarters of an hour. Nothing says the ticks were honest, and nothing is built on them.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    14,
+    44,
+    245,
+    246,
+    298
+  ]
+}

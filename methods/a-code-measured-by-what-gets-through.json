@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "a-code-measured-by-what-gets-through",
+  "kind": "form",
+  "name": "send an alphabet down a channel and count what arrives",
+  "also": [
+    "codice a numeri",
+    "quadrato di Polibio",
+    "codice a colpi",
+    "tap code",
+    "Morse",
+    "semaforo a bandiere",
+    "flag semaphore",
+    "telegrafo ottico"
+  ],
+  "one_line": "Two people, a channel that is not paper, five minutes, and the count of letters that arrived — then one change and the count again.",
+  "from_entries": [
+    131,
+    132,
+    134
+  ],
+  "how": "Print the five by five grid of letters with rows and columns numbered one to five, so a letter is two counts and M is three taps, a pause, one tap. Print the grid rather than describing it: whether the alphabet has twenty-one letters or twenty-six changes every value from L onwards, and two people counting different alphabets never work out why they disagree. Print the mnemonic A F M R Z, the first letter of each row, because that is what was taught and learned in days. Print the two service signals: five-five-five means start again, a quick double tap means received. Then the run — two rooms or a shut door, five minutes, one taps and one writes — and count the letters that arrived. Then the two questions: where did it break, and what did you change. Then run it again.",
+  "knobs": [
+    {
+      "knob": "which channel",
+      "effect": "Taps need a wall and counting. Morse is shorter and lost to taps among prisoners in Vietnam, because counting is easier than telling long from short. For anything else, count first: distinguishable states raised to the number of signals must exceed twenty-one."
+    },
+    {
+      "knob": "whether the gap between signs is designed",
+      "effect": "Every system in this family had to solve it: three lengths of silence in Morse, the cell border in braille, a flag counting only when still. Left undecided, the first run fails on that alone and neither person can say why."
+    },
+    {
+      "knob": "whether the result is a number",
+      "effect": "Letters through in five minutes, then the same count after one change, gives something that improves and has no wrong answer. Asked as «did it work», the sheet comes back with a yes and nothing to do next."
+    },
+    {
+      "knob": "how much of the table is memorised",
+      "effect": "Five row letters rebuild twenty-five cells in a few seconds. Twenty-five cells memorised as cells take days and are lost with the sheet."
+    }
+  ],
+  "where_the_work_is": "In the second run. The first produces a failure and a cause; the change made between them is the exercise, and the two counts side by side on the page are what shows it.",
+  "breaks": "A five by five grid prints and scans. On 800x480 the grid needs five rows and there are four; the mnemonic row A F M R Z fits and is most of it. This form has no one-person version and no reduced one — the channel needs somebody at the other end. Nothing comes back off it except two numbers written by hand, which is all a sheet can carry away from a channel that is not paper.",
+  "adult_cost": "take_part",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    66,
+    74,
+    82,
+    129,
+    133
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-rule-that-cannot-tighten",
+  "kind": "move",
+  "name": "write the rule so it can always be satisfied",
+  "also": [
+    "non finisce",
+    "regola che non stringe",
+    "catena senza ultima riga",
+    "gioco infinito",
+    "sandbox",
+    "endless",
+    "termination analysis"
+  ],
+  "one_line": "A form that asks for another one every line must not ask for a smaller one every line, or it closes itself and reads as a failure.",
+  "from_entries": [
+    310
+  ],
+  "how": "Whenever a sheet asks for another, and another after that, check whether the rule tightens. «Something that touches, or once touched, the thing on the line above» can always be satisfied. «Something smaller than the last», or lighter, or rarer, cannot: over a hundred objects it runs out after about five rows, and fourteen printed lines then stand 62.9% empty — and whoever filled the first five believes they failed, when the rule closed by itself. Prefer a relation that is symmetric or repeatable, and allow the same thing to be written twice, which is what keeps a rule satisfiable in a small room. Where a form is meant to close, a tightening rule ends it without anybody having to say so, and that is the one case to use one deliberately: then say on the sheet that it will run out, so reaching the end is a result and not a shortfall.",
+  "knobs": [
+    {
+      "knob": "whether the rule tightens",
+      "effect": "A tightening rule ends the form for you, about five rows in on a hundred objects. Not tightening leaves the ending to whoever is writing, which is where it belongs unless closing is the point."
+    },
+    {
+      "knob": "whether repeats are allowed",
+      "effect": "Allowing something already written keeps the rule satisfiable in a small room. Forbidding repeats turns any rule into a tightening one, because what is left shrinks with every line."
+    },
+    {
+      "knob": "whether the running-out is declared",
+      "effect": "Declared, reaching the end of the chain is the result. Undeclared, the blank lines underneath read as the part that was not done, and there is nothing on the page saying otherwise."
+    },
+    {
+      "knob": "how many lines are printed",
+      "effect": "The printed lines are a claim about how far the rule goes. Fourteen against a rule that gives five is a mostly empty page, so the count and the rule are settled together or not at all."
+    }
+  ],
+  "where_the_work_is": "In counting what the rule leaves before the lines are printed. That count fixes both the rule and how many rows go on the page, and neither of them can be guessed.",
+  "breaks": "Ruled lines print and scan. Nothing here can be resumed by the sheet: whoever prints the next one does not know what was on the last, so the continuity lives in the paper and in whoever keeps it. On 800x480 four or five short lines fit and fourteen do not, so a display can carry the rule and never the chain.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    271,
+    278,
+    300,
+    301
+  ]
+}

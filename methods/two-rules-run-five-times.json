@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "two-rules-run-five-times",
+  "kind": "form",
+  "name": "run a two-rule model five times and compare the runs",
+  "also": [
+    "simulazione",
+    "modello",
+    "micromondo",
+    "far girare un modello",
+    "simulation",
+    "microworld",
+    "stochastic model",
+    "media e singola partita"
+  ],
+  "one_line": "A model small enough to state in two lines, run five times with a die, and an average that almost no single run ever produces.",
+  "from_entries": [
+    279
+  ],
+  "how": "Eight people in a row; the fourth has a cold on day one. Each day whoever has it throws a die for each neighbour still well: one to three catches it, four to six does not. Whoever has had it a day gets better and cannot catch it again. Print a grid of six days by eight seats — six is enough for any throw of the dice, and that is a fact rather than a convenience. Ask for the total, then four more runs with only the totals written. Then print the average over very many runs, 2.81, and ask how many of the five came out 2 or 3. Usually fewer than one. Open by saying the model is wrong on purpose, and that what it models is not a cold but how an average sits next to a single run.",
+  "knobs": [
+    {
+      "knob": "how many runs are asked for",
+      "effect": "One run and the sheet has produced an anecdote. Five and the spread is visible without any statistics at all. The whole content is in the second number coming out different from the first."
+    },
+    {
+      "knob": "whether the average is printed",
+      "effect": "Printed at the foot, the five totals have something to be compared against and the point lands. Left out, five numbers come back and neither the person nor the reader can say anything about them."
+    },
+    {
+      "knob": "whether the model admits it is wrong",
+      "effect": "Saying at the top that people do not sit in rows and colds do not last a day, and that this models one idea only, costs one line and licenses half of what any sheet ever simplifies."
+    },
+    {
+      "knob": "with the die or without",
+      "effect": "With the die, two runs from the same start differ, and that is the property being shown. Without it every run is identical, which is a duller sheet and worth printing once to make the difference visible."
+    }
+  ],
+  "where_the_work_is": "In the model being two lines long. Longer, and what comes out was written by whoever wrote the rules; at two lines the spread of the five totals is genuinely not in the rules and has to be run to be seen.",
+  "breaks": "The sheet cannot throw the die, cannot tell whether five runs happened, and cannot add up. It does not have to: the die is thrown by whoever is there and the sheet is the grid. The six-day bound holds only for eight seats starting from the fourth, and changing either means working it out again. On 800x480 a six-by-eight grid fits and the two rules stated in full do not.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    54,
+    250,
+    277,
+    281,
+    363
+  ]
+}

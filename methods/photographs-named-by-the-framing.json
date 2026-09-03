@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "photographs-named-by-the-framing",
+  "kind": "form",
+  "name": "six photographs named by their framing, not their subject",
+  "also": [
+    "caccia fotografica",
+    "safari fotografico",
+    "gioco delle inquadrature",
+    "photo hunt",
+    "photo scavenger hunt",
+    "photovoice"
+  ],
+  "one_line": "Six rows, none of which names anything to photograph: each names a property the picture itself has to have.",
+  "from_entries": [
+    195
+  ],
+  "how": "Write six rows describing the picture and never the subject: one in which the size of the thing cannot be told, one where the important thing is off centre, one of a spot already photographed in another of the six but from a different height, one showing that somebody was there and has gone, one that cannot be understood. Say the subject is anything within reach. Give one shot each and print that: one shot is what puts the weight back on deciding, and it is the setting to fix. Add a narrow column for how many framings were discarded before the one taken. Then two questions to be answered while looking at the six together: in which did you discard most, and in which is there something you had not seen while shooting.",
+  "knobs": [
+    {
+      "knob": "naming the subject or the framing",
+      "effect": "A subject makes the photograph a receipt and only works where the writer knows the place. A framing makes the photograph the answer, works in a house nobody has seen, and two people shooting the same thing hand back two different answers."
+    },
+    {
+      "knob": "one shot or many",
+      "effect": "One makes the choice cost something and is the reason the discard column has anything in it. Many turn the task into selection afterwards, which is easier, later, and a different activity."
+    },
+    {
+      "knob": "whether discards are counted",
+      "effect": "The count is a number for the only part of the work a finished picture does not keep. It costs one narrow column, has no wrong answer, and is most of what the sheet gets back besides the images."
+    },
+    {
+      "knob": "whether the person has to be in the frame",
+      "effect": "Without, it documents a thing. With, it documents having been there, and the form turns from a hunt into proof of presence — a different afternoon, worth choosing rather than drifting into."
+    }
+  ],
+  "where_the_work_is": "In the six rows naming a property of the image. They are the only part written in advance, and they are what makes each answer a decision rather than an errand.",
+  "breaks": "None of the six can be checked. Whether the first really hides the scale, whether the fifth really shows an absence — nobody can say, including whoever wrote the rows. A photograph is evidence that something was done and never that it was done well. What comes back is six images and a sheet of small numbers; on 800x480 the six rows fit as text and no photograph does.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    49,
+    188,
+    194,
+    196
+  ]
+}

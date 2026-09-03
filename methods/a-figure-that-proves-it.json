@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-figure-that-proves-it",
+  "kind": "form",
+  "name": "give a drawing that proves it, ask for the sentence",
+  "also": [
+    "dimostrazione senza parole",
+    "proof without words",
+    "dimostrazione visiva",
+    "visual proof",
+    "gnomone",
+    "dimostrazione per riarrangiamento"
+  ],
+  "one_line": "A figure that makes an identity evident, handed over for one case, with the next case to be drawn and the sentence to be written.",
+  "from_entries": [
+    369
+  ],
+  "how": "Draw the case for five and never the general one: a five by five square split into five L-shaped teams, each labelled with its number. Ask for the size of each team, then for two sums — the five numbers, and the whole square — so that anybody who miscounts finds out from their own figures. Then ask for the same square made of six teams, drawn by hand, which is the only way to know the figure was seen rather than looked at. Last, one line: write what this proves, so that it holds for a square of side a hundred. Put no caption above the figure and no identity beside it.",
+  "knobs": [
+    {
+      "knob": "whether the figure is given or built",
+      "effect": "given, it is looked at and agreed with, and nothing on the page shows whether it was understood; built for the next case, it either comes out or it does not, and that is the only check this form owns."
+    },
+    {
+      "knob": "whether the words are asked for",
+      "effect": "without the sentence the drawing is a picture somebody liked; with it, and with «so that it holds for a hundred» attached, it is the difference between one case and a proof."
+    },
+    {
+      "knob": "whether the identity is printed under it",
+      "effect": "printed, the figure becomes an illustration of a formula somebody already has; withheld, the formula is the thing that gets written at the bottom, which is the whole order of the afternoon."
+    },
+    {
+      "knob": "what the figure does",
+      "effect": "counting one thing two ways gives an identity and needs only labels and a printer; moving pieces about without changing the area gives a shape and needs scissors. The first prints; the second costs an evening of cutting."
+    }
+  ],
+  "where_the_work_is": "In the last line, which asks for words back under a drawing made to do without them. Whether the figure generalises is decided there and nowhere else, and it is also the part nothing on the sheet can mark.",
+  "breaks": "The sentence cannot be checked by the sheet; the numbers can. Handed to somebody who writes nothing, this comes back empty and there is no telling that from having failed. A five by five labelled square fits on the display at one bit; a six by six drawn by hand does not exist there.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    365,
+    366,
+    370,
+    371,
+    376
+  ]
+}

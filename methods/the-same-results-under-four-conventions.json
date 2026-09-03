@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "method_id": "the-same-results-under-four-conventions",
+  "kind": "form",
+  "name": "rank the same results by four rules that disagree",
+  "also": [
+    "classifica",
+    "graduatoria",
+    "pari merito",
+    "ordine di arrivo",
+    "regole dell'orologio",
+    "controllo del tempo",
+    "ranking",
+    "standard competition ranking",
+    "time control",
+    "modi di contare una raccolta"
+  ],
+  "one_line": "One set of numbers, several conventions that are all in real use printed in full, and the discovery that they do not agree with each other.",
+  "from_entries": [
+    259,
+    267,
+    271
+  ],
+  "how": "Print eight results with ties in them — 41, 37, 37, 30, 30, 30, 22, 15 — and beside them four empty columns headed 1224, 1334, 1223 and 1234. Print each convention in one line: one more than those above you; those above plus the ties plus you; one more than the distinct scores above; everybody different, ties split alphabetically. That is thirty-two cells, and seven of the eight get more than one number. Then ask whether anybody gets the same number from all four, and how many numbers a table of one person produces. The answer to the second is one, which is why a ranking of one person says nothing. The same sheet works with three tournament clock rules on one printed game.",
+  "knobs": [
+    {
+      "knob": "whether the conventions are printed in full",
+      "effect": "Given in full there is nothing to guess and the work is applying them. Left as names it becomes a quiz about vocabulary, and the disagreement — which is the only thing here — never shows up at all."
+    },
+    {
+      "knob": "what the results belong to",
+      "effect": "Numbers with no owner can be printed and argued about. Numbers belonging to people in the house put them in a row against each other, need a register nobody keeps, and are the version left out."
+    },
+    {
+      "knob": "which material carries it",
+      "effect": "Eight scores and four tie rules is the shortest. Three clock rules on one printed game of ten moves each is the strongest, because delay reverses what sudden death and increment both said. Two ways of counting a part-finished collection is the mildest."
+    },
+    {
+      "knob": "whether a last question with no answer is added",
+      "effect": "Asking which convention you would pick for yourself, and whether you would have picked it before seeing where you stood, costs one line and is the only part of the sheet nobody can mark."
+    }
+  ],
+  "where_the_work_is": "In the ties. A table without ties gives four identical columns and says nothing at all; choosing scores so that seven of the eight move is the whole of the design, and it is done by hand.",
+  "breaks": "It is arithmetic and it prints. Scanned back, a grid of small handwritten numbers reads only if the columns are wide. On 800x480 eight rows by four columns fit and the four rules stated in full do not, so a display carries the table or the rules and not both. The clock version needs a printed game of twenty moves with its times, which is most of a second sheet.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    190,
+    244,
+    250,
+    260,
+    265
+  ]
+}

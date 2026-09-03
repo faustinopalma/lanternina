@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "the-instruction-said-to-one-person",
+  "kind": "move",
+  "name": "leave the instruction off the page and say it aloud",
+  "also": [
+    "poesia enigmatica",
+    "enigma senza consegna",
+    "componimento a soluzione nascosta",
+    "denominazione mancante",
+    "consegna orale"
+  ],
+  "one_line": "The thing on the table says nothing about being a game; one person is told out loud that there is something in it, and not where.",
+  "from_entries": [
+    339
+  ],
+  "how": "Take something that has been made — a note, a drawing, a list — and hide one thing in it: a word down the left margin, a name, a date. Do not mark it and do not write anything on it saying it is there. Then tell exactly one person in the house, out loud, that the thing on the table has something inside it, and stop. Say that there is something; do not say where. That sentence is the whole move: without it the object is a note, with it the object is a game, and the difference is nowhere on the paper. Choose the hidden thing before the lines are written, since fitting it afterwards almost never works.",
+  "knobs": [
+    {
+      "knob": "how many people are told",
+      "effect": "Nobody, and the thing is almost certainly never opened. One, and there is a search and a secret at the same time. Everybody, and it is an ordinary puzzle whose instruction happens to have been spoken."
+    },
+    {
+      "knob": "how much they are told",
+      "effect": "That something is there is enough to start. Saying where it is ends the search before it begins. Saying what kind of thing it is sits between the two and is usually the right amount."
+    },
+    {
+      "knob": "whether the object stands up without it",
+      "effect": "A note that reads as a note keeps working even if nobody ever finds anything. A note that only makes sense once the hidden thing is found is broken until it is solved, which is most of the time."
+    },
+    {
+      "knob": "whether anybody can check",
+      "effect": "Nobody can. Whoever gave the instruction does not know whether the thing was made, whether it was found, or whether the hidden word came out, and that has to be accepted before this is used."
+    }
+  ],
+  "where_the_work_is": "In the sentence said out loud, which is the only part not on the table. Everything printed would be identical without it, and without it none of it is a game.",
+  "breaks": "It produces nothing that comes back, so it can never be the whole of a moment, only something added to one. Nobody can tell whether it worked, which rules it out wherever an afternoon has to answer for itself. Used twice in the same house it stops being a secret and becomes a habit, and the second time nobody looks.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    185,
+    311,
+    337,
+    349,
+    351
+  ]
+}

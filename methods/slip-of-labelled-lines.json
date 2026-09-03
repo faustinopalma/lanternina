@@ -1,0 +1,57 @@
+{
+  "format_version": 1,
+  "method_id": "slip-of-labelled-lines",
+  "kind": "form",
+  "name": "print a slip with one labelled line per thing",
+  "also": [
+    "risposta breve",
+    "scheda di catalogo",
+    "descrizione tecnica",
+    "registro",
+    "giornale di bordo",
+    "tabella",
+    "short answer",
+    "record sheet",
+    "log"
+  ],
+  "one_line": "A printed form with a label at the head of every short rule, so a paragraph gets written without anybody being asked to write one.",
+  "from_entries": [
+    11,
+    22,
+    27,
+    39
+  ],
+  "how": "Five labels, no more, each on its own line with a rule to write on. Make two of them ask for the evidence and not the conclusion — how do you know, measured with what — and say a thumb counts as a unit. Ban the words that end the looking, by name and with an instance: whoever writes «old» or «strange» crosses it out and writes what made them think so. Add one label whose reason is not given, which carries the guess you are not making aloud. Last line, and it does the most work: a line that cannot be filled in is left empty, and an empty line is information.",
+  "knobs": [
+    {
+      "knob": "who chooses the labels",
+      "effect": "Printed for them, filling the slip in is the whole task and anybody can do it; chosen by whoever fills it, the choosing is the task, and the test of a good column is that it does not give the same answer for every row."
+    },
+    {
+      "knob": "one slip or a row each time",
+      "effect": "One slip is finished in ten minutes and comes back complete; the same labels as columns, a row added whenever somebody passes, make a register — and then how few rows are enough must be printed, three, or the empty rows read as days missed."
+    },
+    {
+      "knob": "the label that is not explained",
+      "effect": "One column with no stated reason — who was in the house, what the weather was doing — carries a hypothesis without announcing it, costs nothing to whoever ignores it, and is the only part that can produce a discovery."
+    },
+    {
+      "knob": "what an empty cell means",
+      "effect": "Undeclared, a blank reads as a failure and the slip comes back with guesses filling it; with one line saying to leave it and why — not known, or the question does not apply here — the blank becomes an answer."
+    }
+  ],
+  "where_the_work_is": "In the labels and in how long each rule is. The printed space is the real instruction: three centimetres asks for one word whatever the sentence above says, so the length decides what comes back.",
+  "breaks": "Five labelled rules fit an A4 and scan back cleanly, since handwriting stays on a printed rule. A register wants the same sheet again tomorrow and nothing makes tomorrow arrive. On eight hundred by four-eighty two columns fit and five do not, so the display can carry the instruction and never the grid.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    14,
+    38,
+    40,
+    54,
+    246
+  ]
+}

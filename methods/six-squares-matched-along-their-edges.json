@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "six-squares-matched-along-their-edges",
+  "kind": "form",
+  "name": "cut out squares and match them edge to edge",
+  "also": [
+    "puzzle a incastro",
+    "jigsaw",
+    "tangram",
+    "puzzle di tassellazione",
+    "pentamini",
+    "poliomini",
+    "edge-matching puzzle",
+    "tiling puzzle"
+  ],
+  "one_line": "Pieces printed to be cut out and fitted, where scissors cannot make the tabs, so the check has to be drawn across the cut instead.",
+  "from_entries": [
+    159,
+    160
+  ],
+  "how": "Print six identical squares, each carrying one of four signs on each side, and ask for a two-by-three rectangle where touching edges bear the same sign and the outside border is blank. The blank border is what makes corners, which is the low rung everybody starts from. Use four signs repeated, not six all different, or it solves itself by pairing. Then the other half on the same sheet: four shapes of five squares each and three outlines to cover, one coverable four ways, one exactly one way, one not at all. Check both halves by program before printing. Six squares in six places at four turns are 2 949 120 arrangements, and two pieces that are the same piece turned round hide in plain sight.",
+  "knobs": [
+    {
+      "knob": "which channel carries the information",
+      "effect": "A bought jigsaw says where a piece goes twice, by its outline and by the picture across it. Scissors cannot cut tabs, so the outline says nothing and everything rides on the marks — the hardest case, and the only one paper can print."
+    },
+    {
+      "knob": "whether the border is declared blank",
+      "effect": "Blank, four corner pieces exist and there is somewhere to start. Marked like everything else, that rung goes and the first placement has nothing to recommend it over the other twenty-three."
+    },
+    {
+      "knob": "same pieces, many outlines",
+      "effect": "Seven tangram pieces produced six thousand five hundred problems. Cut once, the second sheet costs only a new outline, which is the cheapest second day anywhere in this chapter."
+    },
+    {
+      "knob": "how many coverings an outline has",
+      "effect": "One covering and four coverings are different tasks behind the same drawing, and the outline does not say which. Whoever prints it can count them; whoever receives it cannot even estimate."
+    }
+  ],
+  "where_the_work_is": "In verifying by program that exactly one arrangement exists and not eight. A duplicated piece is invisible on the page and no amount of rereading catches it.",
+  "breaks": "It prints, and every cut is a straight line, which is the one manual family scissors serve honestly. Nothing comes back on a sheet: the answer is an arrangement on a table, so the return is a photograph. On 800x480 neither the squares nor the outlines fit. A wrong piece still rests where it does not belong — the marks say so, nothing prevents it — and if the sheet is never cut out, nothing happens at all.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    42,
+    43,
+    161,
+    370
+  ]
+}

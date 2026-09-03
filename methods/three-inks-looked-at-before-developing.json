@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "three-inks-looked-at-before-developing",
+  "kind": "form",
+  "name": "write in three invisible inks and look before heating",
+  "also": [
+    "inchiostro simpatico",
+    "inchiostro invisibile",
+    "invisible ink",
+    "sympathetic ink",
+    "scrittura invisibile"
+  ],
+  "one_line": "The same word written in lemon, milk and water on three scraps, examined in raking light before any heat, and only then developed.",
+  "from_entries": [
+    136
+  ],
+  "how": "Print two tables and the order in which they are filled. Ask for three scraps of the roughest paper in the house, a cut lemon, a little milk, water and three toothpicks; the same word on each; ten minutes to dry, not two. Then, before any heat at all, the first table: hold each scrap to the light, then at a low angle against a lamp, and write down whether it can already be seen and how — a scratch, a duller patch, a halo. Only then develop, over a lamp bulb or a warm radiator, or an iron on low with somebody helping, and fill the second table: did it appear, and after how long. Print the last question and nothing after it: nearly all the spies who used lemon juice in 1915 were caught, and the first table says why.",
+  "knobs": [
+    {
+      "knob": "when the looking happens",
+      "effect": "Before developing, the sheet finds that invisible ink is visible and that finding is the result. After developing there is nothing left to notice, and the sheet is a craft activity with a warm radiator."
+    },
+    {
+      "knob": "which paper",
+      "effect": "Printer paper is the worst there is for this and shows the writing in raking light almost every time. Rough absorbent paper hides it far better, and how much better has not been measured here."
+    },
+    {
+      "knob": "how dilute the ink is",
+      "effect": "The instruction given to agents who had to improvise was to dilute as far as possible. More dilute hides better and develops worse, and the point at which it stops developing has not been measured here either."
+    },
+    {
+      "knob": "whether the limit is declared first",
+      "effect": "Saying in advance that visibility is one of the things being measured protects the finding when the experiment works too well. Left unsaid, a scrap that shows its writing reads as a failed craft project."
+    }
+  ],
+  "where_the_work_is": "In the first table, filled in before anything is heated. It is the only part that cannot be redone once the writing has come up, and it is what the whole sheet exists for.",
+  "breaks": "Two small tables print and scan. Nothing of the result comes back except what is written in them: a browned scrap photographs badly, and a scrap that shows only in raking light does not photograph at all. On 800x480 the shopping list fits and the tables do not. Heat is the real limit and it belongs on the sheet rather than in a note, because paper burns not far above the temperature at which the writing appears, so an iron needs a second pair of hands.",
+  "adult_cost": "take_part",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    52,
+    65,
+    135,
+    139,
+    140
+  ]
+}

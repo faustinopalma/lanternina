@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "permission-first-and-a-box-for-the-unasked",
+  "kind": "move",
+  "name": "ask permission at the top, keep a box for the unasked",
+  "also": [
+    "chiesta a una persona vera",
+    "intervista",
+    "storia orale",
+    "raccolta di testimonianze",
+    "folklore di famiglia",
+    "elicitazione",
+    "chiedi a qualcuno che c'era"
+  ],
+  "one_line": "Two things added to any sheet that sends somebody to talk to a person: the permission, and what was said that nobody asked for.",
+  "from_entries": [
+    293
+  ],
+  "how": "When a sheet sends somebody to ask questions of another person, put the permission in the first three lines and write that refusing costs nothing — «if they say no, the sheet closes and nothing happens». That is the only part of such a sheet that can go wrong, and the person answering never agreed to anything and does not know a sheet exists. Keep the last box for what was said that was not asked for: it is the only material on the page that whoever printed it could not have produced. Ask the questions as absences — what was not there, what nobody does any more, what noise has gone — because an absence gets answers where a presence gets silence. Note what the medium gives free: a printed sheet is a structured interview by construction, the same questions in the same order, which is the property researchers otherwise get by discipline.",
+  "knobs": [
+    {
+      "knob": "whether refusing is written as costless",
+      "effect": "Written, the refusal is a foreseen outcome and the sheet is closed by it. Unwritten, whoever is holding the paper has to invent what happens next while standing in front of somebody."
+    },
+    {
+      "knob": "whether a box is kept for what was not asked",
+      "effect": "The box is the only thing on the page nobody could have written in advance. Without it the sheet returns exactly what it went out to get, which is what it already knew."
+    },
+    {
+      "knob": "what the name and the age are for",
+      "effect": "Kept on the sheet and going nowhere else, they are how the answers get read a year later. Anywhere else they are a record about somebody who never received the task."
+    },
+    {
+      "knob": "who writes the answers down",
+      "effect": "Whoever holds the sheet, almost always: the person answering does not touch the paper. That is what keeps it a conversation instead of a form somebody is being made to fill in."
+    }
+  ],
+  "where_the_work_is": "In the last box. Everything above it is preparation for somebody to say something nobody planned, and that is the one thing another person brings which no procedure makes.",
+  "breaks": "Prose and ruled lines print and scan. On 800x480 the permission fits and the questions do not, and a permission on a screen that clears is worse than none at all. It cannot be substituted in an empty house: the fallbacks collected for two-person forms all fail here, because what is wanted is exactly what no procedure manufactures. Asking yourself to remember is a different form and should be called one.",
+  "adult_cost": "take_part",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    63,
+    81,
+    92,
+    251,
+    303
+  ]
+}

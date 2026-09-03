@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "the-sentence-the-other-side-says",
+  "kind": "move",
+  "name": "make the reader write the objection, with a name on it",
+  "also": [
+    "avvocato del diavolo",
+    "steelmanning",
+    "contraddittorio",
+    "devil's advocate",
+    "obiezione con un nome",
+    "simulazione di ruolo"
+  ],
+  "one_line": "One printed line asking for the sentence the other side replies with, given to somebody named, with a trade and something to lose.",
+  "from_entries": [
+    253,
+    254
+  ],
+  "how": "Wherever a form asks somebody to argue for something, add one printed line asking for the sentence the other side answers with — and give that side a person. Not «what would somebody who disagrees say», which returns the reader's own objection in a wig, but «one of the eight is the biggest grain merchant in the city: write the sentence he replies with». A name, a trade, an interest. Then one more line: does your proposal survive that sentence, and if not, rewrite it changed. With nobody else in the room this is the only contradiction available at no cost, and it should say so rather than pretend to be a second person.",
+  "knobs": [
+    {
+      "knob": "whether the objector has an identity",
+      "effect": "Named, with a trade and something to lose, the objection comes from somewhere and is hard to answer with what has already been written. Unnamed, it is the reader's own objection restated, and they had already dealt with that one."
+    },
+    {
+      "knob": "whether the proposal has to be rewritten",
+      "effect": "Asking only for the objection lets it be written down and admired. Asking whether the proposal survives it, and for a changed version if it does not, is what makes writing the strong version cost something."
+    },
+    {
+      "knob": "how strong the objection is made",
+      "effect": "The weak version is easy to knock over and teaches nothing. The test for the strong one is printable: would somebody who really thinks this recognise themselves in this sentence? If they would say that is not why I think it, the line is a straw man and gets rewritten."
+    },
+    {
+      "knob": "asking a second person instead",
+      "effect": "Somebody with an actual contrary interest does this better and costs a few minutes. This move exists for when there is nobody, and the sheet is more use if it says which of the two is happening."
+    }
+  ],
+  "where_the_work_is": "In the identity given to the objector. It is the difference between an argument tested against somebody with something to lose and an argument tested against its own author, who agreed with it before starting.",
+  "breaks": "It returns nothing on its own and can only be added to something else. Assigning somebody a position they do not hold is not free: one psychologist finds that appointed dissent is considerably less effective than real dissent and can leave people more attached to what they thought at the start, which is the opposite of the point. On a display one line fits, and one line is all this is.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    107,
+    224,
+    233,
+    252,
+    254
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "a-zero-point-and-a-unit-of-your-own",
+  "kind": "form",
+  "name": "hide three things and give coordinates in your own unit",
+  "also": [
+    "geocaching",
+    "caccia con le coordinate",
+    "sistema di coordinate inventato",
+    "punto zero e unità",
+    "GPS stash hunt",
+    "invented coordinate system"
+  ],
+  "one_line": "A corner, two directions and a unit taken from the body: enough for two people in one house to name a place with numbers.",
+  "from_entries": [
+    197
+  ],
+  "how": "Print four blanks and little else: the zero point — one corner of one room, and always the same one — the first direction, the second direction, and the unit, which should be a foot, a pace, a floor tile, a book. Then a table for three hidden things, two numbers each, and a difficulty from one to five written by whoever hid them. Before the sheet goes to anybody, ask for the same distance to be paced twice and for the difference to be written down: the two numbers never agree. Then print what that difference costs. An error of d units on both directions leaves an area of d by d to search — one unit is a plate, three a small table, five half a room — so doubling the carelessness quadruples the searching, which is why the last few metres are always searched by hand.",
+  "knobs": [
+    {
+      "knob": "whose unit it is",
+      "effect": "A ruler makes the numbers portable and throws away the thing worth finding, which is that two pacings of one distance never agree. A body unit keeps that and makes the sheet useless outside the pair, and that is the right trade."
+    },
+    {
+      "knob": "how many things are hidden",
+      "effect": "Three is enough for the error to show up more than once and few enough that one bad measurement does not end it. One thing found or not found says nothing about the method that produced the numbers."
+    },
+    {
+      "knob": "whether the error is paced before handing over",
+      "effect": "Paced, the search area is predicted and the prediction is tested by somebody actually looking for something. Left out, the sheet is an exercise in writing coordinates and the one fact it carries is never met."
+    },
+    {
+      "knob": "whether difficulty is declared",
+      "effect": "A number from one to five is exactly what the hider knows and the searcher cannot. It costs a column, is taken from the real practice, and gives the hider something to be wrong about."
+    }
+  ],
+  "where_the_work_is": "In the zero point and the unit being agreed rather than correct. No satellites, no ruler and no true north: two people using one convention, which is the whole content and the reason it works indoors.",
+  "breaks": "It needs a second person, and a coordinate system that one person understands is not a coordinate system. Nothing that comes back can be checked, because the numbers mean nothing outside the room they were paced in. The area table holds in any house, since it does not depend on how long the unit is. On 800x480 the four blanks fit and the table of areas does not.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    37,
+    54,
+    79,
+    199
+  ]
+}

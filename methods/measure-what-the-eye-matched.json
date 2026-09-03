@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "measure-what-the-eye-matched",
+  "kind": "form",
+  "name": "guess which line matches, then measure all ten",
+  "also": [
+    "illusione ottica geometrica",
+    "illusione di lunghezza",
+    "illusione di Müller-Lyer",
+    "geometrical-optical illusion",
+    "Müller-Lyer illusion",
+    "nulling technique"
+  ],
+  "one_line": "Eleven bars with fins at their ends, one of them a printed length, and the eye picks the wrong twin by a measurable amount.",
+  "from_entries": [
+    378
+  ],
+  "how": "Print eleven horizontal bars, each with fins at its ends. One, marked R, is 60 mm long. The ten others, A to L, have their fins turned the other way and run from 46 to 64 mm in steps of 2 mm — a scale of errors from −6.7% to +23.3%, wider at both ends than any published range, so nobody has to pick an extreme by elimination. Set the rows 12 mm apart: eleven take 140 mm of an A4. Ask first, without a ruler and without dwelling, which of the ten looks as long as R. Then hand over the ruler and ask for all ten measured. The last line is their own number: 60 minus the true length of the one they chose, over 60, in per cent.",
+  "knobs": [
+    {
+      "knob": "whether the ruler comes out at all",
+      "effect": "without it the sheet is a quiz somebody gets wrong; with it the sheet stops testing and starts measuring the person holding it, and the result is a number about themselves with no right answer."
+    },
+    {
+      "knob": "how wide the scale of lengths is",
+      "effect": "ten bars from 46 to 64 mm cover every error that has been reported and some that have not; a narrow scale sends anyone whose eye is at an extreme to the last bar for want of anywhere else to go."
+    },
+    {
+      "knob": "whether a published range is printed beside it",
+      "effect": "with «between 1.4% and 20.3% across sixteen groups, in 1963» printed, the number lands inside an interval and is neither good nor bad; without it a percentage arrives with nothing to sit against and reads as a mark."
+    },
+    {
+      "knob": "how long they are allowed to look",
+      "effect": "a glance measures the eye; a long stare lets somebody start reasoning from the fins and the number drifts towards zero, at which point the sheet is measuring patience."
+    }
+  ],
+  "where_the_work_is": "In the ten true lengths, settled before printing and never shown. Two millimetres between neighbours is what makes the choice a measurement rather than a guess.",
+  "breaks": "It all rests on printing at exactly 100%. A printer set to fit the page shrinks all eleven bars together: the picture still looks right, every length measured is wrong by the same factor, and the number that comes back is plausible and false. Print at actual size and lay a ruler on R first. The bars differ by 2 mm, so a soft pen line is a third of a step wide. On the display, 800×480 in one bit carries the question and the range, not the figures: nowhere to lay a ruler.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    379,
+    380,
+    385,
+    388,
+    389
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "not-finished-until-it-is-in-a-hand",
+  "kind": "move",
+  "name": "it is not finished until somebody else has it",
+  "also": [
+    "finisce con una consegna",
+    "passaggio di mano",
+    "dare a qualcuno",
+    "dono",
+    "mostrare e raccontare",
+    "show and tell",
+    "delivery"
+  ],
+  "one_line": "The ending is the handing over, and where there is nobody a place counts: leave it where it will be found and write the place.",
+  "from_entries": [
+    303
+  ],
+  "how": "End on the moment the thing stops being yours. Print three lines to fill in — to whom, when, and what came back — and say the work is not finished until they are filled. Do not ask whether it is any good. Ask one thing with an answer of fact: what did you expect to be there, and is not. That returns the words of somebody who received no task and does not know a sheet exists, and it tells whoever made the thing what they left out, without anybody having to be kind. Then print the fallback as a full alternative and not a retreat: with nobody there, the recipient is a place — leave it where it will be found and write the place instead of the name. If the gain is in the handing over, a kitchen table counts as much as a person, and what is lost is the reaction rather than the ending.",
+  "knobs": [
+    {
+      "knob": "who receives",
+      "effect": "A person in the house, one far away, or a place. Only the last needs nothing from anybody, and it is the one that keeps this working in an empty house without changing what is written."
+    },
+    {
+      "knob": "what is asked back",
+      "effect": "Nothing, a nod, an execution, or an answer. Asking what they expected and did not find is the one request that does not pass through an opinion, so it can be answered by anybody."
+    },
+    {
+      "knob": "whether the handing over is written down",
+      "effect": "Three lines make it a dated fact on the page. Without them the ending lives in the memory of two people, and neither of them can say afterwards when it happened."
+    },
+    {
+      "knob": "whether the recipient knows it is coming",
+      "effect": "Expected, they can prepare. Unannounced, they are put in the position of having to react, which is a different afternoon for them and one they did not choose."
+    }
+  ],
+  "where_the_work_is": "In the question asked of whoever receives it. It has to be answerable as a fact and not as an opinion, or the ending becomes a request that somebody be nice about it.",
+  "breaks": "Three ruled lines print and scan. What is handed over may be anything, so nothing can be checked and nothing is meant to be. On 800x480 the three lines fit and the thing being given does not. Where the recipient is a person, the cost of the ending falls on somebody who received no task — the second place in this material where that happens.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    20,
+    37,
+    46,
+    293,
+    297
+  ]
+}

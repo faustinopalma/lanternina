@@ -1,0 +1,47 @@
+{
+  "format_version": 1,
+  "method_id": "name-whoever-made-it",
+  "kind": "move",
+  "name": "print who made it and when",
+  "also": [
+    "rompicapo classico",
+    "rompicapo d'autore",
+    "puzzle matematico",
+    "brain teaser",
+    "matematica ricreativa",
+    "recreational mathematics"
+  ],
+  "one_line": "One line under the task giving the name of whoever set it and the year, so that the opponent is a person and not a page.",
+  "from_entries": [
+    360
+  ],
+  "how": "Take a task that is already finished and add a line at its foot: who set it, where it appeared, and in what year. Nothing else changes. Use it only where the attribution is true — an invented name gets looked up and costs the sheet everything it had. Keep it to one line and put it below the task and never above, or the question is read as somebody else's business before it is read as a question. Do not promise the answer next week: the newspapers this comes from could and a house cannot, and a promise not kept is worse than none. Where the year is old, print the year; that is the part doing the work.",
+  "knobs": [
+    {
+      "knob": "named or anonymous",
+      "effect": "with a name it is a challenge from somebody who got there first and went unbeaten for a while; without one it is a task set by whoever is in the house, and putting it down costs nothing."
+    },
+    {
+      "knob": "whether the year is given",
+      "effect": "a year in the eighteen hundreds says other people have been stuck here for a long time; no year makes it look invented this afternoon, which is often true and never useful."
+    },
+    {
+      "knob": "whether an answer is promised",
+      "effect": "the weeklies printed the solution seven days later and that was half the arrangement; a house has no next issue, so promising one leaves a debt and saying nothing leaves nothing."
+    }
+  ],
+  "where_the_work_is": "In its being true. The line costs nothing to print and cannot be invented, and the single thing it adds is that somebody real was once on the other side of the question.",
+  "breaks": "It produces nothing that can come back on a sheet and can never be the point of a moment. On a task made up in the house it has to be left off, so the forms it helps are only the ones taken from somewhere that has a name attached.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    152,
+    356,
+    359,
+    361,
+    371
+  ]
+}

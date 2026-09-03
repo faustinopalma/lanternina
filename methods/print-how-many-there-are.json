@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "print-how-many-there-are",
+  "kind": "move",
+  "name": "print how many there are to be found",
+  "also": [
+    "dichiarare il numero",
+    "trova le sette differenze",
+    "il momento in cui si è finito",
+    "declared count",
+    "spot the difference"
+  ],
+  "one_line": "One line added to a form where things have to be found, which moves the end of the task from nowhere onto the page.",
+  "from_entries": [
+    385,
+    386
+  ],
+  "how": "Applies to any form where things are hidden in a field and found one at a time. Print how many there are. Nothing else changes — the same ink, the same field, the same differences — and the person now has a way of knowing they have finished, which before existed nowhere at all. Count them twice and by two roads, once by applying the changes and once by comparing the field against itself, because a printed number is a promise and a wrong one cannot be finished against. Where the point of the form is that no such moment exists, leave it out and print instead: when you think you have finished, how do you know? Do that once in an afternoon and not twice.",
+  "knobs": [
+    {
+      "knob": "declared or not",
+      "effect": "declared, the task ends and the sheet comes back complete; not declared, stopping and being finished cannot be told apart, and noticing that is worth more than the things found — once, to somebody who has never noticed it."
+    },
+    {
+      "knob": "counted or also listed",
+      "effect": "a number alone leaves the finding intact; listing what the things are turns finding into ticking off, and the field stops being searched at all."
+    },
+    {
+      "knob": "whether the number is right",
+      "effect": "a count made once and by eye turns the promise into a trap: somebody finds a difference nobody meant to make and can now never reach the printed total. Two roads to the count, and the lists compared, is what the line costs."
+    },
+    {
+      "knob": "whether a time is set as well",
+      "effect": "a printed number ends the task; a printed number and a clock make it a race, and what comes back is a speed instead of a set of findings."
+    }
+  ],
+  "where_the_work_is": "In the count being true. The line is free to print and free to read, and its whole value is that it can be relied on; a number arrived at casually is worse than no number, because a task measured against it cannot be completed.",
+  "breaks": "It adds nothing that comes back on a sheet — the finding was already coming back — so it can only be an addition to a form and never a moment of its own. It also removes a good question along with the bad one: whoever is told there are seven never gets to notice that without a number there is no such thing as being finished. On a display it costs one short line and fits anywhere, which makes it the cheapest thing in this manual to apply.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    383,
+    387,
+    388,
+    391
+  ]
+}

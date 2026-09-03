@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "rewrite-under-one-constraint",
+  "kind": "form",
+  "name": "rewrite a printed text under one hard constraint",
+  "also": [
+    "riassunto",
+    "sintesi",
+    "parafrasi",
+    "riscrittura",
+    "lingua facile",
+    "summary",
+    "paraphrase",
+    "plain language"
+  ],
+  "one_line": "A short printed text and the same content written out again under one limit: a counted number of words, or a reader who is nine.",
+  "from_entries": [
+    17,
+    18
+  ],
+  "how": "The source goes on the same page and stays under twelve lines. Past that the sheet stops asking for a rewrite and starts measuring reading, and measuring it where whoever struggles will notice. Choose a badly written source — a notice in a hallway, a warranty, the manual of an appliance nobody owns — because rewriting something written well means making it worse, and whoever does it can feel that. Set one limit only. If it is a word count, print the count as separate short rules, fourteen of them, so nobody has to count. Then ask what was decided against: the line worth more than the rewrite.",
+  "knobs": [
+    {
+      "knob": "the limit chosen",
+      "effect": "A hard word count makes the task about what to lose, which is where the difficulty sits; a named reader — somebody who is nine — makes it about register; asking for both at once produces neither."
+    },
+    {
+      "knob": "how long the source is",
+      "effect": "Under twelve lines on the same page, anybody can begin; a chapter measures reading instead of rewriting, and a page of ten lines is already near the ceiling once the answer needs room too."
+    },
+    {
+      "knob": "how the count is shown",
+      "effect": "Printed as fourteen separate rules the limit is a visible fact and nobody counts; written as «about fourteen words» it is a rule to be kept, it gets kept loosely, and the difficulty goes out of the task."
+    },
+    {
+      "knob": "whether one buried word is pointed at",
+      "effect": "Asking for the one word almost nobody knows to be ringed gives a finished piece of work to somebody who rewrites nothing, and that word is usually the reason the original exists."
+    }
+  ],
+  "where_the_work_is": "In choosing the source. Badly written and short is better material than well written and short: there is something to be done to it, and no author on the other side to be measured against.",
+  "breaks": "The source has to be printed beside the answer, so both compete for one A4 and twelve lines is about the ceiling. Short rules for a word count survive printing, but handwriting over a dashed rule scans back badly, so print them spaced and solid. On a display neither the source nor the answer fits.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    10,
+    12,
+    20,
+    49,
+    219
+  ]
+}

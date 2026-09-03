@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "strips-cut-along-their-length",
+  "kind": "form",
+  "name": "cut paper rings along their length and count",
+  "also": [
+    "topologia ricreativa",
+    "nastro di Möbius",
+    "Möbius strip",
+    "superfici a una faccia",
+    "teoria dei nodi",
+    "knot theory",
+    "geometria della gomma"
+  ],
+  "one_line": "Paper strips joined into rings with different numbers of half-twists, cut along their length, and whatever comes out is counted.",
+  "from_entries": [
+    375
+  ],
+  "how": "Five long narrow strips and some tape. Before joining the ends of each, twist it half a turn as many times as the table says: none, one, two, one again, three. Print a table with a row for each strip and three columns — what you expect, how many rings came out, how many twists each ring has. The expectation is filled in before the scissors touch anything, and that is the form. Cut along the length until the cut comes back to where it started. On the fourth strip cut a third of the way in instead of down the middle. Last line: two of the five rows can be worked out from odd and even, and the other three cannot. Which two?",
+  "knobs": [
+    {
+      "knob": "whether the guess is written first",
+      "effect": "written, a wrong guess is something that happened and gets remembered; left out, every result was obvious in hindsight and five cuts have taught nobody anything."
+    },
+    {
+      "knob": "where the cut runs",
+      "effect": "down the middle the rings are whatever the twists decide; a third of the way in the strip is cut twice round and two linked rings of different lengths come out, which is the row nobody predicts."
+    },
+    {
+      "knob": "how many strips",
+      "effect": "one strip is a trick shown once and finished; five make a table with a pattern in the odd rows and exceptions in the even ones, and a table is what makes it worth counting rather than watching."
+    },
+    {
+      "knob": "paper or a drawing of string",
+      "effect": "with paper the scissors settle it and cannot be wrong, because what is counted is whole rings; with a drawing of a loop the eye settles it and the eye is wrong — an unknotted loop with eleven crossings looks knotted."
+    }
+  ],
+  "where_the_work_is": "In the count of half-twists, fixed before anything is stuck down and deciding every row of the table. Cutting takes a minute; choosing what the five rows should be is the design.",
+  "breaks": "The objects stay on the table and only the numbers come back, so a strip joined with the wrong number of twists produces a wrong row that nothing on the sheet can catch. It needs scissors and tape. Strips cut too wide give short fat rings whose twists cannot be counted. None of it exists on a display.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    162,
+    359,
+    367,
+    370,
+    374
+  ]
+}

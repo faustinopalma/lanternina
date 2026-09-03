@@ -1,0 +1,56 @@
+{
+  "format_version": 1,
+  "method_id": "one-letter-per-box-and-scissors",
+  "kind": "move",
+  "name": "give the letter operation to a pair of scissors",
+  "also": [
+    "sciarada",
+    "striscia di caselle",
+    "strumenti di carta",
+    "taglio della parola",
+    "disco cifrante",
+    "paper tools",
+    "one letter per cell"
+  ],
+  "one_line": "An exact operation on letters is done by a hand on cut paper, never by whoever writes the sheet and never by a model.",
+  "from_entries": [
+    120,
+    121,
+    123,
+    130,
+    138
+  ],
+  "how": "Whenever a form needs letters cut, reordered, paired or shifted, print a strip of empty boxes, one letter to a box, and print the operation as a procedure with no judgement in it. Cutting the strip and reading the two halves splits a long word into two short ones. Cutting the boxes apart and laying them out alphabetically seals a sentence so that only its writer can restore it. Numbering the boxes and matching 1 against 21, 2 against 20 and inward tests a symmetry. Two strips, the lower carrying the alphabet twice, shift a Caesar cipher with nobody counting past Z. Print the boxes empty and print how many there are, and print no example that required the operation to be done first.",
+  "knobs": [
+    {
+      "knob": "which operation the hand does",
+      "effect": "Cutting splits a word in two. Sorting alphabetically seals a sentence and cannot go wrong in silence. Pairing from the two ends tests a symmetry. Sliding two strips does modular arithmetic. Cutting off a word's top half and turning it makes a shape that reads both ways."
+    },
+    {
+      "knob": "who does it",
+      "effect": "A hand on cut paper is exact and its mistakes are visible on the table. A model asked for the same operation returns a string of the right length and the wrong letters, and nothing downstream catches that."
+    },
+    {
+      "knob": "whether the number of boxes is printed",
+      "effect": "Printed, the strip says how long the word may be and how many pieces come out of it. Left open, somebody cuts a strip that does not fit the frame and the sheet has to be drawn again."
+    },
+    {
+      "knob": "whether failure is announced",
+      "effect": "«Expect to try five words before one splits» keeps somebody going past the second failure. Left out, the second word that does not work is where the sheet gets put down."
+    }
+  ],
+  "where_the_work_is": "In the strip of boxes, which turns an operation nobody does reliably in their head into scissors and a table top. The boxes are drawn before anyone knows what will go in them.",
+  "breaks": "Boxes print, and a hand-lettered strip scans if the boxes are eight millimetres or more. On 800x480 a row of boxes draws and nothing can be cut, so a panel carries the tally of attempts and never the strip. The move makes checking safe and not composing: whether a given word splits into two real words still has to be settled against a word list by hand, and the sheet must never print a result that the scissors were supposed to produce.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    313,
+    326,
+    331,
+    333,
+    352
+  ]
+}

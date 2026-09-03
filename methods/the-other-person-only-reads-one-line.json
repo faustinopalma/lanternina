@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "the-other-person-only-reads-one-line",
+  "kind": "move",
+  "name": "give the second person one line and nothing to judge",
+  "also": [
+    "attore dal vivo nella stanza",
+    "game master",
+    "oracolo",
+    "foglio di chi conduce",
+    "chiave nascosta",
+    "live actor",
+    "non-player character"
+  ],
+  "one_line": "The second person is genuinely needed and is given no preparation, nothing to understand and nothing to decide: a line, and a moment to say it.",
+  "from_entries": [
+    166,
+    179,
+    192
+  ],
+  "how": "Print two sheets and a cut line. The second sheet is the whole trick and has to be short enough to hand to anybody in the house. Smallest version: five fixed lines, each under forty-three characters, said one at a time whenever the other person stops writing, in whatever order, with a tick beside each — no answering questions, no acting, nothing to understand. Next size up: a hidden path of five column numbers, and the only reply allowed is yes or no. On the first sheet forbid rejecting anything: whatever gets said fits, and finding how is the work. Then give them two boxes checkable without understanding a thing: all five lines used, and at least one wait of over ten seconds.",
+  "knobs": [
+    {
+      "knob": "how much the second person has to know",
+      "effect": "Nothing, with five fixed lines: read, wait, tick. A little, with a hidden path: read five numbers and say yes or no. A lot, if they are expected to improvise, and then it stops being something anybody in the house can be asked to do."
+    },
+    {
+      "knob": "whether they can refuse anything",
+      "effect": "An oracle with a written path cannot refuse wrongly, and an actor with five fixed lines has nothing to refuse with. Removing the trade's characteristic mistake is what makes an unprepared person safe to ask."
+    },
+    {
+      "knob": "how they know it went well",
+      "effect": "By two conditions needing no understanding: every line used, and at least one long wait. Whoever runs it never sees the story, so their check cannot depend on anything they were not in a position to see."
+    },
+    {
+      "knob": "whether a second person is needed at all",
+      "effect": "For a hidden path they are the only place the secret can live, since on the walker's own sheet it is not a secret. For nearly everything else in this chapter one person is enough, and this should be reached for last."
+    }
+  ],
+  "where_the_work_is": "In how little the second sheet asks for. Five lines under forty-three characters, or five numbers and a yes or no, is all an unprepared person can be handed, and writing to that limit is the design.",
+  "breaks": "Two sheets and a cut line print for the price of one. What comes back is the first sheet, carrying the transcribed lines and what was written between them, from which the order they were said in can be recovered without asking anybody. On 800x480 the five lines fit and the second person disappears with them, and a line appearing on a screen when you stop writing is not a person speaking. This is the one thing here a display cannot stand in for.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    78,
+    81,
+    86,
+    143
+  ]
+}

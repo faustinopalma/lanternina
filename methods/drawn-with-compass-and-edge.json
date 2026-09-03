@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "drawn-with-compass-and-edge",
+  "kind": "form",
+  "name": "build a figure with a compass that never changes",
+  "also": [
+    "costruzione con riga e compasso",
+    "costruzione euclidea",
+    "straightedge and compass construction",
+    "poligono costruibile",
+    "constructible polygon",
+    "trisezione dell'angolo",
+    "duplicazione del cubo"
+  ],
+  "one_line": "A figure built with two tools and five moves, where the compass coming back onto its first mark is the whole of the proof.",
+  "from_entries": [
+    371
+  ],
+  "how": "One instruction and one opening. Draw a circle, then do not touch the compass again: step round the edge, each time putting the point where it last landed. It closes on the sixth mark, and the hexagon has been proved by the tool and not by the page. Then ask for seven marks by eye, adjusting until they close — and print the sentence that matters, which is that they will close, that the last gap is under two millimetres, and that the heptagon is wrong anyway. Print a table of which polygons up to twenty can be built and which cannot, and ask what the yes column has in common. The rule is not guessable; the table is there to be stared at.",
+  "knobs": [
+    {
+      "knob": "whether an approximation is allowed",
+      "effect": "allowed everywhere, every figure closes and the sheet has taught that closing means correct, which is false; forbidden and then broken on purpose with the heptagon, closing is shown to be worth nothing by itself."
+    },
+    {
+      "knob": "asking for the figure or for whether it exists",
+      "effect": "the hexagon takes three minutes and always works; which polygons exist at all is two thousand years of the question, and on a sheet it is answered by a printed table rather than by anybody in the room."
+    },
+    {
+      "knob": "which tools are allowed",
+      "effect": "with a marked ruler, or one fold of the paper, the angle can be trisected and the famously impossible becomes routine. All the interest lives in the ban, so the ban has to be stated as a rule and never assumed."
+    },
+    {
+      "knob": "whether the table is printed",
+      "effect": "printed, there is something to look at and be puzzled by after the drawing; withheld, the afternoon is over in three minutes, because the hexagon is genuinely easy."
+    }
+  ],
+  "where_the_work_is": "In the heptagon, not the hexagon. The hexagon shows a tool proving something; the heptagon shows the same tool proving something false, and the pair is the only reason to hand over either.",
+  "breaks": "It needs a compass, the one tool in its chapter a house may not own, and a compass whose hinge slips ruins the hexagon and teaches the wrong lesson. A drawn heptagon and a correct hexagon come back looking equally finished — that is the point being made, and also why nothing on the page can mark it.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    162,
+    365,
+    366,
+    369,
+    372
+  ]
+}

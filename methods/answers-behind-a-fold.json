@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "answers-behind-a-fold",
+  "kind": "form",
+  "name": "answer for tomorrow, then fold the page over",
+  "also": [
+    "previsione",
+    "pronostico",
+    "predict-observe-explain",
+    "POE",
+    "calibrazione",
+    "prediction"
+  ],
+  "one_line": "Three answers about tomorrow written today, folded out of sight along a printed line, and opened tomorrow beside what actually happened.",
+  "from_entries": [
+    28
+  ],
+  "how": "Three questions about the same hour tomorrow, filled in now: what will be in the kitchen, who will come in first, one thing that will have moved by itself. Then a dotted line across the sheet with «fold here» on it. The fold is the only mechanism: it stops the answers being adjusted without anybody watching. Below it, the second half — open the page and write beside each one what happened. Make one question slightly absurd, because an absurd question buys a whole day of attention. Last line: the one you got most wrong is the interesting one, ring it and write in one line why you thought otherwise.",
+  "knobs": [
+    {
+      "knob": "whether the answers are written first",
+      "effect": "Written and folded away, a wrong guess stays wrong and is a fact; recalled the next day, memory tidies it, everything was obvious all along, and the day taught nobody anything."
+    },
+    {
+      "knob": "how far ahead",
+      "effect": "Ten seconds is settled while you watch and needs no fold; a day is long enough for a guess to be a guess and short enough that the sheet is still around; a year does not come back."
+    },
+    {
+      "knob": "whether reasons are asked for before looking",
+      "effect": "The canonical form has four boxes and not three, and the extra one holds the reasons written before the observation; without them a wrong prediction cannot be explained afterwards without inventing why."
+    },
+    {
+      "knob": "what the questions point at",
+      "effect": "Pointed at the house — who comes in first, what will have moved — anybody can answer and the answers get settled; pointed at the reader — how long I will take, how hard it will be — it produces a number about a person."
+    }
+  ],
+  "where_the_work_is": "In the fold. It makes the first half unalterable with nobody supervising, and the same three questions without it are three opinions written down and quietly revised.",
+  "breaks": "It is a form in two parts and nothing brings the second part back; a sheet found a week later holds three predictions and no outcomes, which is a whole afternoon returning empty. A folded sheet scans with a crease across it that can cut through a line of handwriting. On a display the three questions fit and the fold does not exist.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    8,
+    22,
+    29,
+    38,
+    364
+  ]
+}

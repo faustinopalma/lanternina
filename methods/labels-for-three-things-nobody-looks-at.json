@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "labels-for-three-things-nobody-looks-at",
+  "kind": "form",
+  "name": "write museum labels for three invisible objects",
+  "also": [
+    "cartellino da museo",
+    "didascalia da museo",
+    "targhetta",
+    "cartello di sala",
+    "museum label",
+    "wall text",
+    "per quanto si possa sapere"
+  ],
+  "one_line": "Three blank museum cards and a room card, to be filled in for the three least looked-at objects in the house and laid beside them.",
+  "from_entries": [
+    97
+  ],
+  "how": "Print three identical labels with the inventory numbers already on them — 1974/1, /2, /3 — and the fields: what it is, who made it, when, what of, how it got here. Then the two fields that are not an inventory: a LOOK line for one thing that cannot be seen from across the room, and a last field for what is not known. Ask for the three objects that have been in the house longest and are looked at least; say the toaster will do. Three rules. Where a field is not known, write that it is not — museums do, and it is what stops a card being abandoned at the first blank. The LOOK line may not repeat anything visible at a distance. The room card, two lines saying why these three belong together, is written last. One photograph with all three in it.",
+  "knobs": [
+    {
+      "knob": "read or written",
+      "effect": "Read, this is the one genre in the chapter that asks nothing back. Written, it becomes a judgement about what deserves to be looked at, and that judgement is not asked for anywhere else in the house."
+    },
+    {
+      "knob": "the field for what is not known",
+      "effect": "Printed, no field can stop the work: ignorance has somewhere to go and the card can be finished. Left out, the first unknown date ends the activity, because a half-filled card looks like a failure."
+    },
+    {
+      "knob": "the LOOK line",
+      "effect": "Barred from repeating what is visible across the room, it puts somebody close to a thing they have walked past for years. Unconstrained it comes back as «it is white», and the card is an inventory again."
+    },
+    {
+      "knob": "when the room card is written",
+      "effect": "Last, it is a discovery: three objects were chosen and the reason appeared afterwards. First, it is a theme, and the three objects get chosen to fit it, which is a duller afternoon and a shorter one."
+    }
+  ],
+  "where_the_work_is": "In the LOOK line and in when the room card is written. The identifying fields are scaffolding that makes a card look like a card; those two are the only places where something happens that would not have happened anyway.",
+  "breaks": "Nothing on it can be checked, and nothing should be: what it produces is that three objects were looked at. The photograph is all that returns, and it has to hold all three labels in one frame or the arrangement is lost. On 800x480 a label does not fit — a card is a shape, and shapes are what a display that size cannot carry.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    23,
+    24,
+    52,
+    93,
+    98
+  ]
+}

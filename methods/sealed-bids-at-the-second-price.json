@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "sealed-bids-at-the-second-price",
+  "kind": "form",
+  "name": "bid in sealed slips and pay what the second bid said",
+  "also": [
+    "asta",
+    "incanto",
+    "asta a busta chiusa",
+    "licitazione",
+    "asta di Vickrey",
+    "Vickrey auction",
+    "sealed-bid auction",
+    "second-price",
+    "bid shading",
+    "smussare l'offerta"
+  ],
+  "one_line": "Four things somebody in the house can really grant, bid for on folded slips opened together, with the winner paying the runner-up's number.",
+  "from_entries": [
+    284
+  ],
+  "how": "Write four lots that will actually happen this week — who picks what we eat on Saturday, an hour when nothing is asked of you — and give each bidder twelve tokens. For each lot everybody writes a number on a slip and folds it; the slips open together; the highest takes the lot and pays what the second-highest wrote. Print the table showing why: with a lot worth seven to you and the other bid anywhere between nought and ten, bidding seven earns most, and bidding above or below earns less. Nobody has to be honest and nobody has to guess what anybody else will do. Afterwards ask each bidder what they would have written if the winner paid their own number, and by how much they went down.",
+  "knobs": [
+    {
+      "knob": "first price or second",
+      "effect": "Paying your own bid makes everybody shade downwards — about three quarters of true value with four bidders, half with two — so the sheet ends up measuring guesswork. Paying the second bid makes the true number the best one, and that is provable on the page."
+    },
+    {
+      "knob": "what the lots are",
+      "effect": "Lots that will really be granted make the numbers mean something. Invented lots turn it into an arithmetic exercise, everybody bids much the same, and nobody finds anything out about themselves."
+    },
+    {
+      "knob": "how many bidders",
+      "effect": "Two is the floor and carries most of it. More is better for an auction and worse for the house: with more bidders the winner is likelier to be whoever overestimated the lot by the most."
+    },
+    {
+      "knob": "when the shading question is asked",
+      "effect": "Asked afterwards, the gap between the two numbers is a measurement of the person. Asked at the start, both get written to look consistent with each other and nothing has been measured."
+    }
+  ],
+  "where_the_work_is": "In the second-price rule and the table under it. Nobody arbitrates, counts or forbids: the slips open together and the numbers are read, and the reason honesty pays is twelve printed rows instead of an appeal.",
+  "breaks": "With one bidder there is nothing at all: an auction with a single bid returns nothing, and there is no honest substitute, because a printed bid is known in advance and can be beaten by one. The lots are worthless unless whoever wrote them means them, and the sheet cannot make that true. Tokens are counted by hand and nothing stops thirteen being spent. Twelve rows of two numbers print and scan well; on 800x480 they fit and the four lots do not.",
+  "adult_cost": "prepare",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    72,
+    89,
+    244,
+    250,
+    270
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "five-games-against-somebody",
+  "kind": "form",
+  "name": "play the same short game five times against somebody",
+  "also": [
+    "gioco combinatorio imparziale",
+    "gioco imparziale",
+    "Nim",
+    "gioco di sottrazione",
+    "impartial game",
+    "subtraction game",
+    "Chomp",
+    "misère"
+  ],
+  "one_line": "Two people take turns under rules that are the same for both, and after five games the losing positions are what has to be said out loud.",
+  "from_entries": [
+    367
+  ],
+  "how": "Three rows of three, four and five counters, printed to be crossed out. A turn takes as many as you like from one row and never fewer than one; whoever takes the last counter wins. Say on the sheet to swap who starts, because the pattern only shows from both sides. Then the question, and only after the games: in which positions do you already know you will lose, however you move? Print one hint and no second one — try it with two rows, and see what happens when they are equal. Print no strategy: the sheet cannot state it without ending the afternoon on the first line.",
+  "knobs": [
+    {
+      "knob": "how many rows",
+      "effect": "one row is solved in three games and stops; two rows show the pattern plainly; three rows need the pattern before they can be won, and three is where it stops being obvious and is still playable."
+    },
+    {
+      "knob": "who wins at the end",
+      "effect": "whoever takes the last counter is the ordinary rule and the pattern comes out clean; whoever is forced to take it inverts the endgame, and the strategy people find stops working near the finish."
+    },
+    {
+      "knob": "whether the strategy is on the sheet",
+      "effect": "printed, the game is over on reading and five rounds are five recitals; withheld, the five games are the whole form, and the one hint is what stops them from being five wasted ones."
+    },
+    {
+      "knob": "whether a second game is put beside it",
+      "effect": "a game whose winning line nobody has ever found, set next to one that can be worked out, teaches the difference between not knowing yet and nobody knowing. It costs three lines and needs no answer."
+    }
+  ],
+  "where_the_work_is": "In the repetition, which this form produces by itself: five games do not tire anybody the way five exercises do, and the pattern is only visible across them. The sheet's job is to make swapping who starts unavoidable.",
+  "breaks": "It needs a second person for the whole of it, which nothing else in its chapter does, and that person is the only place any checking can happen. One written line comes back, and if the two of them never swapped who started, that line is wrong and nothing on the page says so.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    152,
+    366,
+    373,
+    374,
+    375
+  ]
+}

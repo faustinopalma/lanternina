@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "both-ends-of-the-scale-before-the-middle",
+  "kind": "form",
+  "name": "write both ends of the scale before you start",
+  "also": [
+    "autovalutazione con rubrica",
+    "rubrica valutativa",
+    "griglia di valutazione",
+    "criteri di riuscita",
+    "scoring rubric",
+    "self-assessment",
+    "valutazione formativa"
+  ],
+  "one_line": "Three criteria and the two extreme cells of each written before the thing is made, and the middle cell written afterwards, looking at it.",
+  "from_entries": [
+    244,
+    255
+  ],
+  "how": "Before starting something that is going to be made — a drawing, a repair, a cake, a text — ask for three criteria, with the warning printed that lovely, nice and well done are one criterion written three times. Print a grid of three rows and three columns: least of all, in between, most of all. Fill the two outer cells of each row now, in words and not in marks — «you can see it was a rush», «somebody else could redo it from looking at it» — and leave the middle column empty, and say so on the sheet. Make the thing. Then fill the three middle cells looking at what was made, mark where each row landed, and answer two lines: which criterion turned out useless, and which one was missing.",
+  "knobs": [
+    {
+      "knob": "the order the cells are filled",
+      "effect": "The two ends can be imagined with your eyes shut. The middle cannot be written in the abstract and takes two seconds with a real thing in front of you: six cells before and three after, and the middle row ends up describing what happened in words chosen beforehand."
+    },
+    {
+      "knob": "who writes the criteria",
+      "effect": "Written by whoever will use the grid, it records what they were trying to do. Handed over ready-made it is somebody else's idea of what the thing was for — and a grid decides what gets looked at: in one study feedback covered content and structure, and almost never the sentences."
+    },
+    {
+      "knob": "the sum or the lowest row",
+      "effect": "Summing loses the thing the grid was made for. Across every way of scoring five rows from one to five, four times in ten a high total hides a row sitting at one or two. Read the lowest row and ask what would raise it by one."
+    },
+    {
+      "knob": "where the sheet ends up",
+      "effect": "Filled in by whoever did the work and then thrown away, it is a judgement about one object. Collected and kept, it becomes a record about a person, which is a different object with a different use, and nothing here needs it."
+    }
+  ],
+  "where_the_work_is": "In the two lines at the end. A grid decides what gets looked at, and asking which criterion was useless and which was missing is the cheapest way of showing that to whoever is subject to it, without having to explain it to them.",
+  "breaks": "Nothing on the sheet settles anything: it is a judgement written by the person being judged, and no line of it can be right or wrong. What is missing against the method the sources describe is their first step — examples of different quality to look at before writing the two ends, so the extremes come from something seen instead of imagined. On a display three rows of three cells do not fit; the three criteria and the two closing questions do.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    8,
+    86,
+    236,
+    245,
+    246
+  ]
+}

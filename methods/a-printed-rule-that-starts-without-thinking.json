@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-printed-rule-that-starts-without-thinking",
+  "kind": "move",
+  "name": "print a rule that gives a start without thinking",
+  "also": [
+    "euristica del vicino più prossimo",
+    "regola della mano sul muro",
+    "conto della sovrapposizione",
+    "piolo basso",
+    "nearest neighbour",
+    "wall follower"
+  ],
+  "one_line": "A mechanical procedure printed beside a hard task, runnable by anybody without deciding anything, which leaves the task itself intact.",
+  "from_entries": [
+    153,
+    155,
+    164
+  ],
+  "how": "Find the procedure that needs no decision and print it above the task. For a shortest tour: always go to the nearest place you have not been. For a picture grid: push each run to one end, push it to the other, and the cells filled both ways are certain. For a maze: put your right hand on the wall and never take it off. Say what it gives, because a valid answer to beat and a piece that is certain are different things and only one is final. Then print a second case built so the rule fails — a maze whose goal is ringed by walls touching no edge, where the hand walks sixteen cells and comes home — and ask what the hand did, and why it was enough the first time.",
+  "knobs": [
+    {
+      "knob": "what the rule produces",
+      "effect": "A mediocre but valid answer, like the nearest-neighbour tour, gives a number to beat and the number improves. A partial but certain answer, like the overlap count, gives cells that will never be taken back. Only the first invites a second attempt."
+    },
+    {
+      "knob": "whether a failing case is printed too",
+      "effect": "One case and the rule is a gift, believed. Two, the second built so it fails, and what comes out is that a procedure can work every time it has been tried and still not be a proof. That is the better half."
+    },
+    {
+      "knob": "where the rule is printed",
+      "effect": "Above the task it is a foothold and nobody faces a blank page. Below it, it is a solution and arrives too late to be one. There is no third position that does anything useful."
+    },
+    {
+      "knob": "whether what the rule scores is printed",
+      "effect": "Twenty steps against a shortest twelve, or a tour of 412 mm. Printing the rule's own score turns the task into beating a figure, and nobody is needed afterwards to say whether that happened."
+    }
+  ],
+  "where_the_work_is": "In the second case, built so the rule fails. Any handbook prints the rule; printing the maze where the hand walks the outer ring and returns is the part that has to be constructed and checked.",
+  "breaks": "The rule prints in four lines and fits 800x480; the maze and the ten points do not, and both have to be seen whole. A traced route scans back only if the corridors are drawn well apart. The failing case has to be verified cell by cell before printing — a maze where the hand happens to reach the goal makes the second half of the sheet say nothing, and nobody would notice.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    130,
+    145,
+    152,
+    227
+  ]
+}

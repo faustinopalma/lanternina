@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "questions-instead-of-answers",
+  "kind": "form",
+  "name": "ask for the questions and never for the answer",
+  "also": [
+    "domanda",
+    "formulare domande",
+    "question formulation",
+    "intervista",
+    "migliore risposta",
+    "single best answer",
+    "caso denso"
+  ],
+  "one_line": "A situation with more detail than is needed, and what comes back is a list of questions somebody would ask about it, never a conclusion.",
+  "from_entries": [
+    4,
+    30
+  ],
+  "how": "Write half a page of situation, dense and ordinary: the dog has not eaten for two days, drinks a lot, will not come out from under the table even when the bell rings, and the fur round its muzzle is lighter than it was in May. Put in details that matter and details that do not, and never say which. Then ask for questions — the two you would ask before saying anything, or seven for somebody in the house who was already grown when you were not born. Name a moment and not a subject: a day, a room, a job, a fear. Print that the first two come at once and the rest need knowing the person.",
+  "knobs": [
+    {
+      "knob": "asking for questions or for a conclusion",
+      "effect": "Asked for the best answer, the sheet needs a criterion for what makes one better, that criterion is never printed, and somebody right for a different reason comes out wrong; asked for questions, there are more useful and less useful ones and no wrong ones."
+    },
+    {
+      "knob": "how many are asked for",
+      "effect": "Two is a decision about what matters most and is the heavier request; seven goes past the two anybody would ask, and from the third on the person being asked about has to be known."
+    },
+    {
+      "knob": "whether the case is dense",
+      "effect": "A case holding only what is needed can be solved by counting the facts; one with more detail than the questions use makes deciding what is relevant part of the work, and costs four extra lines of printing."
+    },
+    {
+      "knob": "whether the questions ever get asked",
+      "effect": "Prepared and never used, it is finished work and nothing is owed to anybody; carried out, it becomes an afternoon with a second person in it, and that decision belongs to whoever wrote them."
+    }
+  ],
+  "where_the_work_is": "In the situation being dense and dull. It has to be ordinary enough that no knowledge is needed and detailed enough that the questions have somewhere to land.",
+  "breaks": "Nothing on the page distinguishes a sharp question from a lazy one, so seven flat questions come back looking like two good ones. Half a page of case prints and scans cleanly. On a display the case does not fit; a three-line version of it does, and loses the density that made it work.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    16,
+    29,
+    31,
+    65,
+    297
+  ]
+}

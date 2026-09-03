@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "ask-for-one-instead-of-solving-one",
+  "kind": "move",
+  "name": "ask for one to be made instead of one to be solved",
+  "also": [
+    "girare il gioco dalla parte dell'autore",
+    "zeppa",
+    "officina delle parole",
+    "autore invece che solutore",
+    "compose instead of solve"
+  ],
+  "one_line": "The sheet sets no puzzle; it asks for one to be built, which takes both the making and the checking off the page at once.",
+  "from_entries": [
+    311
+  ],
+  "how": "Take a form whose examples cannot be produced without searching inside words, and stop producing them. Print the rule, one example already known to work, and blank lines: a letter more and a word becomes another word, sale becomes scale, find four of your own. Print the one condition that has to hold, and say that three out of four is three. Then add the second half, which is the part worth having: take one pair and write a line describing each of the two words without naming them, so that somebody else could guess both. That makes the person a composer instead of a solver.",
+  "knobs": [
+    {
+      "knob": "how many are asked for",
+      "effect": "Four, with permission to bring three, keeps a bad run from ending the sheet. One makes a single failure the whole result. Ten turns a game into a task, and the tenth is worse than the first."
+    },
+    {
+      "knob": "whether the second half is there",
+      "effect": "Writing a clue for each of the two words is the composer's job rather than the solver's, and it is what stays on the paper afterwards. Without it, four pairs of words come back and nothing was said."
+    },
+    {
+      "knob": "where the checking ends up",
+      "effect": "In a dictionary if the house has one, and in whoever reads the clues if it does not. Neither is on the sheet, and pretending otherwise is the thing that breaks this."
+    },
+    {
+      "knob": "whether one worked example is given",
+      "effect": "One example that works opens the form in a line. Two make it look like a pattern to be copied, and everything that comes back has the same shape as the two."
+    }
+  ],
+  "where_the_work_is": "In the one example given, which has to be right, because it is the only thing on the sheet anybody can lean on. Everything after it is made by the person and cannot be prepared in advance.",
+  "breaks": "Nothing comes back that can be marked without a word list or somebody to read it, so it cannot be used where an afternoon has to answer for itself. Applied to a form whose rule needs a paragraph it fails, since the whole thing rests on the rule fitting in a line. It survives 800x480 better than the sheet it replaces, because a rule and one example are two short lines.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_solve",
+  "goes_with": [
+    312,
+    314,
+    316,
+    323,
+    331
+  ]
+}

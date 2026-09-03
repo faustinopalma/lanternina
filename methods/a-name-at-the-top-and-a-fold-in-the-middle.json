@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "a-name-at-the-top-and-a-fold-in-the-middle",
+  "kind": "form",
+  "name": "write the question, fold the sheet, hand it on",
+  "also": [
+    "assegnata a qualcun altro",
+    "inventata da chi la fa",
+    "scrivere un esercizio per un altro",
+    "compito rinnovabile",
+    "renewable assignment",
+    "learning by teaching",
+    "inventane uno tu"
+  ],
+  "one_line": "One sheet in two boxes with a fold between them: one person makes a question, another answers it in a different moment.",
+  "from_entries": [
+    291,
+    292
+  ],
+  "how": "Print two boxes with a dashed fold between them and a subtitle on each saying whose it is. The top box carries a blank for a name, filled in by whoever makes the question, because the sheet cannot know who lives in the house. Give three stubs rather than a blank space — «what in this room is ... but is not ...?» — since a wide stub returns nothing and a narrow one returns something in a minute. Print the rule that says when a question is finished: you have to know the answer while you write it, otherwise it is a curiosity. Ask for that answer small and turned face down on the maker's half, so the check is on the paper and passes through nobody. The fold is how the second box arrives covered without anyone promising not to look. Under the answer, one line asking for something the question did not ask about.",
+  "knobs": [
+    {
+      "knob": "how wide the stub is",
+      "effect": "«Invent a question» returns nothing. A stub with two blanks in it returns something in a minute. It is the same result the research records for designing and for constraining, arriving here from a third direction."
+    },
+    {
+      "knob": "whether the maker must know the answer",
+      "effect": "With the rule, the check sits in the material and nobody has to give a verdict. Without it, what comes back is a curiosity and the second box cannot be filled at all."
+    },
+    {
+      "knob": "who receives",
+      "effect": "A person in the house, a person far away, or an object that cannot answer. The third is a documented technique whose stated advantage is precisely that nobody else is needed, and not a retreat."
+    },
+    {
+      "knob": "who keeps the sheet at the end",
+      "effect": "Left with whoever answered, it is over. Returned to the maker, a round starts, and nothing on the page says how a round stops."
+    }
+  ],
+  "where_the_work_is": "In the fold. It gets the separation out of the shape of the object instead of out of somebody's promise, and it has to be printed as a line with «fold here» on it.",
+  "breaks": "One A4, one fold, two moments; it prints and scans as it is. It fails where expected: with nobody else in the house the first line has to be rewritten for an object or for yourself in a week. On 800x480 neither box fits — a display can hold the name of who it is for and nothing more — and the fold has to be paper, because a screen cannot cover half of itself.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    19,
+    45,
+    47,
+    285,
+    341
+  ]
+}

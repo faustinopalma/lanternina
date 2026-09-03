@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "wrong-attempts-kept-side-by-side",
+  "kind": "move",
+  "name": "keep the wrong attempts and read them together",
+  "also": [
+    "vite",
+    "tentativi",
+    "prove",
+    "cuori",
+    "hai tre possibilità",
+    "lives",
+    "tries",
+    "hearts",
+    "errori conservati"
+  ],
+  "one_line": "Three boxes for three tries at one answer, nothing rubbed out, and a question about what the wrong ones have in common.",
+  "from_entries": [
+    266
+  ],
+  "how": "Beside a question with one right answer, print three boxes in a row headed first, second and third try, and one line saying not to rub anything out. Then say plainly on the sheet that when the boxes are full nothing happens: nobody takes the sheet away and anybody can go on trying aloud or on other paper. That sentence is what has been removed. A life is a threat, a threat needs somebody able to carry it out, and paper cannot take anything from anybody. Then the line that pays for the boxes: look at the three wrong answers side by side and say what they have in common. One wrong answer is a mistake; three in a row is a theory somebody was holding without knowing it.",
+  "knobs": [
+    {
+      "knob": "how many boxes",
+      "effect": "Three is the classic number and it came out of pinball. Five changes how carefully the first one is written, which is the thing every source about lives asserts and none of them measures."
+    },
+    {
+      "knob": "whether anything is taken away",
+      "effect": "Nothing is, here. A sheet claiming to take something away is claiming a power it has not got, and the first person to test it finds out the sheet was bluffing about everything else too."
+    },
+    {
+      "knob": "whether the wrong tries are kept",
+      "effect": "Kept, they are the material of the closing question and the one thing paper does better than a screen, where the natural order is to wipe and restart. Rubbed out, the boxes have counted something and produced nothing."
+    },
+    {
+      "knob": "what the question underneath asks",
+      "effect": "Asking what the three have in common turns three failures into one description of a way of thinking. Asking which was closest rewards being nearly right, which where the answers are lumpy is mostly luck."
+    }
+  ],
+  "where_the_work_is": "In the sentence saying that running out costs nothing. Without it the boxes are a threat the paper cannot keep; with it they are a place to put three tries where they can be read together.",
+  "breaks": "It adds nothing to a question with many right answers, and to one with no answer it adds confusion. It cannot enforce anything and says so, which some readers will take as the sheet giving permission not to bother. Three boxes across A4 leave about sixty millimetres each, enough for a word and not for working. Scanned back, handwriting inside boxes reads if the boxes are tall enough. On 800x480 three boxes and the closing question fit.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    231,
+    243,
+    270,
+    281
+  ]
+}

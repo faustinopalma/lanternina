@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "compare-the-errors-not-the-results",
+  "kind": "move",
+  "name": "compare how far off each was, not who did better",
+  "also": [
+    "finisce con un confronto",
+    "messo accanto",
+    "handicap",
+    "riferimento normativo",
+    "come sono andati gli altri",
+    "benchmark",
+    "due numeri e non si parla"
+  ],
+  "one_line": "Two people guess a number apart, then count together, and what is set side by side is the two distances from the fact.",
+  "from_entries": [
+    309
+  ],
+  "how": "Where two results would be laid beside each other, print the distance from a fact instead. Pick something in the house nobody has ever counted — sockets, handles, the books on one shelf. Each person writes a number alone and does not say it; then both go and count together and fill the true value in once. Two rows: the number I said, and how far off I was. Comparing errors takes the head start out, because an adolescent and an adult are far closer in how wrong they are than in what they know, and it does in one printed row what a golf handicap does with a history and a calculation. Print no winner: what gets looked at is how far apart the two distances are. Where the house is empty the fallback degrades this and the sheet should say so — yourself yesterday is not an independent second measurement, because the second guess knows the first.",
+  "knobs": [
+    {
+      "knob": "results or distances from a fact",
+      "effect": "Results measure who was already ahead. Distances measure how well each of them knows the same thing, and the correction costs one printed row and no arithmetic."
+    },
+    {
+      "knob": "whether a winner is printed",
+      "effect": "A printed winner turns two numbers into a ranking. Leaving it out is a choice visible on the page, and what remains to look at is the gap between the two distances."
+    },
+    {
+      "knob": "who the other is",
+      "effect": "A second person gives two independent guesses. Yourself a day ago gives two that are not independent, and that is a real loss of a property, not the same form written smaller."
+    },
+    {
+      "knob": "whether the other knows they are the comparison",
+      "effect": "They need not know for the form to work. They do have to be there for the counting, because the counting is where the fact that settles both numbers comes from."
+    }
+  ],
+  "where_the_work_is": "In the true value being fetched and not printed. Neither person is right by authority, which is what keeps the comparison from turning into an argument between two opinions.",
+  "breaks": "Two columns of short numbers print and scan. On 800x480 the two columns fit and the instructions do not. The place it breaks is the second person, whom a sheet cannot manufacture: the substitute — yourself a day later — loses the independence of the two measurements, and independence is the property being compared.",
+  "adult_cost": "take_part",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    87,
+    89,
+    190,
+    250,
+    276
+  ]
+}

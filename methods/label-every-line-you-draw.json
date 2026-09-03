@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "label-every-line-you-draw",
+  "kind": "form",
+  "name": "join things with lines and label every line",
+  "also": [
+    "diagramma",
+    "schema",
+    "mappa concettuale",
+    "grafo",
+    "rete di relazioni",
+    "concept map",
+    "relationship diagram"
+  ],
+  "one_line": "Nine people described in one clause each, joined by lines drawn freely, and every line carries two words saying what is between them.",
+  "from_entries": [
+    36
+  ],
+  "how": "Print nine short descriptions and no bare names — Renzo, who mended radios; the woman on the fourth floor, never seen; the one who left every Thursday. A description gives a line somewhere to come from and a name gives nothing. Leave the rest of the sheet empty. One rule, and it is the whole exercise: on every line write what is between the two, two words are enough — they owe each other, they avoid each other, they have never met. Require at least one line reaching each of the nine. Then ask who came out most alone in this drawing, and what that says about them.",
+  "knobs": [
+    {
+      "knob": "whether the lines are labelled",
+      "effect": "Unlabelled, a line can mean anything and the page is a drawing; with two words on each, every line is a claim somebody could disagree with, and that single rule is the whole difference between the two."
+    },
+    {
+      "knob": "names or descriptions",
+      "effect": "Nine bare names give nothing to connect and the page stays empty; nine one-clause descriptions supply the reasons, and the lines appear without anybody being told to look for them."
+    },
+    {
+      "knob": "whether the lines have a direction",
+      "effect": "An arrow says who owes whom and doubles what can be written; a plain segment says only that there is something, which is enough for the first four lines and runs out after that."
+    },
+    {
+      "knob": "how many nodes",
+      "effect": "Nine fit an A4 and stay readable; past fifteen the drawing cannot be read and the real work becomes choosing what to leave out, which is a different exercise from this one."
+    }
+  ],
+  "where_the_work_is": "In the nine clauses. Each has to suggest a relation with at least two of the others without stating one, and that is what makes the lines arrive by themselves.",
+  "breaks": "Hand-drawn lines crossing a page scan back as a mess and the two words on each are unreadable at low contrast, so anything meant to survive has to be copied out as a list underneath. Nine descriptions fit on a display, the drawing does not, and there is nowhere on it to draw.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    31,
+    37,
+    40,
+    57,
+    63
+  ]
+}

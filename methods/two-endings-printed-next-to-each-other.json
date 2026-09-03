@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "two-endings-printed-next-to-each-other",
+  "kind": "move",
+  "name": "print two endings and a counting rule that picks one",
+  "also": [
+    "finale buono e finale cattivo",
+    "finali multipli",
+    "storia che si biforca",
+    "multiple endings",
+    "gamebook",
+    "Choose Your Own Adventure"
+  ],
+  "one_line": "Two endings on one page and a counting rule that decides which is read, so that not finishing well still ends in something.",
+  "from_entries": [
+    191
+  ],
+  "how": "Five binary choices down the page, then count the ticks in the left column: nought to two reads ending A, three to five reads ending B. Print both endings three centimetres apart and say to read the other one as well — on paper that costs nothing, and it is the complaint this form attracts everywhere else. Write neither as a failure. Then the part that is not the story: ask which single choice, changed on its own, would have given the other ending. Under a threshold rule the answer is any of them, twelve routes out of thirty-two each; under a rule where the first choice decides everything it is the first and only the first, thirty-two out of thirty-two. The two look identical from outside.",
+  "knobs": [
+    {
+      "knob": "what decides the ending",
+      "effect": "A threshold over all five spreads the weight evenly, each choice flipping twelve routes out of thirty-two. A branch on the first choice flips all thirty-two and leaves the other four flipping none. Nothing on the page distinguishes the two."
+    },
+    {
+      "knob": "whether one ending is a failure",
+      "effect": "Adventure gamebooks make one ending right and the rest deaths; branching novels make them all count. A second ending that is not a failure is the cheapest way of making not finishing well still produce something."
+    },
+    {
+      "knob": "whether the other ending may be read",
+      "effect": "In a book it costs page-turning and in a game it costs replaying, and players complain about exactly this. On one sheet both are printed, and saying so removes the form's usual defect for nothing."
+    },
+    {
+      "knob": "how many endings",
+      "effect": "Two is the smallest and the only number that can be printed side by side. Past four nobody counts them, and the page has to carry text that most readers will never reach."
+    }
+  ],
+  "where_the_work_is": "In the rule mapping ticks to endings, which is invisible from the page and decides whether five choices mattered or only one did. It is settled by enumerating thirty-two routes.",
+  "breaks": "Nothing: no material, no clock, nobody else, one side of paper, and the five ticks come back in a photograph from which the ending read can be worked out without asking. On 800x480 the choices go well and the two endings do not — showing one at a time puts back exactly the defect that paper removes.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    150,
+    183,
+    185,
+    189
+  ]
+}

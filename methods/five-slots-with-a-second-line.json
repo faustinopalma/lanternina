@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "five-slots-with-a-second-line",
+  "kind": "form",
+  "name": "ask for five, each with a second line",
+  "also": [
+    "elenco",
+    "lista",
+    "brainstorming scritto",
+    "titolo",
+    "intitolare",
+    "dare un nome",
+    "list",
+    "naming"
+  ],
+  "one_line": "A numbered set of short slots, each with a second rule beside it asking why, and a printed warning that the last one is the hard one.",
+  "from_entries": [
+    14,
+    24
+  ],
+  "how": "State the number and keep it small and odd: three or five. «As many as you can think of» sounds kinder and is not, because it never says when somebody has finished. Print a rule for each slot and a shorter one beside it carrying the second question — why it is still here, what it names, what it is for. That half-rule turns a list into a page of small reasons and costs half a line. Under the last slot, one sentence: the fifth is the hard one, and if you stop at the fourth the list is of four. Print it above the work and not below, so the cost is expected rather than suffered.",
+  "knobs": [
+    {
+      "knob": "the number asked for",
+      "effect": "One asks for the best there is and is the heaviest request on any page; three comes easily twice and makes the third be hunted; ten stops being memory around the fourth and becomes invention, which is why writing rooms use it."
+    },
+    {
+      "knob": "whether a number is given at all",
+      "effect": "A number says when the work is over, which for somebody who finds it hard is the only thing on the sheet that matters; without one there is no floor and no ceiling, and stopping feels like giving up."
+    },
+    {
+      "knob": "the second rule beside each slot",
+      "effect": "With it, every item has to be defended in four words; without it, five nouns come back and there is nothing on the page that anybody could disagree with or return to."
+    },
+    {
+      "knob": "warning against encouraging",
+      "effect": "«You can do it» says that not doing it would be theirs; «the fifth is the hardest» says the difficulty is in the task, and only one of those can be printed before the difficulty arrives."
+    }
+  ],
+  "where_the_work_is": "In what is being asked for. It has to be something nobody could be wrong about and that the first two answers do not exhaust — things with no name, things kept for no reason — or the third slot is padding.",
+  "breaks": "Five ruled slots with five half-rules fill an A4 and scan back well, because handwriting on a printed rule stays on the rule. Nothing about the answers can be checked, deliberately. The display holds the request, the number and the warning, which is most of what this is.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    23,
+    29,
+    30,
+    32,
+    41
+  ]
+}

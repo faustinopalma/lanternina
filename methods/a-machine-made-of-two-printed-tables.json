@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-machine-made-of-two-printed-tables",
+  "kind": "form",
+  "name": "a machine of two tables that answers with nobody there",
+  "also": [
+    "gioco a scatola nera",
+    "indovina la regola",
+    "logica induttiva",
+    "black box",
+    "Zendo",
+    "Eleusis",
+    "Mastermind"
+  ],
+  "one_line": "A grid sends every question to a numbered hatch, the hatch list gives the answer, and the rule lives only in the pair.",
+  "from_entries": [
+    205
+  ],
+  "how": "Choose a rule with one exception: two numbers from one to six are multiplied, except when they are equal, and then they are added. Draw the six-by-six grid, but put a hatch number in each cell instead of a result, scattered so that the grid by itself says nothing. Print the thirty-six hatches in hatch order and never in cell order, each with its result. Print a working table of four columns — the two numbers, what I predict, what came out, so the rule is — and say that opening a hatch without writing a prediction is not a test but a look. Before revealing anything, ask for the one pair that would come out one way if the rule is what they wrote and another way if it is not. On thirty-six cells «multiply» is right thirty-one times, and only the five equal pairs above two give it away.",
+  "knobs": [
+    {
+      "knob": "whether a prediction is asked for first",
+      "effect": "Predicting turns opening a hatch into something that can fail, which is the operation being taught. Without it the same sheet is a lookup table with a puzzle printed over it and gets filled in without a thought."
+    },
+    {
+      "knob": "one table or two",
+      "effect": "A result written in the cell makes the grid readable as a rule at a glance. A hatch number in the cell, with the results listed in hatch order, means neither table alone says anything: that separation is the whole machine."
+    },
+    {
+      "knob": "how reachable the exception is",
+      "effect": "Anybody who never tries two equal numbers confirms «multiply» for ever. Two and two is the safe equal pair, four either way, so an exception that can be reached and is not forced is what makes the sheet worth doing."
+    },
+    {
+      "knob": "asking for the test that could disprove",
+      "effect": "One line asking which pair separates the stated rule from its rival is the only place on the sheet where a wrong idea gets caught. Left out, everything on the page rewards confirming what was already thought."
+    }
+  ],
+  "where_the_work_is": "In the two tables separating the question from its answer. That is what lets a form needing something that reacts be printed at all, and the price is a world of exactly thirty-six questions.",
+  "breaks": "The domain is finite and small: a real black box takes whatever is invented, this takes thirty-six pairs and refuses seven and eight. Nothing stops all thirty-six hatches being read at once, and the sheet cannot count them — the question about how many were opened is the only measure, and it is trusted rather than checked. On 800x480 neither table fits; two lines given to somebody who holds the rule replace both, and then it needs a person.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    110,
+    157,
+    168,
+    233
+  ]
+}

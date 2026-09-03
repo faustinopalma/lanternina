@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "declared-first-then-the-gap",
+  "kind": "move",
+  "name": "end on the gap between what you said and what was",
+  "also": [
+    "corretta da sé",
+    "finisce con una scoperta",
+    "finisce con un punteggio",
+    "taratura",
+    "autovalutazione",
+    "calibration",
+    "quanto sei sicuro"
+  ],
+  "one_line": "A number or a letter written before looking, the fact fetched afterwards, and the ending is the distance between the two.",
+  "from_entries": [
+    296,
+    304,
+    308
+  ],
+  "how": "Ask for a declaration before anything is looked at, then print the subtraction. One number — how many things in this room are older than you, how many will pass the window — with two lines under it, what it really was and the difference with its sign. Or a letter beside every row, S, A or I, and three tallies at the foot: how many S, and of those how many turned out right. Write on the page that a difference of zero is an outcome and not a win, or whoever guessed correctly ends with a blank. What is compared is a declaration and not an answer, so nothing here is a mark: the standard came from the person, the number stays on their sheet. Print the arithmetic that makes it small — six rows cannot tell 80% sure from 60% and sixty could — because without that line a count of how often «sure» was wrong reads as a measurement of somebody.",
+  "knobs": [
+    {
+      "knob": "one number or a letter beside every row",
+      "effect": "A single number gives one distance and suits anything ending in a count. A letter on every row gives three tallies and needs six rows or more before the foot of the sheet says anything at all."
+    },
+    {
+      "knob": "whether zero is declared an outcome",
+      "effect": "Declared, being right is a result like the others. Undeclared, whoever guessed correctly reaches the end with nothing written and reads it as having done nothing."
+    },
+    {
+      "knob": "whether the sheet says it cannot measure",
+      "effect": "One sentence takes from the number a power it does not have. Left out, three tallies on six rows look like a figure about a person, and whoever reads it will treat it as one."
+    },
+    {
+      "knob": "where the true value comes from",
+      "effect": "Fetched by getting up and looking, it costs nothing and makes honesty convenient, since the thing is in the room in ten minutes. Printed as a key, somebody has to hold the key."
+    }
+  ],
+  "where_the_work_is": "In the declaration coming first and in writing. Everything after it is subtraction. Without it there is a count of something, and a count of something is not an ending.",
+  "breaks": "Three ruled lines print, and handwritten digits scan back badly at small sizes. On 800x480 the declaration line fits and the tallies do not. Nobody knows what was declared last time, so no series can be built and every sheet is the first — which is the property that keeps it off anybody's record, and is also why it cannot improve.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    53,
+    243,
+    281,
+    299
+  ]
+}

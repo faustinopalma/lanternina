@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "named-by-what-happens-there",
+  "kind": "move",
+  "name": "name the place by what is done there, not by what it is",
+  "also": [
+    "tappa nominata per funzione",
+    "luogo nominato per funzione",
+    "nominare una proprietà invece di un oggetto",
+    "categoria invece di cosa",
+    "place named by function",
+    "functional landmark"
+  ],
+  "one_line": "A sheet that has never been in the house names what happens somewhere, and whoever reads it decides which place that is.",
+  "from_entries": [
+    193,
+    194,
+    196,
+    204,
+    206,
+    207
+  ],
+  "how": "Never write «the kitchen drawer». Write «where what gets used once a year is kept», «the room where most is thrown away», «the box that is here and whose contents nobody knows». Every house has one, no two houses have the same one, and identifying it is already the first piece of work. Test each line against three houses somebody actually knows before printing it: a line with two answers in one of them is a good line, a line with none is a dead stop and has to go. Never add «if you have one» — the doubt is what makes somebody look. Where several lines run together, print how many places there are, so that a line nobody can settle does not end the afternoon.",
+  "knobs": [
+    {
+      "knob": "a function, a property, or an object",
+      "effect": "An object names one thing and only in the house that owns it. A function — where coats are hung — exists everywhere and takes a moment to identify. A property — something older than you — exists everywhere and is settled by whoever chooses, so it cannot be got wrong."
+    },
+    {
+      "knob": "whether the line has one answer or several",
+      "effect": "One answer makes a small puzzle with an end. Several make the choosing the work and remove any way of being wrong, which is what a list of fourteen wants and what a chain of stations cannot survive, because a station with two answers splits the chain."
+    },
+    {
+      "knob": "how strange the naming is",
+      "effect": "«Where the first light is switched on» is read once and understood. «The tiredest thing in the house» has to be argued with, returns a better answer, and stops whoever wanted an errand rather than a decision."
+    },
+    {
+      "knob": "naming a person or a moment instead",
+      "effect": "The same move runs on people — whoever gets up first — and on times of day. It costs nothing more and reaches the parts of a household that have no room of their own."
+    }
+  ],
+  "where_the_work_is": "In writing lines a house cannot fail to satisfy. That is a test against real houses rather than an act of imagination, and it is the whole reason a sheet printed in one place can be answered in another.",
+  "breaks": "It costs nothing and prints anywhere. What it cannot do is come back: the reader knows which drawer they meant and the page says «where what is used once a year is kept», so nothing returned can be matched against anything. In one room several lines collapse onto the same answer, and a chain built out of them short-circuits. On 800x480 one such line fits per screen, which is enough, because the line is short by construction.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    37,
+    183,
+    199,
+    302
+  ]
+}

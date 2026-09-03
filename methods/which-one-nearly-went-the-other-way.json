@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "which-one-nearly-went-the-other-way",
+  "kind": "move",
+  "name": "ask which one nearly went the other way",
+  "also": [
+    "dove il vincolo è debole",
+    "quali due hai spostato di più",
+    "la cosa che stava bene in due mucchi",
+    "il dettaglio che tutte spiegano peggio",
+    "where the criterion wavered"
+  ],
+  "one_line": "One line at the foot asking for the item where the person's own rule almost failed — named in the terms the form already uses.",
+  "from_entries": [
+    56,
+    57,
+    59,
+    60,
+    62,
+    69
+  ],
+  "how": "Take any form ending in an order, a grouping, a decision, a rule or a set of explanations, and add one line naming its weak point in that form's own words. In an ordering: the two you moved most. In a grouping: the thing that sat well in two piles. In three explanations: the detail all three explain worst. Under a constraint: the line where the rule made you write something you would not have written. After five yes-or-no questions: which one, looking back, was wasted. Print a blank long enough for a phrase and a second one for why. Never ask whether it was hard — that has no answer and comes back blank or says «everything». Ask for the item, by name, first.",
+  "knobs": [
+    {
+      "knob": "asking for an item or for a feeling",
+      "effect": "«Which one nearly went the other way» has an answer that can be written and pointed at afterwards. «Where did you struggle» has none, and the blank comes back empty or filled with the word everything."
+    },
+    {
+      "knob": "how many are asked for",
+      "effect": "One is answerable and is the whole technique. Two starts to be a survey of the person's own work and is still worth the line. Three turns the page into a report on itself and the original task stops being the point."
+    },
+    {
+      "knob": "whether a reason is asked for too",
+      "effect": "The item alone is a fact that can be looked at later. The item with a reason beside it is the only part of the page that could not have been written by anybody else, and it costs a second blank."
+    },
+    {
+      "knob": "aimed at the answer or at the sheet",
+      "effect": "Aimed at the answer it produces reasoning. Aimed at the page — «which question was badly made» — it produces criticism of the sheet, which is also useful and is a different afternoon. The two do not go on one page."
+    }
+  ],
+  "where_the_work_is": "In phrasing the weak point in the form's own terms. A generic version — «where was your reasoning weakest» — comes back empty; «the thing that sat well in two piles» comes back with a name on it, because the sheet has already said where to look.",
+  "breaks": "It adds nothing markable: the answer names an item nobody else can check, which is exactly why it is safe to ask. Put on a form with one right answer it reads as a trick, because there was no moment when anything nearly went the other way. On 800x480 the line fits and is useless there, since the item it asks about is on the sheet and not on the screen.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    6,
+    7,
+    17,
+    49,
+    100
+  ]
+}

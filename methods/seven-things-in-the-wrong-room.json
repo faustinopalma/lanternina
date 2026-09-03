@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "seven-things-in-the-wrong-room",
+  "kind": "form",
+  "name": "find seven things that are in the wrong room",
+  "also": [
+    "cercare",
+    "caccia agli oggetti",
+    "sette cose che non dovrebbero essere lì",
+    "scavenger hunt",
+    "bersaglio definito da una relazione"
+  ],
+  "one_line": "A hunt whose target is never described: it is defined by a relation to where it is, so there is nothing on the page to match against.",
+  "from_entries": [
+    58
+  ],
+  "how": "Print a number — seven works — and a target defined by a relation rather than a property: things sitting in a room that is not theirs, things that were not here yesterday, things that do not belong with what is around them. Print seven rows, each with three blanks: what it is, where it was found, where it belongs. Say in one line that the seventh is the hardest, because by then everything looks out of place. Say in another that an eighth should be written down if it turns up, and that the count belongs to the house and not to whoever printed the page. Describe none of the seven: a described target is found by matching, and the whole of this is that there is nothing to match against.",
+  "knobs": [
+    {
+      "knob": "target given as a property or as a relation",
+      "effect": "«A small brass key» can be matched and jumps out. «Something that is not in its place» has to be judged one object at a time against a room, which is the search worth having and the one a word grid cannot ask for."
+    },
+    {
+      "knob": "whether a number is printed",
+      "effect": "A number gives somewhere to stop and turns an endless look into a task with an end. Without one the hunt finishes when somebody gets bored, which is a worse ending than seven."
+    },
+    {
+      "knob": "who guarantees the count",
+      "effect": "Nobody can: the sheet cannot know the house. Printing the licence to find an eighth removes the only way the form fails, and costs one line. Left out, whoever finds five believes they failed."
+    },
+    {
+      "knob": "how far the field runs",
+      "effect": "One room is twenty minutes and comes back full. A whole house is an afternoon and comes back with three rows filled. The field is the length of the activity, and it is set by naming which rooms count."
+    }
+  ],
+  "where_the_work_is": "In the relation that defines the target. It has to be judgeable by somebody standing in the room and unknowable by whoever printed the sheet, which is the same property seen from its two ends.",
+  "breaks": "Not one row can be checked by whoever wrote the page, and none needs to be: where a thing belongs is known by whoever lives there. It fails if the number is presented as a fact rather than a guess. On 800x480 seven rows of three blanks do not fit; the sentence saying how many there are, and that the count may be wrong, does.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    13,
+    14,
+    273,
+    386
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "scale-anchored-to-what-moves",
+  "kind": "form",
+  "name": "grade the day on a scale of things you can see",
+  "also": [
+    "scala di accordo",
+    "scala Likert",
+    "Likert scale",
+    "scala Beaufort",
+    "Beaufort scale",
+    "rating scale"
+  ],
+  "one_line": "Five numbered steps, each naming something that either happened or did not, and today gets the number whose description matches what is outside.",
+  "from_entries": [
+    8
+  ],
+  "how": "Write five steps, zero to four, and make every one of them an event somebody could have watched: nothing moves, only the lightest things move, the leaves move, the branches move, something moves that usually never does. Print them as five short lines. Under them, one line to fill: today is ___ because I saw ___. The second half is what makes the number inspectable; without it the sheet carries a rating nobody can argue with, including whoever wrote it. Point the scale at the world and never at the reader — how hard it was, how sure you feel — because those land on a person and land as a number three characters wide.",
+  "knobs": [
+    {
+      "knob": "what the sentence is about",
+      "effect": "About the wind, the water, the noise from the street, the number describes a day and can be discussed; about the reader, it is a score on a person, and there is no version of that worth printing."
+    },
+    {
+      "knob": "whether every rung names something visible",
+      "effect": "With «the leaves move» on a rung, two people watching the same hour agree; with «a bit» and «quite a lot» the same hour gets a two and a four and neither of them is wrong."
+    },
+    {
+      "knob": "whether the reason sits beside the number",
+      "effect": "Without it the number is an opinion and nothing can be done with it later; with it the sheet holds an observation, and a rung chosen wrongly for a stated reason is still a reading."
+    },
+    {
+      "knob": "how many rungs",
+      "effect": "Five separates days and can be read at a glance; nine invites a middle nobody can define, and an even number takes the middle away and forces a side, which is done to opinions and not to weather."
+    }
+  ],
+  "where_the_work_is": "In writing the rungs so that each names an event and not a degree. Every step has to be a sentence somebody could have seen come true, and finding five of those for one quantity is the whole design.",
+  "breaks": "Five short lines and one sentence to complete are among the few things that fit whole on eight hundred by four-eighty. What breaks is the return: the sheet asks for tomorrow at the same hour, nothing makes that happen, and one reading on its own says nothing, because the scale only means something across days.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    28,
+    38,
+    54,
+    246
+  ]
+}

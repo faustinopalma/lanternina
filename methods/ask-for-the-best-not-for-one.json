@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "method_id": "ask-for-the-best-not-for-one",
+  "kind": "move",
+  "name": "ask for the best one, not for one",
+  "also": [
+    "chiedere il minimo",
+    "qual è il più corto",
+    "con quanti pezzi",
+    "ask for the minimum",
+    "fewest pieces",
+    "shortest tour"
+  ],
+  "one_line": "The same material with one word changed in the question, from whether it can be done to how well, which moves where the answer can be checked.",
+  "from_entries": [
+    366,
+    370,
+    376
+  ],
+  "how": "Leave the material exactly as it is and change the question: not «can you cover it» but «with how few pieces», not «find a route» but «find the shortest one». Then pay for it, because it is not free — doing it is still proof that it can be done, but nobody holding the sheet can show that nothing better exists. So print a ladder instead of an answer: under fifty can be done, under forty-five can be done, under forty-two nobody manages. And say plainly that the last figure is not going to be explained. That sentence is what keeps the checkable half checkable.",
+  "knobs": [
+    {
+      "knob": "which way the question runs",
+      "effect": "«can it be done» is settled by doing it, and the arrangement is its own proof; «can it be done better» cannot be settled by anybody holding the paper, and both look identical when read."
+    },
+    {
+      "knob": "whether a ladder of thresholds is printed",
+      "effect": "three thresholds give something to beat and somewhere to stop, and each one that falls is real; a bare «find the best» gives no way of knowing whether stopping was right or lazy."
+    },
+    {
+      "knob": "whether the true best is stated",
+      "effect": "stating it ends the search honestly and admits the sheet knows something it will not explain; withholding it leaves somebody at a question that stayed open for a century, which is either the best hour of the afternoon or a wasted one."
+    }
+  ],
+  "where_the_work_is": "In admitting on the page which half can be settled today. The two questions read the same, and the sheet is the only thing that can say one of them will close this evening and the other will not.",
+  "breaks": "It takes away the sheet's ability to mark itself and puts nothing in its place, so applied to a form whose whole value was checking itself it removes that value. Where the true best is unknown to whoever printed it, that has to be written down or the sheet is lying by leaving it out.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    152,
+    359,
+    363,
+    367,
+    377
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "answer-in-the-part-nobody-searches",
+  "kind": "move",
+  "name": "put the answer in the part nobody searches",
+  "also": [
+    "oggetto nascosto in piena vista",
+    "la lettera rubata",
+    "cecità da disattenzione",
+    "hidden in plain sight",
+    "purloined letter",
+    "inattentional blindness"
+  ],
+  "one_line": "The thing to be found is put in the title or the instruction line, whole and in plain sight, where reading has already passed once.",
+  "from_entries": [
+    388
+  ],
+  "how": "Take a sheet that asks for something and put the answer in the part that is read on the way to the task and never read again: the title, the instruction line, the frame round the edge. Declare that it is there, say how long it is, say it is not reversed and not coded — and do not say where. Nothing is hidden and no letter is disturbed inside any word; what hides it is that the reader is busy. Then add the second question, why did you not see it, and mean it, because without that the sheet is a joke at somebody's expense and with it the answer is that their attention was on the task. Use it once per person and no more.",
+  "knobs": [
+    {
+      "knob": "where it goes",
+      "effect": "the title and the instruction line are read once and never revisited, so they work; inside the field it is an ordinary search and hides nothing; outside the printed area it is not there at all and the sheet is lying."
+    },
+    {
+      "knob": "whether its presence is declared",
+      "effect": "declared, with a length given, it is a fair question and failing to find it is the interesting part; undeclared, nobody looks and nothing happens, which is the difference between a form and an anecdote told afterwards."
+    },
+    {
+      "knob": "whether the second question is asked",
+      "effect": "asked, whoever did not find it has something to think about and nothing to feel bad about; left out, the sheet says only that they missed something obvious, and that is the whole of what it says."
+    },
+    {
+      "knob": "how often it is used",
+      "effect": "once per person is the entire budget. A second sheet of the same kind meets somebody who reads the title first, and that does not weaken the move — it removes it, leaving a sheet with nothing else on it."
+    }
+  ],
+  "where_the_work_is": "In the declaration. Saying that something is there and how long it is turns a trick into a question that can be answered, and it is also what makes the failure worth talking about afterwards instead of worth covering up.",
+  "breaks": "One use per person, with no way to know who has already spent theirs, so it cannot go into anything meant to be reused. It produces nothing that comes back: the sheet returns what it was already returning, with one blank filled or not. On a display the title is the first line and is read the same way, so the move survives — but 800×480 in one bit is small enough to be taken in at a glance, which spends the single use at once.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    383,
+    384,
+    385,
+    387
+  ]
+}

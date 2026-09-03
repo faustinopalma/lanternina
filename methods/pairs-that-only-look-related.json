@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "pairs-that-only-look-related",
+  "kind": "form",
+  "name": "decide which pairs of words are actually related",
+  "also": [
+    "falso accrescitivo",
+    "falso diminutivo",
+    "falso derivato",
+    "falso alterato",
+    "paretimologia",
+    "false cognate",
+    "folk etymology"
+  ],
+  "one_line": "Eight pairs that look like a word and its enlargement, and five of them have nothing in common except the sound.",
+  "from_entries": [
+    322
+  ],
+  "how": "Print eight pairs: tavolo and tavolino, matto and mattone, mulo and mulino, ragazzo and ragazzone, burro and burrone, gatto and gattino, caso and casino, tacco and tacchino. Ask which are real relations. Then, before the answer is reached, ask for how many were marked to be written in a box. Then print the answer — three, the first, the fourth and the sixth — because checking it needs an etymological dictionary, which is not the same thing as a dictionary and is rare in a house. Close with one fact: the augmentative of matto is not mattone, which was taken, but mattacchione.",
+  "knobs": [
+    {
+      "knob": "whether the answer is printed",
+      "effect": "Here it has to be. Every other sheet in this chapter can be checked against a word list; this one needs an etymological dictionary. Withholding the answer leaves the question standing with nowhere to take it."
+    },
+    {
+      "knob": "the number written before the answer is read",
+      "effect": "Committing to a count first means the printed answer still says something to somebody who has already read it. Without that line, reading the answer costs nothing and leaves nothing."
+    },
+    {
+      "knob": "how many of the eight are false",
+      "effect": "Five false out of eight makes guessing worse than useless and makes the surprise the point. Two out of eight reads as a list of true relations with a couple of oddities, and nobody stops on it."
+    },
+    {
+      "knob": "the fact at the end",
+      "effect": "Mattacchione exists because mattone was already occupied: an accident of form with a consequence in the grammar. It costs three lines and it is the part that gets repeated at dinner."
+    }
+  ],
+  "where_the_work_is": "In the pairs, which cannot be told apart by looking at them. Mattone and gattone are built the same way and only one is what it appears to be, and that is the whole sheet.",
+  "breaks": "The answer printed on the same page gets read first, so put it below a fold or on the back. On 800x480 two pairs fit at a time and the count of how many were marked cannot be carried across screens, so this is paper. Nothing is composed inside words and the eight pairs come from the entry; a ninth invented pair is a claim about etymology and needs a source before it goes on a sheet.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    316,
+    335,
+    337,
+    352
+  ]
+}

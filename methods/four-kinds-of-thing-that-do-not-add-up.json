@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "four-kinds-of-thing-that-do-not-add-up",
+  "kind": "form",
+  "name": "sort five things that do not add up into four kinds",
+  "also": [
+    "paradosso",
+    "antinomia",
+    "paradosso veridico",
+    "sofisma",
+    "classificazione di Quine",
+    "paradox",
+    "antinomy"
+  ],
+  "one_line": "Five short things that all look wrong, four named kinds to put them in, and one kind whose whole correct answer is a blank.",
+  "from_entries": [
+    151
+  ],
+  "how": "Print the four kinds first: looks false and is true, so check it; looks false and is false, so find the wrong step; goes round and does not stop, so there is nothing to find; and none of those, because something was taken for granted. Then five items — twenty-three people sharing a birthday, a six-line proof that 2 = 1, «this sentence is false», the barber who shaves everyone who does not shave himself, the surgeon who is the boy's mother. Two columns: which kind, and what there is to do. Print that two of the five leave the second column empty. Without that count a blank and a surrender look identical on a returned sheet, and the blank here is the right answer.",
+  "knobs": [
+    {
+      "knob": "whether the count of each kind is printed",
+      "effect": "Printed, somebody who leaves three columns empty knows they are wrong before anybody says so, and an empty box reads as an answer. Left out, the sheet cannot be marked by anyone, including whoever wrote it."
+    },
+    {
+      "knob": "one item or five",
+      "effect": "One paradox needs nothing else and is twenty characters, which is why a small panel can carry it. Five is what makes sorting possible at all, because the four kinds only become visible side by side."
+    },
+    {
+      "knob": "whether the wrong step is asked for by number",
+      "effect": "Asking which line of the 2 = 1 proof fails puts a second checkable answer on the page: a minus b is zero and that is the only step that breaks. Asking only for the kind leaves nothing to check."
+    },
+    {
+      "knob": "which kinds are mixed",
+      "effect": "The four ask four different things: verify, find the step, do nothing, notice an assumption. A sheet that mixes them without naming them hands over four tasks and calls them one."
+    }
+  ],
+  "where_the_work_is": "In deciding what kind of thing something is before deciding what to do about it. The five items are replaceable; the four kinds are not, and they are the whole exercise.",
+  "breaks": "It prints, and comes back as five letters and five short lines. On 800x480 one item fits and the sorting does not, because four kinds and five items have to be seen together. The birthday row asks how you would check it and not for the number, so it is honest and unmarkable. And two rows are meant to come back empty, which on a scanned page cannot be told from a sheet somebody abandoned unless the count is printed.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    148,
+    158,
+    378,
+    381
+  ]
+}

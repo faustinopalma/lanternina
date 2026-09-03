@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "an-alphabet-tested-in-the-dark",
+  "kind": "form",
+  "name": "invent an alphabet and test it in the dark",
+  "also": [
+    "cifrario a sostituzione",
+    "nictografia",
+    "alfabeto quadrato",
+    "braille come cifra visiva",
+    "nyctography",
+    "substitution cipher",
+    "tavoletta e punteruolo"
+  ],
+  "one_line": "An empty table of one row per letter, a rule for the shape of the signs, and a test at night that says which two cannot be told apart.",
+  "from_entries": [
+    129,
+    133
+  ],
+  "how": "Print an empty table with one row per letter of the alphabet in use, and one design rule that makes the signs writable without sight. Carroll's is a square: a heavy dot in one corner, marks on the other three corners and on the four sides, which gives over a hundred signs and a fixed corner saying which way up it is. Say to make most signs resemble their own letter — he managed twenty-three out of twenty-six, and a letter that looks like itself is not forgotten. Then the test, which happens once: keep the sheet and a pencil by the bed, write three lines in the dark, read them in the morning, transcribe them. Print three closing lines — which letters could not be read, which they were confused with, and what that sign will become. A letter that cannot be read is a fault in the alphabet and not in the writer.",
+  "knobs": [
+    {
+      "knob": "which body the notation is for",
+      "effect": "A square traced by a fingertip suits a hand in the dark. Six raised dots suit a fingertip reading, and twelve do not fit under one, which is what a fifteen-year-old found in 1824 and why braille has six."
+    },
+    {
+      "knob": "whether the table is printed empty",
+      "effect": "Empty, nothing needs to know what the signs will be and no machine ever touches a letter. Printed full, the sheet has already done the only part that was worth doing."
+    },
+    {
+      "knob": "whether the test is physical",
+      "effect": "Writing in the dark and reading it in the morning settles the matter with no opinion in it. Reading the table by daylight tests nothing, because every sign is distinguishable when it can be seen."
+    },
+    {
+      "knob": "whether the table has to be memorised",
+      "effect": "A rule that rebuilds it — ten shapes and two additions, or five row letters — costs a line and survives the sheet being lost. Twenty-one arbitrary rows have to be kept, and a lost key is a lost message."
+    }
+  ],
+  "where_the_work_is": "In the empty rows, which are the whole machine and can be printed by anybody without knowing what will go into them. The design rule is the other half and takes two lines.",
+  "breaks": "Empty rows print, and hand-drawn signs scan if the rows are eight millimetres apart or more. On 800x480 twenty-one rows do not fit; what fits is the instruction for the evening, three lines in the dark tonight, which is most of what a panel is for. Printing a message already enciphered would be wrong and unnoticeable, so the table stays empty. A pricked braille cell is the same case: a printer makes no relief, and only a pin does.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    5,
+    19,
+    47,
+    132,
+    134
+  ]
+}

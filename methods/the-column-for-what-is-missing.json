@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "the-column-for-what-is-missing",
+  "kind": "form",
+  "name": "three columns: known, missing, where to look",
+  "also": [
+    "apprendimento per problemi",
+    "PBL",
+    "sette salti di Maastricht",
+    "problem-based learning",
+    "obiettivi di apprendimento",
+    "materiale d'innesco"
+  ],
+  "one_line": "A real oddity in the house, and a three-column table filled in before going to look: what I know, what I am missing, where I will look.",
+  "from_entries": [
+    234
+  ],
+  "how": "Print a small choice of household oddities with no known cause and ask which one exists here: a room that is always colder, a door that sticks in some weather, a light that flickers only in the evening. Then say plainly that you are not asking for it to be fixed — you are asking what somebody would have to know to understand it, and that there may be no single answer. Then a table of three columns, filled in before going to look at anything: what I already know, what I am missing, where I will go and see. Then go and look, only at the third column and only at what is in the house. Then cross out every row of the first column that turned out to be wrong.",
+  "knobs": [
+    {
+      "knob": "the middle column",
+      "effect": "What I already know and where to look are both easy. What am I missing is the one no school worksheet asks for, and it is the step the whole method turns on: naming what you would have to know before deciding you know it."
+    },
+    {
+      "knob": "whether a crossing-out closes it",
+      "effect": "Coming back to strike out the first-column rows that turned out wrong is what a group discussion does in the classroom version, with yourself an hour ago instead of other people. If nothing gets struck out, the first column was written too thinly, and the sheet says so."
+    },
+    {
+      "knob": "whether the problem has an answer",
+      "effect": "A problem with one right answer turns the table into a route to it and the middle column empties. A cold room can be the aspect, the window, an outside wall, a badly set radiator or nobody spending time in it, and nothing on the back of the sheet settles which."
+    },
+    {
+      "knob": "who supplies the problem",
+      "effect": "A real oddity has to be in the house, and whoever prints cannot know whether it is. A printed choice of five moves the first decision to the reader; an invented one makes the whole afternoon a pretence, because the looking has nothing to find."
+    }
+  ],
+  "where_the_work_is": "In writing the middle column before going to look at anything. Filled in afterwards it becomes a list of what turned out to be relevant, which is a different and much easier thing, and teaches nothing about not knowing.",
+  "breaks": "If the house has no such oddity there is no problem to start from, and no printed choice covers every house. Nothing comes back that can be marked: three full columns with no crossings-out look the same as a sheet where the looking never happened. The seven-step form it comes from puts independent study between two meetings, and an afternoon collapses that into «go and see now», which loses the part where old guesses are met with something new in hand.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    30,
+    39,
+    236,
+    252,
+    255
+  ]
+}

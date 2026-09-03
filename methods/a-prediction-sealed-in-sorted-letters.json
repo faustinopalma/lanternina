@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "a-prediction-sealed-in-sorted-letters",
+  "kind": "form",
+  "name": "seal a prediction as its letters in alphabetical order",
+  "also": [
+    "anagramma di priorita",
+    "sigillo di Hooke",
+    "anagram",
+    "priority anagram",
+    "previsione sigillata"
+  ],
+  "one_line": "One sentence about what will happen, cut into letters, sorted alphabetically and glued down, with the date it will be opened.",
+  "from_entries": [
+    121
+  ],
+  "how": "Print four steps and two dates. Ask for one line: something the writer thinks will happen within a month and that nobody would believe. Then write it in capitals on a strip, one letter to a box, no spaces and no accents; cut the boxes apart; lay them in alphabetical order, all the As, then all the Bs; glue them in a row on the sheet. Print today's date and the date it will be opened. Print the rule that makes it a commitment rather than a game: do not keep the original sentence anywhere, because the point is that only you can write it again. Print the opening block on the same sheet — what it said, whether it happened, and if the letters do not come back, why. Hooke did this in 1660 and Galileo fifty years earlier.",
+  "knobs": [
+    {
+      "knob": "whether the original is kept",
+      "effect": "Destroyed, the sealed line is a commitment and the month is real. Kept in a drawer, it is a copy of something already written and the date on it means nothing at all."
+    },
+    {
+      "knob": "how long the sentence is",
+      "effect": "Ten to fifteen letters cut and sort in about ten minutes. Past thirty the cutting is the afternoon, and the glueing goes wrong long before the month does."
+    },
+    {
+      "knob": "whether anybody has to solve it",
+      "effect": "Nobody does, and that is what brings this within reach. Asked to be solved it becomes an anagram, which cannot be composed reliably and cannot be checked by whoever printed the sheet."
+    },
+    {
+      "knob": "how far away the date is",
+      "effect": "A month is long enough that the sentence cannot be steered and short enough to be come back to. A year and the sheet is lost; a week and the prediction is a guess about the weekend."
+    }
+  ],
+  "where_the_work_is": "In the sorting, which is the one operation on letters that anybody can do and nobody can get wrong without it showing. Everything else on the sheet is two dates and a rule.",
+  "breaks": "Glued paper letters scan badly: the edges cast shadows and a photographed row reads as noise, so the sealed line stays on the sheet. On 800x480 the two dates fit and are the useful part, since «opened on the 3rd» is what a panel is for. The failure is silent and arrives a month later — a letter dropped while cutting means the sentence cannot be rebuilt, and nobody finds out until the day.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    64,
+    65,
+    80,
+    313,
+    364
+  ]
+}

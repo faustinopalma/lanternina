@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "a-column-for-what-you-kept-the-same",
+  "kind": "move",
+  "name": "print a column for what you did not change",
+  "also": [
+    "provare",
+    "che cosa ho tenuto uguale",
+    "variabile di controllo",
+    "una cosa sola per volta",
+    "controlled variable",
+    "one change at a time"
+  ],
+  "one_line": "Beside «what I changed», a second column for what was held still — and one repeat of the best attempt, which shows it was not held still enough.",
+  "from_entries": [
+    54,
+    64,
+    65,
+    102
+  ],
+  "how": "Take any form asking for more than one attempt and print two columns instead of one: what I changed, and what I kept the same. The second is the half that gets left out and the half that makes the comparison mean anything — the distance between the books, where the coins were put, how the thing was held. Fix the rule at one change per attempt and print it. Then add the line nobody adds: repeat the attempt that went best, exactly, and write the second number beside the first. They will differ. Ask what was not held still. Two readings of one thing never agree, and that is the finding rather than the fault. Last, before the next attempt: what will you change, and what do you expect.",
+  "knobs": [
+    {
+      "knob": "how many things change per attempt",
+      "effect": "One, and the difference belongs to it. Two, and the attempt has produced a number that cannot be attributed to anything. The rule costs one printed line and is what separates four tries from an experiment."
+    },
+    {
+      "knob": "whether the controls get a column",
+      "effect": "Printed, they get written down. Left to memory, they are not, and by the third attempt the first one is gone and nothing on the page is comparable to anything else."
+    },
+    {
+      "knob": "whether the best attempt is repeated",
+      "effect": "Repeating it introduces repeatability without the word: the second number differs and «what did you not hold still» has a real answer. Without the repeat, the best attempt is read as a fact about the thing."
+    },
+    {
+      "knob": "whether the next change is written first",
+      "effect": "«Next time I change ___ and I expect ___» turns the following attempt into an experiment with one variable, committed to before anybody can adjust it afterwards to fit what happened."
+    }
+  ],
+  "where_the_work_is": "In the second column. It looks like bookkeeping and it is the control: without it, four attempts are four anecdotes and the sheet cannot say which change did anything at all.",
+  "breaks": "It costs two columns of width on a page that may not have them, and on 800x480 a two-column table of four rows does not fit at all. It cannot catch a control that was broken without being noticed either — the only thing that catches that is the repeat, which is why the repeat is fixed here rather than offered.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    29,
+    44,
+    66,
+    279
+  ]
+}

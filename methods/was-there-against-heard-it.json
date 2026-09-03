@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "was-there-against-heard-it",
+  "kind": "form",
+  "name": "two columns: was there, and was told",
+  "also": [
+    "storia orale",
+    "fonti orali",
+    "testimonianza",
+    "intervista di memoria",
+    "oral history",
+    "StoryCorps",
+    "storia di vita"
+  ],
+  "one_line": "Somebody in the house interviewed with six open questions, written down in their words, with each line marked lived or heard from others.",
+  "from_entries": [
+    251
+  ],
+  "how": "Find somebody in the house who remembers something you cannot know: a place they lived, a job that no longer exists, this street before it changed. Ask permission first, say what will be written and that they will read it. Then six questions written before starting, under one mechanical test — if it can be answered yes or no, rewrite it. Then listen and write in their words, not summarised and not tidied; a word you would never use is worth twice and gets kept as it is. Beside each line a tick in one of two columns: was there, or was told. Then go back over the was-there lines and ring every number and every date. Finish by handing it over and asking whether anything written was not said.",
+  "knobs": [
+    {
+      "knob": "the two columns",
+      "effect": "A historian who checked hundreds of testimonies against documents found what people lived through surprisingly accurate, and what they were told worth whatever the source was worth. The two are told apart by the grammar of the sentence, so the sorting is done while writing."
+    },
+    {
+      "knob": "what gets ringed inside the reliable half",
+      "effect": "Inside the accurate part three things still go wrong — numbers, ranks and dates — and the numbers tend to grow with time. Ringing them makes the least solid part of a story the part that had looked most solid."
+    },
+    {
+      "knob": "how the words are written down",
+      "effect": "Real archives neutralise dialect and repetition to make a transcript readable, and say so: their transcripts do not fully reflect what was said. Keeping them makes the page more faithful and harder to read, and it is a decision taken every time somebody writes down speech."
+    },
+    {
+      "knob": "how many people are asked",
+      "effect": "One person gives one perspective, and the discipline's own repair is to interview widely and look for the places different accounts agree. An afternoon has one person, and the sheet cannot pretend otherwise."
+    }
+  ],
+  "where_the_work_is": "In the two ticks, made while writing rather than afterwards. They produce a page whose reliable half is already separated from the rest, and the person doing the separating has judged nobody at all.",
+  "breaks": "There is no recording: writing by hand while somebody talks is slower and loses things, though less than it seems, since professional transcripts lose things too. Only the person who spoke can settle whether the page is right, so the closing question needs them still there. Nothing keeps the page afterwards — the archive is whoever puts it somewhere. On a display six questions fit and a two-column transcript does not.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    25,
+    30,
+    86,
+    249
+  ]
+}

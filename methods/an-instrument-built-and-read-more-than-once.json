@@ -1,0 +1,61 @@
+{
+  "format_version": 1,
+  "method_id": "an-instrument-built-and-read-more-than-once",
+  "kind": "form",
+  "name": "build the instrument, then take the reading twice",
+  "also": [
+    "puzzle ottico",
+    "foro stenopeico",
+    "camera oscura",
+    "stadera",
+    "puzzle a bilanciamento",
+    "puzzle magnetico",
+    "clessidra",
+    "nodi",
+    "sporgenza massima",
+    "travaso"
+  ],
+  "one_line": "The sheet carries no apparatus; it says how to make one out of things named by their job, and asks for the reading more than once.",
+  "from_entries": [
+    168,
+    173,
+    174,
+    175,
+    177,
+    178,
+    189
+  ],
+  "how": "Name every part by what it does, never by what it is — something stiff and straight, something that pours, eight small things alike — because the house is unknown. Build the pinhole one: four holes in card, round square triangular and cross, four millimetres each, held towards the sun over white paper, and never look at the sun. From far enough all four patches come out round. Measure the round patch at 50 cm and at 200 cm, subtract, divide by 1500, multiply by 150 000 000: the sun comes out near 1 391 000 km against a true 1 392 700. The subtraction is why it is read twice — the hole's width cancels, and nobody knows how wide theirs is. Print the true figure and ask by how much they missed.",
+  "knobs": [
+    {
+      "knob": "why the reading is taken twice",
+      "effect": "To lose an unknown, as with the two pinhole distances where the hole's width cancels. Or to show the spread, as with weighing one thing twice on a home steelyard or timing one hourglass three times, where what varies is the person."
+    },
+    {
+      "knob": "what the instrument can refuse",
+      "effect": "A magnetised needle settles one way and cannot be read two; a knotted thread breaks in the knot five times out of five; a stack stands or is on the floor. A balance is the exception: it says which side is heavier and can never say two things are equal."
+    },
+    {
+      "knob": "what the apparatus needs from outside",
+      "effect": "The pinhole needs the sun and fails under a lamp, so the sheet may sit on the table a week and should say so. The clicks need flat fridge magnets and are absent on button ones. The hourglass needs grains between a twelfth and half the neck."
+    },
+    {
+      "knob": "whether a prediction comes first",
+      "effect": "Asking for the number before building turns the measurement into an experiment on the person: four ten-centimetre strips overhang the table edge by 10.4 cm, which almost nobody predicts, and the gap is what the sheet collects."
+    }
+  ],
+  "where_the_work_is": "In taking the reading more than once, which is the difference between an apparatus made of junk and a measurement. One reading from a home-made instrument is a number with nothing attached.",
+  "breaks": "No apparatus prints: the sheet is instructions, and if the house lacks the stiff straight thing or two identical glasses nothing starts and the sheet cannot tell. What returns is what was written in the boxes, photographed: four patch widths read fine, a floating needle's direction does not. On 800x480 an instruction fits and a table of readings does not. The hourglass is the worst case: neither surface can show a quantity falling, so it is built and never run.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    49,
+    54,
+    88,
+    144,
+    145
+  ]
+}

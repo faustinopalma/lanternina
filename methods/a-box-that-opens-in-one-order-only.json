@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "a-box-that-opens-in-one-order-only",
+  "kind": "form",
+  "name": "build a container that opens in one order only",
+  "also": [
+    "scatola a segreto",
+    "scatola a sorpresa",
+    "puzzle box",
+    "himitsu-bako",
+    "scatola di Hakone",
+    "trick box"
+  ],
+  "one_line": "A container already in the house, closed in three moves that must be made in one order, where the building is the task and the opening is the test.",
+  "from_entries": [
+    169
+  ],
+  "how": "Name the container by what it does and never by what it is — something with a lid that opens — because whoever writes the sheet does not know what the house has. Tape, string, elastic bands, pegs, cardboard, a magnet. Three rules: at least three moves to open, always in the same order; each move impossible before the one before it; nothing broken and no force, and somebody who knows opens it in under ten seconds. The second rule is the whole thing, and it is checked in ten seconds by trying to make the second move first: if that works, this is three fastenings and not one box. Write the sequence down, hide the sheet, put something inside, and give it to two people saying only «it opens».",
+  "knobs": [
+    {
+      "knob": "how many moves",
+      "effect": "Three is the fewest that can show an order at all. The Hakone tradition goes to seventy-two, and past about six the person who built it stops being able to remember the sequence they made."
+    },
+    {
+      "knob": "whether the order is forced",
+      "effect": "Forced, it is a puzzle box. Not forced, it is three fastenings wearing one name. The difference is invisible from outside and free to check from inside, which is what makes it worth checking."
+    },
+    {
+      "knob": "whether anybody else tries it",
+      "effect": "Two people and a clock produce the one thing the maker cannot have: where somebody stopped. Without them the box is finished and nobody knows whether it works, only that it closes."
+    },
+    {
+      "knob": "which move stops everybody",
+      "effect": "Everybody stopping on the first move means the box does not declare that there is anything to do. That is muteness and not difficulty, and the repair is to make the first move visible rather than the rest harder."
+    }
+  ],
+  "where_the_work_is": "In the second rule and in the ten seconds that check it. Trying to make move two first is a complete test of the only property that separates this from three fastenings.",
+  "breaks": "The sheet cannot deliver a box, only the rules, and if the house has no lidded container nothing starts. Nothing comes back on paper: the return is the written sequence and the two timings, photographed. On 800x480 the three rules fit and are enough on their own. The last third wants two people; the first two thirds are a design exercise that works alone, which is where the secret sitting in an object rather than a person earns its keep.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    80,
+    88,
+    167,
+    179
+  ]
+}

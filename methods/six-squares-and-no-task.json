@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "six-squares-and-no-task",
+  "kind": "form",
+  "name": "hand over six squares, a joining rule and no task",
+  "also": [
+    "sandbox",
+    "gioco libero",
+    "recinto della sabbia",
+    "giocattolo",
+    "esapentomini",
+    "free play",
+    "software toy",
+    "polyomino",
+    "hexomino"
+  ],
+  "one_line": "Material, one rule about how the pieces may be joined, a printed statement that there is nothing to build, and space to draw what turns up.",
+  "from_entries": [
+    278
+  ],
+  "how": "Ask for six equal paper squares to be cut, two centimetres a side. One rule: squares join edge to edge, never at a corner and never partly, and all six make one shape. Print the sentence saying this sheet is not asking for anything to be built. Then twelve empty boxes to draw found shapes in, and a second rule: two shapes that lie on each other when the sheet is turned round or held up to the light are the same shape, and one of them gets crossed out. Print the number thirty-five at the very bottom and nowhere else — given at the start it turns the whole thing into a hunt. Six is fixed: four squares give five shapes and run out, eight give 369 and never end.",
+  "knobs": [
+    {
+      "knob": "how many squares",
+      "effect": "Four gives five shapes and is over in a minute. Six gives thirty-five: enough not to run out, few enough to count. Eight gives 369, and there is no point at which anybody has finished."
+    },
+    {
+      "knob": "where the total is printed",
+      "effect": "At the foot it closes the afternoon and says how much was found. At the head it is a quota, and the sheet has stopped being open-ended, which was the only thing it had."
+    },
+    {
+      "knob": "whether the discard is asked about",
+      "effect": "Asking which shape was thrown away and why collects a decision that otherwise leaves no trace at all. It is also the one line here that cannot be answered without having played."
+    },
+    {
+      "knob": "the joining rule",
+      "effect": "Edge to edge makes the count finite and settles sameness by laying two cut-outs on each other. Corner joins or partial overlaps make a set nobody can count, including whoever printed the sheet."
+    }
+  ],
+  "where_the_work_is": "In giving material and a constraint instead of an objective. A sheet asking for nothing is a blank sheet, and a blank sheet is the cost that stops nearly everybody; six squares and one rule is the way round it.",
+  "breaks": "Whoever wrote the sheet cannot check that thirty-five is thirty-five in this house, nor that the drawn shapes differ. It does not need to: two cut-outs laid on each other settle it where it happens. Twelve boxes will not hold thirty-five shapes and are not meant to. On 800x480 the rule and the number fit, and twelve drawing boxes are useless there, because what goes in them is drawn by hand.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    17,
+    42,
+    49,
+    109,
+    279
+  ]
+}

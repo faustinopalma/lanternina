@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "one-guess-you-expect-to-be-refused",
+  "kind": "move",
+  "name": "make them offer one case they expect to be refused",
+  "also": [
+    "indurre",
+    "trovare la regola",
+    "controesempio",
+    "compito 2-4-6",
+    "falsification",
+    "rule discovery"
+  ],
+  "one_line": "Of the cases somebody proposes to test their rule with, at least one has to be a case they believe falls outside it.",
+  "from_entries": [
+    61
+  ],
+  "how": "Add one printed condition to any form that asks for a rule, a criterion or an explanation: of the cases proposed for testing, at least one must be a case the person expects to come back «no». Print it as a sentence and not as a hint — «if all five are cases you think fit, you are not testing your rule, you are having it applauded» — because a hint gets read as optional. Then ask at the foot whether the rule they ended with is wider or narrower than the one they started with. Without the condition, five guesses come back as five confirmations and a rule too narrow to be right; that is what was measured in 1960, and it happens to nearly everybody who is not told.",
+  "knobs": [
+    {
+      "knob": "whether a refusal is required",
+      "effect": "Without it, people propose only cases they expect to pass and finish holding a rule narrower than the true one. With it, one guess in five carries information that the other four cannot carry."
+    },
+    {
+      "knob": "how many guesses",
+      "effect": "Three is too few to separate two rules that agree on the easy cases. Five is enough and short enough to hold in the head. Past eight the answering becomes the work, and whoever is answering stops."
+    },
+    {
+      "knob": "who answers yes or no",
+      "effect": "A person answering is the strong version and needs a second person for the whole of it. A printed list — twelve inside, eight outside — works alone, at the cost that nothing outside the list can be tested."
+    },
+    {
+      "knob": "asking wider or narrower at the end",
+      "effect": "One line, and it makes visible a change that otherwise leaves no trace: the rule arrived with against the rule arrived at. Without it the page comes back holding one rule and no history of how it got there."
+    }
+  ],
+  "where_the_work_is": "In the printed refusal condition, which is one sentence and is the entire method. Everything else on the page is material; that sentence is what stops five guesses from being five agreements.",
+  "breaks": "In its strong form somebody has to answer yes or no, and that somebody has to know the rule — so an adult is inside the activity rather than beside it. On paper alone the substitute is a longer list of cases in and out, and then nothing new can be tested at all. On 800x480 the condition fits in one line; the list does not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    29,
+    45,
+    372,
+    374
+  ]
+}

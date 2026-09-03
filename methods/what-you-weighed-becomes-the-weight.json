@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "what-you-weighed-becomes-the-weight",
+  "kind": "form",
+  "name": "weigh in coins until what you weighed is a weight",
+  "also": [
+    "costruzione di un motore",
+    "engine building",
+    "circolo virtuoso",
+    "bilancia a gruccia",
+    "pesare in monete",
+    "unità scelta",
+    "collo di bottiglia",
+    "bottleneck"
+  ],
+  "one_line": "A coat hanger, two bags and a pile of one-cent coins, and a rule that every object once weighed may be used as a weight afterwards.",
+  "from_entries": [
+    272
+  ],
+  "how": "Hang a coat hanger on a nail, hang a plastic bag from each end, and take one-cent coins as the unit. How many grams a coin weighs does not matter; that they are alike does. Weigh something light first and write it down. Then the rule that does the work: anything whose weight is known may go on the pan instead of coins. Print six ruled rows — object, coins, found with — and a column asking how many coins the last row saved. Six rows is the horizon, and printing it is what makes stopping calculable. Close by offering two objects, one worth five coins and one worth two hundred, only one of which can be kept: the five saves about fourteen objects off the pan, the two hundred saves two.",
+  "knobs": [
+    {
+      "knob": "the unit",
+      "effect": "Coins make the unit something already in the house and the reading a count. Grams make it a measurement with a device between the person and the balance, and nothing here needs one."
+    },
+    {
+      "knob": "whether the horizon is printed",
+      "effect": "Six rows says when to stop building and lets somebody work out whether the next row pays for itself. With no stated number of rows the table just grows and nothing is ever collected."
+    },
+    {
+      "knob": "what the last question offers",
+      "effect": "The small piece and the large piece are the bottleneck put as a choice. Whichever is taken, the reason can be counted off the table already written instead of being believed."
+    },
+    {
+      "knob": "how the balance is made",
+      "effect": "A coat hanger and two bags takes a few minutes and swings freely. A ruler balanced on a pencil is quicker and much less stable, and differences of one or two coins stop showing at all."
+    }
+  ],
+  "where_the_work_is": "In the second rule. Every row written makes the next row shorter, so the table is the engine, and there is no counter anywhere for anybody to keep up to date.",
+  "breaks": "Whoever wrote the sheet cannot check a single weight: a photograph says what was written, not whether it is true. It does not need to, because the hanger either balances or it does not, and that is settled where it happens. Objects lighter than two or three coins are past what a hanger resolves and come back as nought. Scanned, the table reads. On 800x480 six rows of three columns fit and the closing question does not.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    54,
+    109,
+    257,
+    377
+  ]
+}

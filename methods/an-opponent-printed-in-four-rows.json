@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "an-opponent-printed-in-four-rows",
+  "kind": "move",
+  "name": "replace the opponent with a table anyone may read",
+  "also": [
+    "bluff",
+    "avversario stampato",
+    "strategia in quattro righe",
+    "poker di Kuhn",
+    "Kuhn poker",
+    "printed opponent",
+    "fixed strategy",
+    "semi-bluff"
+  ],
+  "one_line": "A form that needs two people is made playable alone by printing the other side's whole strategy in rows that never consult what is hidden.",
+  "from_entries": [
+    283
+  ],
+  "how": "Where a form needs an opponent, write that opponent's entire strategy as a table and print it. It works when the table can be read openly without spoiling anything, and that is checkable by looking: no column may depend on what the reader is holding. Kuhn poker is the worked case — three cards, and the printed side plays on its own card and the reader's last move only, so the sheet can say outright that seeing the table is no use and be telling the truth. Where the strategy has to be mixed, hand the mixing to a die inside the table: bet with the worst card when the die shows one or two. Ask first whether the strategy fits in four rows; where it depends on what has been said, it does not.",
+  "knobs": [
+    {
+      "knob": "whether the table may be read",
+      "effect": "Readable and useless is the strong version and it can be verified by inspection. Readable and useful means the sheet has to ask for a promise instead, and a promise is not a mechanism."
+    },
+    {
+      "knob": "whether the table needs chance",
+      "effect": "Some strategies are only good if they are unpredictable, and nobody is unpredictable by deciding to be; a die column does it. Deterministic tables are simpler and beatable as soon as the pattern shows."
+    },
+    {
+      "knob": "how long the run is",
+      "effect": "Eighteen hands cannot separate somebody betting a third of the time from somebody betting a sixth: with six bad cards that is two hands against one. The sheet should say so, because shorter runs measure nothing."
+    },
+    {
+      "knob": "what the printed number is for",
+      "effect": "Perfect play still loses a bean in eighteen hands. Printing that makes a small loss the expected outcome, and stops the count at the end being read as a verdict on the reader."
+    }
+  ],
+  "where_the_work_is": "In checking that no row of the table depends on what the reader holds. That is what lets it be printed in the open, and it is a property of the table anybody can look at rather than a rule somebody has to keep.",
+  "breaks": "Most opponents will not go into a table at all. A strategy depending on what the other side has said — anything with talking in it — does not fit in four rows and has no version that does. Cards cut from a sheet have identical backs only if cut carefully, which does not matter here because nothing is hidden, and matters at once in any two-player use. On 800x480 four rows of a strategy table fit.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    105,
+    107,
+    281,
+    285
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "solids-given-as-layers-of-squares",
+  "kind": "form",
+  "name": "read a solid off three views and count what fits",
+  "also": [
+    "sezione e proiezione",
+    "proiezioni ortogonali",
+    "pianta e prospetto",
+    "rotazione mentale",
+    "orthographic projection",
+    "multiview projection",
+    "mental rotation"
+  ],
+  "one_line": "Three flat views of a solid inside a three-by-three-by-three box, and the question is how many solids give exactly those views.",
+  "from_entries": [
+    392,
+    393
+  ],
+  "how": "Print three views of an object built of cubes inside a 3×3×3 box — from the front, from the right, from above — each as a three-by-three block of # and . in a fixed-pitch face. The drawing-class question is how many cubes it has. Ask the other one: how many different objects give exactly these three views? Ask for all of them, drawn floor by floor like a block of flats, the layer touching the table first. With the three L-shaped views of entry 393 the answer is two, one of six cubes and one of seven, differing by a single cube in the corner all three views look past. Enumerate the box by hand before printing, because the count is the answer.",
+  "knobs": [
+    {
+      "knob": "which way round the question goes",
+      "effect": "from solid to views is a drawing exercise with one answer; from views to solids contains that one, because counting the objects means being able to build one, and it ends in a number rather than a picture."
+    },
+    {
+      "knob": "how big the box is",
+      "effect": "three by three by three can be enumerated by hand, so the printed count is a fact; four by four by four cannot, and the sheet would be asking a question whose answer whoever wrote it does not have."
+    },
+    {
+      "knob": "whether mirror images are among the candidates",
+      "effect": "with reflections in the set the task is to tell a rotation from a mirror image, and it has a printed answer — two of four in the classical test; without them almost any candidate can be turned to match and nothing is decided."
+    },
+    {
+      "knob": "whether the second sheet is included",
+      "effect": "cutting strips of six squares and folding them tests which of the 35 shapes close into a cube — eleven do — and the fold settles it with nobody judging. It needs scissors and takes longer than the first sheet."
+    }
+  ],
+  "where_the_work_is": "In the corner cube that none of the three views can see. Choosing views that hide exactly one cell is what makes the count two instead of one, and it is settled by enumerating the box before anything is printed.",
+  "breaks": "Blocks of # and . print at any size and scan back cleanly, so nothing rides on the print scale — but a proportional face breaks the columns and the views stop meaning anything. What comes back is a hand-drawn set of layers, and a . read as a # by whoever marks it turns a right answer into a wrong one, so ask for the layers on a grid rather than sketched. The display holds the three views comfortably at 800×480 in one bit. The second sheet, strips folded into cubes, exists only in paper and scissors.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    370,
+    376,
+    391,
+    394
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "three-photographs-of-one-changing-thing",
+  "kind": "form",
+  "name": "photograph one thing three times and name what stayed",
+  "also": [
+    "indovinello della persona",
+    "enigma della Sfinge",
+    "indovinello delle tre eta",
+    "person-riddle",
+    "Sphinx riddle",
+    "time-lapse in tre fotografie"
+  ],
+  "one_line": "Three pictures of the same thing at three moments, handed over out of order, with one line saying what did not change.",
+  "from_entries": [
+    115
+  ],
+  "how": "Find something in the house that becomes another thing rather than moving: a candle, a fruit, soap, ice, a notebook filling up. Photograph it three times with a real gap between, and print a blank for the gap so that whoever shoots writes down whether it was an hour or a week. Print one line under the three pictures: what stays the same in all three is ____. That is the only clue given, and the Sphinx gave one, a single voice, and it was enough. Hand the three over shuffled and never in order, because the order is the thing being removed. Print one last line for what happened: guessed at once means the three moments were too close together.",
+  "knobs": [
+    {
+      "knob": "how many moments",
+      "effect": "Two read as a comparison and hide nothing. Three is the form. Four becomes a story, and a story told in order is a biography rather than a riddle."
+    },
+    {
+      "knob": "whether the order is declared",
+      "effect": "Shuffled, whoever looks has to supply the time that was taken out, and the three states contradict each other until they do. Printed as first, then, finally, the contradiction never forms and there is nothing to solve."
+    },
+    {
+      "knob": "whether the constant is printed",
+      "effect": "One line naming what stays makes the three pictures one thing. Without it they are three unrelated objects and no amount of looking joins them up."
+    },
+    {
+      "knob": "pictures or words",
+      "effect": "Three photographs do the work the three numbers do in the Greek text. Written as three states of an unnamed thing it comes out far too easy or impossible, and there is no way to tell which before somebody has tried it."
+    }
+  ],
+  "where_the_work_is": "In choosing a thing whose three states are far enough apart to look like three things and near enough to be one. Nothing printed can help with that choice, and the last line is what measures it.",
+  "breaks": "The sheet is a caption and three blanks, so nothing about the pictures can be checked before it is printed. A photograph at 800x480 in one bit is a grey field, and this is the one form here whose product does not survive the display at all. The gap between shots fails silently: an hour on a candle and a week on a notebook are both right, and the wrong choice gives three identical pictures that nobody can say anything about.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_photograph",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    34,
+    77,
+    80,
+    110,
+    119
+  ]
+}

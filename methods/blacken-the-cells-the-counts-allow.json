@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "blacken-the-cells-the-counts-allow",
+  "kind": "form",
+  "name": "black out the cells that the printed counts allow",
+  "also": [
+    "cruciverba senza schema",
+    "parole crociate senza schema",
+    "diagramless",
+    "skeleton crossword",
+    "carte blanche",
+    "schema libero",
+    "freeform crossword"
+  ],
+  "one_line": "An empty grid, the number of black cells, and how many words each row and column holds; the pattern that satisfies all of it is one.",
+  "from_entries": [
+    353,
+    357
+  ],
+  "how": "Print an empty five-by-five grid, the sentence that the grid holds five black cells, and for each of the five rows and five columns how many words it holds. Add the rule that is normally left unsaid, that no white cell may stand alone. Ask for the five to be blacked in. One pattern fits, and whoever finished can check it by counting their own black cells and the words in each line, so nobody needs to know the answer. Do not add clues: the words would need a dictionary and cannot be checked, while the pattern can. Five cells in twenty-five have 53 130 arrangements, 423 of them leave no white cell alone, and one has these counts.",
+  "knobs": [
+    {
+      "knob": "whether the unwritten rule is written",
+      "effect": "No white cell alone is never printed because it seems obvious, and on this grid it removes a factor of 126 — more than the count of black cells removes, which is 632. The rule taken for granted does the heavier work."
+    },
+    {
+      "knob": "whether the clues come too",
+      "effect": "Without them the whole thing can be set and checked by counting and nobody needs to know any words. With them it needs a word list to build and a dictionary to mark, and the countable half is lost inside the other."
+    },
+    {
+      "knob": "whether the pattern must be symmetric",
+      "effect": "Free, eight black cells in a seven-by-seven grid have 450 978 066 arrangements. Symmetric under a half turn, 10 626 — forty-two thousand times fewer, which costs whoever builds it and gives whoever solves it nothing."
+    },
+    {
+      "knob": "the size of the grid",
+      "effect": "Five by five with five black cells has one answer and an hour in it. Anything bigger has several answers unless more counts are printed, and those counts then take up more room than the grid does."
+    }
+  ],
+  "where_the_work_is": "In the counts, which have to leave exactly one pattern and cannot be checked by looking at them. The only thing that says whether they do is going through every arrangement of that many black cells.",
+  "breaks": "The grid has to be ruled and the cells big enough to fill in solidly, or a scanned page cannot tell a black cell from a smudge. On 800x480 the two lines of the declaration fit and the grid does not, which is enough to remember where one had got to. Nothing here is a word, so it can be built and checked end to end by machine, which is true of almost nothing else in its chapter.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    352,
+    355,
+    358,
+    362
+  ]
+}

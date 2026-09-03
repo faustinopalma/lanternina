@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "count-the-roads-a-rule-closes",
+  "kind": "move",
+  "name": "count what a constraint forbids and print the number",
+  "also": [
+    "obiettivo giornaliero",
+    "quota del giorno",
+    "minimo giornaliero",
+    "vincolo dichiarato",
+    "conteggio delle disposizioni",
+    "daily goal",
+    "daily quota",
+    "counting what a rule leaves"
+  ],
+  "one_line": "Before a rule goes on a sheet, count how many ways of satisfying it are left, and print that count beside the rule itself.",
+  "from_entries": [
+    261,
+    264
+  ],
+  "how": "Every printed constraint has a count underneath it and almost nobody works it out. Twenty-one things spread over seven days can be arranged 296 010 ways; «three a day» leaves exactly one. A ceiling of five a day instead leaves 18 327 and forbids only doing it all at once. A rule that fires whenever two empty days fall together cannot be satisfied at all with twelve full days out of thirty, because eighteen empties will not sit apart in thirty places and fifteen is the most that can. Do the count first, then print it: the number tells a reader whether they have been asked something or sentenced to something. Where it comes out at one or at zero, change the rule rather than the wording.",
+  "knobs": [
+    {
+      "knob": "a floor or a ceiling",
+      "effect": "«At least three a day» leaves one arrangement out of 296 010. «At most five a day» leaves 18 327. The ceiling is almost always the setting worth printing and the floor almost never is."
+    },
+    {
+      "knob": "whether the count is printed or only used",
+      "effect": "Used privately it fixes the rule and nobody sees why. Printed beside it, the reader can see how wide the rule is, and a rule whose width is visible is one somebody can argue with."
+    },
+    {
+      "knob": "whether the empty slot is allowed to be a slot",
+      "effect": "Of the ways of doing twenty-one things in seven days, 86.9% contain at least one empty day. A rule treating the empty day as failure is ruling out most of what is going to happen anyway."
+    },
+    {
+      "knob": "what is being counted",
+      "effect": "Arrangements of a quantity over days, orders of reading, distributions of a budget, ways of filling a grid. All four are counted the same way, and all four are normally printed uncounted."
+    }
+  ],
+  "where_the_work_is": "In doing the count before the rule is printed. Reading a rule tells you what it asks for; counting what is left tells you what it forbids, and the two are not the same size.",
+  "breaks": "It produces nothing that comes back, so it is never the point of an afternoon: it is a check on whoever is writing one. The counts have to be worked out by hand or in a few lines of code, and a count that was guessed is worse than no count, because a printed number gets read as a measured one. On a display a single number and the rule it belongs to fit; the reasoning that produced it does not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    88,
+    145,
+    189,
+    260,
+    359
+  ]
+}

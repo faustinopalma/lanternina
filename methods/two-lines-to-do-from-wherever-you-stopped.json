@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "two-lines-to-do-from-wherever-you-stopped",
+  "kind": "move",
+  "name": "two things to do from wherever you got to",
+  "also": [
+    "finisce quando si smette",
+    "gesto di chiusura",
+    "via d'uscita",
+    "regola d'arresto",
+    "lasciare a metà",
+    "stopping rule",
+    "satisficing"
+  ],
+  "one_line": "A closing gesture that works from any point, so that stopping is an ending and not a break in the middle of something.",
+  "from_entries": [
+    301
+  ],
+  "how": "Print a small box headed «when you stop», holding two short things doable from anywhere in the work: write the number of the last line you filled, and circle the passage you like best. The first turns the point reached into a fact instead of a shortfall — «I got to line seven» is information, «I did not finish» is a verdict, and which gets written is settled by the sheet. The second asks for a judgement about one passage and not about the length, so a chain of three has its best step exactly as a chain of twenty does. Under them, one line saying there is no right length: a chain of three is a chain. Every version of this that watches a clock is out of reach, because paper does not know when twenty minutes have gone. What is left is to move the decision to whoever is reading and give them something to do at the moment they take it.",
+  "knobs": [
+    {
+      "knob": "whether there is a closing gesture at all",
+      "effect": "Without one, stopping is standing up, and the unfinished thing stays on the table as a debt. With one, it is a thing finished at a length that was chosen rather than reached."
+    },
+    {
+      "knob": "what gets declared about the point reached",
+      "effect": "A line number is a fact and can be written by anybody from anywhere. A judgement about completeness is a verdict on the person, and the sheet is what decides which one appears."
+    },
+    {
+      "knob": "whether stopping is authorised in writing",
+      "effect": "One line saying a short one counts makes stopping a result. Left out, the same act is a surrender, and there is nothing on the page saying otherwise."
+    },
+    {
+      "knob": "how many exits an afternoon carries",
+      "effect": "Exits cost more than they look: a twelfth of what a parent reads is the ending that gets used, and at half an hour a twenty-minute exit is two thirds of the afternoon."
+    }
+  ],
+  "where_the_work_is": "In the two gestures being doable from any point. Anything that needs the work to have reached a stage is not a way of stopping, it is one more stage.",
+  "breaks": "Two lettered lines in a box print and scan, and a circled passage reads back when the lines are set well apart. On 800x480 the box fits and the work above it does not. The sheet cannot tell stopping from abandoning and cannot know whether the two lines were done: the difference exists only on the paper.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    14,
+    22,
+    191,
+    271,
+    306
+  ]
+}

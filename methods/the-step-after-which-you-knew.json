@@ -1,0 +1,47 @@
+{
+  "format_version": 1,
+  "method_id": "the-step-after-which-you-knew",
+  "kind": "move",
+  "name": "circle the step after which you already knew",
+  "also": [
+    "informazione nascosta",
+    "insieme informativo",
+    "sapere prima di dimostrare",
+    "quando l'hai capito",
+    "information set",
+    "hidden information",
+    "imperfect information"
+  ],
+  "one_line": "One closing line on any puzzle that closes on a single answer: mark the step after which you knew, and say what told you.",
+  "from_entries": [
+    282
+  ],
+  "how": "Under a puzzle that closes on one answer — a hidden layout being searched, a weighing, a set of clues — print two lines: circle the step after which you knew, before you had shown it, and say in one line what told you. It is not a hint and not a score. It asks for something real and datable: the moment the set of possibilities still open collapsed to one, which happens before the last move and usually several moves before it. Nothing on the sheet can check the answer and nothing should try. Print it after the working and never beside it, because somebody told at the start to watch for that moment stops solving and starts watching for it.",
+  "knobs": [
+    {
+      "knob": "what it asks for",
+      "effect": "«When did you know» collects a moment. «What told you» collects a reason. Both, in two lines, is the setting worth printing; either one alone comes back too thin to be read by anybody."
+    },
+    {
+      "knob": "where it is printed",
+      "effect": "After the working it collects something that happened. Beside the working it changes the task, because a person watching for the moment they know is no longer solving the thing."
+    },
+    {
+      "knob": "what kind of puzzle it goes on",
+      "effect": "It needs one that closes: a single answer reached by narrowing. On anything open-ended the question has no referent at all, and the line comes back blank without anybody having done anything wrong."
+    }
+  ],
+  "where_the_work_is": "In the gap between knowing and having shown it. The gap is real, it is what the whole of deduction turns on, and almost nothing ever printed asks anybody to notice they went through it.",
+  "breaks": "It produces one circle and one line, so it is never the point of anything, only an addition. It cannot be checked and cannot be argued with, and somebody who circles the last step has either missed the question or genuinely never knew early — the sheet cannot tell those apart, and neither can whoever reads it. On a display the two lines fit and the puzzle they belong under does not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    63,
+    113,
+    144,
+    146
+  ]
+}

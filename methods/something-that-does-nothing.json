@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "something-that-does-nothing",
+  "kind": "move",
+  "name": "put in something that turns out not to matter",
+  "also": [
+    "rossa aringa",
+    "falsa pista",
+    "depistaggio",
+    "distrattore",
+    "red herring",
+    "decoy"
+  ],
+  "one_line": "One thing placed where somebody will look, attractive enough to be picked up and inert enough to produce nothing.",
+  "from_entries": [
+    185
+  ],
+  "how": "Take a form that already works and add one item that leads nowhere: a fourth measurement in a table of three that are used, an object named in the room that opens nothing, a date on the page that no question asks about. Make it useless rather than false — a false item sends somebody to a wrong conclusion and costs them everything they did, a useless one costs them the ten seconds of deciding. Never announce it. A line saying «not everything here is needed» makes discarding the exercise instead of solving it, which is a different afternoon. One is enough.",
+  "knobs": [
+    {
+      "knob": "useless or false",
+      "effect": "useless wastes time and is recoverable; false leads to a wrong answer and throws away the work done to reach it. They share a name and are not the same object."
+    },
+    {
+      "knob": "whether it is declared",
+      "effect": "undeclared, the task is to solve; declared, the task becomes to discard, and the person reads looking for what to throw away rather than for what is there."
+    },
+    {
+      "knob": "how attractive it is",
+      "effect": "too dull and nobody picks it up, so it did nothing; too central and it stops being an aside and becomes the afternoon."
+    },
+    {
+      "knob": "adding nothing at all",
+      "effect": "the same effect is available by making something else more interesting instead of adding an item. It costs no paper and cannot be mistaken for a mistake."
+    }
+  ],
+  "where_the_work_is": "In deciding what is relevant, which is the operation this adds and the only one it adds. A page where every item is used can be solved by counting the items, and somebody who notices that stops reading.",
+  "breaks": "It produces nothing that can come back on a sheet, so it can never be the point of a moment — only an addition to one. Used more than once in an afternoon it stops being an aside and reads as the page being untrustworthy, which is a different and worse feeling.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    150,
+    156,
+    188
+  ]
+}

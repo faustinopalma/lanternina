@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "one-printed-step-fewer-each-time",
+  "kind": "move",
+  "name": "take one printed step away at each repeat",
+  "also": [
+    "fading",
+    "dissolvenza dell'aiuto",
+    "esempi svolti sfumati",
+    "ritiro graduale del sostegno",
+    "faded worked examples",
+    "gradual release of responsibility"
+  ],
+  "one_line": "Four instances of the same task on one page, the help dropping by one printed step each time until nothing is left.",
+  "from_entries": [
+    230
+  ],
+  "how": "Take a form that already works and put four instances of it on one page instead of one. Print the first with every step filled in, the second with the last step blank, the third with the last two blank, the fourth with nothing but ruled lines. Fade from the last step backwards, which is the order the literature uses. Then the rule this move exists for: fade what can be reconstructed and never the check. If each instance ends in a counter-proof — 3 x 5 + 2 = 17, and it comes back — keep that line printed at all four, or the last instance leaves somebody with no help and no way to know. Finish with one question outside the series, where the arithmetic stops.",
+  "knobs": [
+    {
+      "knob": "how many instances, and how fast",
+      "effect": "Three or four fit a page and no source gives a number. What they do give is Pillay's condition: two shown stages have to be near enough that the step between them does not have to be invented by whoever is looking."
+    },
+    {
+      "knob": "which end fades first",
+      "effect": "Last step first is what the literature uses and it does not say why. First step first exists and nobody has compared the two; this move fixes the first only because it is the one that has been run."
+    },
+    {
+      "knob": "whether the check fades too",
+      "effect": "Fading the counter-proof along with the steps leaves the final instance with no support and no way of knowing. Keeping it printed at every step costs one line, and it is the one rule here that no source states."
+    },
+    {
+      "knob": "who decides the rate",
+      "effect": "A printed series drops the help whatever happens, including when somebody lost the thread at the second instance. A person watching drops it according to how it is going, and the sources give that contingency as a condition of good support. A sheet has the plan and not that."
+    }
+  ],
+  "where_the_work_is": "In the succession being spatial. Four instances on one page are already a series, so nothing here needs days or a memory of what was given last time, which is what puts a form defined by a sequence inside a single sheet.",
+  "breaks": "Across one sheet it does not break. Across two afternoons it breaks at once, because a sheet does not know what was already given or how long ago. And it drops the help on schedule even when somebody has just got lost, which is the contingency the sources call a condition of quality and which only a person in the house can supply. On a display four instances do not fit, and one instance is not a series.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    227,
+    229,
+    231,
+    242,
+    224
+  ]
+}

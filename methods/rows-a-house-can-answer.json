@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "rows-a-house-can-answer",
+  "kind": "form",
+  "name": "rows that name a property and let the house supply the thing",
+  "also": [
+    "caccia agli oggetti",
+    "caccia a elenco",
+    "caccia per categorie",
+    "lista di cose da trovare",
+    "scavenger hunt",
+    "find something that…"
+  ],
+  "one_line": "Fourteen lines, not one of them naming an object, each satisfied by something already in the house and chosen by whoever looks.",
+  "from_entries": [
+    194,
+    196
+  ],
+  "how": "Write fourteen lines that name a property and never a thing: something bought before you were born, something broken that gets used anyway, something nobody chose, the thing that would be missed least. Make at least half of them lines with no fact underneath — nobody, not even whoever wrote them, can call the answer wrong — and say so on the sheet, because a reader who thinks there is a right answer picks the safe object. Beside each, a ruled line for why, and refuse the answer without it: without the reason the sheet returns fourteen nouns and loses all the work. Add one line that scores for something looked for and not found. End with a row to be written and left empty: a category this house deserves that whoever printed the sheet could not have known.",
+  "knobs": [
+    {
+      "knob": "with a fact underneath or without",
+      "effect": "A beetle, a coin minted before 2002: the class exists, somebody competent can say no, and the work is classifying. The tiredest thing in the house: the class does not exist until something is put in it, nobody can be wrong, and the work is deciding."
+    },
+    {
+      "knob": "whether the reason is demanded",
+      "effect": "Without it this collapses into a worse version of an errand and comes back as a list of nouns. With it the object is half the answer and the argument the other half, at the cost of one ruled line per row."
+    },
+    {
+      "knob": "how wide the categories are",
+      "effect": "«Something red» is satisfied in three seconds. «Something kept by somebody who no longer knows why» takes a walk round the house. Width sets what it costs in time and not how hard it is, which is a separate knob."
+    },
+    {
+      "knob": "the row written and left blank",
+      "effect": "Asking for a fifteenth category and forbidding it to be answered returns an observation about this house that nobody who wrote the other fourteen could have made. It costs one row and cannot be got wrong."
+    }
+  ],
+  "where_the_work_is": "In the rows naming properties instead of objects, which is what lets a sheet written by somebody who has never been in the house be answered inside it at all.",
+  "breaks": "Not one of the fourteen can be checked, because not one has a right answer — the rule here, not a fault. Nothing says whether all fourteen were read before choosing or whether somebody stopped at the first that worked, which is the decision this form exists to produce and the one it cannot see. On 800x480 four rows fit and fourteen do not, and a shortened list stops being a menu and becomes a chore.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    193,
+    195,
+    271,
+    302
+  ]
+}

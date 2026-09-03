@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "run-the-rule-line-by-line",
+  "kind": "form",
+  "name": "apply a rule that is given in full, line after line",
+  "also": [
+    "successione con regola dichiarata",
+    "successione audioattiva",
+    "look-and-say",
+    "automa cellulare",
+    "cellular automaton",
+    "regola su griglia",
+    "elementary CA",
+    "formica di Langton"
+  ],
+  "one_line": "The rule is printed in full and nothing is to be guessed: it is applied step by step down the page, and what comes out is the surprise.",
+  "from_entries": [
+    368,
+    374
+  ],
+  "how": "Choose a rule that needs no arithmetic — read the row above out loud and write what you said, or fill a cell by looking at the three above it. Print five or six lines already done, the rule in one line with two worked steps beside it, and three blank lines. Then two questions the running does not answer: one about something that can never appear, and one about how fast the lines grow, asked as «about how many times». Both are settled by thinking, and both check themselves, because anybody who has gone wrong finds out by reading their own last line back. Squared paper, not lined.",
+  "knobs": [
+    {
+      "knob": "what the rule needs",
+      "effect": "a rule that only looks at what is written can be handed to anybody; a rule that adds or halves puts arithmetic between the person and the thing being shown, and the arithmetic was never the point."
+    },
+    {
+      "knob": "how many lines are given",
+      "effect": "five lines of a three-cell grid rule fix it at exactly one of two hundred and fifty-six; two lines leave sixteen and the question has no answer. How many to print is a count, not a feeling."
+    },
+    {
+      "knob": "what is asked after the blanks",
+      "effect": "«three more lines» is executing and it ends there; «will a four ever appear, and why» is about every line at once, and it is the only part that cannot be got wrong quietly."
+    },
+    {
+      "knob": "whether the rule is admitted to be open",
+      "effect": "some of these rules have questions nobody has answered. Saying so costs one line, is true, and turns running the rule into looking at something unfinished instead of doing an exercise."
+    }
+  ],
+  "where_the_work_is": "In the question printed under the blanks. Running the rule is mechanical by construction and cannot be got interestingly wrong; whatever the afternoon is worth is in what gets asked about the run afterwards.",
+  "breaks": "Some of these rules grow: two lines of look-and-say pass the width of a sheet in a dozen steps, so the page decides how far it can go and had better say so. On a display a run in progress is unreadable at any useful number of columns. Ordinary lined paper will not do — the columns must line up or the rule cannot be applied at all.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    149,
+    351,
+    359,
+    366,
+    372
+  ]
+}

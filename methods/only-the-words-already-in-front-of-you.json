@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "only-the-words-already-in-front-of-you",
+  "kind": "form",
+  "name": "write with only the words already printed in front of you",
+  "also": [
+    "monovocalismo",
+    "univocalico",
+    "magazzino chiuso di parole",
+    "poesia trovata",
+    "found poetry",
+    "cento",
+    "vincolo di materiale"
+  ],
+  "one_line": "A closed store of words is printed, and anything built out of it obeys the rule by construction, so nobody has to check.",
+  "from_entries": [
+    210,
+    219
+  ],
+  "how": "There are two ways to build the store, and the choice is the whole design. Either compile a list that already obeys a letter rule — ninety-one words with no vowel but O, sorted into who, things, what I do, what they do, what it is like — counted once by a person, word by word, and then printed unchanged for ever. Or take a page that already exists and was never meant to be read: a warranty, an appliance manual, a leaflet. Print the store whole; it is the sheet. Ask for six short lines in which something changes, using nothing that is not there, and say the section labels are not part of the rule. Then ask for every used word to be struck out on the store, and for one look at what is left.",
+  "knobs": [
+    {
+      "knob": "a list built to a rule or a page that already exists",
+      "effect": "A built list guarantees a letter constraint and costs an hour of somebody counting. A found page guarantees nothing, costs nothing, and gives each house a different store — at the price that whoever set the task can check none of it."
+    },
+    {
+      "knob": "how big the store is",
+      "effect": "Fifty distinct words carry twenty short lines and not one paragraph, and the reason is grammatical rather than a matter of skill. The size of the store chooses the genre, so it is settled before anything else is."
+    },
+    {
+      "knob": "whether words may be inflected",
+      "effect": "Allowing it makes the store far larger than it looks and reopens the letter rule the list was built to close. Forbidding it is the only version that is guaranteed. It has to be said either way, because the sources do not decide it."
+    },
+    {
+      "knob": "whether the leftovers are looked at",
+      "effect": "Striking out what was used costs one line of instruction, turns the discards into something to look at, and leaves material for the next sheet at no cost. Whether it produces anything has not been tried."
+    }
+  ],
+  "where_the_work_is": "In the store being an object rather than a generation. A store assembled at the moment of delivery is wrong in about a dozen entries, and one wrong word makes the whole sheet a lie about its own rule.",
+  "breaks": "A built list cannot be composed by anything that does not look inside words, and it fails silently: a handful of wrong entries look exactly like the rest. Ninety-one words are not a language and what can be said with them is little, all of it true. A found page has the opposite problem — safe to deliver, and nothing on the returned sheet checkable. On 800x480 a store of ninety words does not fit, and twenty are not a store.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    209,
+    212,
+    220,
+    223
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "order-of-magnitude-estimate",
+  "kind": "form",
+  "name": "estimate a quantity nobody knows, in factors",
+  "also": [
+    "problema di Fermi",
+    "stima di Fermi",
+    "Fermi problem",
+    "back-of-the-envelope calculation",
+    "calcolo sul retro della busta",
+    "stima a spanne"
+  ],
+  "one_line": "A quantity that cannot be looked up is broken into factors somebody can guess, and the answer wanted is an order of magnitude.",
+  "from_entries": [
+    359
+  ],
+  "how": "Pick a quantity nobody in the house knows and nothing in the house can settle — how many times the door opens in a year, how many words are on a shelf. Ask for it twice, by two roads that share no number: one down through people and days, one across from something counted in ten minutes. Print each road as three or four named lines with a blank at the end of every one, and a last line that divides the larger total by the smaller. Say in one line that under ten means the two roads agree. Ask for the chain, never only for the number.",
+  "knobs": [
+    {
+      "knob": "one road or two",
+      "effect": "one road leaves nothing to check and the sheet comes back unmarkable; two independent roads check each other and cost one extra line. This is the knob that pays."
+    },
+    {
+      "knob": "how long the chain is",
+      "effect": "three factors is enough to be an estimate and short enough to hold; past five the arithmetic becomes the exercise and the guessing stops."
+    },
+    {
+      "knob": "whether the tolerance is written on the page",
+      "effect": "stating «under ten and they agree» turns a vague result into something with a pass mark; leaving it out returns a number nobody can judge, including whoever wrote it."
+    },
+    {
+      "knob": "whether a range is asked for as well",
+      "effect": "asking for a smallest and a largest beside the guess changes the task from producing a number to bounding one, which is harder and more honest."
+    }
+  ],
+  "where_the_work_is": "In choosing the factors, not in multiplying them. Every line of the chain has to be something the person has an opinion about without knowing it, and finding those is the whole design.",
+  "breaks": "There is no answer to publish, so a sheet that asks for one road only cannot be responded to at all — that is why the record fixes the knob at two. On a display the chain does not fit; the question and the tolerance do.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    29,
+    38,
+    360,
+    363
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "format_version": 1,
+  "method_id": "write-the-guess-before-it-happens",
+  "kind": "move",
+  "name": "have it written down before anything happens",
+  "also": [
+    "scrivere la previsione",
+    "prevedere prima di giocare",
+    "predict before you look",
+    "written prediction",
+    "invariante",
+    "quantità conservata"
+  ],
+  "one_line": "One blank filled in before the thing is done, which turns watching something happen into finding out whether you were right.",
+  "from_entries": [
+    364,
+    375
+  ],
+  "how": "It applies wherever something observable is about to be done — beans drawn out of a jar under three swap rules, a strip about to be cut, a game about to be played. Put one blank above it and one line of instruction: write what you think will come out, before you start. Place the blank so that it cannot honestly be filled in afterwards, on its own line above every piece of the material. Print nothing beside it that leans towards the answer. Then have the whole thing done a second time with one condition altered, so that whoever understood knows the second answer before starting and whoever guessed does not.",
+  "knobs": [
+    {
+      "knob": "before or after",
+      "effect": "written first, a wrong guess is a fact and something gets learnt from it; asked for afterwards, every outcome was obvious all along and nothing was found out by anybody."
+    },
+    {
+      "knob": "whether the second run changes something",
+      "effect": "a second run with one thing altered separates understanding from having guessed right once and costs a single line; without it a correct guess and a lucky one come back looking the same."
+    },
+    {
+      "knob": "whether the answer is anywhere on the page",
+      "effect": "with the answer printed further down, the blank gets filled in from it and the move has done nothing; with the answer nowhere at all, the checking happens out in the world and no adult marks anything."
+    }
+  ],
+  "where_the_work_is": "In the blank being physically before the task. Everything this move does comes from the order in which the page gets filled in, and the same blank at the foot of the sheet is a different move that does nothing.",
+  "breaks": "Nothing can tell whether the blank really was filled in first, so it runs on trust and stops working the moment it is used to catch somebody out. It adds nothing to forms where nothing observable happens, which is most of what a printed sheet holds.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    162,
+    359,
+    363,
+    373,
+    374
+  ]
+}

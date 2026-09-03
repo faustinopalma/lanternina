@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "depth-at-every-crossing",
+  "kind": "form",
+  "name": "decide which line passes in front at each crossing",
+  "also": [
+    "figura reversibile",
+    "cubo di Necker",
+    "impossibile geometrico",
+    "triangolo di Penrose",
+    "figura indecidibile",
+    "Necker cube",
+    "impossible object",
+    "Penrose triangle",
+    "undecidable figure"
+  ],
+  "one_line": "A line figure whose crossings can be resolved several ways, and the question is how many of those ways make a buildable solid.",
+  "from_entries": [
+    380,
+    381
+  ],
+  "how": "Ask for a 4 cm square, a second the same size shifted 18 mm up and 18 mm right, and the four pairs of corners joined: a transparent cube with two crossings inside it. At each crossing one edge of a real cube would pass in front, so ask for both to be broken all four ways — front and front, front and back, back and front, back and back — and all four figures drawn. Two are cubes; two are not, and look ordinary. Then three beams closed into a triangle, and a table saying A passes in front of B, B of C, C of A. Ask for the beams to be numbered 1, 2, 3 by distance so that all three rows hold. Twenty-seven ways, none works.",
+  "knobs": [
+    {
+      "knob": "how far the second square is shifted",
+      "effect": "anywhere between a twentieth and nineteen twentieths of the side gives the two crossings the exercise rests on; at a full side a back corner lands on a front one and the crossings vanish."
+    },
+    {
+      "knob": "whether the four figures are drawn or only named",
+      "effect": "drawn, the two impossible ones exist on paper and go on looking ordinary as long as anybody stares; named in a table, the answer is right, nothing was made, and the second half has no material."
+    },
+    {
+      "knob": "whether the beams are numbered or just argued about",
+      "effect": "numbering forces the contradiction into three rows a finger can follow; arguing lets «it just can't work» stand as an answer, and that sentence is the one the sheet exists to replace."
+    },
+    {
+      "knob": "which figure is used",
+      "effect": "two crossings and four resolutions leave two consistent readings; three beams and three rows leave none out of twenty-seven, which is an impossibility proved on a drawing they made themselves."
+    }
+  ],
+  "where_the_work_is": "In the table of who passes in front of whom. The drawing is copied in four minutes; the table turns «this looks wrong» into three statements that cannot all hold at once.",
+  "breaks": "The figure is drawn by hand from two measurements, so the print scale does not matter — the 18 mm shift does, and at a full side length the crossings degenerate. Both counts, two of four and none of twenty-seven, can be marked; what nothing catches is a cube whose corners were joined to the wrong partners, which gives crossings the table does not describe. On the display 800×480 in one bit draws the finished cube well and cannot hold the four erasures, which are the exercise.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    363,
+    365,
+    378,
+    379,
+    393
+  ]
+}

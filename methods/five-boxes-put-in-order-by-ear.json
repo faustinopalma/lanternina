@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "five-boxes-put-in-order-by-ear",
+  "kind": "form",
+  "name": "shake five closed boxes into order by ear alone",
+  "also": [
+    "puzzle acustico",
+    "enigma sonoro",
+    "indovina il suono",
+    "contare i colpi",
+    "gioco d'ascolto",
+    "sound puzzle"
+  ],
+  "one_line": "Five identical closed containers holding one, two, three, five and eight small things, shuffled blind and then put in order by shaking.",
+  "from_entries": [
+    176
+  ],
+  "how": "Five containers that close and feel the same — tins, jars, paper packets folded and taped — and a handful of small hard identical things: dried beans, rice, coins. Put in one, two, three, five and eight. Close them, then shuffle them with your eyes shut until you no longer know which is which; that is how the answer gets hidden with nobody else in the room. Shake, line them up from least to most, then open them and write the true order beside your own and how many you had right. The quantities are unevenly spaced on purpose: one against two is obvious and five against eight is not, so mistakes land at the crowded end and show without anybody explaining why.",
+  "knobs": [
+    {
+      "knob": "whether the sound can be repeated",
+      "effect": "Shaken again as often as wanted, it behaves like everything else on a table. Given once, the size of the task is set by memory rather than by what fits on a page, and that is a different exercise with the same material."
+    },
+    {
+      "knob": "how the quantities are spaced",
+      "effect": "One two three five eight puts the hard discriminations at one end, so errors cluster where the ear actually stops. Evenly spaced amounts make every pair equally hard and the score then carries no information."
+    },
+    {
+      "knob": "counting or judging",
+      "effect": "Below some number the taps get counted and above it they get estimated, and the changeover is lower than anybody expects. Asking where it happened turns a failure into a measurement of the person."
+    },
+    {
+      "knob": "whether the result lands on paper",
+      "effect": "Two rows of five and one score come back and can be read. Without somewhere to write, a sound task leaves nothing at all, because it happened in a room the sheet was not in."
+    }
+  ],
+  "where_the_work_is": "In shuffling blind, which makes one person the author and the solver of the same puzzle without spoiling it, and in opening the boxes, which is the whole of the verification.",
+  "breaks": "The sheet has no sound: it cannot make one, hear one, or check that a rhythm was tapped in time. All that returns is what was written — two rows of five, a score, two thresholds. Noise in the room can make the task impossible with nobody noticing, which no other family here can do. On 800x480 none of it fits and there is no reason to try. Notation lies both ways, so a written rhythm is evidence about the page and not about what was heard.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    47,
+    132,
+    134,
+    169
+  ]
+}

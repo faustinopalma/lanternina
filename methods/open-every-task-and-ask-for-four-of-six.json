@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "open-every-task-and-ask-for-four-of-six",
+  "kind": "move",
+  "name": "open every task at once and ask for four of the six",
+  "also": [
+    "percorso aperto",
+    "percorso lineare",
+    "sblocco progressivo dello spazio",
+    "non-linear escape room",
+    "gating",
+    "quota"
+  ],
+  "one_line": "Which tasks are available when, and a quota that turns a list of six into a decision about which two to give up.",
+  "from_entries": [
+    181,
+    183,
+    186
+  ],
+  "how": "Print all six at once, of six different kinds — look, draw, calculate, write, count while walking, weigh — because six similar ones make choosing a cost, not a decision. Then the line that does the work: do four, leave two. Without it the order is not a decision, since nothing is given up either way. Add two lines at the foot asking in which order they were done and which two were left, because a finished sheet is silent about its own sequence and that sequence is the only thing this produces. Do not chain them. A chain is as long as its weakest link and a printed sheet cannot notice that somebody has stopped, so the structure needing no hints is the one where nothing waits for anything.",
+  "knobs": [
+    {
+      "knob": "chained, converging or open",
+      "effect": "Chained, one stuck step ends the sheet and a hint system has to be bought to prevent it. Converging, a stuck task is skipped and the last one still works. Open, there is no breaking point at all, which is why it is the setting for a sheet nobody is watching."
+    },
+    {
+      "knob": "whether there is a quota",
+      "effect": "Without one, six tasks in any order, and the order costs nothing because nothing is lost. With «do four», every choice excludes another and the verb changes from carrying out to deciding what to give up."
+    },
+    {
+      "knob": "whether the tasks resemble each other",
+      "effect": "Six of a kind make choosing expensive, and the cure is not fewer of them but making them unalike. One look, one drawing, one sum: the equivalence goes and the choice stops being a burden."
+    },
+    {
+      "knob": "how a chain is held together if used at all",
+      "effect": "Not by asking nobody to read ahead. Each step must work on the number carried in, so reading the next box without it is useless. That is a dependency and not an honour rule, and it is the only chain one sheet can hold."
+    }
+  ],
+  "where_the_work_is": "In the quota line and the two lines asking for the order. The rest was going to be printed anyway; those three lines are what make the order a decision and then record that it happened.",
+  "breaks": "A sheet shows everything at once, which is exactly what an open path wants and exactly what a chain has to work around. On 800x480 the opposite holds: four lines that replace one another impose an order for free and cannot show six choices, so a chain belongs on the panel and an open path on the page. Without the order line the filled sheet says which four were done and never in what sequence, and that cannot be recovered later.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    179,
+    187,
+    189,
+    190
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-module-from-an-office-that-does-not-exist",
+  "kind": "form",
+  "name": "a form from an office that does not exist",
+  "also": [
+    "incarico d'ufficio",
+    "modulo",
+    "modulistica",
+    "istanza",
+    "da compilare in ogni sua parte",
+    "official form",
+    "red tape"
+  ],
+  "one_line": "A prestamped module with lettered sections, a protocol number and no addressee, which makes askable a question that asked directly would be awkward.",
+  "from_entries": [
+    91
+  ],
+  "how": "Invent an office narrow enough to have a real remit — an Office for Things Not To Be Thrown Away — and print a real module: heading, protocol number, «to be completed in every part, in block capitals», lettered sections, a date and a signature. Ask what that office would ask: what the object is, where it is, when it was last of use, why it must not be thrown out, what would happen if it were. Tick-boxes for the reasons and one line for «other». Then the box no real office has: is what you wrote above true — yes, or not entirely — with the awkward box printed beside the easy one so ticking it is one of two expected answers. At the foot: this office does not reply. It is true, and it is what makes the page safe.",
+  "knobs": [
+    {
+      "knob": "how narrow the office is",
+      "effect": "A wide one sounds like a joke about bureaucracy and nothing else. One narrow enough to have a remit makes the questions specific, and the specific questions are the whole page."
+    },
+    {
+      "knob": "whether it admits it will not be read",
+      "effect": "«This office does not reply» is true and removes the reason to write what would look good. Left out, the page inherits the school's reader and the answers come back tidied for somebody."
+    },
+    {
+      "knob": "what the compulsory box asks",
+      "effect": "Used on the ordinary data it only irritates, which is what real modules do. Used on «is what you have just written true», it turns the genre inside out and is the line that gets remembered."
+    },
+    {
+      "knob": "how many times it is filled in",
+      "effect": "Once, and the format has not had time to work. Three times, for three objects, and the repetition is both the joke and the material: the third is answered quite differently from the first."
+    }
+  ],
+  "where_the_work_is": "In the format doing what the question cannot. Section codes, block capitals and a protocol number turn an intrusive question — why do you keep this — into paperwork, and paperwork gets answered.",
+  "breaks": "Nobody reads it, which is declared and is the point, so nothing on it can be checked and nothing should be. The whole effect is in the layout: reflowed into one column, or set without boxes and dotted leaders, it stops being a module and becomes a questionnaire. On 800x480 none of that shape survives — a display can announce that a module has arrived and nothing more.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    11,
+    14,
+    63,
+    98,
+    99
+  ]
+}

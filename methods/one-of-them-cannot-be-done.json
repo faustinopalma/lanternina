@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "one-of-them-cannot-be-done",
+  "kind": "move",
+  "name": "put in one item that cannot be done",
+  "also": [
+    "problema impossibile",
+    "dimostrazione di impossibilità",
+    "scacchiera mutilata",
+    "figura impossibile",
+    "impossibility proof",
+    "mutilated chessboard"
+  ],
+  "one_line": "Among items that can be done, one that cannot, so that stopping for the right reason becomes an answer instead of a failure.",
+  "from_entries": [
+    152,
+    160,
+    171
+  ],
+  "how": "Take a form where items are attempted one after another — outlines to cover, boards to tile, starting positions to sort — and make one of them impossible. Then decide the only thing that matters here, which is whether the sheet says so. The setting to use is the middle one: say that one of the three cannot be done and do not say which. That keeps every item worth attempting, costs a line, and stops anybody spending an afternoon on the wrong one. Whatever is chosen, print a place to write why it cannot be done, and expect a reason that fits on a line: the piece whose hole cannot be reached in a strip two squares wide, the two tiles that can never swap. One per sheet.",
+  "knobs": [
+    {
+      "knob": "whether it is declared in advance",
+      "effect": "Declared, nobody wastes twenty minutes and the task becomes finding the reason, which is the better half anyway. Undeclared, those twenty minutes are what make the reason mean anything, and somebody pays for them."
+    },
+    {
+      "knob": "declaring that one exists without saying which",
+      "effect": "«One of these three cannot be done» costs a line, keeps all three worth attempting, and turns the set into a single question. Neither tradition takes this setting and it is the one that works on a sheet."
+    },
+    {
+      "knob": "whether the reason is short",
+      "effect": "A reason that fits on a line — thirty dark squares against thirty-one tiles — makes the impossibility somebody's own. A reason needing a proof leaves them taking the sheet's word for it, which is what this was meant to avoid."
+    },
+    {
+      "knob": "whether the possible twin is printed too",
+      "effect": "The same board with its corners left on, the same tiles with a fourth outline that works. An impossibility beside its possible neighbour shows that the difficulty was never in the trying."
+    }
+  ],
+  "where_the_work_is": "In the sentence saying whether it can be done. It costs nothing to print, it is the only decision in the whole move, and it changes what twenty minutes of failing were for.",
+  "breaks": "It adds nothing markable: whoever stops has produced a blank, and a blank from somebody who proved it impossible looks exactly like a blank from somebody who gave up, so the line for the reason is not optional. On 800x480 the declaration fits and the board does not. Used twice in one afternoon it stops being a discovery and reads as the sheets being unreliable.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    156,
+    159,
+    363,
+    366
+  ]
+}

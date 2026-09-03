@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "check-the-constraint-with-a-pencil",
+  "kind": "move",
+  "name": "check a written rule by a procedure, not by rereading",
+  "also": [
+    "lipogramma",
+    "palindromo",
+    "scrittura vincolata",
+    "controllo a matita",
+    "lipogram",
+    "constrained writing"
+  ],
+  "one_line": "A formal constraint is verified by a mechanical pass over the text, because rereading finds meaning and never finds the breach.",
+  "from_entries": [
+    123,
+    124
+  ],
+  "how": "When a sheet asks for writing under a rule, print the check beside the rule as a procedure. For a banned letter: one pass with a pencil, circling the letter every time it appears, line by line, and two boxes for how many were found on the first pass and on the second. For a symmetry: number the boxes and print the pairs to compare, 1 against 21, 2 against 20, inward until the two fingers meet. Never print «read it back». A text that reads well is exactly the one whose breach survives a reading. Print the count of what was found rather than a verdict: two on the first pass and none on the second is the record worth keeping, and it is also the only thing that improves.",
+  "knobs": [
+    {
+      "knob": "circling or pairing",
+      "effect": "Circling suits a ban: one pass, one mark per breach, and the count is the result. Pairing suits a symmetry, where nothing is wrong on its own and only two positions taken together can be."
+    },
+    {
+      "knob": "whether the pass is counted",
+      "effect": "Two numbers, first pass and second, make the check a measurement that gets better. A tick says the check was done and says nothing at all about what it found."
+    },
+    {
+      "knob": "whether the difficulty sits on a printed scale",
+      "effect": "The Italian letters run E A I O N L R T S C D U from commonest to rarest, from a source crediting Singh and Galli. Printing that row lets the difficulty be chosen; leaving it out means everyone picks Z and nothing happens."
+    },
+    {
+      "knob": "who wrote the text under the rule",
+      "effect": "A hand: the check is real and finds real breaches. A model: the text comes back the right shape with the ban broken, the pencil pass finds it, and an hour has gone on a sheet that should never have been printed."
+    }
+  ],
+  "where_the_work_is": "In the procedure being executable without understanding the text. Anybody can circle a letter or compare box 3 with box 19; nobody reliably sees a breach while reading for sense.",
+  "breaks": "A row of letters and a two-number tally print and scan. On 800x480 the frequency row fits as twelve letters on one line, and the text to be rewritten does not, so a panel carries the setting chosen and the day count and never the task. The move does nothing for composing: eighty-seven words rewritten without a chosen letter have to come from a hand, and the only part safe to print is the ordinary text to start from.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "both",
+  "goes_with": [
+    17,
+    69,
+    331,
+    333,
+    352
+  ]
+}

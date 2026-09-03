@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "one-fact-that-changes-what-was-already-read",
+  "kind": "move",
+  "name": "add one fact and make the same page mean something else",
+  "also": [
+    "oggetto che cambia significato",
+    "rilettura",
+    "ricontestualizzazione",
+    "il dettaglio che torna",
+    "the reveal",
+    "foreshadowing",
+    "anagnorisi"
+  ],
+  "one_line": "A page read once, then one fact that was true all along, and the same page with a single reading left instead of many.",
+  "from_entries": [
+    188
+  ],
+  "how": "Print something ordinary that does not add up: a receipt of eight items whose lines come to 20,30 against a printed total of 19,50. Ask for the difference, then for three different explanations, all of them possible. That request is what makes the rest work: it puts the space of readings on paper in their own handwriting. Then the fact, and it has to be something already true and not a change: in that shop bread is twenty per cent off. Send them back to the same page. The two bread lines come to 4,00 and twenty per cent of that is 0,80, exactly the gap. Check by program that of all 255 subsets only one sums to 4,00, and print it, so the new reading is demonstrated rather than announced.",
+  "knobs": [
+    {
+      "knob": "whether the new fact was already true",
+      "effect": "Already true, and the page never changed — the reading did, and that can be shown. Changing the data and calling it a change of meaning is how this goes wrong, and it is invisible to anybody reading once."
+    },
+    {
+      "knob": "whether the earlier readings were written down",
+      "effect": "Written first, the surviving explanations can be counted at the end and the change is measured. Not written, there is nothing to compare against and the new fact is only an announcement."
+    },
+    {
+      "knob": "whether exactly one reading survives",
+      "effect": "Enumerating every subset and finding one that fits is what turns a twist into something anybody can redo by hand in five minutes. Two surviving subsets and the page never had a hidden meaning at all."
+    },
+    {
+      "knob": "whether it can be looked at again",
+      "effect": "On paper always, because the receipt is still on the table. Heard aloud, or shown a line at a time, it cannot be revisited, and the whole thing depends on going back to what was already seen."
+    }
+  ],
+  "where_the_work_is": "In the enumeration behind the numbers. Eight amounts of which exactly one subset makes the gap has to be searched for, and cannot be got by writing down plausible figures.",
+  "breaks": "It costs nothing: no material, no clock, nobody else, one side of paper, and it comes back as arithmetic in boxes. On 800x480 it fails completely, because four lines that replace one another carry the receipt away and there is nothing to go back to. It also runs once — whoever has read the page cannot unread it — so this is the one thing here that cannot be handed over twice, though it does not go stale either.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    150,
+    185,
+    186
+  ]
+}

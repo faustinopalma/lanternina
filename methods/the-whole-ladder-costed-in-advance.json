@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "the-whole-ladder-costed-in-advance",
+  "kind": "move",
+  "name": "print what the whole ladder costs before the first rung",
+  "also": [
+    "livelli",
+    "gradi",
+    "gradini",
+    "scaglioni",
+    "cinture",
+    "salire di livello",
+    "level up",
+    "tier",
+    "sistema a livelli"
+  ],
+  "one_line": "Work already there is cut into rungs, the cost of every rung is printed before anything starts, and stopping is written in as a result.",
+  "from_entries": [
+    257
+  ],
+  "how": "Take work that already exists and cut it into six rungs asking for one, two, three, four, five and six of the same thing. Print all six with their counts before anything is done: twenty-one in all, the first three rungs are six of them, so half the ladder costs a fifth of the work and anybody can see that before starting. Then one line — I stopped at rung ___, and here is why — and no line anywhere saying how far somebody should get. Nothing carries: the rung reached is written on this sheet, and this sheet is one afternoon. A rung that has to be judged well done is left out, because judging it needs somebody who judges and then judges again.",
+  "knobs": [
+    {
+      "knob": "whether the whole cost is printed first",
+      "effect": "Printed, the ladder can be argued with and somebody can decide where to stop knowing what stopping costs. Shown a rung at a time, the same arithmetic is hidden and the ladder simply lengthens under the feet."
+    },
+    {
+      "knob": "what a rung asks for",
+      "effect": "More of the same thing makes a rung a quantity, and a quantity is what turns a ladder into a tally. A rung asking for the same thing done another way costs the same ink and cannot be climbed by volume."
+    },
+    {
+      "knob": "whether stopping is written in",
+      "effect": "With the line asking why you stopped, rung three is an answer. Without it, stopping is what happens when somebody gives up, and none of the ladders in the research says otherwise."
+    },
+    {
+      "knob": "whether the rungs are evenly spaced",
+      "effect": "Even spacing makes each step the same and the printed total is the honest part. Spacing that widens hides the same rising cost in a falling reward, and only the first of the two can be contested."
+    }
+  ],
+  "where_the_work_is": "In the arithmetic printed at the top. Six rungs of one to six things is twenty-one, and the fact that the last three cost two and a half times the first three is the whole of what this adds.",
+  "breaks": "It adds a number and a sentence, so it can never be the point of an afternoon, only an arrangement of one. Carried between afternoons it needs the sheet kept, which nobody can promise, and the version that persists is a counter attached to a person: left out here on purpose, and this is the field where that decision shows. On 800x480 six rungs and their counts fit; the work each rung asks for does not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    24,
+    34,
+    231,
+    244
+  ]
+}

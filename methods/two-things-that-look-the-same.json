@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "two-things-that-look-the-same",
+  "kind": "form",
+  "name": "find five differences between two things that look alike",
+  "also": [
+    "confrontare",
+    "riconoscere",
+    "contrasto minimo",
+    "paragonare",
+    "trova le differenze",
+    "minimal pair",
+    "da che cosa l'hai capito"
+  ],
+  "one_line": "Two objects from the same house that were meant to be identical, side by side, and five differences — the last three of which need hands.",
+  "from_entries": [
+    51,
+    55
+  ],
+  "how": "Do not name the objects: name the pair by what it has to be, because the sheet does not know the house. «Two spoons of the same kind», «two of the same coin», «two keys off the same bunch» — not two chosen to be different, two that look the same. Under one light, side by side. Ask for five differences on five numbered lines: the first two arrive at once, and from the third the objects have to be turned over, weighed one in each hand, set down and listened to. Beside each line leave a second, shorter blank for what gave it away — the grain, a fold, wear on one side only — because that answer stands even when the name for it is wrong. Last line: which of the two is older, and what tells you.",
+  "knobs": [
+    {
+      "knob": "how alike the two are",
+      "effect": "Two obviously different things ask nothing; the differences are the objects. Two meant to be identical put the whole difficulty into the similarity, and need no apparatus at all."
+    },
+    {
+      "knob": "differences or likenesses",
+      "effect": "Differences come to the eye and run out around five. Likenesses have to be gone looking for and are much harder, so the same pair gives two rungs for the price of one printed word."
+    },
+    {
+      "knob": "how many are asked for",
+      "effect": "Three is one pass of the eye. Five is where the hands come in and is the setting worth printing. Ten stops being about the objects and becomes about listing, and the last four are padding."
+    },
+    {
+      "knob": "the second blank",
+      "effect": "«What gave it away» produces an answer even when the difference is misnamed — from the grain, from the fold — and that answer is the real content. Without it the sheet comes back as a list of adjectives."
+    }
+  ],
+  "where_the_work_is": "In choosing the pair, which is done by whoever is there and not by whoever printed the sheet. The rest of the page is five lines and one question; all the difficulty sits in how alike the two things are.",
+  "breaks": "Four of the five differences can be checked by looking again, so the sheet is honest about those; the last question — which is older — has no answer in the objects and none on the page, and is asked for the reasoning rather than the verdict. On 800x480 the five lines fit and the pair does not: a display can carry the instruction, but the objects have to be found and the writing happens on paper.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    9,
+    27,
+    52,
+    93,
+    385
+  ]
+}

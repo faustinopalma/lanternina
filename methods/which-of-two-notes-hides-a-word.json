@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "which-of-two-notes-hides-a-word",
+  "kind": "form",
+  "name": "decide which of two ordinary notes hides a word",
+  "also": [
+    "acrostico",
+    "mesostico",
+    "telestico",
+    "acrostic",
+    "mesostic",
+    "telestich",
+    "capoverso parlante",
+    "notarikon"
+  ],
+  "one_line": "Two notes that read as notes, and in one of them the first letters of the lines spell something when read downwards.",
+  "from_entries": [
+    349,
+    350
+  ],
+  "how": "Print two notes of seven lines each, of the sort left on a kitchen table. In one, the initials of the lines spell an Italian word read down the margin; in the other they spell nothing. Ask which of the two it is, what the word is, and then how many letters had to be looked at: fourteen out of the four hundred and thirteen on the page. That last number is the whole point — the cost is not in checking an acrostic but in thinking to check one. Close with the fact: in Modena in 1859 people wrote Viva V.E.R.D.I. on walls, and whoever passed read the name of a composer.",
+  "knobs": [
+    {
+      "knob": "which letter of the line is read",
+      "effect": "First and last are positions that exist without being declared, so the form announces itself. A letter in the middle is not a position at all and has to be marked with a capital or a column, or nobody finds it."
+    },
+    {
+      "knob": "whether the lines are written or found",
+      "effect": "Written, the surface has to carry a constraint and most drafts read as forced. Found — open a book, take the first line holding the letter you need — the constraint stays and the writing cost goes."
+    },
+    {
+      "knob": "how visible it is meant to be",
+      "effect": "A capital or a wider margin makes it a signature that anybody sees. Nothing at all makes it a hiding place, and then it depends entirely on somebody suspecting there is anything there."
+    },
+    {
+      "knob": "whether the surface stands up",
+      "effect": "A note that only makes sense once the hidden word is found is a failed one, because the column was all there was. A note that reads as a note and also hides something pays twice."
+    }
+  ],
+  "where_the_work_is": "In the second note, the one that hides nothing. It has to look exactly as deliberate as the first, or the question answers itself before anybody has read a line of either.",
+  "breaks": "The initials have to line up, so a ragged left edge destroys it; set both notes flush left. Scanned back it reads. On 800x480 half a note fits, though four short lines are exactly a four-letter acrostic and that is worth trying. Nothing here needs a letter counted inside a word, since a first letter is a first letter, so this is the one form in its chapter that composes without a hand check.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    122,
+    311,
+    337,
+    339,
+    351
+  ]
+}

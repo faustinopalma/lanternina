@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "a-register-that-does-not-add-up",
+  "kind": "form",
+  "name": "find the moment a running count goes impossible",
+  "also": [
+    "quesito narrativo",
+    "situation puzzle",
+    "lateral thinking puzzle",
+    "minute mystery",
+    "giallo da tavolo",
+    "indovinello logico"
+  ],
+  "one_line": "A list of comings and goings that cannot be true, one exact moment where it breaks, and an explanation with more than one right answer.",
+  "from_entries": [
+    340
+  ],
+  "how": "Print a fact that fixes both ends — the yard was empty at seven in the evening and empty at seven in the morning — then fourteen numbered lines, each an hour and either in or out, six of them in and eight out. Ask for the count to be kept going down the list and for the first moment it drops below zero, which is exact and settles itself: 22:15. Then ask, in writing, what could have happened. Then print three facts any explanation has to cover, with a box beside each, and ask which are covered. More than one explanation works and the sheet should not pretend otherwise: the count is the checked half and the story is the open one.",
+  "knobs": [
+    {
+      "knob": "whether the totals are made to disagree",
+      "effect": "Six in and eight out, with fourteen lines and none missing, rules out the comfortable answer that a line was lost. Making the totals agree leaves an arithmetic exercise with nothing wrong in it to find."
+    },
+    {
+      "knob": "how much is withheld",
+      "effect": "Everything printed, and one person works alone. Half withheld and filled in by yes-or-no questions, and somebody has to be there who knows the story, which is another afternoon and cannot be posted."
+    },
+    {
+      "knob": "whether a list of facts is printed",
+      "effect": "Three facts with boxes give a written explanation something to be measured against, and the person counts their own coverage. Without it, an explanation cannot be judged by anybody who was not there."
+    },
+    {
+      "knob": "how many explanations are admitted",
+      "effect": "One, the author's, makes every other reading wrong and the sheet unmarkable by anyone else. All those that cover the facts makes the list the rule, and then the writing is worth doing."
+    }
+  ],
+  "where_the_work_is": "In the fourteen lines, which have to be arithmetically impossible in exactly one place and ordinary everywhere else. The times do nothing; the running total does all of it.",
+  "breaks": "The fourteen lines have to be seen together, because the count is kept while reading down them, so 800x480 cannot carry it and paper can. Scanned back, the one written hour is legible and the written explanation may not be. No letters are looked at anywhere here, so a model can build the register and check the arithmetic; it cannot judge the explanation, and neither can the sheet.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    337,
+    351,
+    359,
+    360
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "two-lists-made-apart",
+  "kind": "form",
+  "name": "two people list apart, then lay the lists side by side",
+  "also": [
+    "cooperazione",
+    "gioco cooperativo",
+    "lavoro di gruppo",
+    "unione di due raccolte",
+    "co-op",
+    "cooperative board game",
+    "social loafing",
+    "disimpegno"
+  ],
+  "one_line": "The same sheet printed twice, filled in without looking at the other, and then a count of what only one of the two thought of.",
+  "from_entries": [
+    276
+  ],
+  "how": "Print the sheet twice, one each, with twelve blank rows under a single criterion — things in this house more than ten years old. First half: apart, without seeing the other sheet. Second half: side by side, and five counts — on both lists, only on mine, only on theirs, how many in all, how many one person alone would have had. That count is the whole argument for the second person and needs no theory: two partial lists of three hundred out of a possible six hundred and eighty-one are worth 467.8 together, fifty-six per cent more than one. Third half: take the strangest thing on only one list and ask whoever wrote it why they thought of it. One line for the answer.",
+  "knobs": [
+    {
+      "knob": "how many people",
+      "effect": "Two carries almost all of it. A sixth person adds about a tenth of what the second added, for two reasons pointing the same way: the lists overlap more, and each person does less when nobody can see who did what."
+    },
+    {
+      "knob": "how wide the criterion is",
+      "effect": "A narrow criterion makes the two lists overlap and the count at the bottom comes out flat. A very wide one makes them barely meet, and then the union looks impressive and has proved nothing."
+    },
+    {
+      "knob": "whether the reason is asked for",
+      "effect": "A list can be added up by post. A reason cannot, and the third half is the only part of the sheet that needs the other person to be in the room."
+    },
+    {
+      "knob": "whether who wrote what stays visible",
+      "effect": "Visible, and each does more; it is the cheapest known guard against one person coasting and costs a column. It also puts the two side by side, which is what a ranking does and what the rest of this sheet avoids."
+    }
+  ],
+  "where_the_work_is": "In the two halves being kept apart. Lists made together converge while they are written, the overlap climbs, and the count at the bottom stops measuring anything at all.",
+  "breaks": "The sheet cannot tell there were two people: two identical lists in one hand pass every count on the page. The line about why is the only part hard to fake, and not because anything checks it. It fails silently the other way too — with nobody available the first half is a list and the rest of the sheet stays blank. On 800x480 the five counts fit and twenty-four ruled rows do not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    238,
+    239,
+    250,
+    259,
+    271
+  ]
+}

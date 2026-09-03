@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "magic-square-part-filled",
+  "kind": "form",
+  "name": "complete a square of numbers that adds up",
+  "also": [
+    "quadrato magico",
+    "magic square",
+    "quadrato di Dürer",
+    "costante magica",
+    "magic constant",
+    "Lo Shu",
+    "quadrato parzialmente riempito"
+  ],
+  "one_line": "A square of numbers with cells taken out, every row, column and diagonal adding to the same total, and one way to put them back.",
+  "from_entries": [
+    362
+  ],
+  "how": "Do not invent a square: take one that exists and take cells away. Four by four, the numbers one to sixteen, every line adding to thirty-four. Leave the main diagonal and the two remaining corners — six numbers, which on Dürer's square is the only four-by-four square containing them, and there are only seven thousand of those to check that against. Print the cells large enough to write two digits in. Then one line under the grid asking for something the numbers are not: read the two middle cells of the bottom row as a four-figure number. It is the year the square was engraved. Do not call it a date.",
+  "knobs": [
+    {
+      "knob": "how many cells are left",
+      "effect": "six well-placed cells leave one way to finish and an hour of work; ten leave arithmetic and no search; three leave hundreds of squares, and then there is nothing to be right about."
+    },
+    {
+      "knob": "which cells are left",
+      "effect": "a diagonal plus corners touches every line and constrains from the first move; six cells crowded in one quadrant leave half the square free and the finish stops being unique, which cannot be seen by looking."
+    },
+    {
+      "knob": "whether anything is read out of the answer",
+      "effect": "a square that only adds up is finished and put down; a square whose last row turns into a year pays twice, and the second payment is the one that gets talked about at dinner."
+    },
+    {
+      "knob": "the order",
+      "effect": "four by four is the size that carries a famous square and a famous year; three by three has one square up to turning and nothing to find; five and above is more arithmetic than attention."
+    }
+  ],
+  "where_the_work_is": "In choosing which cells to leave, which happens before anything is printed. The sheet is trivial or impossible according to that choice, and only counting the squares of that order which contain them says which.",
+  "breaks": "It survives paper better than anything else in its chapter: a grid, a pencil, sums. Scanned back it fails only when the numbers are written across the ruled lines instead of inside the cells, so print the cells large. On the display a four-by-four grid of two-figure numbers fits whole, which is rare.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    353,
+    358,
+    359,
+    370,
+    376
+  ]
+}

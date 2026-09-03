@@ -1,0 +1,54 @@
+{
+  "format_version": 1,
+  "method_id": "faces-a-rule-finds-in-random-dots",
+  "kind": "form",
+  "name": "count the faces a written rule finds in random dots",
+  "also": [
+    "pareidolia",
+    "apofenia",
+    "aguzza la vista",
+    "ricerca visiva",
+    "apophenia",
+    "visual search",
+    "feature integration",
+    "hidden object"
+  ],
+  "one_line": "Twenty dots dropped at random and a rule printed above them that decides, with a ruler, which triples of dots count as a face.",
+  "from_entries": [
+    383,
+    387
+  ],
+  "how": "Draw a 10 cm square and put twenty dots in it at coordinates taken from any random source, in millimetres from the bottom left corner. Print the rule above the square, never below it: three dots make a face when the first two differ in height by no more than 6 mm and lie 12 to 34 mm apart — those are the eyes — and the third sits more than 6 mm below their midpoint without straying sideways past half their separation. Ask for every face to be circled and counted, and print the count. With the twenty dots of entry 383 it is fourteen, and it has to be worked out by hand first. Never ask what they see in it: that question has no answer for anybody.",
+  "knobs": [
+    {
+      "knob": "whether the rule measures or reads symbols",
+      "effect": "a rule in millimetres needs a ruler and a page at exactly 100%, and it is the version where the eye is caught out. A rule about printed marks — one figure in a hundred and twenty with both a striped hat and glasses — prints at any size."
+    },
+    {
+      "knob": "whether the count is printed",
+      "effect": "printed, there is a moment of being finished and a wrong count shows; withheld, the sheet comes back saying «I found nine» and nobody, including whoever wrote it, can say whether nine was all of them."
+    },
+    {
+      "knob": "how many marks are in the field",
+      "effect": "twenty dots in ten centimetres give fourteen faces, enough to surprise and few enough to circle; forty give so many that counting becomes the afternoon and the surprise arrives after the patience has gone."
+    },
+    {
+      "knob": "whether a question is asked before the search",
+      "effect": "asking which of two features is rarer, and counting both before looking, turns patience into strategy: nineteen candidates instead of a hundred and twenty. Whoever misses it searches six times as much and finishes anyway."
+    }
+  ],
+  "where_the_work_is": "In the rule, settled and printed before the field is looked at, and in the count, which whoever writes the sheet has to do by hand first. A rule nobody has counted against is a question with no answer wearing the grammar of one.",
+  "breaks": "The rule is in millimetres, so the sheet only works printed at exactly 100%: shrunk to fit the margins, the 6 mm and the 12-to-34 mm bands stop picking out the same triples, and the printed fourteen is wrong while the page still looks right. Check that the square measures 10 cm first. A fat dot costs a millimetre of its own. On the display, 800×480 in one bit holds twenty dots easily, but nobody can lay a ruler on a panel and know its pixel pitch, so only the version whose rule reads symbols survives there.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    384,
+    385,
+    386,
+    388,
+    391
+  ]
+}

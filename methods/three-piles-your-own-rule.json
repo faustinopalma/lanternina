@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "three-piles-your-own-rule",
+  "kind": "form",
+  "name": "split a pile into three by a rule you chose",
+  "also": [
+    "classificazione in insiemi",
+    "raggruppamento",
+    "scelta multipla a risposte multiple",
+    "sorting",
+    "free sorting",
+    "multiple response"
+  ],
+  "one_line": "A pile of unlike things, three piles to make of them, and the rule for dividing them is written by whoever divides.",
+  "from_entries": [
+    3,
+    7
+  ],
+  "how": "List eleven small things that could have come out of one box: a bone button, a key with no lock, half a photograph, a string knotted three times, a bent coin. Print three lines, «first pile: the ones that ___», and nothing more, because the rule is theirs. Close the easy road inside the instruction and by name — «and it may not be big, medium and small» — since a ban costs one line and three lines of encouragement buy nothing. Three piles and not two: two is a true-or-false with a heap on each side. Last line: one of the eleven sits in two piles at once, ring it.",
+  "knobs": [
+    {
+      "knob": "who owns the rule",
+      "effect": "Given by whoever printed the sheet, it is a multiple-choice question spread over eleven items and can be got wrong; chosen by whoever sorts, nothing can be wrong and the mental work is unchanged."
+    },
+    {
+      "knob": "two piles or three",
+      "effect": "Two is a yes and a no and inherits everything wrong with true or false; three or more force a look at the objects instead of at the question, which is where the sorting starts."
+    },
+    {
+      "knob": "whether everything has to be placed",
+      "effect": "With a pile for everything the sorting comes out tidy and nobody hesitates; with a fourth pile allowed for «I do not know», that pile is usually where the interesting objects end up."
+    },
+    {
+      "knob": "asking for a second pass",
+      "effect": "One rule reads as the rule; a second pass with a different one shows that the first was one of many, which is the point of the form and costs a single line."
+    }
+  ],
+  "where_the_work_is": "In the eleven objects. They have to resist the obvious cuts, which means listing things that share nothing and putting in at least one that honestly belongs in two piles.",
+  "breaks": "Only the three written rules come back, and a rule that reads well sits just as comfortably over a pile sorted at random; the sheet cannot tell. Real objects work better than a printed list, and then nothing of the sorting survives on paper at all. Eleven names fit on a display; the three lines to write on do not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    6,
+    39,
+    41,
+    57
+  ]
+}

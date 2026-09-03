@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "plan-of-a-place-you-know",
+  "kind": "form",
+  "name": "draw a plan of a place you already know",
+  "also": [
+    "mappa",
+    "pianta",
+    "cartografia",
+    "modello in scala",
+    "plastico",
+    "mappa mentale",
+    "floor plan",
+    "scale drawing",
+    "mental map"
+  ],
+  "one_line": "One room drawn from knowing it, to a scale chosen and measured with the body, where the first scale almost never fits the page.",
+  "from_entries": [
+    37,
+    46
+  ],
+  "how": "Never print a plan of a house the sheet knows nothing about: ask for it instead. Fix it at one room, the one they are sitting in. Before any drawing, two rules to fill in — my unit is ___, on this page one unit is ___ — and say the unit can be a pace, a book, one foot placed in front of the other, as long as it stays the same throughout. Then print that the first scale almost certainly will not fit, that this happens to people who draw plans for a living, and that changing it and starting again is the work rather than a mistake. Last line: put in the one thing that takes up more room than you thought.",
+  "knobs": [
+    {
+      "knob": "whether the geometry is kept",
+      "effect": "Kept, with a declared unit, the plan can come out wrong and the wrong scale is the content; dropped entirely — a map of the draughts, the noises, the warm and cold places — nothing can be compared with the real room and nothing can be wrong."
+    },
+    {
+      "knob": "who supplies the place",
+      "effect": "Asked for, the sheet needs to know nothing about the house and cannot be caught out; printed, it is a plausible house that is not this one, and every reader sees that in the first second."
+    },
+    {
+      "knob": "what does the measuring",
+      "effect": "A ruler turns it into a measuring exercise and needs a ruler; paces and a book make it possible with nothing at all, and keeping one unit throughout is then the only rule that matters."
+    },
+    {
+      "knob": "how much goes in",
+      "effect": "One room with one object in it is finished in twenty minutes; a whole flat gets abandoned halfway, and half a plan is not half a result."
+    }
+  ],
+  "where_the_work_is": "In choosing the scale, which happens before anything is measured and is nearly always wrong the first time. That first failure is the reason for the form and not an accident to be prevented.",
+  "breaks": "A pencil plan scans back faintly, and the two declared units, handwritten on printed rules, are the only part read reliably. The paper is the frame, so a plan that does not fit cannot be extended and has to be redrawn. None of it exists on a display, which can hold the two rules to fill in and nothing after them.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    33,
+    36,
+    40,
+    54,
+    63
+  ]
+}

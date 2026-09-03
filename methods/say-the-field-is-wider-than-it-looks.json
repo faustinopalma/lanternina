@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "say-the-field-is-wider-than-it-looks",
+  "kind": "move",
+  "name": "say the search is wider than it looks, not where",
+  "also": [
+    "vincolo immaginario",
+    "pensiero laterale",
+    "nove punti",
+    "il divieto che nessuno ha imposto",
+    "imaginary constraint",
+    "nine dots"
+  ],
+  "one_line": "One line that removes a prohibition nobody imposed, while saying nothing whatever about the answer.",
+  "from_entries": [
+    163,
+    167
+  ],
+  "how": "Use it wherever the obstacle is a rule the task never stated: a matchstick that need not stay inside one digit, a pencil that need not pass through the loop because the cloth can pass instead, a line that need not stop at the corner dot. The sentence names the boundary and never the move — the stick does not have to stay inside a number; the thing that has to give is not what you do with the string. Print it under the task and not above, so it is read after the first attempts have failed. Then, in place of the answer, print a line asking what they had to stop assuming. That line goes where the solution would have gone and collects the only thing worth having.",
+  "knobs": [
+    {
+      "knob": "how much of the boundary is named",
+      "effect": "Naming the family of the answer — the crease is not parallel to a side, the stick may cross two cells — removes the one way of never starting and gives nothing away. Naming the move itself ends the exercise."
+    },
+    {
+      "knob": "above the task or below it",
+      "effect": "Above, it reads as part of the brief and the imaginary rule is never formed, so nothing gets unlearned. Below, it arrives after the wall has been hit, which is the only moment it does any work."
+    },
+    {
+      "knob": "whether it is there at all",
+      "effect": "Without it the nine-dot problem is solved by nobody in three minutes — the measured rate is zero — and the afternoon produces a blank. With it the problem is untouched and only the way of never beginning is gone."
+    },
+    {
+      "knob": "what replaces the answer",
+      "effect": "«What did you have to stop assuming» can be answered by whoever solved it and by whoever did not, needs nobody to mark it, and is the one sentence the solution cannot be written without giving itself away."
+    }
+  ],
+  "where_the_work_is": "In naming the boundary without naming the move. It is one sentence and has to be written afresh for each task: too wide and it does nothing, one word narrower and the task is over.",
+  "breaks": "It adds one line and one blank, so it prints anywhere, 800x480 included, and the blank comes back as a sentence nobody can mark and nobody needs to. It cannot rescue a task whose obstacle is genuinely difficulty rather than an assumption: there it reads as a hint that was not one, and whoever is stuck stays stuck with the added impression of having missed something obvious.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    143,
+    150,
+    175,
+    178
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "questions-that-count-their-own-answers",
+  "kind": "form",
+  "name": "answer three questions that count their own answers",
+  "also": [
+    "enigma auto-referenziale",
+    "autoreferenza",
+    "quiz che parla di sé",
+    "self-referential test",
+    "self-reference",
+    "strange loop"
+  ],
+  "one_line": "Three multiple-choice questions that are statements about the answers being given, with exactly one set of three that makes all of them true.",
+  "from_entries": [
+    158
+  ],
+  "how": "Three questions, three options each, A B or C, the options always none, one, two. The first asks how many B answers this sheet has, the second how many C answers, the third how many questions carry the same answer as the one directly above. The answer is C, B, B. Print all twenty-seven triples in a block nine rows by three, and say to read each as the three answers, check whether all three come true, and cross the row out otherwise: exactly one survives. Then ask for a fourth question of the same kind, and warn that it makes eighty-one triples and may leave two standing or none — and that either way the sheet is broken and a question has to change.",
+  "knobs": [
+    {
+      "knob": "whether every combination is printed",
+      "effect": "Printed, nobody can be stuck: the worst route, trying all twenty-seven, is on the page. Left out, somebody who cannot see the argument has nothing at all, because three questions offer no foothold of their own."
+    },
+    {
+      "knob": "how many questions",
+      "effect": "Three gives twenty-seven combinations and a block that fits a page. Four gives eighty-one, still possible by hand and no longer by eye. Five gives 243, and the sheet stops being verifiable by whoever made it."
+    },
+    {
+      "knob": "whether a fourth is asked for",
+      "effect": "Asking hands over the thing that makes this unlike everything else: whoever writes it does not choose the answer but finds out afterwards whether there is one. It is also where a home-made sheet ends up with none."
+    },
+    {
+      "knob": "what the questions count",
+      "effect": "Counting answers keeps it free of language, chess and arithmetic beyond three. Counting letters inside the printed words gives the same shape and needs somebody to spell, which is the half a model gets wrong."
+    }
+  ],
+  "where_the_work_is": "In whether exactly one triple survives, which is not chosen but discovered by checking all twenty-seven. You write the three questions and then find out what the sheet says.",
+  "breaks": "Three questions and twenty-seven three-letter rows fit one side, and three letters and a crossed-out block scan back cleanly. On 800x480 one self-referential question fits — «how many letter A are on this panel» is forty-three characters — but it then asks for letters to be counted inside words, and the block of combinations does not fit at all. Composing is where it fails: a sheet with two consistent triples cannot be told from a hard one by whoever is solving it.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    148,
+    151,
+    154,
+    165
+  ]
+}

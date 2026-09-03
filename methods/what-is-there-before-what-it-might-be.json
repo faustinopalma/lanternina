@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "what-is-there-before-what-it-might-be",
+  "kind": "form",
+  "name": "write down what is there before saying what it is",
+  "also": [
+    "reperto",
+    "scavo domestico",
+    "ritrovamento",
+    "manufatto",
+    "artifact",
+    "found object",
+    "descrizione prima, ipotesi dopo"
+  ],
+  "one_line": "An object nobody can identify any more, and a sheet in two boxes: everything visible in the first, and no hypothesis permitted until the second.",
+  "from_entries": [
+    93
+  ],
+  "how": "Ask for an object that is in the house and whose purpose nobody remembers — a part, a cap, a key, something left over from something. Add the rule that protects it, addressed to the room rather than to the reader: do not ask anybody what it is, because if somebody tells you the object is spent. Print two boxes and say they do not mix. The first takes only what can be seen: material by eye, size against a hand, where it is worn, where it is broken, whether any part was made to be held. A small second box for where it was lying and what was around it, which is a fact and not a memory. Only then, three hypotheses — never one. Last: which mark of wear is explained by none of the three. Photograph the object beside the sheet, both in frame.",
+  "knobs": [
+    {
+      "knob": "whether description and hypothesis are separated",
+      "effect": "Separated by a ruled box, somebody looks first and the looking lasts. Together, the first guess arrives in ten seconds and everything seen afterwards is evidence for it. Two boxes are the whole difference."
+    },
+    {
+      "knob": "how many hypotheses",
+      "effect": "One is whatever came to mind first. Three forces the first to be set aside and makes a comparison possible. Beyond three they stop being different from each other and the extra lines come back blank."
+    },
+    {
+      "knob": "whether where it lay is recorded",
+      "effect": "Where it was found is a fact and can be written today. Where it came from is a reconstruction and belongs with the guesses. Keeping the two in different boxes is the whole of the archaeology."
+    },
+    {
+      "knob": "who is allowed to say what it is",
+      "effect": "Nobody. The rule points at the household instead of at the person answering, which is unusual, and it is the only thing keeping the object unidentified long enough for the sheet to be worth filling in."
+    }
+  ],
+  "where_the_work_is": "In the wall between the two boxes. The object supplies everything else free; what has to be built is the order — seen first, guessed second — and the one line sending the guesses back to a mark on the thing.",
+  "breaks": "Whoever printed the sheet can check nothing and does not need to: the marks are on the object and the object is in the hand. It fails when somebody helpful names the thing, which is why the rule is addressed to the room. On 800x480 the two boxes do not fit, and the photograph must include the sheet or the object comes back without its record.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_photograph",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    49,
+    52,
+    75,
+    97,
+    98
+  ]
+}

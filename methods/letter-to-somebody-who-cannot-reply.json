@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "letter-to-somebody-who-cannot-reply",
+  "kind": "form",
+  "name": "write to somebody who will never answer",
+  "also": [
+    "lettera",
+    "epistola",
+    "tema",
+    "saggio",
+    "dialogo scritto",
+    "letter",
+    "essay",
+    "written dialogue"
+  ],
+  "one_line": "A long piece of writing whose shape is already given: a named reader out of reach, one small subject, and the opening words printed.",
+  "from_entries": [
+    20,
+    21,
+    25
+  ],
+  "how": "Never ask for a long text without saying who it is for. Name the reader precisely and put them out of reach — whoever lives here in ten years, somebody who wrote first and is gone. Give one small subject: the window that shuts badly, the corner the winter sun reaches, the neighbour not to wake. One thing, explained properly. Print the first words on the page, «I opened the box on the ___», because the first sentence is the expensive one and printing it costs a rule. Say in five words that they cannot read it. Then give the page a destination that is not a reader: fold it in four and decide where to leave it.",
+  "knobs": [
+    {
+      "knob": "whether the reader can reply",
+      "effect": "A reader out of reach removes both the fear of an answer and any need for the text to be good; a real reader who will read it makes a different afternoon, better in some ways and not one where nothing can go wrong."
+    },
+    {
+      "knob": "how big the subject is",
+      "effect": "One small thing gives somebody something to say; a large subject — friendship, the future — produces the blank page this form exists to remove."
+    },
+    {
+      "knob": "whether the first line is printed",
+      "effect": "Printed, whoever is stuck starts on the second line; blank, the cost of beginning is paid by the person least able to pay it, and that cost is most of what stops a long text."
+    },
+    {
+      "knob": "one voice or two",
+      "effect": "One voice is a letter, and the reader sets its length and register without either being stated; two voices with the first and last line printed and one thing that may not be said is a scene, and the ban is what makes them talk around it."
+    }
+  ],
+  "where_the_work_is": "In the reader and the subject, both chosen before anything is printed. Between them they fix the length, the register and the moment it is finished, none of which then has to appear as a rule.",
+  "breaks": "No length is set anywhere, so three lines and a full page both come back and both are the work — but four printed rules quietly ask for four, so print them or leave them out on purpose. Nothing here is checkable and nothing should be. On a display the situation fits in four lines and the writing does not.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    11,
+    15,
+    22,
+    224,
+    246
+  ]
+}

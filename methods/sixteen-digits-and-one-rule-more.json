@@ -1,0 +1,49 @@
+{
+  "format_version": 1,
+  "method_id": "sixteen-digits-and-one-rule-more",
+  "kind": "form",
+  "name": "cross a grid of digits, then add a rule and cross again",
+  "also": [
+    "labirinto logico",
+    "labirinto multi-stato",
+    "labirinto a numeri",
+    "logic maze",
+    "mazes with rules"
+  ],
+  "one_line": "Sixteen digits in a four-by-four square, a rule for moving, and a second rule that makes the same square two and a half times longer.",
+  "from_entries": [
+    165
+  ],
+  "how": "Print a four-by-four grid of digits, 3 3 1 1 over 1 1 1 3 over 1 3 1 1 over 1 1 2 V. Start at the top left, finish at the V. The rule: the digit under you is exactly how many cells you move, in a straight line, up down left or right, never diagonally and never off the grid. Ask for the fewest moves and for the cells touched in order. Then reprint the same grid with one line added — you may not immediately reverse the direction you have just come from — and ask again. Six moves becomes fifteen. Say plainly that with the second rule knowing which cell you are on is no longer enough, because you have to remember which way you arrived. That sentence is the only idea here and it arrives whole.",
+  "knobs": [
+    {
+      "knob": "how many rules",
+      "effect": "One rule, the shortest path is six moves and unique. One line added, the same sixteen digits give fifteen, still unique: two and a half times the work for one printed line, and the second cannot be got by patching the first."
+    },
+    {
+      "knob": "whether the count of moves is printed",
+      "effect": "Printed, somebody who takes eleven knows to keep looking and the sheet needs nobody to mark it. Left out, any route reaching the V looks finished and the shortest one is never sought."
+    },
+    {
+      "knob": "what the added rule is",
+      "effect": "No immediate reversal needs one thing remembered besides position. A die whose top face sets the step, or cells enterable only from a larger one, need more, and the bookkeeping overtakes the maze."
+    },
+    {
+      "knob": "whether the extra thing to remember is named",
+      "effect": "«Remember which way you came» is the working definition of a technical idea and costs two lines. Giving it its name teaches nothing more and makes the sheet sound like a lesson."
+    }
+  ],
+  "where_the_work_is": "In the sixteen digits, chosen so that both problems have one shortest path and the second is much longer than the first. That is settled by program and never by looking.",
+  "breaks": "Sixteen digits and four lines of rule: the cheapest thing to print in the chapter, and it fits 800x480 whole, grid and both rules. A filled route scans back as a list of cells. Fifteen moves by hand, each depending on how you arrived, is a lot of bookkeeping, and the sheet does not say how much — whoever built the grid knows and whoever gets it does not.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    157,
+    158,
+    164,
+    171
+  ]
+}

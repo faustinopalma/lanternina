@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "fold-or-cut-the-sheet-itself",
+  "kind": "form",
+  "name": "fold or cut the printed sheet into the answer",
+  "also": [
+    "piegatura",
+    "origami",
+    "kirigami",
+    "taglio",
+    "ritaglio",
+    "maschera",
+    "cut-up",
+    "folding",
+    "stencil"
+  ],
+  "one_line": "The printed page is the material: creases numbered along it, or windows cut in a blank sheet and laid over a printed text.",
+  "from_entries": [
+    42,
+    43
+  ],
+  "how": "Two sheets cost almost nothing more than one, and that is the mechanism. For the fold: print the crease lines with two symbols only, a dashed line for a valley and a dash-dot for a mountain, numbered in the order they are made, so the instructions are followed without being read. It closes into a box that holds one thing, and the decision — what goes in and who it is for — arrives after the hands have already done something. For the cut: print a dense page nobody wrote for anybody, an old appliance manual, and a blank second sheet to cut windows in. Sliding it over the text until it says something makes an irreversible cut recoverable.",
+  "knobs": [
+    {
+      "knob": "whether the instructions use words",
+      "effect": "Two symbols and a run of numbers can be followed by somebody who will not read a paragraph, and this is the one form here that asks for no reading; the same folds written as sentences ask for more reading than the folding is worth."
+    },
+    {
+      "knob": "whether the result is announced",
+      "effect": "Saying it becomes a box gives a reason to fold and a place to stop; saying nothing makes the last crease a surprise, and there is no arrangement that gives both."
+    },
+    {
+      "knob": "one sheet or two",
+      "effect": "One sheet cut is a shape, and a cut in the wrong place ends it; a cut sheet laid over a printed one can be slid about until the text underneath says something, which turns an irreversible gesture into one that can be adjusted."
+    },
+    {
+      "knob": "which half is kept",
+      "effect": "The piece cut out and the hole left behind are two results of the same cut, and asking for both costs nothing; most sheets throw one away without anybody deciding which."
+    }
+  ],
+  "where_the_work_is": "In the printed sheet being the material rather than directions towards one. Nothing has to be found first, which makes it the only form in the chapter with no material cost at all.",
+  "breaks": "Fold lines have to print in register or the box does not close, and a printer that shifts a millimetre a page shows it by the tenth crease. Nothing comes back from the fold: the box goes somewhere and stays an object. Only the sentence copied out from under the windows can be scanned. None of this exists on a display.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    10,
+    28,
+    44,
+    140,
+    141
+  ]
+}

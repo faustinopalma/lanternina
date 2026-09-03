@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "sums-that-fix-their-own-digits",
+  "kind": "form",
+  "name": "fill a grid with digits the sums leave no choice about",
+  "also": [
+    "kakuro",
+    "kakkuro",
+    "cross sums",
+    "cross addition",
+    "crossnumber",
+    "cross-figure",
+    "crucintarsio numerico"
+  ],
+  "one_line": "A crossword grid whose cells hold digits, so the crossings are settled by addition and nothing on the page has to be a word.",
+  "from_entries": [
+    358
+  ],
+  "how": "Print a two-by-two block of white cells with a sum written before each row and each column, the rule that every white cell holds a digit from 1 to 9, and the rule that no digit repeats inside a row or a column. Three and four across, four and three down, leave one filling out of the 6 561 possible. Then print the table that makes larger ones playable: the sums that can be written with only one set of digits, all thirty-four of them, from 3, 4, 16 and 17 on a row of two up to 45 on a row of nine. It is not a selection of the useful ones; it is every one there is, worked out from the subsets of 1 to 9.",
+  "knobs": [
+    {
+      "knob": "whether digits may repeat in a line",
+      "effect": "Forbidden, a sum often fixes which digits are in a line and the grid can be built with one answer. Allowed, most sums admit several sets and no amount of crossing closes the grid."
+    },
+    {
+      "knob": "digits or letters in the cells",
+      "effect": "Digits, and every step can be built, set and checked by machine, because nothing on the page is a word. Letters, and the same grid needs a word list to build and a dictionary to mark."
+    },
+    {
+      "knob": "whether the table of single-set sums is printed",
+      "effect": "Printed, thirty-four entries in eight lines cover everything that trick can ever give, and a line carrying one of those sums is half done. Withheld, the same reasoning is redone on every line."
+    },
+    {
+      "knob": "sums or arithmetic clues",
+      "effect": "Sums written before each line keep the grid self-contained. Clues like «the seventh prime» or «27 times 79» make it a crossword whose answers are numbers, and then something outside the sheet has to be known."
+    }
+  ],
+  "where_the_work_is": "In the sums, which have to leave one filling. On a small grid every filling can be counted, and counting them is the only thing that says whether the answer is one or several.",
+  "breaks": "The half cells carrying the sums need a diagonal rule through them, and a hand-drawn diagonal scans badly, so print the rules. On 800x480 a two-by-two block fits in four rows of nineteen characters and one line of the table fits whole. Nothing here touches a letter inside a word, so this is the one form of its chapter that can be built, set and checked with no person anywhere in the loop.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    311,
+    352,
+    353,
+    359,
+    362
+  ]
+}

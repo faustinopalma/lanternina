@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-rule-then-seven-cases",
+  "kind": "form",
+  "name": "write a rule, then meet seven cases it must judge",
+  "also": [
+    "metodo socratico",
+    "maieutica",
+    "elenchus",
+    "confutazione",
+    "Socratic method",
+    "Socratic questioning",
+    "aporia"
+  ],
+  "one_line": "A rule written first, then seven printed cases judged twice — once by the rule and once by the person — and the rows where the two disagree.",
+  "from_entries": [
+    233
+  ],
+  "how": "Pick something everybody recognises and nobody defines: what counts as a sandwich, as a soup, as a game. One line at the top — write your rule, one sentence. Then seven cases printed underneath, chosen so a rule written on instinct admits two or three, with two columns to fill for each: does your rule let this one in, and would you call it that when talking. Every row where the two answers differ is a place where somebody's rule says one thing and they say another, and nothing on the sheet told them so. End with two roads printed as equals — rewrite the rule, or keep it and change your mind about a case — and a last line asking which case they changed their mind about while filling it in.",
+  "knobs": [
+    {
+      "knob": "who supplies the counterexamples",
+      "effect": "Prepared in advance they cannot adapt: an odd rule — anything I eat standing up — is untouched by all seven, and somebody asking would swap examples on the spot. The repair is the closing line, which works whatever was written above it."
+    },
+    {
+      "knob": "how closed the field is",
+      "effect": "The method needs premises accepted one at a time without seeing where they lead, and those can only be written beforehand if the field is small enough to list. Things eaten between two pieces of something can be listed. Fairness cannot."
+    },
+    {
+      "knob": "whether one of the two roads is marked right",
+      "effect": "Printed as equals, rewriting the rule and changing your mind about a case are both answers. Marked, the sheet has said which conclusion to reach, and the contradiction stops belonging to the person who produced it."
+    },
+    {
+      "knob": "how the seven are chosen",
+      "effect": "Cases that all pass or all fail leave the two columns identical and the afternoon empty. Two or three admitted out of seven is where the disagreements are, and only trying the cases against a plausible rule by hand says which set does that."
+    }
+  ],
+  "where_the_work_is": "In the second column. The first asks what a written rule does, which is mechanical. The second asks what somebody actually says, and the gap between them is produced by the same person twice, with no judge on the page.",
+  "breaks": "Two ticks per row scan back only if the rows are set well apart, and the rule at the top is handwriting that everything else refers to, so it needs a whole line. On a display seven rows of two columns do not fit; the opening question does. It also carries a risk the sources name: producing your own contradiction is a small humiliation, and the printed line saying this happens to everybody asked to define something they can recognise is not decoration.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    30,
+    61,
+    86,
+    234,
+    254
+  ]
+}

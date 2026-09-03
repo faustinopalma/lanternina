@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "a-grid-whose-leftovers-must-fit",
+  "kind": "form",
+  "name": "build a grid until the cells left over fit a message",
+  "also": [
+    "crucipuzzle",
+    "parole intrecciate",
+    "word search",
+    "parole crociate senza schema",
+    "schema con 11 caselle nere",
+    "diagramless"
+  ],
+  "one_line": "An empty grid, a sentence to hide, and a subtraction that has to come out: the cells the words do not use are the letters of the sentence.",
+  "from_entries": [
+    127,
+    128
+  ],
+  "how": "Print an empty eight by eight grid, a line for the sentence and a line for the arithmetic: sixty-four minus the letters of the sentence is how many cells the words may take. Ask for the sentence first and for its letters to be counted, spaces not counted. Then words on any theme at all, written in any of the eight directions. Print the trap, which is that two crossing words share a cell, so two six-letter words that cross take eleven and not twelve. Then: count the empty cells with a pencil point, one at a time, and do not work them out. If the count is wrong, add or remove a short word and never touch the sentence. Last, write the sentence into the empty cells, left to right, row by row.",
+  "knobs": [
+    {
+      "knob": "whether the leftovers carry a message",
+      "effect": "With one, whoever solves it needs no answer sheet: circle every word and what remains either reads or does not. Without one the grid ends when it ends, and nobody can say whether it ended right."
+    },
+    {
+      "knob": "a grid of letters or a grid of blacked cells",
+      "effect": "Letters hide words and the leftovers say something. Blacking cells builds a crossword skeleton instead, and there the difficulty runs backwards: more black cells is easier, because the runs get shorter and cross less."
+    },
+    {
+      "knob": "who fills it",
+      "effect": "A hand builds a grid that can be checked by counting. A grid made by a program lays its words at regular intervals, and whoever finds one word finds the rest by looking at the neighbouring rows."
+    },
+    {
+      "knob": "how the count is done",
+      "effect": "Counted with a pencil point, cell by cell, the number is right. Worked out from the word lengths it is wrong, because the crossings were never subtracted, and the sentence then does not fit."
+    }
+  ],
+  "where_the_work_is": "In the subtraction coming out, not in hiding the words. The sentence is fixed and the words are the adjustable side, which is why the instruction is to add or drop a word and never to shorten the sentence.",
+  "breaks": "Sixty-four hand-lettered cells scan if each cell is eight millimetres or more; smaller and a circled word reads as a smudge. On 800x480 an eight by eight grid needs eight rows and there are four, so a panel can carry a tally — three words still to find — if somebody supplies it. The silent failure is the usual one: a grid with a word missing can be searched forever, and only the leftover sentence says that it is finished.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_compose",
+  "goes_with": [
+    7,
+    58,
+    125,
+    354,
+    356
+  ]
+}

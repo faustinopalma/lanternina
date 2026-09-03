@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "five-unalike-tasks-and-the-one-dropped-last",
+  "kind": "move",
+  "name": "offer five unalike tasks and ask which was dropped",
+  "also": [
+    "scelta da chi la fa",
+    "menu",
+    "carta",
+    "scelta del compito",
+    "choice board",
+    "ora del genio",
+    "decidi tu quale"
+  ],
+  "one_line": "A menu instead of a task, with five things unalike in kind, and a second question about the one nearly chosen.",
+  "from_entries": [
+    290
+  ],
+  "how": "Print five things to do, not twenty, and make them unalike in kind: one done with the ears, one with a date, one outside the house, one with the hand, one with somebody else. Choice overload needs three conditions together — options of equal apparent quality, none standing out, and somebody with no preference formed — and five unlike things fail the first two, which is why five holds and twenty variants of one thing does not. Put one line of description under each title: a picture raises the apparent complexity and a verbal line lowers it. Then ask two things: which one you are doing, and which you dropped last, and why that one and not another. The second turns choosing into content — there is an answer and no right answer. Say nothing about time; paper cannot measure it, and a time limit over a large set produces regret.",
+  "knobs": [
+    {
+      "knob": "how many items",
+      "effect": "None is bad and many is bad, so the best sits inside. Five unlike things hold. Twenty variants of one thing is the shelf of detergents: every option equal, none dominant, nobody with a preference already formed."
+    },
+    {
+      "knob": "how alike the items are",
+      "effect": "Unalike in kind, the reader has a preference already and picks in seconds. Alike, all three overload conditions are met at once and the menu does the damage rather than the choosing."
+    },
+    {
+      "knob": "whether the discarded one is asked for",
+      "effect": "Asking costs one line and makes visible a decision that otherwise leaves no trace. Left out, choosing is a preliminary and not part of the afternoon."
+    },
+    {
+      "knob": "one item or several",
+      "effect": "Six to take three from is 20 sets, or 120 sequences if the order counts, or 63 non-empty sets if any number may be taken. Each of those is a different afternoon and only the first fits on one page."
+    }
+  ],
+  "where_the_work_is": "In how unlike the five are. That decides whether the menu is a choice or a shelf, and it is settled before a word of any item is written.",
+  "breaks": "Five titles with a line each print, and a circled letter scans back cleanly. On 800x480 five titles fit and their descriptions do not, and without the descriptions the apparent complexity is exactly the thing the verbal line was there to lower. Nothing on the sheet says the second answer was honest, and nothing here depends on it.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    1,
+    17,
+    37,
+    70,
+    268
+  ]
+}

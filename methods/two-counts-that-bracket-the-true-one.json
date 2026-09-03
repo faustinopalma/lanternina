@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "two-counts-that-bracket-the-true-one",
+  "kind": "form",
+  "name": "count it twice, and the true number is between",
+  "also": [
+    "scienza partecipata",
+    "citizen science",
+    "monitoraggio volontario",
+    "censimento a data fissa",
+    "community science",
+    "Christmas Bird Count",
+    "protocollo di conteggio"
+  ],
+  "one_line": "A count taken from one fixed point, recorded twice — every sighting added up, and the most ever seen at once — with the truth between the two.",
+  "from_entries": [
+    250
+  ],
+  "how": "Before anything is counted, the line the whole thing rests on: who this sheet goes to when it is full, and what they need it for. It has to be somebody real in the house — whoever cooks, whoever pays the bills, the class, the shop on the corner — and if nobody comes to mind, the sheet says to stop and count something else. Then a fixed point that will not move, and fifteen minutes of watching from it. Four rows and two numbers for each thing: how many times you saw one, adding up, and the most you ever saw at once. Where the two differ the true number lies between them. Last line: what would somebody repeating this count have to do the same way?",
+  "knobs": [
+    {
+      "knob": "whether a recipient actually exists",
+      "effect": "With a real one the sheet is a small service and the care and the repeatability follow from that. With an invented one it is homework dressed as a service, which is worse than homework. This is the one part a sheet cannot manufacture, and it is why it says to stop."
+    },
+    {
+      "knob": "the two counts",
+      "effect": "Adding up every sighting can never be less than the true number, since each individual was seen at least once. The most seen at once can never be more, since they were all there together. Neither is right, and the true one is between them."
+    },
+    {
+      "knob": "what a protocol is for",
+      "effect": "It does not make a count correct. It makes it wrong in the same direction every time, which is what lets two counts be compared. The oldest bird census keeps routes that barely change from year to year, rather than trying to count well once."
+    },
+    {
+      "knob": "how the quality is got",
+      "effect": "Not by choosing who looks. Galaxy Zoo took forty million classifications from more than a hundred thousand volunteers, an average of thirty-eight per galaxy. With a second person in the house the smallest version of that is two copies of the sheet at the same window."
+    }
+  ],
+  "where_the_work_is": "In the gap between the two numbers. Neither of them is an answer and neither can be wrong, and what comes out of the sheet is that a count of things that move is an interval rather than a number.",
+  "breaks": "One sheet produces one row, and a row is not a dataset — what makes this form what it is in the sources is the sum: thirty-eight looks at one galaxy, six hundred thousand people in one weekend. Fifteen minutes is the only thing here that asks for a clock, and any other span does instead: a chapter, a song, a wash cycle. On a display the four rows and two columns fit, and so does the recipient line, which decides whether the rest means anything.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    22,
+    53,
+    247,
+    248,
+    249
+  ]
+}

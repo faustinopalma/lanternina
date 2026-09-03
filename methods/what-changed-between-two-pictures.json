@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "what-changed-between-two-pictures",
+  "kind": "form",
+  "name": "find what changed, and say what kind of change it was",
+  "also": [
+    "cecità al cambiamento",
+    "trova le differenze",
+    "trova le sette differenze",
+    "change blindness",
+    "spot the difference",
+    "flicker paradigm"
+  ],
+  "one_line": "Two grids of small marks differing in a printed number of places, and each difference named as an appearance, a loss or a swap.",
+  "from_entries": [
+    385,
+    386
+  ],
+  "how": "Print two blocks of characters side by side, four or five rows of sixteen, built from four or five different marks. Make seven differences, and make them of the three kinds that get studied separately: three things appeared, two vanished, two became something else. Print the number seven — without it there is no moment of being finished. Ask for the seven to be circled, then for a second table naming what happened at each and giving them in the order found. Then the question the weekly puzzle never asks: were the appearances found before the losses? Build the second block twice, once by applying the changes and once cell against cell, and check the lists agree.",
+  "knobs": [
+    {
+      "knob": "whether the number is printed",
+      "effect": "printed, the task ends and the sheet comes back complete; withheld, stopping and being finished cannot be told apart, which is worth showing once, with «how do you know you are done?» in place of the number."
+    },
+    {
+      "knob": "how far apart the two blocks sit",
+      "effect": "side by side, comparing means moving the eyes from one to the other, and that movement suppresses the change exactly as a laboratory's grey screen does; stacked close, some differences are caught by the edge of vision."
+    },
+    {
+      "knob": "which kinds of change are used",
+      "effect": "all three kinds make the second table worth filling in and give the last question something to work on; swaps only make every difference the same and reduce the sheet to counting."
+    },
+    {
+      "knob": "how large the blocks are",
+      "effect": "seventy cells and four marks force a dozen journeys between the pictures and the phenomenon arrives on its own; twenty cells are held in the head at one go and nothing is hidden from anybody."
+    }
+  ],
+  "where_the_work_is": "In the second table, which asks what kind each change was and not where it is. Finding is the game; naming the kind turns the order of finding into something to look at afterwards, without pretending that order has a right answer.",
+  "breaks": "Two blocks of characters print at any size and scan back cleanly, so nothing rides on the print scale — but they must be set in a fixed-pitch face, or the columns stop lining up and cells cannot be compared at all. The seven differences have to be built twice and the lists compared, because a difference nobody meant to make is invisible to whoever reads the sheet afterwards and turns the printed seven into a trap. On the display, 800×480 in one bit holds both blocks; what it cannot hold is a pencil circle.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    383,
+    384,
+    387,
+    388
+  ]
+}

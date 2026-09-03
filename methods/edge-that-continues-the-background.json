@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "edge-that-continues-the-background",
+  "kind": "form",
+  "name": "trace the edge that continues the background",
+  "also": [
+    "mimetismo e camuffamento",
+    "criptismo",
+    "colorazione disruptiva",
+    "camouflage",
+    "crypsis",
+    "disruptive coloration",
+    "countershading"
+  ],
+  "one_line": "The same shape printed three times on the same striped ground, painted three ways, and the count is of how much edge disappeared.",
+  "from_entries": [
+    384
+  ],
+  "how": "Print a patch of twelve vertical stripes 1 cm wide, alternating black and white. Put the same animal shape on it three times, each in the same place relative to the stripes — that is what makes the three comparable. Paint the first a flat grey, the second in black and white blotches placed at random, the third in blotches that continue the stripes beneath it exactly. Ask for the whole outline of each to be gone over in pencil, including the parts that cannot be seen, then for a count: how many of the twelve stripes did you have to guess instead of follow? It comes out 0, 6 and 12. Then the real question — was the randomly blotched one harder to see than the plain grey one?",
+  "knobs": [
+    {
+      "knob": "whether the blotches line up with the stripes",
+      "effect": "lined up to the width of a pen line, all twelve stripes of edge vanish and the shape has no outline at all; half a millimetre out, the edge returns as a thin seam everywhere and the printed answer of twelve is wrong."
+    },
+    {
+      "knob": "whether the three shapes are identical and identically placed",
+      "effect": "identical, one thing changes between them and the three counts can be set against each other; drawn freehand three times, three different animals in three different places are compared and the numbers say nothing."
+    },
+    {
+      "knob": "what is counted",
+      "effect": "counting the stripes whose edge had to be guessed gives a number the sheet can be marked on; asking which is hardest to find gives an opinion, and that is what nearly every sheet in this family asks for."
+    },
+    {
+      "knob": "how many stripes",
+      "effect": "twelve at 1 cm across an animal a few centimetres wide put enough edge on each stripe to be judged; two wide stripes leave nothing to count, thirty thin ones make the counting the afternoon."
+    }
+  ],
+  "where_the_work_is": "In the third shape, whose blotches have to continue the stripes behind it to within a pen line. Drawing it is the whole preparation; the other two take a minute and exist so that the third has something to be measured against.",
+  "breaks": "The count is of stripes and not of millimetres, so it survives any print scale as long as the scaling is uniform — blotches and stripes shrink together. What it does not survive is the drawing being placed freehand or shifted against its background: blotches half a stripe out give a visible edge everywhere and an answer of twelve that is false, with nothing on the sheet to show it. One bit of colour is the condition here rather than a limit, so a display could carry the picture; the tracing still needs a pencil on paper.",
+  "adult_cost": "none",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    383,
+    385,
+    387,
+    388
+  ]
+}

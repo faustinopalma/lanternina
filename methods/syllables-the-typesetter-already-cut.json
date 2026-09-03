@@ -1,0 +1,52 @@
+{
+  "format_version": 1,
+  "method_id": "syllables-the-typesetter-already-cut",
+  "kind": "form",
+  "name": "use the hyphens a printed book already made",
+  "also": [
+    "zeppa sillabica",
+    "scarto sillabico",
+    "divisione in sillabe",
+    "sillabazione",
+    "sincope sillabica",
+    "epentesi sillabica"
+  ],
+  "one_line": "The only exact table of Italian syllable breaks in a house is the one a typesetter printed at the ends of the lines of a book.",
+  "from_entries": [
+    312,
+    315
+  ],
+  "how": "Ask for a book to be opened anywhere and for five words broken across a line end to be copied out with the hyphen where it was. Those five divisions were made by somebody else and the page carries them, so nothing you print has to be right. Then ask for one of the five to be given an extra syllable so that another word comes out, written with its hyphens. Then print the contested case: SUBACQUEO is SU-BAC-QUEO for one dictionary and SU-BAC-QUE-O for another, so the ways of taking a syllable away are three or four. Ask for both counts, and for one line on who ought to decide.",
+  "knobs": [
+    {
+      "knob": "where the exact check sits",
+      "effect": "Taken from a printed book, the division is somebody else's and cannot be argued with. Written on the sheet by whoever prepared it, it is a claim, and the sources do not agree well enough for that claim to be safe."
+    },
+    {
+      "knob": "whether the contested case is printed",
+      "effect": "With SUBACQUEO the sheet holds a question that has two answers for a reason that can be named. Without it the same sheet quietly picks one convention, and a division made the other way looks like ignorance."
+    },
+    {
+      "knob": "adding or taking away",
+      "effect": "Adding a syllable to a word of two has an upper bound of 255 places and nothing can be listed. Taking one from a word of three leaves three candidates, which fit on one line and can all be shown."
+    },
+    {
+      "knob": "the unit",
+      "effect": "Letters are counted and nobody argues. Syllables are not, and the disagreement is the material rather than a flaw in it — which is only true if the sheet says so."
+    }
+  ],
+  "where_the_work_is": "In the book, not on the sheet. Five hyphens somebody else set are the whole check, and the only thing to prepare is the instruction to go and find them.",
+  "breaks": "A book set ragged-right has no broken words at all, so ask for one with straight edges down both sides rather than for a book. On 800x480 the instruction fits and the five copied words do not, since each needs its hyphen kept where it was. Nothing here can be composed by a model: it cannot divide a word into syllables and cannot check one line of what comes back.",
+  "adult_cost": "none",
+  "verification": "in_the_object",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "to_solve",
+  "goes_with": [
+    311,
+    313,
+    314,
+    335,
+    350
+  ]
+}

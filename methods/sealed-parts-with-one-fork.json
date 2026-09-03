@@ -1,0 +1,53 @@
+{
+  "format_version": 1,
+  "method_id": "sealed-parts-with-one-fork",
+  "kind": "move",
+  "name": "seal the parts and let one choice fix the order",
+  "also": [
+    "sblocco di contenuti",
+    "cancello",
+    "prerequisito",
+    "busta sigillata",
+    "contenuto bloccato",
+    "unlockable",
+    "gating",
+    "lock and key"
+  ],
+  "one_line": "The parts of an afternoon go into envelopes with the opening condition written outside, all in sight, and one point on the sheet has two doors.",
+  "from_entries": [
+    263
+  ],
+  "how": "Take an afternoon that already has parts and put each part into an envelope, with all five left on the table so that what is closed can be seen to be closed. Write the condition on the outside: open now; open when A is done; open when A is done; open when B is done; open when C is done. That shape gives six orders where a chain gives one, everything still gets opened, and nothing is lost by the road not taken — which is what separates this from a fork in a story. Ask one line: which of the two you opened first, and why. Never make the key a thing done well; judging that needs somebody who judges, and then judges again, and paper cannot do it.",
+  "knobs": [
+    {
+      "knob": "one door or two",
+      "effect": "A chain of five envelopes has one order and no choice in it. One fork after the first costs nothing extra and gives six orders, each of them a decision somebody made and can be asked about."
+    },
+    {
+      "knob": "whether the closed parts are visible",
+      "effect": "Five envelopes on the table say how much there is and that four of them are shut. Envelopes handed over one at a time say nothing about the size of what is still coming."
+    },
+    {
+      "knob": "what the key is",
+      "effect": "A thing done can be gated by paper: the envelope is shut and nobody checks anything. A thing done well cannot be, because that needs a person to judge and to judge again, and it is left out here."
+    },
+    {
+      "knob": "whether anything is lost",
+      "effect": "Nothing is: this defers and does not remove, and that is what makes it the mildest thing in its family. If a road not taken is meant to stay untaken, the parts have to be unreadable and not merely unopened."
+    }
+  ],
+  "where_the_work_is": "In the envelope being a real gate. Paper folded and glued holds without anybody remembering or checking anything, which is the one restriction a printed sheet can actually enforce by itself.",
+  "breaks": "Anybody can open all five and nothing stops them; what the envelope buys is that opening one early is a decision rather than an oversight. Each envelope is folded by hand before the afternoon, and five of them is five minutes of somebody's time. A scanned sheet shows nothing of the order the envelopes were opened in, so it has to be written down on purpose. A display can say which envelope to open and cannot be one.",
+  "adult_cost": "prepare",
+  "verification": "nowhere",
+  "comes_back": "a_sheet",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    28,
+    43,
+    46,
+    109,
+    274
+  ]
+}

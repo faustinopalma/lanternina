@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "method_id": "fold-it-before-you-pass-it-on",
+  "kind": "form",
+  "name": "two people answer three questions unseen",
+  "also": [
+    "pensa–confrontati–condividi",
+    "pensa-coppia-condividi",
+    "think-pair-share",
+    "think-pair-write",
+    "turn and talk",
+    "istruzione fra pari"
+  ],
+  "one_line": "The same three questions printed twice with a fold between them, so the second answer is written without having seen the first.",
+  "from_entries": [
+    239
+  ],
+  "how": "Print the same three questions twice on one sheet with a fold line between the halves. Four printed options each, and about the house: the most useful room, the thing that breaks most often, the one thing you would change. The first person rings an answer for each, folds the sheet along the printed line so the rings are hidden, and hands it over; the second answers the same three seeing nothing. Then open it together and talk only about the questions where the answers differ — one person all the way through, then the other, no interrupting. Print that rule: where you agreed there is nothing to say and it gets skipped.",
+  "knobs": [
+    {
+      "knob": "how many questions",
+      "effect": "With four options, two people choosing at random agree on a given question one time in four, so one question leaves a real chance of nothing to compare. Three make complete agreement 1 in 64; people sharing a kitchen agree more often than chance, so three is a floor."
+    },
+    {
+      "knob": "whether the first answer is hidden",
+      "effect": "The fold is the mechanism. It does in paper what the silent minute does in a classroom, and guarantees the second answer was not contaminated by the first. Without it two people are talking, and the form has done nothing at all."
+    },
+    {
+      "knob": "whether the pair has to disagree",
+      "effect": "The sources' own repair is to pair with somebody who thinks differently, because a form whose feedback comes from another learner can confirm a misunderstanding as easily as correct one. Disagreement is the condition of working, not an accident."
+    },
+    {
+      "knob": "whether the third act is kept",
+      "effect": "The sources make telling a group optional. With two people it shrinks to one line written together, and the line that admits failing to agree — saying so, and on which question — is a better result than a manufactured agreement."
+    }
+  ],
+  "where_the_work_is": "In the fold, and then in the rule that only the disagreements get talked about. Independence first, then the narrowest possible thing to discuss; without either, two people fill a sheet in together and neither hears anything they did not know.",
+  "breaks": "It needs a second person for ten minutes and cannot be done alone. The crease crosses the page and can cut through a line of handwriting when the sheet is scanned back. What is lost against the classroom form is the person who listens to the pairs: nobody hears how the two reached their answers, and what stays on the sheet is the conclusion and not the reasoning. On a display three questions with four options fit and a fold does not exist.",
+  "adult_cost": "take_part",
+  "verification": "in_the_sheet",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    8,
+    9,
+    238,
+    240,
+    254
+  ]
+}

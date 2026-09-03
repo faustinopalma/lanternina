@@ -1,0 +1,55 @@
+{
+  "format_version": 1,
+  "method_id": "what-chance-alone-would-score",
+  "kind": "move",
+  "name": "print what chance alone scores, under the result",
+  "also": [
+    "rendimento del gioco casuale",
+    "pavimento di riferimento",
+    "termine di paragone stampato",
+    "giocare a caso",
+    "random play baseline",
+    "floor",
+    "chance benchmark"
+  ],
+  "one_line": "The number saying what somebody who understood nothing would have got, worked out in advance and printed under the blank, never above it.",
+  "from_entries": [
+    277,
+    282,
+    283,
+    285
+  ],
+  "how": "For anything with a countable outcome, work out what random play gets, and print that number under the place where the person writes their own. Jumping coins at random finishes with one left 0.69% of the time and with four nearly half the time. Firing at random on a seven-by-seven grid takes 46 shots against about 33 played well. Playing Kuhn poker as well as it can be played still loses a bean in eighteen hands. It is not the answer and cannot be copied into the blank; it is the floor. Below, it says a poor result was expected. Above, it is a target read before anything is attempted, and the sheet has answered itself.",
+  "knobs": [
+    {
+      "knob": "what the reference is",
+      "effect": "Chance alone gives a floor and makes a poor result the expected one without a word of consolation. The best possible gives a ceiling. A measured fact about what other people did gives neither and is often the most interesting of the three."
+    },
+    {
+      "knob": "above or below the blank",
+      "effect": "Below, it is a term of comparison for something already written. Above, it is a target, and everything written afterwards has been leaned on by it."
+    },
+    {
+      "knob": "computed or estimated",
+      "effect": "Computed exactly, it can be printed as it stands and defended. Estimated and printed as a figure it will be read as measured, and an invented floor is worse than no floor at all."
+    },
+    {
+      "knob": "whether nearness is rewarded",
+      "effect": "Random coin-jumping stops at four almost half the time, so nearly finishing is mostly luck. Wherever the distribution of chance is lumpy, how close somebody got carries no information about them."
+    }
+  ],
+  "where_the_work_is": "In the number being calculated instead of felt. A guessed floor is decoration; a computed one is the only thing that makes «I finished with four» mean anything to whoever reads the sheet afterwards.",
+  "breaks": "It adds nothing that comes back beyond a number already printed, so it is never the point of a moment. The calculation is real work, usually a few lines of code, and it has to be done before anything goes to the printer. On a display one number and the thing it is a floor for both fit, and the working does not — but a floor separated from its subject means nothing, so a display can only ever carry the pair.",
+  "adult_cost": "none",
+  "verification": "nowhere",
+  "comes_back": "nothing",
+  "people": 1,
+  "letters_inside_words": "no",
+  "goes_with": [
+    88,
+    190,
+    250,
+    265,
+    359
+  ]
+}

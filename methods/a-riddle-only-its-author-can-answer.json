@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "method_id": "a-riddle-only-its-author-can-answer",
+  "kind": "form",
+  "name": "ask something nobody else can know, then tell it",
+  "also": [
+    "neck-riddle",
+    "indovinello del collo",
+    "indovinello del prigioniero",
+    "indovinello irrisolvibile",
+    "Out-riddling the Judge"
+  ],
+  "one_line": "A riddle about one small thing that happened to whoever wrote it, three guesses that will all fail, and the account afterwards.",
+  "from_entries": [
+    117
+  ],
+  "how": "Print the rule first: think of one thing you saw or did that nobody in this house knows. Not a secret, and print that a small one is better. Three blank lines to write it as a riddle, with no names and no places. Then print what to say when handing it over, word for word: that they cannot guess it, and that they have three tries anyway. Print a table for the three guesses, the number of the nearest, and a line asking why the nearest was not near. The last instruction on the sheet is the one that matters, and it goes in bold on its own row: when the three tries are done, say what actually happened. Without that the sheet has asked somebody an unfair question and given nothing back.",
+  "knobs": [
+    {
+      "knob": "how private the fact is",
+      "effect": "An object in a pocket can be checked by opening the pocket, so the riddle is only hard. A thing seen once cannot be checked by anybody, which is the form as the tales have it and the only version that cannot be argued with."
+    },
+    {
+      "knob": "whether the failure is announced",
+      "effect": "Saying in advance that they cannot guess removes the awkwardness of having asked an unfair question. Left unsaid, three failures in a row read as the other person being slow."
+    },
+    {
+      "knob": "whether the telling is required",
+      "effect": "Ending with the account turns a discourtesy into a way of getting something told without asking for it. Ending at the third failed guess leaves a trick and nothing else."
+    },
+    {
+      "knob": "how many guesses",
+      "effect": "Three makes the exchange exist and costs a minute. None makes it a statement rather than a game. Unlimited turns it into questioning somebody who cannot win."
+    }
+  ],
+  "where_the_work_is": "In the telling at the end and not in the riddle. The sheet is a way of getting one small true story out of the room, and the three failed guesses are what buys an audience for it.",
+  "breaks": "Nothing here can be checked by whoever printed it, and that is the construction: the only person who can know the answer is the one filling it in. It prints and scans as ruled lines. On 800x480 the rule fits, since «ask something only you know, they get three tries» is under a hundred characters, but the guess table does not, and without the table the three tries are not recorded and the last question cannot be asked.",
+  "adult_cost": "take_part",
+  "verification": "needs_a_person",
+  "comes_back": "a_sheet",
+  "people": 2,
+  "letters_inside_words": "no",
+  "goes_with": [
+    81,
+    92,
+    110,
+    118,
+    150
+  ]
+}
