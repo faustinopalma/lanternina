@@ -218,7 +218,13 @@ Ten afternoons devised against the real service on 3 September 2026, prompt `d42
 
 **All ten were recovered by the repair loop**, which is what the loop is for and also what hid the rate until today.
 
-**And then the limit was moved, because it turned out not to be one.** `MAX_ILLUSTRATION` capped a field that is never lettered on the paper and never passes the gate — `shared/page.Page.words` says so in as many words — so unlike every other ceiling beside it, it protected no physical space and no screening. What it did instead was refuse six documents in eleven and charge a second full devise call for each. Meanwhile the instruction it sits inside has grown about a dozen prohibitions — no diagram, no legend, no compass rose, no materials, nothing from this house — and satisfying them costs words. The number was fighting the paragraph around it, which is the correction §12 already recorded about the ceilings in `methods/`: *a ceiling set from the wrong constraint shapes the writing instead of catching it*. It is now 600, above the observed maximum of 251 by a wide margin, and it still catches a model returning a page of prose. The prompt fingerprint moves from `d427131c594e` to `7f732d0d28eb`.
+**And then the limit was moved, because it turned out not to be one.** `MAX_ILLUSTRATION` capped a field that is never lettered on the paper and never passes the gate — `shared/page.Page.words` says so in as many words — so unlike every other ceiling beside it, it protected no physical space and no screening. What it did instead was refuse six documents in eleven and charge a second full devise call for each. Meanwhile the instruction it sits inside has grown about a dozen prohibitions — no diagram, no legend, no compass rose, no materials, nothing from this house — and satisfying them costs words. The number was fighting the paragraph around it, which is the correction §12 already recorded about the ceilings in `methods/`: *a ceiling set from the wrong constraint shapes the writing instead of catching it*. It is now 600, and the prompt fingerprint moves from `d427131c594e` to `7f732d0d28eb`.
+
+**Checked, and the check was sharper than the diagnosis.** Ten more afternoons under the new fingerprint, `experiments/13-illustrazione-a-600`: **format refusals 5 in 10 → zero**. And the reason is worse than "the model overshoots sometimes" — of the fifteen illustrations those ten afternoons wrote, **fifteen are over 200**, from 215 to 455. The old ceiling was not catching an occasional excess; it was refusing what the model writes when it obeys the paragraph above it, every single time, and the repair loop was the only reason anything came out at all. Every repaired document therefore carried a *shorter, less specific* image prompt, chosen to squeeze under a number that protected nothing. 600 has headroom: the largest observed is 455.
+
+**What it bought, measured.** A devise now takes 101.5–157.3 s, median 117.7, against 112.4–183.8 and median 143.1 — a median 25.4 s faster, and the slowest fell by 26.5 s, because half the batch is no longer paying for a second model call. The decision to read afternoons back outside the reply stands anyway, and for the reason given there rather than for the margin.
+
+**What it did not change, and saying so is the point of having a trail.** Judged side by side, `d427131c594e` and `7f732d0d28eb` are the same: 6 of 10 clean against 7 of 10, one `given_away` each, three `does_not_end_on_the_object` against two, and neither has an afternoon whose question the reader could not state. On ten afternoons a move of one is well inside the ±15 points a proportion of that size carries, so the honest reading is *no measured difference*, which is what a change to a ceiling on a field nobody reads ought to produce.
 
 **The thing this was hiding is worse than the cost.** Half the documents reaching production were *second attempts*. Every measurement of the prompt was therefore a measurement of the prompt plus its repair, including the research run above.
 
@@ -251,12 +257,19 @@ Ten afternoons devised against the real service on 3 September 2026, prompt `d42
 
 `panel/judging.py`, `agents/experience_deviser.PROMPT_FINGERPRINT`, `tests/test_judging.py`, and `experiments/12-giudice-in-produzione/judged.json` as the first batch whose prompt is written down beside it.
 
-Three things are worth doing next and one of them is cheap. **Tighten the illustration** — done, and the other way round from what this said: the ceiling moved rather than the prose, because the field it capped protects nothing. What is left is to check it, and the check is written above as a prediction that can fail: under `7f732d0d28eb` the format refusals should go from 5 in 10 to none, and if they do not the diagnosis was wrong. **Then §10 becomes runnable for real**: twenty afternoons under two fingerprints, counted rather than remembered. **And the question above stays a question** until somebody with a parent's stake in it answers it.
+Three things are worth doing next and one of them is done. **The illustration ceiling** moved rather than the prose, and the prediction written here — refusals from 5 in 10 to none — held. **Then §10 becomes runnable for real**: twenty afternoons under two fingerprints, counted rather than remembered, and the machinery for that is now all there. **And the question above stays a question** until somebody with a parent's stake in it answers it.
 
-**Before any of that, `questionHasAWrittenAnswer` at 1.75.** It is the largest measured fall and the axis furthest below the line, and a `research` run is an hour and about thirty-six cents — cheap enough to bisect the prompt changes of the last five days against, now that a run records which prompt it was. Note that the illustration ceiling has moved since that run, so the next one measures two changes at once unless it is done first.
+**The one to do first is `questionHasAWrittenAnswer` at 1.75.** It is the largest measured fall and the axis furthest below the line, and a `research` run is an hour and about thirty-six cents — cheap enough to bisect the prompt changes of the last five days against, now that a run records which prompt it was. The ceiling has moved since that run, so the next one is under `7f732d0d28eb` and measures both unless the bisection is done deliberately.
 
 **The trail survives a change of session now.** `experiments/**/judged.json` is committed — a hundred kilobytes of invented material carrying the findings, the question and the answer worked out per afternoon, and the fingerprint of the prompt that wrote them. Until today the only record of five judged batches was a table somebody had retyped into this file. `runs.json` stays out: it repeats every afternoon document in full, 560 kB against 100.
 
-**Done when**, for the first: a batch of ten under `7f732d0d28eb` with no illustration refusal, compared against `d427131c594e` by `tools/judge_many.py` over the two folders.
+| batch | prompt | n | clean | findings |
+| --- | --- | ---: | ---: | --- |
+| 07 prima della riscrittura | — | 5 | 3 | `given_away` 2 |
+| 08 dopo la domanda-con-operazione | — | 5 | 4 | `given_away` 1 |
+| 09 prima, altri cinque | — | 5 | 1 | `given_away` 4, `does_not_end` 1 |
+| 10 dopo, altri cinque | — | 4 | 4 | — |
+| 12 il giudice in produzione | `d427131c594e` | 10 | 6 | `given_away` 1, `does_not_end` 3 |
+| 13 illustrazione a 600 | `7f732d0d28eb` | 10 | 7 | `given_away` 1, `does_not_end` 2 |
 
 

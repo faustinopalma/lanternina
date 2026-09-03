@@ -93,6 +93,13 @@ MAX_SPACES: Final = 8
 # already recorded about the ceilings in `methods/`: a ceiling set from the wrong constraint
 # shapes the writing instead of catching it. What it still catches is a model returning a
 # page of prose, which is the only thing this field needs bounding against.
+#
+# Checked after moving it: ten more afternoons, **zero** refused by the format, and of the
+# fifteen illustrations they wrote **all fifteen are over 200**, from 215 to 455. The old
+# number was not catching an occasional excess — it refused what the model writes every
+# time, and every repaired document carried a shorter, less specific image prompt as a
+# result. Devising also got faster, median 143.1 s to 117.7 s, for the second call it stops
+# paying.
 MAX_ILLUSTRATION: Final = 600
 
 # The fraction of the paper a finished page may cover in ink.
