@@ -1,0 +1,82 @@
+[
+  {
+    "at": "2026-08-29T072645Z",
+    "prompt": null,
+    "label": "prima-corsa",
+    "iterations": 4,
+    "afternoons": 24,
+    "refused": 3,
+    "endings": {
+      "closed": 0,
+      "way_out": 10,
+      "stopped": 11,
+      "went_wrong": 0
+    },
+    "axes": {
+      "canBeAbandoned": 3.38,
+      "canBeStarted": 4.57,
+      "everyStepLeavesAMark": 3.76,
+      "notASchoolSheet": 2.48,
+      "oneThingAtATime": 3.52,
+      "questionHasAWrittenAnswer": 2.43,
+      "sheetStandsAlone": 1.95,
+      "worthTheHour": 3.24
+    },
+    "minutes": 57.9,
+    "run": "2026-08-29T072645Z-prima-corsa"
+  },
+  {
+    "at": "2026-08-29T082831Z",
+    "prompt": null,
+    "label": "dopo-le-tre-frasi",
+    "iterations": 4,
+    "afternoons": 24,
+    "refused": 1,
+    "endings": {
+      "closed": 1,
+      "asked": 13,
+      "stopped": 9,
+      "way_out": 0,
+      "went_wrong": 0
+    },
+    "axes": {
+      "canBeAbandoned": 3.57,
+      "canBeStarted": 4.78,
+      "everyStepLeavesAMark": 4.3,
+      "notASchoolSheet": 2.09,
+      "oneThingAtATime": 3.22,
+      "questionHasAWrittenAnswer": 3.13,
+      "sheetStandsAlone": 3.61,
+      "worthTheHour": 3.09
+    },
+    "minutes": 54.6,
+    "run": "2026-08-29T082831Z-dopo-le-tre-frasi"
+  },
+  {
+    "at": "2026-08-29T092622Z",
+    "prompt": null,
+    "label": "la-voce-dell-oggetto",
+    "iterations": 4,
+    "afternoons": 24,
+    "refused": 0,
+    "endings": {
+      "closed": 2,
+      "asked": 9,
+      "stopped": 13,
+      "way_out": 0,
+      "went_wrong": 0
+    },
+    "axes": {
+      "canBeAbandoned": 3.88,
+      "canBeStarted": 4.71,
+      "everyStepLeavesAMark": 3.92,
+      "notASchoolSheet": 3.08,
+      "oneThingAtATime": 3.46,
+      "questionHasAWrittenAnswer": 2.79,
+      "sheetStandsAlone": 2.88,
+      "worthTheHour": 3.17
+    },
+    "minutes": 54.2,
+    "run": "2026-08-29T092622Z-la-voce-dell-oggetto"
+  }
+]

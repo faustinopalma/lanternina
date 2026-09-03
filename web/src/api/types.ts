@@ -236,6 +236,24 @@ export interface Judged {
   findings: Finding[];
 }
 
+/* One research run: eight axes, each given a number from 1 to 5, over two dozen afternoons
+ * devised with the real prompts and played against a model standing in for an adolescent.
+ *
+ * `prompt` is the version of the standing instruction the run exercised, and it is empty on
+ * the runs that predate fingerprints — those can be read but not lined up against a later
+ * one. `afternoons` is the denominator and belongs beside every figure. */
+export interface ResearchRun {
+  run: string;
+  at: string;
+  label: string;
+  prompt: string;
+  afternoons: number;
+  refused: number;
+  minutes: number;
+  endings: Record<string, number>;
+  axes: Record<string, number>;
+}
+
 /* One turn of a parent working on an idea. `who` is "parent" or "system" and there is no
  * third: a draft is a parent and the model they are working with. */
 export interface Turn {
@@ -503,6 +521,8 @@ export interface Api {
   trail(runId: string): Promise<Trail>;
   /** Temporary, for the weeks the prompts are being changed. See panel/routes/verdicts.py. */
   verdicts(): Promise<Judged[]>;
+  /** The same, for the research runs. See panel/routes/research.py. */
+  research(): Promise<ResearchRun[]>;
   drafts(): Promise<DraftCard[]>;
   startDraft(fromExperience: string): Promise<Draft>;
   draft(id: string): Promise<Draft>;

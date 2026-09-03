@@ -23,6 +23,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from agents.experience_deviser import PROMPT_FINGERPRINT
 from panel.devising import RefusedByTheChecks, devise_experience
 from panel.what_happened import Answered, as_material, how_it_has_gone, remembered, the_ground
 from shared.capabilities import HouseCapability
@@ -213,6 +214,10 @@ async def main() -> int:
 
     summary = {
         "at": stamp,
+        # Which version of the standing instruction this run exercised. Without it two runs
+        # a week apart are two tables with no way to say whether they are about the same
+        # prompt — which is what the three runs of 29 August are.
+        "prompt": PROMPT_FINGERPRINT,
         "iterations": asked.iterations,
         "households": [one.name for one in wanted],
         "afternoons": len(rows),
@@ -228,8 +233,10 @@ async def main() -> int:
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     from .report import write_report
+    from .scores import write as write_scores
 
     write_report(where, summary, rows)
+    write_scores()
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     print(f"\n{where}")
     return 0

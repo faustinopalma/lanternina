@@ -27,6 +27,7 @@ import {
   type Proposal,
   type Reminder,
   type Reminders,
+  type ResearchRun,
   type Rhythm,
   type Said,
   type NewSaid,
@@ -305,6 +306,11 @@ export function httpApi(token: string): Api {
     async verdicts(): Promise<Judged[]> {
       const answer = await json<{ verdicts: Judged[] }>("/api/verdicts", {}, ["verdicts"]);
       return answer.verdicts;
+    },
+
+    async research(): Promise<ResearchRun[]> {
+      const answer = await json<{ runs: ResearchRun[] }>("/api/research", {}, ["runs"]);
+      return answer.runs;
     },
 
     // An idea the parent is working on. Starting one and typing into one are inert writes

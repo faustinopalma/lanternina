@@ -22,6 +22,10 @@ COPY devices/ ./devices/
 # which cost nothing until the panel gained a route that calls one: the import is lazy, so
 # the app started, the route registered, and the failure waited for the first real page.
 COPY agents/ ./agents/
+# The score of every research run, and nothing else from `research/`: the transcripts beside
+# it are 200 kB apiece and belong nowhere near the product image. Temporary, with the panel
+# section that reads it — see panel/routes/research.py.
+COPY research/scores.json ./research/scores.json
 
 # The source is copied before this, so every changed line reinstalls every dependency.
 # That costs nothing to fix and nothing to leave: `az acr build` gives each run a fresh
