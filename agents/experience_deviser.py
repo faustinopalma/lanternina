@@ -39,6 +39,7 @@ caution here, it is the type — an experience has no field that could hold one.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import secrets
 from collections.abc import Sequence
@@ -507,3 +508,49 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
             "moments": raw,
         }
     )
+
+
+# Blocks this module sends only when the house has something to put in them. The words are
+# ours; the values are exactly what is left out below.
+_WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
+    "what-happened",
+    "how-it-has-gone",
+    "ground-covered",
+    "brief",
+    "not-again",
+)
+
+
+def what_is_not_about_a_house() -> str:
+    """Everything this agent can send a model that does not come from one household.
+
+    Every block, with the numbers the format fills them with, and the three shapes and
+    three distances a parent's choice picks between. What is left out is what a house puts
+    in: its language, its equipment, its interests, its titles, and the parent's note.
+    """
+    return "\n".join(
+        [
+            the_prompt(language="", capabilities=frozenset()),
+            _REPAIR,
+            *sorted(SHAPES.values()),
+            *sorted(DISTANCES.values()),
+            *(SAYS.text(name) for name in _WHEN_THERE_IS_SOMETHING_TO_SAY),
+        ]
+    )
+
+
+# Which version of this prompt wrote an afternoon. Twelve hex characters of a sha256 over
+# the text above, so it moves when a block is edited or when `MAX_LINE` moves, and it is
+# the same for two houses on the same day — which is the point, because a fingerprint that
+# differed per household could not answer *how did the afternoons from this prompt go*.
+#
+# **There is nothing about a house in it, and that is why it may be logged.** The rendered
+# prompt carries `$note`, what a parent wrote about their household — the example in
+# `experience_deviser.household.md` is a death in the family three weeks ago — and
+# `panel/observability.py` says that may not reach a workspace. Fingerprinting the call
+# instead of the instruction would also have been useless: `already`, `happened` and
+# `ground` differ on every call, so every afternoon would have carried its own value and
+# no two could be counted together.
+PROMPT_FINGERPRINT: Final = hashlib.sha256(
+    what_is_not_about_a_house().encode("utf-8")
+).hexdigest()[:12]

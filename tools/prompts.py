@@ -48,6 +48,10 @@ class Prompt:
     # What of it was invented for this rendering, so a reader is never in doubt about which
     # words came from the repository and which stood in for a house.
     invented: str
+    # Twelve hex characters naming this version of the standing instruction, where the
+    # sender computes one. It is what a line in the workspace carries, so a count of
+    # afternoons under a fingerprint can be read against the text that produced them.
+    fingerprint: str = ""
 
 
 def every_prompt() -> list[Prompt]:
@@ -98,6 +102,7 @@ def every_prompt() -> list[Prompt]:
             ),
             "the language, what the house can do, two interests, one thing to avoid, and "
             "one title already offered",
+            fingerprint=experience_deviser.PROMPT_FINGERPRINT,
         ),
         Prompt(
             "continuer",
@@ -184,7 +189,8 @@ def _head(one: Prompt) -> str:
     return (
         f"{one.name}  —  {one.sends}\n"
         f"{len(one.text)} characters, {len(one.text.splitlines())} lines\n"
-        f"invented for this rendering: {one.invented}\n"
+        + (f"fingerprint: {one.fingerprint}\n" if one.fingerprint else "")
+        + f"invented for this rendering: {one.invented}\n"
     )
 
 

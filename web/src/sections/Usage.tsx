@@ -34,6 +34,7 @@ export function Usage() {
     { kind: "image", title: t("usage.kind.image") },
     { kind: "text", title: t("usage.kind.text") },
     { kind: "read", title: t("usage.kind.read") },
+    { kind: "judge", title: t("usage.kind.judge") },
   ];
 
   const detail = (totals: UsageTotals) => [

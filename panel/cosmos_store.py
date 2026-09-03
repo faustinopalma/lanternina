@@ -500,6 +500,19 @@ class CosmosExperienceStore:
         self._container.upsert_item(document)
         return _to_offered(document)
 
+    def judged(
+        self, household_id: str, experience_id: str, verdict: dict[str, Any]
+    ) -> OfferedExperience | None:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(item=experience_id, partition_key=household_id)
+        except exceptions.CosmosResourceNotFoundError:
+            return None
+        document["verdict"] = verdict
+        self._container.upsert_item(document)
+        return _to_offered(document)
+
 
 def _from_offered(record: OfferedExperience) -> dict[str, Any]:
     return {
@@ -513,6 +526,7 @@ def _from_offered(record: OfferedExperience) -> dict[str, Any]:
         "decidedBy": record.decided_by,
         "note": record.note,
         "begunAt": record.begun_at,
+        "verdict": record.verdict,
     }
 
 
@@ -528,6 +542,7 @@ def _to_offered(document: dict[str, Any]) -> OfferedExperience:
         decided_by=str(document.get("decidedBy") or ""),
         note=str(document.get("note") or ""),
         begun_at=float(document.get("begunAt") or 0.0),
+        verdict=dict(document.get("verdict") or {}),
     )
 
 

@@ -101,7 +101,27 @@ async def run(folder: Path) -> int:
     written_to.parent.mkdir(parents=True, exist_ok=True)
     written_to.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
     _summarise(rows, written_to)
+    _which_prompt(folder)
     return 0
+
+
+def _which_prompt(folder: Path) -> None:
+    """The fingerprint of the prompt that wrote these, if the run that made them said.
+
+    Read off `runs.json` rather than computed here: the prompt has very likely changed
+    since, and stamping today's fingerprint on afternoons written a week ago is the way to
+    make a set of counts say something that is not true.
+    """
+    runs = folder / "runs.json" if folder.is_dir() else None
+    if runs is None or not runs.is_file():
+        print("prompt: non registrato in questa cartella")
+        return
+    try:
+        found = {str(row.get("prompt", "")) for row in json.loads(runs.read_text("utf-8"))}
+    except ValueError:
+        return
+    named = sorted(one for one in found if one)
+    print(f"prompt: {', '.join(named) if named else 'non registrato in questa cartella'}")
 
 
 def _say(got: dict[str, Any]) -> None:

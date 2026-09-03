@@ -24,7 +24,7 @@ import time
 from dataclasses import replace
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.approval import ApprovalState
@@ -232,7 +232,9 @@ async def say(draft_id: str, what: Saying, account: CurrentAccount, request: Req
 
 
 @router.post("/api/drafts/{draft_id}/approve")
-async def approve(draft_id: str, account: CurrentAccount, request: Request) -> Any:
+async def approve(
+    draft_id: str, account: CurrentAccount, request: Request, afterwards: BackgroundTasks
+) -> Any:
     """Turn the idea into an afternoon a house can run, approved and waiting.
 
     The deviser writes the plan from the script as a brief, and nothing is relaxed because
@@ -255,6 +257,7 @@ async def approve(draft_id: str, account: CurrentAccount, request: Request) -> A
     chosen = preferences.get(household)
     from ..devising import RefusedByTheChecks
     from ..editing import afternoon_from
+    from ..judging import judged_and_filed
 
     spent: Any = None
     outcome = FAILED
@@ -306,6 +309,15 @@ async def approve(draft_id: str, account: CurrentAccount, request: Request) -> A
         )
     )
     store.save(replace(draft, state=APPROVED, became=stored.id))
+    afterwards.add_task(
+        judged_and_filed,
+        experiences=experiences,
+        usage=counter,
+        limits=request.app.state.limit,
+        configured=settings.monthly_limit,
+        household_id=household,
+        experience=experience,
+    )
     return {"id": stored.id, "title": stored.title, "state": stored.state}
 
 

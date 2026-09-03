@@ -7,8 +7,14 @@ the trade is made in the open: the parent does not get a veto on each move, and 
 they get to read every one of them afterwards, in full, beside the script the move came from.
 
 What the afternoon *came to* is not here. It is in `panel/what_happened.py`, kept separately
-because it is read by something else — the next afternoon is written from it. This file is a
-record of a machine, and nothing here has a field a judgement would fit in.
+because it is read by something else — the next afternoon is written from it. Nothing here
+has a field that judgement would fit in, and that is on purpose: this is a record of a
+machine, and how an afternoon went with a person is not a fact about the machine.
+
+One reading is here, and it is a different one. `agents/experience_judge.py` reads a plan
+back against the promises the prompt that wrote it made, before anybody has done it and
+without knowing anything about who will. That is a fact about a document, so it is filed
+under :data:`WHAT_A_READER_MADE_OF_IT`, beside the plan it judges.
 """
 
 from __future__ import annotations
@@ -29,6 +35,11 @@ WHAT_COMES_AFTER = "continuation"
 # files what it actually performed, and the two differ whenever the clock made it run a
 # shorter version or reach for the way out.
 THE_PLAN = "plan"
+# What one reader made of that plan, filed beside it. `panel/judging.py` writes it straight
+# after the afternoon is devised and it is kept on the offered afternoon until the house
+# says it began; this is where a parent finds it. It is a reading and not a decision:
+# nothing anywhere consults it to allow or refuse an afternoon.
+WHAT_A_READER_MADE_OF_IT = "judged"
 # What the machine could not do: a page the printer never took, a continuation the checks
 # refused, a model that was not there. Until now it existed only in the journal on the house,
 # where the person reading the parent's page cannot see it, and an afternoon that quietly did

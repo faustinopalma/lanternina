@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import threading
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Protocol, runtime_checkable
 
 from shared.approval import ApprovalState
@@ -53,6 +53,15 @@ class OfferedExperience:
     # afternoon from being handed over again every day. Nothing about who did it, how far
     # they got or whether it finished: an afternoon that ends still leaves nothing.
     begun_at: float = 0.0
+    # What one reader made of this document, straight after it was written, as
+    # `agents/experience_judge.Verdict.to_dict` wrote it. It is about the afternoon and not
+    # about anybody, and it is not a decision: nothing reads it to allow or refuse
+    # anything, and a parent approving one is not answering it.
+    #
+    # Here rather than on the document, because the document is a closed format and a
+    # reading of it is not a field of it. It reaches the trail from here when the house
+    # says it began, which is where a parent finds it beside the plan it judges.
+    verdict: dict[str, Any] = field(default_factory=dict)
 
     @property
     def title(self) -> str:
@@ -64,6 +73,13 @@ class OfferedExperience:
         The idea is the overview, the themes and the script — what it is about and how it
         should go. That is what approval is given to, and `ideas/08 §2` settled it. The plan
         goes too, for a parent who wants to look; nothing may assume they did.
+
+        :attr:`verdict` is deliberately not here. A parent shown *this afternoon gives away
+        its answer* while deciding whether to approve it has been handed a gate to operate,
+        and `agents/experience_judge.py` says in its first line that it is never one. It
+        reaches them through the trail instead, after the afternoon has begun. Whether that
+        is the right side of the decision is written down as a question in `ideas/11 §13`
+        rather than settled here.
         """
         return {
             "id": self.id,
@@ -149,6 +165,10 @@ class ExperienceStore(Protocol):
 
     def begun(self, household_id: str, experience_id: str, at: float) -> OfferedExperience: ...
 
+    def judged(
+        self, household_id: str, experience_id: str, verdict: dict[str, Any]
+    ) -> OfferedExperience | None: ...
+
 
 @dataclass
 class InMemoryExperienceStore:
@@ -184,16 +204,15 @@ class InMemoryExperienceStore:
             raise ValueError("a decision must record who made it")
         with self._lock:
             current = self._rows[(household_id, experience_id)]
-            decided = OfferedExperience(
-                id=current.id,
-                household_id=current.household_id,
-                experience=current.experience,
-                created_at=current.created_at,
+            # `replace` rather than the fields one by one: this record has grown a field
+            # twice, and a rebuild that lists them is a rebuild that will one day drop the
+            # newest one without saying so.
+            decided = replace(
+                current,
                 state=state,
                 decided_at=time.time(),
                 decided_by=decided_by,
                 note=note,
-                begun_at=current.begun_at,
             )
             self._rows[(household_id, experience_id)] = decided
         return decided
@@ -205,16 +224,17 @@ class InMemoryExperienceStore:
             # afternoon, and moving the moment would say something that is not true.
             if current.begun_at:
                 return current
-            started = OfferedExperience(
-                id=current.id,
-                household_id=current.household_id,
-                experience=current.experience,
-                created_at=current.created_at,
-                state=current.state,
-                decided_at=current.decided_at,
-                decided_by=current.decided_by,
-                note=current.note,
-                begun_at=at,
-            )
+            started = replace(current, begun_at=at)
             self._rows[(household_id, experience_id)] = started
         return started
+
+    def judged(
+        self, household_id: str, experience_id: str, verdict: dict[str, Any]
+    ) -> OfferedExperience | None:
+        with self._lock:
+            current = self._rows.get((household_id, experience_id))
+            if current is None:
+                return None
+            read = replace(current, verdict=dict(verdict))
+            self._rows[(household_id, experience_id)] = read
+        return read

@@ -22,7 +22,7 @@ import logging
 import time
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.approval import ApprovalState
@@ -48,6 +48,7 @@ from ..trail import (
     HOUSE_MAY_FILE,
     THE_PLAN,
     WENT_WRONG,
+    WHAT_A_READER_MADE_OF_IT,
     WHAT_CAME_BACK,
     WHAT_COMES_AFTER,
     TrailStore,
@@ -412,7 +413,11 @@ class WhatTheHouseHas(BaseModel):
 
 @router.post("/api/device/{household_id}/experiences")
 async def devise_afternoon(
-    household_id: str, has: WhatTheHouseHas, _: DeviceKey, request: Request
+    household_id: str,
+    has: WhatTheHouseHas,
+    _: DeviceKey,
+    request: Request,
+    afterwards: BackgroundTasks,
 ) -> Any:
     """Devise one afternoon for this house and leave it waiting for the parent.
 
@@ -423,6 +428,9 @@ async def devise_afternoon(
     Refused the same way the continuing route is, and for the same reason: there is no
     reduced version of an afternoon, so the cap, the cloud, the gate and a malformed
     answer all end with the house not being offered one.
+
+    The reading of what was written happens after this answer has gone, not inside it.
+    `panel/judging.py` has the measurement that decides that.
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
@@ -504,7 +512,31 @@ async def devise_afternoon(
             created_at=time.time(),
         )
     )
+    _read_it_back(afterwards, request, household_id, experience)
     return {"id": stored.id, "title": stored.title, "state": stored.state}
+
+
+def _read_it_back(
+    afterwards: BackgroundTasks, request: Request, household_id: str, experience: Experience
+) -> None:
+    """Queue the reading of an afternoon that was just written, for after the answer.
+
+    A background task rather than another await: a devise takes 120–180 s measured and the
+    ingress gives up at 240, so the reading would be spending the margin that belongs to
+    the afternoon. What it costs is that a replica shut down in the seconds after a reply
+    loses the verdict — which loses a row and nothing else.
+    """
+    from ..judging import judged_and_filed
+
+    afterwards.add_task(
+        judged_and_filed,
+        experiences=request.app.state.experiences,
+        usage=request.app.state.usage,
+        limits=request.app.state.limit,
+        configured=request.app.state.settings.monthly_limit,
+        household_id=household_id,
+        experience=experience,
+    )
 
 
 # How many earlier afternoons the next one is drawn against. Five is a month of weekly
@@ -624,6 +656,27 @@ def afternoon_begun(
             offered.experience.get("moments") or [], ensure_ascii=False, indent=2
         ),
     )
+    # And what one reader made of that plan when it was written, kept on the offered
+    # afternoon until now. Filed here rather than at devising because the run has an id
+    # only from this moment, and a verdict filed against a run nobody plays is a record in
+    # a trail a parent will never open.
+    if offered.verdict:
+        filed(
+            trail,
+            household_id,
+            run_id,
+            kind=WHAT_A_READER_MADE_OF_IT,
+            at=now,
+            # The question a reader who saw only the moments worked out, as the heading:
+            # it is the line worth reading first, and an empty one says the reader could
+            # not state what the afternoon asks, which is the loudest thing this produces.
+            heading=str(offered.verdict.get("question") or ""),
+            body=json.dumps(offered.verdict, ensure_ascii=False, indent=2),
+            why=", ".join(
+                str(one.get("where", "")).split(":", 1)[0]
+                for one in offered.verdict.get("findings") or ()
+            ),
+        )
     return {"id": row.id, "begunAt": row.begun_at}
 
 

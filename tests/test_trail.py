@@ -413,7 +413,7 @@ def test_a_house_cannot_claim_to_have_written_the_plan() -> None:
     client = client_for()
     household = household_of(client)
 
-    for kind in ("plan", "continuation", "invented", "came"):
+    for kind in ("plan", "continuation", "judged", "invented", "came"):
         answer = client.post(
             f"/api/device/{household}/trail/aft_1",
             json={"kind": kind},

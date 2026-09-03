@@ -33,9 +33,14 @@ KIND_TEXT = "text"
 # the wordings under KIND_TEXT are read off a display. Summing the two would give back a
 # figure whose name says less than it holds, which is the thing just taken apart.
 KIND_READ = "read"
+# `panel/judging.py` reading back an afternoon that was just devised. Its own kind because
+# it is the one call here made for our benefit rather than the household's — it exists for
+# the hours spent changing the prompts — and a total that hid it inside KIND_TEXT would
+# again be a figure whose name says less than it holds.
+KIND_JUDGE = "judge"
 # Reported even when a household has made none of that kind, so a figure of zero is
 # distinguishable from a kind the panel forgot to mention.
-KINDS = (KIND_IMAGE, KIND_TEXT, KIND_READ)
+KINDS = (KIND_IMAGE, KIND_TEXT, KIND_READ, KIND_JUDGE)
 
 # Told apart because they cost differently: a picture the gate refused was still generated
 # and still paid for, while one that never reached the model was not.
@@ -190,7 +195,10 @@ def over_limit(store: UsageStore, household_id: str, limit: int, now: float | No
     """Whether this household has already paid for as many calls as it is allowed."""
     if limit <= 0:
         return False
-    return store.summary(household_id, month_of(now or time.time())).total.billed_calls >= limit
+    # `now if now is not None`, not `now or`: an instant of zero is a real instant, and the
+    # short form silently read the current month instead of the one that was asked for.
+    at = month_of(time.time() if now is None else now)
+    return store.summary(household_id, at).total.billed_calls >= limit
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,4 +1,4 @@
-"""Devise a handful of afternoons against the real service and write them down.
+r"""Devise a handful of afternoons against the real service and write them down.
 
 What a test cannot tell you: whether the things that come back are any good. This runs the
 whole devising path — prompt, model, parse, checks, one repair — as many times as asked, and
@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import logging
 import statistics
 import sys
 import time
@@ -65,10 +66,21 @@ async def once(
 
 
 async def run(name: str, times: int) -> int:
+    from agents.experience_deviser import PROMPT_FINGERPRINT
     from shared.experience import Drawn
 
     folder = WHERE / f"{_next_number():02d}-{name}"
     folder.mkdir(parents=True, exist_ok=True)
+    # Which version of the standing instruction wrote this batch. Without it two folders of
+    # afternoons look alike and the counts under them cannot be compared, which is the only
+    # thing anybody runs this for.
+    # The refusals and the repairs, which are the measurement this tool exists for and were
+    # invisible: `panel/devising.py` logs both at INFO and nothing here configured a
+    # handler, so a batch where the format refused a third of the answers and the repair
+    # loop recovered them looked exactly like a batch where nothing went wrong.
+    logging.basicConfig(level=logging.WARNING, format="%(name)s %(message)s", force=True)
+    logging.getLogger("panel.devising").setLevel(logging.INFO)
+    print(f"prompt {PROMPT_FINGERPRINT}  ->  {folder.name}")
     already: list[str] = []
     # Carried forward, because this is what makes each afternoon unlike the last and a run
     # that does not carry it is measuring a house with no history nine times over. The
@@ -80,6 +92,7 @@ async def run(name: str, times: int) -> int:
     rows: list[dict[str, Any]] = []
     for turn in range(1, times + 1):
         got = await once(tuple(already), tuple(drawn[-5:]), tuple(subjects[-25:]))
+        got["prompt"] = PROMPT_FINGERPRINT
         rows.append(got)
         document = got.get("experience")
         if document:

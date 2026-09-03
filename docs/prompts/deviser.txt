@@ -1,5 +1,6 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
 27449 characters, 150 lines
+fingerprint: d427131c594e
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
 ==============================================================================
 Devise one afternoon for one household, from nothing.
