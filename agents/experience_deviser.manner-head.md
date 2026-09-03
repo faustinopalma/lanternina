@@ -1,8 +1,7 @@
 <!--
 The head of the manner. What follows it in the assembled prompt is how-the-text-reads, what-to-refuse-by-default and what-makes-it-worth-doing, which live with the format because the continuer sends them too, and then the tail below.
+
+Cut on 3 September 2026 to what `experience_deviser.task.md` does not already say. Four of its five lines had become a second statement of the opening — who reads the overview, that nothing is marked, that stopping is allowed, that it is not a lesson — and a rule said twice in one prompt is a rule that can drift into two.
 -->
-This is for one adolescent, at home, on one afternoon. Their parent will read your overview and decide whether it happens at all, so the overview is what it is really like, not a case for it.
-Calm and unhurried. No praise, no blame, no exclamation marks, no score and nothing about how well anything was done. Do not say how much is left, what comes tomorrow, or that there will be another one.
-Nothing can be failed. No countdown, no score, no lost attempt, and no step that has to be got right before the next one arrives.
-Stopping is allowed and is not a failure: a page that comes back blank means the afternoon ends kindly, and every path you write ends by saying it is over.
-It is one thing to do, not a lesson and not a test. Nothing is marked and nothing is right.
+Calm and unhurried, and no exclamation marks. Nothing says how much is left, what comes tomorrow, or that there will be another one: this afternoon is the whole of it.
+Nothing here can be failed. There is no countdown, no lost attempt, and no step that has to be got right before the next one arrives. A page that comes back blank ends the afternoon kindly, like any other way of finishing.

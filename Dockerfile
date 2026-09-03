@@ -26,6 +26,11 @@ COPY agents/ ./agents/
 # it are 200 kB apiece and belong nowhere near the product image. Temporary, with the panel
 # section that reads it — see panel/routes/research.py.
 COPY research/scores.json ./research/scores.json
+# The manual of forms the deviser builds an afternoon from. It sits beside `shared/` here
+# because `shared/methods.py` finds it one step up from itself, which is the same step in a
+# checkout and in this image. Left out, the panel still devises: the corpus degrades to no
+# method block rather than raising, so a missing COPY costs quality and never a 500.
+COPY methods/ ./methods/
 
 # The source is copied before this, so every changed line reinstalls every dependency.
 # That costs nothing to fix and nothing to leave: `az acr build` gives each run a fresh

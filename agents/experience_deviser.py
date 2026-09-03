@@ -76,6 +76,7 @@ from shared.experience_prompt import (
     WHAT_TO_REFUSE_BY_DEFAULT,
 )
 from shared.ids import new_request_id
+from shared.methods import Method
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
@@ -87,6 +88,33 @@ from shared.safety import ContentKind
 # 1 060 characters more per moment. This leaves room for a longer one arriving
 # pretty-printed, and it is the reason the number moved rather than a guess about models.
 MAX_EXPERIENCE_CHARS: Final = 20000
+
+# Two ids and a sentence. Anything longer is a model explaining itself instead of choosing.
+MAX_CHOICE_CHARS: Final = 600
+
+
+def _choice_in(text: str) -> tuple[str, str, str]:
+    """The two ids and the reason, or three empty strings.
+
+    Nothing raises. A choice that cannot be read is a choice the caller makes another way,
+    and turning an unreadable answer into an exception here would mean the lookup could cost
+    an afternoon — which is the one thing a step that only improves quality must never do.
+    """
+    start = text.find("{")
+    end = text.rfind("}")
+    if start < 0 or end <= start:
+        return ("", "", "")
+    try:
+        said = json.loads(text[start : end + 1])
+    except json.JSONDecodeError:
+        return ("", "", "")
+    if not isinstance(said, dict):
+        return ("", "", "")
+    return (
+        str(said.get("form") or "").strip(),
+        str(said.get("move") or "").strip(),
+        str(said.get("why") or "").strip(),
+    )
 
 SAYS: Final = beside(__file__)
 
@@ -196,6 +224,8 @@ def the_prompt(
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = DEFAULT_WORDS_PER_LINE,
+    form: Method | None = None,
+    move: Method | None = None,
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
@@ -224,9 +254,19 @@ def the_prompt(
     afternoon and no other, so it replaces the invitation to invent rather than sitting
     beside it. `docs/NON-GOALS.md` says what stays true — it shapes this afternoon and
     reaches no other prompt.
+
+    ``form`` and ``move`` are drawn from `methods/` by `shared/methods.draw`, filtered first
+    to what this house can run. They carry the craft: how one is built and where it breaks.
+    Both may be absent — a container without the corpus devises afternoons with no method
+    block at all rather than failing — so nothing downstream may assume one was sent.
     """
     return (
         f"{_INSTRUCTION}\n"
+        + (
+            SAYS.text("method", form=form.written(), move=move.written())
+            if form is not None and move is not None
+            else ""
+        )
         + SAYS.text(
             "household",
             language=language,
@@ -256,6 +296,43 @@ class ExperienceDeviser:
 
     name = "experience_deviser"
 
+    async def choose(
+        self,
+        ctx: AgentContext,
+        *,
+        catalogue: str,
+        interests: tuple[str, ...] = (),
+        avoid: tuple[str, ...] = (),
+        already: tuple[str, ...] = (),
+        shape: str = "",
+    ) -> tuple[str, str, str]:
+        """Which form and which move to build out of, chosen from a catalogue of names.
+
+        The cheap call before the expensive one. It carries names and no records, so the
+        knowledge stays outside the prompt and only what was asked for is paid for.
+
+        Returns two ids and the reason, all three possibly empty. Empty is not an error
+        here: the caller draws instead, and `panel/devising.py` is where that is decided.
+        """
+        payload = await ctx.router.analyze(
+            ModelRequest(
+                capability=Capability.PLANNING,
+                prompt=SAYS.text(
+                    "choosing",
+                    catalogue=catalogue,
+                    interests=json.dumps(list(interests), ensure_ascii=False),
+                    avoid=json.dumps(list(avoid), ensure_ascii=False),
+                    already=json.dumps(list(already), ensure_ascii=False),
+                    shape=shape or SHAPES[DEFAULT_DIFFICULTY],
+                ),
+                request_id=new_request_id(),
+                max_output_chars=MAX_CHOICE_CHARS,
+                purpose="choosing what to build an afternoon out of",
+                content_kind=ContentKind.EXERCISE_JSON,
+            )
+        )
+        return _choice_in(payload.text)
+
     async def devise(
         self,
         ctx: AgentContext,
@@ -276,6 +353,8 @@ class ExperienceDeviser:
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
+        form: Method | None = None,
+        move: Method | None = None,
     ) -> Experience:
         """One afternoon, parsed. Raises when what came back is not one."""
         return experience_in(
@@ -297,6 +376,8 @@ class ExperienceDeviser:
                 note=note,
                 sheets=sheets,
                 words_per_line=words_per_line,
+                form=form,
+                move=move,
             )
         )
 
@@ -320,6 +401,8 @@ class ExperienceDeviser:
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
+        form: Method | None = None,
+        move: Method | None = None,
     ) -> str:
         """The answer as it came back, before anything tries to read it.
 
@@ -358,6 +441,8 @@ class ExperienceDeviser:
                     note=note,
                     sheets=sheets,
                     words_per_line=words_per_line,
+                    form=form,
+                    move=move,
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_EXPERIENCE_CHARS,
@@ -512,7 +597,17 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
 
 # Blocks this module sends only when the house has something to put in them. The words are
 # ours; the values are exactly what is left out below.
+# Blocks this module sends only when the house has something to put in them. The words are
+# ours; the values are exactly what is left out below.
+#
+# `choosing` is not one of the devise prompt's blocks: it is the whole of the cheaper call
+# that comes first, where the model reads a catalogue of names and asks for the records it
+# wants. It belongs in the fingerprint all the same, because which method an afternoon is
+# built out of is decided there, and a change to that text changes the afternoons without
+# touching a line of the prompt that writes them.
 _WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
+    "choosing",
+    "method",
     "what-happened",
     "how-it-has-gone",
     "ground-covered",

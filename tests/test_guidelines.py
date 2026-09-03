@@ -145,11 +145,18 @@ def test_what_a_parent_writes_cannot_loosen_what_we_wrote() -> None:
 
 def test_the_licence_to_improvise_is_only_given_with_the_bounds() -> None:
     """Told it may take liberties and not told the bounds is the one combination that must
-    not exist, so the licence and the limits are written by the same function."""
+    not exist, so the licence and the limits are written by the same function.
+
+    The phrase moved on 3 September 2026, when the latitude was widened from reacting to a
+    page that came back wrong to writing a different rest of the afternoon. What is asserted
+    is the same thing: the sentence that grants the liberty is unreachable without the list
+    that bounds it.
+    """
     from agents.experience_continuer import _INSTRUCTION
 
-    assert "Take the liberty" not in _INSTRUCTION
-    assert "Take the liberty" in with_bounds(FIXED)
+    licence = "a proposal and not a schedule"
+    assert licence not in _INSTRUCTION
+    assert licence in with_bounds(FIXED)
 
 
 def test_a_house_with_nothing_written_still_gets_the_fixed_bounds() -> None:

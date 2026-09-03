@@ -6,25 +6,27 @@ It is the operational half of [enciclopedia/](../enciclopedia/README.md), which 
 
 ## Why it exists
 
-`agents/experience_deviser.py` devises an afternoon from nothing. Nothing in its prompt says what forms exist, so it reaches for the ten anybody reaches for. The encyclopedia's own statement of purpose is the statement of purpose here too: *chi deve proporre qualcosa da fare ne conosce una decina e usa sempre quelle.* A record in the prompt is how one of the other three hundred gets a turn.
+`agents/experience_deviser.py` devises an afternoon from nothing. Nothing in its prompt said what forms exist, so it reached for the ten anybody reaches for. The encyclopedia's own statement of purpose is the statement of purpose here too: *chi deve proporre qualcosa da fare ne conosce una decina e usa sempre quelle.* A record in the prompt is how one of the other hundred and seventy gets a turn.
 
-It does not all fit. Measured 3 September 2026: the three sections of an entry that teach construction average 5 503 characters, so 327 of them are 1 799 kB against a rendered prompt of 25 330 bytes. A record's prompt-facing half turned out to average 2 316 characters — the first estimate was 800 and was wrong by nearly three times — so five records are 11.3 kB, which is 45% of the prompt as it stands. That settles the serving: a prompt gets a long list of names and one or two records in full, not five. `ideas/11-the-methods.md` holds the argument for why the choice of which is made in code rather than by similarity.
+**How it is served, since 3 September 2026.** Not by pouring the corpus into the prompt, which the arithmetic forbids: a record's prompt-facing half averages 2 320 characters, so 180 of them are some 440 kB against a rendered prompt of 27 kB. The model is given a catalogue of ids and names — 12 kB, 2.8% of the corpus — and answers with the one form and the one move it wants; those two arrive in full in the call that writes the afternoon. `shared/methods.py` filters the catalogue to what the house can run before the model ever sees it, which is what makes *a house is never offered a form it cannot run* a property rather than a hope, and draws at random if the choosing call fails, because a step that exists to improve an afternoon may never be the step that costs one.
 
 ## What is in it, measured
 
-204 records, written 3 September 2026 from 323 of the 395 entries.
+180 records, written 3 September 2026 from 273 of the 395 entries, and read by `shared/methods.py`.
 
 | | |
 | --- | --- |
-| kind | 136 `form`, 68 `move` |
-| verification | 93 `in_the_sheet`, 68 `nowhere`, 34 `in_the_object`, 9 `needs_a_person` |
-| adult_cost | 182 `none`, 17 `take_part`, 5 `prepare` |
-| comes_back | 173 `a_sheet`, 21 `nothing`, 10 `a_photograph` |
-| letters_inside_words | 180 `no`, 16 `to_compose`, 5 `both`, 3 `to_solve` |
-| people | 183 need one, 21 need two |
-| entries per record | 112 records from one entry, 58 from two, 34 from three or more, one from nine |
+| kind | 117 `form`, 63 `move` |
+| verification | 74 `in_the_sheet`, 67 `nowhere`, 30 `in_the_object`, 9 `needs_a_person` |
+| adult_cost | 158 `none`, 17 `take_part`, 5 `prepare` |
+| comes_back | 150 `a_sheet`, 20 `nothing`, 10 `a_photograph` |
+| letters_inside_words | 180 `no`, and nothing else is now accepted |
+| people | 159 need one, 21 need two |
+| entries per record | 103 records from one entry, 48 from two, 29 from three or more |
 
-The collapse is real but smaller than expected: 112 of 204 records come from a single entry. The chapter that folded hardest is 12, classical Italian word puzzles, where 48 entries became 22 records and nine of them became one — nine named letter operations that all give a builder the same three instructions.
+**24 records were removed on 3 September 2026, and the reason is a contract this file states in its own first line.** A manual of *methods that can actually be run in a house with a printer, a scanner and a small display* cannot hold a method neither half of which can be run here. Every one of the 24 declared `to_solve`, `to_compose` or `both`: composing is the search inside words that a language model gets wrong without being able to tell, and solving is the operation `shared/experience_prompt.only-what-you-can-answer.md` does not ask a reader for, on an argument from W3C COGA that would hold even if a model learned to do anagrams. They were the corpus's own record of a thing it could not do. `tools/methods_check.py` now accepts only `no`, so the check is what keeps them out rather than a filter that would have skipped them in silence — and a record nobody serves is a record nobody corrects.
+
+The collapse is real but smaller than expected: 103 of 180 records come from a single entry. The chapter that folded hardest is 12, classical Italian word puzzles, and it is also the one the pruning emptied most, because that is where the letter work lives.
 
 **72 entries have no record, and the reasons are not equal.** Chapter 3's ten leave whole and by kind: they are a taxonomy of what a request arrives on, not techniques, and their content is the schema of properties instead. Chapter 9 lost five to a rule rather than to a failing — a run of days, a variable-ratio reward, an inactivity notice, a progress bar and a campaign across twelve afternoons all work by making it hard to stop, which this system refuses. Chapter 11 lost one ending for the same reason. Entry 289 was discarded because it is documentation of a product wearing the vocabulary of a form; it had already survived one automated check that way.
 

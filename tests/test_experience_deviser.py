@@ -296,8 +296,13 @@ def test_the_ten_dimensions_are_all_asked_for_by_name() -> None:
         assert f'"{dimension}"' in DEVISER, f"the deviser never asks for {dimension}"
 
 
-def test_the_prompt_refuses_the_six_things_a_model_reaches_for() -> None:
-    """`ideas/09 §16` names them rather than describing originality, and so does this."""
+def test_the_prompt_names_the_six_things_a_model_reaches_for() -> None:
+    """`ideas/09 §16` names them rather than describing originality, and so does this.
+
+    They stopped being a ban on 3 September 2026. Naming them is what makes the instruction
+    land, so the six words still have to be in the prompt; what changed is that they are a
+    first draft to get past rather than six territories the afternoon may not enter.
+    """
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
     for reached_for in (
@@ -309,6 +314,8 @@ def test_the_prompt_refuses_the_six_things_a_model_reaches_for() -> None:
         "computer that has gone mad",
     ):
         assert reached_for in DEVISER
+    assert "your first idea rather than your best one" in DEVISER
+    assert "Do not write any of these" not in DEVISER
 
 
 def test_the_six_properties_of_the_text_are_in_both_prompts() -> None:

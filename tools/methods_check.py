@@ -59,7 +59,17 @@ ENUMS: dict[str, set[Any]] = {
     # Chi compone non e' chi risolve. Un crittarismo si risolve facendo una somma e non
     # guardando dentro le parole; comporlo e' una ricerca dentro le parole, ed e' quella che
     # un modello sbaglia. Un booleano solo non sapeva dirlo.
-    "letters_inside_words": {"no", "to_solve", "to_compose", "both"},
+    #
+    # Dei quattro valori ne resta ammesso uno. Il 3 settembre 2026 i 24 record che valevano
+    # `to_solve`, `to_compose` o `both` sono stati tolti: il manuale dichiara di raccogliere
+    # «metodi che si possono davvero eseguire in casa», e di questi nessuna delle due meta'
+    # si puo'. Comporre e' l'operazione che un modello linguistico sbaglia senza potersene
+    # accorgere; risolvere e' quella che `shared/experience_prompt.only-what-you-can-answer.md`
+    # non chiede a un lettore, per un motivo che viene da W3C COGA e non da un modello.
+    # Il campo resta, con un valore solo, perche' e' il controllo che impedisce di rimetterli:
+    # `shared/methods.py` li filtrerebbe comunque in silenzio, e un record che nessuno serve
+    # e' un record che nessuno corregge.
+    "letters_inside_words": {"no"},
     "people": {1, 2},
 }
 

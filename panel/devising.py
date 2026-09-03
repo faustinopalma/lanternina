@@ -28,6 +28,7 @@ import logging
 import os
 import secrets
 from collections.abc import Sequence
+from typing import Any
 
 from panel.preferences import (
     DEFAULT_DIFFICULTY,
@@ -40,6 +41,7 @@ from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
 from shared.experience_checks import Complaint, check
 from shared.ids import LearnerId
+from shared.methods import Method, by_id, draw, index, load, runnable
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
 
@@ -53,6 +55,52 @@ class RefusedByTheChecks(ValueError):
     def __init__(self, complaints: Sequence[Complaint]) -> None:
         super().__init__("; ".join(str(complaint) for complaint in complaints))
         self.complaints = tuple(complaints)
+
+
+async def _what_to_build_out_of(
+    deviser: Any,
+    context: Any,
+    *,
+    capabilities: frozenset[HouseCapability],
+    interests: tuple[str, ...],
+    avoid: tuple[str, ...],
+    already: tuple[str, ...],
+    shape: str,
+    log: logging.Logger,
+) -> tuple[Method | None, Method | None]:
+    """One form and one move out of `methods/`, asked for by the model and drawn if it cannot.
+
+    The filter is here because this is where the house's equipment is known, and it is what
+    makes *a house is never offered a form it cannot run* a property rather than a hope.
+    The choosing is a model call over names only; everything that can go wrong with it ends
+    in a draw, because a step that exists to improve an afternoon may never be the step that
+    costs one.
+    """
+    here = runnable(load(), capabilities=capabilities)
+    if not here:
+        return (None, None)
+    try:
+        wants_form, wants_move, why = await deviser.choose(
+            context,
+            catalogue=index(here),
+            interests=interests,
+            avoid=avoid,
+            already=already,
+            shape=shape,
+        )
+        asked = by_id(here, [wants_form, wants_move])
+        form = next((one for one in asked if not one.is_a_move), None)
+        move = next((one for one in asked if one.is_a_move), None)
+        if form is not None and move is not None:
+            log.info("chose %r with %r: %s", form.method_id, move.method_id, why)
+            return (form, move)
+        log.info("the choice named %r and %r; drawing instead", wants_form, wants_move)
+    except Exception as exc:  # noqa: BLE001 - a failed lookup may not cost the afternoon
+        log.info("choosing a method failed, drawing instead: %s", exc)
+    form, move = draw(here)
+    if form is not None and move is not None:
+        log.info("drew %r with %r", form.method_id, move.method_id)
+    return (form, move)
 
 
 async def devise_experience(
@@ -121,6 +169,16 @@ async def devise_experience(
     context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=now)
     deviser = ExperienceDeviser()
     log = logging.getLogger(__name__)
+    form, move = await _what_to_build_out_of(
+        deviser,
+        context,
+        capabilities=capabilities,
+        interests=interests,
+        avoid=avoid,
+        already=already,
+        shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
+        log=log,
+    )
     try:
         answer = await deviser.ask(
             context,
@@ -140,6 +198,8 @@ async def devise_experience(
             note=note,
             sheets=sheets,
             words_per_line=words_per_line,
+            form=form,
+            move=move,
         )
         try:
             experience = experience_in(answer)

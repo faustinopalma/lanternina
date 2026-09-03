@@ -8,13 +8,13 @@ The overview asked for the wrong thing until 3 September 2026, and it asked for 
 Answer with JSON and nothing else, in this exact shape:
 {"title": "<text>", "overview": "<text>", "themes": ["..."], "script": "<text>", "minutes": <whole number>, "drawn": { ... }, "moments": [ ... ]}
 Do not write an id, a format version or a list of what the house needs: those are known already and are not yours to write.
-  "overview": at most $max_overview characters, and it is what a parent decides on. Five things, plainly, in this order:
+  "overview": at most $max_overview characters, and it is what a parent sees at a glance. Five things, plainly, in this order:
     what the person actually does — the verbs, and the thing they do them to;
     what comes off the printer, and what that object is;
     what is in their hands when it is over;
     anything the house has to find beyond paper, a pencil and what is already on the table — or that there is nothing;
     and the one thing somebody might not want about it, said without softening.
-    **Never say what it is like to be inside it.** «Un pomeriggio quieto», «un'indagine quieta», «il tono è raccolto» tell a parent nothing, and three afternoons that all begin that way cannot be told apart. Write it so somebody holding three of these can say which one they want and why.
+    Write it so somebody holding three of these can say which one they want and why. What it is like to be inside it — «un pomeriggio quieto», «un'indagine quieta», «il tono è raccolto» — tells a parent nothing, and three afternoons that all begin that way cannot be told apart.
   "themes": at most $max_themes of them, each at most $max_theme characters. What it is about, a few words each, and the first thing the parent reads. Nouns, not sentences.
   "script": at most $MAX_SCRIPT characters, and use them. This is the game itself, written out for whoever runs the afternoon — not a summary, not a statement of intent, not a paragraph about what you hope it will feel like. Write it in these parts, in this order, each headed by its own name on its own line:
     THE WORLD. Where this is set and what is true in it that is not true here. Two or three specifics that do the work of twenty: what the light is like, what the place smells of, what nobody there ever mentions.
@@ -25,11 +25,10 @@ Do not write an id, a format version or a list of what the house needs: those ar
       The operation: what somebody does with those things to get from them to the answer. Put in order, lay side by side, rule one out, count, match, hold one over the other. Name it in a word. **If you cannot name it, there is nothing here to do, and what you have is a story with a pencil in it.**
       The false answer, which will look right for a while, and the thing already on the paper that makes it collapse. It collapses because of something somebody can see, never because they were told.
       Who wanted to know, and what it changes for them.
-      **Nothing printed and nothing on a display may state the answer, or state the fact the answer rests on.** The fourth rung of help hands it over; nothing before it does. A sheet that says why somebody did something has answered its own question, and every moment after it is choreography over a page that already spoke.
     THE BEATS. Six to twelve of them, each a line: what happens, and what it makes the person do. Say which beat turns the thing over, and which one is the one where the answer arrives.
     WHAT IS HELD BACK. Three or four things, and for each one the thing somebody has to do before it is given — turned the page over, tried the second sound, laid the two halves side by side. Not a beat number: a beat number is a clock, and something given by the clock was never held back. Nothing may be held past the last beat.
     WHAT IS MADE. Every object that comes off the printer, one line each: what it is inside the story, what it says, what it asks for, and what a person is meant to do to it. Whoever runs the afternoon draws these from what you write here, so name the thing, not the format — a shipping manifest and not a table, a letter and not a form. **More than one, unless the afternoon is short.** The paper is where the story lives; the displays hold four short lines each and cannot carry it.
-      A sheet carries the things that settle the question and never the reason. It may show what was recorded, what was drawn, what was crossed out, what does not match. It may not say why anybody did anything: that is the one sentence the afternoon exists to arrive at, and a page that prints it has ended the afternoon on the way in.
+      A sheet shows the things that settle the question: what was recorded, what was drawn, what was crossed out, what does not match. The reason somebody did any of it is the one sentence the afternoon exists to arrive at, and it waits for the fourth rung of help.
     WHERE IT CAN GO DIFFERENTLY. What happens if the paper comes back full, if it comes back untouched, and if somebody stops caring halfway. Concrete moves, not principles.
     WHAT WOULD SPOIL IT. Two or three, and they should be things you are actually tempted to do.
     Nothing in this is a step to perform in order. It is the material the afternoon is made of, and whoever runs it decides which of it happens.
