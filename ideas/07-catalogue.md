@@ -24,6 +24,10 @@ The verbs we already have: print a sheet described by `SheetSpec`, show this on 
 
 `shared/capabilities.py` holds four capability names. `shared/blueprint.py` holds five verbs — `show_words`, `print_sheet`, `read_sheet`, `show_reading`, `ask_model` — one frozen dataclass per verb, and a `Blueprint` that is a flat sequence of them. There is no expression, no branch and no loop, so the set of things a blueprint can express is the set of fields of five types. `devices/run_blueprint.py` runs one; the two experiences are `catalogue/four-things-about-today.json` and `catalogue/three-words.json`, JSON rather than Python because the claim is that a blueprint is data.
 
+**All of that is in `attic/` as of 3 September 2026, and the paths above are where it was.** The module, the runner, the tests and the two blueprints are now `attic/blueprint.py`, `attic/run_blueprint.py`, `attic/test_blueprint.py` and `attic/catalogue/`. What replaced the format is `shared/experience.py` and `devices/run_experience.py`, designed in [08-experience.md](08-experience.md); the two blueprints moved last, because until then they were the only files of the format still standing outside the attic and nothing read them.
+
+**What moving them did not decide.** This file is about experiences designed once for every house, and 08 is about an afternoon devised fresh for one. The second replaced the first in the code without anybody writing down whether the first is retired or waiting. Moving the two files says the *format* is retired. It says nothing about the idea, which is still open and still in this file.
+
 Four decisions worth their sentence each:
 
 - **`requires` and `uses_if_present` are declared by the author and checked against the steps.** A blueprint that understates what it touches is refused while it is being read, which is where an administrator is.

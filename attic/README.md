@@ -2,11 +2,13 @@
 
 Code that worked, answered a question nobody is asking any more, and is kept because the reasoning in it is worth more than the disk it costs. Nothing here is packaged (`pyproject.toml` lists the packages by name and this directory is not one of them) and nothing here runs in the ordinary test run (`testpaths = ["tests"]`).
 
-The tests that came up with their modules still run, from the repository root:
+The tests that came up with their modules were meant to stay runnable from the repository root:
 
     pytest attic
 
-They are kept runnable rather than commented out because a test that cannot be run is a claim nobody can check.
+They are kept rather than commented out because a test that cannot be run is a claim nobody can check.
+
+**That sentence is not true today, and saying so is the point of it.** Measured 3 September 2026: `pytest attic` stops at collection with eleven errors. Every test here imports the module it was written against, and those modules were retired too — `shared.blueprint`, `shared.sheet`, `shared.pagedesign`, `printing.render`, `printing.compose`, `agents.page_illustrator`. They are files in this directory, not importable modules, so nothing here has been executed since it arrived. The claims in the table below are therefore claims, not checks.
 
 ## What is here, and what replaced it
 
@@ -17,6 +19,11 @@ They are kept runnable rather than commented out because a test that cannot be r
 | `ink_arithmetic.py` | 21 Aug 2026 | `agents/sheet_reader.py` — a vision model reads the page |
 | `test_ink_arithmetic.py` | 21 Aug 2026 | nothing offline; see below |
 | `measure_calibration.py`, `probe_sheet_ink.py` | 21 Aug 2026 | nothing — both existed to look at the two thresholds `ink_arithmetic.py` used |
+| `catalogue/` | 3 Sep 2026 | `experiences/` — an afternoon devised for one house instead of a blueprint designed once for every house |
+
+**Why the two blueprints came up here rather than being deleted.** They are the only two artefacts in this repository that ran end to end on the Epson and the FB9F18 display, and on 21 August they were converted to carry page designs with every cell checked identical. That is evidence, and it costs 14 kB. They also arrived last: `blueprint.py`, `run_blueprint.py` and `test_blueprint.py` came up in August and left their only two inputs behind in `catalogue/`, where nothing read them and where the directory read as live. `attic/test_blueprint.py` names them by filename and asserts there are exactly two, so the data belongs beside the code that reads it.
+
+What this does **not** decide is whether a catalogue of experiences designed once for every house is retired or waiting. That question is `ideas/07-catalogue.md` and it is still open. What moved is a format.
 
 ## Why the arithmetic went, when it worked
 

@@ -31,7 +31,8 @@ from shared.ids import BlueprintId
 from shared.pagedesign import MIN_BOX_SIDE, PageDesign, TickBox, Words
 from shared.sheet import Rect
 
-CATALOGUE = Path(__file__).resolve().parent.parent / "catalogue"
+# Retired 3 September 2026: the two blueprints moved in here beside the code that read them.
+CATALOGUE = Path(__file__).resolve().parent / "catalogue"
 
 PAPER = HouseCapability.PRINT_A4
 GLASS = HouseCapability.SCAN_A4
