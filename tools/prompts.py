@@ -54,6 +54,7 @@ def every_prompt() -> list[Prompt]:
     from agents import (
         experience_continuer,
         experience_deviser,
+        experience_judge,
         page_maker,
         page_reader,
         reminder_reader,
@@ -135,10 +136,18 @@ def every_prompt() -> list[Prompt]:
             "the line naming what the sheet asked for; two images go with it",
         ),
         Prompt(
+            "judge",
+            "agents/experience_judge.py :: _INSTRUCTION",
+            experience_judge._INSTRUCTION
+            + "\nThe afternoon, as the person receives it:\n"
+            + '{"moments": [{"id": "m1", "act": "say", "lines": ["C\'è una lettera nel muro."]}]}',
+            "one moment of an invented afternoon; a real call carries the whole of it, with "
+            "the title, the overview, the themes, the script and the ten dimensions taken out",
+        ),
+        Prompt(
             "reminder-reader",
             "agents/reminder_reader.py :: _INSTRUCTION",
-            reminder_reader._INSTRUCTION
-            + '\n[{"id": "r1", "text": "lavarsi i denti dopo cena"}]',
+            reminder_reader._INSTRUCTION + '\n[{"id": "r1", "text": "lavarsi i denti dopo cena"}]',
             "one sentence a parent might have typed",
         ),
         Prompt(
