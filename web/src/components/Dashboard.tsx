@@ -94,16 +94,16 @@ export function Dashboard({ api }: { api: Api }) {
       sections: [
         { name: "themes", title: t("themes.title"), note: t("themes.note"), Body: Themes },
         {
-          name: "reminders",
-          title: t("reminders.title"),
-          note: t("reminders.note"),
-          Body: Reminders,
-        },
-        {
           name: "pictures",
           title: t("pictures.title"),
           note: t("pictures.note"),
           Body: Pictures,
+        },
+        {
+          name: "reminders",
+          title: t("reminders.title"),
+          note: t("reminders.note"),
+          Body: Reminders,
         },
       ],
     },
