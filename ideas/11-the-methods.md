@@ -222,11 +222,34 @@ Ten afternoons devised against the real service on 3 September 2026, prompt `d42
 
 **And the reader stated the question on all ten.** Zero afternoons where something can be got wrong and no reader could say what. That is the loudest thing this instrument produces and it stayed quiet, which is a result and not an absence of one.
 
+### The other instrument says the afternoons got worse, and it should be believed first
+
+`research/` is the apparatus that plays afternoons against a model standing in for an adolescent and gives eight axes a number from 1 to 5. It had not been run since 29 August. Run again on 3 September under prompt `d427131c594e` — same seed, same six households, four iterations, 24 afternoons — **every one of the eight axes is lower than the last run of 29 August**, and the mean across them falls from 3.49 to 2.93.
+
+| asse | 29 Aug | 3 Sep | |
+| --- | ---: | ---: | ---: |
+| `questionHasAWrittenAnswer` | 2.79 | 1.75 | −1.04 |
+| `canBeStarted` | 4.71 | 3.96 | −0.75 |
+| `worthTheHour` | 3.17 | 2.54 | −0.63 |
+| `notASchoolSheet` | 3.08 | 2.50 | −0.58 |
+| `oneThingAtATime` | 3.46 | 3.04 | −0.42 |
+| `sheetStandsAlone` | 2.88 | 2.46 | −0.42 |
+| `canBeAbandoned` | 3.88 | 3.54 | −0.34 |
+| `everyStepLeavesAMark` | 3.92 | 3.62 | −0.30 |
+
+**The first confounder was checked and is not the explanation.** A run that ends `asked` is one the apparatus stopped rather than one the afternoon finished, so its appraisal reads a truncated transcript; more of those would move the means for a reason that is about the instrument. The ending mix is almost identical — 2 closed, 9 asked, 13 stopped on 29 August against 2, 8, 14 today — and within today's run the `asked` afternoons score *higher* than the `stopped` ones, 3.09 against 2.92, so having one fewer of them cannot produce a fall.
+
+**What it is not safe to conclude.** Which prompt state the 29 August runs exercised is not recorded — fingerprints started today — so the comparison is *between two dates* and not between two named prompts. That gap closes from here: every run from now on carries its fingerprint.
+
+**What it is safe to say.** Eight axes out of eight moving the same way is not the shape of noise, and −1.04 on `questionHasAWrittenAnswer` puts that axis below 2, which is the number the axis was given to catch: a question the system cannot answer, handed to somebody who believes there is one. That is the first thing to look at, and it sits oddly beside the judge, which could state a question on all ten afternoons it read. The two are not measuring the same failure — one asks whether a question can be *stated*, the other whether its answer is anywhere *written* — and a session that treats them as one number will lose the disagreement, which is the most informative thing either of them produced today.
+
 ### Where the next session starts
 
 `panel/judging.py`, `agents/experience_deviser.PROMPT_FINGERPRINT`, `tests/test_judging.py`, and `experiments/12-giudice-in-produzione/judged.json` as the first batch whose prompt is written down beside it.
 
 Three things are worth doing next and one of them is cheap. **Tighten the illustration.** It is one prompt block, `shared/experience_prompt.the-marks-on-a-page.md`, one limit, and a measured overrun of a median of nine characters over half the batch; a second batch of ten says whether the edit worked, and the fingerprint says the two batches are comparable. **Then §10 becomes runnable for real**: twenty afternoons under two fingerprints, counted rather than remembered. **And the question above stays a question** until somebody with a parent's stake in it answers it.
+
+**Before any of that, `questionHasAWrittenAnswer` at 1.75.** It is the largest measured fall and the axis furthest below the line, and a `research` run is an hour and about thirty-six cents — cheap enough to bisect the prompt changes of the last five days against, now that a run records which prompt it was.
 
 **Done when**, for the first: a batch of ten under a new fingerprint with no illustration over 200, compared against `d427131c594e` by the query in `panel/judging.py` or by `tools/judge_many.py` over the two folders.
 
