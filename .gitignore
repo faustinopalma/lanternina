@@ -65,6 +65,16 @@ experiments/**
 !experiments/**/
 !experiments/**/notes.md
 !experiments/README.md
+# And the one small file that says what a reader made of a batch: the findings, the question
+# and the answer worked out per afternoon, and the fingerprint of the prompt that wrote
+# them. A few kilobytes of invented material, and keeping it out cost the one thing this
+# apparatus is for — on 3 September 2026 the only surviving record of five judged batches was
+# a table somebody had retyped into `ideas/`. A drift trail that does not survive a change of
+# session is not one.
+#
+# `runs.json` stays out: it carries every afternoon document in full, which is 560 kB against
+# 100 kB, and those documents are already the `NN.json` beside it.
+!experiments/**/judged.json
 # Browser tooling drops screenshots, accessibility snapshots and console dumps here;
 # any of the three can carry a page of the panel with real content in it.
 .playwright-mcp/

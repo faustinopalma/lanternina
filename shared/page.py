@@ -78,7 +78,22 @@ MAX_NOTE_LINES: Final = 4
 MAX_LABEL: Final = 40
 MAX_SPACES: Final = 8
 # What the picture shows, in words, and it is a prompt rather than something anybody reads.
-MAX_ILLUSTRATION: Final = 200
+#
+# **A backstop, not a target**, and it was a target until 3 September 2026. Nothing here is
+# lettered on the paper and nothing here passes the gate — `Page.words` says why — so unlike
+# every other ceiling above, this one protects no physical space and no screening. What it
+# did instead was refuse documents: measured over eleven devisings against the real service,
+# **six came back over 200**, at 201, 206, 208, 209, 215 and 251, and each one cost a second
+# full devise call to repair. The instruction beside it in
+# `experience_prompt.the-marks-on-a-page.md` has grown a dozen prohibitions — no diagram, no
+# legend, no compass rose, no materials, nothing from this house — and satisfying them takes
+# words, so the number was fighting the paragraph it sits in.
+#
+# 600 is above the observed maximum by a wide margin, which is the correction `ideas/11 §12`
+# already recorded about the ceilings in `methods/`: a ceiling set from the wrong constraint
+# shapes the writing instead of catching it. What it still catches is a model returning a
+# page of prose, which is the only thing this field needs bounding against.
+MAX_ILLUSTRATION: Final = 600
 
 # The fraction of the paper a finished page may cover in ink.
 #

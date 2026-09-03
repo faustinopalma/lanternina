@@ -90,22 +90,25 @@ async def run(folder: Path) -> int:
         return 2
 
     rows: list[dict[str, Any]] = []
+    # Stamped on every row rather than printed only, so `judged.json` answers "how did the
+    # afternoons from this prompt go" without the run file beside it, which is not kept.
+    prompt = _which_prompt(folder)
     for path in files:
         try:
             got = await judge_one(path)
         except Exception as exc:  # noqa: BLE001 - a failed judgement is a result worth keeping
             got = {"file": path.name, "failed": f"{type(exc).__name__}: {exc}"}
-        rows.append(got)
+        rows.append({"prompt": prompt, **got})
         _say(got)
 
     written_to.parent.mkdir(parents=True, exist_ok=True)
     written_to.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
     _summarise(rows, written_to)
-    _which_prompt(folder)
+    print(f"prompt: {prompt or 'non registrato in questa cartella'}")
     return 0
 
 
-def _which_prompt(folder: Path) -> None:
+def _which_prompt(folder: Path) -> str:
     """The fingerprint of the prompt that wrote these, if the run that made them said.
 
     Read off `runs.json` rather than computed here: the prompt has very likely changed
@@ -114,14 +117,12 @@ def _which_prompt(folder: Path) -> None:
     """
     runs = folder / "runs.json" if folder.is_dir() else None
     if runs is None or not runs.is_file():
-        print("prompt: non registrato in questa cartella")
-        return
+        return ""
     try:
         found = {str(row.get("prompt", "")) for row in json.loads(runs.read_text("utf-8"))}
     except ValueError:
-        return
-    named = sorted(one for one in found if one)
-    print(f"prompt: {', '.join(named) if named else 'non registrato in questa cartella'}")
+        return ""
+    return ", ".join(sorted(one for one in found if one))
 
 
 def _say(got: dict[str, Any]) -> None:
