@@ -4,13 +4,27 @@ Written 2 September 2026, the day the 395-entry compilation in [enciclopedia/](.
 
 The numbers below come from `python tools/enciclopedia_censimento.py`, which can be run again.
 
+**Reviewed the same evening, and three of its arguments did not survive.** They are corrected in place, with the correction said out loud rather than smoothed over: the ruts argument in §3, the 169 in §4's table, and the word *weighted* in §5. The conclusions mostly stand; two of the three reasons given for them were wrong.
+
+**Corrected again on 3 September, and this one was mine.** That review concluded the artefact's job was to be a closed vocabulary for `drawn.mechanic`, so that a check which never fires would fire. It reached that conclusion because the defect was measurable and the purpose was not, which is the same failure it had just accused the first draft of one level up. The encyclopedia's own statement of purpose says what it is for: *chi deve proporre qualcosa da fare — un genitore, un insegnante, chi scrive un gioco — ne conosce una decina e usa sempre quelle. Qui ce ne sono 395,* and each entry is *la forma descritta in modo che si possa costruire*. That is a manual, and a list of names is not one. §1 leads with the manual again. The vocabulary survives as a by-product: every record has a `name`, and the name is what makes two afternoons comparable.
+
+**And then it was built.** [methods/](../methods/README.md) holds 204 records written on 3 September 2026 from 323 of the 395 entries. What that cost and what it found is §12.
+
 ---
 
 ## 1. What it is
 
-A second artefact, generated once from the encyclopedia and then living on its own: one small record per **method that can actually be run here**, holding what a generator needs and nothing else — the movable parts, what it costs, where the verification sits, what comes back, and which forms it goes with.
+A second artefact, generated once from the encyclopedia and then living on its own: one small record per **method that can actually be run here**, holding what somebody needs in order to build one — how it is made, which parts of it move and what happens when they are moved, where the part that does the work sits, where it breaks on paper, and what it costs.
 
 It is a child, not a view. Not one record per entry, no obligation to keep the count, no obligation to keep the shape. The encyclopedia becomes a dated witness of what was known on 2 September 2026 and is not maintained further.
+
+**The by-product, which is worth having and is not the point.** `shared/experience.DIMENSIONS` already has a `mechanic` — *what they actually do* — and `shared/experience_checks.not_the_same_afternoon_again` already refuses an afternoon that shares more than two of the four decision dimensions with a recent one: mechanic, progress, tone, ending. The comparison is `shared_dimensions`, which folds with `_folded`, which is `" ".join(text.lower().split())`. Exact string equality on a free phrase of at most 60 characters, written each time by a model.
+
+Measured 2 September 2026, by constructing two `Drawn` and calling the check: two afternoons that are the same crossword, in the same kitchen, with the same role, the same tone and the same ending — worded as one model would word them twice — produce **zero complaints**. The check whose docstring explains so carefully why two of the ten may recur and four may not is, on the four that may not, comparing snowflakes. It fires on nothing.
+
+A record's `name` is at most 60 characters and is unique across the corpus, enforced by `tools/methods_check.py`. Two afternoons built from the same record can be written into the same name, and the check starts working. That is a real repair and it costs nothing extra, because a manual needs names anyway.
+
+**The cost of it, said next to the claim.** Making `mechanic` a label picked from a list rather than a phrase written afterwards changes the type of a field on a load-bearing contract, and `Drawn`'s docstring calls the ten *one short phrase each*. Handing a model a label before it devises risks an afternoon built around the label rather than around the afternoon. Nothing has been changed in `shared/` and that decision is still open.
 
 ## 2. Why the encyclopedia cannot do this job itself
 
@@ -22,9 +36,13 @@ It is a child, not a view. Not one record per entry, no obligation to keep the c
 
 ## 3. Why not a search over it
 
-The first shape proposed was an index the model searches at devise time. Three arguments against, in order of weight.
+The first shape proposed was an index the model searches at devise time. The conclusion — not at devise time — stands. The first reason given for it was wrong and is withdrawn.
 
-**Similarity works against the machinery already built.** `agents/experience_deviser.ground-covered.md` splits covered ground into three bands — *justUsed* closed, *usedLately* to be kept away from, *usedBefore* only as another visit — and `DISTANCES["frequent"]` says «go somewhere else: another place, another century, another kind of object». A search keyed on a household's interests returns the same neighbourhood every time. It would be a machine for making ruts standing next to a machine built to avoid them.
+**Withdrawn: «similarity would make ruts».** The draft argued that a search keyed on a household's interests returns the same neighbourhood every time, and would fight the three bands in `agents/experience_deviser.ground-covered.md`. It does not hold. Those bands are about **subjects** — the ground a house has been over is a list of what afternoons were about — and `DISTANCES["frequent"]` ends «and keep only the way it is made». The existing machinery does not merely tolerate a form recurring while the world changes; at the far end of the variety setting it asks for exactly that. Form and subject are different axes, and an argument that borrows the anti-rut machinery to rule out a search over forms has confused them.
+
+**There is no query.** This is the argument that does hold, and it is simpler. Retrieval needs something to be similar to. At devise time the only text in hand is the parent's interests, and `agents/experience_deviser.household.md` words them as *a place to begin* — they are subject matter. Searching a corpus of forms with a query about subjects returns whatever the embedding happens to associate, which is neither a form that suits the house nor a form that suits the subject. It is not that the answers would be bad; it is that the question is not being asked.
+
+**A neighbourhood has no name.** Given §1, this is decisive. What the artefact has to produce is a label that two afternoons can be compared on. A search returns a region of a corpus, and a region cannot be folded, written into a 60-character field, or asserted about in a test. Whatever else retrieval is good for, it cannot do the one job.
 
 **The records are small enough that no search is needed.** A record fits in about 300 characters. Twenty of them are 6 kB, which sits beside a 25 kB prompt without argument. Selection can be done in code — filter to what this house can run, drop what is on closed ground, spread across chapters — which is deterministic, reproducible, and testable. A test can assert *an afternoon is never offered a form this house cannot run*; no test can assert that of a similarity search.
 
@@ -38,13 +56,18 @@ The intuition was that whole chapters could be dropped. Measured against what th
 | --- | --- | --- |
 | the wall: a model cannot manipulate letters inside words | **58** | 27 in ch. 12, 19 in ch. 5, 7 in ch. 7 |
 | needs a second person | **74** | spread across all fourteen |
-| says where it would break | 169 | everywhere |
+
+**A third row was here and has been removed.** The census also reports 169 entries under «declares where it would break», and putting that number in this table invited it to be read as a count of forms that fail. It is not one. Measured 2 September 2026 by locating every match: «si romperebbe» occurs in exactly one section, «Un esempio giocabile», once per entry in 168 of the 169. It is a standing caveat paragraph about the worked example, not a verdict on the method. Six were read by hand, chosen at random with a fixed seed: three of them say the form works anyway — voce 279, «ma qui non serve: i dadi li tira chi legge»; voce 127, where the grid does not fit a display but one line of it does and «basta a sé stessa»; voce 394, where what breaks is the return path and not the form. A row that counts caveats cannot sit beside a row that counts failures.
+
+The consequence is not only a correction. That paragraph is where the properties of §5 are already written, in prose, in 169 entries: *la verifica sta sul foglio e la fa chi scrive* is where the verification sits, *quello che torna indietro sono i numeri, non l'immagine* is what comes back, *i dadi li tira chi legge* is who pays. The child's source is that section, not the whole entry.
 
 Chapter 12, classical Italian word puzzles, is the one that mostly dies: **27 entries of 48**, 56%, rest on an operation the entries themselves say does not work. Chapter 5 has 83 entries and 19 fall to the same wall, so **64 survive**. Cutting by chapter throws those 64 away and keeps the 21 of chapter 12 without looking at them.
 
 The one genuinely chapter-shaped cut is **3, on what the request arrives on**: ten entries that are a taxonomy of supports — sheet, display, voice, video, body, time — rather than techniques to use. It leaves whole, and not because it fails: because it is of another kind. Its content becomes the schema of properties, not records.
 
 **«Needs a second person» is a property, not a sentence.** Seventy-four entries. A house with two people runs them. Deleting them decides for every house; recording them lets the situation decide. Of the reasons found, one is a cut and the rest are labels.
+
+**The union, which nobody had counted:** the letter wall and chapter 3 overlap in nothing, so 58 + 10 = 68 and **327 entries survive the two mechanical cuts**. That is a ceiling, not an estimate of the answer: everything the review removes by judgement comes off it, and — given §1 — the number that matters in the end is the count of distinct *names*, which is smaller again, because «Varianti e parenti» says many of the 327 are one another's variants.
 
 ## 5. The score: properties, not a verdict
 
@@ -54,9 +77,9 @@ The instinct is right — without weights, uniform sampling over a couple of hun
 
 **It has no provenance.** `.github/copilot-instructions.md` §2 asks for numbers with their provenance — measured, computed or estimated. A 4-out-of-5 assigned by whoever writes the record is a superlative in numeric costume, which is the thing the encyclopedia has just finished taking off.
 
-**Used greedily it makes ruts.** Always taking the high scores is what the three bands and `DISTANCES` exist to prevent. It would be the third machine, fighting the first two.
+**Used greedily it flattens the repertoire.** Always taking the high scores means the same twenty forms and never the other three hundred. The draft called this fighting the three bands and `DISTANCES`, and that is the same confusion §3 withdraws: those are about subjects, and `DISTANCES["frequent"]` positively asks for the form to stay while the world changes. The fault is real and it is narrower than the draft said — a scalar over forms decides once, for every house and every evening, which of them are ever seen.
 
-Instead, a few declared properties, each decidable and checkable, weighted per request by the selector:
+Instead, a few declared properties, each decidable and checkable, used by the selector as **filters and never as weights**:
 
 - **cost to the adult** — none · prepare beforehand · take part
 - **where the verification sits** — in the sheet · needs a person · nowhere (the *control of error* axis the encyclopedia found running across chapters)
@@ -64,7 +87,9 @@ Instead, a few declared properties, each decidable and checkable, weighted per r
 - **how many moments it needs at minimum** — one · two times · many
 - **how many people** — one · two
 
-With these, "favouring a method" stops being an opinion and becomes a question: *tonight the adult cannot prepare anything and the verification has to sit in the sheet* — and twenty forms remain instead of two hundred. The situation decides rather than the compiler, and a test can assert it.
+**The draft said «weighted per request by the selector», and that sentence was the score coming back in.** Five properties combined with per-request weights is a scalar computed at request time; all that moved is where the judgement is written. The question «how many properties before they become a score» has the wrong shape: one property is already a score if it is weighted, and twenty are not if each is a hard predicate about whether this house can run this thing at all. The line is not a count, it is the difference between *can it be run here* and *is it any good*. Only the first belongs in the record.
+
+**And the arithmetic the draft offered for them was invented.** It said «twenty forms remain instead of two hundred», with no provenance — the exact fault this section accuses the score of. Measured: the two properties that exist today are lopsided towards survival. 58 fall to the letter wall and 74 need a second person, they overlap in 5, and a one-person house with no letter manipulation is left with **268 of 395, 68%**. Filters of that shape do not cut two hundred to twenty. Either the remaining three properties bite far harder than these two, or selection has to do its narrowing some other way — by chapter spread, by covered ground, by what the afternoon already needs. Which of the two is true is not known, and cannot be known until the properties are written on real records.
 
 **The only honest scalar is the earned one.** Every form starts at zero. `panel/what_happened.py` already records how afternoons went; if a record accumulates *offered N times, reached the end M*, that is a number with a real denominator. A score assigned before anything was tried is a preference; a count kept afterwards is a measurement.
 
@@ -86,6 +111,8 @@ Covered ground already does the useful work expected of a per-house score. It sa
 
 A second artefact to keep honest. The mechanical half regenerates; the judgement half does not, so a drift check must **flag** rather than silently rebuild. With the encyclopedia frozen, drift is mostly one-way and this is cheaper than it would have been a week ago.
 
+**«The mechanical half» is almost empty, and this is the correction that hurts.** Measured 2 September 2026: «Che cos'è» averages 1 431 characters and «Un esempio giocabile» 2 578, so a 300-character record is a **13.4× compression** of its own source. Nothing at that ratio is extraction. Every record is written, by judgement, one at a time. What does regenerate is the citation back to the entry and the 2 448 cross-reference edges of §7 — useful, and not the record. So the cost is not «a drift check»; the cost is up to 327 acts of writing, and the drift check only guards them afterwards.
+
 **The link back has to survive.** The moment it stops being one-to-one, the child cannot be checked against the parent by machine. Each record should name the entry or entries it came from — many-to-one allowed, zero allowed when it is new. It regenerates nothing; it answers, in a year, the question *did this line come from research or did somebody invent it*. Without it the child becomes indistinguishable from a list of opinions.
 
 **The real cost is that this is the review.** `docs/NON-GOALS.md` says the design rules were taken out rather than patched, and will come from this research, form by form, with the reasoning attached. Deciding which methods survive **is** that review. Doing it inside a data file means taking the decisions one field at a time without writing why. That is not a reason to avoid it; it is a reason to do it as the review, with the reasoning here, and the artefact as its product.
@@ -98,14 +125,46 @@ A second artefact to keep honest. The mechanical half regenerates; the judgement
 
 An afternoon devised with the methods in the prompt is read side by side with one devised without, ten of each, by somebody who does not know which is which. If the difference cannot be seen, the artefact has not earned its place, however good the schema is.
 
-## 11. Open questions — decide these before writing anything
+**That test is second, not first.** It costs twenty devisings and a person's afternoon, and what it measures is taste. There is a cheaper one that comes before it and that §1 makes possible: **write the failing test first.** Two `Drawn` that are the same form in different words, handed to `not_the_same_afternoon_again`, must be refused. Today they are not — measured, zero complaints. The smallest vocabulary that turns that red test green is the smallest honest version of this artefact, and it can be found without a single model call.
 
-**Where does it live, and in what form?** Not inside `enciclopedia/`, which is prose for people. `catalogue/` is blueprints the software executes and is a different thing. One file or one per record; JSON that a program reads or Markdown that a person also reads.
+If the vocabulary cannot be made to do that — if every candidate list is either too coarse to distinguish afternoons or too fine to be picked from — the artefact fails early and cheaply, and nobody has reviewed 395 entries to find out.
 
-**Who decides what survives, and against what written criterion?** «It does not work» has to be stated as a test, not as a feeling. The 58 of the letter wall are decidable. The rest are not, yet.
+## 11. What was open, and what is decided now
 
-**How many make it across?** 395 minus 58, minus chapter 3's ten, minus whatever the review removes. Nobody has counted the union. The answer is somewhere under 300 and the shape of the work depends on whether it is 120 or 250.
+Five questions were left open. Four move; the fifth turns out to have been the wrong question.
 
-**Does the selector go in the deviser or beside it?** Putting it in `the_prompt` makes a seventeenth argument. Putting it beside makes a second thing to keep in step.
+**Where does it live, and in what form? — decided by §1.** If the thing is a vocabulary that `shared_dimensions` compares and a test asserts on, it has to be read by code, so it is not Markdown. It goes in `shared/`, beside `DIMENSIONS`, and not in `catalogue/`: a blueprint is executed, a vocabulary is compared, and those are different kinds of file. Whether the prose that goes with each name lives in the same file or beside it is a smaller question and can wait.
 
-**What does a form do to the ten dimensions?** `Experience.drawn` already carries ten axes along which an afternoon was conceived, and `ideas/10-the-page.md` §2 says none of them reaches the page. A method chosen from this artefact and a dimension already drawn could easily contradict each other, and nothing currently notices.
+**Who decides what survives, and against what criterion? — the criterion is now writable.** Not «does it work», which is a feeling. A form is in the vocabulary when it has **a name of at most 60 characters that two different afternoons using that form would both be written into**. A form nobody can name that way is out, however good it is — because an unnameable form cannot be compared, and comparing is the job. That is decidable per entry by one person reading it, and it is a much smaller decision than judging the method.
+
+**How many make it across? — answered: 204, from 323 entries.** The ceiling reasoned out here was 327, and 323 of the 395 were in fact used. The collapse was smaller than expected: 112 of the 204 records come from a single entry, and only 34 from three or more. The one chapter that folded hard is 12, where nine entries naming nine letter operations became one record, because all nine give a builder the same three instructions. §12 has what else the counting found.
+
+**Does the selector go in the deviser or beside it? — the question dissolves.** A vocabulary for `mechanic` is not a seventeenth argument to `the_prompt`. It enters where the mechanic is already spoken about, in `shared/experience_prompt.the-ten-dimensions.md`, and it is compared where comparison already happens, in `shared/experience_checks.py`. There is nothing new to keep in step. This is only true while the artefact stays a vocabulary; the moment it also carries the five properties of §5 and a selector filters on them, the question comes back, and it should be allowed to come back later rather than be answered now.
+
+**What does a form do to the ten dimensions? — it is one of them.** The feared contradiction, between a method chosen from the artefact and a dimension already drawn, does not arise: a form is the value of `mechanic`, not an eleventh thing standing next to the ten. What replaces the question is a real one, and it is the tradeoff in §1: `mechanic` stops being a phrase the model writes about what it made and becomes a label it picks before making it. Whether an afternoon built from a label is worse than one described afterwards is not known, and it is exactly what §10's twenty afternoons would measure — which is the right order: cheap test first to find out whether the vocabulary can exist, expensive test second to find out whether it should.
+
+**One question is new, and it is the largest.** §6 draws a line at a per-house score because it would be a model of a person. A closed vocabulary of forms draws a fainter one: covered ground already records which subjects a house has been over, and adding form names to it records which *methods* a house has been given. That is still a fact about afternoons and not about anybody — but it is one join away from *this house is given crosswords*, and the join would be easy and nobody would notice it being made. Worth writing down before the vocabulary exists, not after.
+
+## 12. What building it found
+
+The manual is [methods/](../methods/README.md): 204 records from 323 of the 395 entries, written 3 September 2026, one hand-written first and the rest in parallel. `tools/methods_check.py` accepts all of them. What the writing found is worth more than the count.
+
+**The estimates in §3 and §5 of this file were wrong by about three times, in the same direction.** A record's prompt-facing half was estimated at 300 characters, then at 800; measured across 204 it is 2 316. Five records are 11.3 kB against a 25 330-byte prompt, which is 45% of it. Five was never the right number. The serving is two-tier: a long list of names, which cost about 40 characters each, and one or two records in full. This does not change the argument against retrieval — it strengthens it, because with only one or two arriving, the choice of which is nearly the whole design, and a choice that cannot be tested is worse the fewer it makes.
+
+**Every length ceiling was set from the wrong constraint, twice.** They came from the prompt budget, which is about serving, not from what a record needs in order to teach. Across 157 records written under the first ceilings, `how` had a median of 643 against a cap of 700 and a ninetieth percentile of 697 — three characters under. The number was shaping the writing instead of catching it, which is the failure the prompt notes already record about stating a number of sheets. The ceilings now sit above the observed maximum.
+
+**Two fields in §5 did not survive contact.** `moments` was removed: sixteen records were written and all sixteen said `one`, because nothing in the research says how long anything takes, and a field with one value is a guess in the grammar of a declaration. `needs_letters_inside_words` became four values, because a cryptarithm is solved by doing a sum and composed by searching inside words, and one boolean was wrong whichever way it was set. A fourth value was added to `verification`: `in_the_object`, for scissors, a compass, a ruler or a soap film settling it with no sheet and no person. Without it, records contradicted their own `breaks` field in the same file.
+
+**The properties are lopsided, and §5's worry about filters was right.** 182 of 204 records cost the adult nothing, 183 work with one person, 180 need no letter work. Filtering on those removes almost nothing, exactly as the measured 268-of-395 predicted. The field that discriminates is `verification`: 93 in the sheet, 68 nowhere, 34 in the object, 9 needing a person. A house on an evening when nothing can be checked by a person has 195 to choose from, not 20. Narrowing has to come from covered ground and from spreading across chapters, not from the properties.
+
+**The rule that made the records worth having is not in §5 at all.** A record describes the version worth building, not the family. It was found writing the third one by hand: a chain of estimates has its verification nowhere, and asking for the same quantity by two independent roads puts it inside the sheet for the cost of one line. Recording `nowhere` would have been true of the family and useless to somebody building one tonight. The encyclopedia is neutral on purpose; the manual must not be.
+
+**Some entries are not forms, and the schema had nowhere to put them.** 68 of the 204 records are `move`: a thing applied to a form rather than a thing somebody does. A red herring, fading a sequence of sheets, asking for a prediction before the measurement. These are the most reusable records in the corpus and a schema with only forms in it would have thrown them away.
+
+**Five records were refused on principle rather than for failing.** A run of days, a variable-ratio reward, an inactivity notice, a progress bar and a campaign across twelve afternoons all work by making it hard to stop, which the deviser's prompt refuses in as many words. One ending in chapter 11 went the same way. Writing them with the objection buried in `breaks` would have read as permission.
+
+**And one entry was discarded that had already passed an automated check once.** Entry 289 is documentation of a product wearing the vocabulary of a form. It survived the encyclopedia's own checker at zero complaints and it survived this one too, because neither can tell. Somebody read it.
+
+**What is thin, said plainly.** Chapter 4, how a request is packaged, has 17 of its 27 entries untaken, and chapter 7, formal constraints, has 13 of 18. Chapter 4 is the gap that matters, because it is the catalogue of wrappers and the deviser's prompt already asks for an afternoon that begins in the middle of something and has a way in that is a thing.
+
+**Nothing reads it yet.** `the_prompt` still takes sixteen arguments and none of them is a form, `Drawn.mechanic` is still free text, and `not_the_same_afternoon_again` still fires on nothing. The manual is an artefact with no consumer, which is the state the encyclopedia was in yesterday. §10 is still the test, and it is now runnable.
