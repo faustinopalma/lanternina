@@ -15,7 +15,7 @@ import random
 from pathlib import Path
 
 from shared.capabilities import HouseCapability
-from shared.methods import Method, draw, load, runnable, where_they_are
+from shared.methods import CATALOGUE, Method, by_id, draw, index, load, runnable, where_they_are
 
 EVERYTHING = frozenset(
     {
@@ -99,6 +99,55 @@ def test_the_draw_gives_one_form_and_one_move() -> None:
 def test_a_draw_from_an_empty_corpus_is_two_absences_and_not_a_crash() -> None:
     """A container built without `methods/` devises afternoons with no method block."""
     assert draw(()) == (None, None)
+
+
+def test_the_catalogue_names_methods_and_marks_the_moves() -> None:
+    """A model choosing from one unmarked list takes two forms and never learns that the
+    second kind exists."""
+    said = index([a_method(method_id="f", name="a form"), a_method(method_id="m", kind="move")])
+
+    assert "f: a form" in said
+    assert "(a move)" in said
+    assert said.count("(a move)") == 1
+
+
+def test_two_calls_are_offered_different_menus() -> None:
+    """The defect this sampling exists for, measured before it existed.
+
+    Handed the whole catalogue twice for one household on 3 September 2026, the model chose
+    the same form and the same move both times, wording its reason differently each time.
+    The same judgement over the same list gives the same answer, so a fixed menu turns a
+    good chooser into a fixed one — worse than the random draw it replaced.
+    """
+    here = runnable(load(), capabilities=EVERYTHING)
+
+    first = set(index(here, sample=CATALOGUE, rand=random.Random(1)).splitlines())
+    second = set(index(here, sample=CATALOGUE, rand=random.Random(2)).splitlines())
+
+    assert len(first) == CATALOGUE
+    assert first != second
+    assert len(first & second) < CATALOGUE
+
+
+def test_a_sampled_menu_always_holds_both_kinds() -> None:
+    """Forms and moves are sampled apart, so no draw can leave one kind out entirely."""
+    here = runnable(load(), capabilities=EVERYTHING)
+
+    for seed in range(6):
+        lines = index(here, sample=CATALOGUE, rand=random.Random(seed)).splitlines()
+        moves = [one for one in lines if "(a move)" in one]
+        assert moves, f"seed {seed} offered no move"
+        assert len(moves) < len(lines), f"seed {seed} offered no form"
+
+
+def test_the_records_asked_for_come_back_and_inventions_do_not() -> None:
+    """A model that misspells an id gets silence, and the caller draws instead. Refusing the
+    afternoon because one of two names was wrong would be the diagnostic costing the product."""
+    here = (a_method(method_id="real"), a_method(method_id="other"))
+
+    assert by_id(here, ["real"]) == (here[0],)
+    assert by_id(here, ["invented"]) == ()
+    assert by_id(here, ["other", "real"]) == (here[1], here[0])
 
 
 def test_a_record_written_for_the_prompt_carries_the_craft() -> None:

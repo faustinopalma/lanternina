@@ -41,7 +41,7 @@ from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
 from shared.experience_checks import Complaint, check
 from shared.ids import LearnerId
-from shared.methods import Method, by_id, draw, index, load, runnable
+from shared.methods import CATALOGUE, Method, by_id, draw, index, load, runnable
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
 
@@ -82,7 +82,7 @@ async def _what_to_build_out_of(
     try:
         wants_form, wants_move, why = await deviser.choose(
             context,
-            catalogue=index(here),
+            catalogue=index(here, sample=CATALOGUE),
             interests=interests,
             avoid=avoid,
             already=already,

@@ -47,6 +47,12 @@ _LETTERS_OK: Final = "no"
 _FORM: Final = "form"
 _MOVE: Final = "move"
 
+# How many methods are put in front of the model at once. Not a budget: the whole catalogue
+# is only 12 kB and would fit. It is what keeps two afternoons for the same household from
+# being offered the same menu and therefore making the same choice, measured doing exactly
+# that on 3 September 2026. Sixty leaves a real choice and changes enough between calls.
+CATALOGUE: Final = 60
+
 
 @dataclass(frozen=True, slots=True)
 class Method:
@@ -243,20 +249,46 @@ def draw(
     )
 
 
-def index(methods: Sequence[Method]) -> str:
-    """The catalogue: every method this house can run, as an id and a name and nothing else.
+def index(
+    methods: Sequence[Method],
+    *,
+    sample: int = 0,
+    rand: random.Random | None = None,
+) -> str:
+    """The catalogue: methods this house can run, as an id and a name and nothing else.
 
     This is the knowledge the model is given, and it is deliberately not the knowledge
-    itself. A name is about 47 characters and a whole record is about 2 300, so the corpus
-    in full is some 460 kB against a prompt of 27 kB — the arithmetic settles it before
-    taste does. What a name buys is the one thing the model cannot supply for itself: that
-    there are a hundred and eighty of these and not the ten anybody thinks of.
+    itself. A name is about 47 characters and a whole record is about 2 300, so the corpus in
+    full is some 440 kB against a prompt of 27 kB — the arithmetic settles it before taste
+    does. What a name buys is the one thing the model cannot supply for itself: that there
+    are a hundred and eighty of these and not the ten anybody thinks of.
+
+    ``sample`` is why this takes a random source, and it was added after measuring. Handed
+    the whole catalogue twice for the same household on 3 September 2026, the model chose
+    `plan-of-a-place-you-know` with `hand-over-the-wrong-version-to-be-corrected` **both
+    times**, wording the reason differently and picking identically. That is worse than the
+    random draw it replaced: a menu that never changes turns a good chooser into a fixed one,
+    because the same judgement applied to the same list gives the same answer. Offering a
+    different subset each time keeps the judgement and removes the fixity, and it is cheaper.
 
     The `move` records are marked, because a model choosing blindly from one list would take
-    two forms and never learn that the second kind exists.
+    two forms and never learn that the second kind exists. Forms and moves are sampled
+    separately so that a subset can never arrive without one of each.
     """
+    chosen = list(methods)
+    if sample > 0:
+        picker = rand or random.Random()
+        forms = [one for one in chosen if not one.is_a_move]
+        moves = [one for one in chosen if one.is_a_move]
+        # Two thirds forms: a form is what the afternoon is built out of and a move only
+        # seasons it, so the choice that matters deserves the wider menu.
+        want_forms = max(1, sample * 2 // 3)
+        chosen = picker.sample(forms, min(want_forms, len(forms))) + picker.sample(
+            moves, min(max(1, sample - want_forms), len(moves))
+        )
+        picker.shuffle(chosen)
     lines = []
-    for one in methods:
+    for one in chosen:
         mark = " (a move)" if one.is_a_move else ""
         lines.append(f"{one.method_id}: {one.name}{mark}")
     return "\n".join(lines)
