@@ -2,11 +2,19 @@
 The shape of the answer. What follows it in the assembled prompt is the format describing itself — the shape of a moment, the acts, and what a page is — which lives with the format in shared/experience_prompt.*.md because the continuer sends it too.
 
 `themes` and `script` are what the parent approves alongside the overview: what it is about, and how it should go. The script is also what whatever runs the afternoon reads, so it is written for somebody doing it rather than for somebody deciding about it — the limits it names are the ones that matter once the paper is already on the table.
+
+The overview asked for the wrong thing until 3 September 2026, and it asked for it in one sentence: *say what it is like to be inside it*. It got exactly that. Measured on the fifteen overviews generated that day: eight of them open with the same two words — «Un pomeriggio quieto» or «Un'indagine quieta» — every one describes an atmosphere, none says what the person will do, what the house has to supply, or what is left at the end. A parent handed three of those reads the same fog three times. `panel/experiences.py::to_public` shows the overview, the themes and the script to the parent, and `ideas/08 §2` says approval is given to them, so this is the one string the whole gate rests on.
 -->
 Answer with JSON and nothing else, in this exact shape:
 {"title": "<text>", "overview": "<text>", "themes": ["..."], "script": "<text>", "minutes": <whole number>, "drawn": { ... }, "moments": [ ... ]}
 Do not write an id, a format version or a list of what the house needs: those are known already and are not yours to write.
-  "overview": at most $max_overview characters. What this afternoon is, in the words a parent decides by. Not a summary of the moments — those can be read. Say what it is like to be inside it.
+  "overview": at most $max_overview characters, and it is what a parent decides on. Five things, plainly, in this order:
+    what the person actually does — the verbs, and the thing they do them to;
+    what comes off the printer, and what that object is;
+    what is in their hands when it is over;
+    anything the house has to find beyond paper, a pencil and what is already on the table — or that there is nothing;
+    and the one thing somebody might not want about it, said without softening.
+    **Never say what it is like to be inside it.** «Un pomeriggio quieto», «un'indagine quieta», «il tono è raccolto» tell a parent nothing, and three afternoons that all begin that way cannot be told apart. Write it so somebody holding three of these can say which one they want and why.
   "themes": at most $max_themes of them, each at most $max_theme characters. What it is about, a few words each, and the first thing the parent reads. Nouns, not sentences.
   "script": at most $MAX_SCRIPT characters, and use them. This is the game itself, written out for whoever runs the afternoon — not a summary, not a statement of intent, not a paragraph about what you hope it will feel like. Write it in these parts, in this order, each headed by its own name on its own line:
     THE WORLD. Where this is set and what is true in it that is not true here. Two or three specifics that do the work of twenty: what the light is like, what the place smells of, what nobody there ever mentions.
