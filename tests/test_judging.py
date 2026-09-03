@@ -198,6 +198,53 @@ def test_a_reading_that_could_not_be_made_costs_the_afternoon_nothing(
     assert [one["kind"] for one in made] == ["plan"]
 
 
+# ── The page that exists while the prompts are being changed ─────────────────────────
+
+
+def test_the_readings_page_carries_the_whole_verdict_and_unpacks_the_finding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`agents/experience_judge.py` keeps the finding name inside `where`, ahead of a
+    colon, because `Complaint` is what a repair loop consumes. Splitting it on this side of
+    the wire keeps that encoding out of the browser."""
+    client = client_for()
+    devising(monkeypatch)
+    judging(monkeypatch, a_verdict())
+    household = household_of(client)
+    offered_id = offer(client, household)
+
+    rows = client.get("/api/verdicts", headers=headers()).json()["verdicts"]
+
+    assert [one["experienceId"] for one in rows] == [offered_id]
+    assert rows[0]["question"] == QUESTION
+    assert rows[0]["answer"] == ANSWER
+    assert rows[0]["prompt"] == PROMPT_FINGERPRINT
+    assert rows[0]["findings"] == [
+        {"name": "given_away", "where": "m3", "says": SAYS}
+    ]
+    # Before it is decided on, which is the whole reason this page exists and also the
+    # reason it is temporary. `panel/routes/verdicts.py` says so.
+    assert rows[0]["state"] == "pending"
+
+
+def test_the_readings_page_is_behind_the_parents_login() -> None:
+    client = client_for()
+
+    assert client.get("/api/verdicts").status_code != 200
+
+
+def test_an_afternoon_nobody_read_is_not_on_the_readings_page(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = client_for()
+    devising(monkeypatch)
+    judging(monkeypatch, RuntimeError("the cloud is not there"))
+    household = household_of(client)
+    offer(client, household)
+
+    assert client.get("/api/verdicts", headers=headers()).json()["verdicts"] == []
+
+
 # ── What it may cost ─────────────────────────────────────────────────────────────────
 
 

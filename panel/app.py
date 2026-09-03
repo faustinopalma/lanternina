@@ -61,6 +61,7 @@ from .routes import rhythm as rhythm_routes
 from .routes import themes as theme_routes
 from .routes import trail as trail_routes
 from .routes import usage as usage_routes
+from .routes import verdicts as verdict_routes
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
@@ -89,6 +90,9 @@ SECTIONS = (
     paper_routes,
     trail_routes,
     draft_routes,
+    # Temporary, for the weeks the prompts are being changed. `panel/routes/verdicts.py`
+    # says what has to be true before it can go.
+    verdict_routes,
 )
 
 

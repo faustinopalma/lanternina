@@ -10,6 +10,7 @@ import type {
   Device,
   Draft,
   Guidelines,
+  Judged,
   NewAssignment,
   NewPreferences,
   NewRhythm,
@@ -368,9 +369,44 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       ],
     },
   ];
+  // Two readings under one version of the prompt: one with something to report and one
+  // without, because a page that only ever shows findings hides what a clean one looks like.
+  const judged: Judged[] = [
+    {
+      experienceId: "un-pomeriggio-di-nuvole",
+      title: "Un pomeriggio di nuvole",
+      createdAt: NOW - 86_400,
+      state: "approved",
+      begunAt: NOW - 86_300,
+      prompt: "d427131c594e",
+      canBeWrong: true,
+      question: "Che forma aveva la nuvola delle sei",
+      answer: "Quella che si vede dalla finestra della cucina",
+      degraded: false,
+      findings: [
+        {
+          name: "given_away",
+          where: "moments[1].help[2]",
+          says: "Il terzo aiuto consegna il dettaglio ripetuto.",
+        },
+      ],
+    },
+    {
+      experienceId: "la-meridiana",
+      title: "La meridiana dichiarata dispersa",
+      createdAt: NOW - 172_800,
+      state: "pending",
+      begunAt: 0,
+      prompt: "d427131c594e",
+      canBeWrong: true,
+      question: "Perché Nora dichiarò dispersa la meridiana",
+      answer: "Per lasciarla sul davanzale",
+      degraded: false,
+      findings: [],
+    },
+  ];
   // What the parent has said to a running afternoon and the house has not yet come for.
-  let waiting: Said[] = [];
-  // One the house has placed, and one it has not been asked about yet.
+  let waiting: Said[] = [];  // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
     {
       id: "rm_1",
@@ -662,6 +698,8 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       if (!found) throw new Error("unknown run");
       return found;
     },
+
+    verdicts: async () => judged,
 
     drafts: async () =>
       drafts.map((one) => ({
