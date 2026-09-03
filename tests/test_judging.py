@@ -155,7 +155,6 @@ def test_the_verdict_reaches_the_trail_whole_beside_the_plan_it_judges(
     # The question first, because an afternoon whose question a reader could not state is
     # the loudest thing this produces and it should not need opening to be seen.
     assert made[1]["heading"] == QUESTION
-    assert made[1]["why"] == "given_away"
 
 
 def test_the_verdict_is_behind_the_parents_login(monkeypatch: pytest.MonkeyPatch) -> None:

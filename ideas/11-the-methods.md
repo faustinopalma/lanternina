@@ -168,3 +168,66 @@ The manual is [methods/](../methods/README.md): 204 records from 323 of the 395 
 **What is thin, said plainly.** Chapter 4, how a request is packaged, has 17 of its 27 entries untaken, and chapter 7, formal constraints, has 13 of 18. Chapter 4 is the gap that matters, because it is the catalogue of wrappers and the deviser's prompt already asks for an afternoon that begins in the middle of something and has a way in that is a thing.
 
 **Nothing reads it yet.** `the_prompt` still takes sixteen arguments and none of them is a form, `Drawn.mechanic` is still free text, and `not_the_same_afternoon_again` still fires on nothing. The manual is an artefact with no consumer, which is the state the encyclopedia was in yesterday. §10 is still the test, and it is now runnable.
+
+## 13. The reading, in production, and which prompt wrote what
+
+Written 3 September 2026. `agents/experience_judge.py` existed and was run by hand from `tools/judge_many.py` over folders in `experiments/`. Two things were missing and both matter for §10, which is a test that compares afternoons written under two prompts. Nothing read the afternoons a real house is actually offered, so the only material to compare was material generated for the comparison. And nothing anywhere said **which prompt wrote which afternoon**, so a change to a block could be argued about and not counted.
+
+Three things now exist. `panel/judging.py` reads back every afternoon the panel devises, on both paths — the house asking, and a parent approving their own brief. The verdict is kept whole beside the afternoon and is filed into the trail next to the plan it judges when the house says it began, behind the parent's own login. One line per afternoon goes to the workspace: ids, a prompt fingerprint, the finding names, a latency, token counts, and no words.
+
+**Measured in production, revision `--0000089`, 3 September 2026.** One afternoon devised for the real household in **137.9 s** and read back in **14.4 s** — 4 246 input tokens, 999 output of which 946 reasoning. No findings, and the reader could state the question the afternoon asks. The line it wrote:
+
+```
+afternoon judged {"household": "hh_9a6d6e38", "experience": "aftn-67586379",
+"prompt": "d427131c594e", "canBeWrong": true, "findings": [], "contradictions": [],
+"readTheQuestion": true, "degraded": false, "latencyS": 14.41, "inputTokens": 4246,
+"outputTokens": 999, "reasoningTokens": 946}
+```
+
+and the query written in `panel/judging.py` returns one row: prompt `d427131c594e`, finding `none`, one afternoon. That is the whole point of the exercise working end to end — the question *how did the afternoons from this prompt go* now has an answer that is a query rather than a memory.
+
+### The three open decisions, and what took them
+
+**Inside the reply to the house, or after it? — after.** The ingress gives up at 240 s. Measured 3 September 2026: a devise costs **112.4–183.8 s** over ten runs, median 143.1 s, and 137.9 s in production; the reading costs **14.4 s**. Inside one reply, the slowest measured devise plus a reading leaves about 42 s of margin, which is 17% and is not comfortable — but the margin is not what decides it. What decides it is that the two failures are not worth the same. A reading that does not happen costs a row. A reply that runs out of time costs the afternoon, which was already written and already paid for. Putting a diagnostic inside the transaction it measures means a diagnostic failure can destroy the product.
+
+What running it afterwards costs is written down rather than hidden: a replica shut down in the seconds following a reply loses a verdict, and a lost verdict is a missing row and nothing else.
+
+**Who pays for the extra call? — the household, counted like every other, and skipped at the limit.** Two properties, and they are what make *an afternoon never fails because of its own reading* true rather than intended. Its own afternoon is safe because the reading runs after that afternoon is stored. The next one is safe because a household already at its limit is not read back at all, so the reading can never be the call that crosses.
+
+The alternative — leaving the reading out of the figure the cap compares — was written first and then rejected with a number. A devising loop that has lost its mind is stopped at the limit; a reading outside the limit would make the real spend at that moment exactly **twice** what the limit says, because there is one reading per successful devise. A cap that a category of call can double is not a cap.
+
+What counting it costs is small enough to state: at most one reading per devised afternoon, and `panel/usage.py` works an ordinary month out at 1 302 calls, of which devising is the rarest path. The month reaches its limit a few per cent sooner and nothing else changes.
+
+**The fingerprint: where computed, where kept?** Computed in `agents/experience_deviser.py`, at import, over everything that agent can send a model which does not come from a house: every block, with the numbers the format fills them with, and the three shapes and three distances a parent's choice picks between. Today that is **31 366 characters** and `d427131c594e`.
+
+Fingerprinting the *rendered* prompt was the obvious reading of the requirement and it is wrong twice over. It is useless, with a number: `already`, `happened` and `ground` differ on every call, so ten afternoons would carry ten fingerprints and no two could ever be counted together. And it is not allowed: the rendered prompt carries `$note`, what the parent wrote about their household, whose documented example in `experience_deviser.household.md` is a death in the family three weeks ago. `panel/observability.py` says that may not reach a workspace. Fingerprinting the standing instruction sidesteps both, and a test asserts that no block is left out of it — the failure that would make a prompt change invisible in the counts.
+
+It is kept in three places, on purpose: the header of `docs/prompts/deviser.txt`, so a fingerprint in a log can be read against the text that produced it; the verdict row, in the store and in the trail, so a parent's record says which prompt wrote their afternoon; and the workspace line, which is what the query groups by. `tools/devise_many.py` writes it into `runs.json` and `tools/judge_many.py` reads it back out, so two folders in `experiments/` can be compared instead of merely both existing.
+
+### The question that no number answers, so it stays a question
+
+The verdict is shown to the parent, and `agents/experience_judge.py` says in its opening line that it is **never a gate**. It is not one in the code: nothing consults it to allow or refuse anything. But a parent who reads *this afternoon gives away its answer* while deciding whether to approve it has been handed a gate to operate — and one whose criteria come from a model that read a document knowing nothing about the house it is for.
+
+The version built today takes the smaller side: the verdict is not in `OfferedExperience.to_public`, so it is absent from what a parent reads while deciding, and it appears in the trail once the afternoon has begun. That is a default, not an answer. **Should a parent see the reading before they decide?** Arguments exist both ways and neither has a measurement behind it. It is worth knowing that showing it is one line of code and un-showing it, after parents have relied on it, is not.
+
+### What ten devisings found, and it is one limit and not several
+
+Ten afternoons devised against the real service on 3 September 2026, prompt `d427131c594e`, in `experiments/12-giudice-in-produzione`. All ten came back. The counting was possible at all because `tools/devise_many.py` now configures logging: `panel/devising.py` writes every refusal and every repair at INFO and nothing in that tool had a handler, so a batch where the format refused half the answers and the repair loop quietly recovered them looked exactly like a batch where nothing went wrong.
+
+**Five of ten were refused by the format, and all five name the same rule.** The illustration on a handed-over page is capped at 200 characters and came back at 201, 208, 209, 215 and 251. A sixth, in production, came back at 206. Nothing else was refused by the format: not a line, not a heading, not a title, not an overview, not a script. So the question the last batch left open — *do the new instructions push the model over the other limits* — has an answer, and it is **no**. One limit is being overrun, about half the time, by a median of nine characters. That is a prompt to tighten in one place, not a model to change. One further afternoon was refused by the checks, for a way out reaching for an object nothing before it mentioned.
+
+**All ten were recovered by the repair loop**, which is what the loop is for and also what hid the rate until today.
+
+**The readings, against the earlier batches.** `does_not_end_on_the_object` 3 of 10 and `given_away` 1 of 10, against 2 of 5, 1 of 5, 5 findings across 5, and 0 of 4 in `experiments/07` to `10`. The `given_away` is a real one and was read by hand to check: it names `moments[1].help[2]`, the **third** rung, where «Cerchia il muro in entrambe» hands over the repeated detail before the fourth rung hands over the answer. The fourth rung was not named once in ten, which is the empirical confirmation that the line added to `experience_judge.instruction.md` today works — that finding used to be worth nothing because it reported the format doing its job.
+
+**And the reader stated the question on all ten.** Zero afternoons where something can be got wrong and no reader could say what. That is the loudest thing this instrument produces and it stayed quiet, which is a result and not an absence of one.
+
+### Where the next session starts
+
+`panel/judging.py`, `agents/experience_deviser.PROMPT_FINGERPRINT`, `tests/test_judging.py`, and `experiments/12-giudice-in-produzione/judged.json` as the first batch whose prompt is written down beside it.
+
+Three things are worth doing next and one of them is cheap. **Tighten the illustration.** It is one prompt block, `shared/experience_prompt.the-marks-on-a-page.md`, one limit, and a measured overrun of a median of nine characters over half the batch; a second batch of ten says whether the edit worked, and the fingerprint says the two batches are comparable. **Then §10 becomes runnable for real**: twenty afternoons under two fingerprints, counted rather than remembered. **And the question above stays a question** until somebody with a parent's stake in it answers it.
+
+**Done when**, for the first: a batch of ten under a new fingerprint with no illustration over 200, compared against `d427131c594e` by the query in `panel/judging.py` or by `tools/judge_many.py` over the two folders.
+
+

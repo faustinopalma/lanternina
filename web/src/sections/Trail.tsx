@@ -50,7 +50,9 @@ function Written({ made }: { made: Made }) {
                   ? t("trail.kind.fault")
                   : made.kind === "came"
                     ? t("trail.kind.came")
-                    : made.kind;
+                    : made.kind === "judged"
+                      ? t("trail.kind.judged")
+                      : made.kind;
 
   return (
     <li className="border-l-2 border-edge pl-3">

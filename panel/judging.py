@@ -4,11 +4,13 @@
 is the half that runs in the container that holds the identity, the twin of
 `panel/devising.py` — and the differences from that twin are the whole design of it.
 
-**It runs after the afternoon is stored, never before.** A devise takes 120–180 s measured
-and this adds about 30 more; the Container Apps ingress gives up at 240 s. Inside the same
-reply that would leave 30 s of margin on the slowest devise already measured, and a request
-that runs out of time loses the afternoon too — which would mean a diagnostic could cost a
-house its afternoon. So the house is answered first and this runs afterwards.
+**It runs after the afternoon is stored, never before.** Measured 3 September 2026: a
+devise costs 112–184 s over ten runs, median 143 s, and 138 s in production; this costs
+14.4 s. The Container Apps ingress gives up at 240 s, so inside the same reply the slowest
+measured devise plus a reading leaves about 42 s. That margin is not the argument on its
+own — what decides it is that the two failures are not worth the same. A reading that does
+not happen costs a row; a reply that runs out of time costs the afternoon, which was
+already written and already paid for. So the house is answered first and this runs after.
 
 **Its router has no content-safety gate, and that is a property rather than an omission.**
 `FoundryRouter.analyze` is internal reasoning and does not pass the gate; `generate_for_user`

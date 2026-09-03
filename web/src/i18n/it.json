@@ -307,6 +307,7 @@
   "trail.kind.continuation": "Il seguito, scritto quando è tornato un foglio",
   "trail.kind.fault": "Qui non ha funzionato",
   "trail.kind.came": "Quello che è tornato dal vetro",
+  "trail.kind.judged": "Il piano, riletto prima che qualcuno lo facesse",
   "usage.title": "Consumo",
   "usage.note": "Quanto hanno consumato i modelli questo mese.",
   "usage.loading": "Sto leggendo il consumo.",

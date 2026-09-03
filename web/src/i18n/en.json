@@ -307,6 +307,7 @@
   "trail.kind.continuation": "The rest, written when a page came back",
   "trail.kind.fault": "This did not work",
   "trail.kind.came": "What came back off the glass",
+  "trail.kind.judged": "The plan, read back before anybody did it",
   "usage.title": "Usage",
   "usage.note": "What the models consumed this month.",
   "usage.loading": "Reading the usage.",

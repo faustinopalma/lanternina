@@ -521,10 +521,10 @@ def _read_it_back(
 ) -> None:
     """Queue the reading of an afternoon that was just written, for after the answer.
 
-    A background task rather than another await: a devise takes 120–180 s measured and the
-    ingress gives up at 240, so the reading would be spending the margin that belongs to
-    the afternoon. What it costs is that a replica shut down in the seconds after a reply
-    loses the verdict — which loses a row and nothing else.
+    A background task rather than another await, because the two failures are not worth the
+    same: a reading that does not happen costs a row, and a reply that runs out of time
+    costs an afternoon that was already written and already paid for. `panel/judging.py`
+    has the measured latencies.
     """
     from ..judging import judged_and_filed
 
@@ -672,10 +672,6 @@ def afternoon_begun(
             # not state what the afternoon asks, which is the loudest thing this produces.
             heading=str(offered.verdict.get("question") or ""),
             body=json.dumps(offered.verdict, ensure_ascii=False, indent=2),
-            why=", ".join(
-                str(one.get("where", "")).split(":", 1)[0]
-                for one in offered.verdict.get("findings") or ()
-            ),
         )
     return {"id": row.id, "begunAt": row.begun_at}
 
