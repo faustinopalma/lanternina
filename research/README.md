@@ -93,6 +93,18 @@ Stated here rather than discovered in a pull request.
 - **The judge and the devisor are the same family of model.** A shared blind spot is invisible to this apparatus by construction.
 - **The axes are not independent.** An afternoon that cannot be started scores badly on most of them, so the mean across axes is a summary and not a measurement.
 
+## Reading one
+
+```powershell
+python -m research.reader
+```
+
+Writes `build/research.html` and opens it: every afternoon of every run, and for each one the three things a score cannot be acted on without — the **input** that decided it (the household's settings, what had already been offered there, the method drawn from `methods/`), the **output** it produced (the overview, the script, the devised document and the transcript of it being played), and the **score** with the judge's sentence beside each axis. One self-contained file, no server, gitignored because it rebuilds in under a second.
+
+Two smaller things come out of `python -m research.scores`, which runs at the end of a run and can be re-run at any time: `scores.json`, the eight axes per run, and `afternoons.md`, one line per afternoon across every run. Both are committed and small, so a change in a score shows up in a diff.
+
+⚠️ This used to be a page in the parent's panel, and it was in the wrong product: axis means are a developer's material, and a parent has no decision that changes because one of them moved. It was removed on 4 September 2026 — route, section, catalogue strings and the one file the image carried for it.
+
 ## Running one
 
 ```powershell
@@ -106,7 +118,7 @@ About **145 s and one and a half cents** per afternoon, measured 29 August 2026:
 
 ## What is published
 
-`runs/` is committed. Each directory holds `afternoons.json` — everything, including full transcripts — `summary.json`, and a `README.md` that is the run as a page.
+`runs/` is committed. Each directory holds `afternoons.json` — everything, including full transcripts, the input each afternoon was devised from and the document that came back — `summary.json`, and a `README.md` that is the run as a page.
 
 Nothing in it came from a person in a household: the settings are invented, the afternoons are generated, and both sides of every transcript are a model. Committing it is what makes two runs comparable with `git diff` and what lets somebody argue with a score by reading the quote under it.
 

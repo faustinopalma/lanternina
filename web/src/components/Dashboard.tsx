@@ -17,7 +17,6 @@ import { Pictures } from "@/sections/Pictures";
 import { Preferences } from "@/sections/Preferences";
 import { Proposals } from "@/sections/Proposals";
 import { Reminders } from "@/sections/Reminders";
-import { Research } from "@/sections/Research";
 import { Rhythm } from "@/sections/Rhythm";
 import { Themes } from "@/sections/Themes";
 import { TheTrail } from "@/sections/Trail";
@@ -141,12 +140,6 @@ export function Dashboard({ api }: { api: Api }) {
           title: t("verdicts.title"),
           note: t("verdicts.note"),
           Body: Verdicts,
-        },
-        {
-          name: "research",
-          title: t("research.title"),
-          note: t("research.note"),
-          Body: Research,
         },
         { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
       ],

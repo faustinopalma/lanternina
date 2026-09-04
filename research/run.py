@@ -74,7 +74,26 @@ async def one_afternoon(
     ran = list(memory.ran)
     going = how_it_has_gone(ran)  # type: ignore[arg-type]
     ground = the_ground(memory.offered)
-    row: dict[str, Any] = {"household": house.name}
+    # Everything that decided this afternoon, beside the afternoon itself. Without it a row
+    # says a score and not what produced it, and a score with no input is a number nobody
+    # can act on: the household's settings, what has already been offered here, and the
+    # method drawn from `methods/` are the three things a prompt change is judged against.
+    row: dict[str, Any] = {
+        "household": house.name,
+        "input": {
+            "language": house.language,
+            "interests": list(house.interests),
+            "avoid": list(house.avoid),
+            "difficulty": house.difficulty,
+            "variety": house.variety,
+            "sheets": house.sheets,
+            "note": house.note,
+            "guidelines": list(house.guidelines),
+            "already": [one.title for one in ran if getattr(one, "title", "")],
+            "ground": ground.to_dict() if ground.anything() else {},
+            "howItHasGone": going.to_dict(),
+        },
+    }
     built_from: dict[str, str] = {}
     try:
         experience, spent = await devise_experience(
@@ -144,6 +163,11 @@ async def one_afternoon(
             "title": experience.title,
             "experienceId": experience.experience_id,
             "builtFrom": built_from,
+            # The document itself, and not a count of its moments. It is what the prompt
+            # actually produced, so it is the only place a format-level defect can be seen
+            # — a way out reaching for nothing, a weight that is not a whole number. Roughly
+            # doubles the size of a run's file, which is what a developer's artefact is for.
+            "experience": experience.to_dict(),
             "themes": list(experience.themes),
             "minutes": experience.minutes,
             "moments": len(experience.moments),

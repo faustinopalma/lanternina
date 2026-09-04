@@ -1,10 +1,8 @@
-"""The score history: one file built from the run directories, and the route that serves it.
+"""The score history: one file built from the run directories.
 
-Two things are worth a test rather than a look. Rebuilding from the directories is the
-definition of the file, so a run directory that appears must reach it. And the panel must
-answer with an empty history rather than an error when the file was not shipped — the
-image copies one small file, and a route that fell over without it would take the whole
-section with it for a reason nobody could see.
+Rebuilding from the directories is the definition of the file, so a run directory that
+appears must reach it. Nothing here is served to anybody: the reader is
+`python -m research.reader`, which is a developer's tool and not part of the product.
 """
 
 from __future__ import annotations
@@ -12,16 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-from fastapi.testclient import TestClient
-
-from panel.app import create_app
-from panel.config import Settings
-from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
-from panel.store import InMemoryAccountStore
 from research.scores import collect, write
-
-PARENT = "parent@example.test"
 
 A_RUN = {
     "at": "2026-08-29T072645Z",
@@ -33,15 +22,6 @@ A_RUN = {
     "axes": {"canBeStarted": 4.57, "sheetStandsAlone": 1.95},
     "minutes": 57.9,
 }
-
-
-def client_for() -> TestClient:
-    settings = Settings(dev_auth=True, bootstrap_contact=PARENT)
-    return TestClient(create_app(store=InMemoryAccountStore(), settings=settings))
-
-
-def headers() -> dict[str, str]:
-    return {DEV_SUBJECT_HEADER: "parent-1", DEV_CONTACT_HEADER: PARENT}
 
 
 def a_run(runs: Path, name: str, **changes: object) -> None:
@@ -75,34 +55,3 @@ def test_writing_the_history_leaves_a_file_that_reads_back(tmp_path: Path) -> No
     write(tmp_path, to)
 
     assert json.loads(to.read_text(encoding="utf-8")) == collect(tmp_path)
-
-
-def test_the_panel_serves_the_history_behind_the_parents_login(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    a_run(tmp_path, "2026-09-03T090000Z-dopo", prompt="d427131c594e")
-    scores = tmp_path / "scores.json"
-    write(tmp_path, scores)
-    monkeypatch.setattr("panel.routes.research.HISTORY", scores)
-    client = client_for()
-
-    assert client.get("/api/research").status_code != 200
-
-    rows = client.get("/api/research", headers=headers()).json()["runs"]
-    assert [row["label"] for row in rows] == ["dopo"]
-    assert rows[0]["axes"]["sheetStandsAlone"] == 1.95
-    assert rows[0]["afternoons"] == 24
-
-
-def test_a_panel_shipped_without_the_file_answers_with_no_runs(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
-    """One small file is copied into the image. A route that fell over without it would
-    take the section down for a reason nobody reading the page could see."""
-    monkeypatch.setattr("panel.routes.research.HISTORY", tmp_path / "not-here.json")
-    client = client_for()
-
-    answer = client.get("/api/research", headers=headers())
-
-    assert answer.status_code == 200
-    assert answer.json() == {"runs": []}

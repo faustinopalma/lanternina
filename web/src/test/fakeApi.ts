@@ -19,7 +19,6 @@ import type {
   Preferences,
   Proposal,
   Reminder,
-  ResearchRun,
   Rhythm,
   Said,
   NewSaid,
@@ -406,32 +405,6 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       findings: [],
     },
   ];
-  // Two research runs, so the table has a row along which something moved. The first has
-  // no fingerprint, like the runs that predate them.
-  const research: ResearchRun[] = [
-    {
-      run: "2026-08-29T072645Z-prima-corsa",
-      at: "2026-08-29T072645Z",
-      label: "prima-corsa",
-      prompt: "",
-      afternoons: 24,
-      refused: 3,
-      minutes: 57.9,
-      endings: { closed: 0, way_out: 10, stopped: 11 },
-      axes: { canBeStarted: 4.57, sheetStandsAlone: 1.95 },
-    },
-    {
-      run: "2026-09-03T090000Z-dopo",
-      at: "2026-09-03T090000Z",
-      label: "dopo",
-      prompt: "d427131c594e",
-      afternoons: 24,
-      refused: 0,
-      minutes: 61.2,
-      endings: { closed: 2, way_out: 9, stopped: 13 },
-      axes: { canBeStarted: 4.71, sheetStandsAlone: 3.61 },
-    },
-  ];
   // What the parent has said to a running afternoon and the house has not yet come for.
   let waiting: Said[] = [];  // One the house has placed, and one it has not been asked about yet.
   let reminders: Reminder[] = [
@@ -727,8 +700,6 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
 
     verdicts: async () => judged,
-
-    research: async () => research,
 
     drafts: async () =>
       drafts.map((one) => ({

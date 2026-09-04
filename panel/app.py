@@ -57,7 +57,6 @@ from .routes import preferences as preference_routes
 from .routes import proposals as proposal_routes
 from .routes import reminders as reminder_routes
 from .routes import requests as request_routes
-from .routes import research as research_routes
 from .routes import rhythm as rhythm_routes
 from .routes import themes as theme_routes
 from .routes import trail as trail_routes
@@ -94,7 +93,6 @@ SECTIONS = (
     # Temporary, for the weeks the prompts are being changed. `panel/routes/verdicts.py`
     # says what has to be true before it can go.
     verdict_routes,
-    research_routes,
 )
 
 
