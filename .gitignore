@@ -86,31 +86,6 @@ sessions/
 ledger/
 approved/
 profiles/
-# Working photographs of the bench, the hardware and the printed sheets. Not
-# deliverables, and too easy for a real page or a face to end up in one.
-pictures/
-# Any image that might be a real page rather than a synthetic fixture. Scanners
-# emit TIFF, phones emit HEIC, the renderer emits SVG — all of them can carry a
-# page of her handwriting, so the list is by intent, not by convenience.
-*.png
-*.jpg
-*.jpeg
-*.jpe
-*.gif
-*.bmp
-*.tif
-*.tiff
-*.webp
-*.heic
-*.heif
-*.dng
-*.raw
-*.ppm
-*.pgm
-*.pnm
-*.svg
-*.pdf
-*.ps
 !docs/diagrams/*.png
 !docs/diagrams/*.svg
 !tests/fixtures/**/*.png
