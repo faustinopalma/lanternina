@@ -25,27 +25,35 @@ jobs:
       - uses: actions/checkout@v7
 
       # Cheap guards against the two ways this page breaks silently: an <img> or a
-      # stylesheet whose file was renamed, and a page that lost its language switch.
+      # stylesheet whose file was renamed, and a page that lost one of its languages.
       - name: check every local reference resolves
         run: |
           python3 - <<'PY'
           import pathlib, re, sys
 
           site = pathlib.Path("site")
-          html = (site / "index.html").read_text(encoding="utf-8")
+          pages = sorted(site.glob("*.html"))
+          if not pages:
+              sys.exit("no pages found — the guard would have passed by checking nothing")
 
-          refs = re.findall(r'(?:src|href)="(?!https?:|#|mailto:)([^"]+)"', html)
-          missing = [r for r in refs if not (site / r).exists()]
+          problems = []
+          for page in pages:
+              html = page.read_text(encoding="utf-8")
 
-          langs = set(re.findall(r'data-lang="(\w+)"', html))
+              refs = re.findall(r'(?:src|href)="(?!https?:|#|mailto:)([^"]+)"', html)
+              missing = [r for r in refs if not (site / r).exists()]
 
-          print(f"references checked: {len(refs)}")
-          print(f"languages present : {sorted(langs)}")
+              langs = set(re.findall(r'data-lang="(\w+)"', html))
 
-          if missing:
-              sys.exit(f"missing files: {missing}")
-          if langs != {"it", "en"}:
-              sys.exit(f"expected both languages, found {sorted(langs)}")
+              print(f"{page.name}: {len(refs)} references, languages {sorted(langs)}")
+
+              if missing:
+                  problems.append(f"{page.name} points at missing files: {missing}")
+              if langs != {"it", "en"}:
+                  problems.append(f"{page.name} has languages {sorted(langs)}, expected both")
+
+          if problems:
+              sys.exit("\n".join(problems))
           PY
 
       - uses: Azure/static-web-apps-deploy@v1

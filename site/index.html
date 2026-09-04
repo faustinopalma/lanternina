@@ -1,20 +1,20 @@
 <!doctype html>
-<!-- The public page. Italian by default; site.js switches to English and remembers the choice.
-     No web fonts, no analytics, no third-party requests: the CSP below allows none. -->
-<html lang="it">
+<!-- The public page. English by default for this audience; site.js switches to Italian and
+     remembers the choice. No web fonts, no analytics, no third-party requests. -->
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lanternina</title>
+    <title>Lanternina — an afternoon on paper, decided by a parent</title>
     <meta
       name="description"
-      content="Lanternina inventa un pomeriggio per un adolescente, lo fa approvare a un genitore, e poi lo fa succedere in una stanza vera: su carta, su schermi che non si scorrono, e con una penna in mano."
+      content="A home system that invents an afternoon for an adolescent, has a parent approve it, and runs it on paper and e-paper. Models in Microsoft Foundry; nothing infers on the device."
     />
     <link rel="canonical" href="https://lanternina.com/" />
     <meta property="og:title" content="Lanternina" />
     <meta
       property="og:description"
-      content="Un pomeriggio inventato per una persona, approvato da un genitore, e fatto succedere su carta in una stanza vera."
+      content="One prompt draws a whole A4 page. A returned page is read by diffing it against its own blank. The guarantees are types and tests, not conventions."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://lanternina.com/" />
@@ -25,276 +25,456 @@
 
   <body>
     <header class="bar">
-      <span class="wordmark">Lanternina</span>
-      <nav class="langs" aria-label="Lingua / Language">
-        <button type="button" data-set-lang="it" aria-pressed="true">Italiano</button>
-        <button type="button" data-set-lang="en" aria-pressed="false">English</button>
+      <a class="wordmark" href="./">Lanternina</a>
+      <nav class="barnav">
+        <a href="flows.html" data-lang="en">Flows</a>
+        <a href="flows.html" data-lang="it">I flussi</a>
+        <a href="https://github.com/faustinopalma/lanternina">GitHub</a>
+        <span class="langs">
+          <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-set-lang="it" aria-pressed="false">IT</button>
+        </span>
       </nav>
     </header>
 
     <main>
       <section class="hero">
-        <h1>Lanternina</h1>
+        <div class="prose">
+          <h1>Lanternina</h1>
 
-        <p class="lede" data-lang="it">
-          Lanternina inventa un pomeriggio per un adolescente, lo fa approvare a un genitore, e poi
-          lo fa succedere in una stanza vera: su carta, su schermi che non si scorrono, e con una
-          penna in mano.
-        </p>
-        <p class="lede" data-lang="en">
-          Lanternina invents an afternoon for an adolescent, has a parent approve it, and then runs
-          it in a real room: on paper, on screens that do not scroll, and with a pen in hand.
-        </p>
+          <p class="lede" data-lang="en">
+            A home system that invents an afternoon for an adolescent, has a parent approve it, and
+            then runs it in a real room — on paper, on e-paper displays, and on physical buttons. It
+            reads what comes back in handwriting and decides what happens next from that.
+          </p>
+          <p class="lede" data-lang="it">
+            Un sistema di casa che inventa un pomeriggio per un adolescente, lo fa approvare a un
+            genitore, e poi lo fa succedere in una stanza vera — su carta, su schermi a inchiostro
+            elettronico e su pulsanti fisici. Legge quello che torna scritto a mano, e da lì decide
+            come va avanti.
+          </p>
 
-        <p class="sub" data-lang="it">
-          Non c'è un'applicazione da aprire, non c'è niente a cui accedere, e non c'è niente da
-          scorrere.
-        </p>
-        <p class="sub" data-lang="en">
-          There is no application to open, nothing to log in to, and nothing to scroll.
-        </p>
+          <p class="sub" data-lang="en">
+            A mini-PC in a house drives two e-paper displays, an inkjet and a flatbed scanner. Every
+            language and vision call goes to Microsoft Foundry in the EU. No model runs on the
+            device, and there is no offline mode.
+          </p>
+          <p class="sub" data-lang="it">
+            Un mini-PC in una casa pilota due schermi a inchiostro elettronico, una stampante e uno
+            scanner. Ogni chiamata di linguaggio e di visione va a Microsoft Foundry, in UE. Nessun
+            modello gira sul dispositivo, e non esiste una modalità offline.
+          </p>
+        </div>
 
-        <figure class="bleed">
+        <figure class="wide">
           <img
             src="images/hero.jpg"
-            width="1600"
-            height="900"
-            alt="Uno schermo a inchiostro elettronico in una cornice, su un tavolo, con un disegno."
-            data-alt-it="Uno schermo a inchiostro elettronico in una cornice, su un tavolo, con un disegno."
-            data-alt-en="An e-paper screen in a frame, on a table, showing a drawing."
+            width="1800"
+            height="771"
+            alt="A 7.5-inch e-paper display in a 3D printed frame, showing an engraving."
+            data-alt-en="A 7.5-inch e-paper display in a 3D printed frame, showing an engraving."
+            data-alt-it="Uno schermo a inchiostro elettronico da 7,5 pollici in una cornice stampata in 3D, con un'incisione."
           />
         </figure>
       </section>
 
       <section>
-        <h2 data-lang="it">Comincia sul tavolo</h2>
-        <h2 data-lang="en">It starts on the table</h2>
-
-        <p data-lang="it">
-          Il pomeriggio arriva dove sei già. Una pagina esce dalla stampante — una mappa, una
-          scheda, l'etichetta di un museo, il foglio di un taccuino — disegnata per intero, una
-          volta sola, per quel pomeriggio lì. Su uno schermo appeso al muro compare una frase, e poi
-          lo schermo resta fermo.
-        </p>
-        <p data-lang="en">
-          The afternoon arrives where you already are. A page comes out of the printer — a map, a
-          dossier, a museum label, a leaf from a notebook — drawn whole, once, for that afternoon
-          and no other. A sentence appears on a screen on the wall, and then the screen holds
-          still.
-        </p>
-
-        <div class="pair">
-          <figure>
-            <img
-              src="images/page.jpg"
-              width="707"
-              height="1000"
-              loading="lazy"
-              alt="Una pagina stampata."
-              data-alt-it="Una pagina stampata."
-              data-alt-en="A printed page."
-            />
-          </figure>
-          <figure>
-            <img
-              src="images/screen.jpg"
-              width="800"
-              height="480"
-              loading="lazy"
-              alt="Una frase su uno schermo a inchiostro elettronico."
-              data-alt-it="Una frase su uno schermo a inchiostro elettronico."
-              data-alt-en="A sentence on an e-paper screen."
-            />
-          </figure>
+        <div class="prose">
+          <h2 data-lang="en">Four things that are unusual</h2>
+          <h2 data-lang="it">Quattro cose fuori dall'ordinario</h2>
         </div>
+
+        <div class="cards">
+          <article class="card">
+            <h3 data-lang="en">One prompt draws the whole sheet</h3>
+            <h3 data-lang="it">Un prompt disegna il foglio intero</h3>
+            <p data-lang="en">
+              There is no layout engine. An image model is given every string that has already
+              passed the safety gate, told to letter exactly those characters, and returns a finished
+              A4 page. The design work is the prompt. Measured: 19–33 s per page, 0.5–2.7 % of the
+              sheet in ink.
+            </p>
+            <p data-lang="it">
+              Non c'è un motore di impaginazione. A un modello di immagini vengono date tutte le
+              stringhe già passate dal filtro di sicurezza, con l'istruzione di scriverle esattamente
+              così, e torna una pagina A4 finita. Il lavoro di design è il prompt. Misurato: 19–33 s
+              a pagina, 0,5–2,7 % del foglio in inchiostro.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-lang="en">A page is read against its own blank</h3>
+            <h3 data-lang="it">Una pagina si legge contro il proprio bianco</h3>
+            <p data-lang="en">
+              No QR code, no ArUco markers, no declared grid — nothing printed on the paper that is
+              there for a machine. Reading is handing a model two images, the blank and what came
+              back off the glass, and asking what is different. Measured: 4.4–5.5 s.
+            </p>
+            <p data-lang="it">
+              Niente QR, niente marker ArUco, nessuna griglia dichiarata — niente sulla carta che sia
+              lì per una macchina. Leggere vuol dire dare a un modello due immagini, il bianco e
+              quello che è tornato dal vetro, e chiedere cosa è cambiato. Misurato: 4,4–5,5 s.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-lang="en">The cloud cannot start anything</h3>
+            <h3 data-lang="it">Il cloud non può far partire niente</h3>
+            <p data-lang="en">
+              The dashboard is inert by construction: approving writes a row and does nothing else.
+              The house asks, on its own clock, and the answer arrives inside the reply. There is no
+              inbound path to a device in the room.
+            </p>
+            <p data-lang="it">
+              Il pannello è inerte per costruzione: approvare scrive una riga e nient'altro. È la
+              casa che chiede, sul proprio orologio, e la risposta arriva dentro la replica. Non
+              esiste una strada in ingresso verso un dispositivo nella stanza.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3 data-lang="en">The guarantees are types and tests</h3>
+            <h3 data-lang="it">Le garanzie sono tipi e test</h3>
+            <p data-lang="en">
+              An agent has nowhere to record that its own output is acceptable, because
+              <code>Proposal</code> has no status field. Only the safety gate can mint the type a
+              user-facing payload requires. Each boundary test was mutation-checked: the violation
+              was injected and the test watched to fail.
+            </p>
+            <p data-lang="it">
+              Un agente non ha dove annotare che la propria uscita va bene, perché
+              <code>Proposal</code> non ha un campo di stato. Solo il filtro di sicurezza può coniare
+              il tipo che un contenuto destinato a una persona richiede. Ogni test di confine è stato
+              verificato al negativo: violazione iniettata, e test guardato mentre falliva.
+            </p>
+          </article>
+        </div>
+
+        <p class="prose more">
+          <a href="flows.html" data-lang="en">The flows, drawn →</a>
+          <a href="flows.html" data-lang="it">I flussi, disegnati →</a>
+        </p>
       </section>
 
       <section>
-        <h2 data-lang="it">Quello che scrivi decide come va avanti</h2>
-        <h2 data-lang="en">What you write decides how it goes on</h2>
+        <div class="prose">
+          <h2 data-lang="en">What comes out, and what goes back</h2>
+          <h2 data-lang="it">Cosa esce, e cosa torna indietro</h2>
 
-        <p data-lang="it">
-          Rimetti il foglio sullo scanner. Viene letto confrontandolo con com'era prima di essere
-          riempito, e le pagine dopo vengono scritte a partire da quello che c'è sopra, mentre il
-          foglio è ancora sul tavolo.
-        </p>
-        <p data-lang="en">
-          You put the sheet back on the scanner. It is read against how it looked before anybody
-          filled it in, and the pages after it are written from what is on it, while the sheet is
-          still on the table.
-        </p>
+          <p data-lang="en">
+            The page below was drawn whole by an image model. Somebody writes on it and puts it back
+            on the scanner glass; the reading decides the next moments, which are written while the
+            sheet is still on the table.
+          </p>
+          <p data-lang="it">
+            La pagina qui sotto è stata disegnata per intero da un modello di immagini. Qualcuno ci
+            scrive sopra e la rimette sul vetro dello scanner; la lettura decide i momenti dopo, che
+            vengono scritti mentre il foglio è ancora sul tavolo.
+          </p>
+        </div>
 
-        <p data-lang="it">
-          Quello che hai scritto non viene conservato. Viene letto, serve per il momento dopo, e poi
-          non c'è più. L'unica traccia di com'è andato un pomeriggio è la carta, e la carta resta a
-          chi l'ha riempita.
-        </p>
-        <p data-lang="en">
-          What you wrote is not kept. It is read, it decides the next moment, and then it is gone.
-          The only account of how an afternoon went is the paper, and the paper belongs to the
-          person who filled it in.
-        </p>
-
-        <div class="pair">
+        <div class="pair wide">
           <figure>
             <img
               src="images/page.jpg"
-              width="707"
-              height="1000"
+              width="919"
+              height="1300"
               loading="lazy"
-              alt="La pagina come esce dalla stampante."
-              data-alt-it="La pagina come esce dalla stampante."
-              data-alt-en="The page as it comes out of the printer."
+              alt="A printed page, blank."
+              data-alt-en="A printed page, blank."
+              data-alt-it="Una pagina stampata, bianca."
             />
-            <figcaption data-lang="it">Come esce.</figcaption>
-            <figcaption data-lang="en">As it comes out.</figcaption>
+            <figcaption data-lang="en">Handed over. Unedited model output.</figcaption>
+            <figcaption data-lang="it">Consegnata. Uscita del modello, non ritoccata.</figcaption>
           </figure>
           <figure>
             <img
               src="images/page-written.jpg"
-              width="666"
-              height="1000"
+              width="866"
+              height="1300"
               loading="lazy"
-              alt="La stessa pagina, riempita a mano."
-              data-alt-it="La stessa pagina, riempita a mano."
+              alt="The same page, filled in by hand."
               data-alt-en="The same page, filled in by hand."
+              data-alt-it="La stessa pagina, riempita a mano."
             />
-            <figcaption data-lang="it">Come torna.</figcaption>
-            <figcaption data-lang="en">As it comes back.</figcaption>
+            <figcaption data-lang="en">
+              Came back. Filled in by a simulated hand, so a run needs no person in it.
+            </figcaption>
+            <figcaption data-lang="it">
+              Tornata. Riempita da una mano simulata, così una corsa non ha bisogno di una persona.
+            </figcaption>
           </figure>
+        </div>
+
+        <div class="prose">
+          <p data-lang="en">
+            The reader's vocabulary is deliberately poor: a page came back with <b>marks</b> or
+            <b>blank</b>, and nothing else. Not a count and not a fraction, because a count of
+            somebody's marks is one step from a score. The reading is not kept — the type refuses to
+            be pickled, copied or cached.
+          </p>
+          <p data-lang="it">
+            Il vocabolario del lettore è volutamente povero: una pagina è tornata con <b>segni</b>
+            oppure <b>bianca</b>, e nient'altro. Non un conteggio e non una frazione, perché contare
+            i segni di qualcuno è a un passo da un punteggio. La lettura non viene conservata: il
+            tipo si rifiuta di essere serializzato, copiato o messo in cache.
+          </p>
         </div>
       </section>
 
       <section>
-        <h2 data-lang="it">Finisce all'ora che avete deciso</h2>
-        <h2 data-lang="en">It ends at the hour you agreed on</h2>
+        <div class="prose">
+          <h2 data-lang="en">Measured, not estimated</h2>
+          <h2 data-lang="it">Misurato, non stimato</h2>
 
-        <p data-lang="it">
-          Mezz'ora prima dell'ora fissata dal genitore, il pomeriggio comincia a chiudersi. Arriva
-          alla stessa fine a cui sarebbe arrivato comunque, e nessuno schermo dice che è stato
-          accorciato.
-        </p>
-        <p data-lang="en">
-          Thirty minutes before the hour the parent set, the afternoon begins finding its way out.
-          It reaches the same ending it would have reached anyway, and no screen ever says that it
-          was shortened.
-        </p>
+          <p data-lang="en">
+            Dates are attached because prompts change and the numbers move with them.
+          </p>
+          <p data-lang="it">Le date ci sono perché i prompt cambiano e i numeri si spostano con loro.</p>
+
+          <table class="numbers">
+            <tbody>
+              <tr>
+                <th scope="row" data-lang="en">Devising a whole afternoon</th>
+                <th scope="row" data-lang="it">Inventare un pomeriggio intero</th>
+                <td>68–157 s <span class="dim">n=22</span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Rereading it with a second model</th>
+                <th scope="row" data-lang="it">Rileggerlo con un secondo modello</th>
+                <td>14,4–22,8 s</td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Drawing one page</th>
+                <th scope="row" data-lang="it">Disegnare una pagina</th>
+                <td>19–33 s</td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Ink on a drawn page</th>
+                <th scope="row" data-lang="it">Inchiostro su una pagina disegnata</th>
+                <td>0,5–2,7 %</td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Reading a returned page</th>
+                <th scope="row" data-lang="it">Leggere una pagina tornata</th>
+                <td>4,4–5,5 s</td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Button press to reading landing</th>
+                <th scope="row" data-lang="it">Dalla pressione alla lettura</th>
+                <td>≈ 35 s</td>
+              </tr>
+              <tr>
+                <th scope="row" data-lang="en">Printed ruler on paper</th>
+                <th scope="row" data-lang="it">Righello stampato sulla carta</th>
+                <td data-lang="en">50 mm asked, 50 mm measured</td>
+                <td data-lang="it">50 mm chiesti, 50 mm misurati</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p data-lang="en">
+            The last row is the one that is not about speed. The print chain does not rescale, and
+            that was checked with a ruler on the paper — a chain that silently rescales would make
+            every physical dimension on every page wrong in a way no test would notice.
+          </p>
+          <p data-lang="it">
+            L'ultima riga è quella che non parla di velocità. La catena di stampa non riscala, e la
+            verifica è stata fatta con un righello sulla carta: una catena che riscala in silenzio
+            renderebbe sbagliata ogni misura fisica di ogni pagina, in un modo che nessun test
+            noterebbe.
+          </p>
+        </div>
       </section>
 
       <section>
-        <h2 data-lang="it">Il genitore decide</h2>
-        <h2 data-lang="en">The parent decides</h2>
+        <div class="prose">
+          <h2 data-lang="en">The stack</h2>
+          <h2 data-lang="it">Lo stack</h2>
 
-        <p data-lang="it">
-          Tutto quello che il sistema inventa è una proposta, finché un genitore non la approva. Il
-          genitore scrive i limiti con parole sue, sceglie i giorni e le ore, e guarda quello che è
-          stato preparato prima che entri in casa. Niente comincia da solo.
-        </p>
-        <p data-lang="en">
-          Everything the system invents is a proposal until a parent approves it. The parent writes
-          the limits in their own words, chooses the days and the hours, and reads what has been
-          prepared before it reaches the room. Nothing starts on its own.
-        </p>
+          <dl class="stack">
+            <dt data-lang="en">In the house</dt>
+            <dt data-lang="it">In casa</dt>
+            <dd data-lang="en">
+              Raspberry Pi Compute Module 5 on a PoE base board, Raspberry Pi OS. Two 7.5" e-paper
+              displays on XIAO ESP32-S3, running a patched TRMNL firmware against our own BYOS
+              server. Epson ET-2870 over IPP and eSCL, driverless. Frames 3D printed, units assembled
+              by hand.
+            </dd>
+            <dd data-lang="it">
+              Raspberry Pi Compute Module 5 su base board PoE, Raspberry Pi OS. Due schermi a
+              inchiostro elettronico da 7,5" su XIAO ESP32-S3, con firmware TRMNL modificato contro
+              un server BYOS nostro. Epson ET-2870 via IPP ed eSCL, senza driver. Cornici stampate in
+              3D, unità montate a mano.
+            </dd>
 
-        <figure class="framed">
+            <dt data-lang="en">In the cloud</dt>
+            <dt data-lang="it">Nel cloud</dt>
+            <dd data-lang="en">
+              Microsoft Foundry in the EU for every language, vision and image call, behind a single
+              router module. Azure Content Safety on everything generated. Container Apps for the
+              API, Cosmos DB, Blob Storage, Static Web Apps, Entra External ID for parents and a
+              separate workforce app registration for administrators. Infrastructure as Bicep.
+            </dd>
+            <dd data-lang="it">
+              Microsoft Foundry in UE per ogni chiamata di linguaggio, visione e immagini, dietro un
+              unico modulo router. Azure Content Safety su tutto ciò che viene generato. Container
+              Apps per l'API, Cosmos DB, Blob Storage, Static Web Apps, Entra External ID per i
+              genitori e una app registration workforce separata per gli amministratori.
+              Infrastruttura in Bicep.
+            </dd>
+
+            <dt data-lang="en">How it ships</dt>
+            <dt data-lang="it">Come si pubblica</dt>
+            <dd data-lang="en">
+              A push to <code>main</code> publishes the API through a user-assigned managed identity
+              with a federated credential, so there is no password anywhere in the pipeline. Measured
+              end to end at 1 m 35 s. The image is built on the runner rather than with
+              <code>az acr build</code>, because the latter needs rights that would let the identity
+              reconfigure the registry.
+            </dd>
+            <dd data-lang="it">
+              Un push su <code>main</code> pubblica l'API attraverso una managed identity assegnata
+              dall'utente con credenziale federata, quindi nella pipeline non c'è nessuna password.
+              Misurato end to end in 1 m 35 s. L'immagine si costruisce sul runner e non con
+              <code>az acr build</code>, perché quest'ultimo richiede diritti che permetterebbero
+              all'identità di riconfigurare il registro.
+            </dd>
+          </dl>
+        </div>
+
+        <figure class="wide narrow">
           <img
-            src="images/panel.jpg"
-            width="766"
+            src="images/kit.jpg"
+            width="825"
             height="1100"
             loading="lazy"
-            alt="Il pannello del genitore, con un pomeriggio in attesa di una decisione."
-            data-alt-it="Il pannello del genitore, con un pomeriggio in attesa di una decisione."
-            data-alt-en="The parent's panel, with an afternoon waiting for a decision."
+            alt="An e-paper panel, an ESP32 board and a battery, before assembly."
+            data-alt-en="An e-paper panel, an ESP32 board and a battery, before assembly."
+            data-alt-it="Un pannello a inchiostro elettronico, una scheda ESP32 e una batteria, prima del montaggio."
           />
-          <figcaption data-lang="it">
-            Quello che il genitore legge prima di approvare. Approvare non accende niente: la casa
-            se lo prende quando è il suo momento.
-          </figcaption>
           <figcaption data-lang="en">
-            What the parent reads before approving. Approving turns nothing on: the house takes it
-            when its moment comes.
+            What goes into a frame: panel, XIAO ESP32-S3, a 2000 mAh cell, and the ribbon between
+            them.
+          </figcaption>
+          <figcaption data-lang="it">
+            Cosa va dentro una cornice: pannello, XIAO ESP32-S3, una cella da 2000 mAh e la piattina
+            fra i due.
           </figcaption>
         </figure>
       </section>
 
-      <section class="plain">
-        <h2 data-lang="it">Quello che non fa</h2>
-        <h2 data-lang="en">What it does not do</h2>
+      <section>
+        <div class="prose">
+          <h2 data-lang="en">What it does not do</h2>
+          <h2 data-lang="it">Quello che non fa</h2>
 
-        <ul data-lang="it">
-          <li>
-            Nessuna serie di giorni da non interrompere, nessun obiettivo giornaliero, niente tenuto
-            da parte per farti tornare.
-          </li>
-          <li>
-            Nessun punteggio, nessun voto, nessuna pagella: niente che descriva chi sei arriva su un
-            foglio o su uno schermo.
-          </li>
-          <li>Nessuna notifica perché è da un po' che non ti fai vedere.</li>
-          <li>Nessuna misura di quanto tempo ci hai passato.</li>
-        </ul>
-        <ul data-lang="en">
-          <li>No run of days to keep alive, no daily goal, nothing withheld to bring you back.</li>
-          <li>
-            No score, no grade, no report card: nothing describing who you are reaches a sheet or a
-            screen.
-          </li>
-          <li>No notification because you have not been seen for a while.</li>
-          <li>No measure of how long you spent on anything.</li>
-        </ul>
+          <p data-lang="en">
+            Engagement optimisation is easy to add to a system like this and would do harm, so it is
+            a written rule rather than a matter of judgement.
+            <code>tests/test_boundaries.py</code> refuses the vocabulary in the stored shape, in the
+            panel, in the browser and in the prompts.
+          </p>
+          <p data-lang="it">
+            Ottimizzare l'aggancio è facile da aggiungere a un sistema così, e farebbe danno: quindi
+            è una regola scritta e non una questione di buon senso.
+            <code>tests/test_boundaries.py</code> rifiuta quel vocabolario nella forma salvata, nel
+            pannello, nel browser e nei prompt.
+          </p>
 
-        <p data-lang="it">
-          Smettere è un finale accettabile. Non è una buona intenzione: sono controlli automatici
-          che rifiutano quel vocabolario, e che falliscono se qualcuno prova a rimetterlo dentro.
-        </p>
-        <p data-lang="en">
-          Stopping is a legitimate ending. That is not an intention: it is automated checks that
-          refuse the vocabulary, and that fail if somebody puts it back.
-        </p>
+          <ul data-lang="en">
+            <li>No streak, no daily goal, nothing withheld as a reason to come back.</li>
+            <li>No notification triggered by absence, and no measure of time spent.</li>
+            <li>
+              A profile is kept, and it reaches the two models that write and run an afternoon — and
+              no display, no printed sheet and no page of the panel. A review gate enforces that, not
+              the hope that a prompt was polite.
+            </li>
+            <li>No face or person detection, no emotion or attention inference, no biometrics.</li>
+          </ul>
+          <ul data-lang="it">
+            <li>
+              Nessuna serie di giorni, nessun obiettivo giornaliero, niente tenuto da parte per farti
+              tornare.
+            </li>
+            <li>Nessuna notifica innescata dall'assenza, e nessuna misura del tempo passato.</li>
+            <li>
+              Un profilo viene tenuto, e arriva ai due modelli che scrivono ed eseguono un
+              pomeriggio — e a nessuno schermo, nessun foglio stampato e nessuna pagina del pannello.
+              Lo impone un gate di revisione, non la speranza che un prompt sia stato educato.
+            </li>
+            <li>
+              Nessun riconoscimento di volti o persone, nessuna inferenza di emozione o attenzione,
+              nessun dato biometrico.
+            </li>
+          </ul>
+        </div>
       </section>
 
-      <section class="plain">
-        <h2 data-lang="it">Non è un prodotto</h2>
-        <h2 data-lang="en">It is not a product</h2>
+      <section>
+        <div class="prose">
+          <h2 data-lang="en">It is a project, not a product</h2>
+          <h2 data-lang="it">È un progetto, non un prodotto</h2>
 
-        <p data-lang="it">
-          Lanternina è un progetto, costruito in una casa: le cornici sono stampate in 3D e i pezzi
-          montati a mano. Non si compra, non c'è una lista d'attesa e non raccoglie iscrizioni. Il
-          codice è pubblico, insieme alle misure e a quello che ancora non funziona.
-        </p>
-        <p data-lang="en">
-          Lanternina is a project, built in a house: the frames are 3D printed and the parts are
-          assembled by hand. It is not for sale, there is no waiting list, and it collects no
-          sign-ups. The code is public, along with the measurements and the parts that do not work
-          yet.
-        </p>
+          <p data-lang="en">
+            Built in one house, for one afternoon at a time. It is not for sale and there is no
+            waiting list. The repository carries the reasoning, the measurements, every prompt as the
+            model receives it, and the parts that do not work yet — including a camera and a button
+            panel that exist as objects on a bench and as an empty Python package.
+          </p>
+          <p data-lang="it">
+            Costruito in una casa, per un pomeriggio alla volta. Non si compra e non c'è una lista
+            d'attesa. Il repository porta il ragionamento, le misure, ogni prompt come lo riceve il
+            modello, e le parti che ancora non funzionano — compresi una telecamera e una pulsantiera
+            che esistono come oggetti su un banco e come un package Python vuoto.
+          </p>
 
-        <p class="links">
-          <a href="https://github.com/faustinopalma/lanternina" data-lang="it">Il codice</a>
-          <a href="https://github.com/faustinopalma/lanternina" data-lang="en">The code</a>
-          <a
-            href="https://github.com/faustinopalma/lanternina/blob/main/docs/ILLUSTRATED.md"
-            data-lang="it"
-            >Come funziona, con le fotografie</a
-          >
-          <a
-            href="https://github.com/faustinopalma/lanternina/blob/main/docs/ILLUSTRATED.md"
-            data-lang="en"
-            >How it works, in pictures</a
-          >
-          <a href="https://app.lanternina.com/" data-lang="it">Il pannello del genitore</a>
-          <a href="https://app.lanternina.com/" data-lang="en">The parent's panel</a>
-        </p>
+          <p class="links">
+            <a href="https://github.com/faustinopalma/lanternina"
+              >github.com/faustinopalma/lanternina</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/blob/main/docs/ILLUSTRATED.md"
+              data-lang="en"
+              >The system in photographs, page by page</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/blob/main/docs/ILLUSTRATED.md"
+              data-lang="it"
+              >Il sistema in fotografie, pagina per pagina</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/blob/main/docs/ARCHITECTURE.md"
+              data-lang="en"
+              >Why each boundary exists, and what it costs</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/blob/main/docs/ARCHITECTURE.md"
+              data-lang="it"
+              >Perché ogni confine esiste, e quanto costa</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/tree/main/docs/prompts"
+              data-lang="en"
+              >Every prompt, whole, as the model receives it</a
+            >
+            <a
+              href="https://github.com/faustinopalma/lanternina/tree/main/docs/prompts"
+              data-lang="it"
+              >Ogni prompt, intero, come lo riceve il modello</a
+            >
+          </p>
+        </div>
       </section>
     </main>
 
     <footer class="bar foot">
-      <p data-lang="it">
-        Questo sito non usa cookie, non raccoglie statistiche e non carica niente da altri server.
-      </p>
       <p data-lang="en">
         This site sets no cookies, collects no statistics, and loads nothing from anybody else's
         server.
+      </p>
+      <p data-lang="it">
+        Questo sito non usa cookie, non raccoglie statistiche e non carica niente da altri server.
       </p>
     </footer>
 

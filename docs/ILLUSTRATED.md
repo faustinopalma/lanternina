@@ -10,7 +10,7 @@ Every image below is either a photograph of the hardware in the house, an unedit
 
 ![The finished display, framed, on a table](images/photos/display-framed.jpg)
 
-*Photograph. A 7.5" e-paper display in its frame, showing a picture it was sent an hour earlier. The frame and its stand are printed, and so is the dragon lying in front of it.*
+*Photograph. A 7.5" e-paper display in its frame, showing a picture it was sent an hour earlier. The frame and its stand are 3D printed, and so is the dragon lying in front of it.*
 
 One machine and four kinds of thing attached to it.
 
@@ -31,15 +31,17 @@ The displays are dumb on purpose. They receive a finished 1-bit bitmap and rende
 
 *Photograph. What goes inside a frame: the e-paper panel, a Seeed Studio XIAO ESP32-S3, a 2000 mAh cell and the ribbon between them. The display asks the hub for content and is never contacted the other way round.*
 
-### The frames are printed, and everything is assembled by hand
+### The frames are 3D printed, and everything is assembled by hand
 
-Every enclosure in the house is printed here — the frames that hold a panel, its board and its battery, and the stand under the one on the table. There are two, and the difference is only how they attach: the black one has a foot and sits on a surface, the white one has a hook that engages the slots of a pegboard.
+Two different printers appear in this page and it is worth separating them once. One is an inkjet, and it produces the paper an afternoon runs on; it is part of the system. The other is a filament 3D printer, and it made the objects the hardware sits in; it is not part of the system at all. Everything in this section is the second one.
 
-That is not decoration and it is not a saving. [docs/HARDWARE.md](HARDWARE.md) makes an enclosure a condition a device has to meet before it is interesting at all, on the grounds that a bare board with a ribbon cable taped to a wall is not a thing anybody puts in a room somebody lives in. Nothing bought met the shape, so the frames are drawn and printed.
+Every enclosure in the house is 3D printed here — the frames that hold a panel, its board and its battery, and the stand under the one on the table. There are two, and the difference is only how they attach: the black one has a foot and sits on a surface, the white one has a hook that engages the slots of a pegboard.
+
+That is not decoration and it is not a saving. [docs/HARDWARE.md](HARDWARE.md) makes an enclosure a condition a device has to meet before it is interesting at all, on the grounds that a bare board with a ribbon cable taped to a wall is not a thing anybody puts in a room somebody lives in. Nothing bought met the shape, so the frames are drawn and 3D printed.
 
 What is inside them is put together by hand as well: panel, board, cell and ribbon, one unit at a time, then flashed and provisioned over USB. That is worth saying plainly next to the photographs, because photographs of finished objects imply a supply chain that does not exist. A display here cannot be replaced by ordering one, and it is part of why the README says a second house has never been provisioned.
 
-The dragon in the first photograph is printed too, and it is nothing to do with the system. It is worth pointing at anyway: it is what the surface around a display actually looks like, and a photograph staged without it would be describing a different room.
+The dragon in the first photograph is 3D printed too, and it is nothing to do with the system. It is worth pointing at anyway: it is what the surface around a display actually looks like, and a photograph staged without it would be describing a different room.
 
 ---
 
@@ -205,7 +207,7 @@ Most of the time no afternoon is running, and the display is a picture that chan
 
 ![The same display, showing another](images/photos/display-on-the-wall.jpg)
 
-*Two photographs of the same display, in the same place, at two different times. The house asked for a picture, was given one, and put it up; an hour later it did that again. Nothing else in the room changed, and nobody asked for either of them. The white frame is the printed one with the hook, holding onto the pegboard.*
+*Two photographs of the same display, in the same place, at two different times. The house asked for a picture, was given one, and put it up; an hour later it did that again. Nothing else in the room changed, and nobody asked for either of them. The white frame is the 3D printed one with the hook, holding onto the pegboard.*
 
 The parent writes the themes; the house picks one and asks for a picture on its own schedule. What arrives at the display is 1-bit, dithered, at 800 × 480:
 

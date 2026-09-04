@@ -1,12 +1,16 @@
-/* Paper, ink, and one column. No web fonts: a request to somebody else's server is a
-   thing this page says it does not make. */
+/* Paper, ink, and two widths: text sits at a reading measure, figures and diagrams are
+   allowed to be wider. No web fonts — a request to somebody else's server is a thing this
+   page says it does not make, so the CSP forbids one. */
 
 :root {
   --paper: #f7f6f3;
+  --card: #fffefc;
   --ink: #17171a;
   --muted: #5f5c56;
   --rule: #e2ded6;
-  --measure: 34rem;
+  --edge: clamp(1.25rem, 5vw, 3rem);
+  --measure: 36rem;
+  --wide: 62rem;
 }
 
 *,
@@ -34,13 +38,15 @@ html[lang="en"] [data-lang="it"] {
   display: none;
 }
 
+/* ── bars ─────────────────────────────────────────────────────────────────── */
+
 .bar {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 1.25rem clamp(1.25rem, 5vw, 3rem);
+  padding: 1rem var(--edge);
   border-bottom: 1px solid var(--rule);
 }
 
@@ -48,11 +54,31 @@ html[lang="en"] [data-lang="it"] {
   font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
   font-size: 1.2rem;
   letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.barnav {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  font-size: 0.95rem;
+}
+
+.barnav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.barnav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .langs {
-  display: flex;
-  gap: 0.25rem;
+  display: inline-flex;
+  gap: 0.2rem;
+  margin-left: 0.3rem;
 }
 
 .langs button {
@@ -61,14 +87,15 @@ html[lang="en"] [data-lang="it"] {
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 0.9rem;
-  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.55rem;
   cursor: pointer;
 }
 
 .langs button[aria-pressed="true"] {
   border-color: var(--rule);
-  background: #fff;
+  background: var(--card);
   color: var(--ink);
 }
 
@@ -76,14 +103,16 @@ html[lang="en"] [data-lang="it"] {
   color: var(--ink);
 }
 
+/* ── the two widths ───────────────────────────────────────────────────────── */
+
 main {
-  padding: 0 clamp(1.25rem, 5vw, 3rem);
+  padding: 0 var(--edge);
 }
 
 section {
-  max-width: var(--measure);
+  max-width: var(--wide);
   margin: 0 auto;
-  padding: clamp(2.5rem, 7vw, 4.5rem) 0;
+  padding: clamp(2.5rem, 6vw, 4rem) 0;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -91,9 +120,21 @@ section:last-of-type {
   border-bottom: 0;
 }
 
+/* Text is capped at a measure even though its parent is wide. Anything without this class
+   — a figure, a diagram, a grid of cards — gets the full width of the section. */
+.prose {
+  max-width: var(--measure);
+}
+
+.wide {
+  max-width: var(--wide);
+}
+
+/* ── type ─────────────────────────────────────────────────────────────────── */
+
 h1 {
   font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
-  font-size: clamp(2.2rem, 7vw, 3.2rem);
+  font-size: clamp(2.1rem, 6vw, 3rem);
   font-weight: 400;
   line-height: 1.1;
   margin: 0 0 1.25rem;
@@ -101,10 +142,17 @@ h1 {
 
 h2 {
   font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
-  font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+  font-size: clamp(1.35rem, 3.2vw, 1.7rem);
   font-weight: 400;
   line-height: 1.25;
   margin: 0 0 1rem;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.5rem;
 }
 
 p {
@@ -112,16 +160,27 @@ p {
 }
 
 .lede {
-  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
   line-height: 1.5;
 }
 
-.sub {
+.sub,
+.note {
   color: var(--muted);
 }
 
+.note {
+  font-size: 0.95rem;
+  margin-top: 1.5rem;
+}
+
+.more {
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
 ul {
-  margin: 0 0 1.4rem;
+  margin: 0 0 1.2rem;
   padding-left: 1.1rem;
 }
 
@@ -129,75 +188,13 @@ li {
   margin-bottom: 0.6rem;
 }
 
-figure {
-  margin: 2rem 0 0;
-}
-
-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 3px;
-  background: #fff;
-}
-
-/* Wider than the measure, because a photograph read at text width is a thumbnail.
-   Width first, then centre by shifting: setting `width` against a narrow parent is what
-   made an earlier version of this rule silently do nothing. */
-.bleed {
-  width: min(58rem, calc(100vw - 2 * clamp(1.25rem, 5vw, 3rem)));
-  max-width: none;
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-.pair {
-  display: grid;
-  gap: 1.25rem;
-  grid-template-columns: 1fr;
-  margin-top: 2rem;
-}
-
-@media (min-width: 40rem) {
-  .pair {
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-  }
-}
-
-.pair figure {
-  margin: 0;
-}
-
-/* A page is tall and a screen is wide. Bounding both by height rather than width is what
-   keeps the two from being reproduced at wildly different scales beside each other. */
-.pair img {
-  width: auto;
-  max-width: 100%;
-  max-height: 20rem;
-  margin-inline: auto;
-}
-
-figcaption {
-  margin-top: 0.5rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* A screenshot is a picture of a window, so it is given an edge. A photograph is not. */
-.framed img {
+code {
+  font-family: ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--card);
   border: 1px solid var(--rule);
-}
-
-.plain img {
-  display: none;
-}
-
-.links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-top: 1.8rem;
+  border-radius: 3px;
+  padding: 0.05em 0.3em;
 }
 
 a {
@@ -209,6 +206,345 @@ a {
 a:hover {
   text-decoration-thickness: 2px;
 }
+
+/* ── figures ──────────────────────────────────────────────────────────────── */
+
+figure {
+  margin: 2rem 0 0;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  background: var(--card);
+}
+
+/* A hero is a band, not a wall: capping the height stops a wide photograph from taking a
+   whole viewport before a reader has got to the first heading. */
+.hero .wide img {
+  max-height: 26rem;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+figcaption {
+  margin-top: 0.6rem;
+  max-width: var(--measure);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* The two sheets are the point of that section, so they get the full width and a height
+   that makes the handwriting legible rather than a pair of thumbnails. */
+.pair {
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+}
+
+@media (min-width: 44rem) {
+  .pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pair figure {
+  margin: 0;
+}
+
+.pair img {
+  border: 1px solid var(--rule);
+}
+
+.narrow img {
+  max-width: 26rem;
+}
+
+/* ── cards ────────────────────────────────────────────────────────────────── */
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+}
+
+@media (min-width: 46rem) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.25rem 1.35rem;
+}
+
+.card p {
+  margin: 0;
+  font-size: 0.97rem;
+  color: var(--muted);
+}
+
+/* ── numbers ──────────────────────────────────────────────────────────────── */
+
+.numbers {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.4rem;
+  font-size: 0.97rem;
+}
+
+.numbers th,
+.numbers td {
+  text-align: left;
+  vertical-align: baseline;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.numbers th {
+  font-weight: 400;
+  padding-right: 1rem;
+}
+
+.numbers td {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dim {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+/* ── stack list ───────────────────────────────────────────────────────────── */
+
+.stack {
+  margin: 0;
+}
+
+.stack dt {
+  font-weight: 600;
+  margin-top: 1.3rem;
+}
+
+.stack dt:first-child {
+  margin-top: 0;
+}
+
+.stack dd {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+/* ── diagram: two zones and the gap between them ──────────────────────────── */
+
+.diagram {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+}
+
+@media (min-width: 52rem) {
+  .diagram {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+  }
+}
+
+.zone {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--card) 60%, transparent);
+}
+
+.zone-name {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.nodes {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.node {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.node b {
+  display: block;
+  font-weight: 600;
+}
+
+.node span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 0.15rem;
+}
+
+.node.strong {
+  border-color: var(--ink);
+}
+
+.node.gate {
+  border-style: dashed;
+  border-color: var(--ink);
+}
+
+.flowgap {
+  display: grid;
+  align-content: center;
+  gap: 0.75rem;
+  min-width: 12rem;
+  padding: 0 0.5rem;
+}
+
+.arrow {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.4rem;
+}
+
+.arrow.back {
+  border-top: 0;
+  border-bottom: 1px solid var(--rule);
+  padding: 0 0 0.4rem;
+}
+
+/* ── diagram: numbered steps ──────────────────────────────────────────────── */
+
+.steps {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  margin: 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.steps li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.step-n {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--card);
+}
+
+.steps b {
+  display: block;
+  font-weight: 600;
+}
+
+.steps p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: var(--measure);
+}
+
+/* The three steps that are not just "the next thing": a human decision, a fork, an end. */
+.steps .wait .step-n,
+.steps .branch .step-n,
+.steps .ending .step-n {
+  border-color: var(--ink);
+}
+
+.steps .ending .step-n {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── diagram: the chain ───────────────────────────────────────────────────── */
+
+.chain {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 60rem) {
+  .chain {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.link {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rule);
+  border-radius: 3px;
+  background: var(--card);
+  padding: 0.8rem 0.9rem;
+}
+
+.link b {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.link p {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* The one step no machine performs, and the one thing that leaves the loop. */
+.link.human {
+  border-left-color: var(--ink);
+  border-style: dashed;
+  border-left-style: solid;
+}
+
+.link.out {
+  border-left-color: var(--ink);
+}
+
+/* ── links list ───────────────────────────────────────────────────────────── */
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+}
+
+/* ── foot ─────────────────────────────────────────────────────────────────── */
 
 .foot {
   border-bottom: 0;
@@ -226,13 +562,10 @@ a:hover {
 @media (prefers-color-scheme: dark) {
   :root {
     --paper: #16161a;
+    --card: #1e1e24;
     --ink: #ececea;
     --muted: #9b978f;
-    --rule: #2e2e34;
-  }
-
-  .langs button[aria-pressed="true"] {
-    background: #24242b;
+    --rule: #32323a;
   }
 
   img {

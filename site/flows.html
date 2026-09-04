@@ -1,0 +1,363 @@
+<!doctype html>
+<!-- The flows. Diagrams built out of HTML boxes rather than images, so they reflow on a
+     phone, translate with the rest of the page, and are readable by a screen reader. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lanternina — the flows</title>
+    <meta
+      name="description"
+      content="How work is requested, screened, approved and run: the request loop, the life of an afternoon, and the paper round trip."
+    />
+    <link rel="canonical" href="https://lanternina.com/flows.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header class="bar">
+      <a class="wordmark" href="./">Lanternina</a>
+      <nav class="barnav">
+        <a href="./" data-lang="en">Home</a>
+        <a href="./" data-lang="it">Pagina iniziale</a>
+        <a href="https://github.com/faustinopalma/lanternina">GitHub</a>
+        <span class="langs">
+          <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-set-lang="it" aria-pressed="false">IT</button>
+        </span>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="prose">
+          <h1 data-lang="en">The flows</h1>
+          <h1 data-lang="it">I flussi</h1>
+
+          <p class="lede" data-lang="en">
+            Three diagrams. Who is allowed to ask whom, what happens to an afternoon between being
+            invented and being over, and what a sheet of paper does on its round trip.
+          </p>
+          <p class="lede" data-lang="it">
+            Tre diagrammi. Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere
+            inventato e l'essere finito, e cosa fa un foglio di carta nel suo giro.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div class="prose">
+          <h2 data-lang="en">1. Who asks whom</h2>
+          <h2 data-lang="it">1. Chi chiede a chi</h2>
+
+          <p data-lang="en">
+            Every arrow that crosses into the house is the answer to a request the house made. There
+            is no inbound path: the panel writes a row, and the hub finds it the next time it asks.
+            That is what makes the dashboard inert — changing a setting stores a new state and makes
+            nothing happen in a room.
+          </p>
+          <p data-lang="it">
+            Ogni freccia che entra in casa è la risposta a una richiesta che la casa ha fatto. Non
+            esiste una strada in ingresso: il pannello scrive una riga, e l'hub la trova la volta
+            dopo che chiede. È questo che rende il pannello inerte — cambiare un'impostazione salva
+            uno stato nuovo e non fa succedere niente in una stanza.
+          </p>
+        </div>
+
+        <div class="diagram wide" role="group" aria-label="Request loop">
+          <div class="zone">
+            <p class="zone-name" data-lang="en">The house</p>
+            <p class="zone-name" data-lang="it">La casa</p>
+            <div class="nodes">
+              <div class="node strong">
+                <b>Hub</b>
+                <span data-lang="en">clock · sealing keys · print queue</span>
+                <span data-lang="it">orologio · chiavi · coda di stampa</span>
+              </div>
+              <div class="node">
+                <b data-lang="en">e-paper displays</b>
+                <b data-lang="it">schermi e-paper</b>
+                <span data-lang="en">receive a finished bitmap</span>
+                <span data-lang="it">ricevono un bitmap già fatto</span>
+              </div>
+              <div class="node">
+                <b data-lang="en">printer · scanner</b>
+                <b data-lang="it">stampante · scanner</b>
+                <span data-lang="en">one A4 sheet at a time</span>
+                <span data-lang="it">un foglio A4 per volta</span>
+              </div>
+              <div class="node">
+                <b data-lang="en">button</b>
+                <b data-lang="it">pulsante</b>
+                <span data-lang="en">one press, answered in the same response</span>
+                <span data-lang="it">una pressione, risposta nella stessa replica</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flowgap">
+            <p class="arrow out">
+              <span data-lang="en">asks, on its own clock →</span>
+              <span data-lang="it">chiede, sul proprio orologio →</span>
+            </p>
+            <p class="arrow back">
+              <span data-lang="en">← answers, inside the reply</span>
+              <span data-lang="it">← risponde, dentro la replica</span>
+            </p>
+          </div>
+
+          <div class="zone">
+            <p class="zone-name" data-lang="en">Azure, EU region</p>
+            <p class="zone-name" data-lang="it">Azure, regione UE</p>
+            <div class="nodes">
+              <div class="node">
+                <b data-lang="en">parent's panel + API</b>
+                <b data-lang="it">pannello del genitore + API</b>
+                <span data-lang="en">holds decisions, never triggers work</span>
+                <span data-lang="it">tiene le decisioni, non innesca lavoro</span>
+              </div>
+              <div class="node strong">
+                <b data-lang="en">model router</b>
+                <b data-lang="it">router dei modelli</b>
+                <span data-lang="en">the only module allowed an SDK</span>
+                <span data-lang="it">l'unico modulo a cui è permesso un SDK</span>
+              </div>
+              <div class="node gate">
+                <b data-lang="en">Content Safety</b>
+                <b data-lang="it">Content Safety</b>
+                <span data-lang="en">the only thing that can mint a screened payload</span>
+                <span data-lang="it">l'unica cosa che può coniare un contenuto filtrato</span>
+              </div>
+              <div class="node">
+                <b>Microsoft Foundry</b>
+                <span data-lang="en">language · vision · image</span>
+                <span data-lang="it">linguaggio · visione · immagini</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="prose note" data-lang="en">
+          No model runs on the device, and an import-level test refuses an on-device runtime in every
+          package including the router.
+        </p>
+        <p class="prose note" data-lang="it">
+          Nessun modello gira sul dispositivo, e un test a livello di import rifiuta un runtime
+          locale in ogni package, router compreso.
+        </p>
+      </section>
+
+      <section>
+        <div class="prose">
+          <h2 data-lang="en">2. The life of an afternoon</h2>
+          <h2 data-lang="it">2. La vita di un pomeriggio</h2>
+
+          <p data-lang="en">
+            One document, written in a single pass before anybody has read a word of it. It holds
+            every moment, three lengths of each, a four-rung ladder of help under each, and a way
+            out. Nothing is added while it runs.
+          </p>
+          <p data-lang="it">
+            Un documento solo, scritto in un colpo prima che qualcuno ne abbia letto una parola.
+            Contiene ogni momento, tre lunghezze per ciascuno, una scala di aiuto a quattro pioli
+            sotto ognuno, e una via d'uscita. Niente viene aggiunto mentre gira.
+          </p>
+        </div>
+
+        <ol class="steps wide">
+          <li>
+            <span class="step-n">1</span>
+            <div>
+              <b data-lang="en">The house asks for an idea</b>
+              <b data-lang="it">La casa chiede un'idea</b>
+              <p data-lang="en">It keeps a few ready, so nobody waits on a model.</p>
+              <p data-lang="it">Ne tiene qualcuna pronta, così nessuno aspetta un modello.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-n">2</span>
+            <div>
+              <b data-lang="en">A model writes the whole afternoon</b>
+              <b data-lang="it">Un modello scrive il pomeriggio intero</b>
+              <p data-lang="en">68–157 s measured over 22 runs. Six checks then read it back.</p>
+              <p data-lang="it">68–157 s misurati su 22 corse. Poi sei controlli lo rileggono.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-n">3</span>
+            <div>
+              <b data-lang="en">A second model rereads it</b>
+              <b data-lang="it">Un secondo modello lo rilegge</b>
+              <p data-lang="en">
+                14.4–22.8 s. A refusal costs a whole new devise, which is why a check that reads a
+                phrasing instead of a fact is expensive.
+              </p>
+              <p data-lang="it">
+                14,4–22,8 s. Un rifiuto costa un'invenzione intera da capo: per questo un controllo
+                che legge una formulazione invece di un fatto costa caro.
+              </p>
+            </div>
+          </li>
+          <li class="wait">
+            <span class="step-n">4</span>
+            <div>
+              <b data-lang="en">It waits for the parent</b>
+              <b data-lang="it">Aspetta il genitore</b>
+              <p data-lang="en">
+                Approving writes a row. It prints nothing and wakes nothing.
+              </p>
+              <p data-lang="it">Approvare scrive una riga. Non stampa niente e non sveglia niente.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-n">5</span>
+            <div>
+              <b data-lang="en">The house begins it</b>
+              <b data-lang="it">La casa lo comincia</b>
+              <p data-lang="en">
+                On a day and inside the hours the parent set, and only if the whole length still fits
+                before the end.
+              </p>
+              <p data-lang="it">
+                In un giorno e dentro le ore fissate dal genitore, e solo se la lunghezza intera ci
+                sta ancora prima della fine.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-n">6</span>
+            <div>
+              <b data-lang="en">Moments run</b>
+              <b data-lang="it">I momenti girano</b>
+              <p data-lang="en">
+                <code>say</code> puts words on a display, <code>hand over</code> prints a page,
+                <code>collect</code> takes one back. The length is chosen on entering a moment and
+                does not change until the next one.
+              </p>
+              <p data-lang="it">
+                <code>say</code> mette parole su uno schermo, <code>hand over</code> stampa una
+                pagina, <code>collect</code> ne raccoglie una. La lunghezza si sceglie entrando in un
+                momento e non cambia fino al successivo.
+              </p>
+            </div>
+          </li>
+          <li class="branch">
+            <span class="step-n">7</span>
+            <div>
+              <b data-lang="en">Either the rest is written, or it asks</b>
+              <b data-lang="it">O il resto è già scritto, o chiede</b>
+              <p data-lang="en">
+                <code>ask</code> means the rest is not written yet: the house sends up the blank and
+                the returned page and receives a continuation, in the same format, with its own
+                ending.
+              </p>
+              <p data-lang="it">
+                <code>ask</code> vuol dire che il resto non è ancora scritto: la casa manda su il
+                bianco e la pagina tornata, e riceve una continuazione, nello stesso formato, con una
+                sua fine.
+              </p>
+            </div>
+          </li>
+          <li class="ending">
+            <span class="step-n">8</span>
+            <div>
+              <b data-lang="en">It ends on the object</b>
+              <b data-lang="it">Finisce sull'oggetto</b>
+              <p data-lang="en">
+                Thirty minutes before the agreed hour the way out begins, whatever has been reached.
+                The ending is the same ending, and no display says it was shortened.
+              </p>
+              <p data-lang="it">
+                Mezz'ora prima dell'ora concordata comincia la via d'uscita, comunque sia andata. La
+                fine è la stessa fine, e nessuno schermo dice che è stata accorciata.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <div class="prose">
+          <h2 data-lang="en">3. The paper round trip</h2>
+          <h2 data-lang="it">3. Il giro della carta</h2>
+
+          <p data-lang="en">
+            The part with the least machinery in it. Nothing is printed on the paper for a machine to
+            find, so there is nothing to detect, rectify or decode.
+          </p>
+          <p data-lang="it">
+            La parte con meno meccanica dentro. Sulla carta non c'è niente stampato perché una
+            macchina lo trovi, quindi non c'è niente da rilevare, raddrizzare o decodificare.
+          </p>
+        </div>
+
+        <div class="chain wide" role="group" aria-label="Paper round trip">
+          <div class="link">
+            <b data-lang="en">Words</b>
+            <b data-lang="it">Parole</b>
+            <p data-lang="en">Already through the safety gate. Quoted into the drawing prompt.</p>
+            <p data-lang="it">Già passate dal filtro. Citate dentro il prompt di disegno.</p>
+          </div>
+          <div class="link">
+            <b data-lang="en">One image call</b>
+            <b data-lang="it">Una chiamata di immagini</b>
+            <p data-lang="en">The whole A4 sheet, drawn in one pass. 19–33 s.</p>
+            <p data-lang="it">Il foglio A4 intero, disegnato in un colpo. 19–33 s.</p>
+          </div>
+          <div class="link">
+            <b data-lang="en">Printed, and the blank is kept</b>
+            <b data-lang="it">Stampata, e il bianco si conserva</b>
+            <p data-lang="en">The blank is the only thing the reading will be compared against.</p>
+            <p data-lang="it">Il bianco è l'unica cosa contro cui la lettura verrà confrontata.</p>
+          </div>
+          <div class="link human">
+            <b data-lang="en">Somebody writes on it</b>
+            <b data-lang="it">Qualcuno ci scrive sopra</b>
+            <p data-lang="en">Or does not. Nothing says a page will come back.</p>
+            <p data-lang="it">Oppure no. Niente dice che una pagina tornerà.</p>
+          </div>
+          <div class="link">
+            <b data-lang="en">Scanner, then two images to a model</b>
+            <b data-lang="it">Scanner, poi due immagini a un modello</b>
+            <p data-lang="en">Scan ≈ 26 s, reading 4.4–5.5 s. The question is what is different.</p>
+            <p data-lang="it">Scansione ≈ 26 s, lettura 4,4–5,5 s. La domanda è cosa è cambiato.</p>
+          </div>
+          <div class="link out">
+            <b data-lang="en">marks · blank</b>
+            <b data-lang="it">segni · bianca</b>
+            <p data-lang="en">
+              The whole vocabulary. Then the reading is gone: it is not written to storage, a log, or
+              anywhere a person could read it later.
+            </p>
+            <p data-lang="it">
+              Tutto il vocabolario. Poi la lettura sparisce: non finisce in un archivio, in un log,
+              né in nessun posto dove qualcuno possa rileggerla dopo.
+            </p>
+          </div>
+        </div>
+
+        <p class="prose note" data-lang="en">
+          Measured with a finger on a real button: press to reading on the display, about 35 s, of
+          which 26 s is the scanner.
+        </p>
+        <p class="prose note" data-lang="it">
+          Misurato col dito su un pulsante vero: dalla pressione alla lettura sullo schermo, circa
+          35 s, di cui 26 s sono lo scanner.
+        </p>
+      </section>
+    </main>
+
+    <footer class="bar foot">
+      <p data-lang="en">
+        This site sets no cookies, collects no statistics, and loads nothing from anybody else's
+        server.
+      </p>
+      <p data-lang="it">
+        Questo sito non usa cookie, non raccoglie statistiche e non carica niente da altri server.
+      </p>
+    </footer>
+
+    <script src="site.js"></script>
+  </body>
+</html>
