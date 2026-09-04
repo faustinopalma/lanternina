@@ -363,6 +363,41 @@ Without them the page at `/admin` loads and says it is not configured, which is 
 
 ---
 
+## 4b. The API rolls out from a push, and there is no secret for it
+
+`.github/workflows/api.yml` builds the image and moves the container app onto it. What signs it in is a **user-assigned managed identity**, `id-lanternina-github` in `rg-lanternina-dev-core`, with a federated credential rather than a password.
+
+There is nothing to rotate and nothing to leak. GitHub mints a short-lived token that says *this is the repository `faustinopalma/lanternina`, on `refs/heads/main`*; Entra trades it for a token belonging to the identity, but only because a federated credential names that exact subject. A copy of the workflow in a fork, or on another branch, gets a token Entra refuses.
+
+The three values in *Settings → Secrets and variables → Actions → Variables* are a client id, a tenant id and a subscription id. They are variables and not secrets for the same reason as above and a better one: none of them is a credential. On their own they open nothing, and reading them in a log is what makes a failed sign-in diagnosable.
+
+**What the identity may do, which is the whole of it:**
+
+| role | scope |
+| --- | --- |
+| `AcrPush` | the registry `acrlanterninadevssveb` |
+| `Reader` | the same registry — `az acr login` resolves the login server through ARM, and `AcrPush` carries no control-plane read |
+| `Container Apps Contributor` | the single app `ca-lanternina-dev-api` |
+
+It cannot read a secret, cannot delete the registry, and cannot touch `ca-lanternina-dev-worker` beside it. To see it as it is rather than as this file claims:
+
+```powershell
+az role assignment list --assignee 8144796a-f04f-434c-9483-9c3ee5912471 --all -o table
+az identity federated-credential list --identity-name id-lanternina-github -g rg-lanternina-dev-core -o table
+```
+
+**Why the image is built on the runner and not with `az acr build`.** `AcrPush` grants `pull/read` and `push/write`. `az acr build` queues a task on the registry and needs `scheduleRun`, which among the built-in roles only `Contributor` carries — so keeping the familiar command would have meant an identity that can also reconfigure or delete the registry, for the same image. Building on the runner also puts the build log in the run, instead of the `--no-logs` that works around the CLI crash described in §Troubleshooting.
+
+**To take it away**, delete the identity; the assignments and the credential go with it, and the workflow starts failing at sign-in rather than doing something unexpected:
+
+```powershell
+az identity delete --name id-lanternina-github --resource-group rg-lanternina-dev-core
+```
+
+⚠️ Created by CLI and **not yet described in `infra/`**. A redeploy of `main.bicep` will not remove it, but nothing in the templates would recreate it either.
+
+---
+
 ## 5. The data tier is private by default
 
 Cosmos DB and the storage account ship with `publicNetworkAccess = Disabled` and are reachable only through private endpoints from inside the Container Apps environment.

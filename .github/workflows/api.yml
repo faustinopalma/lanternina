@@ -1,0 +1,121 @@
+# Build the API image and roll it out to the container app.
+#
+# **It waits for nothing.** There is no `needs:` here and `tests.yml` does not mention this
+# file, so a push starts both at the same instant and the revision goes live whether or not
+# the suite has finished. That is deliberate and it was asked for: in development, seeing
+# production is worth more than being stopped by a test that would have gone green anyway.
+# The record of whether it was safe arrives beside it, a minute or two later.
+#
+# **No secret exists for this.** The three values below are a client id, a tenant id and a
+# subscription id — coordinates, not credentials. What authorises the run is a token GitHub
+# mints for this repository on this branch, which Entra trades for one belonging to a
+# user-assigned managed identity because a federated credential says that exact subject may.
+# Nothing in the repository, in a log or in a fork can be replayed anywhere.
+#
+# What that identity may do is the whole of it: push an image to one registry, and change
+# the image on one container app. It cannot read a secret, delete the registry, or touch the
+# worker beside it. `docs/DEPLOY.md` has the three assignments and how to see them.
+#
+# Building here rather than with `az acr build` is what makes that list short. `AcrPush`
+# grants `pull/read` and `push/write` and nothing else, while `az acr build` queues a task
+# and needs `scheduleRun`, which among built-in roles only `Contributor` carries — a far
+# larger identity for the same image. The build logs are visible here as a side effect,
+# instead of the `--no-logs` that works around the CLI's crash on non-ASCII output.
+name: api
+
+on:
+  push:
+    branches: [main]
+    # Only what ends up in the image. A README or a research transcript changing is not a
+    # reason to roll production, and the manual run below is there for when it is.
+    paths:
+      - "shared/**"
+      - "panel/**"
+      - "orchestrator/**"
+      - "agents/**"
+      - "devices/**"
+      - "methods/**"
+      - "research/scores.json"
+      - "Dockerfile"
+      - ".dockerignore"
+      - "pyproject.toml"
+      - ".github/workflows/api.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+# One rollout at a time, and the one already running is never cancelled: it may be halfway
+# through `containerapp update`, and a revision abandoned mid-shift is the one state worse
+# than the old image still serving.
+concurrency:
+  group: api
+  cancel-in-progress: false
+
+env:
+  REGISTRY: acrlanterninadevssveb
+  IMAGE: lanternina/panel
+  APP: ca-lanternina-dev-api
+  APP_GROUP: rg-lanternina-dev-app
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # The tag is the commit, so what is serving can always be read back to a line of code.
+      - name: name it after the commit
+        run: echo "TAG=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: build and push
+        run: |
+          az acr login --name "$REGISTRY"
+          docker build -t "$REGISTRY.azurecr.io/$IMAGE:$TAG" -f Dockerfile .
+          docker push "$REGISTRY.azurecr.io/$IMAGE:$TAG"
+
+      - name: roll it out
+        run: |
+          az containerapp update --name "$APP" --resource-group "$APP_GROUP" \
+            --image "$REGISTRY.azurecr.io/$IMAGE:$TAG" --output none
+
+      # Two questions, and they are different: is the revision carrying the image this run
+      # built, and does anything answer at the front door. A rollout that reports success on
+      # neither is the failure that hides longest.
+      - name: is it actually serving
+        run: |
+          serving=$(az containerapp show --name "$APP" --resource-group "$APP_GROUP" \
+            --query "properties.template.containers[0].image" -o tsv)
+          echo "the app now names: $serving"
+          [ "$serving" = "$REGISTRY.azurecr.io/$IMAGE:$TAG" ] || {
+            echo "::error::the app is on $serving, not the image this run built"; exit 1; }
+
+          fqdn=$(az containerapp show --name "$APP" --resource-group "$APP_GROUP" \
+            --query "properties.configuration.ingress.fqdn" -o tsv)
+          # Traffic moves to a new revision in about a minute, so the door is knocked on
+          # rather than asked once.
+          for attempt in $(seq 1 20); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "https://$fqdn/health" || true)
+            echo "  $attempt: /health said $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 15
+          done
+          echo "::error::/health never answered 200 on https://$fqdn"
+          exit 1
+
+      - name: say what is live
+        if: always()
+        run: |
+          {
+            echo "## api"
+            echo
+            echo "\`$IMAGE:$TAG\` on **$APP**, from commit \`$GITHUB_SHA\`."
+          } >> "$GITHUB_STEP_SUMMARY"
