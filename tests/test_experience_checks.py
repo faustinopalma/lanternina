@@ -158,6 +158,31 @@ def test_a_way_out_that_reaches_for_an_object_nobody_was_given_is_refused() -> N
     assert "goodbye that is felt as a cut" in complaints[0].says
 
 
+def test_a_way_out_may_name_the_object_in_other_words_than_the_story_used() -> None:
+    """The refusal that was wrong, and the most frequent one there was.
+
+    Until 4 September 2026 both this check and the parser compared the whole ``in_hand``
+    phrase as a substring. An afternoon that put a notebook on the table as *il quaderno*
+    and opened *la pagina* was refused for a way out about *la pagina del quaderno* — the
+    object had been named twice, in two lines, and the rule was reading the wording rather
+    than the thing. Each refusal cost a whole second devising.
+
+    The negative control is the test above it: `la chiave di ottone`, which nothing ever
+    mentions, is still refused. What changed is the strictness and not the guarantee.
+    """
+    moments = a.moments()
+    moments[0]["weights"] = a.weights(lines=("Apri il quaderno.", "Guarda la pagina."))
+    moments[0]["way_out"] = a.way_out(in_hand="la pagina del quaderno")
+    moments[1]["way_out"] = a.way_out(in_hand="la pagina annotata")
+
+    assert (
+        the_way_out_starts_from_something(
+            Experience.from_dict(a.an_afternoon(moments=moments)).moments
+        )
+        == ()
+    )
+
+
 def test_a_way_out_may_name_something_an_earlier_moment_mentioned() -> None:
     """Earlier, not only here: the object stays in hand across the moments after it."""
     moments = a.moments()

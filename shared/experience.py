@@ -311,6 +311,51 @@ def _folded(text: str) -> str:
     return " ".join(text.lower().split())
 
 
+# Words that name nothing on their own: articles, prepositions and the Italian contractions
+# of the two, plus the English equivalents. A phrase stripped to these has named no object.
+_NOT_AN_OBJECT: Final[frozenset[str]] = frozenset(
+    """
+    il lo la i gli le un uno una un' l' d' dell della dello dei degli delle del
+    di a da in con su per tra fra al allo alla ai agli alle dal dalla dallo dai dagli dalle
+    nel nello nella nei negli nelle sul sullo sulla sui sugli sulle che e ed o od
+    the a an of in on at to for with from and or its his her their this that
+    """.split()
+)
+
+# Below this a word is not doing the naming: "ada" and "il" alike are too short to be the
+# thing a way out reaches for, and matching on them would let anything through.
+_LONG_ENOUGH: Final = 4
+
+
+def names_the_same_thing(phrase: str, said: str) -> bool:
+    """Whether ``said`` mentions the object that ``phrase`` names.
+
+    **This used to be an exact substring test, and it was refusing good afternoons.**
+    ``in_hand`` is a noun phrase written once, and the story that put the object on the
+    table wrote it a different way — *la pagina del quaderno* against a page called *il
+    quaderno* in one line and *la pagina* in another. The object had been named twice and
+    the check refused it, because it was comparing the wording and not the thing. Measured
+    on 3 September 2026: it was the most frequent refusal in the run, and each one cost a
+    whole second devising.
+
+    So the test is now: the phrase as written, or any one content word of it long enough to
+    be doing the naming. That keeps what the rule is for — an ending may not reach for an
+    object nobody was ever given, which is the goodbye felt as a cut — and stops it turning
+    into a demand that the same words be repeated. What it gives up is said plainly: a
+    phrase sharing an incidental word with something earlier now passes. This was always a
+    test against text and never against the world, and `the_way_out_starts_from_something`
+    says so in as many words.
+    """
+    kept = _folded(phrase)
+    if kept and kept in said:
+        return True
+    return any(
+        word in said
+        for word in kept.split()
+        if len(word) >= _LONG_ENOUGH and word not in _NOT_AN_OBJECT
+    )
+
+
 # ── The three weights, the ladder, and the way out ───────────────────────────────────
 
 
@@ -456,10 +501,10 @@ class WayOut:
                 f"{MAX_WAY_OUT_MINUTES}, or it is not a way out"
             )
         said = _folded(" ".join((self.heading, *self.lines)))
-        if _folded(self.in_hand) not in said:
+        if not names_the_same_thing(self.in_hand, said):
             raise ExperienceError(
-                f"this way out is about {self.in_hand!r} and never says so; an ending that "
-                f"names nothing in the person's hands is the goodbye that is felt as a cut"
+                f"this way out is about {self.in_hand!r} and never names it; say the object "
+                f"in the lines, in whatever words the story already uses for it"
             )
 
     def to_dict(self) -> dict[str, Any]:

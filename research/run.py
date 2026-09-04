@@ -17,7 +17,9 @@ import argparse
 import asyncio
 import json
 import random
+import re
 import time
+from collections.abc import Iterable
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -73,6 +75,7 @@ async def one_afternoon(
     going = how_it_has_gone(ran)  # type: ignore[arg-type]
     ground = the_ground(memory.offered)
     row: dict[str, Any] = {"household": house.name}
+    built_from: dict[str, str] = {}
     try:
         experience, spent = await devise_experience(
             capabilities=CAN,
@@ -89,13 +92,16 @@ async def one_afternoon(
             counts=json.dumps(going.to_dict(), ensure_ascii=False),
             direction=going.direction(),
             ground=json.dumps(ground.to_dict(), ensure_ascii=False) if ground.anything() else "",
+            built_from=built_from,
             now=time.time(),
         )
     except RefusedByTheChecks as exc:
-        row["refused"] = {"by": "checks", "says": str(exc)}
+        row["builtFrom"] = built_from
+        row["refused"] = {"by": "checks", "says": str(exc), "rules": _rules(str(exc))}
         return row
     except ExperienceError as exc:
-        row["refused"] = {"by": "format", "says": str(exc)}
+        row["builtFrom"] = built_from
+        row["refused"] = {"by": "format", "says": str(exc), "rules": _rules(str(exc))}
         return row
 
     played = await play(
@@ -137,6 +143,7 @@ async def one_afternoon(
         {
             "title": experience.title,
             "experienceId": experience.experience_id,
+            "builtFrom": built_from,
             "themes": list(experience.themes),
             "minutes": experience.minutes,
             "moments": len(experience.moments),
@@ -155,6 +162,34 @@ async def one_afternoon(
         }
     )
     return row
+
+
+# Which rule refused, with the index taken out, so that twenty afternoons refused at
+# `moments[3]` and `moments[7]` count as twenty of one thing rather than two of ten. The
+# complaints name a field; the format's messages do not, so those fall back to their first
+# few words, which is enough to tell one recurring refusal from another.
+_INDEX = re.compile(r"\[\d+\]")
+
+
+def _rules(says: str) -> list[str]:
+    """The rules named in a refusal, normalised so they can be counted across a run.
+
+    A count of refusals says a run went badly. A count *per rule* says which sentence in
+    which prompt to work on next, which is the only reason the number is worth keeping.
+    """
+    found: list[str] = []
+    for part in says.split("; "):
+        where, _, _rest = part.partition(": ")
+        found.append(_INDEX.sub("[]", where) if _rest else " ".join(part.split()[:6]))
+    return found
+
+
+def _tally(what: Iterable[str]) -> dict[str, int]:
+    """How many times each of them, most first. Ties broken by name so a run is stable."""
+    counted: dict[str, int] = {}
+    for one in what:
+        counted[one] = counted.get(one, 0) + 1
+    return dict(sorted(counted.items(), key=lambda pair: (-pair[1], pair[0])))
 
 
 def _drawn(memory: Memory) -> tuple[Drawn, ...]:
@@ -222,6 +257,17 @@ async def main() -> int:
         "households": [one.name for one in wanted],
         "afternoons": len(rows),
         "refused": sum(1 for one in rows if "refused" in one),
+        # Which rule, and how often. A run that loses six afternoons to one sentence and a
+        # run that loses six to six different ones are the same number and not the same
+        # problem, and only this tells them apart.
+        "refusedBy": _tally(
+            rule for one in rows for rule in one.get("refused", {}).get("rules", [])
+        ),
+        # What the afternoons were built out of. Since 3 September the method drives the
+        # afternoon, so a score with no record of which method it scored cannot be read.
+        "methods": _tally(
+            one["builtFrom"]["form"] for one in rows if one.get("builtFrom", {}).get("form")
+        ),
         "endings": {
             ending: sum(1 for one in rows if one.get("ending") == ending)
             for ending in ("closed", "asked", "stopped", "way_out", "went_wrong")

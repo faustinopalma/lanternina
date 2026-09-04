@@ -300,10 +300,15 @@ def test_a_ladder_that_does_not_go_up_is_refused() -> None:
 
 
 def test_a_way_out_that_never_names_what_is_in_hand_is_refused() -> None:
-    """The goodbye that is felt as a cut, refused where the words are, not where they run."""
+    """The goodbye that is felt as a cut, refused where the words are, not where they run.
+
+    The message changed on 4 September 2026 when the comparison stopped demanding the whole
+    phrase back word for word; what it refuses is the same, and these lines name nothing at
+    all.
+    """
     silent = a.way_out()
     silent["lines"] = ["È finita qui.", "A domani."]
-    with pytest.raises(ExperienceError, match="never says so"):
+    with pytest.raises(ExperienceError, match="never names it"):
         Say.from_dict(a.say(way_out=silent))
 
 

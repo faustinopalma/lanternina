@@ -121,6 +121,7 @@ async def devise_experience(
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = WORDS_PER_LINE,
+    built_from: dict[str, str] | None = None,
     now: float,
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
@@ -135,6 +136,12 @@ async def devise_experience(
     invitation to invent rather than sitting beside it, and nothing else is relaxed: the
     format, the checks and the gate all run unchanged, so a script asking for a scoreboard
     is refused the same way whoever wrote it.
+
+    ``built_from`` is a sink a caller may pass to learn which method this afternoon was made
+    out of; it is filled with ``form`` and ``move`` ids and left alone otherwise. It is a
+    parameter rather than a third value in the tuple because it is a diagnostic and only the
+    research loop wants it — and rather than a log line the loop reads back, because a log
+    line that somebody rewords stops being read and says nothing about having stopped.
 
     Raises whatever the router raises when the cloud will not serve it,
     :class:`~shared.errors.SafetyBlocked` when the gate refuses it,
@@ -179,6 +186,9 @@ async def devise_experience(
         shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
         log=log,
     )
+    if built_from is not None and form is not None and move is not None:
+        built_from["form"] = form.method_id
+        built_from["move"] = move.method_id
     try:
         answer = await deviser.ask(
             context,

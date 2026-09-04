@@ -53,6 +53,7 @@ from .experience import (
     Moment,
     Weight,
     longest_at,
+    names_the_same_thing,
     shared_dimensions,
     sheets_at_once,
 )
@@ -182,7 +183,7 @@ def the_way_out_starts_from_something(
     said = fold(" ".join(already_said))
     for index, moment in enumerate(moments):
         said = f"{said} {fold(' '.join(moment.words_before_the_way_out))}"
-        if fold(moment.way_out.in_hand) not in said:
+        if not names_the_same_thing(moment.way_out.in_hand, said):
             complaints.append(
                 Complaint(
                     where=f"moments[{index}].way_out.in_hand",
