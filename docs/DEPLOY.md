@@ -365,36 +365,30 @@ Without them the page at `/admin` loads and says it is not configured, which is 
 
 ## 4b. The API rolls out from a push, and there is no secret for it
 
-`.github/workflows/api.yml` builds the image and moves the container app onto it. What signs it in is a **user-assigned managed identity**, `id-lanternina-github` in `rg-lanternina-dev-core`, with a federated credential rather than a password.
+`.github/workflows/api.yml` builds the image and moves the container app onto it. What signs it in is a **user-assigned managed identity**, `id-lanternina-github` in `rg-lanternina-dev-core`, with a federated credential rather than a password. Nothing has to be rotated and nothing can leak.
 
-There is nothing to rotate and nothing to leak. GitHub mints a short-lived token that says *this is the repository `faustinopalma/lanternina`, on `refs/heads/main`*; Entra trades it for a token belonging to the identity, but only because a federated credential names that exact subject. A copy of the workflow in a fork, or on another branch, gets a token Entra refuses.
+**[docs/WORKLOAD-IDENTITY.md](WORKLOAD-IDENTITY.md) is the method** — why a managed identity rather than an app registration, what the trust consists of, how to set another one up, and the three things that went wrong doing this one. What follows here is only what is deployed today.
 
-⚠️ **The subject carries numeric ids, not names, and getting this wrong is the whole failure.** The first attempt registered `repo:faustinopalma/lanternina:ref:refs/heads/main` and Entra answered `AADSTS700213: No matching federated identity record found for presented assertion subject`, naming what had actually arrived:
-
-```
-repo:faustinopalma@39453908/lanternina@1338031850:ref:refs/heads/main
-```
-
-Do not write that by hand from this file. Add the credential, run the workflow once, and **read the subject out of the error** — it is quoted in full, and it is the only source that cannot be out of date. The id form is the better one anyway: it survives the repository being renamed, which the name form does not.
-
-The three values in *Settings → Secrets and variables → Actions → Variables* are a client id, a tenant id and a subscription id. They are variables and not secrets for the same reason as above and a better one: none of them is a credential. On their own they open nothing, and reading them in a log is what makes a failed sign-in diagnosable.
-
-**What the identity may do, which is the whole of it:**
+The identity holds three role assignments, each on its own target and nothing at subscription or resource-group scope:
 
 | role | scope |
 | --- | --- |
 | `AcrPush` | the registry `acrlanterninadevssveb` |
-| `Reader` | the same registry — `az acr login` resolves the login server through ARM, and `AcrPush` carries no control-plane read |
+| `Reader` | the same registry, so `az acr login` can resolve the login server through ARM |
 | `Container Apps Contributor` | the single app `ca-lanternina-dev-api` |
 
-It cannot read a secret, cannot delete the registry, and cannot touch `ca-lanternina-dev-worker` beside it. To see it as it is rather than as this file claims:
+It cannot read a secret, cannot delete the registry, and cannot touch `ca-lanternina-dev-worker` beside it. The image is built on the runner rather than with `az acr build`, which is what keeps that list short.
+
+The three values in *Settings → Secrets and variables → Actions → Variables* are a client id, a tenant id and a subscription id. They are variables and not secrets because none of them is a credential.
+
+⚠️ **The federated subject carries numeric ids, not names.** Registering it by hand from a document is how the first attempt failed; the procedure is in the method file.
+
+To see it as it is rather than as this file claims:
 
 ```powershell
 az role assignment list --assignee 8144796a-f04f-434c-9483-9c3ee5912471 --all -o table
 az identity federated-credential list --identity-name id-lanternina-github -g rg-lanternina-dev-core -o table
 ```
-
-**Why the image is built on the runner and not with `az acr build`.** `AcrPush` grants `pull/read` and `push/write`. `az acr build` queues a task on the registry and needs `scheduleRun`, which among the built-in roles only `Contributor` carries — so keeping the familiar command would have meant an identity that can also reconfigure or delete the registry, for the same image. Building on the runner also puts the build log in the run, instead of the `--no-logs` that works around the CLI crash described in §Troubleshooting.
 
 **To take it away**, delete the identity; the assignments and the credential go with it, and the workflow starts failing at sign-in rather than doing something unexpected:
 

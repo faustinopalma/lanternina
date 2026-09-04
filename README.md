@@ -100,6 +100,7 @@ The overview page is the shortest route in: one page, three diagrams, and each n
 | [docs/NON-GOALS.md](docs/NON-GOALS.md) | Where the lines this project will not cross are written down. |
 | [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md) | What leaves the device, and what is treated as hostile input. |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Reproducing the cloud tier in your own subscription. |
+| [docs/WORKLOAD-IDENTITY.md](docs/WORKLOAD-IDENTITY.md) | How the pipeline changes Azure with no secret anywhere, and the three things that went wrong building it. |
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware reasoning, with what is verified and what is a guess. |
 | [ideas/](ideas/) | What is not built, ranked, each entry with its cost and a check somebody else can run. **What to do next is decided here**, in the "where to start" table of [ideas/README.md](ideas/README.md). |
 
