@@ -5,12 +5,16 @@ then gone. The cost of that rule was the whole point of the system: an afternoon
 be written from the last one, so it was written from settings a parent typed once. This is
 the relaxation, asked for by the parent, and it is bounded by shape rather than by promise.
 
-**What is kept is what happened, not who somebody is.** A row says which afternoon ran, what
-it was about, how far it got, whether each sheet came back marked or blank, and what the
-page reader said was on it. There is no field for a score, a level, an ability, a difficulty
-that suits somebody, or a summary of a person — not because a rule forbids writing one, but
-because there is nowhere to put it. What a model makes of these facts it makes at the moment
-it writes, and it is gone again.
+**What is kept here is what happened, not who somebody is** — and that is now a division of
+labour rather than a rule about the whole system. A row says which afternoon ran, what it
+was about, how far it got, whether each sheet came back marked or blank, and what the page
+reader said was on it. It has no field for a level or a summary of a person, because those
+belong to the profile that is kept beside it; this store is the evidence and not the reading
+of it.
+
+Until 4 September 2026 this paragraph said no such reading existed anywhere, and that there
+was nowhere to put one. That rule was withdrawn: an afternoon cannot be pitched at the right
+level without a profile, and refusing to hold one was refusing to do the work well.
 
 **It is the parent's to read and to delete.** Every row goes to the panel in plain language,
 and `forget` empties the lot. A memory the parent cannot see is the thing this project said

@@ -373,7 +373,13 @@ def test_what_a_page_said_cannot_be_pickled_copied_or_cached() -> None:
 
 # ── Where a verdict would do damage: the schema, the panel, the prompts ──────────────
 
-ENGAGEMENT_AND_ASSESSMENT = {
+# **These were one set until 4 September 2026, and holding them together was the mistake.**
+# They are two different commitments and only one of them still stands everywhere.
+#
+# Hooking is refused outright: nothing here may work by making it hard to stop, and that is
+# a property of the product rather than of where a word appears. The list stays enforced in
+# the stored shape, in the panel, in the browser and in the prompts.
+ENGAGEMENT = {
     "streak",
     "streaks",
     "daily_goal",
@@ -383,16 +389,29 @@ ENGAGEMENT_AND_ASSESSMENT = {
     "engagement",
     "engagement_score",
     "retention",
+    "leaderboard",
+    "points",
+    "xp",
+    "level_up",
+}
+
+# Judgement is now a thing the system keeps and never a thing it shows. The rule that no
+# record of how somebody is doing may exist anywhere was removed on 4 September 2026: a
+# profile is kept at system level, it is what lets an afternoon be pitched at the right
+# level, and refusing to hold one was refusing to do the work well.
+#
+# What did not move is where it may appear. It reaches the model that writes an afternoon
+# and the model that runs one. It reaches no display, no sheet, and no page a parent reads.
+# So this list is still enforced in the browser and still refused as a field a prompt asks a
+# model to fill in — and is no longer refused across `shared` and `panel`, because that is
+# where the profile has to live.
+ASSESSMENT = {
     "score",
     "scores",
     "grade",
     "grades",
     "rating",
     "ranking",
-    "leaderboard",
-    "points",
-    "xp",
-    "level_up",
     "accuracy_rate",
     "success_rate",
     "progress_percent",
@@ -423,15 +442,15 @@ def _stored_or_shown_names(path: Path) -> set[str]:
     return names
 
 
-def test_no_verdict_vocabulary_in_the_stored_shape_or_the_panel() -> None:
-    """Narrowed on 27 August 2026, from every identifier in every package to the three
-    places the word does damage: the stored shape, the panel, and the prompts.
+def test_nothing_stored_or_shown_works_by_making_it_hard_to_stop() -> None:
+    """Narrowed on 27 August 2026 from every identifier to the stored shape and the panel,
+    and narrowed again on 4 September to hooking alone.
 
     The wide version was a lint on words standing in for a ban on behaviour. It ruled out
     calling a content setting `difficulty`, a puzzle's in-fiction tally `score`, or a job's
-    advancement `progress` — none of which is a claim about anybody. A local variable is
-    harmless; a persisted field is not, because a field called `mastery` is a claim about a
-    person however carefully the code around it is written.
+    advancement `progress` — none of which is a claim about anybody. What is left is the one
+    thing no field may hold whatever the code around it says: a streak, a daily goal, a
+    figure for time spent. Those are the machinery of retention and this system refuses it.
     """
     offences: list[str] = []
     for package in SCHEMA_AND_PANEL:
@@ -439,21 +458,21 @@ def test_no_verdict_vocabulary_in_the_stored_shape_or_the_panel() -> None:
             where = path.relative_to(REPO).as_posix()
             if where == NAMES_THE_WORDS_ON_PURPOSE:
                 continue
-            leaked = _stored_or_shown_names(path) & ENGAGEMENT_AND_ASSESSMENT
+            leaked = _stored_or_shown_names(path) & ENGAGEMENT
             if leaked:
                 offences.append(f"{where}: {sorted(leaked)}")
-    assert not offences, "verdict vocabulary in the stored shape:\n" + "\n".join(offences)
+    assert not offences, "hooking vocabulary in the stored shape:\n" + "\n".join(offences)
 
 
-def test_the_panel_in_the_browser_uses_none_of_that_vocabulary_either() -> None:
-    """The same rule, on the other side of the wire.
+def test_the_panel_in_the_browser_shows_neither_a_hook_nor_a_verdict() -> None:
+    """Both lists, on the other side of the wire, and this is where the second one survives.
 
-    The panel is where a number about a person would be easiest to add and hardest to
-    notice: it already draws counts, dates and lists. `_` is optional in the pattern so a
-    camelCase spelling — `timeSpent`, `dailyGoal` — is caught as readily as a snake_case
-    one.
+    A profile is kept and it is not shown. The panel is where a number about a person would
+    be easiest to add and hardest to notice — it already draws counts, dates and lists — so
+    the browser is the surface the rule is written on. `_` is optional in the pattern so a
+    camelCase spelling is caught as readily as a snake_case one.
     """
-    words = "|".join(term.replace("_", "_?") for term in sorted(ENGAGEMENT_AND_ASSESSMENT))
+    words = "|".join(term.replace("_", "_?") for term in sorted(ENGAGEMENT | ASSESSMENT))
     marker = re.compile(rf"(?i)(?<![\w-])({words})(?![\w-])")
 
     offences: list[str] = []
@@ -472,8 +491,12 @@ def test_no_prompt_asks_a_model_for_a_verdict() -> None:
     What it may not do is ask for one, so the check is on the field names a prompt declares
     rather than on the word: `"score":` in a shape the model is told to fill in, never `no
     score` in a sentence telling it not to.
+
+    Both lists, and the second one is deliberate: a profile is written by something that
+    weighs what happened, never by asking the model that just wrote an afternoon to grade
+    the person who did it.
     """
-    words = "|".join(sorted(ENGAGEMENT_AND_ASSESSMENT))
+    words = "|".join(sorted(ENGAGEMENT | ASSESSMENT))
     asked_for = re.compile(rf"""["']({words})["']\s*:""")
 
     offences: list[str] = []

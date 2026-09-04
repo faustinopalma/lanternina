@@ -95,6 +95,8 @@ Instead, a few declared properties, each decidable and checkable, used by the se
 
 ## 6. The line, worth seeing before it is crossed
 
+⚠️ **Crossed deliberately on 4 September 2026.** This section argued that a per-house score would be a model of a person and that there was nowhere to put one. The parent has withdrawn that rule: a profile is kept at system level, on axes still to be defined, because pitching an afternoon at the right level cannot be done without one. `docs/NON-GOALS.md` states what replaced it — the profile reaches the two models and never a display, a sheet or the panel, and a review gate is what enforces that. The argument below is left standing as it was written, because it is the reasoning the decision was taken against and deleting it would leave the decision looking easy.
+
 A **global** score — this form reached the end 12 times out of 30, across all houses — is a measurement about a method.
 
 A **per-house** score — *this house prefers crosswords* — is a model of a person. The deviser's own docstring states it as a fact of type rather than a caution: *«There is nothing about a person in it: no name, no profile, no learner, and no record of what anybody did. That is not caution here, it is the type — an experience has no field that could hold one.»* `docs/NON-GOALS.md` and the product notes say the same. There is nowhere to put it today, and a per-house score would be the first thing to open somewhere — arriving sideways, as a side effect of an optimisation.

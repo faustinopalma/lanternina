@@ -32,9 +32,15 @@ because an afternoon written by hand can still declare it and be checked against
 
 What a devised afternoon is given about the household is the equipment, the language, what
 the parent already wrote in their settings as interests and as things to avoid, and the
-dimensions the last few afternoons here were drawn along. There is nothing about a person
-in it: no name, no profile, no learner, and no record of what anybody did. That is not
-caution here, it is the type — an experience has no field that could hold one.
+dimensions the last few afternoons here were drawn along.
+
+**What is not here yet, and is coming.** Until 4 September 2026 this docstring said there
+was nothing about a person in the prompt and that this was a fact of the type rather than a
+caution. The rule it stated has been withdrawn: a profile is kept at system level, and an
+afternoon pitched without one is an afternoon pitched at nobody. The document this agent
+writes still carries no such field — a plan a parent reads is not the place for it — but the
+prompt will receive what the profile says about the level an afternoon should be written
+at, and the gate is what keeps that out of anything printed or shown.
 """
 
 from __future__ import annotations
