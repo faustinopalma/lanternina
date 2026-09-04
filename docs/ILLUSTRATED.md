@@ -10,7 +10,7 @@ Every image below is either a photograph of the hardware in the house, an unedit
 
 ![The finished display, framed, on a table](images/photos/display-framed.jpg)
 
-*Photograph. A 7.5" e-paper display in its frame, showing a picture it was sent an hour earlier.*
+*Photograph. A 7.5" e-paper display in its frame, showing a picture it was sent an hour earlier. The frame and its stand are printed, and so is the dragon lying in front of it.*
 
 One machine and four kinds of thing attached to it.
 
@@ -27,9 +27,19 @@ One machine and four kinds of thing attached to it.
 
 The displays are dumb on purpose. They receive a finished 1-bit bitmap and render it; they hold no fonts and compose no text. That is not a style choice — a device that cannot compose text cannot draw something the safety gate never saw, so the guarantee is a property of the topology rather than of anybody remembering to call a function. What it costs is that every word has to be laid out on the hub before it is sent.
 
-![A display with the frame off](images/photos/display-open.jpg)
+![A display before it is framed](images/photos/display-open.jpg)
 
-*Photograph. The same kind of display with the back off: the panel, the ESP32 board and the battery. The display asks the hub for content and is never contacted the other way round.*
+*Photograph. What goes inside a frame: the e-paper panel, a Seeed Studio XIAO ESP32-S3, a 2000 mAh cell and the ribbon between them. The display asks the hub for content and is never contacted the other way round.*
+
+### The frames are printed, and everything is assembled by hand
+
+Every enclosure in the house is printed here — the frames that hold a panel, its board and its battery, and the stand under the one on the table. There are two, and the difference is only how they attach: the black one has a foot and sits on a surface, the white one has a hook that engages the slots of a pegboard.
+
+That is not decoration and it is not a saving. [docs/HARDWARE.md](HARDWARE.md) makes an enclosure a condition a device has to meet before it is interesting at all, on the grounds that a bare board with a ribbon cable taped to a wall is not a thing anybody puts in a room somebody lives in. Nothing bought met the shape, so the frames are drawn and printed.
+
+What is inside them is put together by hand as well: panel, board, cell and ribbon, one unit at a time, then flashed and provisioned over USB. That is worth saying plainly next to the photographs, because photographs of finished objects imply a supply chain that does not exist. A display here cannot be replaced by ordering one, and it is part of why the README says a second house has never been provisioned.
+
+The dragon in the first photograph is printed too, and it is nothing to do with the system. It is worth pointing at anyway: it is what the surface around a display actually looks like, and a photograph staged without it would be describing a different room.
 
 ---
 
@@ -177,9 +187,13 @@ Which channel a moment lands on is a decision the format has to survive, so all 
 | **A physical button** | room → house | Nothing. It confirms, asks for help, or says done. |
 | **The handheld camera** | room → house | A photograph, in a gallery its owner can delete from. |
 
-Paper is the only one that leaves something behind. The button is how anything gets answered — no keyboard, no login, nothing to dismiss.
+Paper is the only one that leaves something behind.
 
-The camera is the only channel where the initiative sits with the adolescent, and it is **not built**: `vision/` is an empty package, nothing here takes a photograph, and every guarantee stated about it in the README is a design decision that no test would notice being dropped.
+Two of the four are being built right now, as objects, and neither has a line of code behind it yet.
+
+**The camera.** The only channel where the initiative sits with the adolescent. `vision/` is an empty package and nothing in this repository takes a photograph, so every guarantee the README states about it is a design decision that no test would notice being dropped.
+
+**The button panel.** A separate box of physical buttons, so that confirming, asking for help and saying done are three things you press rather than one. Today there is one button and it is the one on the display itself: a press wakes the board, and the hub answers it inside the response to the display's own request. That is enough to close the paper loop and it is not enough to answer a question.
 
 ---
 
@@ -191,7 +205,7 @@ Most of the time no afternoon is running, and the display is a picture that chan
 
 ![The same display, showing another](images/photos/display-on-the-wall.jpg)
 
-*Two photographs of the same display, in the same place, at two different times. The house asked for a picture, was given one, and put it up; an hour later it did that again. Nothing else in the room changed, and nobody asked for either of them.*
+*Two photographs of the same display, in the same place, at two different times. The house asked for a picture, was given one, and put it up; an hour later it did that again. Nothing else in the room changed, and nobody asked for either of them. The white frame is the printed one with the hook, holding onto the pegboard.*
 
 The parent writes the themes; the house picks one and asks for a picture on its own schedule. What arrives at the display is 1-bit, dithered, at 800 × 480:
 
@@ -286,7 +300,8 @@ The last row is the one that is not about speed. The print chain does not rescal
 
 A page of photographs makes a system look more finished than it is, so this section is not optional.
 
-- **The handheld camera.** Nothing here takes a photograph. `vision/` is empty. The acknowledgment on the display within seconds of a press is part of the channel and is not built either.
+- **The handheld camera.** Being assembled by hand as an object; nothing here takes a photograph. `vision/` is empty. The acknowledgment on the display within seconds of a press is part of the channel and is not built either. A device on a bench and an empty package are not the same distance from working, and the second is the longer one.
+- **The button panel.** Being assembled by hand as well. Nothing in the repository expects more than the one button already on each display.
 - **That a reading never lands in a store.** The type refuses to be pickled, copied or cached, but the reading travels from the house to the panel and back as a request body, and nothing stops either end writing that body down. One household named in `panel/keeping.py` deliberately does keep it, for a fortnight, while this is being built.
 - **The seventh property.** That every moment has an answer that can be wrong, and that the last moment produces something worth keeping, is specified and not checked. A plan that fails it is saved.
 - **The plain-language memory view.** There is no page that renders the whole household memory as sentences. Until there is, the enforcement that replaces locality does not exist.
