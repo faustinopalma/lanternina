@@ -369,6 +369,14 @@ Without them the page at `/admin` loads and says it is not configured, which is 
 
 There is nothing to rotate and nothing to leak. GitHub mints a short-lived token that says *this is the repository `faustinopalma/lanternina`, on `refs/heads/main`*; Entra trades it for a token belonging to the identity, but only because a federated credential names that exact subject. A copy of the workflow in a fork, or on another branch, gets a token Entra refuses.
 
+⚠️ **The subject carries numeric ids, not names, and getting this wrong is the whole failure.** The first attempt registered `repo:faustinopalma/lanternina:ref:refs/heads/main` and Entra answered `AADSTS700213: No matching federated identity record found for presented assertion subject`, naming what had actually arrived:
+
+```
+repo:faustinopalma@39453908/lanternina@1338031850:ref:refs/heads/main
+```
+
+Do not write that by hand from this file. Add the credential, run the workflow once, and **read the subject out of the error** — it is quoted in full, and it is the only source that cannot be out of date. The id form is the better one anyway: it survives the repository being renamed, which the name form does not.
+
 The three values in *Settings → Secrets and variables → Actions → Variables* are a client id, a tenant id and a subscription id. They are variables and not secrets for the same reason as above and a better one: none of them is a credential. On their own they open nothing, and reading them in a log is what makes a failed sign-in diagnosable.
 
 **What the identity may do, which is the whole of it:**
