@@ -147,6 +147,7 @@ vision/         the handheld camera's intake. Empty: nothing here takes a photog
 printing/       paper.py: one image onto A4, and the ink it costs. Nothing lays anything out
 panel/          the parent-facing API — the only place approval happens
 web/            the panel in the browser, a React single-page application
+site/           the public page. Hand-written HTML and CSS, no build, its own Static Web App
 devices/        what runs in the house: display server, runner, printing, scanning
                   pretend.py — the same house with the person simulated
 tools/          the command-line paths, the probes, and the simulated hand

@@ -1,0 +1,241 @@
+/* Paper, ink, and one column. No web fonts: a request to somebody else's server is a
+   thing this page says it does not make. */
+
+:root {
+  --paper: #f7f6f3;
+  --ink: #17171a;
+  --muted: #5f5c56;
+  --rule: #e2ded6;
+  --measure: 34rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+/* The language that is not selected is removed from the page, not just hidden from view:
+   a screen reader should not read the same paragraph twice. */
+html[lang="it"] [data-lang="en"],
+html[lang="en"] [data-lang="it"] {
+  display: none;
+}
+
+.bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.25rem clamp(1.25rem, 5vw, 3rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.wordmark {
+  font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+}
+
+.langs {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.langs button {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.2rem 0.7rem;
+  cursor: pointer;
+}
+
+.langs button[aria-pressed="true"] {
+  border-color: var(--rule);
+  background: #fff;
+  color: var(--ink);
+}
+
+.langs button:hover {
+  color: var(--ink);
+}
+
+main {
+  padding: 0 clamp(1.25rem, 5vw, 3rem);
+}
+
+section {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 7vw, 4.5rem) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+section:last-of-type {
+  border-bottom: 0;
+}
+
+h1 {
+  font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(2.2rem, 7vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+}
+
+h2 {
+  font-family: ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(1.35rem, 3.5vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 0 0 1rem;
+}
+
+p {
+  margin: 0 0 1.1rem;
+}
+
+.lede {
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  line-height: 1.5;
+}
+
+.sub {
+  color: var(--muted);
+}
+
+ul {
+  margin: 0 0 1.4rem;
+  padding-left: 1.1rem;
+}
+
+li {
+  margin-bottom: 0.6rem;
+}
+
+figure {
+  margin: 2rem 0 0;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  background: #fff;
+}
+
+/* Wider than the measure, because a photograph read at text width is a thumbnail.
+   Width first, then centre by shifting: setting `width` against a narrow parent is what
+   made an earlier version of this rule silently do nothing. */
+.bleed {
+  width: min(58rem, calc(100vw - 2 * clamp(1.25rem, 5vw, 3rem)));
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.pair {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  margin-top: 2rem;
+}
+
+@media (min-width: 40rem) {
+  .pair {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.pair figure {
+  margin: 0;
+}
+
+/* A page is tall and a screen is wide. Bounding both by height rather than width is what
+   keeps the two from being reproduced at wildly different scales beside each other. */
+.pair img {
+  width: auto;
+  max-width: 100%;
+  max-height: 20rem;
+  margin-inline: auto;
+}
+
+figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* A screenshot is a picture of a window, so it is given an edge. A photograph is not. */
+.framed img {
+  border: 1px solid var(--rule);
+}
+
+.plain img {
+  display: none;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+}
+
+a {
+  color: var(--ink);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.foot {
+  border-bottom: 0;
+  border-top: 1px solid var(--rule);
+  margin-top: 2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.foot p {
+  margin: 0;
+  max-width: var(--measure);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16161a;
+    --ink: #ececea;
+    --muted: #9b978f;
+    --rule: #2e2e34;
+  }
+
+  .langs button[aria-pressed="true"] {
+    background: #24242b;
+  }
+
+  img {
+    background: #24242b;
+  }
+}

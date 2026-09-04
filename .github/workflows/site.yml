@@ -1,0 +1,58 @@
+# Publish the public page to its own Static Web App.
+#
+# A different site from the parent's panel: that one is app.lanternina.com and is built by
+# panel.yml. Nothing here is built — the folder is hand-written HTML, CSS and one script,
+# so what is published is byte for byte what is in the repository.
+name: site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+
+# One publish at a time. Two overlapping runs would race for the same site.
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Cheap guards against the two ways this page breaks silently: an <img> or a
+      # stylesheet whose file was renamed, and a page that lost its language switch.
+      - name: check every local reference resolves
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, sys
+
+          site = pathlib.Path("site")
+          html = (site / "index.html").read_text(encoding="utf-8")
+
+          refs = re.findall(r'(?:src|href)="(?!https?:|#|mailto:)([^"]+)"', html)
+          missing = [r for r in refs if not (site / r).exists()]
+
+          langs = set(re.findall(r'data-lang="(\w+)"', html))
+
+          print(f"references checked: {len(refs)}")
+          print(f"languages present : {sorted(langs)}")
+
+          if missing:
+              sys.exit(f"missing files: {missing}")
+          if langs != {"it", "en"}:
+              sys.exit(f"expected both languages, found {sorted(langs)}")
+          PY
+
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SITE }}
+          action: upload
+          # Nothing to build: publish the folder as it stands.
+          skip_app_build: true
+          app_location: site
+          output_location: ""

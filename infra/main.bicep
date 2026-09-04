@@ -257,6 +257,18 @@ module web 'modules/web.bicep' = {
   }
 }
 
+module site 'modules/site.bicep' = {
+  scope: rgApp
+  name: 'site'
+  params: {
+    projectName: projectName
+    environmentName: environmentName
+    location: webLocation
+    suffix: suffix
+    tags: tags
+  }
+}
+
 module identity 'modules/identity.bicep' = if (deployExternalId) {
   scope: rgData
   name: 'identity'
@@ -294,6 +306,8 @@ output apiAppName string = app.outputs.apiAppName
 output workerAppName string = app.outputs.workerAppName
 output staticWebAppHostname string = web.outputs.defaultHostname
 output staticWebAppName string = web.outputs.name
+output siteHostname string = site.outputs.defaultHostname
+output siteName string = site.outputs.name
 output cosmosEndpoint string = data.outputs.cosmosEndpoint
 output aiAccountName string = ai.outputs.accountName
 output aiProjectName string = ai.outputs.projectName

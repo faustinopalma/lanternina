@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Lanternina">
+  <rect width="32" height="32" rx="6" fill="#17171a" />
+  <g fill="none" stroke="#f7f6f3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 4v2" />
+    <path d="M11 8h10" />
+    <path d="M12 8v13h8V8" />
+    <path d="M10 24h12" />
+  </g>
+  <rect x="14" y="12" width="4" height="6" rx="1" fill="#f7f6f3" />
+</svg>
