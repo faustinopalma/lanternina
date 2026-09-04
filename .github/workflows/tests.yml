@@ -1,0 +1,77 @@
+# The Python tier, checked on every push. It gates nothing.
+#
+# **This workflow cannot slow a deploy down, and that is a property of the file rather
+# than an intention.** Jobs in GitHub Actions run in parallel unless one names another in
+# `needs:`, and nothing here names anything. The panel's browser tier publishes from
+# `panel.yml`, which does not mention this file; the API image is built and rolled out by
+# hand with `az acr build` and `az containerapp update`, which do not go through Actions at
+# all. So a push starts the deploy and this run at the same instant, and the revision is
+# serving whether or not the tests have finished.
+#
+# What it is for is the record. Until 4 September 2026 the 948 tests and the linter ran
+# only on one laptop, which means the repository's guarantees held exactly as long as
+# somebody remembered to check them. Now every commit carries its own answer, and a commit
+# that broke something says so next to itself instead of waiting to be discovered.
+#
+# Deliberately not here: `mypy`. It reports four errors that predate this file, in
+# `shared/vision_contracts.py` and `orchestrator/safety.py`, and a check that is red on the
+# day it is added is a check nobody reads afterwards. It goes in when those are fixed.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# No concurrency group on purpose. Cancelling a superseded run would leave the commit that
+# started it with no answer, and an answer per commit is the whole point.
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # The image the panel ships on, so a failure here is a failure there.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      # `vision` is not optional for the tests even though the panel runs without it:
+      # `tests/test_page_maker.py` imports cv2 and numpy to prove the page maker does not.
+      - name: install
+        run: pip install -e ".[dev,panel,vision,devices]"
+
+      - name: ruff
+        run: ruff check .
+
+      # Written down as well as printed: `--junit-xml` is what the summary and the artifact
+      # are built from, and it survives the log being truncated.
+      - name: pytest
+        run: pytest tests/ -q --junit-xml=tmp/tests.xml
+        # So that a failing suite still produces the record this workflow exists for.
+        continue-on-error: true
+        id: pytest
+
+      - name: what happened
+        if: always()
+        run: python tools/ci_summary.py tmp/tests.xml >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results
+          path: tmp/tests.xml
+          retention-days: 14
+
+      # Last, so the summary and the artifact are already written when the run turns red.
+      - name: fail if the suite did
+        if: steps.pytest.outcome == 'failure'
+        run: exit 1
