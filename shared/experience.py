@@ -78,6 +78,7 @@ here that could hold a verdict.
 
 from __future__ import annotations
 
+import math
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -271,9 +272,26 @@ def _identifier(raw: object, what: str) -> str:
 
 
 def _whole(raw: object, what: str) -> int:
-    if isinstance(raw, bool) or not isinstance(raw, int):
+    """A count of minutes, from whatever shape the number arrived in.
+
+    A float is taken and rounded rather than refused, and that is a change of 4 September
+    2026 made from a measurement: `12.0` and `12.5` were both refused, and each refusal cost
+    a whole second devising — about 140 seconds and a full model call — for half a minute on
+    a way out. It fired on two afternoons out of six.
+
+    Rounding is honest here and would not be everywhere. Every one of these numbers is
+    minutes, read by arithmetic on a clock and shown as a duration; neither can express half
+    a minute, so nothing downstream can tell the difference between what was written and
+    what is kept. A bool is still refused, because `True` is an `int` in Python and a
+    document saying a moment lasts `true` has not said a number.
+    """
+    if isinstance(raw, bool):
         raise ExperienceError(f"{what} must be a whole number")
-    return raw
+    if isinstance(raw, int):
+        return raw
+    if isinstance(raw, float) and math.isfinite(raw):
+        return round(raw)
+    raise ExperienceError(f"{what} must be a whole number")
 
 
 def _only(values: Mapping[str, Any], allowed: set[str], what: str) -> None:
