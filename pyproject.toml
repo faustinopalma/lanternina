@@ -82,6 +82,14 @@ panel = ["*.md"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+# The repository root, so that `tests`, `tools` and `research` import. None of the three is
+# an installed package — `packages.find` lists what ships — and the tests import all three.
+# It worked without this on a developer machine and nowhere else: an editable install whose
+# packages are enumerated maps only those, while the same command on a laptop had left the
+# root on `sys.path` from some earlier install. The first CI run found it, which is what the
+# first CI run is for. Here rather than in the workflow, so that one machine cannot pass a
+# suite that another cannot even collect.
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100
