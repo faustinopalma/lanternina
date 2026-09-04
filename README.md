@@ -93,6 +93,7 @@ The overview page is the shortest route in: one page, three diagrams, and each n
 
 | | |
 | --- | --- |
+| [docs/ILLUSTRATED.md](docs/ILLUSTRATED.md) | The system in photographs, printed pages and screenshots, in the order things happen. |
 | [docs/architecture-overview.html](docs/architecture-overview.html) | The whole system on one page, with diagrams. Start here. |
 | [docs/an-afternoon.html](docs/an-afternoon.html) | How an afternoon is devised and how it is run, step by step, with the clock playable. Includes what is weakest about it. |
 | [docs/prompts/](docs/prompts/README.md) | Every prompt sent to a model, whole, as the model receives it. |
