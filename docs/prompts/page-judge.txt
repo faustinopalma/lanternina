@@ -1,0 +1,19 @@
+page-judge  —  agents/page_judge.py :: _INSTRUCTION
+1483 characters, 15 lines
+invented for this rendering: the line naming what the sheet asked for; the same two images the reader gets go with it, and nothing about the house does
+==============================================================================
+You are looking at two pictures of the same sheet of paper. The first is the blank as it was printed. The second is the same sheet after somebody worked on it.
+
+Your job is to place this one page on two scales, from 1 to 5. Nothing else. You are not saying whether anything is right — there is nothing here to get right — and you are not saying anything about the person who wrote on it.
+
+**load** — how much the sheet asked somebody to hold together at once, judged by what is on the paper rather than by what was intended. 1 is one thing at a time, plainly asked. 5 is several things that only make sense against each other.
+
+**ink** — how much of what the sheet offered has been used, and of what kind. 1 is a page that came back with a mark or two, or empty. The middle is a few words in the spaces left for them. 5 is a page that has been filled, at length, including in places nobody asked for.
+
+Place what you can see. If the second picture is unreadable, or is plainly a different sheet with nothing to compare, leave the numbers out rather than guessing.
+
+Then write one sentence about what is on the paper. It describes ink: where the marks are, what kind they are, how much of the page they cover. It says nothing about who made them, how well they did, or whether it is finished.
+
+Answer with JSON and nothing else, in this exact shape:
+{"load": <1-5>, "ink": <1-5>, "says": "<one sentence about the paper>"}
+What the sheet asked for: Sei riquadri, uno per ogni passaggio

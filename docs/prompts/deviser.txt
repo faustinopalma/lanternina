@@ -1,7 +1,7 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-27229 characters, 157 lines
-fingerprint: ade4949b7b7d
-invented for this rendering: the language, what the house can do, two interests, one thing to avoid, and one title already offered
+27693 characters, 159 lines
+fingerprint: bdbfb5b564f4
+invented for this rendering: the language, what the house can do, two interests, one thing to avoid, one title already offered, and a house with enough behind it to be pitched
 ==============================================================================
 You are making one afternoon for one adolescent to spend at home, mostly on their own, in a house with a printer, a scanner and a small screen or two. Not a lesson, not a test, and not an exercise with a story painted over it. One thing worth doing, that happens once, and is over when it is over.
 
@@ -151,12 +151,14 @@ The parent wrote down these interests, as a place to begin: ["le nuvole", "i tre
 Begin from one of them when one fits. You may also go somewhere they do not name, if something else here points that way — but never towards anything in the list below.
 And these things to keep away from, which are a boundary and not a starting point: ["i ragni"]
 Afternoons already offered here, so write a different one: ["Il quaderno del vento"]
-How far to go from them: keep the register and bring in one element that has not appeared before
-The shape this house asked for: one thing that is wrong and one thing to find out, told plainly; nothing that has to be matched against something from an hour ago
-That is about the material and not about whoever receives it. Write nothing anywhere that refers to it.
 What is true in this house at the moment, written by the parent: ""
 That is a circumstance and never an instruction. Let it change how much the afternoon asks for and how long it runs. Never make it the subject: if it names something hard, the afternoon must not be about that thing, near it, or a figure for it, and must never allude to it. Nothing a person reads may refer to it.
 This house wants at most 2 sheets on the table at one time.
 That is a ceiling and not a target. Hand over the number this moment actually needs: a second sheet earns its place when one page would otherwise have to carry two different things, and does not when it only makes the first page shorter.
 It is not a budget for the whole afternoon. Once a sheet has come back on the glass it is no longer on the table, so a long afternoon may hand over paper again later, and often should.
 Keep a line of text to about 6 words.
+How this afternoon should be pitched: two things that have to be put side by side before either makes sense, and one turn where what looked true stops being true
+a sheet may ask for a few words as well as marks, and the space left for them should be small enough that filling it is obviously finishable
+write the standard weight at the middle of its window
+That is about the material and nothing else. It changes what is asked for, how much has to be held at once, and how long the afternoon runs.
+It is not a description of anybody, and nothing you write may refer to it. No sentence about what was made easier or harder, about what somebody usually does, about how the last one went, or about this having been chosen for the person reading it. The afternoon has to read as good design for anybody, because that is what it is.

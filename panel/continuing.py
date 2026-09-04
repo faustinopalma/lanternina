@@ -59,6 +59,7 @@ async def continue_experience(
     reading: dict[str, Any],
     now: float,
     household_bounds: str = "",
+    pitch: str = "",
 ) -> tuple[Continuation, ModelUsage | None]:
     """The rest of the afternoon, screened, and what the call consumed.
 
@@ -67,6 +68,12 @@ async def continue_experience(
     bounds are not a parameter: they are ours, they hold in every household, and a caller
     that forgot them would be handing out the licence to improvise with only a parent's
     sentences behind it.
+
+    ``pitch`` is where this house sits, from :meth:`shared.profile.Profile.as_material`. It
+    is the one thing here that is about the person rather than about the afternoon, and it
+    reaches the model and nothing else — `shared/blocklist.py` refuses a sentence that tells
+    the reader the afternoon was fitted to them, and the screening below is what makes that
+    a gate rather than a hope.
 
     Raises whatever the router raises when the cloud will not serve it,
     :class:`~shared.errors.SafetyBlocked` when the gate refuses what came back, and
@@ -90,8 +97,9 @@ async def continue_experience(
         Sealer(SealPurpose.CONTENT_SAFETY, key, "orchestrator.safety"),
     )
     router = FoundryRouter(FoundryConfig.from_env(environment), gate=gate)
-    # An empty learner and empty hints: an experience carries nothing about a person and
-    # handing the agent nothing is the cheapest way to keep that true as the prompt changes.
+    # An empty learner and empty hints: `AgentContext` carries the two fields a retired path
+    # used, and where this house sits travels as `pitch` instead, because a pitch is prose
+    # for one prompt rather than a field an agent may read for itself.
     context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=now)
     try:
         carrying_on = await ExperienceContinuer().continue_from(
@@ -102,6 +110,7 @@ async def continue_experience(
             reading=reading,
             bounds=FIXED,
             household_bounds=household_bounds,
+            pitch=pitch,
         )
         # The same checks the whole afternoon passed, on the half nobody approved, and
         # given the half that already happened: a continuation begins in the middle, so a

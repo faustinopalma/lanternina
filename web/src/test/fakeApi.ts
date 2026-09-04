@@ -449,15 +449,11 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let preferences: Preferences = {
     interests: ["gatti", "vele"],
     avoid: ["tempeste"],
-    difficulty: "gentle",
-    variety: "balanced",
     language: "it",
     sheets: 2,
     note: "",
     noteUntil: 0,
     noteLastsDays: 28,
-    difficultyChoices: ["gentle", "steady", "stretch"],
-    varietyChoices: ["familiar", "balanced", "frequent"],
     languageChoices: ["it", "en"],
     sheetsChoices: [1, 2, 3],
   };

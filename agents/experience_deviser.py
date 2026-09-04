@@ -31,16 +31,24 @@ and a model made to restate that can only get it wrong. It stays a field on the 
 because an afternoon written by hand can still declare it and be checked against it.
 
 What a devised afternoon is given about the household is the equipment, the language, what
-the parent already wrote in their settings as interests and as things to avoid, and the
-dimensions the last few afternoons here were drawn along.
+the parent already wrote in their settings as interests and as things to avoid, the
+dimensions the last few afternoons here were drawn along, and where this house sits on the
+three axes of :mod:`shared.profile`.
 
-**What is not here yet, and is coming.** Until 4 September 2026 this docstring said there
-was nothing about a person in the prompt and that this was a fact of the type rather than a
-caution. The rule it stated has been withdrawn: a profile is kept at system level, and an
-afternoon pitched without one is an afternoon pitched at nobody. The document this agent
-writes still carries no such field — a plan a parent reads is not the place for it — but the
-prompt will receive what the profile says about the level an afternoon should be written
-at, and the gate is what keeps that out of anything printed or shown.
+**The pitch arrives as sentences about the afternoon, never as a description of anybody.**
+That is not politeness; it is what makes the review gate's job possible. A prompt saying
+*this person holds two things at once* would produce an afternoon that occasionally says so.
+What goes in is the register `SHAPES` was written in when a parent chose between three of
+them by hand, and the block is left out altogether when the profile knows nothing — a house
+with no history gets a deviser inventing freely, which is what it did for the whole of
+August.
+
+**And how far an afternoon travels from the last ones is no longer a setting.** It was three
+choices in the panel until 4 September 2026 and it is now always as far as the format
+allows: `not-again` already refuses an afternoon sharing more than two of the eight
+dimensions that are decisions, which is a bound that can be checked, and a parent asked to
+pick between *always the same* and *changes often* was being asked a question nobody can
+answer before seeing an afternoon.
 """
 
 from __future__ import annotations
@@ -83,6 +91,7 @@ from shared.experience_prompt import (
 )
 from shared.ids import new_request_id
 from shared.methods import Method
+from shared.profile import PITCHES
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
@@ -169,47 +178,11 @@ _INSTRUCTION: Final = (
 # repair is written against the same shape the first attempt was.
 _REPAIR: Final = SAYS.text("repair")
 
-# What the parent's three choices mean for an afternoon, said as a property of the material.
-# The old printed-exercise path glossed them as sentence length; an afternoon's difficulty is
-# not how long a sentence is, it is how many things have to be held together at once — which
-# is the axis the afternoons were failing on before anything read this at all.
-DEFAULT_DIFFICULTY: Final = "gentle"
-DEFAULT_WORDS_PER_LINE: Final = 6
-SHAPES: Final[dict[str, str]] = {
-    "gentle": (
-        "one thing that is wrong and one thing to find out, told plainly; nothing that has "
-        "to be matched against something from an hour ago"
-    ),
-    "steady": (
-        "two things that have to be put side by side before either makes sense, and one "
-        "turn where what looked true stops being true"
-    ),
-    "stretch": (
-        "three things to relate, and something that only resolves once all three are in "
-        "hand — still one question, and every step still clear on its own"
-    ),
-}
-
-# How far an afternoon should travel from the ones already offered. The list of those is
-# already in the prompt saying "write a different one"; this says how different, which is
-# the only thing the choice can honestly mean. It was stored and read by nothing until
-# 27 August 2026, the same fault as the shape and found the same way.
-DEFAULT_VARIETY: Final = "balanced"
-DISTANCES: Final[dict[str, str]] = {
-    "familiar": (
-        "stay in the same world and the same register as the recent ones; what changes is "
-        "the question, not the furniture"
-    ),
-    "balanced": "keep the register and bring in one element that has not appeared before",
-    "frequent": (
-        "go somewhere else — another place, another century, another kind of object — and "
-        "keep only the way it is made"
-    ),
-}
-
 # How many sheets may be on the table at one time. The parent sets it; `panel/preferences.py`
 # says why two rather than one, and `shared/experience_checks.py` refuses a document above it.
 DEFAULT_SHEETS: Final = 2
+
+DEFAULT_WORDS_PER_LINE: Final = 6
 
 
 def the_prompt(
@@ -225,8 +198,7 @@ def the_prompt(
     direction: str = "",
     ground: str = "",
     brief: str = "",
-    shape: str = "",
-    distance: str = "",
+    pitch: str = "",
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -240,10 +212,13 @@ def the_prompt(
     that has not been rendered. What a parent typed in the panel arrives quoted as JSON,
     which is what keeps it material rather than instruction.
 
-    ``shape`` is what the parent chose under "how it should be made" — how many things
-    connect and how long a chain of them runs. It is the starting point; ``direction`` says
-    which way to move from it, read off how the last runs actually went. Neither reaches the
-    document: `tests/test_experience.py` refuses a field named `difficulty` on an afternoon.
+    ``pitch`` is :meth:`shared.profile.Profile.as_material` — one sentence per axis this
+    house has enough evidence for, written as a property of the afternoon. It replaced a
+    setting a parent chose between three steps of, on 4 September 2026, because asking a
+    parent to grade what somebody can take is asking them for a verdict. Empty is ordinary
+    and means the block is left out. Neither it nor anything it is computed from reaches the
+    document: `tests/test_experience.py` refuses a field named `difficulty` on an afternoon,
+    and `shared/blocklist.py` refuses a sentence that tells the reader it was fitted to them.
 
     Three arguments come out of `panel/what_happened.py` and they are three different jobs.
     ``happened`` is the last few afternoons as rows — the evidence. ``counts`` and
@@ -280,12 +255,11 @@ def the_prompt(
             interests=json.dumps(list(interests), ensure_ascii=False),
             avoid=json.dumps(list(avoid), ensure_ascii=False),
             already=json.dumps(list(already), ensure_ascii=False),
-            shape=shape or SHAPES[DEFAULT_DIFFICULTY],
-            variety=distance or DISTANCES[DEFAULT_VARIETY],
             note=json.dumps(note, ensure_ascii=False),
             sheets=sheets,
             words_per_line=words_per_line,
         )
+        + (SAYS.text("pitch", pitch=pitch) if pitch else "")
         + (SAYS.text("what-happened", happened=happened) if happened else "")
         + (
             SAYS.text("how-it-has-gone", counts=counts, direction=direction)
@@ -310,7 +284,7 @@ class ExperienceDeviser:
         interests: tuple[str, ...] = (),
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
-        shape: str = "",
+        pitch: str = "",
     ) -> tuple[str, str, str]:
         """Which form and which move to build out of, chosen from a catalogue of names.
 
@@ -329,7 +303,7 @@ class ExperienceDeviser:
                     interests=json.dumps(list(interests), ensure_ascii=False),
                     avoid=json.dumps(list(avoid), ensure_ascii=False),
                     already=json.dumps(list(already), ensure_ascii=False),
-                    shape=shape or SHAPES[DEFAULT_DIFFICULTY],
+                    pitch=pitch or "nothing is known about this house yet",
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_CHOICE_CHARS,
@@ -354,8 +328,7 @@ class ExperienceDeviser:
         direction: str = "",
         ground: str = "",
         brief: str = "",
-        shape: str = "",
-        distance: str = "",
+        pitch: str = "",
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -377,8 +350,7 @@ class ExperienceDeviser:
                 direction=direction,
                 ground=ground,
                 brief=brief,
-                shape=shape,
-                distance=distance,
+                pitch=pitch,
                 note=note,
                 sheets=sheets,
                 words_per_line=words_per_line,
@@ -402,8 +374,7 @@ class ExperienceDeviser:
         direction: str = "",
         ground: str = "",
         brief: str = "",
-        shape: str = "",
-        distance: str = "",
+        pitch: str = "",
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -442,8 +413,7 @@ class ExperienceDeviser:
                     direction=direction,
                     ground=ground,
                     brief=brief,
-                    shape=shape,
-                    distance=distance,
+                    pitch=pitch,
                     note=note,
                     sheets=sheets,
                     words_per_line=words_per_line,
@@ -614,6 +584,7 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
 _WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
     "choosing",
     "method",
+    "pitch",
     "what-happened",
     "how-it-has-gone",
     "ground-covered",
@@ -625,16 +596,19 @@ _WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
 def what_is_not_about_a_house() -> str:
     """Everything this agent can send a model that does not come from one household.
 
-    Every block, with the numbers the format fills them with, and the three shapes and
-    three distances a parent's choice picks between. What is left out is what a house puts
-    in: its language, its equipment, its interests, its titles, and the parent's note.
+    Every block, with the numbers the format fills them with, and every sentence the profile
+    can put in the pitch. The sentences are in here rather than left out because which of
+    them a house is sent is about the house, but the nine of them are ours: editing one
+    changes the afternoons and has to move the fingerprint.
+
+    What is left out is what a house puts in: its language, its equipment, its interests,
+    its titles, and the parent's note.
     """
     return "\n".join(
         [
             the_prompt(language="", capabilities=frozenset()),
             _REPAIR,
-            *sorted(SHAPES.values()),
-            *sorted(DISTANCES.values()),
+            *sorted(says for axis in PITCHES.values() for says in axis.values()),
             *(SAYS.text(name) for name in _WHEN_THERE_IS_SOMETHING_TO_SAY),
         ]
     )

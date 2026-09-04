@@ -1,8 +1,12 @@
-"""What the content is made of: interests, what to avoid, difficulty, language.
+"""What the content is made of: interests, what to avoid, the language, the note.
 
 These are the fields the hub may put in a prompt, and the list is closed on purpose — a
 body carrying something we do not store is refused rather than dropped, so it cannot look
 as though it was saved.
+
+The shape and the variety were two of these fields until 4 September 2026 and are gone; a
+body that still sends them is refused by ``extra="forbid"``, which is the behaviour worth
+having — an old browser is told rather than quietly steering with a field nobody reads.
 """
 
 from __future__ import annotations
@@ -29,8 +33,6 @@ class NewPreferences(BaseModel):
 
     interests: list[str] = Field(default_factory=list)
     avoid: list[str] = Field(default_factory=list)
-    difficulty: str
-    variety: str
     language: str
     # How many sheets one afternoon may put on the table. A ceiling, not a target.
     sheets: int = DEFAULT_SHEETS
@@ -55,8 +57,6 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
             str(account.household_id),
             interests=new.interests,
             avoid=new.avoid,
-            difficulty=new.difficulty,
-            variety=new.variety,
             language=new.language,
             sheets=new.sheets,
             note=new.note,

@@ -37,7 +37,7 @@ from orchestrator.router import FoundryConfig, FoundryRouter
 from orchestrator.safety import AzureContentSafetyGate, ContentSafetyConfig
 from shared.agents import AgentContext
 from shared.approval import ApprovalDecision, ApprovalState, ApprovedItem
-from shared.domain import ActivityKind, ContentVariety, Difficulty, LearnerProfile
+from shared.domain import ActivityKind, LearnerProfile
 from shared.errors import SafetyBlocked, UnusableGeneration
 from shared.ids import LearnerId, ProposalId, new_proposal_id, new_request_id
 from shared.proposal import Proposal, ProposalKind
@@ -122,7 +122,9 @@ def learner_profile(panel: str, household: str, key: str) -> LearnerProfile:
     """The household's settings, as the parent last left them in the panel.
 
     The name and id are added here and only here. Everything else comes down from the
-    panel, which holds exactly the fields `prompt_hints()` returns and no other.
+    panel, and two fields that used to are gone: the shape and the variety left the panel
+    on 4 September 2026, so this type's own defaults stand in for them on the retired
+    printed-exercise path that is the only thing still reading them.
 
     A silent panel gives the plain defaults rather than stopping the batch: cloud
     unavailable means content that is less tuned, not a house with nothing to offer.
@@ -138,9 +140,6 @@ def learner_profile(panel: str, household: str, key: str) -> LearnerProfile:
             display_name=LOCAL_LEARNER_NAME,
             interests=tuple(str(item) for item in answer.get("interests") or ()),
             avoid=tuple(str(item) for item in answer.get("avoid") or ()),
-            default_difficulty=Difficulty(str(answer["difficulty"])),
-            content_variety=ContentVariety(str(answer["variety"])),
-            max_words_per_line=int(answer["maxWordsPerLine"]),
             language=str(answer["language"]),
         )
     except (urllib.error.URLError, OSError, ValueError, KeyError, TypeError) as exc:

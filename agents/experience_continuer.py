@@ -15,9 +15,10 @@ Two things bound what a model can do with that, and neither is in the prompt.
   and has not seen this. That is the trade `ideas/08 §2` records, and this module is the
   place it is paid.
 
-What the model is given is the experience, what came back off the glass, and nothing
-else. There is no name, no profile and no household in any of it — an experience carries
-nothing about a person, and a reading describes ink.
+What the model is given is the experience and what came back off the glass. The document
+carries nothing about a person and the reading describes ink; what the prompt carries is a
+separate question, and since 4 September 2026 the answer is no longer *nothing* — see
+`docs/NON-GOALS.md`.
 
 What the prompt leaves out, said here rather than found later: a design may also carry
 strokes and circles, and this prompt does not offer them. A continuation is therefore
@@ -110,22 +111,31 @@ def the_prompt(
     reading: dict[str, Any],
     bounds: Sequence[str] = (),
     household_bounds: str = "",
+    pitch: str = "",
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
     Its own function so that what is sent can be read without running anything:
     `tools/prompts.py` renders it into `docs/prompts/`, and a test refuses a change here
     that has not been rendered.
+
+    ``pitch`` is :meth:`shared.profile.Profile.as_material`, empty when this house has too
+    little behind it. It goes in ahead of the page rather than after it, so that the model
+    reads the handwriting already knowing what to do with it rather than deciding.
     """
     instruction = (
         with_bounds(bounds, household_bounds) if bounds or household_bounds else _INSTRUCTION
     )
-    return f"{instruction}\n" + SAYS.text(
-        "household",
-        experience=json.dumps(experience, ensure_ascii=False),
-        after=after,
-        came=came,
-        ink=json.dumps(_ink(reading), ensure_ascii=False),
+    return (
+        f"{instruction}\n"
+        + (SAYS.text("pitch", pitch=pitch) if pitch else "")
+        + SAYS.text(
+            "household",
+            experience=json.dumps(experience, ensure_ascii=False),
+            after=after,
+            came=came,
+            ink=json.dumps(_ink(reading), ensure_ascii=False),
+        )
     )
 
 
@@ -144,6 +154,7 @@ class ExperienceContinuer:
         reading: dict[str, Any],
         bounds: Sequence[str] = (),
         household_bounds: str = "",
+        pitch: str = "",
     ) -> Continuation:
         """The rest of the afternoon, parsed. Raises when what came back is not one.
 
@@ -164,6 +175,7 @@ class ExperienceContinuer:
             reading=reading,
             bounds=bounds,
             household_bounds=household_bounds,
+            pitch=pitch,
         )
         answer = await self._ask(ctx, asked, experience, after)
         try:

@@ -21,8 +21,6 @@ const fromLines = (text: string) =>
 interface Draft {
   interests: string;
   avoid: string;
-  difficulty: string;
-  variety: string;
   language: string;
   sheets: number;
   note: string;
@@ -44,8 +42,6 @@ function Form({ settings }: { settings: Settings }) {
   const [draft, setDraft] = useState<Draft>(() => ({
     interests: asLines(settings.interests),
     avoid: asLines(settings.avoid),
-    difficulty: settings.difficulty,
-    variety: settings.variety,
     language: settings.language,
     sheets: settings.sheets,
     note: settings.note,
@@ -57,12 +53,6 @@ function Form({ settings }: { settings: Settings }) {
   /* The words for each choice, written out rather than built from the value: a key that
    * only exists at runtime is a key no test can find missing. */
   const words: Record<string, string> = {
-    gentle: t("preferences.gentle"),
-    steady: t("preferences.steady"),
-    stretch: t("preferences.stretch"),
-    familiar: t("preferences.familiar"),
-    balanced: t("preferences.balanced"),
-    frequent: t("preferences.frequent"),
     it: t("preferences.italian"),
     en: t("preferences.english"),
   };
@@ -77,8 +67,6 @@ function Form({ settings }: { settings: Settings }) {
       await api.savePreferences({
         interests: fromLines(draft.interests),
         avoid: fromLines(draft.avoid),
-        difficulty: draft.difficulty,
-        variety: draft.variety,
         language: draft.language,
         sheets: draft.sheets,
         note: draft.note.trim(),
@@ -118,34 +106,6 @@ function Form({ settings }: { settings: Settings }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <span className="flex items-center gap-2">
-            <Label htmlFor="pref-difficulty">{t("preferences.difficulty")}</Label>
-            <Select
-              id="pref-difficulty"
-              value={draft.difficulty}
-              onChange={(event) => edit({ difficulty: event.target.value })}
-            >
-              {settings.difficultyChoices.map((value) => (
-                <option key={value} value={value}>
-                  {words[value] ?? value}
-                </option>
-              ))}
-            </Select>
-          </span>
-          <span className="flex items-center gap-2">
-            <Label htmlFor="pref-variety">{t("preferences.variety")}</Label>
-            <Select
-              id="pref-variety"
-              value={draft.variety}
-              onChange={(event) => edit({ variety: event.target.value })}
-            >
-              {settings.varietyChoices.map((value) => (
-                <option key={value} value={value}>
-                  {words[value] ?? value}
-                </option>
-              ))}
-            </Select>
-          </span>
           <span className="flex items-center gap-2">
             <Label htmlFor="pref-language">{t("preferences.language")}</Label>
             <Select

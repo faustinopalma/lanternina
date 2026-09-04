@@ -54,11 +54,23 @@ class Prompt:
     fingerprint: str = ""
 
 
+def a_pitch() -> str:
+    """What a house with a history is sent, for the rendering only.
+
+    The middle band of every axis, because it is the one a reader learns least from being
+    shown and therefore the one least likely to be mistaken for a recommendation.
+    """
+    from shared.profile import PITCHES, Axis, Band
+
+    return "\n".join(PITCHES[axis][Band.MIDDLE] for axis in Axis)
+
+
 def every_prompt() -> list[Prompt]:
     from agents import (
         experience_continuer,
         experience_deviser,
         experience_judge,
+        page_judge,
         page_maker,
         page_reader,
         reminder_reader,
@@ -99,9 +111,10 @@ def every_prompt() -> list[Prompt]:
                 interests=("le nuvole", "i treni"),
                 avoid=("i ragni",),
                 already=("Il quaderno del vento",),
+                pitch=a_pitch(),
             ),
-            "the language, what the house can do, two interests, one thing to avoid, and "
-            "one title already offered",
+            "the language, what the house can do, two interests, one thing to avoid, "
+            "one title already offered, and a house with enough behind it to be pitched",
             fingerprint=experience_deviser.PROMPT_FINGERPRINT,
         ),
         Prompt(
@@ -123,6 +136,7 @@ def every_prompt() -> list[Prompt]:
                 },
                 bounds=FIXED,
                 household_bounds="In questa casa si può uscire in giardino.",
+                pitch=a_pitch(),
             ),
             "an afternoon of one moment, a page that came back with one cell written and "
             "one left blank, and a line a parent might have typed",
@@ -139,6 +153,14 @@ def every_prompt() -> list[Prompt]:
             page_reader._INSTRUCTION
             + "\nWhat the sheet asked for, for context only: Le nuvole del ventiquattro",
             "the line naming what the sheet asked for; two images go with it",
+        ),
+        Prompt(
+            "page-judge",
+            "agents/page_judge.py :: _INSTRUCTION",
+            page_judge._INSTRUCTION
+            + "\nWhat the sheet asked for: Sei riquadri, uno per ogni passaggio",
+            "the line naming what the sheet asked for; the same two images the reader gets "
+            "go with it, and nothing about the house does",
         ),
         Prompt(
             "judge",

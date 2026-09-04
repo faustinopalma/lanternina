@@ -45,7 +45,7 @@ import time
 import urllib.error
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -55,7 +55,13 @@ from devices.house import CannotRun, House, screen_in, the_sheet_layer_is_done
 from devices.print_page import recall
 from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
-from shared.capabilities import WENT_WRONG
+from shared.capabilities import (
+    ENDED_CLOSED,
+    ENDED_WAY_OUT,
+    ENDED_WENT_WRONG,
+    NEVER_CAME_BACK,
+    WENT_WRONG,
+)
 from shared.experience import (
     ASK,
     HELP_LEVELS,
@@ -129,6 +135,11 @@ class Afternoon:
     # `ideas/09 §6` names: restart from nothing at 16:40, print sheet three again, and the
     # thing the person was inside of breaks.
     printed: tuple[str, ...] = ()
+    # One entry per sheet that came back, as "<collect id>:<marks|blank>". Everything in
+    # ``printed`` that has no entry here is a sheet that was handed over and never reached
+    # the glass, which is a different fact from one that came back empty: blank is an act.
+    # What the page *said* is not here and will not be — a reading is read and not kept.
+    answered: tuple[str, ...] = ()
     # The moment whose way out is being taken. Non-empty means the ending has begun and
     # the only thing left is the close.
     leaving_at: str = ""
@@ -179,6 +190,7 @@ class Afternoon:
             "segment": [moment.to_dict() for moment in self.segment],
             "weight": str(self.weight),
             "printed": list(self.printed),
+            "answered": list(self.answered),
             "leaving_at": self.leaving_at,
             "left_at": self.left_at,
             "waited_since": self.waited_since,
@@ -198,6 +210,7 @@ class Afternoon:
             segment=tuple(moment_from_dict(m) for m in values.get("segment", [])),
             weight=Weight(str(values.get("weight", Weight.STANDARD))),
             printed=tuple(str(sheet) for sheet in values.get("printed", [])),
+            answered=tuple(str(one) for one in values.get("answered", [])),
             leaving_at=str(values.get("leaving_at", "")),
             left_at=float(values.get("left_at", 0.0)),
             # A run written before the ladder existed counts from when the afternoon began,
@@ -299,6 +312,7 @@ def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> lis
             if now < run.closing_due_at():
                 continue
             _close_it(house, run, send=send)
+            _how_it_went(house, run, ENDED_WAY_OUT, minutes=(now - run.started_at) / 60.0)
             _forget(house.sheets_dir, run, [])
             ended.append(run.run_id)
             continue
@@ -306,6 +320,7 @@ def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> lis
             continue
         leaving = _take_the_way_out(house, run, now)
         if leaving is None:
+            _how_it_went(house, run, ENDED_WENT_WRONG, minutes=(now - run.started_at) / 60.0)
             _forget(house.sheets_dir, run, [])
             ended.append(run.run_id)
             continue
@@ -409,6 +424,7 @@ def _over_at(run: Afternoon, when: float) -> Afternoon:
         segment=run.segment,
         weight=run.weight,
         printed=run.printed,
+        answered=run.answered,
         leaving_at=run.leaving_at,
         left_at=run.left_at,
         waited_since=run.waited_since,
@@ -491,6 +507,7 @@ def _one_rung_on(run: Afternoon) -> Afternoon:
         segment=run.segment,
         weight=run.weight,
         printed=run.printed,
+        answered=run.answered,
         leaving_at=run.leaving_at,
         left_at=run.left_at,
         waited_since=run.waited_since,
@@ -519,6 +536,7 @@ def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | N
         segment=run.segment,
         weight=run.weight,
         printed=run.printed,
+        answered=run.answered,
         leaving_at=at.id,
         left_at=now,
         waited_since=run.waited_since,
@@ -620,6 +638,66 @@ def _tell_the_panel(house: House, run_id: str, what: dict[str, Any]) -> None:
         print(f"the panel was not told what was done ({exc})")
 
 
+def _sheets_of(run: Afternoon) -> list[dict[str, str]]:
+    """Every sheet this afternoon put on the table, and what became of it.
+
+    The ones that came back carry the collect that read them and which of the two words
+    described the page. The ones that did not carry ``never``, which is a third word here
+    and deliberately not a third value of :class:`~shared.experience.Came`: that enum is
+    what a document branches on, and an outcome for a page nobody brought back is a branch
+    that could never be taken.
+
+    They are not the same as blank and must not be counted as one. Blank is somebody
+    carrying the sheet to the glass. ``never`` covers the sheet still on the table, the
+    sheet in the bin, the afternoon walked away from — and a scanner in another room, which
+    is why the panel refuses to read these in a house that has never returned a sheet.
+    """
+    sheets: list[dict[str, str]] = []
+    for one in run.answered:
+        moment_id, _, came = one.partition(":")
+        sheets.append({"momentId": moment_id, "came": came})
+    for _ in range(max(0, len(run.printed) - len(run.answered))):
+        sheets.append({"momentId": "", "came": NEVER_CAME_BACK})
+    return sheets
+
+
+def _how_it_went(house: House, run: Afternoon, ending: str, *, minutes: float) -> None:
+    """File how this afternoon went, so the next one can be pitched from it.
+
+    The route has existed since 28 August 2026 and nothing called it until 4 September, so
+    every afternoon devised in production until then was written with no history and no
+    pitch at all — the two prompt blocks that read them were both conditional on a store
+    that was never written to. This is the call that was missing.
+
+    Never raises and never blocks anything. It runs at the instant an afternoon ends, next
+    to :func:`_forget`, and an afternoon must not fail to end because a panel was down — or
+    because there is no panel at all, which is what a house being tried on a bench is.
+    """
+    if not house.panel:
+        return
+    body = json.dumps(
+        {
+            "experience": run.experience.to_dict(),
+            "ending": ending,
+            "weight": str(run.weight),
+            "minutes": max(0, int(round(minutes))),
+            "reached": run.leaving_at or run.waiting_at,
+            "sheets": _sheets_of(run),
+        }
+    ).encode()
+    try:
+        request = urllib.request.Request(
+            f"{house.panel.rstrip('/')}/api/device/{house.household}/what-happened/{run.run_id}",
+            data=body,
+            headers={"X-Device-Key": house.device_key, "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=FILE_TIMEOUT_SECONDS):
+            pass
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the panel was not told how the afternoon went ({exc})")
+
+
 def _weight_for(moments: tuple[Moment, ...], start: int, minutes_left: float) -> Weight:
     """Which of the three versions to run from here, so that the ending still fits.
 
@@ -689,6 +767,7 @@ def _pause(
         segment=run.segment,
         weight=weight,
         printed=(*run.printed, *printed),
+        answered=run.answered,
         waited_since=now,
         over_at=run.over_at,
     )
@@ -886,6 +965,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
         # ending this reaches is the same ending it would have reached the long way.
         leaving = _take_the_way_out(house, run, moment)
         if leaving is None:
+            _how_it_went(house, run, ENDED_WAY_OUT, minutes=(moment - run.started_at) / 60.0)
             _forget(house.sheets_dir, run, [sheet_id])
             return "that afternoon is over"
         _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
@@ -898,6 +978,10 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
     if came is None:
         return "the page was not clear enough to say what came back"
     then = _then(at, came)
+    # One line per sheet that reached the glass. What is in ``printed`` and not here is a
+    # sheet handed over and never brought back, which is what `panel/profiles.py` reads as
+    # its own kind of evidence.
+    run = replace(run, answered=(*run.answered, f"{at.id}:{came}"))
 
     if then == ASK:
         carrying_on = _ask(house, run, at, came, reading)
@@ -909,6 +993,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
             segment=carrying_on.moments,
             weight=run.weight,
             printed=run.printed,
+            answered=run.answered,
             over_at=run.over_at,
         )
         start = 0
@@ -919,6 +1004,7 @@ def carry_on(house: House, *, now: float | None = None, send: bool = True) -> st
     following, printed, weight = _play(house, run, start, now=moment, send=send, out=out)
     _say_the_tally(out)
     if following is None:
+        _how_it_went(house, run, ENDED_CLOSED, minutes=(moment - run.started_at) / 60.0)
         _forget(house.sheets_dir, run, [sheet_id, *printed])
         return "the afternoon is finished"
     _pause(house, run, following, printed, weight, moment)

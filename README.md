@@ -118,7 +118,10 @@ By types, seals and tests rather than by convention, so that removing one is a d
 | No model runs in the house | Import-level check for on-device runtimes, in every package including the router | `test_boundaries.py` |
 | Agents never reach each other | Import-level check | `test_boundaries.py` |
 | A reading of a returned page cannot be pickled, copied or cached | `WhatCameBack` closes every implicit route out of memory; the one door left is the request that carries it home | `test_boundaries.py` |
-| No verdict vocabulary in the stored shape, the panel or the prompts | Document keys and type fields in `shared/` and `panel/`; a text check across the panel; a prompt may forbid a score, never ask for one | `test_boundaries.py` |
+| Nothing works by making it hard to stop | Document keys and type fields in `shared/` and `panel/`; a text check across the browser; no prompt may ask for one | `test_boundaries.py` |
+| A verdict about a person reaches the models and nothing else | The same text check across the browser, and no prompt may ask a model to fill in a score | `test_boundaries.py` |
+| An afternoon never tells its reader it was sized for them | A sixth family of block-list patterns, checked before a document is stored and again on every string heading for a display | `test_profile.py` |
+| A house whose scanner never returns a sheet is not walked down the scale | The missing-sheet rule counts only where a sheet has come back at least once | `test_profile.py` |
 | The content language is a setting, not a property of the data | Field names are English; two readers may name the old Italian keys, nothing else | `test_boundaries.py` |
 
 Each of those tests was mutation-checked: a deliberate violation was injected and the test was watched to fail. If you change the design so one no longer holds, please change the product rather than the test.

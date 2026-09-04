@@ -26,6 +26,7 @@ from azure.identity import DefaultAzureCredential
 from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 from shared.message import Message, Says
+from shared.profile import Noticed
 
 from .devices import DeviceStatus, Thing, order_of
 from .drafts import OPEN as DRAFT_OPEN
@@ -34,13 +35,8 @@ from .experiences import OfferedExperience
 from .guidelines import Guidelines
 from .keeping import Keeping
 from .messages import PendingMessage
-from .preferences import (
-    DEFAULT_DIFFICULTY,
-    DEFAULT_LANGUAGE,
-    DEFAULT_SHEETS,
-    DEFAULT_VARIETY,
-    Preferences,
-)
+from .preferences import DEFAULT_LANGUAGE, DEFAULT_SHEETS, Preferences
+from .profiles import KEPT
 from .proposals import ProposalRecord
 from .reminders import Sentence
 from .requests import HouseRequest
@@ -963,8 +959,6 @@ class CosmosPreferencesStore:
                 "type": "preferences",
                 "interests": list(preferences.interests),
                 "avoid": list(preferences.avoid),
-                "difficulty": preferences.difficulty,
-                "variety": preferences.variety,
                 "language": preferences.language,
                 "sheets": preferences.sheets,
                 "note": preferences.note,
@@ -977,12 +971,12 @@ class CosmosPreferencesStore:
 
 
 def _to_preferences(document: dict[str, Any]) -> Preferences:
+    # A document written before 4 September may still carry a shape and a variety; they are
+    # read past rather than migrated, because nothing asks for them any more.
     return Preferences(
         household_id=str(document["familyId"]),
         interests=tuple(str(item) for item in document.get("interests") or ()),
         avoid=tuple(str(item) for item in document.get("avoid") or ()),
-        difficulty=str(document.get("difficulty") or DEFAULT_DIFFICULTY),
-        variety=str(document.get("variety") or DEFAULT_VARIETY),
         language=str(document.get("language") or DEFAULT_LANGUAGE),
         sheets=int(document.get("sheets") or DEFAULT_SHEETS),
         note=str(document.get("note") or ""),
@@ -1183,12 +1177,62 @@ def _to_afternoon(document: dict[str, Any]) -> Afternoon:
     )
 
 
+class CosmosNoticedStore:
+    """Conforms to :class:`~panel.profiles.NoticedStore`.
+
+    One document per page read, in the container the afternoons already live in and under
+    its own ``type``. A separate container would have been a change to the infrastructure
+    for rows that are read with the afternoons and deleted with them.
+    """
+
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(WHAT_HAPPENED_CONTAINER)
+        )
+
+    def notice(self, household_id: str, noticed: Noticed) -> Noticed:
+        self._container.upsert_item(
+            {
+                "id": f"noticed-{household_id}-{noticed.at:.6f}",
+                "familyId": household_id,
+                "type": "noticed",
+                **noticed.to_dict(),
+            }
+        )
+        return noticed
+
+    def list(self, household_id: str) -> list[Noticed]:
+        rows = self._container.query_items(
+            query=(
+                "SELECT * FROM c WHERE c.familyId = @family AND c.type = 'noticed' "
+                "ORDER BY c.at ASC OFFSET 0 LIMIT @kept"
+            ),
+            parameters=[
+                {"name": "@family", "value": household_id},
+                {"name": "@kept", "value": KEPT},
+            ],
+            partition_key=household_id,
+        )
+        return [Noticed.from_dict(document) for document in rows]
+
+    def forget(self, household_id: str) -> None:
+        for document in self._container.query_items(
+            query="SELECT c.id FROM c WHERE c.familyId = @family AND c.type = 'noticed'",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        ):
+            self._container.delete_item(item=document["id"], partition_key=household_id)
+
+
 class CosmosDeviceStatusStore:
     """Conforms to :class:`~panel.devices.DeviceStatusStore`.
 
     One document per display, overwritten on each report: this is a current state, not a
     history. Keeping every reading would be a log of when the house is awake.
     """
+
     def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
         self._container = (
             _client(endpoint, credential)

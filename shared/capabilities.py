@@ -60,6 +60,25 @@ class Act(StrEnum):
 WENT_WRONG: Final = "fault"
 
 
+# How an afternoon stopped, and what became of a sheet it handed over. Both sides of the
+# wire again: the house says these words when it files how an afternoon went, and
+# `panel/what_happened.py` refuses a body that says anything else. Written here rather than
+# in the panel because the house cannot import the panel, and two lists that must match are
+# two lists that will not.
+ENDED_CLOSED: Final = "closed"
+ENDED_WAY_OUT: Final = "way_out"
+ENDED_STOPPED: Final = "stopped"
+ENDED_WENT_WRONG: Final = "went_wrong"
+ENDINGS: Final[frozenset[str]] = frozenset(
+    {ENDED_CLOSED, ENDED_WAY_OUT, ENDED_STOPPED, ENDED_WENT_WRONG}
+)
+
+# A sheet that was handed over and never reached the glass. A third word beside the two of
+# `shared.experience.Came`, and deliberately not a third value of it: that enum is what a
+# document branches on, and a branch for a page nobody brought back could never be taken.
+NEVER_CAME_BACK: Final = "never"
+
+
 
 # The kinds and the jobs, written once. `shared` is what every other package imports and
 # it imports none of them back, so this is the only direction the vocabulary can live in:

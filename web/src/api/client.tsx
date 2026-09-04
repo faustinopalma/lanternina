@@ -63,15 +63,11 @@ const RHYTHM_FIELDS = [
 const PREFERENCES_FIELDS = [
   "interests",
   "avoid",
-  "difficulty",
-  "variety",
   "language",
   "sheets",
   "note",
   "noteUntil",
   "noteLastsDays",
-  "difficultyChoices",
-  "varietyChoices",
   "languageChoices",
   "sheetsChoices",
 ] as const;

@@ -38,9 +38,14 @@ KIND_READ = "read"
 # the hours spent changing the prompts — and a total that hid it inside KIND_TEXT would
 # again be a figure whose name says less than it holds.
 KIND_JUDGE = "judge"
+# `agents/page_judge.py` placing a returned page on the axes an afternoon is pitched along.
+# The same shape of call as KIND_READ over the same two images, and apart from it for the
+# reason KIND_READ is apart from KIND_TEXT: there is exactly one of these per reading, so
+# folding them together would make "how many pages were read" permanently twice the truth.
+KIND_PLACE = "place"
 # Reported even when a household has made none of that kind, so a figure of zero is
 # distinguishable from a kind the panel forgot to mention.
-KINDS = (KIND_IMAGE, KIND_TEXT, KIND_READ, KIND_JUDGE)
+KINDS = (KIND_IMAGE, KIND_TEXT, KIND_READ, KIND_JUDGE, KIND_PLACE)
 
 # Told apart because they cost differently: a picture the gate refused was still generated
 # and still paid for, while one that never reached the model was not.

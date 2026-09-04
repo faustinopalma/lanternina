@@ -41,6 +41,7 @@ from .messages import InMemoryMessageStore, MessageStore
 from .observability import watch
 from .pictures import InMemoryPictureArchive, PictureArchive
 from .preferences import InMemoryPreferencesStore, PreferencesStore
+from .profiles import InMemoryNoticedStore, NoticedStore
 from .proposals import InMemoryProposalStore, ProposalStore
 from .reminders import InMemorySentenceStore, SentenceStore
 from .requests import InMemoryRequestStore, RequestStore
@@ -116,6 +117,7 @@ def create_app(
     trail: TrailStore | None = None,
     keeping: KeepingStore | None = None,
     what_happened: WhatHappenedStore | None = None,
+    noticed: NoticedStore | None = None,
     drafts: DraftStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
@@ -164,6 +166,9 @@ def create_app(
         what_happened
         if what_happened is not None
         else _what_happened_store(app.state.settings)
+    )
+    app.state.noticed = (
+        noticed if noticed is not None else _noticed_store(app.state.settings)
     )
     app.state.drafts = drafts if drafts is not None else _draft_store(app.state.settings)
     # Both identity providers are built on first use, by `panel/gate.py` and
@@ -266,6 +271,14 @@ def _what_happened_store(settings: Settings) -> WhatHappenedStore:
     from .cosmos_store import CosmosWhatHappenedStore
 
     return CosmosWhatHappenedStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _noticed_store(settings: Settings) -> NoticedStore:
+    if not settings.cosmos_configured:
+        return InMemoryNoticedStore()
+    from .cosmos_store import CosmosNoticedStore
+
+    return CosmosNoticedStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 def _picture_archive(settings: Settings) -> PictureArchive:

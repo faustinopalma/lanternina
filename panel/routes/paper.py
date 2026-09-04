@@ -16,7 +16,7 @@ import logging
 import time
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
@@ -25,9 +25,11 @@ from shared.routing import PageImage
 
 from ..config import Settings
 from ..gate import DeviceKey
+from ..profiles import NoticedStore
 from ..usage import (
     FAILED,
     KIND_IMAGE,
+    KIND_PLACE,
     KIND_READ,
     REFUSED,
     SERVED,
@@ -104,13 +106,23 @@ async def draw_a_page(
 
 @router.post("/api/device/{household_id}/read-page")
 async def read_a_page(
-    household_id: str, pages: PagesToCompare, _: DeviceKey, request: Request
+    household_id: str,
+    pages: PagesToCompare,
+    _: DeviceKey,
+    request: Request,
+    afterwards: BackgroundTasks,
 ) -> Any:
     """Say what is on the sheet that was not on the blank.
 
     What comes back describes ink — a house drawn in the left box, three lines at the top —
     and whether it looks like the sheet that was handed over. It never says whether anything
     is right, and there is no field in which it could.
+
+    The same two images are placed on the axes an afternoon is pitched along, and that runs
+    **after** this answer has gone. Somebody is standing at the scanner: a reading was
+    measured at 14.4 s on 3 September 2026 and the placing is another call of the same
+    shape, so putting it inside this reply would make every afternoon wait for its own
+    measurement. What a late replica costs is one row of a series and nothing else.
     """
     settings: Settings = request.app.state.settings
     counter: UsageStore = request.app.state.usage
@@ -136,7 +148,69 @@ async def read_a_page(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_READ, outcome, spent)
+    _place_it(afterwards, request, household_id, blank, came_back, pages.about)
     return came.to_dict()
+
+
+def _place_it(
+    afterwards: BackgroundTasks,
+    request: Request,
+    household_id: str,
+    blank: PageImage,
+    came_back: PageImage,
+    asked_for: str,
+) -> None:
+    """Queue the placing, and only when this household has room for another call.
+
+    Skipped at the limit rather than counted outside it. There is one placing per page read,
+    so a placing exempt from the cap would make the real spend at that moment exactly twice
+    what the cap says, and a cap a category of call can double is not a cap. That argument
+    is `panel/judging.py`'s, and it applies here with the same arithmetic.
+    """
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        return
+    afterwards.add_task(
+        _placed_and_filed,
+        request.app.state.noticed,
+        counter,
+        household_id,
+        blank,
+        came_back,
+        asked_for,
+    )
+
+
+async def _placed_and_filed(
+    store: NoticedStore,
+    counter: UsageStore,
+    household_id: str,
+    blank: PageImage,
+    came_back: PageImage,
+    asked_for: str,
+) -> None:
+    """Place one page and keep the row. Never raises: the page has already gone home.
+
+    A placing that fails is a shorter series, which `shared/profile.read_from` already
+    handles by counting how many placements it has before it leans on them. An exception
+    escaping a background task would be logged as a failure of the request that spawned it,
+    which is the request that succeeded.
+    """
+    from ..paper import place_the_page
+
+    spent: Any = None
+    outcome = FAILED
+    try:
+        noticed, spent = await place_the_page(
+            blank, came_back, asked_for=asked_for, now=time.time()
+        )
+        outcome = SERVED
+        store.notice(household_id, noticed)
+    except Exception as exc:  # noqa: BLE001 - a measurement may not cost the page it measures
+        logging.getLogger(__name__).info("a page was not placed: %s", exc)
+    finally:
+        _count(counter, household_id, KIND_PLACE, outcome, spent)
 
 
 def _count(

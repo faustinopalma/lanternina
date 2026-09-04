@@ -1,7 +1,7 @@
 <!--
 How much to ask for, read off how the last runs went rather than off a setting.
 
-The parent chooses a shape in the panel and that is the starting point. This says which way to move from it, and it is computed from `panel/what_happened.py` at the moment the prompt is built — counts of runs that reached their end, runs that were brought to an end early or stopped, and sheets that came back written on or blank. Nothing is stored: a level written down about somebody is the thing this project does not keep, and the same figure read off the runs each time is not one.
+The parent chooses a shape in the panel and that is the starting point. This says which way to move from it, and it is computed from `panel/what_happened.py` at the moment the prompt is built — counts of runs that reached their end, runs that were brought to an end early or stopped, and sheets that came back written on or blank. Nothing is stored, which until 4 September 2026 was the point of it; that rule is withdrawn and this block is now the one axis of a profile that has not been written yet.
 
 The counts go in beside the sentence on purpose. A model given only the conclusion argues with it or over-applies it; a model given the six numbers it was drawn from can see how thin the evidence is when it is thin. Under three runs the sentence says to stay put whatever the numbers look like.
 

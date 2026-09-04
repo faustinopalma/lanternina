@@ -35,6 +35,18 @@ somebody is doing and becomes a remark about them, or about the machine.
   them behind the afternoon. `ideas/09 §8` is emphatic that the parent's channel must never
   be revealed; this is where that becomes code.
 
+**A sixth group arrived on 4 September 2026 and it is the one with the most behind it.**
+Since that date the prompt of the model that devises an afternoon, and of the model that
+writes the rest of one, carries a pitch: where this house sits on three axes, worked out
+from what came back off the glass. `docs/NON-GOALS.md` allows that and refuses one thing
+about it — that it may never surface in anything a person reads — and says in as many words
+that a review gate is what enforces it rather than the prompt asking nicely. **Fitted** is
+that gate: a sentence telling the reader the afternoon was sized for them, or referring to
+how their last one went. It is the narrowest family here, because second person with a past
+tense is most of the dialogue in most fiction, so each pattern has to carry the sizing
+itself — *pensato apposta per te*, *più facile del solito*, *l'ultima volta hai* — and never
+the mere fact of somebody being addressed.
+
 **What this is not.** It is not a safety classifier, and it does not replace
 :mod:`orchestrator.safety` — that gate looks for harm, this looks for who a sentence is
 about. Nor is it a guarantee: a model can write a verdict without matching any pattern
@@ -55,13 +67,14 @@ from typing import Final
 
 
 class Why(StrEnum):
-    """Which of the five reasons a sentence is refused."""
+    """Which of the six reasons a sentence is refused."""
 
     PRAISE = "praise"
     BLAME = "blame"
     HURRY = "hurry"
     SCORE = "score"
     MACHINERY = "machinery"
+    FITTED = "fitted"
 
 
 # Written against folded text: lower case, accents removed, single spaces. Every pattern
@@ -123,6 +136,32 @@ _RULES: Final[tuple[tuple[Why, str], ...]] = (
     (Why.MACHINERY, r"\b(tempo riman\w+|tempo rimasto|minuti rimasti)\b"),
     (Why.MACHINERY, r"\b(the (system|model) (has|chose|decided)|your parent (chose|set))\b"),
     (Why.MACHINERY, r"\b(shortened|simplified|adapted) (it )?for you\b"),
+    # fitted: the afternoon telling the reader it was sized for them. The narrowest family
+    # here on purpose — second person plus a past tense is most of the dialogue in most
+    # fiction, so every pattern has to carry the sizing itself and not merely the address.
+    (
+        Why.FITTED,
+        r"\b(pensat|fatt|scelt|preparat|adattat|studiat|costruit|cucit)\w* "
+        r"(apposta |proprio |su misura )?per te\b",
+    ),
+    (Why.FITTED, r"\b(su misura|a (tua )?misura) per te\b"),
+    (
+        Why.FITTED,
+        r"\b(piu|meno) (facile|difficile|semplice|lungo|corto|impegnativ\w+|complicat\w+) "
+        r"(per te|del solito|dell'? ?ultima volta|di quello di ieri)\b",
+    ),
+    (Why.FITTED, r"\b(l'? ?ultima|la scorsa) volta [^.!?]{0,40}\b(hai|avevi|sei|eri)\b"),
+    (Why.FITTED, r"\b(hai|avevi) (gia )?(fatto|visto|provato) qualcosa (del genere|di simile)\b"),
+    (Why.FITTED, r"\bormai (lo )?(sai|conosci|ci riesci)\b"),
+    (Why.FITTED, r"\b(sei|ormai sei) (ormai )?pront\w+ (per|a)\b"),
+    (Why.FITTED, r"\b(al|per il|adatto al) tuo livello\b"),
+    (Why.FITTED, r"\b(questa volta|oggi) (e |sara )?(piu|meno) (facile|difficile|semplice)\b"),
+    (Why.FITTED, r"\b(made|chosen|picked|designed|written|built) (just )?for you\b"),
+    (Why.FITTED, r"\blast time you\b"),
+    (Why.FITTED, r"\byou (already )?(know|can do) this (one|by now)\b"),
+    (Why.FITTED, r"\byou'? ?(are|re) ready (for|to)\b"),
+    (Why.FITTED, r"\b(at|for) your level\b"),
+    (Why.FITTED, r"\bthis (one|time) is (easier|harder|shorter|longer)\b"),
 )
 
 # Accents are folded away before matching, so "papà" is caught by "papa" and a model that

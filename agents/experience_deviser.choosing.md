@@ -14,7 +14,7 @@ Below is a catalogue of methods that work on paper, filtered to the ones this ho
 The parent wrote down these interests, as a place to begin: $interests
 And these things to keep away from: $avoid
 Afternoons already offered here: $already
-The shape this house asked for: $shape
+How the afternoon should be pitched: $pitch
 
 Choose one form and one move. Choose what would make the best afternoon for this house — not what is easiest to write, and not the first one that looks familiar. If the interests point at something, let them; if nothing fits them, choose the form that would make the strangest good afternoon rather than the safest one.
 

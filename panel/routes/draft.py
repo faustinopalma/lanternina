@@ -268,8 +268,6 @@ async def approve(
             language=LANGUAGE_NAMES.get(chosen.language, chosen.language),
             interests=chosen.interests,
             avoid=chosen.avoid,
-            difficulty=chosen.difficulty,
-            variety=chosen.variety,
             sheets=chosen.sheets,
             note=chosen.standing(time.time()),
             now=time.time(),

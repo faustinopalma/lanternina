@@ -10,6 +10,8 @@ The old rule said there was nothing about a person anywhere, and that this was a
 
 So a profile is kept and updated at system level, on axes still to be defined, and it is what lets a task and an afternoon be corrected towards the person actually doing them.
 
+Built the same day. Three axes — how many things an afternoon holds at once, how much a sheet asks somebody to put on it, how long it runs — in [shared/profile.py](../shared/profile.py), read off a series of pages placed one at a time by [agents/page_judge.py](../agents/page_judge.py), which is shown one page and nothing about the house. The reasoning, the measurements and what it cost are in [ideas/12](../ideas/12-the-profile.md).
+
 **Three things did not move, and they are the whole of what is refused now.**
 
 **It reaches the models and nothing else.** The profile is written into the prompt of the agent that devises an afternoon and the agent that runs one, because that is what it is for. It reaches no display, no printed sheet, and no page in the parent's panel. Nothing about how somebody is doing is rendered anywhere a person can read it.

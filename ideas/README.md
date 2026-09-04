@@ -21,6 +21,7 @@ The order inside each file runs from most useful to least, by one criterion only
 | [09-a-game-that-ends.md](09-a-game-that-ends.md) | The same afternoon designed further: weights, a way out of every moment, checks before saving. §20 is what of it was built |
 | [10-the-page.md](10-the-page.md) | What a printed page is allowed to be, defined before the code |
 | [11-the-methods.md](11-the-methods.md) | A child of the encyclopedia: which of the 395 forms can actually be run, and how one reaches a prompt |
+| [12-the-profile.md](12-the-profile.md) | Where an afternoon is pitched for this house, worked out from what comes back off the glass |
 
 ## Where to start
 
@@ -46,7 +47,7 @@ The first three steps were taken on 21 August 2026 and are written up in [08-exp
 
 | # | What | Where | Why here |
 | --- | --- | --- | --- |
-| 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so a name has no field to sit in. |
+| 3 | ~~Household settings, replacing the invented profile~~ — **done, 18 August 2026** | 01 §5 | The parent writes interests, things to avoid, difficulty, variety, words per line and the content language in the panel; the hub reads them on its next run. The settings hold exactly the fields `prompt_hints()` lets out, so a name has no field to sit in. **Three of those six have since left the page**: the words per line on 27 August, because it is a fact about an 800×480 display; the shape and the variety on 4 September, because the first asked a parent for a verdict and the second asked a question nobody can answer before seeing an afternoon. See [12](12-the-profile.md §6). |
 | 4 | ~~Field names that are not Italian~~ — **done, 18 August 2026** | 04 §7 | The keys are English, and the content language is free to become what it was meant to be, a setting. Bodies approved before the change keep the Italian keys: the safety seal covers them byte for byte, so the readers accept both spellings and nothing stored was touched. |
 | 5 | ~~The request channel, panel → hub~~ — **done, 20 August 2026** | 01 §7 | "Put this picture back" is its first user, and the shape it fixed is the one every later request copies: the parent presses, one row is written, and the hub finds it when it next asks. `panel/requests.py` holds the contract, `devices/pull_picture.py` the side that acts. |
 | 6 | ~~The layout agent: exercise → sheet~~ — **done, 19 August 2026** | 03 §1 | An approved exercise becomes a printable sheet and comes out of the printer. |

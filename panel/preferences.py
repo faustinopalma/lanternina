@@ -1,4 +1,4 @@
-"""What the content is made of: where to start, what to keep away from, how much it asks.
+"""What the content is made of: where to start, what to keep away from, what is true now.
 
 These were a `LearnerProfile` written into the hub's code, so every piece of content
 generated so far was tuned to a person who does not exist. They live here for the same
@@ -7,11 +7,9 @@ decides for itself, and saving them starts nothing.
 
 Until 27 August 2026 the field list here was kept identical to the one
 `LearnerProfile.prompt_hints()` returns, and that mirror was the reason this page could not
-hold the thing a parent most wants to say. A person's profile has no clock. A household's
-steering is almost always about *now*: a month full of school, a death in the family, a
-week when nothing long will land. Shredded into keywords with no lifetime, those become
-permanent, and a permanent statement about what somebody can take is the verdict this
-project refuses to keep.
+hold the thing a parent most wants to say. A household's steering is almost always about
+*now*: a month full of school, a death in the family, a week when nothing long will land.
+Shredded into keywords with no lifetime, those become permanent.
 
 So the mirror is gone and what replaced it is narrower and truer: **there is no field for a
 name or an id, and no route that carries one.** What is added instead is a note in the
@@ -19,8 +17,18 @@ parent's own words with an expiry, and the expiry is enforced by deleting it rat
 flagging it — see :func:`still_standing`. A note that cannot outlive four weeks cannot
 become a record of anybody.
 
-The words per line left this page on the same day. How wide a line is on an 800×480 display
-is a fact about the hardware, and asking a parent to know it was us handing them our job.
+**Three settings have left this page, and all three for the same reason.** The words per
+line went on 27 August: how wide a line is on an 800×480 display is a fact about the
+hardware, and asking a parent to know it was us handing them our job. The shape — *simple,
+medium, harder* — and the variety went on 4 September. The shape asked a parent to say in
+three steps how much a person can take, which is a verdict, and the system now works that
+out from what comes back off the glass. The variety asked a question a parent could not
+answer, because nobody knows what *one new detail* means before seeing an afternoon; it is
+not a setting any more and it is not a default either — an afternoon travels as far from the
+last ones as it can, always.
+
+What a parent may still say about how much to ask for is the note, in their own words, and
+it is taken as a circumstance rather than as a level. That is the whole of the replacement.
 """
 
 from __future__ import annotations
@@ -29,11 +37,6 @@ import threading
 import time
 from dataclasses import dataclass, field, replace
 from typing import Any, Protocol, runtime_checkable
-
-from shared.domain import ContentVariety, Difficulty
-
-DIFFICULTY_CHOICES = tuple(str(value) for value in Difficulty)
-VARIETY_CHOICES = tuple(str(value) for value in ContentVariety)
 
 # The languages the content agent can be asked to write in. It is the household's choice
 # and it is not the parent's browser language: content approved in one language is not
@@ -79,8 +82,6 @@ NOTE_LASTS_SECONDS = 28 * 24 * 60 * 60
 SHEETS_CHOICES = (1, 2, 3)
 DEFAULT_SHEETS = 2
 
-DEFAULT_DIFFICULTY = str(Difficulty.GENTLE)
-DEFAULT_VARIETY = str(ContentVariety.BALANCED)
 DEFAULT_LANGUAGE = "it"
 
 
@@ -91,8 +92,6 @@ class Preferences:
     household_id: str
     interests: tuple[str, ...] = ()
     avoid: tuple[str, ...] = ()
-    difficulty: str = DEFAULT_DIFFICULTY
-    variety: str = DEFAULT_VARIETY
     language: str = DEFAULT_LANGUAGE
     sheets: int = DEFAULT_SHEETS
     # What is true in this house at the moment, in the parent's own words, and the instant
@@ -126,15 +125,11 @@ class Preferences:
         return {
             "interests": list(self.interests),
             "avoid": list(self.avoid),
-            "difficulty": self.difficulty,
-            "variety": self.variety,
             "language": self.language,
             "sheets": self.sheets,
             "note": self.standing(moment),
             "noteUntil": self.note_until if self.standing(moment) else 0.0,
             "updatedAt": self.updated_at,
-            "difficultyChoices": list(DIFFICULTY_CHOICES),
-            "varietyChoices": list(VARIETY_CHOICES),
             "languageChoices": list(LANGUAGE_CHOICES),
             "sheetsChoices": list(SHEETS_CHOICES),
             "noteLastsDays": NOTE_LASTS_SECONDS // (24 * 60 * 60),
@@ -211,8 +206,6 @@ def clean_preferences(
     *,
     interests: Any,
     avoid: Any,
-    difficulty: Any,
-    variety: Any,
     language: Any,
     sheets: Any = DEFAULT_SHEETS,
     note: Any = "",
@@ -221,10 +214,6 @@ def clean_preferences(
 ) -> Preferences:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
     moment = time.time() if now is None else now
-    if difficulty not in DIFFICULTY_CHOICES:
-        raise ValueError(f"the difficulty must be one of {list(DIFFICULTY_CHOICES)}")
-    if variety not in VARIETY_CHOICES:
-        raise ValueError(f"the variety must be one of {list(VARIETY_CHOICES)}")
     if language not in LANGUAGE_CHOICES:
         raise ValueError(f"the language must be one of {list(LANGUAGE_CHOICES)}")
     if sheets not in SHEETS_CHOICES:
@@ -234,8 +223,6 @@ def clean_preferences(
         household_id=household_id,
         interests=_clean_list(interests, "the interests"),
         avoid=_clean_list(avoid, "the things to avoid"),
-        difficulty=str(difficulty),
-        variety=str(variety),
         language=str(language),
         sheets=int(sheets),
         note=standing,

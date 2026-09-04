@@ -26,7 +26,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.approval import ApprovalState
-from shared.capabilities import HouseCapability
+from shared.capabilities import NEVER_CAME_BACK, HouseCapability
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
 from shared.experience import ASK, Came, Collect, Drawn, Experience, ExperienceError
 from shared.page import Page, PageError
@@ -43,6 +43,12 @@ from ..gate import CurrentAccount, DeviceKey
 from ..guidelines import GuidelineStore
 from ..keeping import KeepingStore, kept_for
 from ..preferences import LANGUAGE_NAMES, PreferencesStore
+from ..profiles import (
+    NoticedStore,
+    a_sheet_that_never_came_back,
+    how_long_it_was_meant_to_take,
+    the_profile,
+)
 from ..rhythm import RhythmStore
 from ..trail import (
     HOUSE_MAY_FILE,
@@ -95,6 +101,26 @@ class WhatCameBack(BaseModel):
     runId: str = ""
 
 
+def _pitch_for(request: Request, household_id: str) -> str:
+    """Where this house sits, as sentences about an afternoon. Empty when too little is known.
+
+    Worked out at the moment a prompt is built and kept nowhere. The rows are the record and
+    the state is arithmetic over them, so there is one place a wrong pitch can come from
+    rather than a stored answer and a way of recomputing it that can disagree.
+    """
+    seen: NoticedStore = request.app.state.noticed
+    memory: WhatHappenedStore = request.app.state.what_happened
+    store: ExperienceStore = request.app.state.experiences
+    return the_profile(
+        seen.list(household_id),
+        memory.list(household_id),
+        {
+            row.id: how_long_it_was_meant_to_take(row.experience)
+            for row in store.list(household_id)
+        },
+    ).as_material()
+
+
 @router.post("/api/device/{household_id}/experience")
 async def continue_afternoon(
     household_id: str, what: WhatCameBack, _: DeviceKey, request: Request
@@ -134,6 +160,7 @@ async def continue_afternoon(
             reading=what.reading,
             now=time.time(),
             household_bounds=said.get(household_id).as_material(),
+            pitch=_pitch_for(request, household_id),
         )
         outcome = SERVED
     except SafetyBlocked as exc:
@@ -456,6 +483,7 @@ async def devise_afternoon(
     memory: WhatHappenedStore = request.app.state.what_happened
     ran = memory.list(household_id)
     going = how_it_has_gone(ran)
+    pitch = _pitch_for(request, household_id)
 
     from ..devising import RefusedByTheChecks, devise_experience
 
@@ -469,10 +497,10 @@ async def devise_afternoon(
             ),
             interests=settings_of_the_house.interests,
             avoid=settings_of_the_house.avoid,
-            # Chosen in the panel and read by nothing until 27 August 2026. It is about the
-            # material, so it goes to the prompt and never onto the document.
-            difficulty=settings_of_the_house.difficulty,
-            variety=settings_of_the_house.variety,
+            # Worked out from what came back off the glass, not chosen by the parent: a
+            # setting asking them to grade what somebody can take left the panel on
+            # 4 September 2026. It goes to the prompt and never onto the document.
+            pitch=pitch,
             sheets=settings_of_the_house.sheets,
             # Empty once it has lapsed, and by then the store has deleted it.
             note=settings_of_the_house.standing(time.time()),
@@ -737,8 +765,13 @@ def how_it_went(
     """File how an afternoon went, so the next one can be written from it.
 
     Facts about the run: how far it got, how it ended, and for each sheet whether it came
-    back marked or blank and what the reader said was on it. The shape has no field for a
-    score, a level or anything about the person, which is what bounds this.
+    back marked, blank, or not at all. The shape has no field for a score, a level or
+    anything about the person, which is what bounds this.
+
+    A sheet that never came back also lands in the series the pitch is read off, as a row
+    with no placement on it. It is not the same as a blank page and is not counted as one:
+    blank means somebody carried the sheet to the glass, and this covers everything from a
+    sheet still on the table to a scanner nobody has plugged in.
     """
     if what.ending not in ENDINGS:
         raise HTTPException(status_code=400, detail=f"no afternoon ends {what.ending!r}")
@@ -763,6 +796,10 @@ def how_it_went(
             ),
         )
     )
+    seen: NoticedStore = request.app.state.noticed
+    for one in what.sheets:
+        if str(one.get("came", "")) == NEVER_CAME_BACK:
+            seen.notice(household_id, a_sheet_that_never_came_back())
     return {"remembered": True}
 
 
@@ -780,9 +817,16 @@ def what_happened_here(account: CurrentAccount, request: Request) -> Any:
 @router.delete("/api/what-happened")
 def forget_all_of_it(account: CurrentAccount, request: Request) -> Any:
     """All of it, at once. There is no forgetting one afternoon: choosing which parts of a
-    history to keep is the beginning of curating a person."""
+    history to keep is the beginning of curating a person.
+
+    Both stores, because they are one memory. Clearing the afternoons and leaving the series
+    of placed pages behind would leave the house pitched by a record the parent believes
+    they deleted, which is worse than not offering to delete it.
+    """
     memory: WhatHappenedStore = request.app.state.what_happened
     memory.forget(account.household_id)
+    seen: NoticedStore = request.app.state.noticed
+    seen.forget(account.household_id)
     return {"forgotten": True}
 
 

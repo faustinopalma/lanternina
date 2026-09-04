@@ -29,6 +29,31 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Protocol, runtime_checkable
 
+from shared.capabilities import (
+    ENDED_CLOSED,
+    ENDED_STOPPED,
+    ENDED_WAY_OUT,
+    ENDED_WENT_WRONG,
+    ENDINGS,
+)
+
+__all__ = [
+    "Afternoon",
+    "Answered",
+    "CLOSED",
+    "ENDINGS",
+    "STOPPED",
+    "WAY_OUT",
+    "WENT_WRONG",
+    "HowItHasGone",
+    "InMemoryWhatHappenedStore",
+    "WhatHappenedStore",
+    "as_material",
+    "how_it_has_gone",
+    "remembered",
+    "the_ground",
+]
+
 # What the page reader said, capped. Long enough for a sentence about a sheet and short
 # enough that nobody is tempted to keep a transcript.
 MAX_READING = 400
@@ -37,12 +62,12 @@ MAX_READING = 400
 RECENT = 8
 
 # How an afternoon stopped. Facts about a run, and the vocabulary is closed so that nothing
-# can file a judgement under a name nobody agreed on.
-CLOSED = "closed"
-WAY_OUT = "way_out"
-STOPPED = "stopped"
-WENT_WRONG = "went_wrong"
-ENDINGS = frozenset({CLOSED, WAY_OUT, STOPPED, WENT_WRONG})
+# can file a judgement under a name nobody agreed on. It lives in `shared/capabilities.py`
+# because the house says these words and the house cannot import the panel.
+CLOSED = ENDED_CLOSED
+WAY_OUT = ENDED_WAY_OUT
+STOPPED = ENDED_STOPPED
+WENT_WRONG = ENDED_WENT_WRONG
 
 
 @dataclass(frozen=True, slots=True)
@@ -228,9 +253,11 @@ ENOUGH_TO_LEAN_ON = 3
 class HowItHasGone:
     """How the last few runs went, and which way that says to move.
 
-    Counts and never a level. It is computed at the moment a prompt is built and stored
-    nowhere: a number written down about somebody is the thing this project does not keep,
-    and the same number read off the runs each time is not one.
+    Counts, recomputed from the rows every time a prompt is built. Until 4 September 2026
+    this docstring said that was the point — that a level written down about somebody was
+    the thing this project would not keep. That rule is withdrawn (`docs/NON-GOALS.md`) and
+    what is left is a fact about the code: this is arithmetic over the evidence, with no
+    memory of its own, and it leans on one axis only.
     """
 
     ran: int = 0

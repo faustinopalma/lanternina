@@ -30,12 +30,7 @@ import secrets
 from collections.abc import Sequence
 from typing import Any
 
-from panel.preferences import (
-    DEFAULT_DIFFICULTY,
-    DEFAULT_SHEETS,
-    DEFAULT_VARIETY,
-    WORDS_PER_LINE,
-)
+from panel.preferences import DEFAULT_SHEETS, WORDS_PER_LINE
 from shared.agents import AgentContext
 from shared.capabilities import HouseCapability
 from shared.experience import Drawn, Experience, ExperienceError
@@ -65,7 +60,7 @@ async def _what_to_build_out_of(
     interests: tuple[str, ...],
     avoid: tuple[str, ...],
     already: tuple[str, ...],
-    shape: str,
+    pitch: str,
     log: logging.Logger,
 ) -> tuple[Method | None, Method | None]:
     """One form and one move out of `methods/`, asked for by the model and drawn if it cannot.
@@ -86,7 +81,7 @@ async def _what_to_build_out_of(
             interests=interests,
             avoid=avoid,
             already=already,
-            shape=shape,
+            pitch=pitch,
         )
         asked = by_id(here, [wants_form, wants_move])
         form = next((one for one in asked if not one.is_a_move), None)
@@ -116,8 +111,7 @@ async def devise_experience(
     direction: str = "",
     ground: str = "",
     brief: str = "",
-    difficulty: str = DEFAULT_DIFFICULTY,
-    variety: str = DEFAULT_VARIETY,
+    pitch: str = "",
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = WORDS_PER_LINE,
@@ -126,11 +120,11 @@ async def devise_experience(
 ) -> tuple[Experience, ModelUsage | None]:
     """One afternoon, checked, repaired if it had to be, screened, and what it consumed.
 
-    ``difficulty`` is the shape the parent chose in the panel, and it arrives as a word
-    rather than as a sentence so that the sentence sent to the model lives beside the rest
-    of the prompt. It says how many things an afternoon holds together at once. It reaches
-    the prompt and nothing else: no afternoon carries a field for it, and
-    `tests/test_experience.py` refuses one that does.
+    ``pitch`` is :meth:`shared.profile.Profile.as_material`: one sentence per axis this
+    house has enough evidence for, saying how much an afternoon should hold, how much a
+    sheet should ask for and how long it should run. Empty is ordinary and means the block
+    is left out. It reaches the prompt and nothing else: no afternoon carries a field for
+    it, and `tests/test_experience.py` refuses one that does.
 
     ``brief`` is a parent's own idea, worked on in the panel and approved. It replaces the
     invitation to invent rather than sitting beside it, and nothing else is relaxed: the
@@ -148,12 +142,7 @@ async def devise_experience(
     :class:`~shared.experience.ExperienceError` when it is not an experience at all, and
     :class:`RefusedByTheChecks` when it is one that cannot be run well.
     """
-    from agents.experience_deviser import (
-        DISTANCES,
-        SHAPES,
-        ExperienceDeviser,
-        experience_in,
-    )
+    from agents.experience_deviser import ExperienceDeviser, experience_in
     from orchestrator.router import FoundryConfig, FoundryRouter
     from orchestrator.safety import (
         AzureContentSafetyGate,
@@ -183,7 +172,7 @@ async def devise_experience(
         interests=interests,
         avoid=avoid,
         already=already,
-        shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
+        pitch=pitch,
         log=log,
     )
     if built_from is not None and form is not None and move is not None:
@@ -203,8 +192,7 @@ async def devise_experience(
             direction=direction,
             ground=ground,
             brief=brief,
-            shape=SHAPES.get(difficulty, SHAPES[DEFAULT_DIFFICULTY]),
-            distance=DISTANCES.get(variety, DISTANCES[DEFAULT_VARIETY]),
+            pitch=pitch,
             note=note,
             sheets=sheets,
             words_per_line=words_per_line,

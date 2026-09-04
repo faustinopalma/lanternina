@@ -438,10 +438,10 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         "counts",
         "direction",
         "ground",
-        # How many things an afternoon holds together at once, and how far it goes from the
-        # last ones. Both are properties of the material, not claims about a person.
-        "difficulty",
-        "variety",
+        # Where this house sits, from `shared/profile.py`: how much an afternoon holds, how
+        # much a sheet asks for, how long it runs. A property of the material every time,
+        # and it replaced two settings a parent used to be asked to grade.
+        "pitch",
         # How much paper this house will spend on one afternoon. About the printer and the
         # attention of whoever reads it, and about nobody.
         "sheets",
@@ -461,8 +461,6 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
         json={
             "interests": ["le nuvole"],
             "avoid": ["i ragni"],
-            "difficulty": "gentle",
-            "variety": "balanced",
             "language": "en",
         },
         headers=headers(),
@@ -475,46 +473,49 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
     assert asked["avoid"] == ("i ragni",)
 
 
-def test_the_shape_the_parent_chose_reaches_the_prompt_as_a_sentence_about_the_material(
+def test_a_house_with_no_history_is_pitched_at_nothing_and_invents_freely(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Chosen in the panel since the first version and read by nothing until 27 August 2026:
-    it was stored, shown back, and dropped on the way to the model. A parent moving it saw
-    no change in what arrived, which is worse than not offering the choice."""
-    from agents.experience_deviser import DISTANCES, SHAPES, the_prompt
+    """The block is left out rather than defaulted, and that is the decision of
+    4 September 2026.
+
+    Until then a parent chose a shape and every prompt carried one of three sentences,
+    including the very first one, before anybody had done anything. A default there is a
+    guess about a person dressed as a setting. What replaced it says nothing until three
+    pages have been placed, and a deviser told nothing invents — which is what it did for
+    the whole of August.
+    """
+    from agents.experience_deviser import the_prompt
 
     client = client_for()
     asked = devising(monkeypatch, THE_AFTERNOON)
-    household = household_of(client)
-    client.post(
-        "/api/preferences",
-        json={
-            "interests": [],
-            "avoid": [],
-            "difficulty": "stretch",
-            "variety": "frequent",
-            "language": "it",
-        },
-        headers=headers(),
-    )
 
-    ask_for_one(client, household)
+    ask_for_one(client, household_of(client))
 
-    assert asked["difficulty"] == "stretch"
-    assert asked["variety"] == "frequent"
-    written = the_prompt(
-        language="Italian",
-        capabilities=frozenset(),
-        shape=SHAPES["stretch"],
-        distance=DISTANCES["frequent"],
-    )
-    assert SHAPES["stretch"] in written
-    assert DISTANCES["frequent"] in written
-    for word in ("gentle", "stretch", "familiar", "frequent"):
-        assert word not in written, (
-            "the word a parent picked is a setting; what the model reads is a property of "
-            "the material, and nothing in the prompt may name the choice itself"
-        )
+    assert asked["pitch"] == ""
+    written = the_prompt(language="Italian", capabilities=frozenset(), pitch="")
+    assert "How this afternoon should be pitched" not in written
+
+
+def test_the_pitch_reaches_the_prompt_as_a_property_of_the_material() -> None:
+    """What the model is given is the sentence, never the band it was worked out from.
+
+    A prompt naming the band would be a prompt naming a level, and a model handed a level
+    writes an afternoon that eventually mentions it. The three words `low`, `middle` and
+    `high` exist in `shared/profile.py` for the arithmetic and reach nothing.
+    """
+    from agents.experience_deviser import the_prompt
+    from shared.profile import PITCHES, Axis, Band
+
+    pitch = "\n".join(PITCHES[axis][Band.HIGH] for axis in Axis)
+    written = the_prompt(language="Italian", capabilities=frozenset(), pitch=pitch)
+
+    assert PITCHES[Axis.LOAD][Band.HIGH] in written
+    assert PITCHES[Axis.INK][Band.HIGH] in written
+    assert PITCHES[Axis.SPAN][Band.HIGH] in written
+    assert "It is not a description of anybody" in written
+    for named in ("low", "middle", "high", "band"):
+        assert f'"{named}"' not in written
 
 
 def test_the_language_reaches_the_model_by_name_and_not_by_code(
@@ -533,8 +534,6 @@ def test_the_language_reaches_the_model_by_name_and_not_by_code(
             json={
                 "interests": [],
                 "avoid": [],
-                "difficulty": "gentle",
-                "variety": "balanced",
                 "language": code,
             },
             headers=headers(),

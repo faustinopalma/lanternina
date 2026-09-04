@@ -22,8 +22,8 @@ class ActivityKind(StrEnum):
 
 
 class Difficulty(StrEnum):
-    """Coarse on purpose. This is a content setting the parent chooses, not a measurement
-    of the person — the system does not assess or score anyone. See docs/NON-GOALS.md."""
+    """Coarse on purpose. What the parent chooses as a starting point for the material;
+    where an afternoon is actually pitched is corrected from there and not from here."""
 
     GENTLE = "gentle"
     STEADY = "steady"

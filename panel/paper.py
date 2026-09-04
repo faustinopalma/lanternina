@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Any
 from shared.agents import AgentContext
 from shared.ids import LearnerId
 from shared.page import Page
+from shared.profile import Noticed
 from shared.routing import ModelUsage, PageImage
 from shared.seal import Sealer, SealPurpose
 from shared.vision_contracts import WhatCameBack
@@ -77,3 +78,29 @@ async def read_the_page(
     finally:
         await gate.aclose()
     return came, router.last_usage
+
+
+async def place_the_page(
+    blank: PageImage, came_back: PageImage, *, asked_for: str, now: float
+) -> tuple[Noticed, ModelUsage | None]:
+    """Where this one page sits on the axes an afternoon is pitched along.
+
+    A second call over the same two images, and the second call is the point: the reading
+    above steers the rest of the afternoon and reaches a display within the minute, while
+    this reaches a store and no person. One answer carrying both would let a judgement into
+    the text by the shortest possible route.
+
+    The model is given the page and nothing about the house, so it cannot agree with a state
+    it was shown. What it answers is one row of a series; the state is arithmetic over the
+    series, in :func:`shared.profile.read_from`.
+    """
+    from agents.page_judge import PageJudge
+
+    router, context, gate = _cloud(now)
+    try:
+        noticed = await PageJudge().place(
+            context, blank=blank, came_back=came_back, asked_for=asked_for
+        )
+    finally:
+        await gate.aclose()
+    return noticed, router.last_usage
