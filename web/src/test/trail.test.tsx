@@ -88,4 +88,60 @@ describe("what the system wrote", () => {
     expect(await screen.findByText("Quello che è tornato dal vetro")).toBeInTheDocument();
     expect(screen.getByText(/si cancella da sola/)).toBeInTheDocument();
   });
+
+  it("indexes what reached paper, and says when a sheet did not", async () => {
+    /* The 5 September 2026 defect, on the side a parent reads. The queue accepted two pages
+       and the printer was on another network; the afternoon carried on and the record showed
+       one that had gone as written. A page that never arrived now has to be visible here
+       without opening every move. */
+    const user = userEvent.setup();
+    const api = fakeApi();
+    const whole = await api.trail("aft_1");
+    renderPanel(
+      fakeApi({
+        trail: async () => ({
+          ...whole,
+          made: [
+            {
+              id: "made_9",
+              at: 0,
+              kind: "fault",
+              heading: "il-foglio-del-cielo",
+              body: "no page reached the table\nthe printer did not take the page within 120 seconds",
+              why: "standard",
+              pictureId: "",
+              paper: "",
+              until: 0,
+            },
+          ],
+        }),
+      }),
+      <TheTrail />,
+    );
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Apri" }));
+
+    expect(await screen.findByText("Che cosa è finito su carta")).toBeInTheDocument();
+    expect(screen.getByText(/Un foglio non è arrivato/)).toBeInTheDocument();
+    // And the reason, so the parent knows it is a printer to switch on and not ours to fix.
+    expect(screen.getByText(/did not take the page/)).toBeInTheDocument();
+  });
+
+  it("reads the afternoons and the readings in one place", async () => {
+    /* They were two sections. A parent had to know that an activity they had not decided on
+       yet was filed somewhere else from one that had run. */
+    renderPanel(fakeApi(), <TheTrail />);
+
+    expect(await screen.findByText("Riletture")).toBeInTheDocument();
+  });
+
+  it("does not read an afternoon twice when it has already run", async () => {
+    /* An afternoon that ran carries its reading inside its own trail, filed as `judged`.
+       Merging the two lists put the same title on the page under two headings. */
+    renderPanel(fakeApi(), <TheTrail />);
+
+    await screen.findByText("Riletture");
+    expect(screen.getAllByText("Un pomeriggio di nuvole")).toHaveLength(1);
+  });
 });

@@ -111,6 +111,49 @@ def test_a_house_without_the_equipment_is_not_offered_it(tmp_path: Path) -> None
         begin(bare, an_experience(), now=0.0, send=False)
 
 
+def test_a_page_the_printer_never_took_is_filed_as_a_fault_with_its_reason(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The whole of 5 September 2026 in one test.
+
+    The queue accepted two pages and the printer was on another network. The afternoon went
+    on as if paper were on the table, the display climbed to the last rung of help for it,
+    and the panel showed an afternoon that had gone as written. Now the page never counts as
+    handed over, the words the afternoon carries for that case are what the room gets, and
+    the reason reaches the parent instead of only the journal.
+    """
+    import subprocess as sub
+
+    from devices import print_page as printing
+
+    def never_takes(argv: list[str], **kw: object) -> sub.CompletedProcess[bytes]:
+        if argv[0] == "lp":
+            return sub.CompletedProcess(argv, 0, b"request id is Lanternina-19\n", b"")
+        if argv[0] == "lpstat":
+            return sub.CompletedProcess(argv, 0, b"Lanternina-19 fausto 100352\n", b"")
+        return sub.CompletedProcess(argv, 0, b"", b"")
+
+    monkeypatch.setattr(printing.subprocess, "run", never_takes)
+    monkeypatch.setattr(printing.time, "sleep", lambda _: None)
+    monkeypatch.setattr(printing, "TOOK_THE_PAGE_SECONDS", 0.0)
+
+    filed: list[dict[str, Any]] = []
+    monkeypatch.setattr(
+        run_experience, "_tell_the_panel", lambda _h, _r, what: filed.append(what)
+    )
+
+    begin(house, an_experience(), now=0.0, send=True)
+
+    from devices.print_page import waiting
+
+    assert waiting(house.sheets_dir) == [], "no sheet is on the table, so none is waited for"
+    faults = [one for one in filed if one["kind"] == "fault"]
+    assert len(faults) == 1, "the parent is told once, on the afternoon it happened to"
+    assert any("did not take the page" in line for line in faults[0]["lines"]), (
+        "the reason has to say it was the printer, not that something went wrong"
+    )
+
+
 # ── The press goes to the afternoon ──────────────────────────────────────────────────
 
 

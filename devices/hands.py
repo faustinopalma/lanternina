@@ -16,17 +16,34 @@ branch, so a hand written for the printer works in a pretend house without being
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 
 from devices.ask_panel import PanelUnreachable, draw_page
 from devices.house import CannotRun, House, hand_over, show
+from devices.print_page import PageNotPrinted
 from orchestrator.outgoing import Outgoing
 from shared.capabilities import Act
 from shared.experience import HandOver, Moment, Weight
 from shared.ids import new_sheet_id
 
-# What a hand is handed, and what it gives back: the id of the sheet it printed, if it
-# printed one. Everything a hand needs about the afternoon is on the moment.
-Moves = Callable[[House, Moment, Weight, Outgoing, bool], "str | None"]
+
+@dataclass(frozen=True, slots=True)
+class Done:
+    """What a hand did: the sheet it printed, and why nothing reached the table.
+
+    ``fault`` carries the reason rather than the runner inferring one. A page that was never
+    drawn and a page the printer never took look the same from outside — nothing on the
+    table — and they are not the same thing to whoever reads the panel: one is ours to fix
+    and the other is a printer to switch on.
+    """
+
+    sheet: str | None = None
+    fault: str = ""
+
+
+# What a hand is handed, and what it gives back. Everything a hand needs about the afternoon
+# is on the moment.
+Moves = Callable[[House, Moment, Weight, Outgoing, bool], Done]
 
 _MOVES: dict[Act, Moves] = {}
 
@@ -43,7 +60,7 @@ def moves(act: Act) -> Callable[[Moves], Moves]:
 
 def play(
     house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool
-) -> str | None:
+) -> Done:
     """Carry out one moment at one weight, whichever verb it is."""
     how = _MOVES.get(moment.act)
     if how is None:
@@ -73,29 +90,35 @@ def _spoken(said: Outgoing, moment: Moment, weight: Weight) -> list[str]:
 @moves(Act.SAY)
 def _say(
     house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool
-) -> str | None:
+) -> Done:
     show(house, moment.heading, _spoken(said, moment, weight))
-    return None
+    return Done()
 
 
 @moves(Act.CLOSE)
 def _close(
     house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool
-) -> str | None:
+) -> Done:
     show(house, moment.heading, _spoken(said, moment, weight))
-    return None
+    return Done()
 
 
 @moves(Act.HAND_OVER)
 def _hand_over(
     house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool
-) -> str | None:
+) -> Done:
     """Print one page, or say the words written for the case where no page arrives.
 
-    A ``hand_over`` plays its ``instead`` when there is no printer, and also when the page
-    could not be drawn: the words are already written and were already checked, so nothing
-    is improvised at the moment something breaks. It returns no sheet, and the ``collect``
-    that follows takes its ``if_no_page`` branch.
+    A ``hand_over`` plays its ``instead`` when there is no printer, when the page could not
+    be drawn, and when the printer never took it: the words are already written and were
+    already checked, so nothing is improvised at the moment something breaks. It returns no
+    sheet, and the ``collect`` that follows takes its ``if_no_page`` branch.
+
+    **The paper comes before the words, and that ordering is the fix.** Until 5 September
+    2026 the display was told to go and fetch a page and the printing was attempted after,
+    so a printer that was off left somebody reading "take the sheet" in front of a printer
+    that never moved — for an hour and forty, on `aft_cf1d8537`. Now nothing is said until
+    the page is out, and the cost is that the previous moment stays up while it prints.
     """
     if not isinstance(moment, HandOver):
         raise CannotRun("a hand_over moment is the only thing that can print a page")
@@ -111,14 +134,24 @@ def _hand_over(
         except PanelUnreachable as exc:
             # Loud in the journal, silent in the room: the afternoon has words for this.
             print(f"the page was not drawn: {exc}")
+            return _instead(house, moment, said, f"the page could not be drawn: {exc}")
     if drawn is None:
-        instead = said.lines(f"{moment.id}.instead", moment.instead, written=moment.instead)
-        show(house, moment.heading, list(instead))
-        return None
-    show(house, moment.heading, _spoken(said, moment, weight))
+        return _instead(house, moment, said, "there is nothing in this house that prints")
     sheet_id = new_sheet_id()
-    hand_over(house, drawn, sheet_id=sheet_id, send=send)
-    return str(sheet_id)
+    try:
+        hand_over(house, drawn, sheet_id=sheet_id, send=send)
+    except PageNotPrinted as exc:
+        print(f"the page was not printed: {exc}")
+        return _instead(house, moment, said, str(exc))
+    show(house, moment.heading, _spoken(said, moment, weight))
+    return Done(sheet=str(sheet_id))
+
+
+def _instead(house: House, moment: HandOver, said: Outgoing, fault: str) -> Done:
+    """The words the afternoon already carries for a page that does not arrive."""
+    lines = said.lines(f"{moment.id}.instead", moment.instead, written=moment.instead)
+    show(house, moment.heading, list(lines))
+    return Done(fault=fault)
 
 
 @moves(Act.COLLECT)

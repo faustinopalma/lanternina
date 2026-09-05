@@ -86,19 +86,23 @@ function Card({ row }: { row: Judged }) {
   );
 }
 
-export function Verdicts() {
+export function Verdicts({ alreadyOnTheTrail = [] }: { alreadyOnTheTrail?: string[] }) {
   const api = useApi();
   const { t } = useWords();
   const [state] = useLoad(() => api.verdicts());
 
   if (state.status === "loading") return <Quiet>{t("verdicts.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("verdicts.unreadable")}</Quiet>;
-  if (state.data.length === 0) return <Quiet>{t("verdicts.empty")}</Quiet>;
+  /* An afternoon that ran carries its own reading inside its trail, filed as `judged` when
+     the house said it had begun. Showing it here as well would put the same afternoon on
+     the page twice under two headings, which is what merging the two sections revealed. */
+  const rows = state.data.filter((row) => !alreadyOnTheTrail.includes(row.experienceId));
+  if (rows.length === 0) return <Quiet>{t("verdicts.empty")}</Quiet>;
 
   return (
     <div>
-      <Tally rows={state.data} />
-      {state.data.map((row) => (
+      <Tally rows={rows} />
+      {rows.map((row) => (
         <Card key={row.experienceId} row={row} />
       ))}
     </div>

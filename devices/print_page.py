@@ -14,7 +14,9 @@ Nothing here lays anything out. The page arrives drawn.
 
 from __future__ import annotations
 
+import re
 import subprocess
+import time
 from pathlib import Path
 
 import cv2
@@ -28,6 +30,25 @@ from shared.ids import SheetId
 # longer breaks the reading — but a page printed at 94 % has margins nobody chose, and the
 # blank kept here would no longer be its twin.
 PRINT_OPTIONS = ("-o", "media=A4", "-o", "print-scaling=none", "-o", "sides=one-sided")
+
+# How long the printer has to take the page before the afternoon stops waiting for it.
+# Measured on this house's ET-2870: an A4 sheet is out well inside a minute once the job
+# reaches the printer, so this is a backstop and not a target. It is spent only when
+# something is wrong, because a job that prints leaves the queue and stops the wait early.
+TOOK_THE_PAGE_SECONDS = 120
+_ASK_EVERY_SECONDS = 2.0
+
+# `lp` says `request id is Lanternina-19 (1 file(s))` and that id is the only handle there
+# is on the job afterwards.
+_JOB_ID = re.compile(r"request id is (\S+)")
+
+
+class PageNotPrinted(RuntimeError):
+    """The queue took the page and the printer did not.
+
+    Its own type because it is not a broken house: the printer may be off, asleep or on a
+    different network, and the afternoon has words written for a page that never arrives.
+    """
 
 
 def blank_path(directory: Path, sheet_id: SheetId) -> Path:
@@ -78,6 +99,57 @@ def make_sheet(
     return blank, to_pdf(drawn)
 
 
+def _hand_to_cups(pdf: bytes, printer: str, sheet_id: SheetId) -> str:
+    """Put the page in the queue and hand back the job id CUPS gave it."""
+    try:
+        done = subprocess.run(
+            ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
+            input=pdf,
+            capture_output=True,
+            check=True,
+        )
+    except (subprocess.SubprocessError, OSError) as exc:
+        raise PageNotPrinted(f"the queue would not take the page: {exc}") from exc
+    found = _JOB_ID.search(done.stdout.decode(errors="replace"))
+    if found is None:
+        raise PageNotPrinted("the queue took the page without saying which job it is")
+    return found.group(1)
+
+
+def _still_queued(job: str, printer: str) -> bool:
+    """Whether the job is still waiting or printing. Unreadable counts as still waiting.
+
+    An error from `lpstat` must not read as "it printed": the whole point here is that
+    only positive evidence of leaving the queue is allowed to end the wait.
+    """
+    try:
+        done = subprocess.run(
+            ["lpstat", "-W", "not-completed", "-o", printer],
+            capture_output=True,
+            check=False,
+            timeout=15,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return True
+    return any(
+        line.split(" ", 1)[0] == job
+        for line in done.stdout.decode(errors="replace").splitlines()
+    )
+
+
+def _give_up_on(job: str) -> None:
+    """Take the job out of the queue, so no page arrives after the afternoon moved on.
+
+    This is the half that is easy to leave out, and leaving it out is what happened on 5
+    September 2026: two pages printed 82 minutes late, for an afternoon that had long since
+    said they were not coming and was nearly over.
+    """
+    try:
+        subprocess.run(["cancel", job], capture_output=True, check=False, timeout=15)
+    except (subprocess.SubprocessError, OSError) as exc:
+        print(f"the page could not be taken out of the queue ({exc})")
+
+
 def print_page(
     drawn: NDArray[np.uint8],
     *,
@@ -85,15 +157,37 @@ def print_page(
     sheet_id: SheetId,
     printer: str,
     send: bool = True,
+    wait_seconds: float | None = None,
 ) -> NDArray[np.uint8]:
-    """Put the page on paper, and hand back the blank it was printed from."""
+    """Put the page on paper, and hand back the blank it was printed from.
+
+    **Accepted by the queue is not out of the printer**, and reading the first as the second
+    is the defect this waits out. `lp` returns as soon as CUPS has the file, so a printer
+    that is off, asleep or on another network leaves the house believing paper is on the
+    table: on 5 September 2026 an afternoon ran for an hour and forty asking for a sheet
+    that was sitting in the queue the whole time, and the display went up to the last rung
+    of help for it. Raises :class:`PageNotPrinted` instead, which the hand above turns into
+    the words the afternoon already has for a page that does not arrive.
+
+    The blank goes with it. `waiting` reads the blanks on disk as sheets on the table, so
+    one kept for a page nobody has would be a sheet the house waits to see come back.
+    """
     blank, pdf = make_sheet(drawn, sheets_dir=sheets_dir, sheet_id=sheet_id)
-    if send:
-        subprocess.run(
-            ["lp", "-d", printer, *PRINT_OPTIONS, "-t", f"lanternina-{sheet_id}", "-"],
-            input=pdf,
-            check=True,
-        )
+    if not send:
+        return blank
+    # Read here rather than bound as a default, so the ceiling is one value and not a copy
+    # taken when this module was imported.
+    waits = TOOK_THE_PAGE_SECONDS if wait_seconds is None else wait_seconds
+    job = _hand_to_cups(pdf, printer, sheet_id)
+    give_up_at = time.monotonic() + waits
+    while _still_queued(job, printer):
+        if time.monotonic() >= give_up_at:
+            _give_up_on(job)
+            blank_path(sheets_dir, sheet_id).unlink(missing_ok=True)
+            raise PageNotPrinted(
+                f"the printer did not take the page within {waits:.0f} seconds"
+            )
+        time.sleep(_ASK_EVERY_SECONDS)
     return blank
 
 

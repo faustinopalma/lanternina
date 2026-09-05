@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
+import { Verdicts } from "@/sections/Verdicts";
 
 /* What the system wrote, afternoon by afternoon.
  *
@@ -76,6 +77,43 @@ function Written({ made }: { made: Made }) {
   );
 }
 
+/* An index of what reached paper, above the moves.
+ *
+ * Headings only, deliberately: the words that were on each sheet are in the move itself,
+ * with the rest of its context, and printing them twice on one page makes the long one
+ * harder to read rather than the short one easier. What this adds is the count and the
+ * absences — until 5 September 2026 a page the printer never took looked exactly like a
+ * page that came out, because the house counted the queue accepting the file as the sheet
+ * being on the table. Two pages sat in a queue for eighty-two minutes and the trail showed
+ * an afternoon that had gone as written. */
+function OnPaper({ made }: { made: Made[] }) {
+  const { t } = useWords();
+  const pages = made.filter((one) => one.kind === "hand_over");
+  const faults = made.filter((one) => one.kind === "fault");
+  if (pages.length === 0 && faults.length === 0) return null;
+
+  return (
+    <div className="mt-3 rounded-control border border-edge px-3 py-2">
+      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
+        {t("trail.onPaper")}
+      </p>
+      {pages.length === 0 ? <Quiet className="mt-1">{t("trail.onPaperNone")}</Quiet> : null}
+      <ul className="mt-1 flex list-none flex-col gap-1 p-0">
+        {pages.map((one) => (
+          <li key={one.id} className="text-[0.9rem]">
+            {one.heading}
+          </li>
+        ))}
+        {faults.map((one) => (
+          <li key={one.id} className="text-[0.9rem]">
+            {t("trail.onPaperMissing")} — {one.heading}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function Whole({ runId }: { runId: string }) {
   const api = useApi();
   const { t } = useWords();
@@ -88,9 +126,10 @@ function Whole({ runId }: { runId: string }) {
 
   return (
     <div className="mt-3">
+      <OnPaper made={made} />
       {trail.script ? (
         <>
-          <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
+          <p className="mt-3 text-[0.82rem] tracking-wider text-quiet uppercase">
             {t("trail.script")}
           </p>
           <p className="mt-1 mb-3 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
@@ -132,15 +171,29 @@ export function TheTrail() {
   const { t } = useWords();
   const [state] = useLoad(() => api.trails());
 
-  if (state.status === "loading") return <Quiet>{t("trail.loading")}</Quiet>;
-  if (state.status === "failed") return <Quiet>{t("trail.unreadable")}</Quiet>;
-  if (state.data.length === 0) return <Quiet>{t("trail.empty")}</Quiet>;
-
   return (
     <div>
-      {state.data.map((trail) => (
-        <Card key={trail.runId} trail={trail} />
-      ))}
+      {state.status === "loading" ? <Quiet>{t("trail.loading")}</Quiet> : null}
+      {state.status === "failed" ? <Quiet>{t("trail.unreadable")}</Quiet> : null}
+      {state.status === "ready" && state.data.length === 0 ? (
+        <Quiet>{t("trail.empty")}</Quiet>
+      ) : null}
+      {state.status === "ready"
+        ? state.data.map((trail) => <Card key={trail.runId} trail={trail} />)
+        : null}
+
+      {/* One section, not two. The readings were their own page while the prompts were
+          being changed, and a parent had to know that an afternoon they had not decided on
+          yet was filed somewhere else from one that had run. Both are the same question —
+          what did the system write, and what did a reader make of it — so they are read in
+          one place, with the afternoons that happened first. */}
+      <h3 className="mt-7 mb-1 text-[1.05rem] font-semibold">{t("trail.readings")}</h3>
+      <Quiet>{t("trail.readingsNote")}</Quiet>
+      <Verdicts
+        alreadyOnTheTrail={
+          state.status === "ready" ? state.data.map((one) => one.experienceId) : []
+        }
+      />
     </div>
   );
 }

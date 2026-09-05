@@ -256,7 +256,11 @@ def test_the_transcript_records_what_the_house_did(
 
     what = [line["what"] for line in simulated.read_transcript(pretend)]
 
-    assert what[:3] == ["display", "display", "paper"]
+    # The paper comes before the words that send somebody to fetch it, and that ordering is
+    # the fix of 5 September 2026: the display used to be told to go to the printer first,
+    # so a printer that was off left somebody reading "take the sheet" in front of a printer
+    # that never moved. Nothing is said now until the page is out.
+    assert what[:3] == ["display", "paper", "display"]
     assert "glass" in what
 
 

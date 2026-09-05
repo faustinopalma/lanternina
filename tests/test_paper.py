@@ -9,15 +9,19 @@ has to exist and nothing else has to.
 
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import numpy as np
 import pytest
 
+from devices import print_page as print_page_module
 from devices.print_page import (
     PRINT_OPTIONS,
+    PageNotPrinted,
     blank_path,
     make_sheet,
+    print_page,
     recall,
     waiting,
 )
@@ -160,3 +164,131 @@ def test_the_sheets_handed_out_come_back_newest_last(tmp_path: Path) -> None:
 
 def test_a_house_that_has_handed_nothing_out_is_waiting_for_nothing(tmp_path: Path) -> None:
     assert waiting(tmp_path / "never-made") == []
+
+
+# ── Accepted by the queue is not out of the printer ──────────────────────────────────
+#
+# On 5 September 2026 an afternoon ran for an hour and forty asking for a page that was
+# sitting in the CUPS queue the whole time, because `lp` returns as soon as the queue takes
+# the file. The display went to the last rung of help for a sheet nobody could fetch. These
+# fix the difference between "the queue has it" and "the printer took it".
+
+
+class _Cups:
+    """A printer that answers the two commands, without one being in the room."""
+
+    def __init__(self, *, leaves_after: int, accepts: bool = True) -> None:
+        self.leaves_after = leaves_after
+        self.accepts = accepts
+        self.asked = 0
+        self.cancelled: list[str] = []
+        self.sent: list[list[str]] = []
+
+    def __call__(self, argv: list[str], **kw: object) -> subprocess.CompletedProcess[bytes]:
+        if argv[0] == "lp":
+            self.sent.append(argv)
+            if not self.accepts:
+                raise subprocess.CalledProcessError(1, argv)
+            return subprocess.CompletedProcess(
+                argv, 0, b"request id is Lanternina-19 (1 file(s))\n", b""
+            )
+        if argv[0] == "lpstat":
+            self.asked += 1
+            gone = self.asked > self.leaves_after
+            out = b"" if gone else b"Lanternina-19  fausto  100352  Sat 05 Sep 2026\n"
+            return subprocess.CompletedProcess(argv, 0, out, b"")
+        if argv[0] == "cancel":
+            self.cancelled.append(argv[1])
+            return subprocess.CompletedProcess(argv, 0, b"", b"")
+        raise AssertionError(f"unexpected command: {argv}")
+
+
+def _cups(monkeypatch: pytest.MonkeyPatch, fake: _Cups) -> None:
+    monkeypatch.setattr(print_page_module.subprocess, "run", fake)
+    monkeypatch.setattr(print_page_module.time, "sleep", lambda _: None)
+
+
+def test_a_page_that_leaves_the_queue_is_a_page_that_printed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = _Cups(leaves_after=2)
+    _cups(monkeypatch, fake)
+
+    blank = print_page(a_drawing(), sheets_dir=tmp_path, sheet_id=SHEET, printer="Lanternina")
+
+    assert blank_path(tmp_path, SHEET).exists()
+    assert np.array_equal(recall(tmp_path, SHEET), blank)
+    assert fake.cancelled == [], "a page that printed must not be cancelled"
+
+
+def test_a_page_the_printer_never_takes_is_refused_rather_than_reported_as_printed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The defect of 5 September, stated. It never leaves the queue, so it never printed."""
+    fake = _Cups(leaves_after=10_000)
+    _cups(monkeypatch, fake)
+
+    with pytest.raises(PageNotPrinted, match="did not take the page"):
+        print_page(
+            a_drawing(),
+            sheets_dir=tmp_path,
+            sheet_id=SHEET,
+            printer="Lanternina",
+            wait_seconds=0.0,
+        )
+
+    assert fake.cancelled == ["Lanternina-19"], (
+        "a page left in the queue arrives after the afternoon has moved on"
+    )
+    assert not blank_path(tmp_path, SHEET).exists(), (
+        "a kept blank is a sheet `waiting` believes is on the table"
+    )
+
+
+def test_a_queue_that_will_not_take_the_page_is_the_same_answer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _cups(monkeypatch, _Cups(leaves_after=0, accepts=False))
+
+    with pytest.raises(PageNotPrinted, match="would not take"):
+        print_page(a_drawing(), sheets_dir=tmp_path, sheet_id=SHEET, printer="Lanternina")
+
+
+def test_a_printer_that_cannot_be_asked_is_not_taken_for_a_printer_that_finished(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`lpstat` failing must not read as "the job is gone, so it printed"."""
+
+    def broken(argv: list[str], **kw: object) -> subprocess.CompletedProcess[bytes]:
+        if argv[0] == "lp":
+            return subprocess.CompletedProcess(argv, 0, b"request id is Lanternina-19\n", b"")
+        if argv[0] == "cancel":
+            return subprocess.CompletedProcess(argv, 0, b"", b"")
+        raise OSError("lpstat is not here")
+
+    monkeypatch.setattr(print_page_module.subprocess, "run", broken)
+    monkeypatch.setattr(print_page_module.time, "sleep", lambda _: None)
+
+    with pytest.raises(PageNotPrinted):
+        print_page(
+            a_drawing(),
+            sheets_dir=tmp_path,
+            sheet_id=SHEET,
+            printer="Lanternina",
+            wait_seconds=0.0,
+        )
+
+
+def test_nothing_is_sent_and_nothing_is_waited_for_when_the_paper_is_off(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`--no-paper` lays the sheet out without a printer being involved at all."""
+    fake = _Cups(leaves_after=0)
+    _cups(monkeypatch, fake)
+
+    print_page(
+        a_drawing(), sheets_dir=tmp_path, sheet_id=SHEET, printer="Lanternina", send=False
+    )
+
+    assert fake.sent == []
+    assert blank_path(tmp_path, SHEET).exists()

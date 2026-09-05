@@ -21,7 +21,6 @@ import { Rhythm } from "@/sections/Rhythm";
 import { Themes } from "@/sections/Themes";
 import { TheTrail } from "@/sections/Trail";
 import { Usage } from "@/sections/Usage";
-import { Verdicts } from "@/sections/Verdicts";
 
 interface Section {
   name: string;
@@ -133,14 +132,6 @@ export function Dashboard({ api }: { api: Api }) {
       sections: [
         { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
         { name: "trail", title: t("trail.title"), note: t("trail.note"), Body: TheTrail },
-        // Temporary, for the weeks the prompts are being changed. See
-        // panel/routes/verdicts.py for what has to be true before it goes.
-        {
-          name: "verdicts",
-          title: t("verdicts.title"),
-          note: t("verdicts.note"),
-          Body: Verdicts,
-        },
         { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
       ],
     },

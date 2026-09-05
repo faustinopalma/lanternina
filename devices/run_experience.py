@@ -578,8 +578,8 @@ def _do(
     *,
     send: bool,
     out: Outgoing | None = None,
-) -> str | None:
-    """Play one moment at one weight. Returns the id of the sheet it printed, if it did.
+) -> hands.Done:
+    """Play one moment at one weight. Says which sheet it printed, or why none reached.
 
     The verb is looked up rather than branched on: what each one does lives in
     :mod:`devices.hands`, one function per device, so this stays the same length however
@@ -588,7 +588,9 @@ def _do(
     return hands.play(house, moment, weight, out or Outgoing(), send)
 
 
-def _it_did(house: House, run_id: str, moment: Moment, weight: Weight, sheet: str | None) -> None:
+def _it_did(
+    house: House, run_id: str, moment: Moment, weight: Weight, done: hands.Done
+) -> None:
     """Tell the panel what went into the room. Never raises, and never blocks the room.
 
     What the panel writes down on its own is what it generated; this is what was performed,
@@ -608,14 +610,17 @@ def _it_did(house: House, run_id: str, moment: Moment, weight: Weight, sheet: st
         "why": str(weight),
     }
     if isinstance(moment, HandOver):
-        if sheet is None:
+        if done.sheet is None:
             # The one divergence a parent cannot otherwise see: the afternoon carried on
             # with the words written for this, and the record used to show the page instead.
+            # The reason comes from the hand rather than being guessed here, because "the
+            # printer is off" and "we could not draw it" ask different things of a parent.
             what = {
                 "kind": WENT_WRONG,
                 "heading": moment.heading,
                 "lines": [
-                    "no page reached the table, so what the afternoon says instead was shown"
+                    "no page reached the table, so what the afternoon says instead was shown",
+                    *([done.fault] if done.fault else []),
                 ],
                 "why": str(weight),
             }
@@ -735,10 +740,10 @@ def _play(
     for moment in moments[start:]:
         if isinstance(moment, Collect):
             return moment, printed, weight
-        sheet_id = _do(house, moment, weight, send=send, out=out)
-        _it_did(house, run.run_id, moment, weight, sheet_id)
-        if sheet_id is not None:
-            printed.append(sheet_id)
+        done = _do(house, moment, weight, send=send, out=out)
+        _it_did(house, run.run_id, moment, weight, done)
+        if done.sheet is not None:
+            printed.append(done.sheet)
         if isinstance(moment, Close):
             return None, printed, weight
     # `_check_graph` refuses a document that could reach here, so this is a bug rather
