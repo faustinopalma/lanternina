@@ -209,37 +209,6 @@ export interface Trail {
   made?: Made[];
 }
 
-/* One thing a reader had to say about an afternoon. `name` is from a closed list in
- * `agents/experience_judge.py`, so it can be counted across afternoons; `where` and `says`
- * are that reader's own words about this one. */
-export interface Finding {
-  name: string;
-  where: string;
-  says: string;
-}
-
-/* What one reader made of one devised afternoon, having seen only what the person sees.
- *
- * `question` and `answer` are what they worked out from the moments alone — the title, the
- * overview and the script were kept from them on purpose. An empty `question` on an
- * afternoon where something can be got wrong is the loudest result this produces.
- *
- * `prompt` is twelve hex characters naming the version of the standing instruction that
- * wrote the afternoon, so two of these are comparable only when it matches. */
-export interface Judged {
-  experienceId: string;
-  title: string;
-  createdAt: number;
-  state: string;
-  begunAt: number;
-  prompt: string;
-  canBeWrong: boolean;
-  question: string;
-  answer: string;
-  degraded: boolean;
-  findings: Finding[];
-}
-
 /* One turn of a parent working on an idea. `who` is "parent" or "system" and there is no
  * third: a draft is a parent and the model they are working with. */
 export interface Turn {
@@ -513,8 +482,6 @@ export interface Api {
   trail(runId: string): Promise<Trail>;
   /** Empty the record for this household. Deletes, and cannot be undone. */
   forgetTrail(): Promise<{ forgotten: number }>;
-  /** Temporary, for the weeks the prompts are being changed. See panel/routes/verdicts.py. */
-  verdicts(): Promise<Judged[]>;
   drafts(): Promise<DraftCard[]>;
   startDraft(fromExperience: string): Promise<Draft>;
   draft(id: string): Promise<Draft>;

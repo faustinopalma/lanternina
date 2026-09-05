@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
-import { Verdicts } from "@/sections/Verdicts";
 
 /* The sheet as it was drawn, fetched as bytes.
  *
@@ -68,8 +67,16 @@ function Drawn({ pictureId }: { pictureId: string }) {
  * afternoon needs. The script arrives when one is opened.
  */
 
-/** The bodies are what a model wrote. They are text, and they are shown as text. */
-function Written({ made }: { made: Made }) {
+/* One step of the trace: when, what it was, what went in, what came out.
+ *
+ * The shape is the design. This page was a list of records in the house's own vocabulary
+ * with the reasoning and the paper attached in whatever order the fields happened to be in,
+ * and beneath it a second section of readings. What a parent actually needs is a trace of
+ * what the model did, in the order it did it, and every step of that has the same two
+ * halves: the text that was sent, and what came back — words on a display, or a sheet
+ * offered to the printer. So both halves are labelled, always, and nothing else competes
+ * with them. */
+function Step({ made }: { made: Made }) {
   const { t, dateTime } = useWords();
   /* Written out rather than built from `made.kind`: a key that only exists at runtime is a
      key no test can find missing. A kind we have no word for is shown as it arrived. */
@@ -95,34 +102,38 @@ function Written({ made }: { made: Made }) {
                       : made.kind === "drawn"
                         ? t("trail.kind.drawn")
                         : made.kind;
+  const outcome = made.paper || made.body;
 
   return (
     <li className="border-l-2 border-edge pl-3">
-      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">{kind}</p>
+      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
+        {dateTime(made.at)} · {kind}
+      </p>
       {made.heading ? <p className="font-semibold">{made.heading}</p> : null}
-      {made.body ? (
-        <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.body}</p>
-      ) : null}
-      {made.paper ? (
-        <div className="mt-2 rounded-control border border-edge px-3 py-2">
-          <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.paper")}
-          </p>
-          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.paper}</p>
-        </div>
-      ) : null}
-      {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
+
       {made.asked ? (
         <details className="mt-2">
           <summary className="cursor-pointer text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.asked")}
+            {t("trail.went_in")}
           </summary>
           <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.asked}</p>
         </details>
       ) : null}
+
+      {outcome || made.pictureId ? (
+        <div className="mt-2">
+          <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
+            {t("trail.came_out")}
+          </p>
+          {outcome ? (
+            <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{outcome}</p>
+          ) : null}
+          {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
+        </div>
+      ) : null}
+
       {made.why ? <Quiet className="mt-1">{t("trail.why", { why: made.why })}</Quiet> : null}
       {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
-      <Quiet className="mt-1">{dateTime(made.at)}</Quiet>
     </li>
   );
 }
@@ -136,39 +147,6 @@ function Written({ made }: { made: Made }) {
  * page that came out, because the house counted the queue accepting the file as the sheet
  * being on the table. Two pages sat in a queue for eighty-two minutes and the trail showed
  * an afternoon that had gone as written. */
-function OnPaper({ made }: { made: Made[] }) {
-  const { t } = useWords();
-  const drawn = made.filter((one) => one.kind === "drawn");
-  const pages = made.filter((one) => one.kind === "hand_over");
-  const faults = made.filter((one) => one.kind === "fault");
-  if (drawn.length === 0 && pages.length === 0 && faults.length === 0) return null;
-
-  return (
-    <div className="mt-3 rounded-control border border-edge px-3 py-2">
-      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-        {t("trail.onPaper")}
-      </p>
-      {pages.length === 0 ? <Quiet className="mt-1">{t("trail.onPaperNone")}</Quiet> : null}
-      <ul className="mt-1 flex list-none flex-col gap-1 p-0">
-        {drawn.map((one) => (
-          <li key={one.id} className="text-[0.9rem]">
-            {t("trail.onPaperDrawn")} — {one.heading}
-          </li>
-        ))}
-        {pages.map((one) => (
-          <li key={one.id} className="text-[0.9rem]">
-            {one.heading}
-          </li>
-        ))}
-        {faults.map((one) => (
-          <li key={one.id} className="text-[0.9rem]">
-            {t("trail.onPaperMissing")} — {one.heading}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 function Whole({ runId }: { runId: string }) {
   const api = useApi();
@@ -182,22 +160,21 @@ function Whole({ runId }: { runId: string }) {
 
   return (
     <div className="mt-3">
-      <OnPaper made={made} />
       {trail.script ? (
-        <>
-          <p className="mt-3 text-[0.82rem] tracking-wider text-quiet uppercase">
+        <details className="mb-3">
+          <summary className="cursor-pointer text-[0.82rem] tracking-wider text-quiet uppercase">
             {t("trail.script")}
-          </p>
-          <p className="mt-1 mb-3 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
-        </>
+          </summary>
+          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
+        </details>
       ) : null}
       <p className="text-[0.82rem] tracking-wider text-quiet uppercase">{t("trail.made")}</p>
       {made.length === 0 ? (
         <Quiet className="mt-1">{t("trail.madeNothing")}</Quiet>
       ) : (
-        <ol className="mt-2 flex list-none flex-col gap-2.5 p-0">
+        <ol className="mt-2 flex list-none flex-col gap-3.5 p-0">
           {made.map((one) => (
-            <Written key={one.id} made={one} />
+            <Step key={one.id} made={one} />
           ))}
         </ol>
       )}
@@ -270,19 +247,6 @@ export function TheTrail() {
               : t("trail.forgotten", { n: String(gone) })}
         </Quiet>
       </div>
-
-      {/* One section, not two. The readings were their own page while the prompts were
-          being changed, and a parent had to know that an afternoon they had not decided on
-          yet was filed somewhere else from one that had run. Both are the same question —
-          what did the system write, and what did a reader make of it — so they are read in
-          one place, with the afternoons that happened first. */}
-      <h3 className="mt-7 mb-1 text-[1.05rem] font-semibold">{t("trail.readings")}</h3>
-      <Quiet>{t("trail.readingsNote")}</Quiet>
-      <Verdicts
-        alreadyOnTheTrail={
-          state.status === "ready" ? state.data.map((one) => one.experienceId) : []
-        }
-      />
     </div>
   );
 }

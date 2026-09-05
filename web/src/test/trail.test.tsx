@@ -22,7 +22,7 @@ describe("what the system wrote", () => {
     expect(screen.queryByText(/THE WORLD/)).not.toBeInTheDocument();
   });
 
-  it("opens the script and everything written under it", async () => {
+  it("traces what the model did, in order, with what went in and what came out", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi(), <TheTrail />);
 
@@ -31,11 +31,34 @@ describe("what the system wrote", () => {
 
     expect(await screen.findByText(/THE WORLD/)).toBeInTheDocument();
     expect(screen.getByText("Guarda fuori e dimmi che forma ha.")).toBeInTheDocument();
-    // The act it performed, in the house's own vocabulary rather than a second one.
-    expect(screen.getByText("Detto su un display")).toBeInTheDocument();
-    expect(screen.getByText("Foglio stampato")).toBeInTheDocument();
+    // The kind sits on the same line as the time, because a step of a trace is a moment
+    // first and a category second.
+    expect(screen.getByText(/Detto su un display/)).toBeInTheDocument();
+    expect(screen.getByText(/Foglio stampato/)).toBeInTheDocument();
+    // Both halves are labelled on every step, which is the whole shape of the page.
+    expect(screen.getAllByText("Che cosa ne e uscito").length).toBeGreaterThan(0);
     // The reasoning reached nobody in the room. It reaches the parent afterwards.
     expect(screen.getByText("Perché: il foglio era tornato vuoto")).toBeInTheDocument();
+  });
+
+  it("keeps the steps in the order they happened", async () => {
+    /* It is a trace, so the order is the content. Reading it by timestamp rather than by
+       kind is what makes it possible to see what the model did after what. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi(), <TheTrail />);
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Apri" }));
+    await screen.findByText(/Detto su un display/);
+
+    const steps = screen.getAllByRole("listitem").map((one) => one.textContent ?? "");
+    const said = steps.findIndex((one) => one.includes("Detto su un display"));
+    const drawn = steps.findIndex((one) => one.includes("Foglio disegnato"));
+    const printed = steps.findIndex((one) => one.includes("Foglio stampato"));
+
+    expect(said).toBeGreaterThanOrEqual(0);
+    expect(drawn).toBeGreaterThan(said);
+    expect(printed).toBeGreaterThan(drawn);
   });
 
   it("says so plainly when nothing has run", async () => {
@@ -51,8 +74,9 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText("Sul foglio")).toBeInTheDocument();
-    expect(screen.getByText(/Guarda il cielo e disegna quello che vedi/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Guarda il cielo e disegna quello che vedi/),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/^\{/)).not.toBeInTheDocument();
   });
 
@@ -86,15 +110,14 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText("Quello che è tornato dal vetro")).toBeInTheDocument();
+    expect(await screen.findByText(/Quello che è tornato dal vetro/)).toBeInTheDocument();
     expect(screen.getByText(/si cancella da sola/)).toBeInTheDocument();
   });
 
-  it("indexes what reached paper, and says when a sheet did not", async () => {
+  it("puts a sheet that never arrived in the trace, with its reason", async () => {
     /* The 5 September 2026 defect, on the side a parent reads. The queue accepted two pages
        and the printer was on another network; the afternoon carried on and the record showed
-       one that had gone as written. A page that never arrived now has to be visible here
-       without opening every move. */
+       one that had gone as written. */
     const user = userEvent.setup();
     const api = fakeApi();
     const whole = await api.trail("aft_1");
@@ -124,27 +147,18 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText("Che cosa è finito su carta")).toBeInTheDocument();
-    expect(screen.getByText(/Un foglio non è arrivato/)).toBeInTheDocument();
+    expect(await screen.findByText(/Qui non ha funzionato/)).toBeInTheDocument();
     // And the reason, so the parent knows it is a printer to switch on and not ours to fix.
     expect(screen.getByText(/did not take the page/)).toBeInTheDocument();
   });
 
-  it("reads the afternoons and the readings in one place", async () => {
-    /* They were two sections. A parent had to know that an activity they had not decided on
-       yet was filed somewhere else from one that had run. */
+  it("has no readings section of its own any more", async () => {
+    /* It was a second list under the trace, and a reading is one of the things the model
+       did: it belongs in the trace, at the moment it happened, like everything else. */
     renderPanel(fakeApi(), <TheTrail />);
 
-    expect(await screen.findByText("Riletture")).toBeInTheDocument();
-  });
-
-  it("does not read an afternoon twice when it has already run", async () => {
-    /* An afternoon that ran carries its reading inside its own trail, filed as `judged`.
-       Merging the two lists put the same title on the page under two headings. */
-    renderPanel(fakeApi(), <TheTrail />);
-
-    await screen.findByText("Riletture");
-    expect(screen.getAllByText("Un pomeriggio di nuvole")).toHaveLength(1);
+    await screen.findByText("Un pomeriggio di nuvole");
+    expect(screen.queryByText("Riletture")).not.toBeInTheDocument();
   });
 
   it("shows what the model was asked for, beside what it produced", async () => {
@@ -156,8 +170,8 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText("Foglio disegnato")).toBeInTheDocument();
-    expect(screen.getByText(/Che cosa e stato chiesto al modello/)).toBeInTheDocument();
+    expect(await screen.findByText(/Foglio disegnato/)).toBeInTheDocument();
+    expect(screen.getByText("Che cosa e stato chiesto")).toBeInTheDocument();
     // A phrase only the request carries: the page's own words appear in both, and matching
     // one of those would pass whether or not the request was ever shown.
     expect(screen.getByText(/Letter this large/)).toBeInTheDocument();
