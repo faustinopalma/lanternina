@@ -20,10 +20,11 @@ Three limits, each of them about the house and none of them about a person:
 
 * **One afternoon at a time.** Two sheets on the table from two afternoons is a house that
   has stopped making sense.
-* **One thing a day.** The stamp is a date, not a tally, and it is written when the house
-  does something — begins an afternoon, or asks for one. A run that finds nothing to do
-  because the parent has not decided yet stamps nothing, so a decision taken at four
-  o'clock is honoured at ten past rather than tomorrow.
+* **As many in a day as the parent chose, and two unless they said otherwise.** The house
+  keeps a date and a number beside its runs, and the date is what makes it a rhythm rather
+  than a tally: a file from yesterday reads as zero. It is added to when an afternoon
+  begins and read by nothing else. A run that finds nothing to do counts nothing, so a
+  decision taken at four o'clock is honoured at ten past rather than tomorrow.
 * **It has to fit.** An afternoon may begin only if its whole length is over before the
   house goes quiet. That is why nothing here has an end-hour setting: the pause the parent
   already chose is the end, and the afternoon's own ``minutes`` say whether it fits.
@@ -86,6 +87,11 @@ NO_DAYS: tuple[str, ...] = ()
 DEFAULT_AFTERNOON_FROM = "15:00"
 DEFAULT_AFTERNOON_UNTIL = "19:00"
 
+# What the house falls back on when the panel does not say how many a day. It matches the
+# panel's own default: a hub reading an API too old to carry the field behaves like a house
+# whose parent has not touched the setting, rather than like one with no ceiling at all.
+DEFAULT_AFTERNOONS_A_DAY = 2
+
 LOOK_TIMEOUT_SECONDS = 30
 # Devising a whole afternoon is a model writing a dozen moments. Measured from the hub on
 # 21 August 2026: 29.1 s for the one that succeeded.
@@ -132,26 +138,44 @@ def fits_inside_the_band(
     return length <= end - minutes_now
 
 
-def looked_today(stamp: Path, now: float, zone: str = "") -> bool:
-    """Whether the house has already done its one thing for today.
+def the_day_stamp(sheets_dir: Path) -> Path:
+    """Beside the runs and not among them: `waiting_runs` globs the directory next door."""
+    return sheets_dir / "afternoons-today.json"
 
-    The file holds a date, deliberately, and not a count. What it stops is a second
-    afternoon on the same day and a devise request every ten minutes at a panel that is
-    answering 503; what it does not do is keep a tally of anything, because there is
-    nothing here that a tally would be about.
+
+def begun_today(stamp: Path, now: float, zone: str = "") -> int:
+    """How many afternoons have begun since midnight where the house is.
+
+    A date and a number, deliberately, and the date is what makes it a rhythm rather than a
+    tally: a file left from yesterday reads as zero rather than as history, and nothing here
+    accumulates across days. It bounds the house's day; it is not a record of anybody, it
+    reaches no display, no sheet and no page, and the only thing that reads it is the
+    decision below about whether one more may begin.
 
     The date turns over at midnight where the house is, which is why the zone is a
     parameter: on a hub set to the wrong country the day rolled at the wrong hour.
+
+    Unreadable reads as zero. The failure worth protecting against is a house that refuses
+    to begin an afternoon for a reason nobody can see, not a house that begins one extra.
     """
     try:
-        return stamp.read_text(encoding="utf-8").strip() == date_there(now, zone)
-    except OSError:
-        return False
+        kept = json.loads(stamp.read_text(encoding="utf-8"))
+        if not isinstance(kept, dict) or kept.get("date") != date_there(now, zone):
+            return 0
+        return max(0, int(kept.get("begun") or 0))
+    except (OSError, ValueError, TypeError):
+        return 0
 
 
-def mark_looked(stamp: Path, now: float, zone: str = "") -> None:
+def note_one_began(stamp: Path, now: float, zone: str = "") -> None:
+    """Add one to today's count, starting again from zero when the date has moved."""
     stamp.parent.mkdir(parents=True, exist_ok=True)
-    stamp.write_text(date_there(now, zone) + "\n", encoding="utf-8")
+    stamp.write_text(
+        json.dumps(
+            {"date": date_there(now, zone), "begun": begun_today(stamp, now, zone) + 1}
+        ),
+        encoding="utf-8",
+    )
 
 
 def _get(url: str, key: str, timeout: int) -> Any:
@@ -174,10 +198,13 @@ def _post(url: str, key: str, body: dict[str, Any], timeout: int) -> Any:
 def read_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
     """The days and the hours the parent chose. Raises on anything the house cannot use."""
     answer = _get(f"{panel}/api/device/{household}/rhythm", key, LOOK_TIMEOUT_SECONDS)
+    a_day = answer.get("afternoonsADay")
     return {
         "afternoonDays": [str(day) for day in (answer.get("afternoonDays") or [])],
         "afternoonFrom": str(answer.get("afternoonFrom") or DEFAULT_AFTERNOON_FROM),
         "afternoonUntil": str(answer.get("afternoonUntil") or DEFAULT_AFTERNOON_UNTIL),
+        # Not `or`: a parent who chose none means none, and that is not the same as absent.
+        "afternoonsADay": DEFAULT_AFTERNOONS_A_DAY if a_day is None else int(a_day),
         "timeZone": str(answer.get("timeZone") or ""),
     }
 
@@ -203,6 +230,7 @@ def the_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
             "afternoonDays": list(NO_DAYS),
             "afternoonFrom": DEFAULT_AFTERNOON_FROM,
             "afternoonUntil": DEFAULT_AFTERNOON_UNTIL,
+            "afternoonsADay": DEFAULT_AFTERNOONS_A_DAY,
             "timeZone": "",
         }
 
@@ -526,6 +554,25 @@ def main(argv: list[str] | None = None) -> int:
             f"the parent asked for one (request {_tail(asked)}); "
             "the day and the hour do not decide"
         )
+
+    # A press steps over the day and the hour; it does not step over this. The ceiling is
+    # the parent's own number and raising it is one field away, so honouring a press against
+    # it would leave the setting meaning nothing.
+    stamp = the_day_stamp(sheets_dir)
+    ceiling = int(rhythm["afternoonsADay"])
+    already = begun_today(stamp, now, zone)
+    if already >= ceiling:
+        print(
+            f"{already} began today and the parent chose at most {ceiling} a day; "
+            "none begins"
+        )
+        if asked:
+            # Cleared rather than left standing. A press that outlives the day would be
+            # found again after midnight, when the count is zero and the hour it overrides
+            # is the middle of the night.
+            the_request_is_done(panel, household, key, asked)
+        return 0
+
     try:
         if not asked and not its_moment(rhythm, there):
             # Said out loud, because it was not. Two silent returns meant a house that did
@@ -567,6 +614,9 @@ def main(argv: list[str] | None = None) -> int:
     except (CannotRun, ExperienceError, OSError) as exc:
         print(f"{experience.title} did not begin ({exc})")
         return 1
+    # Counted before the panel is told, because the afternoon is already in the room: a
+    # network failure here must not make it invisible to tomorrow's ceiling.
+    note_one_began(stamp, now, zone)
     say_it_began(panel, household, key, offered_id, run_name)
     if asked:
         the_request_is_done(panel, household, key, asked)

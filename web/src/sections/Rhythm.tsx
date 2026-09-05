@@ -161,6 +161,7 @@ function Form({ spacing }: { spacing: Spacing }) {
   const [afternoonUntil, setAfternoonUntil] = useState(spacing.afternoonUntil);
   const [timeZone, setTimeZone] = useState(spacing.timeZone);
   const [wanted, setWanted] = useState(String(spacing.scriptsWanted));
+  const [aDay, setADay] = useState(String(spacing.afternoonsADay));
   const [status, setStatus] = useState<MessageKey | null>(
     spacing.picturesFrom === spacing.picturesUntil ? "rhythm.picturesAllDay" : null,
   );
@@ -191,6 +192,7 @@ function Form({ spacing }: { spacing: Spacing }) {
     afternoonUntil,
     timeZone,
     wanted,
+    aDay,
   });
 
   /* Saving persists a choice and returns. The house reads it on its next run and decides
@@ -207,6 +209,7 @@ function Form({ spacing }: { spacing: Spacing }) {
         afternoonUntil,
         timeZone,
         scriptsWanted: Number(wanted),
+        afternoonsADay: Number(aDay),
       });
       saved();
       setStatus("rhythm.saved");
@@ -324,9 +327,10 @@ function Form({ spacing }: { spacing: Spacing }) {
           <Quiet>{t("rhythm.wakeNote")}</Quiet>
         </fieldset>
 
-        {/* No day chosen means no afternoon, which is where every house starts. There is
-            no count beside this and there will not be one: the days and the hours say when
-            one may happen, and nothing keeps track of the ones that did. */}
+        {/* No day chosen means no afternoon, which is where every house starts. The count
+            beside it is a ceiling on the day and not a record: the house keeps the number,
+            resets it at midnight and sends it to nobody, and this field only says how high
+            it may go. */}
         <fieldset className="flex flex-col gap-2 border-0 p-0">
           <legend className="mb-1 font-medium">{t("rhythm.afternoonSection")}</legend>
           <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -373,6 +377,20 @@ function Form({ spacing }: { spacing: Spacing }) {
             </span>
           </span>
           <Quiet>{t("rhythm.afternoonNote")}</Quiet>
+          <span className="flex items-center gap-2">
+            <Label htmlFor="afternoons-a-day">{t("rhythm.aDay")}</Label>
+            <Input
+              id="afternoons-a-day"
+              type="number"
+              required
+              className="w-24"
+              min={spacing.minAfternoonsADay}
+              max={spacing.maxAfternoonsADay}
+              value={aDay}
+              onChange={(event) => setADay(event.target.value)}
+            />
+          </span>
+          <Quiet>{t("rhythm.aDayNote")}</Quiet>
           <span className="flex items-center gap-2">
             <Label htmlFor="scripts-wanted">{t("rhythm.wanted")}</Label>
             <Input

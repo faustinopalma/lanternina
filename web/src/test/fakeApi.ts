@@ -445,6 +445,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     scriptsWanted: 10,
     minScriptsWanted: 0,
     maxScriptsWanted: 30,
+    afternoonsADay: 2,
+    minAfternoonsADay: 0,
+    maxAfternoonsADay: 6,
   };
   let preferences: Preferences = {
     interests: ["gatti", "vele"],

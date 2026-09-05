@@ -17,10 +17,11 @@ import pytest
 from devices import afternoon as clock
 from devices.afternoon import (
     DAYS,
+    begun_today,
     fits_inside_the_band,
     its_moment,
-    looked_today,
-    mark_looked,
+    note_one_began,
+    the_day_stamp,
 )
 from devices.house import House
 from devices.run_experience import conclude_what_is_over, load_experience, waiting_runs
@@ -57,6 +58,7 @@ def a_rhythm(**changes: Any) -> dict[str, Any]:
         "afternoonDays": [THAT_DAY],
         "afternoonFrom": "15:00",
         "afternoonUntil": "22:00",
+        "afternoonsADay": 2,
     }
     rhythm.update(changes)
     return rhythm
@@ -106,14 +108,27 @@ def test_a_press_steps_over_the_start_of_the_band_and_never_the_end() -> None:
     assert not fits_inside_the_band(19 * 60, 120, opens, closes, the_hour_decides=False)
 
 
-def test_the_stamp_holds_a_date_and_not_a_tally(tmp_path: Path) -> None:
-    stamp = tmp_path / "looked.stamp"
-    assert not looked_today(stamp, WHEN)
-    mark_looked(stamp, WHEN)
+def test_the_day_holds_a_date_and_a_count_that_resets(tmp_path: Path) -> None:
+    """A date and a number. The date is what keeps it a rhythm rather than a history."""
+    stamp = tmp_path / "afternoons-today.json"
+    assert begun_today(stamp, WHEN) == 0
 
-    assert looked_today(stamp, WHEN)
-    assert not looked_today(stamp, WHEN + 26 * 3600)
-    assert stamp.read_text(encoding="utf-8").strip() == "2026-08-19"
+    note_one_began(stamp, WHEN)
+    note_one_began(stamp, WHEN)
+    assert begun_today(stamp, WHEN) == 2
+
+    # Twenty-six hours on is another day, and nothing carries over into it.
+    assert begun_today(stamp, WHEN + 26 * 3600) == 0
+    note_one_began(stamp, WHEN + 26 * 3600)
+    assert begun_today(stamp, WHEN + 26 * 3600) == 1
+
+
+def test_a_count_that_cannot_be_read_reads_as_none_begun(tmp_path: Path) -> None:
+    """The failure to protect against is a house that refuses for a reason nobody can see."""
+    stamp = tmp_path / "afternoons-today.json"
+    stamp.write_text("{ not json", encoding="utf-8")
+
+    assert begun_today(stamp, WHEN) == 0
 
 
 def test_a_run_that_found_nothing_to_do_still_begins_one_approved_later(
@@ -265,6 +280,17 @@ def offered_row(offered_id: str = "aftn-1") -> dict[str, Any]:
     return {"id": offered_id, "experience": an_experience().to_dict()}
 
 
+def finish_what_is_running(house: House) -> None:
+    """Take away the run files and nothing else.
+
+    Deliberately not `rglob("*")`: that would sweep away the day's count as well, and a
+    test that resets the thing it is measuring passes whatever the code does.
+    """
+    for left in (house.sheets_dir / "afternoons").glob("*.json"):
+        left.unlink()
+    assert waiting_runs(house.sheets_dir) == []
+
+
 def test_it_begins_the_approved_afternoon_and_tells_the_panel_it_did(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:
@@ -385,20 +411,113 @@ def test_a_second_approved_afternoon_begins_when_the_first_has_finished(
 
     Until 25 August 2026 the day's stamp meant one afternoon a day whatever else was true,
     so the second waited until tomorrow. A parent watching that happen is the reason this
-    test exists; the stamp now gates only the expensive half, asking a model for a new one.
+    test exists. Two is now the ceiling the parent chose rather than a constant, and this
+    is the case that must keep working underneath it.
     """
     calls = a_panel(monkeypatch, offered=[offered_row("aftn-1"), offered_row("aftn-2")])
 
     a_turn(monkeypatch, house, WHEN)
     assert calls["begun"] == ["aftn-1"]
 
-    # The first is over: nothing is waiting on paper any more.
-    for left in house.sheets_dir.rglob("*"):
-        if left.is_file():
-            left.unlink()
-    assert waiting_runs(house.sheets_dir) == []
+    # The first is over: nothing is waiting on paper any more. Only the run goes, because
+    # sweeping the whole directory would take the day's count with it and this test would
+    # then pass without the ceiling ever being consulted.
+    finish_what_is_running(house)
 
     a_turn(monkeypatch, house, WHEN + 3600)
+
+    assert calls["begun"] == ["aftn-1", "aftn-2"]
+
+
+def test_the_third_of_the_day_does_not_begin_however_much_band_is_left(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """The ceiling is two by default, and the band still has hours in it."""
+    calls = a_panel(
+        monkeypatch,
+        offered=[offered_row("aftn-1"), offered_row("aftn-2"), offered_row("aftn-3")],
+    )
+
+    for minutes in (0, 60, 120):
+        a_turn(monkeypatch, house, WHEN + minutes * 60)
+        finish_what_is_running(house)
+
+    assert calls["begun"] == ["aftn-1", "aftn-2"]
+    assert begun_today(the_day_stamp(house.sheets_dir), WHEN) == 2
+    # Writing a script puts nothing in a room, so the ceiling must not stop the queue.
+    assert calls["devised"] > 0
+
+
+def test_the_parent_can_raise_the_ceiling(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    calls = a_panel(
+        monkeypatch,
+        offered=[offered_row("aftn-1"), offered_row("aftn-2"), offered_row("aftn-3")],
+        rhythm=a_rhythm(afternoonsADay=3),
+    )
+
+    for minutes in (0, 60, 120):
+        a_turn(monkeypatch, house, WHEN + minutes * 60)
+        finish_what_is_running(house)
+
+    assert calls["begun"] == ["aftn-1", "aftn-2", "aftn-3"]
+
+
+def test_none_a_day_stops_them_without_unchoosing_the_days(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """Zero is a choice and not an absence: the days stay as they were."""
+    calls = a_panel(
+        monkeypatch, offered=[offered_row()], rhythm=a_rhythm(afternoonsADay=0)
+    )
+
+    assert a_turn(monkeypatch, house, WHEN) == 0
+
+    assert calls["begun"] == []
+    assert waiting_runs(house.sheets_dir) == []
+
+
+def test_a_press_steps_over_the_hour_and_not_over_the_ceiling(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    """And the press is cleared rather than left standing.
+
+    A press kept until tomorrow would be found again after midnight, when the count is back
+    to zero and the hour it overrides is the middle of the night.
+    """
+    calls = a_panel(
+        monkeypatch,
+        offered=[offered_row("aftn-1"), offered_row("aftn-2")],
+        rhythm=a_rhythm(afternoonsADay=1),
+    )
+
+    a_turn(monkeypatch, house, WHEN)
+    finish_what_is_running(house)
+    assert calls["begun"] == ["aftn-1"]
+
+    cleared = a_press(monkeypatch)
+    assert a_turn(monkeypatch, house, WHEN + 3600) == 0
+
+    assert calls["begun"] == ["aftn-1"], "a press must not step over the parent's ceiling"
+    assert cleared == ["rq_53456e"], "the press was neither acted on nor cleared"
+
+
+def test_the_day_starts_again_at_midnight(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    calls = a_panel(
+        monkeypatch,
+        offered=[offered_row("aftn-1"), offered_row("aftn-2")],
+        rhythm=a_rhythm(afternoonDays=list(DAYS), afternoonsADay=1),
+    )
+
+    a_turn(monkeypatch, house, WHEN)
+    finish_what_is_running(house)
+    a_turn(monkeypatch, house, WHEN + 3600)
+    assert calls["begun"] == ["aftn-1"], "the ceiling held for the rest of the day"
+
+    a_turn(monkeypatch, house, WHEN + 24 * 3600)
 
     assert calls["begun"] == ["aftn-1", "aftn-2"]
 

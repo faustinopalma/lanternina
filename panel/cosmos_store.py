@@ -43,6 +43,7 @@ from .requests import HouseRequest
 from .rhythm import (
     DEFAULT_AFTERNOON_FROM_MINUTES,
     DEFAULT_AFTERNOON_UNTIL_MINUTES,
+    DEFAULT_AFTERNOONS_A_DAY,
     DEFAULT_PICTURES_FROM_MINUTES,
     DEFAULT_PICTURES_UNTIL_MINUTES,
     DEFAULT_SCRIPTS_WANTED,
@@ -871,6 +872,7 @@ class CosmosRhythmStore:
                 "afternoonUntilMinutes": rhythm.afternoon_until_minutes,
                 "timeZone": rhythm.time_zone,
                 "scriptsWanted": rhythm.scripts_wanted,
+                "afternoonsADay": rhythm.afternoons_a_day,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
             }
@@ -904,7 +906,10 @@ def _to_rhythm(document: dict[str, Any]) -> Rhythm:
         # A document written before the zone existed has none, and the hub falls back to
         # its own machine — which is what it was already doing.
         time_zone=str(document.get("timeZone") or ""),
-        scripts_wanted=int(document.get("scriptsWanted") or DEFAULT_SCRIPTS_WANTED),
+        # `or` would read a saved zero as "absent" and hand back the default, and zero is a
+        # choice in both: no idea kept waiting, no activity begun.
+        scripts_wanted=_whole(document.get("scriptsWanted"), DEFAULT_SCRIPTS_WANTED),
+        afternoons_a_day=_whole(document.get("afternoonsADay"), DEFAULT_AFTERNOONS_A_DAY),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )
@@ -917,6 +922,11 @@ def _minutes(document: dict[str, Any], key: str, hours_key: str, default: int) -
     if document.get(hours_key) is not None:
         return int(document[hours_key]) * 60
     return default
+
+
+def _whole(value: Any, default: int) -> int:
+    """A saved whole number, where zero is a choice and absent is not."""
+    return default if value is None else int(value)
 
 
 class CosmosPreferencesStore:

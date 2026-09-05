@@ -282,6 +282,7 @@ describe("the rhythm", () => {
       afternoonUntil: "19:00",
       timeZone: "Europe/Rome",
       scriptsWanted: 10,
+      afternoonsADay: 2,
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
   });
@@ -350,6 +351,33 @@ describe("the rhythm", () => {
     renderPanel(fakeApi());
     await open(user, "Ritmo");
     expect(await screen.findByText(/Zero le ferma/)).toBeInTheDocument();
+  });
+
+  it("sets how many activities may begin in a day, and starts from two", async () => {
+    /* Two is what a house that has never been told does, so the field is read as much as
+       it is written: a parent opening this page has to see the ceiling already in force. */
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Ritmo");
+
+    const aDay = await screen.findByLabelText("Al massimo, al giorno");
+    expect(aDay).toHaveValue(2);
+    await user.clear(aDay);
+    await user.type(aDay, "3");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+
+    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
+    expect(api.recorded.rhythm[0]!.afternoonsADay).toBe(3);
+  });
+
+  it("says the button does not step over the ceiling", async () => {
+    /* The one thing a parent cannot work out by looking: the press overrides the day and
+       the hour, and this number is neither. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi());
+    await open(user, "Ritmo");
+    expect(await screen.findByText(/non questo numero/)).toBeInTheDocument();
   });
 
   it("keeps the note about the display waking about every ten minutes", async () => {

@@ -14,8 +14,13 @@ default is no day at all. A house that has never been told when an afternoon may
 never begins one, which is the right default for something that prints paper and puts
 words on a display — and it means the feature arrives switched off rather than arriving.
 
-There is no setting for how many afternoons happen, and there will not be one. The days say
-when it may happen, the band says until when, and nothing counts what did.
+**How many may happen in a day.** Added 5 September 2026, and until that morning this file
+said there would never be such a setting. The reason it gave was that counting afternoons is
+counting a person, and that was the wrong reading of its own rule. The days say when one may
+begin and the band says until when, and between them they bound nothing: a house that
+finishes at three begins another at four, and another after that. What is kept is a date and
+a number that resets at midnight, in the house and not here; nothing reads it but the
+decision to begin one more, and it reaches no display, no sheet and no page.
 
 There is one for how many ideas wait, and it is a different thing: it bounds the parent's
 queue, not the adolescent's week. It is here rather than with the content settings because
@@ -71,6 +76,16 @@ DEFAULT_SCRIPTS_WANTED = 10
 MIN_SCRIPTS_WANTED = 0
 MAX_SCRIPTS_WANTED = 30
 
+# How many afternoons may begin in one day. Two rather than one because one is a rule and not
+# a rhythm, and because an afternoon that goes wrong would otherwise cost the whole day. Zero
+# stops them without unchoosing the days, which is what a parent reaches for when the week is
+# busy rather than over. Six is a backstop and not a shape: the widest band a parent is likely
+# to choose fits about four afternoons of the length these run to, so the number is above what
+# the clock can reach and never decides anything on its own.
+DEFAULT_AFTERNOONS_A_DAY = 2
+MIN_AFTERNOONS_A_DAY = 0
+MAX_AFTERNOONS_A_DAY = 6
+
 _CLOCK = re.compile(r"^(\d{1,2}):(\d{2})$")
 
 
@@ -103,6 +118,9 @@ class Rhythm:
     # How many devised afternoons to keep waiting for the parent. Not a count of anything
     # that happened: it is the depth of the list the parent decides from.
     scripts_wanted: int = DEFAULT_SCRIPTS_WANTED
+    # How many afternoons may begin between one midnight and the next. The house keeps the
+    # count and resets it; this is only the ceiling it compares against.
+    afternoons_a_day: int = DEFAULT_AFTERNOONS_A_DAY
     # Where the house is, as an IANA name. Empty means the hub uses whatever zone its own
     # operating system is set to, which is what every house did before 25 August 2026 and
     # is why one of them honoured every chosen hour an hour late.
@@ -126,6 +144,9 @@ class Rhythm:
             "scriptsWanted": self.scripts_wanted,
             "minScriptsWanted": MIN_SCRIPTS_WANTED,
             "maxScriptsWanted": MAX_SCRIPTS_WANTED,
+            "afternoonsADay": self.afternoons_a_day,
+            "minAfternoonsADay": MIN_AFTERNOONS_A_DAY,
+            "maxAfternoonsADay": MAX_AFTERNOONS_A_DAY,
         }
 
 
@@ -195,6 +216,7 @@ def clean_rhythm(
     afternoon_until: Any = None,
     time_zone: Any = None,
     scripts_wanted: Any = None,
+    afternoons_a_day: Any = None,
     updated_by: str = "",
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
@@ -227,6 +249,14 @@ def clean_rhythm(
             f"how many to keep waiting must be between {MIN_SCRIPTS_WANTED} "
             f"and {MAX_SCRIPTS_WANTED}"
         )
+    a_day = DEFAULT_AFTERNOONS_A_DAY if afternoons_a_day is None else afternoons_a_day
+    if isinstance(a_day, bool) or not isinstance(a_day, int):
+        raise ValueError("how many activities a day is a whole number")
+    if not MIN_AFTERNOONS_A_DAY <= a_day <= MAX_AFTERNOONS_A_DAY:
+        raise ValueError(
+            f"how many activities a day must be between {MIN_AFTERNOONS_A_DAY} "
+            f"and {MAX_AFTERNOONS_A_DAY}"
+        )
     return Rhythm(
         household_id=household_id,
         pictures_from_minutes=minutes_of(pictures_from, "the start of the picture hours"),
@@ -237,6 +267,7 @@ def clean_rhythm(
         afternoon_until_minutes=ends,
         time_zone=zone_of(time_zone),
         scripts_wanted=int(wanted),
+        afternoons_a_day=int(a_day),
         updated_at=time.time(),
         updated_by=updated_by,
     )

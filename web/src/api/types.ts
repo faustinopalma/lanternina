@@ -302,6 +302,12 @@ export interface Rhythm {
   scriptsWanted: number;
   minScriptsWanted: number;
   maxScriptsWanted: number;
+  /* How many activities may begin between one midnight and the next. The house keeps the
+   * count and resets it at midnight; this is only the ceiling it compares against, and
+   * nothing sends the count back here. Zero stops them without unchoosing the days. */
+  afternoonsADay: number;
+  minAfternoonsADay: number;
+  maxAfternoonsADay: number;
 }
 
 export interface NewRhythm {
@@ -313,6 +319,7 @@ export interface NewRhythm {
   afternoonUntil: string;
   timeZone: string;
   scriptsWanted: number;
+  afternoonsADay: number;
 }
 
 /** What a household steers with. There is no field for a name, here or on the route.

@@ -16,7 +16,7 @@ from __future__ import annotations
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from devices.afternoon import its_moment, looked_today, mark_looked
+from devices.afternoon import begun_today, its_moment, note_one_began
 from shared.clock import date_there, day_name, minutes_past_midnight, wall_clock
 
 # 15:30 in Rome, which is 14:30 in London and 09:30 in New York. A Tuesday.
@@ -55,10 +55,10 @@ def test_an_afternoon_set_for_three_begins_at_three_where_the_house_is() -> None
 
 
 def test_a_house_far_enough_west_is_not_even_on_the_same_day() -> None:
-    """Not a curiosity: the stamp that means "already done today" is a date.
+    """Not a curiosity: what bounds how many afternoons happen in a day is a date.
 
-    A hub whose zone is wrong enough rolls its day at the wrong moment, so the one thing
-    the house does each day can be done twice or not at all around midnight.
+    A hub whose zone is wrong enough rolls its day at the wrong moment, so the ceiling the
+    parent chose resets in the middle of an evening or hours after one.
     """
     midnight_in_rome = datetime(2026, 8, 26, 0, 30, tzinfo=ZoneInfo(ROME)).timestamp()
 
@@ -68,15 +68,16 @@ def test_a_house_far_enough_west_is_not_even_on_the_same_day() -> None:
     assert day_name(midnight_in_rome, NEW_YORK) == "tue"
 
 
-def test_the_stamp_turns_over_at_midnight_where_the_house_is(tmp_path: object) -> None:
+def test_the_count_turns_over_at_midnight_where_the_house_is(tmp_path: object) -> None:
     from pathlib import Path
 
-    stamp = Path(str(tmp_path)) / "looked"
-    mark_looked(stamp, WHEN, ROME)
+    stamp = Path(str(tmp_path)) / "afternoons-today.json"
+    note_one_began(stamp, WHEN, ROME)
+    note_one_began(stamp, WHEN, ROME)
 
-    assert looked_today(stamp, WHEN, ROME) is True
-    # Twenty-three hours later is the next day in Rome, so the house may look again.
-    assert looked_today(stamp, WHEN + 23 * 3600, ROME) is False
+    assert begun_today(stamp, WHEN, ROME) == 2
+    # Twenty-three hours later is the next day in Rome, so the day starts again at zero.
+    assert begun_today(stamp, WHEN + 23 * 3600, ROME) == 0
 
 
 def test_a_zone_the_machine_cannot_resolve_falls_back_rather_than_raising() -> None:

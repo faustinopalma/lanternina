@@ -58,6 +58,9 @@ const RHYTHM_FIELDS = [
   "scriptsWanted",
   "minScriptsWanted",
   "maxScriptsWanted",
+  "afternoonsADay",
+  "minAfternoonsADay",
+  "maxAfternoonsADay",
 ] as const;
 
 const PREFERENCES_FIELDS = [

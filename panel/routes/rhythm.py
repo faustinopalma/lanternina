@@ -34,6 +34,9 @@ class NewRhythm(BaseModel):
     # How many devised afternoons to keep waiting for a decision. Absent leaves what was
     # saved, for the same reason.
     scriptsWanted: int | None = None
+    # How many activities may begin in one day. Absent leaves what was saved, so a panel
+    # that has not been rebuilt cannot quietly reset the ceiling to the default.
+    afternoonsADay: int | None = None
 
 
 @router.get("/api/rhythm")
@@ -62,6 +65,9 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
             time_zone=kept.time_zone if new.timeZone is None else new.timeZone,
             scripts_wanted=(
                 kept.scripts_wanted if new.scriptsWanted is None else new.scriptsWanted
+            ),
+            afternoons_a_day=(
+                kept.afternoons_a_day if new.afternoonsADay is None else new.afternoonsADay
             ),
             updated_by=str(account.id),
         )

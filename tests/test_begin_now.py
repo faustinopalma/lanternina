@@ -119,15 +119,20 @@ def test_a_press_that_could_not_be_cleared_does_not_undo_the_afternoon(
     assert "not cleared" in capsys.readouterr().out
 
 
-def test_the_stamp_is_not_what_a_press_has_to_get_past(tmp_path: Path) -> None:
-    """A press means "today, again", so the once-a-day stamp cannot be the thing that
-    refuses it. This pins the stamp's own behaviour, which the runner then chooses to
-    skip; the skipping itself is one `if` in `main` and is read there."""
-    stamp = tmp_path / "looked"
-    when = 1787654321.0
-    clock.mark_looked(stamp, when, "Europe/Rome")
+def test_the_day_count_is_what_a_press_does_have_to_get_past(tmp_path: Path) -> None:
+    """Reversed on 5 September 2026, and deliberately.
 
-    assert clock.looked_today(stamp, when, "Europe/Rome") is True
+    Until then there was a once-a-day stamp that a press was let past, because the stamp was
+    a constant nobody had chosen. What bounds the day now is a number the parent wrote, and
+    a press is the same parent: letting it through would leave the setting meaning nothing,
+    and raising it is one field away. It matches the end of the band, which a press has never
+    been allowed past either — a press steps over the schedule, not over a limit.
+    """
+    stamp = tmp_path / "afternoons-today.json"
+    when = 1787654321.0
+    clock.note_one_began(stamp, when, "Europe/Rome")
+
+    assert clock.begun_today(stamp, when, "Europe/Rome") == 1
 
 
 def test_a_house_with_nothing_approved_has_nothing_to_begin(
