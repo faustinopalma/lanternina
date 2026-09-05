@@ -4,7 +4,7 @@
   "trailingSlash": "auto",
 
   "globalHeaders": {
-    "cache-control": "public, max-age=3600",
+    "cache-control": "public, max-age=0, must-revalidate",
     "Content-Security-Policy": "default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
     "X-Content-Type-Options": "nosniff",
