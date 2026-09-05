@@ -1,5 +1,6 @@
 ---
 /** Not found. Bilingual on one page, because a reader who lands here has not chosen yet. */
+import Mark from "../components/Mark.astro";
 import { LANG_NAME } from "../i18n/ui";
 ---
 
@@ -16,7 +17,8 @@ import { LANG_NAME } from "../i18n/ui";
 
   <body>
     <div class="fork">
-      <p class="mark"><span>◇</span> Lanternina</p>
+      <span class="mark-tile"><Mark size={34} /></span>
+      <p class="name">Lanternina</p>
       <p class="tag" lang="en">That page is not here.</p>
       <p class="tag" lang="it">Questa pagina non c'è.</p>
       <a href="/en/" hreflang="en" lang="en">{LANG_NAME.en}</a>

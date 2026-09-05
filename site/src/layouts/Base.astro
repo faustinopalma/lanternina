@@ -5,6 +5,7 @@
  * hreflang and og:url all have to agree with each other and with the directory the page
  * is actually written to, and three of those are easy to get subtly wrong by hand.
  */
+import Mark from "../components/Mark.astro";
 import {
   LANG_NAME,
   LOCALE,
@@ -72,7 +73,8 @@ const next = index < PAGES.length - 1 ? PAGES[index + 1] : null;
       <header class="sidebar">
         <div class="brand-row">
           <a class="brand" href={pathFor(lang, "")}>
-            <span class="mark" aria-hidden="true">◇</span> Lanternina
+            <Mark size={30} class="mark" />
+            <span class="name">Lanternina</span>
             <small>{UI.tagline[lang]}</small>
           </a>
           <label class="menu-btn" for="nav-open" aria-label={UI.menu[lang]}>

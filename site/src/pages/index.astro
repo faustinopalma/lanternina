@@ -5,6 +5,7 @@
  * only client-side script on the site; without it the two links below are the whole page,
  * which is why they are real links and not a spinner.
  */
+import Mark from "../components/Mark.astro";
 import { LANG_NAME, UI } from "../i18n/ui";
 
 const site = Astro.site!.origin;
@@ -30,7 +31,8 @@ const site = Astro.site!.origin;
 
   <body>
     <div class="fork">
-      <p class="mark"><span>◇</span> Lanternina</p>
+      <span class="mark-tile"><Mark size={34} /></span>
+      <p class="name">Lanternina</p>
       <p class="tag">{UI.tagline.en}</p>
       <a href="/en/" hreflang="en" lang="en">{LANG_NAME.en}</a>
       <a href="/it/" hreflang="it" lang="it">{LANG_NAME.it}</a>

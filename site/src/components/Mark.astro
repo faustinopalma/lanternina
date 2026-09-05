@@ -1,0 +1,42 @@
+---
+/** The lantern.
+ *
+ * Two constraints decided the drawing. It has to read at 16 px in a browser tab, and it
+ * has to survive being rendered in one bit — which is not a hypothetical here, it is what
+ * the displays in the house do to every image they are sent. So: four strokes of one
+ * weight for the body, and one solid shape for the light. No gradient, no thin detail,
+ * nothing that depends on a mid grey existing.
+ *
+ * Inherits `currentColor`, so the same file is amber on the dark rail and ink on paper.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+}
+
+const { size = 24, class: klass } = Astro.props;
+---
+
+<svg
+  class={klass}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g
+    stroke="currentColor"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M9.6 4.7a2.4 2.4 0 0 1 4.8 0"></path>
+    <path d="M6.4 7.3h11.2l-1.7 2.4H8.1z"></path>
+    <path d="M8.1 9.7h7.8v8.1H8.1z"></path>
+    <path d="M6.4 20.2h11.2"></path>
+  </g>
+  <path d="M12 12.2c1.3 1.15 1.8 2 1.8 2.85a1.8 1.8 0 0 1-3.6 0c0-.85.5-1.7 1.8-2.85z" fill="currentColor"
+  ></path>
+</svg>

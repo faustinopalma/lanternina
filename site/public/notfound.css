@@ -1,55 +1,80 @@
 /* The fork at the root and the not-found page. Kept out of the main stylesheet because
    neither of them draws the rail or the sheet, and both must work with nothing inline. */
 
+:root {
+  --bg: #edeae3;
+  --ink: #1b1a17;
+  --ink-soft: #56534c;
+  --ember: #8f4f0d;
+  --rail: #1b1917;
+  --rail-glow: #e8a253;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f2ed;
-  color: #201f1d;
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
 }
 
 .fork {
   text-align: center;
   padding: 2rem;
-  max-width: 32rem;
+  max-width: 34rem;
 }
 
-.mark {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.6rem;
-  margin: 0 0 0.5rem;
+.mark-tile {
+  display: inline-grid;
+  place-items: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 0.9rem;
+  background: var(--rail);
+  color: var(--rail-glow);
+  margin-bottom: 1rem;
 }
 
-.mark span {
-  color: #8a4a1e;
+.name {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  margin: 0 0 0.6rem;
 }
 
 .tag {
-  color: #55524c;
-  font-size: 0.92rem;
-  margin: 0 0 1.5rem;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  margin: 0 0 1.7rem;
 }
 
 .tag + .tag {
-  margin-top: -1rem;
+  margin-top: -1.2rem;
 }
 
 a {
   display: inline-block;
   margin: 0 0.3rem;
-  padding: 0.55rem 1.3rem;
-  border: 1px solid #8a4a1e;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid var(--ember);
   border-radius: 999px;
-  color: #8a4a1e;
+  color: var(--ember);
   text-decoration: none;
   font-weight: 600;
 }
 
 a:hover {
-  background: #8a4a1e;
+  background: var(--ember);
   color: #fff;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 3px;
 }
