@@ -99,7 +99,7 @@ def list_pictures(
 def picture_content(picture_id: str, account: CurrentAccount, request: Request) -> Response:
     archive: PictureArchive = request.app.state.pictures
     try:
-        _record, image = archive.get(str(account.household_id), picture_id)
+        record, image = archive.get(str(account.household_id), picture_id)
     except Exception as exc:
         raise HTTPException(status_code=404, detail="unknown_picture") from exc
-    return Response(content=image, media_type="image/bmp")
+    return Response(content=image, media_type=record.media or "image/bmp")

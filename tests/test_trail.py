@@ -87,9 +87,22 @@ def test_nothing_in_the_record_can_be_about_a_person() -> None:
 
     `until` is the one field that exists for the exception in `panel/keeping.py`, and it is
     about a clock: it says when a row stops being kept, not anything about whom it concerns.
+
+    `asked` is what was sent to the model that drew a page. It is built from the page's own
+    words — its title, its note, its labels, what the drawing shows — plus a manner that says
+    how it is drawn and never what it says. Those come from the script, so it is a record of
+    a request and not of a reader.
     """
     about_the_run = {"id", "household_id", "run_id", "at", "experience_id", "began_at"}
-    about_what_was_written = {"kind", "heading", "body", "why", "picture_id", "paper"}
+    about_what_was_written = {
+        "kind",
+        "heading",
+        "body",
+        "why",
+        "picture_id",
+        "paper",
+        "asked",
+    }
     about_how_long_it_is_kept = {"until"}
     about_the_afternoon = {"title", "overview", "script", "made"}
     allowed = (

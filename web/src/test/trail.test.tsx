@@ -73,6 +73,7 @@ describe("what the system wrote", () => {
               body: "un cavallo nel terzo riquadro",
               why: "marks",
               pictureId: "",
+              asked: "",
               paper: "",
               until: 2_000_000_000,
             },
@@ -110,6 +111,7 @@ describe("what the system wrote", () => {
               body: "no page reached the table\nthe printer did not take the page within 120 seconds",
               why: "standard",
               pictureId: "",
+              asked: "",
               paper: "",
               until: 0,
             },
@@ -143,5 +145,38 @@ describe("what the system wrote", () => {
 
     await screen.findByText("Riletture");
     expect(screen.getAllByText("Un pomeriggio di nuvole")).toHaveLength(1);
+  });
+
+  it("shows what the model was asked for, beside what it produced", async () => {
+    /* A page that came out wrong cannot be judged without it: the question is whether it
+       was drawn badly or asked for badly, and only one of those is the model's fault. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi(), <TheTrail />);
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Apri" }));
+
+    expect(await screen.findByText("Foglio disegnato")).toBeInTheDocument();
+    expect(screen.getByText(/Che cosa e stato chiesto al modello/)).toBeInTheDocument();
+    // A phrase only the request carries: the page's own words appear in both, and matching
+    // one of those would pass whether or not the request was ever shown.
+    expect(screen.getByText(/Letter this large/)).toBeInTheDocument();
+  });
+
+  it("empties the record, and asks twice before it does", async () => {
+    /* One press cannot delete a record. The second is not a dialog: the button itself says
+       what it is about to do, which is the sentence a parent needs before pressing again. */
+    const user = userEvent.setup();
+    renderPanel(fakeApi(), <TheTrail />);
+
+    await screen.findByText("Un pomeriggio di nuvole");
+    await user.click(screen.getByRole("button", { name: "Svuota il registro" }));
+
+    // Still there: the first press only changed what the button says.
+    expect(screen.getByText("Un pomeriggio di nuvole")).toBeInTheDocument();
+    await user.click(await screen.findByRole("button", { name: /Premi ancora/ }));
+
+    expect(await screen.findByText(/Buttate 1 righe/)).toBeInTheDocument();
+    expect(await screen.findByText("Nessuna attività ancora.")).toBeInTheDocument();
   });
 });

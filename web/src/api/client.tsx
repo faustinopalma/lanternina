@@ -299,6 +299,9 @@ export function httpApi(token: string): Api {
         "made",
       ]),
 
+    forgetTrail: () =>
+      json<{ forgotten: number }>("/api/trail", { method: "DELETE" }, ["forgotten"]),
+
     // Temporary, for the weeks the prompts are being changed. panel/routes/verdicts.py
     // says what has to be true before it can go.
     async verdicts(): Promise<Judged[]> {

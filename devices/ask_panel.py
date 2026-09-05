@@ -69,6 +69,7 @@ def draw_page(
     panel: str,
     household: str,
     key: str,
+    run_id: str = "",
     timeout: int = DRAW_TIMEOUT_SECONDS,
     tries: int = 2,
 ) -> NDArray[np.uint8]:
@@ -85,7 +86,7 @@ def draw_page(
         try:
             answer = _ask(
                 f"{panel.rstrip('/')}/api/device/{household}/page",
-                {"page": page},
+                {"page": page, "runId": run_id},
                 key=key,
                 timeout=timeout,
             )

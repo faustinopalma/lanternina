@@ -186,6 +186,10 @@ export interface Made {
   body: string;
   why: string;
   pictureId: string;
+  /* What was asked of the model that made this, kept beside what it produced. A page that
+   * came out wrong cannot be judged without it: the question is whether it was drawn badly
+   * or asked for badly, and only one of those is the model's fault. */
+  asked: string;
   paper: string;
   until: number;
 }
@@ -507,6 +511,8 @@ export interface Api {
   messages(): Promise<Said[]>;
   trails(): Promise<Trail[]>;
   trail(runId: string): Promise<Trail>;
+  /** Empty the record for this household. Deletes, and cannot be undone. */
+  forgetTrail(): Promise<{ forgotten: number }>;
   /** Temporary, for the weeks the prompts are being changed. See panel/routes/verdicts.py. */
   verdicts(): Promise<Judged[]>;
   drafts(): Promise<DraftCard[]>;

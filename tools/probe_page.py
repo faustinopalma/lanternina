@@ -84,7 +84,7 @@ async def _once(page: Page, out: Path) -> None:
     )
     try:
         began = time.monotonic()
-        drawn_png = await PageMaker().draw(context, page)
+        drawn_png, _asked = await PageMaker().draw(context, page)
         seconds = time.monotonic() - began
     finally:
         await gate.aclose()

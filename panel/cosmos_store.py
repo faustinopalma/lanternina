@@ -654,6 +654,29 @@ class CosmosTrailStore:
                 pass
         return kept
 
+    def forget_everything(self, household_id: str) -> int:
+        """Delete every afternoon and everything filed under it, for one household.
+
+        Deletion and not a flag. A record kept and hidden is still a record, which is the
+        same reasoning `_still_kept` applies to a lapsed row — and the point of this is that
+        what was thrown away is gone rather than merely out of sight.
+        """
+        from azure.cosmos import exceptions
+
+        rows = self._container.query_items(
+            query="SELECT c.id FROM c WHERE c.familyId = @family",
+            parameters=[{"name": "@family", "value": household_id}],
+            partition_key=household_id,
+        )
+        gone = 0
+        for row in list(rows):
+            try:
+                self._container.delete_item(item=row["id"], partition_key=household_id)
+            except exceptions.CosmosResourceNotFoundError:
+                continue
+            gone += 1
+        return gone
+
 
 def _trail_id(run_id: str) -> str:
     """The run is the key. Prefixed because things made share the container with it."""
@@ -698,6 +721,7 @@ def _from_made(record: Made) -> dict[str, Any]:
         "body": record.body,
         "why": record.why,
         "pictureId": record.picture_id,
+        "asked": record.asked,
         "paper": record.paper,
         "until": record.until,
     }
@@ -714,6 +738,7 @@ def _to_made(document: dict[str, Any]) -> Made:
         body=str(document.get("body") or ""),
         why=str(document.get("why") or ""),
         picture_id=str(document.get("pictureId") or ""),
+        asked=str(document.get("asked") or ""),
         paper=str(document.get("paper") or ""),
         until=float(document.get("until") or 0.0),
     )

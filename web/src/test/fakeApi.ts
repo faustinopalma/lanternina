@@ -352,6 +352,19 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
           body: "Guarda fuori e dimmi che forma ha.",
           why: "il foglio era tornato vuoto",
           pictureId: "",
+          asked: "",
+          paper: "",
+          until: 0,
+        },
+        {
+          id: "made_1b",
+          at: NOW - 86_200,
+          kind: "drawn",
+          heading: "Le nuvole",
+          body: "",
+          why: "",
+          pictureId: "pic_7",
+          asked: "Letter this large, as the title: \"Le nuvole\"\nWhat the drawing on the page shows: una finestra aperta su un cielo bianco",
           paper: "",
           until: 0,
         },
@@ -363,6 +376,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
           body: "Prendi il foglio dal tavolo.",
           why: "il copione chiedeva un foglio",
           pictureId: "",
+          asked: "",
           paper: "Le nuvole\nGuarda il cielo e disegna quello che vedi.\n— La prima nuvola\n(una finestra aperta su un cielo bianco)",
           until: 0,
         },
@@ -696,6 +710,12 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       const found = trails.find((row) => row.runId === runId);
       if (!found) throw new Error("unknown run");
       return found;
+    },
+
+    forgetTrail: async () => {
+      const gone = trails.length;
+      trails.length = 0;
+      return { forgotten: gone };
     },
 
     verdicts: async () => judged,

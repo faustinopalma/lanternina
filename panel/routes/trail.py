@@ -49,6 +49,21 @@ def one_afternoon(run_id: str, account: CurrentAccount, request: Request) -> Any
     return found.to_public()
 
 
+@router.delete("/api/trail")
+def throw_it_away(account: CurrentAccount, request: Request) -> Any:
+    """Empty the record for this household. Deletes, and cannot be undone.
+
+    The parent's own, so the parent's to throw away: this is the half of the trade they were
+    given in exchange for having no veto on each piece, and a record somebody is not allowed
+    to end is a different thing from a record they were offered.
+
+    It takes no argument on purpose. A route that could delete one afternoon would be a way
+    to make a record say an afternoon never happened, and that is worse than no record.
+    """
+    store: TrailStore = request.app.state.trail
+    return {"forgotten": store.forget_everything(str(account.household_id))}
+
+
 def opened(
     store: TrailStore, household_id: str, run_id: str, document: dict[str, Any], at: float
 ) -> None:
@@ -84,6 +99,8 @@ def filed(
     body: str = "",
     why: str = "",
     paper: str = "",
+    picture_id: str = "",
+    asked: str = "",
     until: float = 0.0,
 ) -> None:
     """Write down one thing the system wrote."""
@@ -99,6 +116,8 @@ def filed(
             body=clipped(body),
             why=why,
             paper=clipped(paper),
+            picture_id=picture_id,
+            asked=clipped(asked),
             until=until,
         ),
     )

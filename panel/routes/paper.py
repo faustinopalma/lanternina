@@ -20,12 +20,15 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
+from shared.ids import new_id
 from shared.page import Page, PageError
 from shared.routing import PageImage
 
 from ..config import Settings
 from ..gate import DeviceKey
+from ..pictures import PictureArchive, PictureRecord
 from ..profiles import NoticedStore
+from ..trail import WHAT_WAS_DRAWN, TrailStore
 from ..usage import (
     FAILED,
     KIND_IMAGE,
@@ -37,6 +40,7 @@ from ..usage import (
     at_the_limit,
     event_from,
 )
+from .trail import filed
 
 router = APIRouter()
 
@@ -47,6 +51,10 @@ class PageToDraw(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     page: dict[str, Any] = Field(default_factory=dict)
+    # Which afternoon this belongs to, so the drawing can be filed under it. Absent means a
+    # caller that predates the field, and the page is still drawn: a record is worth less
+    # than a page reaching the table.
+    runId: str = ""
 
 
 class PagesToCompare(BaseModel):
@@ -67,7 +75,7 @@ class PagesToCompare(BaseModel):
 
 @router.post("/api/device/{household_id}/page")
 async def draw_a_page(
-    household_id: str, asked: PageToDraw, _: DeviceKey, request: Request
+    household_id: str, wanted: PageToDraw, _: DeviceKey, request: Request
 ) -> Any:
     """Draw the whole page and hand it back as a PNG.
 
@@ -81,7 +89,7 @@ async def draw_a_page(
         raise HTTPException(status_code=429, detail="monthly_cap_reached")
 
     try:
-        page = Page.from_dict(asked.page)
+        page = Page.from_dict(wanted.page)
     except PageError as exc:
         raise HTTPException(status_code=400, detail=f"not a page: {exc}") from exc
 
@@ -90,7 +98,7 @@ async def draw_a_page(
     spent: Any = None
     outcome = FAILED
     try:
-        png, spent = await draw_page(page, now=time.time())
+        png, asked, spent = await draw_page(page, now=time.time())
         outcome = SERVED
     except SafetyBlocked as exc:
         outcome = REFUSED
@@ -101,7 +109,59 @@ async def draw_a_page(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_IMAGE, outcome, spent)
+    _keep_the_drawing(request, household_id, wanted.runId, png, page, asked)
     return {"imageBase64": base64.b64encode(png).decode()}
+
+
+def _keep_the_drawing(
+    request: Request,
+    household_id: str,
+    run_id: str,
+    png: bytes,
+    page: Page,
+    asked: str,
+) -> None:
+    """File the sheet as an image, under the afternoon, beside what was asked for.
+
+    Recording happens where generating happens, and until 5 September 2026 this was the one
+    generation that happened nowhere: the PNG went back to the house and no copy and no
+    request survived, so a parent could read the words a page carried but never see the page
+    or why it looked the way it did.
+
+    Never raises. The page has already been drawn and paid for, and a record that could fail
+    the request would be a record with a hold over an afternoon.
+    """
+    if not run_id:
+        return
+    archive: PictureArchive = request.app.state.pictures
+    trail: TrailStore = request.app.state.trail
+    now = time.time()
+    picture_id = str(new_id("pic"))
+    try:
+        archive.save(
+            PictureRecord(
+                id=picture_id,
+                household_id=household_id,
+                theme=page.title,
+                created_at=now,
+                kind="page",
+                media="image/png",
+            ),
+            png,
+        )
+    except Exception as exc:  # noqa: BLE001 - storage SDKs raise their own types
+        logging.getLogger(__name__).warning("the drawn page was not kept: %s", exc)
+        picture_id = ""
+    filed(
+        trail,
+        household_id,
+        run_id,
+        kind=WHAT_WAS_DRAWN,
+        at=now,
+        heading=page.title,
+        picture_id=picture_id,
+        asked=asked,
+    )
 
 
 @router.post("/api/device/{household_id}/read-page")

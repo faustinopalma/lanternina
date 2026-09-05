@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useApi } from "@/api/client";
 import type { Made, Trail } from "@/api/types";
@@ -7,6 +7,45 @@ import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 import { Verdicts } from "@/sections/Verdicts";
+
+/* The sheet as it was drawn, fetched as bytes.
+ *
+ * The route wants a bearer token and an <img> sends no headers, so the element is handed a
+ * blob URL — the same shape as the pictures section, and the reason the CSP allows `blob:`
+ * for images. */
+function Drawn({ pictureId }: { pictureId: string }) {
+  const api = useApi();
+  const { t } = useWords();
+  const [url, setUrl] = useState("");
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    let made = "";
+    api
+      .pictureContent(pictureId)
+      .then((bytes) => {
+        if (!alive) return;
+        made = URL.createObjectURL(bytes);
+        setUrl(made);
+      })
+      .catch(() => alive && setFailed(true));
+    return () => {
+      alive = false;
+      if (made) URL.revokeObjectURL(made);
+    };
+  }, [api, pictureId]);
+
+  if (failed) return <Quiet className="mt-1">{t("trail.sheetGone")}</Quiet>;
+  if (!url) return <Quiet className="mt-1">{t("trail.sheetLoading")}</Quiet>;
+  return (
+    <img
+      src={url}
+      alt={t("trail.sheetAlt")}
+      className="mt-2 max-w-[22rem] rounded-control border border-edge bg-white"
+    />
+  );
+}
 
 /* What the system wrote, afternoon by afternoon.
  *
@@ -53,7 +92,9 @@ function Written({ made }: { made: Made }) {
                     ? t("trail.kind.came")
                     : made.kind === "judged"
                       ? t("trail.kind.judged")
-                      : made.kind;
+                      : made.kind === "drawn"
+                        ? t("trail.kind.drawn")
+                        : made.kind;
 
   return (
     <li className="border-l-2 border-edge pl-3">
@@ -69,6 +110,15 @@ function Written({ made }: { made: Made }) {
           </p>
           <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.paper}</p>
         </div>
+      ) : null}
+      {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
+      {made.asked ? (
+        <details className="mt-2">
+          <summary className="cursor-pointer text-[0.82rem] tracking-wider text-quiet uppercase">
+            {t("trail.asked")}
+          </summary>
+          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.asked}</p>
+        </details>
       ) : null}
       {made.why ? <Quiet className="mt-1">{t("trail.why", { why: made.why })}</Quiet> : null}
       {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
@@ -88,9 +138,10 @@ function Written({ made }: { made: Made }) {
  * an afternoon that had gone as written. */
 function OnPaper({ made }: { made: Made[] }) {
   const { t } = useWords();
+  const drawn = made.filter((one) => one.kind === "drawn");
   const pages = made.filter((one) => one.kind === "hand_over");
   const faults = made.filter((one) => one.kind === "fault");
-  if (pages.length === 0 && faults.length === 0) return null;
+  if (drawn.length === 0 && pages.length === 0 && faults.length === 0) return null;
 
   return (
     <div className="mt-3 rounded-control border border-edge px-3 py-2">
@@ -99,6 +150,11 @@ function OnPaper({ made }: { made: Made[] }) {
       </p>
       {pages.length === 0 ? <Quiet className="mt-1">{t("trail.onPaperNone")}</Quiet> : null}
       <ul className="mt-1 flex list-none flex-col gap-1 p-0">
+        {drawn.map((one) => (
+          <li key={one.id} className="text-[0.9rem]">
+            {t("trail.onPaperDrawn")} — {one.heading}
+          </li>
+        ))}
         {pages.map((one) => (
           <li key={one.id} className="text-[0.9rem]">
             {one.heading}
@@ -169,7 +225,27 @@ function Card({ trail }: { trail: Trail }) {
 export function TheTrail() {
   const api = useApi();
   const { t } = useWords();
-  const [state] = useLoad(() => api.trails());
+  const [state, again] = useLoad(() => api.trails());
+  /* Two presses, not a dialog. The first turns the button into what it will actually do,
+     which is the sentence a parent needs before the second — and it is the parent's own
+     record, so nothing here asks anybody's permission, only their attention. */
+  const [sure, setSure] = useState(false);
+  const [gone, setGone] = useState<number | null>(null);
+
+  async function throwItAway() {
+    if (!sure) {
+      setSure(true);
+      return;
+    }
+    setSure(false);
+    try {
+      const { forgotten } = await api.forgetTrail();
+      setGone(forgotten);
+      again();
+    } catch {
+      setGone(-1);
+    }
+  }
 
   return (
     <div>
@@ -181,6 +257,19 @@ export function TheTrail() {
       {state.status === "ready"
         ? state.data.map((trail) => <Card key={trail.runId} trail={trail} />)
         : null}
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Button type="button" size="small" variant="ghost" onClick={throwItAway}>
+          {t(sure ? "trail.forgetSure" : "trail.forget")}
+        </Button>
+        <Quiet aria-live="polite">
+          {gone === null
+            ? t("trail.forgetNote")
+            : gone < 0
+              ? t("trail.forgetFailed")
+              : t("trail.forgotten", { n: String(gone) })}
+        </Quiet>
+      </div>
 
       {/* One section, not two. The readings were their own page while the prompts were
           being changed, and a parent had to know that an afternoon they had not decided on

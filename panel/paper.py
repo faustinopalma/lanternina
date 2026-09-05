@@ -46,8 +46,8 @@ def _cloud(now: float) -> tuple[FoundryRouter, AgentContext, Any]:
     return router, context, gate
 
 
-async def draw_page(page: Page, *, now: float) -> tuple[bytes, ModelUsage | None]:
-    """The whole page as a PNG, screened as an image by the gate the router holds.
+async def draw_page(page: Page, *, now: float) -> tuple[bytes, str, ModelUsage | None]:
+    """The whole page as a PNG, the request that drew it, and what it cost.
 
     Raises what the router raises when the cloud will not serve it. The house treats that
     as a page it did not get, and the moment plays its ``instead``.
@@ -56,10 +56,10 @@ async def draw_page(page: Page, *, now: float) -> tuple[bytes, ModelUsage | None
 
     router, context, gate = _cloud(now)
     try:
-        png = await PageMaker().draw(context, page)
+        png, asked = await PageMaker().draw(context, page)
     finally:
         await gate.aclose()
-    return png, router.last_usage
+    return png, asked, router.last_usage
 
 
 async def read_the_page(

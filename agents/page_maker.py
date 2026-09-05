@@ -98,24 +98,30 @@ class PageMaker:
 
     name = "page_maker"
 
-    async def draw(self, ctx: AgentContext, page: Page) -> bytes:
-        """The page as a grey PNG, or raise whatever the router raises.
+    async def draw(self, ctx: AgentContext, page: Page) -> tuple[bytes, str]:
+        """The page as a grey PNG and the request that produced it, or raise.
+
+        The request comes back rather than being rebuilt by the caller: the manner is drawn
+        here and at random, so asking again would describe a different page from the one on
+        the paper. A parent reading a sheet that came out wrong needs the words that were
+        actually sent, not a plausible reconstruction of them.
 
         The caller decides what a failure means. On this path it means the moment plays its
         ``instead``, which is written and screened long before anything broke.
         """
         drawn = a_manner()
+        asked = asked_for(page, drawn)
         payload = await ctx.router.generate_for_user(
             ModelRequest(
                 capability=Capability.IMAGE_GENERATION,
-                prompt=asked_for(page, drawn),
+                prompt=asked,
                 request_id=new_request_id(),
                 purpose=f"drawing a {page.kind}",
                 content_kind=ContentKind.IMAGE_PNG,
                 metadata={"size": SIZE, "manner": drawn.to_dict()},
             )
         )
-        return on_paper(base64.b64decode(payload.body))
+        return on_paper(base64.b64decode(payload.body)), asked
 
 
 def on_paper(png: bytes) -> bytes:

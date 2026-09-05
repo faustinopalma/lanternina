@@ -37,6 +37,9 @@ class PictureRecord:
     # Which display this went to, as the house names it. Empty when the house cannot say,
     # which is the state of every row written before 1 September 2026.
     display: str = ""
+    # What the bytes are. Pictures for a display are 1-bit BMP; a sheet drawn for the
+    # printer is a PNG, and serving one as the other gives a parent a broken image.
+    media: str = "image/bmp"
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -45,6 +48,7 @@ class PictureRecord:
             "createdAt": self.created_at,
             "kind": self.kind,
             "display": self.display,
+            "media": self.media,
         }
 
 
@@ -162,6 +166,7 @@ class BlobPictureArchive:
             "theme": _as_metadata(record.theme),
             "createdAt": str(record.created_at),
             "kind": record.kind,
+            "media": record.media,
         }
         # Left out rather than written empty: whether the service takes an empty metadata
         # value has not been measured here, and a refusal would cost the picture itself.
@@ -172,7 +177,7 @@ class BlobPictureArchive:
             data=image,
             overwrite=True,
             metadata=metadata,
-            content_type="image/bmp",
+            content_type=record.media,
         )
         return record
 
@@ -224,4 +229,6 @@ def _to_record(household_id: str, blob: Any) -> PictureRecord:
         created_at=float(metadata.get("createdAt") or 0.0),
         kind=str(metadata.get("kind") or "ok"),
         display=_from_metadata(str(metadata.get("display") or "")),
+        # A row written before pages were kept here holds a BMP for a display.
+        media=str(metadata.get("media") or "image/bmp"),
     )

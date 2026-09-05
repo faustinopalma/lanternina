@@ -578,6 +578,7 @@ def _do(
     *,
     send: bool,
     out: Outgoing | None = None,
+    run_id: str = "",
 ) -> hands.Done:
     """Play one moment at one weight. Says which sheet it printed, or why none reached.
 
@@ -585,7 +586,7 @@ def _do(
     :mod:`devices.hands`, one function per device, so this stays the same length however
     many devices a house grows.
     """
-    return hands.play(house, moment, weight, out or Outgoing(), send)
+    return hands.play(house, moment, weight, out or Outgoing(), send, run_id)
 
 
 def _it_did(
@@ -740,7 +741,7 @@ def _play(
     for moment in moments[start:]:
         if isinstance(moment, Collect):
             return moment, printed, weight
-        done = _do(house, moment, weight, send=send, out=out)
+        done = _do(house, moment, weight, send=send, out=out, run_id=run.run_id)
         _it_did(house, run.run_id, moment, weight, done)
         if done.sheet is not None:
             printed.append(done.sheet)

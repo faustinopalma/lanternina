@@ -40,6 +40,11 @@ THE_PLAN = "plan"
 # says it began; this is where a parent finds it. It is a reading and not a decision:
 # nothing anywhere consults it to allow or refuse an afternoon.
 WHAT_A_READER_MADE_OF_IT = "judged"
+# An image this container drew, filed where it was drawn. Beside it the house files whether
+# the paper ever reached the table, and the two differ exactly when it is worth knowing. It
+# carries the picture it produced and, in the body, what was asked for — a page a parent can
+# see without the request that shaped it is half the record.
+WHAT_WAS_DRAWN = "drawn"
 # What the machine could not do: a page the printer never took, a continuation the checks
 # refused, a model that was not there. Until now it existed only in the journal on the house,
 # where the person reading the parent's page cannot see it, and an afternoon that quietly did
@@ -76,6 +81,10 @@ class Made:
     why: str = ""
     # For a picture, which one in the archive. Empty for everything else.
     picture_id: str = ""
+    # What was asked of the model that made this. Kept beside the thing it produced rather
+    # than in a log, because a generated page without its request cannot be judged: a parent
+    # reading a sheet that came out wrong needs to see whether it was asked for wrongly.
+    asked: str = ""
     # The words a model wrote on a sheet, in the order they are on it. A page was always
     # generated like everything else and always kept, but only inside the plan's JSON, where
     # it was present and readable by nobody.
@@ -93,6 +102,7 @@ class Made:
             "body": self.body,
             "why": self.why,
             "pictureId": self.picture_id,
+            "asked": self.asked,
             "paper": self.paper,
             "until": self.until,
         }
@@ -155,6 +165,8 @@ class TrailStore(Protocol):
 
     def get(self, household_id: str, run_id: str) -> Trail | None: ...
 
+    def forget_everything(self, household_id: str) -> int: ...
+
 
 @dataclass
 class InMemoryTrailStore:
@@ -212,3 +224,12 @@ class InMemoryTrailStore:
                 script=found.script,
                 made=tuple(made),
             )
+
+    def forget_everything(self, household_id: str) -> int:
+        with self._lock:
+            keys = [one for one in self._trails if one[0] == household_id]
+            gone = len(keys)
+            for key in keys:
+                del self._trails[key]
+                gone += len(self._made.pop(key, []))
+            return gone
