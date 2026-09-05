@@ -35,7 +35,8 @@
   --shadow: 0 1px 2px rgba(30, 24, 12, 0.06), 0 12px 30px rgba(30, 24, 12, 0.05);
 
   --measure: 68ch;
-  --sheet-w: 60rem;
+  --text-w: 38rem;
+  --sheet-w: 58rem;
   --rail-w: 19.5rem;
 
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
@@ -272,13 +273,38 @@ main:focus {
   padding: 2.5rem 2rem 5rem;
 }
 
+/* The sheet is three tracks, not one column with capped children. Prose sits in the middle
+   one at a reading width; anything that needs room — a diagram, a pair of sheets, a grid of
+   cards — spans all three. Before this, everything shared the sheet's width and only the
+   text was capped, so a paragraph stopped two thirds of the way across and the empty third
+   beside it looked like a fault rather than a measure. */
 .page {
   background: var(--sheet);
   max-width: var(--sheet-w);
   width: 100%;
-  padding: 3rem clamp(1.4rem, 4vw, 3.5rem);
+  padding: 3rem clamp(1.25rem, 3vw, 2.5rem);
   box-shadow: var(--shadow);
   border-radius: 4px;
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [text-start] min(100%, var(--text-w)) [text-end]
+    minmax(0, 1fr) [full-end];
+}
+
+.page > * {
+  grid-column: text;
+  min-width: 0;
+}
+
+.page > .band,
+.page > .cards,
+.page > .pair,
+.page > .diagram,
+.page > .steps,
+.page > .chain {
+  grid-column: full;
 }
 
 /* ── type ─────────────────────────────────────────────────────────────────── */
@@ -293,7 +319,6 @@ main:focus {
   color: var(--ember);
   font-weight: 700;
   margin: 0 0 0.8rem;
-  max-width: var(--measure);
 }
 
 /* The lit colour arrives as a rule beside a label, not as the colour of the prose. */
@@ -323,7 +348,6 @@ h2 {
   padding-top: 1.1rem;
   border-top: 1px solid var(--rule);
   font-weight: 700;
-  max-width: var(--measure);
   text-wrap: balance;
 }
 
@@ -331,14 +355,6 @@ h3 {
   font-size: 1.05rem;
   margin: 1.9rem 0 0.4rem;
   font-weight: 700;
-  max-width: var(--measure);
-}
-
-p,
-ul,
-ol,
-dl {
-  max-width: var(--measure);
 }
 
 p {
@@ -383,6 +399,9 @@ code {
   border: 1px solid var(--rule);
   border-radius: 3px;
   padding: 0.06em 0.34em;
+  /* Identifiers like a federated-credential subject have no spaces and would otherwise
+     push a phone screen sideways. */
+  overflow-wrap: anywhere;
 }
 
 .note {
@@ -391,7 +410,6 @@ code {
   border-left: 3px solid var(--glow);
   padding: 0.15rem 0 0.15rem 1rem;
   margin: 1.6rem 0;
-  max-width: var(--measure);
 }
 
 /* ── figures ──────────────────────────────────────────────────────────────── */
@@ -411,7 +429,7 @@ figcaption {
   font-size: 0.92rem;
   color: var(--ink-soft);
   margin-top: 0.6rem;
-  max-width: var(--measure);
+  max-width: var(--text-w);
 }
 
 .band img {
@@ -645,6 +663,7 @@ figcaption {
   font-size: 0.97rem;
   color: var(--ink-soft);
   line-height: 1.6;
+  max-width: var(--text-w);
 }
 
 /* The steps that are not simply "the next thing": a human decision, a fork, an end. */
@@ -746,7 +765,7 @@ figcaption {
 /* ── the rail folds away on a narrow screen ───────────────────────────────── */
 
 .nav-toggle,
-.menu-btn,
+.menu-fab,
 .scrim {
   display: none;
 }
@@ -756,46 +775,36 @@ figcaption {
     --rail-w: 17.5rem;
   }
 
-  .menu-btn {
-    display: block;
-    cursor: pointer;
-    color: var(--rail-ink);
-    font-size: 1.4rem;
+  .menu-fab {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    z-index: 110;
+    top: 0.6rem;
+    left: 0.6rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 8px;
+    background: var(--rail);
+    color: var(--rail-glow);
+    font-size: 1.35rem;
     line-height: 1;
-    padding: 0.2rem 0.4rem;
+    cursor: pointer;
   }
 
+  /* Fully off-canvas rather than a folded strip. The strip cost 4.7rem of every line, and
+     on a 390 px screen that left the reading column at about 29 characters. */
   .sidebar {
     position: fixed;
     z-index: 100;
     height: 100vh;
     width: var(--rail-w);
-    transform: translateX(calc(-1 * var(--rail-w) + 3.7rem));
+    transform: translateX(-100%);
     transition: transform 0.2s ease;
   }
 
-  /* Folded, only the strip with the button shows; the rest slides out of view. */
-  .sidebar .langsw,
-  .sidebar nav,
-  .sidebar .side-note,
-  .sidebar .side-link,
-  .sidebar .brand small,
-  .sidebar .brand .name {
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
   .nav-toggle:checked ~ .layout .sidebar {
-    transform: translateX(0);
-  }
-
-  .nav-toggle:checked ~ .layout .sidebar .langsw,
-  .nav-toggle:checked ~ .layout .sidebar nav,
-  .nav-toggle:checked ~ .layout .sidebar .side-note,
-  .nav-toggle:checked ~ .layout .sidebar .side-link,
-  .nav-toggle:checked ~ .layout .sidebar .brand small,
-  .nav-toggle:checked ~ .layout .sidebar .brand .name {
-    opacity: 1;
+    transform: none;
   }
 
   .nav-toggle:checked ~ .layout .scrim {
@@ -807,11 +816,16 @@ figcaption {
   }
 
   .content {
-    padding: 1.5rem 1rem 3rem 4.7rem;
+    padding: 3.9rem 0.9rem 3rem;
   }
 
   .page {
-    padding: 1.9rem 1.25rem;
+    padding: 1.6rem 1rem;
+  }
+
+  /* Three columns of numbers do not fit; let them wrap instead of scrolling the page. */
+  .numbers td:nth-of-type(1) {
+    white-space: normal;
   }
 }
 

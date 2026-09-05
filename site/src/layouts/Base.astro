@@ -77,9 +77,6 @@ const next = index < PAGES.length - 1 ? PAGES[index + 1] : null;
             <span class="name">Lanternina</span>
             <small>{UI.tagline[lang]}</small>
           </a>
-          <label class="menu-btn" for="nav-open" aria-label={UI.menu[lang]}>
-            <span aria-hidden="true">☰</span>
-          </label>
         </div>
 
         <div class="langsw" role="group" aria-label={UI.langGroup[lang]}>
@@ -110,6 +107,12 @@ const next = index < PAGES.length - 1 ? PAGES[index + 1] : null;
       </header>
 
       <label class="scrim" for="nav-open" aria-hidden="true"></label>
+
+      {/* Outside the rail on purpose: `position: fixed` inside a transformed ancestor is
+         contained by it, so a button in the rail would slide away with the rail. */}
+      <label class="menu-fab" for="nav-open" aria-label={UI.menu[lang]}>
+        <span aria-hidden="true">☰</span>
+      </label>
 
       <div class="content">
         <main id="content" class="page">
