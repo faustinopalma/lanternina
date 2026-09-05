@@ -41,6 +41,31 @@ def test_health_needs_no_auth_and_no_store() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_every_method_the_api_serves_is_one_a_browser_may_send() -> None:
+    """The CORS list against what the app actually exposes, rather than against a memory.
+
+    `DELETE /api/trail` shipped on 5 September 2026 while the list said GET and POST. The
+    route was right, the store was right, and the browser never sent the request at all: the
+    preflight was refused, so the panel showed a failure that had never reached the API. A
+    hand-written list beside a growing set of routes is the shape of that fault, and this is
+    the check that makes it impossible to repeat.
+
+    OPTIONS is excluded because it is the preflight itself, which the middleware answers.
+    """
+    from panel.app import BROWSER_METHODS
+
+    client, _ = client_for()
+    served = {
+        method.upper()
+        for path in client.app.openapi()["paths"].values()  # type: ignore[attr-defined]
+        for method in path
+    } - {"options"} - {"OPTIONS"}
+
+    assert served <= set(BROWSER_METHODS), (
+        f"the panel serves {sorted(served - set(BROWSER_METHODS))} and a browser may not send it"
+    )
+
+
 class RefusingVerifier:
     def verify(self, token: str) -> object:
         raise NotAuthenticated("token rejected")

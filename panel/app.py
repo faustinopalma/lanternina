@@ -70,6 +70,13 @@ from .trail import InMemoryTrailStore, TrailStore
 from .usage import InMemoryLimitStore, InMemoryUsageStore, LimitStore, UsageStore
 from .what_happened import InMemoryWhatHappenedStore, WhatHappenedStore
 
+# Which methods a browser may use. Named here rather than written into the middleware call
+# because it drifted: `DELETE /api/trail` shipped on 5 September 2026 against a list that
+# said GET and POST, so the preflight was refused and the button reported a failure that had
+# never reached the API. `tests/test_panel.py` now compares this against what the app serves,
+# which is the only version of this list that cannot go stale.
+BROWSER_METHODS = ("GET", "POST", "DELETE")
+
 # Registered in the order they were written in when they shared one file. No two of them
 # claim the same path, so the order is a reading convenience and not a rule — but leaving
 # it alone means no route changed behaviour by being moved.
@@ -185,7 +192,7 @@ def create_app(
             CORSMiddleware,
             allow_origins=list(app.state.settings.origins),
             allow_credentials=False,
-            allow_methods=["GET", "POST"],
+            allow_methods=list(BROWSER_METHODS),
             allow_headers=["Authorization", "Content-Type"],
         )
 
