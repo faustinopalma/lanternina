@@ -1,0 +1,245 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="it"
+  page="overview"
+  eyebrow="Un sistema di casa, nato per un hackathon"
+  title="Un pomeriggio su carta, inventato per una persona"
+  description="Lanternina inventa un pomeriggio per un adolescente, lo fa approvare a un genitore e lo esegue su carta e su schermi a inchiostro elettronico. I modelli stanno in Microsoft Foundry; sul dispositivo non gira nessuna inferenza."
+>
+  <p class="lede">
+    Lanternina inventa un pomeriggio per un adolescente, lo fa approvare a un genitore, e poi lo fa
+    succedere in una stanza vera — su carta, su schermi a inchiostro elettronico e su pulsanti
+    fisici. Legge quello che torna scritto a mano, da lì decide come va avanti, e si ferma a un'ora
+    stabilita dal genitore.
+  </p>
+
+  <p>
+    Un mini-PC in una casa pilota due schermi a inchiostro elettronico, una stampante e uno scanner.
+    Ogni chiamata di linguaggio e di visione va a Microsoft Foundry, in UE. Nessun modello gira sul
+    dispositivo e non esiste una modalità offline. La casa tiene l'orologio e le chiavi dei sigilli,
+    ed è l'unica cosa che dà inizio al lavoro.
+  </p>
+
+  <figure class="band">
+    <img
+      src="/images/hero.jpg"
+      width="1800"
+      height="771"
+      alt="Uno schermo a inchiostro elettronico da 7,5 pollici in una cornice stampata in 3D, con un'incisione."
+    />
+    <figcaption>
+      Uno dei due schermi. La cornice è stampata in 3D e l'unità è montata a mano; il quadro sopra è
+      stato generato un'ora prima a partire da un tema scritto dal genitore.
+    </figcaption>
+  </figure>
+
+  <h2>Quattro decisioni su cui vale la pena discutere</h2>
+
+  <div class="cards">
+    <article class="card">
+      <h3>Un prompt disegna il foglio intero</h3>
+      <p>
+        Non c'è un motore di impaginazione. A un modello di immagini vengono date tutte le stringhe
+        già passate dal filtro di sicurezza, con l'istruzione di scriverle carattere per carattere, e
+        torna una pagina A4 finita. Il lavoro di design è il prompt, e il formato della pagina vive
+        in un file Markdown invece che nel codice.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Una pagina si legge contro il proprio bianco</h3>
+      <p>
+        Niente QR, niente marker ArUco, nessuna griglia dichiarata — niente sulla carta che sia lì
+        per una macchina. Leggere vuol dire dare a un modello due immagini, il bianco e quello che è
+        tornato dal vetro, e chiedere cosa è cambiato. Una versione precedente aveva tutti e tre, e
+        sono stati cancellati.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Il cloud non può far partire niente</h3>
+      <p>
+        Il pannello è inerte per costruzione: approvare scrive una riga e nient'altro. È la casa che
+        chiede, sul proprio orologio, e la risposta arriva dentro la replica. Non esiste una strada
+        in ingresso verso un dispositivo in una stanza, ed è anche il motivo per cui sulla rete di
+        casa non c'è niente da attaccare.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Le garanzie sono tipi, non convenzioni</h3>
+      <p>
+        Un agente non ha dove annotare che la propria uscita va bene, perché <code>Proposal</code> non
+        ha un campo di stato. Solo il filtro di sicurezza può coniare il tipo che un contenuto
+        destinato a una persona richiede. Ogni test di confine è stato verificato al negativo:
+        violazione iniettata, e test guardato mentre falliva.
+      </p>
+    </article>
+  </div>
+
+  <h2>Cosa esce, e cosa torna indietro</h2>
+
+  <p>
+    La pagina qui sotto è stata disegnata per intero da un modello di immagini, a partire da parole
+    già filtrate. Qualcuno ci scrive sopra e la rimette sul vetro dello scanner; la lettura decide i
+    momenti dopo, che vengono scritti mentre il foglio è ancora sul tavolo.
+  </p>
+
+  <div class="pair">
+    <figure>
+      <img
+        src="/images/page.jpg"
+        width="919"
+        height="1300"
+        loading="lazy"
+        alt="Una pagina stampata, bianca."
+      />
+      <figcaption>Consegnata. Uscita del modello non ritoccata, 19–33 s per disegnarla.</figcaption>
+    </figure>
+    <figure>
+      <img
+        src="/images/page-written.jpg"
+        width="866"
+        height="1300"
+        loading="lazy"
+        alt="La stessa pagina, riempita a mano."
+      />
+      <figcaption>
+        Tornata. Qui riempita da una mano simulata, così una corsa intera si può esercitare senza
+        nessuna persona dentro.
+      </figcaption>
+    </figure>
+  </div>
+
+  <p>
+    Il vocabolario del lettore è volutamente povero: una pagina è tornata con <b>segni</b> oppure
+    <b>bianca</b>, e nient'altro. Non un conteggio e non una frazione, perché contare i segni di
+    qualcuno è a un passo da un punteggio. Poi la lettura sparisce: il tipo si rifiuta di essere
+    serializzato, copiato o messo in cache.
+  </p>
+
+  <h2>Misurato sul sistema in funzione</h2>
+
+  <p>
+    Le date ci sono perché i prompt cambiano e i numeri si spostano con loro. Tutto quello che segue
+    è stato misurato contro i servizi veri, non stimato.
+  </p>
+
+  <table class="numbers">
+    <tbody>
+      <tr>
+        <th scope="row">Inventare un pomeriggio intero</th>
+        <td>68–157 s</td>
+        <td class="when">n=22, set 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Rileggerlo con un secondo modello</th>
+        <td>14,4–22,8 s</td>
+        <td class="when">set 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Disegnare una pagina</th>
+        <td>19–33 s</td>
+        <td class="when">ago 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Inchiostro su una pagina disegnata</th>
+        <td>0,5–2,7 %</td>
+        <td class="when">ago 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Leggere una pagina tornata</th>
+        <td>4,4–5,5 s</td>
+        <td class="when">ago 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Dalla pressione alla lettura sullo schermo</th>
+        <td>≈ 35 s</td>
+        <td class="when">19 ago 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Righello stampato, misurato con un righello</th>
+        <td>50 mm chiesti, 50 mm ottenuti</td>
+        <td class="when">4 ago 2026</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    L'ultima riga è quella che non parla di velocità. La catena di stampa non riscala, e la verifica
+    è stata fatta a mano: una catena che riscala in silenzio renderebbe sbagliata ogni misura fisica
+    di ogni pagina, in un modo che nessun test noterebbe.
+  </p>
+
+  <h2>Lo stack</h2>
+
+  <h3>In casa</h3>
+  <p>
+    Raspberry Pi Compute Module 5 su base board PoE, Raspberry Pi OS. Due schermi a inchiostro
+    elettronico da 7,5" su XIAO ESP32-S3, con firmware TRMNL modificato contro un server BYOS
+    nostro. Epson ET-2870 via IPP ed eSCL, senza driver. Cornici stampate in 3D, unità montate a
+    mano.
+  </p>
+
+  <h3>Nel cloud</h3>
+  <p>
+    Microsoft Foundry in UE per ogni chiamata di linguaggio, visione e immagini, dietro un unico
+    modulo router che è l'unico posto a cui è permesso importare un SDK di modelli. Azure AI Content
+    Safety su tutto ciò che viene generato e su ogni immagine in ingresso. Container Apps per l'API,
+    Cosmos DB, Blob Storage, Static Web Apps. Infrastruttura in Bicep.
+  </p>
+
+  <h3>Come si pubblica</h3>
+  <p>
+    Un push su <code>main</code> pubblica l'API attraverso una managed identity assegnata dall'utente
+    con credenziale federata, quindi nella pipeline non c'è nessuna password — misurato end to end in
+    1 m 35 s. L'immagine si costruisce sul runner e non con <code>az acr build</code>, perché
+    quest'ultimo richiede diritti che permetterebbero all'identità di riconfigurare il registro.
+  </p>
+
+  <figure class="narrow">
+    <img
+      src="/images/kit.jpg"
+      width="825"
+      height="1100"
+      loading="lazy"
+      alt="Un pannello a inchiostro elettronico, una scheda ESP32 e una batteria, prima del montaggio."
+    />
+    <figcaption>
+      Cosa va dentro una cornice: pannello, XIAO ESP32-S3, una cella da 2000 mAh e la piattina fra i
+      due.
+    </figcaption>
+  </figure>
+
+  <h2>Quello che non fa</h2>
+
+  <p>
+    Ottimizzare l'aggancio è facile da aggiungere a un sistema così, e farebbe danno: quindi è una
+    regola scritta e non una questione di buon senso. <code>tests/test_boundaries.py</code> rifiuta
+    quel vocabolario nella forma salvata, nel pannello, nel browser e nei prompt.
+  </p>
+
+  <ul>
+    <li>Nessuna serie di giorni, nessun obiettivo giornaliero, niente tenuto da parte per far tornare qualcuno.</li>
+    <li>Nessuna notifica innescata dall'assenza, e nessuna misura del tempo passato.</li>
+    <li>
+      Un profilo viene tenuto, e arriva ai due modelli che scrivono ed eseguono un pomeriggio — e a
+      nessuno schermo, nessun foglio stampato e nessuna pagina del pannello. Lo impone un gate di
+      revisione, non la speranza che un prompt sia stato educato.
+    </li>
+    <li>
+      Nessun riconoscimento di volti o persone, nessuna inferenza di emozione o attenzione, nessun
+      dato biometrico.
+    </li>
+  </ul>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}
+      >Perché ogni confine esiste, e quanto costa</a
+    > · <a href={`${REPO}/tree/main/docs/prompts`}>ogni prompt, intero, come lo riceve il modello</a>
+  </p>
+</Base>

@@ -1,0 +1,158 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="it"
+  page="status"
+  eyebrow="Un progetto da hackathon, descritto onestamente"
+  title="Cosa c'è davvero"
+  description="Un pomeriggio è girato da capo a fondo in una casa. Cosa gira, cosa no, e cosa i test impongono davvero."
+>
+  <p class="lede">
+    Un pomeriggio è girato da capo a fondo in una casa: inventato, approvato dal browser, stampato,
+    riempito, scansionato, continuato a partire da quello che è tornato, e chiuso sulla propria ora.
+    È successo una volta, il 24 agosto 2026, e quel giorno sono venuti fuori quattro guasti — nessuno
+    dei quali trovato da un test. Li ha trovati una persona in piedi accanto alla stampante.
+  </p>
+
+  <p>
+    Questo è un progetto da hackathon e non è un prodotto finito. Non è neanche una demo: le parti
+    qui sotto girano contro servizi veri, con credenziali vere, su hardware in una stanza. Sono vere
+    tutte e due le cose insieme, e lo scopo di questa pagina è dire quale è quale.
+  </p>
+
+  <h2>Gira</h2>
+
+  <ul>
+    <li>
+      Il tier cloud, il pannello del genitore e la sua API, il router dei modelli con credenziali
+      vere, e il filtro di sicurezza.
+    </li>
+    <li>
+      I servizi dell'hub che servono gli schermi, tirano un quadro ogni ora, stampano, scansionano e
+      rispondono a una pressione del pulsante dentro la stessa risposta HTTP.
+    </li>
+    <li>
+      Il formato del pomeriggio e i suoi sei controlli, un secondo modello che rilegge ogni
+      pomeriggio, l'approvazione del genitore, la pagina disegnata intera e letta contro il proprio
+      bianco, e l'orologio che garantisce una fine.
+    </li>
+    <li>L'archivio dei quadri, e la contabilità d'uso con un tetto per nucleo.</li>
+    <li>
+      Identità: Entra External ID per i genitori, una app registration workforce separata con un app
+      role per gli amministratori, device key per nucleo per la casa.
+    </li>
+  </ul>
+
+  <h2>Imposto, non soltanto voluto</h2>
+
+  <p>
+    Ognuna di queste è un test e non una convenzione, e ognuna è stata verificata al negativo:
+    violazione iniettata, e test guardato mentre falliva. Se cambiate il disegno in modo che una non
+    valga più, per favore cambiate il prodotto e non il test.
+  </p>
+
+  <table class="numbers">
+    <tbody>
+      <tr>
+        <th scope="row">Un agente non può approvare la propria uscita</th>
+        <td><code>Proposal</code> non ha un campo di stato</td>
+      </tr>
+      <tr>
+        <th scope="row">Un'uscita generata non può saltare Content Safety</th>
+        <td>il tipo lo conia solo il filtro</td>
+      </tr>
+      <tr>
+        <th scope="row">Un contenuto approvato non si può sostituire dopo</th>
+        <td>il sigillo di approvazione copre quello di sicurezza</td>
+      </tr>
+      <tr>
+        <th scope="row">Un solo componente parla con un modello</th>
+        <td>controllo a livello di import su ogni package</td>
+      </tr>
+      <tr>
+        <th scope="row">In casa non gira nessun modello</th>
+        <td>controllo a livello di import, router compreso</td>
+      </tr>
+      <tr>
+        <th scope="row">Una lettura non si può serializzare, copiare o mettere in cache</th>
+        <td>il tipo chiude ogni via implicita fuori dalla memoria</td>
+      </tr>
+      <tr>
+        <th scope="row">Niente funziona rendendo difficile smettere</th>
+        <td>controllo di vocabolario su store, pannello, browser e prompt</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Ogni push su <code>main</code> lancia <code>ruff</code> e la suite su un checkout pulito, e
+    lascia un record: 962 test, circa 1 m 30 s. Di proposito non blocca il deploy — un controllo che
+    può fermare una pubblicazione di sabato è un controllo che qualcuno disattiva.
+  </p>
+
+  <h2>Non costruito, e non imposto</h2>
+
+  <ul>
+    <li>
+      <b>La macchina fotografica.</b> L'oggetto si sta montando a mano; <code>vision/</code> è un
+      package Python vuoto e niente nel repository scatta una fotografia. Ogni garanzia dichiarata
+      sulla telecamera è una decisione di progetto che nessun test noterebbe se sparisse. Un oggetto
+      su un banco e un package vuoto non sono alla stessa distanza dal funzionare, e il secondo è la
+      metà più lunga.
+    </li>
+    <li>
+      <b>La pulsantiera.</b> Anche lei un oggetto su un banco. Oggi c'è un pulsante per schermo, e
+      basta a chiudere il giro della carta ma non a rispondere a una domanda.
+    </li>
+    <li>
+      <b>Che una lettura non finisca mai in un archivio.</b> Il tipo si rifiuta di essere
+      serializzato, copiato o messo in cache, ma la lettura viaggia dalla casa al pannello e ritorno
+      come corpo di una richiesta, e niente impedisce a nessuno dei due capi di scrivere quel corpo.
+      Un nucleo, nominato, lo conserva di proposito per quindici giorni mentre questo si costruisce.
+    </li>
+    <li>
+      <b>La settima proprietà.</b> Che ogni momento abbia una risposta che si può sbagliare, e che
+      l'ultimo momento produca qualcosa che vale la pena tenere, è specificata e non controllata. Un
+      piano che non la rispetta viene salvato lo stesso.
+    </li>
+    <li>
+      <b>Una seconda casa.</b> Mai allestita. L'<code>--install</code> dell'installer non è mai stato
+      lanciato.
+    </li>
+  </ul>
+
+  <h2>Cosa hanno insegnato i guasti</h2>
+
+  <p>
+    I difetti che vale la pena leggere stanno nel repository con le loro misure attaccate, perché un
+    sistema come questo è soprattutto il registro delle cose che si sono rivelate false. Tre che
+    hanno cambiato il disegno:
+  </p>
+
+  <ul>
+    <li>
+      Una soglia calcolata con Otsu su ogni singola cella riportava il 45 % di inchiostro su caselle
+      visibilmente vuote, e il test sintetico passava — perché un riquadro bianco uniforme fa
+      degenerare Otsu. Solo la carta vera l'ha mostrato.
+    </li>
+    <li>
+      Un tetto di lunghezza su un campo veniva sforato 6 volte su 11, e ogni sforamento costava una
+      seconda chiamata intera al modello. Il tetto non proteggeva niente di fisico: stava plasmando
+      l'uscita invece di limitarla.
+    </li>
+    <li>
+      Una regola di validazione confrontava una frase intera come sottostringa, quindi un pomeriggio
+      che nominava lo stesso oggetto due volte con parole diverse veniva rifiutato. La regola leggeva
+      una formulazione invece di un fatto, ed era il rifiuto più frequente in assoluto.
+    </li>
+  </ul>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/ILLUSTRATED.md`}>Il sistema in fotografie, pagina per pagina</a>
+    · <a href={`${REPO}/tree/main/ideas`}>quello che non è costruito, in ordine, ognuno col suo costo</a
+    > · <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>le linee che questo progetto non attraversa</a>
+  </p>
+</Base>

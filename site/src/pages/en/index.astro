@@ -1,0 +1,238 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="en"
+  page="overview"
+  eyebrow="A home system, built for a hackathon"
+  title="An afternoon on paper, invented for one person"
+  description="Lanternina invents an afternoon for an adolescent, has a parent approve it, and runs it on paper and e-paper. Models in Microsoft Foundry; nothing infers on the device."
+>
+  <p class="lede">
+    Lanternina invents an afternoon for an adolescent, has a parent approve it, and then runs it in
+    a real room — on paper, on e-paper displays, and on physical buttons. It reads what comes back
+    in handwriting, decides what happens next from that, and stops at an hour the parent set.
+  </p>
+
+  <p>
+    A mini-PC in a house drives two e-paper displays, an inkjet and a flatbed scanner. Every
+    language and vision call goes to Microsoft Foundry in the EU. No model runs on the device, and
+    there is no offline mode. The house holds the clock and the sealing keys, and it is the only
+    thing that starts work.
+  </p>
+
+  <figure class="band">
+    <img
+      src="/images/hero.jpg"
+      width="1800"
+      height="771"
+      alt="A 7.5-inch e-paper display in a 3D printed frame, showing an engraving."
+    />
+    <figcaption>
+      One of two displays. The frame is 3D printed and the unit was assembled by hand; the picture
+      on it was generated an hour earlier from a theme the parent wrote.
+    </figcaption>
+  </figure>
+
+  <h2>Four decisions worth arguing about</h2>
+
+  <div class="cards">
+    <article class="card">
+      <h3>One prompt draws the whole sheet</h3>
+      <p>
+        There is no layout engine. An image model is given every string that has already passed the
+        safety gate, told to letter exactly those characters, and returns a finished A4 page. The
+        design work is the prompt, and the page format lives in one Markdown file rather than in
+        code.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>A page is read against its own blank</h3>
+      <p>
+        No QR code, no ArUco markers, no declared grid — nothing printed on the paper that is there
+        for a machine. Reading is handing a model two images, the blank and what came back off the
+        glass, and asking what is different. An earlier version had all three, and they were
+        deleted.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>The cloud cannot start anything</h3>
+      <p>
+        The dashboard is inert by construction: approving writes a row and does nothing else. The
+        house asks, on its own clock, and the answer arrives inside the reply. There is no inbound
+        path to a device in a room, which is also why there is nothing on the home network to
+        attack.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>The guarantees are types, not conventions</h3>
+      <p>
+        An agent has nowhere to record that its own output is acceptable, because
+        <code>Proposal</code> has no status field. Only the safety gate can mint the type a
+        user-facing payload requires. Each boundary test was mutation-checked: the violation was
+        injected and the test watched to fail.
+      </p>
+    </article>
+  </div>
+
+  <h2>What comes out, and what goes back</h2>
+
+  <p>
+    The page below was drawn whole by an image model, from words that had already been screened.
+    Somebody writes on it and puts it back on the scanner glass; the reading decides the next
+    moments, which are written while the sheet is still on the table.
+  </p>
+
+  <div class="pair">
+    <figure>
+      <img
+        src="/images/page.jpg"
+        width="919"
+        height="1300"
+        loading="lazy"
+        alt="A printed page, blank."
+      />
+      <figcaption>Handed over. Unedited model output, 19–33 s to draw.</figcaption>
+    </figure>
+    <figure>
+      <img
+        src="/images/page-written.jpg"
+        width="866"
+        height="1300"
+        loading="lazy"
+        alt="The same page, filled in by hand."
+      />
+      <figcaption>
+        Came back. Filled in here by a simulated hand, so a whole run can be exercised with no
+        person in it.
+      </figcaption>
+    </figure>
+  </div>
+
+  <p>
+    The reader's vocabulary is deliberately poor: a page came back with <b>marks</b> or
+    <b>blank</b>, and nothing else. Not a count and not a fraction, because a count of somebody's
+    marks is one step from a score. The reading is then gone — the type refuses to be pickled,
+    copied or cached.
+  </p>
+
+  <h2>Measured on the deployment</h2>
+
+  <p>
+    Dates are attached because prompts change and the numbers move with them. Everything here was
+    measured against the real services, not estimated.
+  </p>
+
+  <table class="numbers">
+    <tbody>
+      <tr>
+        <th scope="row">Devising a whole afternoon</th>
+        <td>68–157 s</td>
+        <td class="when">n=22, Sep 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Rereading it with a second model</th>
+        <td>14.4–22.8 s</td>
+        <td class="when">Sep 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Drawing one page</th>
+        <td>19–33 s</td>
+        <td class="when">Aug 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Ink on a drawn page</th>
+        <td>0.5–2.7 %</td>
+        <td class="when">Aug 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Reading a returned page</th>
+        <td>4.4–5.5 s</td>
+        <td class="when">Aug 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Button press to reading on the display</th>
+        <td>≈ 35 s</td>
+        <td class="when">19 Aug 2026</td>
+      </tr>
+      <tr>
+        <th scope="row">Printed ruler, measured with a ruler</th>
+        <td>50 mm asked, 50 mm got</td>
+        <td class="when">4 Aug 2026</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    The last row is the one that is not about speed. The print chain does not rescale, and that was
+    checked by hand — a chain that silently rescales would make every physical dimension on every
+    page wrong in a way no test would notice.
+  </p>
+
+  <h2>The stack</h2>
+
+  <h3>In the house</h3>
+  <p>
+    Raspberry Pi Compute Module 5 on a PoE base board, Raspberry Pi OS. Two 7.5" e-paper displays on
+    XIAO ESP32-S3, running a patched TRMNL firmware against our own BYOS server. Epson ET-2870 over
+    IPP and eSCL, driverless. Frames 3D printed, units assembled by hand.
+  </p>
+
+  <h3>In the cloud</h3>
+  <p>
+    Microsoft Foundry in the EU for every language, vision and image call, behind a single router
+    module that is the only place allowed to import a model SDK. Azure AI Content Safety on
+    everything generated and on every inbound image. Container Apps for the API, Cosmos DB, Blob
+    Storage, Static Web Apps. Infrastructure as Bicep.
+  </p>
+
+  <h3>How it ships</h3>
+  <p>
+    A push to <code>main</code> publishes the API through a user-assigned managed identity with a
+    federated credential, so there is no password anywhere in the pipeline — measured end to end at
+    1 m 35 s. The image is built on the runner rather than with <code>az acr build</code>, because
+    the latter needs rights that would let the identity reconfigure the registry.
+  </p>
+
+  <figure class="narrow">
+    <img
+      src="/images/kit.jpg"
+      width="825"
+      height="1100"
+      loading="lazy"
+      alt="An e-paper panel, an ESP32 board and a battery, before assembly."
+    />
+    <figcaption>
+      What goes into a frame: panel, XIAO ESP32-S3, a 2000 mAh cell, and the ribbon between them.
+    </figcaption>
+  </figure>
+
+  <h2>What it does not do</h2>
+
+  <p>
+    Engagement optimisation is easy to add to a system like this and would do harm, so it is a
+    written rule rather than a matter of judgement. <code>tests/test_boundaries.py</code> refuses the
+    vocabulary in the stored shape, in the panel, in the browser and in the prompts.
+  </p>
+
+  <ul>
+    <li>No streak, no daily goal, nothing withheld as a reason to come back.</li>
+    <li>No notification triggered by absence, and no measure of time spent.</li>
+    <li>
+      A profile is kept, and it reaches the two models that write and run an afternoon — and no
+      display, no printed sheet and no page of the panel. A review gate enforces that, not the hope
+      that a prompt was polite.
+    </li>
+    <li>No face or person detection, no emotion or attention inference, no biometrics.</li>
+  </ul>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}>Why each boundary exists, and what it costs</a
+    > · <a href={`${REPO}/tree/main/docs/prompts`}>every prompt, whole, as the model receives it</a>
+  </p>
+</Base>

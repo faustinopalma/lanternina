@@ -1,0 +1,211 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+  lang="en"
+  page="flows"
+  eyebrow="Three diagrams"
+  title="How it flows"
+  description="Who is allowed to ask whom, what happens to an afternoon between being invented and being over, and what a sheet of paper does on its round trip."
+>
+  <p class="lede">
+    Who is allowed to ask whom, what happens to an afternoon between being invented and being over,
+    and what a sheet of paper does on its round trip.
+  </p>
+
+  <h2>1. Who asks whom</h2>
+
+  <p>
+    Every arrow that crosses into the house is the answer to a request the house made. There is no
+    inbound path: the panel writes a row, and the hub finds it the next time it asks. That is what
+    makes the dashboard inert — changing a setting stores a new state and makes nothing happen in a
+    room.
+  </p>
+
+  <div class="diagram" role="group" aria-label="Request loop">
+    <div class="zone">
+      <p class="zone-name">The house</p>
+      <div class="nodes">
+        <div class="node strong">
+          <b>Hub</b>
+          <span>clock · sealing keys · print queue</span>
+        </div>
+        <div class="node">
+          <b>e-paper displays</b>
+          <span>receive a finished 1-bit bitmap, hold no fonts</span>
+        </div>
+        <div class="node">
+          <b>printer · scanner</b>
+          <span>one A4 sheet at a time</span>
+        </div>
+        <div class="node">
+          <b>button</b>
+          <span>one press, answered inside the same response</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flowgap">
+      <p class="arrow">asks, on its own clock →</p>
+      <p class="arrow back">← answers, inside the reply</p>
+    </div>
+
+    <div class="zone">
+      <p class="zone-name">Azure, EU region</p>
+      <div class="nodes">
+        <div class="node">
+          <b>panel + API</b>
+          <span>holds decisions, never triggers work</span>
+        </div>
+        <div class="node strong">
+          <b>model router</b>
+          <span>the only module allowed a model SDK</span>
+        </div>
+        <div class="node gate">
+          <b>Content Safety</b>
+          <span>the only thing that can mint a screened payload</span>
+        </div>
+        <div class="node">
+          <b>Microsoft Foundry</b>
+          <span>language · vision · image</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    No model runs on the device, and an import-level test refuses an on-device runtime in every
+    package including the router. The trade is stated plainly: one inference path instead of two, no
+    weights to ship — at the price that a page which comes back while the cloud is unreachable stays
+    unread until it is reachable.
+  </p>
+
+  <h2>2. The life of an afternoon</h2>
+
+  <p>
+    One document, written in a single pass before anybody has read a word of it. It holds every
+    moment, three lengths of each, a four-rung ladder of help under each, and a way out. Nothing is
+    added while it runs — which is what lets the same moment be shortened, or put on a display that
+    holds forty words, and still reach the same ending.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <span class="step-n">1</span>
+      <div>
+        <b>The house asks for an idea</b>
+        <p>It keeps a few ready, so nobody waits on a model.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">2</span>
+      <div>
+        <b>A model writes the whole afternoon</b>
+        <p>68–157 s measured over 22 runs. Six checks then read it back.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">3</span>
+      <div>
+        <b>A second model rereads it</b>
+        <p>
+          14.4–22.8 s. A refusal costs a whole new devise, which is why a check that reads a phrasing
+          instead of a fact is expensive: one such check was the most frequent refusal until it was
+          fixed.
+        </p>
+      </div>
+    </li>
+    <li class="mark-out">
+      <span class="step-n">4</span>
+      <div>
+        <b>It waits for a parent</b>
+        <p>Approving writes a row. It prints nothing and wakes nothing.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">5</span>
+      <div>
+        <b>The house begins it</b>
+        <p>
+          On a day and inside the hours the parent set, and only if the whole length still fits
+          before the end — so an ending is never a cut-off.
+        </p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">6</span>
+      <div>
+        <b>Moments run</b>
+        <p>
+          <code>say</code> puts words on a display, <code>hand over</code> prints a page,
+          <code>collect</code> takes one back. The length is chosen on entering a moment and does not
+          change until the next one.
+        </p>
+      </div>
+    </li>
+    <li class="mark-out">
+      <span class="step-n">7</span>
+      <div>
+        <b>Either the rest is written, or it asks</b>
+        <p>
+          <code>ask</code> means the rest is not written yet: the house sends up the blank and the
+          returned page and receives a continuation, in the same format, with its own ending.
+        </p>
+      </div>
+    </li>
+    <li class="ending">
+      <span class="step-n">8</span>
+      <div>
+        <b>It ends on the object</b>
+        <p>
+          Thirty minutes before the agreed hour the way out begins, whatever has been reached. The
+          ending is the same ending, and no display says it was shortened.
+        </p>
+      </div>
+    </li>
+  </ol>
+
+  <h2>3. The paper round trip</h2>
+
+  <p>
+    The part with the least machinery in it. Nothing is printed on the paper for a machine to find,
+    so there is nothing to detect, rectify or decode.
+  </p>
+
+  <div class="chain" role="group" aria-label="Paper round trip">
+    <div class="link">
+      <b>Words</b>
+      <p>Already through the safety gate. Quoted into the drawing prompt, character for character.</p>
+    </div>
+    <div class="link">
+      <b>One image call</b>
+      <p>The whole A4 sheet, drawn in one pass. 19–33 s.</p>
+    </div>
+    <div class="link">
+      <b>Printed, and the blank is kept</b>
+      <p>The blank is the only thing the reading will be compared against.</p>
+    </div>
+    <div class="link human">
+      <b>Somebody writes on it</b>
+      <p>Or does not. Nothing in the format says a page will come back.</p>
+    </div>
+    <div class="link">
+      <b>Scanner, then two images to a model</b>
+      <p>Scan ≈ 26 s, reading 4.4–5.5 s. The question asked is what is different.</p>
+    </div>
+    <div class="link out">
+      <b>marks · blank</b>
+      <p>
+        The whole vocabulary. Then the reading is gone: not written to storage, not to a log, not
+        anywhere a person could read it later.
+      </p>
+    </div>
+  </div>
+
+  <p class="note">
+    Measured with a finger on a real button: press to reading on the display, about 35 s, of which
+    26 s is the scanner. The floor is the scanner plus up to one wake cycle of the display, and the
+    firmware adds 5–11 s to any refresh interval you ask for.
+  </p>
+</Base>

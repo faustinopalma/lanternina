@@ -1,0 +1,174 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="it"
+  page="identity"
+  eyebrow="Due tenant, due audience"
+  title="Identità e accessi"
+  description="I genitori entrano da un tenant Entra External ID; gli amministratori da una app registration workforce separata, con un app role. La casa non tiene nessuna credenziale Azure."
+>
+  <p class="lede">
+    Al sistema arrivano tre tipi di chiamante e nessuno si autentica allo stesso modo. Un genitore è
+    un'identità consumer esterna. Un amministratore è un'identità workforce con un app role. La
+    macchina in casa non è né l'una né l'altro: non tiene nessuna credenziale Azure.
+  </p>
+
+  <div class="diagram" role="group" aria-label="Chi si autentica come">
+    <div class="zone">
+      <p class="zone-name">Chi entra</p>
+      <div class="nodes">
+        <div class="node">
+          <b>Genitore</b>
+          <span>Entra External ID (CIAM), registrazione autonoma</span>
+        </div>
+        <div class="node">
+          <b>Amministratore</b>
+          <span>tenant workforce, app role <code>Lanternina.Admin</code></span>
+        </div>
+        <div class="node strong">
+          <b>La casa</b>
+          <span>una device key per nucleo su TLS, nessuna identità Entra</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flowgap">
+      <p class="arrow">audience separate →</p>
+      <p class="arrow back">← una sola API</p>
+    </div>
+
+    <div class="zone">
+      <p class="zone-name">Cosa raggiunge</p>
+      <div class="nodes">
+        <div class="node">
+          <b>Rotte del genitore</b>
+          <span>solo il proprio nucleo</span>
+        </div>
+        <div class="node">
+          <b>Rotte dell'amministratore</b>
+          <span>ammettere e rifiutare account</span>
+        </div>
+        <div class="node">
+          <b>Rotte del dispositivo</b>
+          <span>chiedere lavoro, ritirare gli approvati, restituire una lettura</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Perché l'amministratore non è un genitore con un flag</h2>
+
+  <p>
+    Sarebbe stato un booleano. Il motivo per cui non lo è: la directory External ID è aperta alla
+    registrazione autonoma, e un flag vivrebbe nello stesso container Cosmos che un amministratore
+    modifica — quindi il privilegio e la cosa che lo concede condividerebbero il raggio d'esplosione,
+    e servirebbe comunque un percorso di bootstrap per crearne il primo.
+  </p>
+
+  <p>
+    Invece l'amministratore entra da una app registration distinta nel tenant workforce, e il
+    privilegio arriva nel claim <code>roles</code> del token. Le due applicazioni hanno audience
+    diverse, quindi il token di un genitore viene rifiutato dal controllo di audience prima che giri
+    una qualunque logica nostra. È un'affermazione più forte di «controlliamo un campo»: non esiste
+    un percorso di codice in cui un token consumer venga esaminato per diritti amministrativi.
+  </p>
+
+  <p class="note">
+    Una trappola che vale la pena scrivere, perché costa un pomeriggio: l'assegnazione di un app role
+    può finire in silenzio su <b>Default Access</b>, il cui <code>appRoleId</code> è tutto zeri. Il
+    token è perfettamente valido e semplicemente non porta il claim <code>roles</code>, quindi il
+    rifiuto sembra un problema di credenziali invece che di assegnazione. Si controlla su
+    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code>, guardando l'id.
+  </p>
+
+  <h2>Multi-tenant per costruzione</h2>
+
+  <p>
+    Niente nel modello dei dati presuppone un nucleo solo. Ogni riga salvata è partizionata per id di
+    nucleo, ogni device key appartiene esattamente a un nucleo, e ogni rotta del genitore risolve il
+    nucleo dal token e non da qualcosa che il chiamante manda. Una seconda casa richiede un
+    provisioning, non un cambio di schema.
+  </p>
+
+  <p>
+    È un'affermazione sulla forma, e conviene essere precisi su quanto sia stata esercitata: il
+    codice ha sempre girato con un nucleo solo dentro. Una seconda casa non è mai stata allestita,
+    quindi «multi-tenant» qui vuol dire che i confini sono tracciati e imposti, non che due nuclei
+    siano stati osservati affiancati.
+  </p>
+
+  <h2>La casa non ha credenziali Azure</h2>
+
+  <p>
+    L'hub nella stanza non può autenticarsi ad Azure e non ci prova. Presenta una device key in
+    un'intestazione <code>X-Device-Key</code> su TLS, e tutto quello che ha bisogno di un modello —
+    leggere una pagina, interpretare un promemoria, continuare un pomeriggio — è una richiesta
+    all'API, che la credenziale ce l'ha. Chiuso per difetto: senza device key configurata quelle
+    rotte rispondono 503 invece di lasciar passare qualcosa.
+  </p>
+
+  <p>
+    Così una macchina fisicamente asportabile da una casa non porta mai qualcosa che si possa
+    rigiocare contro una sottoscrizione. Il costo è quello dichiarato nei flussi: senza cloud, niente
+    lettura.
+  </p>
+
+  <h2>Due chiavi che non sono la stessa chiave</h2>
+
+  <p>
+    Il filtro di sicurezza e l'approvazione del genitore sono entrambi sigillati con HMAC, con due
+    chiavi separate, e il sigillo di approvazione copre quello di sicurezza. Condividerne una
+    permetterebbe al filtro di coniare approvazioni del genitore, che è esattamente il guasto per cui
+    la separazione esiste.
+  </p>
+
+  <p>
+    Il sigillo di approvazione si conia e si verifica dentro una singola esecuzione sul dispositivo,
+    quindi ruotare quella chiave non costa niente. Il sigillo di sicurezza attraversa processi e
+    giorni — coniato quando il contenuto viene offerto, salvato dal pannello, verificato più tardi —
+    quindi è quella la chiave da proteggere. Nessuna delle due sta sull'hub, e questo è stato
+    verificato cercando i valori letterali nel filesystem invece di fidarsi dello script di deploy.
+  </p>
+
+  <h2>Pubblicare senza un segreto</h2>
+
+  <p>
+    La pipeline che pubblica l'API non tiene nessuna password. Una managed identity assegnata
+    dall'utente porta una credenziale federata, GitHub Actions scambia il proprio token OIDC con uno
+    di Azure, e fanno il resto tre assegnazioni di ruolo legate a singole risorse: spingere su un
+    registro, leggerlo, e aggiornare una container app.
+  </p>
+
+  <p class="note">
+    Il soggetto di una credenziale federata porta gli id numerici, non i nomi:
+    <code>repo:owner@12345/repo@67890:ref:refs/heads/main</code>. Il messaggio di rifiuto cita per
+    intero il soggetto che ha ricevuto, quindi il metodo affidabile è registrare una volta, lanciare
+    una volta, e leggere il soggetto vero dal rifiuto invece di scriverlo a memoria. Sopravvive anche
+    a una rinomina del repository.
+  </p>
+
+  <h2>Due buchi, dichiarati</h2>
+
+  <p>
+    <code>scp</code> non viene verificato. Audience, issuer, scadenza e subject del token si
+    controllano, lo scope no. È innocuo finché lo scope è uno solo, e diventa un buco nel momento in
+    cui qualcuno ne aggiunge un secondo credendo che separi permessi.
+  </p>
+
+  <p>
+    Le app registration si creano a mano nel portale, di proposito, e i passi sono scritti invece che
+    scriptati. Quello che si dimentica ogni volta è
+    <code>requestedAccessTokenVersion: 2</code> nel manifesto: senza, l'issuer è l'endpoint v1 e ogni
+    accesso fallisce senza dire perché.
+  </p>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>I passi di deploy, compresi quelli manuali</a> ·
+    <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
+      >come la pipeline cambia Azure senza un segreto</a
+    > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>cosa esce dal dispositivo</a>
+  </p>
+</Base>

@@ -81,6 +81,13 @@ experiments/**
 data/
 captures/
 pages/
+# `pages/` above is where a running system would drop rendered pages of somebody's work.
+# It also matches any directory of that name at any depth, and the public site's routes
+# live in one — so on 5 September 2026 ten source files were silently untracked and the
+# published site would have had no pages in it. The exception is the directory itself:
+# git does not descend into an excluded directory, so re-including only its contents
+# would not have worked.
+!site/src/pages/
 scans/
 sessions/
 ledger/

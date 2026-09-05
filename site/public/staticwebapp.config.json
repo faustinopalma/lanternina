@@ -1,21 +1,30 @@
 {
   "$schema": "https://json.schemastore.org/staticwebapp.config.json",
 
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/images/*", "/*.css", "/*.js", "/*.svg", "/*.txt"]
-  },
-
-  "responseOverrides": {
-    "404": { "rewrite": "/index.html", "statusCode": 200 }
-  },
+  "trailingSlash": "auto",
 
   "globalHeaders": {
+    "cache-control": "public, max-age=3600",
     "Content-Security-Policy": "default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "no-referrer",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  },
+
+  "routes": [
+    {
+      "route": "/images/*",
+      "headers": { "cache-control": "public, max-age=604800, immutable" }
+    },
+    {
+      "route": "/_astro/*",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" }
+    }
+  ],
+
+  "responseOverrides": {
+    "404": { "rewrite": "/404.html" }
   },
 
   "mimeTypes": {

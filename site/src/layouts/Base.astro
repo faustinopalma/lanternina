@@ -1,0 +1,149 @@
+---
+/** The frame every page in both trees shares: sidebar, language switch, head.
+ *
+ * The head is the reason this is a component rather than a copied block. Canonical,
+ * hreflang and og:url all have to agree with each other and with the directory the page
+ * is actually written to, and three of those are easy to get subtly wrong by hand.
+ */
+import {
+  LANG_NAME,
+  LOCALE,
+  NAV,
+  NAV_NOTE,
+  OTHER,
+  PAGES,
+  REPO,
+  UI,
+  pathFor,
+  type Lang,
+  type PageKey,
+} from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+  page: PageKey;
+  title: string;
+  description: string;
+  eyebrow?: string;
+}
+
+const { lang, page, title, description, eyebrow } = Astro.props;
+
+const site = Astro.site!.origin;
+const slug = PAGES.find((p) => p.key === page)!.slug;
+const here = pathFor(lang, slug);
+const other = OTHER[lang];
+
+const index = PAGES.findIndex((p) => p.key === page);
+const prev = index > 0 ? PAGES[index - 1] : null;
+const next = index < PAGES.length - 1 ? PAGES[index + 1] : null;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · Lanternina</title>
+    <meta name="description" content={description} />
+
+    <link rel="canonical" href={`${site}${here}`} />
+    <link rel="alternate" hreflang="en" href={`${site}${pathFor("en", slug)}`} />
+    <link rel="alternate" hreflang="it" href={`${site}${pathFor("it", slug)}`} />
+    <link rel="alternate" hreflang="x-default" href={`${site}${pathFor("en", slug)}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lanternina" />
+    <meta property="og:locale" content={LOCALE[lang]} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={`${site}${here}`} />
+    <meta property="og:image" content={`${site}/images/hero.jpg`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#content">{UI.skip[lang]}</a>
+    <input type="checkbox" id="nav-open" class="nav-toggle" />
+
+    <div class="layout">
+      <header class="sidebar">
+        <div class="brand-row">
+          <a class="brand" href={pathFor(lang, "")}>
+            <span class="mark" aria-hidden="true">◇</span> Lanternina
+            <small>{UI.tagline[lang]}</small>
+          </a>
+          <label class="menu-btn" for="nav-open" aria-label={UI.menu[lang]}>
+            <span aria-hidden="true">☰</span>
+          </label>
+        </div>
+
+        <div class="langsw" role="group" aria-label={UI.langGroup[lang]}>
+          <a class="langbtn is-on" href={here} hreflang={lang} lang={lang} aria-current="true">
+            {LANG_NAME[lang]}
+          </a>
+          <a class="langbtn" href={pathFor(other, slug)} hreflang={other} lang={other}>
+            {LANG_NAME[other]}
+          </a>
+        </div>
+
+        <nav aria-label={UI.sections[lang]}>
+          {
+            PAGES.map((p, i) => (
+              <a href={pathFor(lang, p.slug)} class={p.key === page ? "active" : undefined}>
+                <span class="num">{i + 1}</span>
+                <span class="lbl">
+                  {NAV[p.key][lang]}
+                  <small>{NAV_NOTE[p.key][lang]}</small>
+                </span>
+              </a>
+            ))
+          }
+        </nav>
+
+        <p class="side-note">{UI.sourceNote[lang]}</p>
+        <a class="side-link" href={REPO}>{UI.repo[lang]} ↗</a>
+      </header>
+
+      <label class="scrim" for="nav-open" aria-hidden="true"></label>
+
+      <div class="content">
+        <main id="content" class="page">
+          {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+          <h1 class="title">{title}</h1>
+
+          <slot />
+
+          <nav class="pager" aria-label={UI.sections[lang]}>
+            {
+              prev ? (
+                <a href={pathFor(lang, prev.slug)} class="pager-prev">
+                  <small>{UI.prev[lang]}</small>
+                  {NAV[prev.key][lang]}
+                </a>
+              ) : (
+                <span />
+              )
+            }
+            {
+              next && (
+                <a href={pathFor(lang, next.slug)} class="pager-next">
+                  <small>{UI.next[lang]}</small>
+                  {NAV[next.key][lang]}
+                </a>
+              )
+            }
+          </nav>
+
+          <p class="privacy">{UI.privacy[lang]}</p>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/site.css";
+</style>

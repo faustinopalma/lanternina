@@ -1,0 +1,172 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="en"
+  page="identity"
+  eyebrow="Two tenants, two audiences"
+  title="Identity and access"
+  description="Parents sign in through an Entra External ID tenant; administrators through a separate workforce app registration with an app role. The house holds no Azure credential at all."
+>
+  <p class="lede">
+    Three kinds of caller reach this system and none of them authenticates the same way. A parent is
+    an external consumer identity. An administrator is a workforce identity with an app role. The
+    machine in the house is neither — it holds no Azure credential at all.
+  </p>
+
+  <div class="diagram" role="group" aria-label="Who authenticates how">
+    <div class="zone">
+      <p class="zone-name">Who signs in</p>
+      <div class="nodes">
+        <div class="node">
+          <b>Parent</b>
+          <span>Entra External ID (CIAM), self-service registration</span>
+        </div>
+        <div class="node">
+          <b>Administrator</b>
+          <span>workforce tenant, app role <code>Lanternina.Admin</code></span>
+        </div>
+        <div class="node strong">
+          <b>The house</b>
+          <span>a per-household device key over TLS, no Entra identity</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flowgap">
+      <p class="arrow">separate audiences →</p>
+      <p class="arrow back">← one API</p>
+    </div>
+
+    <div class="zone">
+      <p class="zone-name">What it reaches</p>
+      <div class="nodes">
+        <div class="node">
+          <b>Parent routes</b>
+          <span>their own household only</span>
+        </div>
+        <div class="node">
+          <b>Admin routes</b>
+          <span>admitting and rejecting accounts</span>
+        </div>
+        <div class="node">
+          <b>Device routes</b>
+          <span>ask for work, fetch approved items, return a reading</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Why the administrator is not a parent with a flag</h2>
+
+  <p>
+    It would have been one boolean. The reason it is not is that the External ID directory is open
+    to self-service registration, and a flag would live in the same Cosmos container that an
+    administrator edits — so the privilege and the thing that grants it would share a blast radius,
+    and a bootstrap path would have to exist to create the first one.
+  </p>
+
+  <p>
+    Instead the administrator signs in against a distinct app registration in the workforce tenant,
+    and the privilege arrives in the <code>roles</code> claim of the token. The two applications have
+    different audiences, so a parent's token is rejected by the audience check before any logic of
+    ours runs. That is a stronger statement than "we check a field": there is no code path in which a
+    consumer token is examined for administrative rights.
+  </p>
+
+  <p class="note">
+    A trap worth recording, because it costs an afternoon: an app role assignment can silently land
+    on <b>Default Access</b>, whose <code>appRoleId</code> is all zeros. The token is then perfectly
+    valid and simply carries no <code>roles</code> claim, so the refusal looks like a credential
+    problem rather than an assignment problem. Check
+    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code> and look at the id.
+  </p>
+
+  <h2>Multi-tenant by construction</h2>
+
+  <p>
+    Nothing in the data model assumes one household. Every stored row is partitioned by household
+    id, every device key belongs to exactly one household, and every parent route resolves the
+    household from the token rather than from anything the caller sends. A second house needs a
+    provisioning run, not a schema change.
+  </p>
+
+  <p>
+    That is a claim about shape, and it is worth being precise about how far it has been exercised:
+    the code has always run with one household in it. A second house has never been provisioned, so
+    "multi-tenant" here means the boundaries are drawn and enforced, not that two tenants have been
+    observed side by side.
+  </p>
+
+  <h2>The house has no Azure credential</h2>
+
+  <p>
+    The hub in the room cannot sign in to Azure and does not try. It presents a device key on an
+    <code>X-Device-Key</code> header over TLS, and everything that needs a model — reading a page,
+    interpreting a reminder, continuing an afternoon — is a request to the API, which holds the
+    credential. Default closed: with no device key configured, those routes answer 503 rather than
+    allowing anything.
+  </p>
+
+  <p>
+    So a machine physically removable from a house never carries something that could be replayed
+    against a subscription. The cost is the one stated in the flows: no cloud, no reading.
+  </p>
+
+  <h2>Two keys that are not the same key</h2>
+
+  <p>
+    Content safety and parental approval are both sealed with HMAC, with two separate keys, and the
+    approval seal covers the safety seal. Sharing one key would let the content-safety gate mint
+    parent approvals, which is exactly the failure the separation exists to prevent.
+  </p>
+
+  <p>
+    The approval seal is minted and verified inside a single execution on the device, so rotating
+    that key costs nothing. The safety seal crosses processes and days — minted when content is
+    offered, stored by the panel, verified later — so that is the key worth protecting. Both are
+    absent from the hub entirely, which was verified by searching the filesystem for the literal
+    values rather than by trusting the deployment script.
+  </p>
+
+  <h2>Publishing without a secret</h2>
+
+  <p>
+    The pipeline that deploys the API holds no password. A user-assigned managed identity carries a
+    federated credential, GitHub Actions exchanges its OIDC token for an Azure one, and three
+    role assignments bound to single resources do the rest: push to one registry, read it, and
+    update one container app.
+  </p>
+
+  <p class="note">
+    The subject of a federated credential carries numeric ids, not names:
+    <code>repo:owner@12345/repo@67890:ref:refs/heads/main</code>. The rejection message quotes the
+    subject it received in full, so the reliable method is to register once, run once, and read the
+    real subject out of the refusal rather than writing it from memory. It also survives a rename of
+    the repository.
+  </p>
+
+  <h2>Two gaps, named</h2>
+
+  <p>
+    <code>scp</code> is not verified. The token's audience, issuer, expiry and subject are checked
+    and the scope is not. It is harmless while there is exactly one scope, and it becomes a hole the
+    moment somebody adds a second one believing it separates permissions.
+  </p>
+
+  <p>
+    App registrations are created by hand in the portal, deliberately, and the steps are written
+    down rather than scripted. The one that is forgotten every time is
+    <code>requestedAccessTokenVersion: 2</code> in the manifest — without it the issuer is the v1
+    endpoint and every sign-in fails without saying why.
+  </p>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>The deployment steps, including the manual ones</a> ·
+    <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
+      >how the pipeline changes Azure with no secret anywhere</a
+    > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>what leaves the device</a>
+  </p>
+</Base>

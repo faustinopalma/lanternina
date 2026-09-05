@@ -1,0 +1,212 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+  lang="it"
+  page="flows"
+  eyebrow="Tre diagrammi"
+  title="Come funziona"
+  description="Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere inventato e l'essere finito, e cosa fa un foglio di carta nel suo giro."
+>
+  <p class="lede">
+    Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere inventato e l'essere finito, e
+    cosa fa un foglio di carta nel suo giro.
+  </p>
+
+  <h2>1. Chi chiede a chi</h2>
+
+  <p>
+    Ogni freccia che entra in casa è la risposta a una richiesta che la casa ha fatto. Non esiste una
+    strada in ingresso: il pannello scrive una riga, e l'hub la trova la volta dopo che chiede. È
+    questo che rende il pannello inerte — cambiare un'impostazione salva uno stato nuovo e non fa
+    succedere niente in una stanza.
+  </p>
+
+  <div class="diagram" role="group" aria-label="Il giro delle richieste">
+    <div class="zone">
+      <p class="zone-name">La casa</p>
+      <div class="nodes">
+        <div class="node strong">
+          <b>Hub</b>
+          <span>orologio · chiavi dei sigilli · coda di stampa</span>
+        </div>
+        <div class="node">
+          <b>schermi e-paper</b>
+          <span>ricevono un bitmap già fatto, non hanno font</span>
+        </div>
+        <div class="node">
+          <b>stampante · scanner</b>
+          <span>un foglio A4 per volta</span>
+        </div>
+        <div class="node">
+          <b>pulsante</b>
+          <span>una pressione, risposta dentro la stessa replica</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flowgap">
+      <p class="arrow">chiede, sul proprio orologio →</p>
+      <p class="arrow back">← risponde, dentro la replica</p>
+    </div>
+
+    <div class="zone">
+      <p class="zone-name">Azure, regione UE</p>
+      <div class="nodes">
+        <div class="node">
+          <b>pannello + API</b>
+          <span>tiene le decisioni, non innesca mai lavoro</span>
+        </div>
+        <div class="node strong">
+          <b>router dei modelli</b>
+          <span>l'unico modulo a cui è permesso un SDK</span>
+        </div>
+        <div class="node gate">
+          <b>Content Safety</b>
+          <span>l'unica cosa che può coniare un contenuto filtrato</span>
+        </div>
+        <div class="node">
+          <b>Microsoft Foundry</b>
+          <span>linguaggio · visione · immagini</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    Nessun modello gira sul dispositivo, e un test a livello di import rifiuta un runtime locale in
+    ogni package, router compreso. Il compromesso si dichiara: una sola strada di inferenza invece di
+    due, nessun peso da distribuire — al prezzo che una pagina tornata mentre il cloud è
+    irraggiungibile resta non letta finché non lo è di nuovo.
+  </p>
+
+  <h2>2. La vita di un pomeriggio</h2>
+
+  <p>
+    Un documento solo, scritto in un colpo prima che qualcuno ne abbia letto una parola. Contiene
+    ogni momento, tre lunghezze per ciascuno, una scala di aiuto a quattro pioli sotto ognuno, e una
+    via d'uscita. Niente viene aggiunto mentre gira — ed è quello che permette di accorciare lo
+    stesso momento, o di metterlo su uno schermo che tiene quaranta parole, arrivando comunque alla
+    stessa fine.
+  </p>
+
+  <ol class="steps">
+    <li>
+      <span class="step-n">1</span>
+      <div>
+        <b>La casa chiede un'idea</b>
+        <p>Ne tiene qualcuna pronta, così nessuno aspetta un modello.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">2</span>
+      <div>
+        <b>Un modello scrive il pomeriggio intero</b>
+        <p>68–157 s misurati su 22 corse. Poi sei controlli lo rileggono.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">3</span>
+      <div>
+        <b>Un secondo modello lo rilegge</b>
+        <p>
+          14,4–22,8 s. Un rifiuto costa un'invenzione intera da capo: per questo un controllo che
+          legge una formulazione invece di un fatto costa caro, e uno di questi è stato il rifiuto
+          più frequente finché non è stato corretto.
+        </p>
+      </div>
+    </li>
+    <li class="mark-out">
+      <span class="step-n">4</span>
+      <div>
+        <b>Aspetta un genitore</b>
+        <p>Approvare scrive una riga. Non stampa niente e non sveglia niente.</p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">5</span>
+      <div>
+        <b>La casa lo comincia</b>
+        <p>
+          In un giorno e dentro le ore fissate dal genitore, e solo se la lunghezza intera ci sta
+          ancora prima della fine — così una fine non è mai un troncamento.
+        </p>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">6</span>
+      <div>
+        <b>I momenti girano</b>
+        <p>
+          <code>say</code> mette parole su uno schermo, <code>hand over</code> stampa una pagina,
+          <code>collect</code> ne raccoglie una. La lunghezza si sceglie entrando in un momento e non
+          cambia fino al successivo.
+        </p>
+      </div>
+    </li>
+    <li class="mark-out">
+      <span class="step-n">7</span>
+      <div>
+        <b>O il resto è già scritto, o chiede</b>
+        <p>
+          <code>ask</code> vuol dire che il resto non è ancora scritto: la casa manda su il bianco e
+          la pagina tornata, e riceve una continuazione, nello stesso formato, con una sua fine.
+        </p>
+      </div>
+    </li>
+    <li class="ending">
+      <span class="step-n">8</span>
+      <div>
+        <b>Finisce sull'oggetto</b>
+        <p>
+          Mezz'ora prima dell'ora concordata comincia la via d'uscita, comunque sia andata. La fine è
+          la stessa fine, e nessuno schermo dice che è stata accorciata.
+        </p>
+      </div>
+    </li>
+  </ol>
+
+  <h2>3. Il giro della carta</h2>
+
+  <p>
+    La parte con meno meccanica dentro. Sulla carta non c'è niente stampato perché una macchina lo
+    trovi, quindi non c'è niente da rilevare, raddrizzare o decodificare.
+  </p>
+
+  <div class="chain" role="group" aria-label="Il giro della carta">
+    <div class="link">
+      <b>Parole</b>
+      <p>Già passate dal filtro. Citate dentro il prompt di disegno, carattere per carattere.</p>
+    </div>
+    <div class="link">
+      <b>Una chiamata di immagini</b>
+      <p>Il foglio A4 intero, disegnato in un colpo. 19–33 s.</p>
+    </div>
+    <div class="link">
+      <b>Stampata, e il bianco si conserva</b>
+      <p>Il bianco è l'unica cosa contro cui la lettura verrà confrontata.</p>
+    </div>
+    <div class="link human">
+      <b>Qualcuno ci scrive sopra</b>
+      <p>Oppure no. Niente nel formato dice che una pagina tornerà.</p>
+    </div>
+    <div class="link">
+      <b>Scanner, poi due immagini a un modello</b>
+      <p>Scansione ≈ 26 s, lettura 4,4–5,5 s. La domanda che si fa è cosa è cambiato.</p>
+    </div>
+    <div class="link out">
+      <b>segni · bianca</b>
+      <p>
+        Tutto il vocabolario. Poi la lettura sparisce: non finisce in un archivio, non in un log, e
+        in nessun posto dove qualcuno possa rileggerla dopo.
+      </p>
+    </div>
+  </div>
+
+  <p class="note">
+    Misurato col dito su un pulsante vero: dalla pressione alla lettura sullo schermo, circa 35 s, di
+    cui 26 s sono lo scanner. Il pavimento è lo scanner più al massimo un ciclo di risveglio dello
+    schermo, e il firmware aggiunge 5–11 s a qualunque intervallo di aggiornamento gli si chieda.
+  </p>
+</Base>

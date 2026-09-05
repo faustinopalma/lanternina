@@ -1,0 +1,158 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base
+  lang="en"
+  page="status"
+  eyebrow="A hackathon project, honestly described"
+  title="What is built"
+  description="An afternoon has run end to end in a house. What is running, what is not, and what the tests actually enforce."
+>
+  <p class="lede">
+    An afternoon has run end to end in a house: devised, approved in a browser, printed, filled in,
+    scanned, continued from what came back, and closed on its own hour. That happened once, on 24
+    August 2026, and four defects surfaced that day — none of which had been found by a test. They
+    were found by somebody standing next to the printer.
+  </p>
+
+  <p>
+    This is a hackathon project and it is not a finished product. It is also not a demo: the parts
+    below run against real services, with real credentials, on hardware in a room. Both of those
+    things are true at once, and the point of this page is to say which is which.
+  </p>
+
+  <h2>Running</h2>
+
+  <ul>
+    <li>
+      The cloud tier, the parent panel and its API, the model router with real credentials, and the
+      content-safety gate.
+    </li>
+    <li>
+      The hub services that serve the displays, pull an hourly picture, print, scan and answer a
+      button press inside the same HTTP response.
+    </li>
+    <li>
+      The afternoon format and its six checks, a second model that rereads every afternoon, the
+      parent approval, the page drawn whole and read against its blank, and the clock that
+      guarantees an ending.
+    </li>
+    <li>The picture archive, and usage accounting with a per-household cap.</li>
+    <li>
+      Identity: Entra External ID for parents, a separate workforce app registration with an app
+      role for administrators, per-household device keys for the house.
+    </li>
+  </ul>
+
+  <h2>Enforced, not merely intended</h2>
+
+  <p>
+    Each of these is a test rather than a convention, and each was mutation-checked: the violation
+    was injected and the test was watched to fail. If you change the design so one no longer holds,
+    please change the product rather than the test.
+  </p>
+
+  <table class="numbers">
+    <tbody>
+      <tr>
+        <th scope="row">Agents cannot approve their own output</th>
+        <td><code>Proposal</code> has no status field</td>
+      </tr>
+      <tr>
+        <th scope="row">Generated output cannot skip Content Safety</th>
+        <td>the payload type is minted only by the gate</td>
+      </tr>
+      <tr>
+        <th scope="row">Approved content cannot be swapped afterwards</th>
+        <td>the approval seal covers the safety seal</td>
+      </tr>
+      <tr>
+        <th scope="row">Only one component talks to a model</th>
+        <td>import-level check across every package</td>
+      </tr>
+      <tr>
+        <th scope="row">No model runs in the house</th>
+        <td>import-level check, router included</td>
+      </tr>
+      <tr>
+        <th scope="row">A reading cannot be pickled, copied or cached</th>
+        <td>the type closes every implicit route out of memory</td>
+      </tr>
+      <tr>
+        <th scope="row">Nothing works by making it hard to stop</th>
+        <td>a vocabulary check across storage, panel, browser and prompts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Every push to <code>main</code> runs <code>ruff</code> and the suite on a clean checkout, and
+    leaves a record: 962 tests, about 1 m 30 s. It is deliberately not a gate on the deploy — a
+    check that can block a deploy on a Saturday is a check somebody disables.
+  </p>
+
+  <h2>Not built, and not enforced</h2>
+
+  <ul>
+    <li>
+      <b>The handheld camera.</b> The object is being assembled by hand; <code>vision/</code> is an
+      empty Python package and nothing in the repository takes a photograph. Every guarantee stated
+      about the camera is a design decision that no test would notice being dropped. A device on a
+      bench and an empty package are not the same distance from working, and the second is the
+      longer one.
+    </li>
+    <li>
+      <b>The button panel.</b> Also an object on a bench. Today there is one button per display, and
+      it is enough to close the paper loop and not enough to answer a question.
+    </li>
+    <li>
+      <b>That a reading never lands in a store.</b> The type refuses to be pickled, copied or
+      cached, but the reading travels from the house to the panel and back as a request body, and
+      nothing stops either end writing that body down. One named household deliberately does keep
+      it, for a fortnight, while this is being built.
+    </li>
+    <li>
+      <b>The seventh property.</b> That every moment has an answer that can be wrong, and that the
+      last moment produces something worth keeping, is specified and not checked. A plan that fails
+      it is saved.
+    </li>
+    <li>
+      <b>A second house.</b> Never provisioned. The installer's <code>--install</code> has never
+      been run.
+    </li>
+  </ul>
+
+  <h2>What the failures taught</h2>
+
+  <p>
+    The defects worth reading are in the repository with their measurements attached, because a
+    system like this is mostly the record of things that turned out to be false. Three that changed
+    the design:
+  </p>
+
+  <ul>
+    <li>
+      A per-cell threshold computed with Otsu reported 45 % ink on visibly empty boxes, and the
+      synthetic test passed — because a uniform white patch makes Otsu degenerate. Only real paper
+      showed it.
+    </li>
+    <li>
+      A length cap on one field was being hit in 6 attempts out of 11, and each overrun cost a
+      second full model call. The cap protected nothing physical: it was shaping the output instead
+      of bounding it.
+    </li>
+    <li>
+      A validation rule compared a whole sentence as a substring, so an afternoon that named the
+      same object twice in different words was refused. The rule was reading a phrasing rather than
+      a fact, and it was the single most frequent refusal.
+    </li>
+  </ul>
+
+  <p>
+    <a href={`${REPO}/blob/main/docs/ILLUSTRATED.md`}>The system in photographs, page by page</a> ·
+    <a href={`${REPO}/tree/main/ideas`}>what is not built, ranked, each with a cost</a> ·
+    <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>the lines this project will not cross</a>
+  </p>
+</Base>

@@ -1,0 +1,26 @@
+---
+/** Not found. Bilingual on one page, because a reader who lands here has not chosen yet. */
+import { LANG_NAME } from "../i18n/ui";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Not found · Lanternina</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/notfound.css" />
+  </head>
+
+  <body>
+    <div class="fork">
+      <p class="mark"><span>◇</span> Lanternina</p>
+      <p class="tag" lang="en">That page is not here.</p>
+      <p class="tag" lang="it">Questa pagina non c'è.</p>
+      <a href="/en/" hreflang="en" lang="en">{LANG_NAME.en}</a>
+      <a href="/it/" hreflang="it" lang="it">{LANG_NAME.it}</a>
+    </div>
+  </body>
+</html>

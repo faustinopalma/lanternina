@@ -1,0 +1,39 @@
+---
+/** The root is a fork, not a page.
+ *
+ * It carries the hreflang set and then sends a reader to a language. The redirect is the
+ * only client-side script on the site; without it the two links below are the whole page,
+ * which is why they are real links and not a spinner.
+ */
+import { LANG_NAME, UI } from "../i18n/ui";
+
+const site = Astro.site!.origin;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lanternina</title>
+    <meta name="description" content={UI.tagline.en} />
+
+    <link rel="canonical" href={`${site}/en/`} />
+    <link rel="alternate" hreflang="en" href={`${site}/en/`} />
+    <link rel="alternate" hreflang="it" href={`${site}/it/`} />
+    <link rel="alternate" hreflang="x-default" href={`${site}/en/`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/notfound.css" />
+
+    <script is:inline src="/lang-redirect.js"></script>
+  </head>
+
+  <body>
+    <div class="fork">
+      <p class="mark"><span>◇</span> Lanternina</p>
+      <p class="tag">{UI.tagline.en}</p>
+      <a href="/en/" hreflang="en" lang="en">{LANG_NAME.en}</a>
+      <a href="/it/" hreflang="it" lang="it">{LANG_NAME.it}</a>
+    </div>
+  </body>
+</html>
