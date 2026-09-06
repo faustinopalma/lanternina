@@ -125,6 +125,43 @@ def test_a_long_body_is_kept_short_rather_than_lost() -> None:
 # ── Emptying the record, and the fourteen stores that share its container ────────────
 
 
+def test_the_record_keeps_a_container_to_itself() -> None:
+    """The guarantee is where the rows live, not whether a query is written correctly.
+
+    Every other store in `panel/cosmos_store.py` shares `sources` and every one of them
+    partitions on the household. Emptying the record is the one delete here that takes a
+    whole household at once, so while it lived in `sources` a mistake in its WHERE clause
+    could take the themes, the rhythm, the preferences, the guidelines and the reminders
+    with it. On 6 September 2026 it did.
+    """
+    from panel import cosmos_store
+
+    shared = {
+        name: value
+        for name, value in vars(cosmos_store).items()
+        if name.endswith("_CONTAINER") and isinstance(value, str) and name != "TRAILS_CONTAINER"
+    }
+    clashes = sorted(
+        name for name, value in shared.items() if value == cosmos_store.TRAILS_CONTAINER
+    )
+
+    assert not clashes, (
+        f"the record shares {cosmos_store.TRAILS_CONTAINER!r} with {clashes}, so emptying it "
+        "can reach settings a parent never asked to throw away"
+    )
+
+
+def test_the_infrastructure_makes_the_container_the_code_asks_for() -> None:
+    """A container named only in Python is a store that works locally and 404s in Azure."""
+    from panel import cosmos_store
+
+    described = Path("infra/modules/data.bicep").read_text(encoding="utf-8")
+
+    assert f"name: '{cosmos_store.TRAILS_CONTAINER}'" in described, (
+        f"{cosmos_store.TRAILS_CONTAINER!r} is not in infra/modules/data.bicep"
+    )
+
+
 class _OneContainer:
     """Enough of a Cosmos container to show what a query does and does not match.
 

@@ -76,6 +76,12 @@ var containers = [
   { name: 'proposals', partitionKey: '/familyId' }
   { name: 'outbox', partitionKey: '/familyId' }
   { name: 'sources', partitionKey: '/familyId' }
+  // The record of what the system wrote. Separate from 'sources' because it is the one
+  // thing a parent may throw away whole, and on 6 September 2026 doing that emptied a
+  // household's themes, rhythm, preferences, guidelines and reminders as well: they shared
+  // a container, so a delete scoped to the household reached all of them. A container of
+  // its own makes that structural instead of depending on the WHERE clause being right.
+  { name: 'trail', partitionKey: '/familyId' }
   // One document per model call, append-only. Separate from 'sources' because it grows
   // per call rather than per parent decision.
   { name: 'usage', partitionKey: '/familyId' }

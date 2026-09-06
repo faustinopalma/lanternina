@@ -68,7 +68,13 @@ REMINDERS_CONTAINER = "sources"
 MESSAGES_CONTAINER = "sources"
 REQUESTS_CONTAINER = "sources"
 EXPERIENCES_CONTAINER = "sources"
-TRAILS_CONTAINER = "sources"
+# Its own, and that is the whole point of it. Everything above shares `sources` and all of
+# it partitions on the household, so the parent's "empty the record" — the one delete in
+# this system that takes a whole household at once — could reach the themes, the rhythm,
+# the preferences, the guidelines and the reminders. It did, on 6 September 2026. A
+# container of its own means the blast radius is a property of where the rows live rather
+# than of a WHERE clause staying correct.
+TRAILS_CONTAINER = "trail"
 DRAFTS_CONTAINER = "sources"
 LIMIT_CONTAINER = "sources"
 USAGE_CONTAINER = "usage"
