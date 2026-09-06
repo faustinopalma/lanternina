@@ -95,3 +95,56 @@ def reload_prompts() -> str:
         if module is not None:
             importlib.reload(module)
     return str(importlib.import_module("agents.experience_deviser").PROMPT_FINGERPRINT)
+
+
+def everything() -> dict[str, str]:
+    """Every block the deviser sends, rendered, under a short name.
+
+    The format's own numbers are filled in; the placeholders that carry a household's
+    material are left as `$name` for the caller to fill. Comments never reach a model and
+    are not here either.
+    """
+    import shared.experience_prompt as fmt
+    from agents import experience_deviser as deviser
+    from research import calls
+
+    return {
+        "task": deviser.SAYS.text("task"),
+        "format": deviser.SAYS.text(
+            "format",
+            max_overview=deviser.MAX_OVERVIEW,
+            max_themes=deviser.MAX_THEMES,
+            max_theme=deviser.MAX_THEME,
+            MAX_SCRIPT=deviser.MAX_SCRIPT,
+        ),
+        "shape-of-a-moment": fmt.THE_SHAPE_OF_A_MOMENT,
+        "acts": fmt.THE_ACTS,
+        "marks-on-a-page": fmt.THE_MARKS_ON_A_PAGE,
+        "ten-dimensions": fmt.THE_TEN_DIMENSIONS,
+        "rules-head": deviser.SAYS.text(
+            "rules-head",
+            max_moments=deviser.MAX_MOMENTS,
+            max_title=deviser.MAX_TITLE,
+            max_overview=deviser.MAX_OVERVIEW,
+        ),
+        "limits": fmt.THE_LIMITS,
+        "rules-tail": deviser.SAYS.text(
+            "rules-tail", min_minutes=deviser.MIN_MINUTES, max_minutes=deviser.MAX_MINUTES
+        ),
+        "asking": deviser.SAYS.text("asking"),
+        "manner-head": deviser.SAYS.text("manner-head"),
+        "how-the-text-reads": fmt.HOW_THE_TEXT_READS,
+        "what-to-refuse": fmt.WHAT_TO_REFUSE_BY_DEFAULT,
+        "only-what-you-can-answer": fmt.ONLY_WHAT_YOU_CAN_ANSWER,
+        "worth-doing": fmt.WHAT_MAKES_IT_WORTH_DOING,
+        "manner-tail": deviser.SAYS.text("manner-tail"),
+        "method": deviser.SAYS.text("method"),
+        "household": deviser.SAYS.text("household"),
+        "pitch": deviser.SAYS.text("pitch"),
+        "stand-in": calls.SAYS.text("adolescent"),
+    }
+
+
+def to_paste(key: str, text: str) -> str:
+    """One block as the line of Python that overrides it, to paste into a cell and edit."""
+    return f'P["{key}"] = r"""\n{text.strip()}\n"""'

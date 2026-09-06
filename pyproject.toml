@@ -104,6 +104,11 @@ exclude = ["attic"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# The workbench holds prompt text as string literals, and a prompt is not wrapped: every
+# newline in one reaches a model.
+"research/officina.ipynb" = ["E501"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true
