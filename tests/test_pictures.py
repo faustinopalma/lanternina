@@ -201,3 +201,41 @@ def test_a_subject_written_before_the_encoding_reads_back_unchanged() -> None:
     plain = {"theme": "animali del bosco", "createdAt": "10.0", "kind": "ok"}
     read = _to_record("h1", _Blob("h1/pic_1.bmp", plain))
     assert (read.theme, read.display) == ("animali del bosco", "")
+
+
+# -- A page is not a picture -----------------------------------------------------------
+
+
+def test_a_sheet_drawn_for_the_printer_is_not_kept_among_the_pictures() -> None:
+    """They shared one archive until 6 September 2026.
+
+    A picture is chosen for a display and a page is offered to paper: two kinds of thing,
+    one of which the parent browses as a wall of pictures. Two lined worksheets turned up in
+    the middle of it. Separate archives make that a property of where the bytes live rather
+    than of every writer remembering which kind it holds.
+    """
+    from panel.app import _page_archive, _picture_archive
+
+    settings = Settings(
+        dev_auth=True,
+        bootstrap_contact=PARENT,
+        blob_endpoint="https://blobs.example.test",
+        pictures_container="p",
+    )
+
+    assert settings.pages_container != settings.pictures_container
+    # Configured or not, the two are never the same object.
+    assert _page_archive(settings) is not _picture_archive(settings)
+
+
+def test_the_infrastructure_makes_the_container_the_pages_go_to() -> None:
+    """A container named only in Python works locally and 404s in Azure."""
+    from pathlib import Path
+
+    described = Path("infra/modules/data.bicep").read_text(encoding="utf-8")
+    settings = Settings(dev_auth=True, bootstrap_contact=PARENT)
+
+    assert f"param pagesContainerName string = '{settings.pages_container}'" in described
+    assert "LANTERNINA_PAGES_CONTAINER" in Path("infra/modules/app.bicep").read_text(
+        encoding="utf-8"
+    )

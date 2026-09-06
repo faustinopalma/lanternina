@@ -27,6 +27,7 @@ param storageAccountName string
 param workQueueName string
 param blobEndpoint string
 param picturesContainerName string
+param pagesContainerName string
 param foundryEndpoint string
 param foundryDeployment string
 param foundryFrontierDeployments string
@@ -153,6 +154,10 @@ var commonEnv = [
   {
     name: 'LANTERNINA_PICTURES_CONTAINER'
     value: picturesContainerName
+  }
+  {
+    name: 'LANTERNINA_PAGES_CONTAINER'
+    value: pagesContainerName
   }
   {
     name: 'LANTERNINA_FOUNDRY_ENDPOINT'

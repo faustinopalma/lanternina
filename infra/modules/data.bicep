@@ -24,6 +24,8 @@ param runtimeIdentityPrincipalId string
 param databaseName string = 'lanternina'
 // Every picture a display has shown, kept so it can be put back later.
 param picturesContainerName string = 'pictures'
+// Every sheet drawn for the printer, kept so a parent can see what was offered to paper.
+param pagesContainerName string = 'pages'
 
 var namePrefix = '${projectName}-${environmentName}'
 var workQueueName = 'work'
@@ -168,6 +170,17 @@ resource picturesContainer 'Microsoft.Storage/storageAccounts/blobServices/conta
   }
 }
 
+// Sheets drawn for the printer. Its own container because it is its own kind of thing: a
+// picture is chosen for a display and a page is offered to paper. They shared one archive
+// until 6 September 2026, and the parent's wall of pictures had lined worksheets in it.
+resource pagesContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: blobService
+  name: pagesContainerName
+  properties: {
+    publicAccess: 'None'
+  }
+}
+
 resource blobDataRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: storage
   name: guid(storage.id, runtimeIdentityPrincipalId, storageBlobDataContributorId)
@@ -306,3 +319,4 @@ output storageAccountName string = storage.name
 output workQueueName string = workQueueName
 output blobEndpoint string = storage.properties.primaryEndpoints.blob
 output picturesContainerName string = picturesContainerName
+output pagesContainerName string = pagesContainerName

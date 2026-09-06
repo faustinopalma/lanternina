@@ -109,6 +109,7 @@ def create_app(
     settings: Settings | None = None,
     proposals: ProposalStore | None = None,
     pictures: PictureArchive | None = None,
+    pages: PictureArchive | None = None,
     themes: ThemeStore | None = None,
     devices: DeviceStatusStore | None = None,
     inventory: InventoryStore | None = None,
@@ -139,6 +140,7 @@ def create_app(
     app.state.pictures = (
         pictures if pictures is not None else _picture_archive(app.state.settings)
     )
+    app.state.pages = pages if pages is not None else _page_archive(app.state.settings)
     app.state.themes = themes if themes is not None else _theme_store(app.state.settings)
     app.state.devices = devices if devices is not None else _device_store(app.state.settings)
     app.state.inventory = (
@@ -294,6 +296,15 @@ def _picture_archive(settings: Settings) -> PictureArchive:
     from .pictures import BlobPictureArchive
 
     return BlobPictureArchive(settings.blob_endpoint, settings.pictures_container)
+
+
+def _page_archive(settings: Settings) -> PictureArchive:
+    """The sheets, kept apart from the pictures. Same shape, different container."""
+    if not settings.blob_configured:
+        return InMemoryPictureArchive()
+    from .pictures import BlobPictureArchive
+
+    return BlobPictureArchive(settings.blob_endpoint, settings.pages_container)
 
 
 def _theme_store(settings: Settings) -> ThemeStore:

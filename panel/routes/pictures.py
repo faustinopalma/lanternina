@@ -103,3 +103,25 @@ def picture_content(picture_id: str, account: CurrentAccount, request: Request) 
     except Exception as exc:
         raise HTTPException(status_code=404, detail="unknown_picture") from exc
     return Response(content=image, media_type=record.media or "image/bmp")
+
+
+@router.get("/api/pages/{page_id}/content")
+def page_content(page_id: str, account: CurrentAccount, request: Request) -> Response:
+    """A sheet drawn for the printer, read from the archive the sheets live in.
+
+    Separate from the pictures because they are separate things: one is chosen for a display
+    and one is offered to paper. They shared an archive until 6 September 2026, and the
+    parent's wall of pictures had lined worksheets in the middle of it.
+
+    The two sheets written before the split are still among the pictures, so this falls back
+    there rather than losing them.
+    """
+    pages: PictureArchive = request.app.state.pages
+    pictures: PictureArchive = request.app.state.pictures
+    for archive in (pages, pictures):
+        try:
+            record, image = archive.get(str(account.household_id), page_id)
+        except Exception:  # noqa: BLE001 - storage SDKs raise their own not-found types
+            continue
+        return Response(content=image, media_type=record.media or "image/png")
+    raise HTTPException(status_code=404, detail="unknown_page")

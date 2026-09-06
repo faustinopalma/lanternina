@@ -161,6 +161,12 @@ export function httpApi(token: string): Api {
       return response.blob();
     },
 
+    async pageContent(id: string): Promise<Blob> {
+      const response = await call(`/api/pages/${id}/content`);
+      if (!response.ok) throw new ApiError("page");
+      return response.blob();
+    },
+
     async themes(): Promise<Theme[]> {
       const answer = await json<{ themes: Theme[] }>("/api/themes", {}, ["themes"]);
       return answer.themes;

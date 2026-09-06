@@ -133,7 +133,7 @@ def _keep_the_drawing(
     """
     if not run_id:
         return
-    archive: PictureArchive = request.app.state.pictures
+    archive: PictureArchive = request.app.state.pages
     trail: TrailStore = request.app.state.trail
     now = time.time()
     picture_id = str(new_id("pic"))

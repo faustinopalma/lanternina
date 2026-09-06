@@ -466,6 +466,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     },
     pictures: async (page, perPage) => ({ ...SAMPLE_PICTURES, page, perPage }),
     pictureContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),
+    pageContent: async () => new Blob([TINY_BITMAP], { type: "image/png" }),
     themes: async () => themes,
     addTheme: async (label) => {
       recorded.themesAdded.push(label);

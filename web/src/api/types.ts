@@ -482,6 +482,8 @@ export interface Api {
   trail(runId: string): Promise<Trail>;
   /** Empty the record for this household. Deletes, and cannot be undone. */
   forgetTrail(): Promise<{ forgotten: number }>;
+  /** A sheet drawn for the printer. Its own archive: a page is not a picture. */
+  pageContent(id: string): Promise<Blob>;
   drafts(): Promise<DraftCard[]>;
   startDraft(fromExperience: string): Promise<Draft>;
   draft(id: string): Promise<Draft>;

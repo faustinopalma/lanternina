@@ -46,6 +46,11 @@ class Settings:
     # Where shown pictures are archived. Empty keeps them in memory only.
     blob_endpoint: str = ""
     pictures_container: str = "pictures"
+    # Sheets drawn for the printer. Its own container because it is its own kind of thing:
+    # a picture is chosen for a display and a page is offered to paper, and on 6 September
+    # 2026 they shared one archive, so the parent's wall of pictures had two lined sheets in
+    # the middle of it.
+    pages_container: str = "pages"
     # How many paid calls one household may make in a month, of any kind, unless the parent
     # has set their own. Zero removes the limit, which has to be typed on purpose.
     monthly_limit: int = DEFAULT_MONTHLY_LIMIT
@@ -102,6 +107,7 @@ class Settings:
             pictures_container=os.environ.get(
                 "LANTERNINA_PICTURES_CONTAINER", "pictures"
             ).strip(),
+            pages_container=os.environ.get("LANTERNINA_PAGES_CONTAINER", "pages").strip(),
             monthly_limit=int(
                 os.environ.get("LANTERNINA_MONTHLY_LIMIT", str(DEFAULT_MONTHLY_LIMIT))
             ),

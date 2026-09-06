@@ -22,7 +22,7 @@ function Drawn({ pictureId }: { pictureId: string }) {
     let alive = true;
     let made = "";
     api
-      .pictureContent(pictureId)
+      .pageContent(pictureId)
       .then((bytes) => {
         if (!alive) return;
         made = URL.createObjectURL(bytes);

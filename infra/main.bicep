@@ -225,6 +225,7 @@ module app 'modules/app.bicep' = {
     workQueueName: data.outputs.workQueueName
     blobEndpoint: data.outputs.blobEndpoint
     picturesContainerName: data.outputs.picturesContainerName
+    pagesContainerName: data.outputs.pagesContainerName
     foundryEndpoint: ai.outputs.projectEndpoint
     foundryDeployment: ai.outputs.defaultDeploymentName
     foundryFrontierDeployments: join(ai.outputs.frontierDeploymentNames, ',')
