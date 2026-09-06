@@ -1,0 +1,47 @@
+---
+/** Three kinds of caller, one API, three sets of routes. The drawing says the thing the
+ * prose then argues: the three edges on the left carry three different credentials, and
+ * none of them can be exchanged for another. */
+import Frame from "./Frame.astro";
+import Node from "./Node.astro";
+
+interface Box {
+  title: string;
+  sub?: string[];
+}
+
+interface Props {
+  title: string;
+  desc: string;
+  caption?: string;
+  parent: Box;
+  admin: Box;
+  house: Box;
+  api: Box;
+  parentRoutes: Box;
+  adminRoutes: Box;
+  deviceRoutes: Box;
+}
+
+const p = Astro.props;
+---
+
+<Frame id="idn" viewBox="0 0 840 384" title={p.title} desc={p.desc} caption={p.caption}>
+  <Node x={16} y={16} w={236} h={84} title={p.parent.title} sub={p.parent.sub} kind="human" />
+  <Node x={16} y={150} w={236} h={84} title={p.admin.title} sub={p.admin.sub} kind="human" />
+  <Node x={16} y={284} w={236} h={84} title={p.house.title} sub={p.house.sub} kind="strong" />
+
+  <Node x={322} y={142} w={196} h={100} title={p.api.title} sub={p.api.sub} kind="gate" />
+
+  <Node x={588} y={16} w={236} h={84} title={p.parentRoutes.title} sub={p.parentRoutes.sub} />
+  <Node x={588} y={150} w={236} h={84} title={p.adminRoutes.title} sub={p.adminRoutes.sub} />
+  <Node x={588} y={284} w={236} h={84} title={p.deviceRoutes.title} sub={p.deviceRoutes.sub} />
+
+  <line x1="252" y1="58" x2="318" y2="158" class="g-edge" marker-end="url(#idn-h)" />
+  <line x1="252" y1="192" x2="318" y2="192" class="g-edge" marker-end="url(#idn-h)" />
+  <line x1="252" y1="326" x2="318" y2="226" class="g-edge" marker-end="url(#idn-h)" />
+
+  <line x1="518" y1="158" x2="584" y2="58" class="g-edge" marker-end="url(#idn-h)" />
+  <line x1="518" y1="192" x2="584" y2="192" class="g-edge" marker-end="url(#idn-h)" />
+  <line x1="518" y1="226" x2="584" y2="326" class="g-edge" marker-end="url(#idn-h)" />
+</Frame>

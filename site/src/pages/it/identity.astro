@@ -1,4 +1,5 @@
 ---
+import WhoSignsIn from "../../components/graph/WhoSignsIn.astro";
 import Base from "../../layouts/Base.astro";
 import { REPO } from "../../i18n/ui";
 ---
@@ -16,48 +17,33 @@ import { REPO } from "../../i18n/ui";
     macchina in casa non è né l'una né l'altro: non tiene nessuna credenziale Azure.
   </p>
 
-  <div class="diagram" role="group" aria-label="Chi si autentica come">
-    <div class="zone">
-      <p class="zone-name">Chi entra</p>
-      <div class="nodes">
-        <div class="node">
-          <b>Genitore</b>
-          <span>Entra External ID (CIAM), registrazione autonoma</span>
-        </div>
-        <div class="node">
-          <b>Amministratore</b>
-          <span>tenant workforce, app role <code>Lanternina.Admin</code></span>
-        </div>
-        <div class="node strong">
-          <b>La casa</b>
-          <span>una device key per nucleo su TLS, nessuna identità Entra</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="flowgap">
-      <p class="arrow">audience separate →</p>
-      <p class="arrow back">← una sola API</p>
-    </div>
-
-    <div class="zone">
-      <p class="zone-name">Cosa raggiunge</p>
-      <div class="nodes">
-        <div class="node">
-          <b>Rotte del genitore</b>
-          <span>solo il proprio nucleo</span>
-        </div>
-        <div class="node">
-          <b>Rotte dell'amministratore</b>
-          <span>ammettere e rifiutare account</span>
-        </div>
-        <div class="node">
-          <b>Rotte del dispositivo</b>
-          <span>chiedere lavoro, ritirare gli approvati, restituire una lettura</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <WhoSignsIn
+    title="Chi entra, e cosa raggiunge"
+    desc="Tre chiamanti a sinistra raggiungono una sola API al centro, che raggiunge tre gruppi di rotte a destra. Un genitore arriva con un token Entra External ID e raggiunge solo il proprio nucleo. Un amministratore arriva dal tenant workforce con l'app role Lanternina.Admin e raggiunge le rotte che ammettono e rifiutano account. La casa arriva con una device key per nucleo su TLS, senza nessuna identità Entra, e raggiunge le rotte per chiedere lavoro, ritirare gli approvati e restituire una lettura."
+    caption="Tre frecce dentro un solo nodo, e nessuna delle tre credenziali si può presentare al posto di un'altra."
+    parent={{
+      title: "Un genitore",
+      sub: ["Entra External ID (CIAM)", "registrazione autonoma"],
+    }}
+    admin={{
+      title: "Un amministratore",
+      sub: ["tenant workforce, app role", "Lanternina.Admin"],
+    }}
+    house={{
+      title: "La casa",
+      sub: ["una device key per nucleo,", "su TLS — nessuna identità Entra"],
+    }}
+    api={{
+      title: "Una sola API",
+      sub: ["audience separate, controllate", "prima di ogni logica nostra"],
+    }}
+    parentRoutes={{ title: "Rotte del genitore", sub: ["solo il proprio nucleo"] }}
+    adminRoutes={{ title: "Rotte dell'amministratore", sub: ["ammettere e rifiutare account"] }}
+    deviceRoutes={{
+      title: "Rotte del dispositivo",
+      sub: ["chiedere lavoro, ritirare", "gli approvati, restituire una lettura"],
+    }}
+  />
 
   <h2>Perché l'amministratore non è un genitore con un flag</h2>
 

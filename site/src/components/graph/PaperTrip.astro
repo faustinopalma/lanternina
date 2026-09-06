@@ -1,0 +1,50 @@
+---
+/** The paper round trip, drawn as the ring it is: what comes back is what the next words
+ * are written from. The one box that is not machinery is marked, because it is the only
+ * step nothing in the system can make happen. */
+import Frame from "./Frame.astro";
+import Node from "./Node.astro";
+
+interface Box {
+  title: string;
+  sub?: string[];
+}
+
+interface Props {
+  title: string;
+  desc: string;
+  caption?: string;
+  words: Box;
+  drawn: Box;
+  printed: Box;
+  person: Box;
+  scanned: Box;
+  read: Box;
+  outcome: Box;
+  feeds: string;
+}
+
+const p = Astro.props;
+---
+
+<Frame id="paper" viewBox="0 0 840 412" title={p.title} desc={p.desc} caption={p.caption}>
+  <Node x={40} y={30} w={230} h={78} title={p.words.title} sub={p.words.sub} />
+  <Node x={311} y={30} w={230} h={78} title={p.drawn.title} sub={p.drawn.sub} />
+  <Node x={582} y={30} w={230} h={78} title={p.printed.title} sub={p.printed.sub} />
+  <Node x={582} y={170} w={230} h={78} title={p.person.title} sub={p.person.sub} kind="human" />
+  <Node x={582} y={310} w={230} h={78} title={p.scanned.title} sub={p.scanned.sub} />
+  <Node x={311} y={310} w={230} h={78} title={p.read.title} sub={p.read.sub} />
+  <Node x={40} y={310} w={230} h={78} title={p.outcome.title} sub={p.outcome.sub} kind="end" />
+
+  <line x1="270" y1="69" x2="309" y2="69" class="g-edge" marker-end="url(#paper-h)" />
+  <line x1="541" y1="69" x2="580" y2="69" class="g-edge" marker-end="url(#paper-h)" />
+  <line x1="697" y1="108" x2="697" y2="168" class="g-edge" marker-end="url(#paper-h)" />
+  <line x1="697" y1="248" x2="697" y2="308" class="g-edge" marker-end="url(#paper-h)" />
+  <line x1="582" y1="349" x2="543" y2="349" class="g-edge" marker-end="url(#paper-h)" />
+  <line x1="311" y1="349" x2="272" y2="349" class="g-edge" marker-end="url(#paper-h)" />
+
+  <path d="M40 349 H 26 V 69 H 38" class="g-edge g-edge-back" marker-end="url(#paper-h)" />
+  <text transform="rotate(-90 12 209)" x="12" y="209" text-anchor="middle" class="g-lbl">
+    {p.feeds}
+  </text>
+</Frame>

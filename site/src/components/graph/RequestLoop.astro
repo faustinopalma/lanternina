@@ -1,0 +1,101 @@
+---
+/** Who asks whom. Two zones, one hub, one chain in the cloud, and no arrow that starts
+ * outside the house and ends inside it. */
+import Frame from "./Frame.astro";
+import Node from "./Node.astro";
+
+interface Box {
+  title: string;
+  sub?: string[];
+}
+
+interface Props {
+  title: string;
+  desc: string;
+  caption?: string;
+  house: string;
+  cloud: string;
+  parent: Box;
+  writes: string;
+  displays: Box;
+  button: Box;
+  hub: Box;
+  paper: Box;
+  shows: string;
+  press: string;
+  sheet: string;
+  api: Box;
+  router: Box;
+  gate: Box;
+  foundry: Box;
+  asks: string[];
+  answers: string[];
+}
+
+const p = Astro.props;
+---
+
+<Frame id="loop" viewBox="0 0 820 512" title={p.title} desc={p.desc} caption={p.caption}>
+  <rect x="8" y="96" width="320" height="400" rx="6" class="g-zone" />
+  <rect x="492" y="96" width="320" height="400" rx="6" class="g-zone" />
+  <text x="8" y="86" class="g-zone-name">{p.house}</text>
+  <text x="492" y="86" class="g-zone-name">{p.cloud}</text>
+
+  <Node x={536} y={8} w={252} h={52} title={p.parent.title} sub={p.parent.sub} kind="human" />
+  <line x1="662" y1="60" x2="662" y2="132" class="g-edge" marker-end="url(#loop-h)" />
+  <text x="674" y="98" class="g-lbl">{p.writes}</text>
+
+  <Node x={24} y={124} w={140} h={56} title={p.displays.title} sub={p.displays.sub} />
+  <Node x={172} y={124} w={140} h={56} title={p.button.title} sub={p.button.sub} />
+  <Node x={24} y={236} w={288} h={64} title={p.hub.title} sub={p.hub.sub} kind="strong" />
+  <Node x={24} y={396} w={288} h={56} title={p.paper.title} sub={p.paper.sub} />
+
+  <line x1="94" y1="236" x2="94" y2="182" class="g-edge" marker-end="url(#loop-h)" />
+  <text x="102" y="214" class="g-lbl">{p.shows}</text>
+  <line x1="242" y1="182" x2="242" y2="234" class="g-edge" marker-end="url(#loop-h)" />
+  <text x="234" y="214" text-anchor="end" class="g-lbl">{p.press}</text>
+  <line
+    x1="168"
+    y1="302"
+    x2="168"
+    y2="394"
+    class="g-edge"
+    marker-start="url(#loop-h)"
+    marker-end="url(#loop-h)"
+  />
+  <text x="180" y="352" class="g-lbl">{p.sheet}</text>
+
+  <Node x={508} y={132} w={288} h={56} title={p.api.title} sub={p.api.sub} />
+  <Node x={508} y={228} w={288} h={56} title={p.router.title} sub={p.router.sub} kind="strong" />
+  <Node x={508} y={324} w={288} h={56} title={p.gate.title} sub={p.gate.sub} kind="gate" />
+  <Node x={508} y={420} w={288} h={56} title={p.foundry.title} sub={p.foundry.sub} />
+
+  <line x1="652" y1="188" x2="652" y2="226" class="g-edge" marker-end="url(#loop-h)" />
+  <line x1="652" y1="284" x2="652" y2="322" class="g-edge" marker-end="url(#loop-h)" />
+  <line x1="652" y1="380" x2="652" y2="418" class="g-edge" marker-end="url(#loop-h)" />
+
+  {/* The only two edges that cross the boundary. Both begin in the house. */}
+  <line x1="312" y1="250" x2="504" y2="155" class="g-edge-lit" marker-end="url(#loop-hl)" />
+  {
+    p.asks.map((line, i) => (
+      <text x="410" y={176 + i * 14} text-anchor="middle" class="g-lbl-lit">
+        {line}
+      </text>
+    ))
+  }
+  <line
+    x1="506"
+    y1="182"
+    x2="314"
+    y2="291"
+    class="g-edge g-edge-back"
+    marker-end="url(#loop-h)"
+  />
+  {
+    p.answers.map((line, i) => (
+      <text x="410" y={262 + i * 14} text-anchor="middle" class="g-lbl">
+        {line}
+      </text>
+    ))
+  }
+</Frame>

@@ -1,0 +1,71 @@
+---
+/** The life of an afternoon: one path down, two edges that go back up, one that leaves the
+ * column to ask. The two returning edges are the whole point of the drawing — a refusal
+ * costs a whole new devise, and `ask` is where the document is not finished yet. */
+import Frame from "./Frame.astro";
+import Node from "./Node.astro";
+
+interface Box {
+  title: string;
+  sub?: string[];
+}
+
+interface Props {
+  title: string;
+  desc: string;
+  caption?: string;
+  idea: Box;
+  devise: Box;
+  checks: Box;
+  waits: Box;
+  begins: Box;
+  moment: Box;
+  cameBack: Box;
+  ends: Box;
+  ask: Box;
+  refused: string;
+  passes: string;
+  approving: string;
+  nextMoment: string;
+  askEdge: string;
+  continuation: string;
+  closes: string;
+}
+
+const p = Astro.props;
+---
+
+<Frame id="life" viewBox="0 0 780 884" title={p.title} desc={p.desc} caption={p.caption}>
+  <Node x={110} y={16} w={340} h={56} title={p.idea.title} sub={p.idea.sub} />
+  <Node x={110} y={112} w={340} h={64} title={p.devise.title} sub={p.devise.sub} />
+  <Node x={110} y={216} w={340} h={72} title={p.checks.title} sub={p.checks.sub} kind="gate" />
+  <Node x={110} y={328} w={340} h={64} title={p.waits.title} sub={p.waits.sub} kind="human" />
+  <Node x={110} y={432} w={340} h={64} title={p.begins.title} sub={p.begins.sub} />
+  <Node x={110} y={536} w={340} h={64} title={p.moment.title} sub={p.moment.sub} kind="strong" />
+  <Node x={110} y={640} w={340} h={64} title={p.cameBack.title} sub={p.cameBack.sub} kind="gate" />
+  <Node x={110} y={800} w={340} h={64} title={p.ends.title} sub={p.ends.sub} kind="end" />
+  <Node x={480} y={624} w={292} h={96} title={p.ask.title} sub={p.ask.sub} />
+
+  <line x1="280" y1="72" x2="280" y2="110" class="g-edge" marker-end="url(#life-h)" />
+  <line x1="280" y1="176" x2="280" y2="214" class="g-edge" marker-end="url(#life-h)" />
+  <line x1="280" y1="288" x2="280" y2="326" class="g-edge" marker-end="url(#life-h)" />
+  <text x="290" y="312" class="g-lbl">{p.passes}</text>
+  <line x1="280" y1="392" x2="280" y2="430" class="g-edge" marker-end="url(#life-h)" />
+  <text x="290" y="416" class="g-lbl">{p.approving}</text>
+  <line x1="280" y1="496" x2="280" y2="534" class="g-edge" marker-end="url(#life-h)" />
+  <line x1="280" y1="600" x2="280" y2="638" class="g-edge" marker-end="url(#life-h)" />
+  <line x1="280" y1="704" x2="280" y2="798" class="g-edge" marker-end="url(#life-h)" />
+  <text x="290" y="756" class="g-lbl">{p.closes}</text>
+
+  <path d="M110 252 H 44 V 144 H 108" class="g-edge g-edge-back" marker-end="url(#life-h)" />
+  <text x="52" y="200" class="g-lbl">{p.refused}</text>
+
+  <path d="M110 672 H 44 V 568 H 108" class="g-edge" marker-end="url(#life-h)" />
+  <text x="52" y="624" class="g-lbl">{p.nextMoment}</text>
+
+  <line x1="450" y1="672" x2="478" y2="672" class="g-edge-lit" marker-end="url(#life-hl)" />
+  <text x="464" y="660" text-anchor="middle" class="g-lbl-lit">{p.askEdge}</text>
+
+  <path d="M626 624 V 568 H 452" class="g-edge-lit" marker-end="url(#life-hl)" />
+  <text x="492" y="556" class="g-lbl-lit">{p.continuation}</text>
+</Frame>

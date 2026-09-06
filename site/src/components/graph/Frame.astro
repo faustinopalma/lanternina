@@ -1,0 +1,54 @@
+---
+/** The shell every graph on this site shares: one SVG, two arrowheads, a caption.
+ *
+ * `id` prefixes the marker and label ids, because three graphs on one page would otherwise
+ * define the same arrowhead three times and the browser would use whichever came first.
+ */
+interface Props {
+  id: string;
+  viewBox: string;
+  title: string;
+  desc: string;
+  caption?: string;
+}
+
+const { id, viewBox, title, desc, caption } = Astro.props;
+---
+
+<figure class="graph">
+  <div class="graph-frame" tabindex="0" role="group" aria-labelledby={`${id}-t`}>
+    <svg viewBox={viewBox} role="img" aria-labelledby={`${id}-t ${id}-d`}>
+      <title id={`${id}-t`}>{title}</title>
+      <desc id={`${id}-d`}>{desc}</desc>
+
+      <defs>
+        {/* userSpaceOnUse, so a heavier line does not also grow its head. */}
+        <marker
+          id={`${id}-h`}
+          markerUnits="userSpaceOnUse"
+          markerWidth="11"
+          markerHeight="9"
+          refX="10"
+          refY="4.5"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L11 4.5 L0 9 Z" class="g-head" />
+        </marker>
+        <marker
+          id={`${id}-hl`}
+          markerUnits="userSpaceOnUse"
+          markerWidth="13"
+          markerHeight="11"
+          refX="12"
+          refY="5.5"
+          orient="auto-start-reverse"
+        >
+          <path d="M0 0 L13 5.5 L0 11 Z" class="g-head-lit" />
+        </marker>
+      </defs>
+
+      <slot />
+    </svg>
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

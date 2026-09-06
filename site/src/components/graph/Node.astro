@@ -1,0 +1,41 @@
+---
+/** One node of a graph: a box with a name and, under it, lines that are already broken.
+ *
+ * The lines are given rather than wrapped because SVG does not wrap text, and the same
+ * geometry serves both languages — a label that grows in translation would run out of its
+ * box silently. Breaking it in the page is the only place a person can see it happen.
+ */
+export type NodeKind = "plain" | "strong" | "gate" | "human" | "end";
+
+interface Props {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  title: string;
+  sub?: string[];
+  kind?: NodeKind;
+}
+
+const { x, y, w, h, title, sub = [], kind = "plain" } = Astro.props;
+
+const cx = x + w / 2;
+const first = y + h / 2 - (14 + sub.length * 14) / 2 + 12;
+---
+
+<g>
+  <rect x={x} y={y} width={w} height={h} rx="4" class={`g-box g-box-${kind}`} />
+  <text x={cx} y={first} text-anchor="middle" class={`g-t g-t-${kind}`}>{title}</text>
+  {
+    sub.map((line, i) => (
+      <text
+        x={cx}
+        y={first + 16 + i * 14}
+        text-anchor="middle"
+        class={`g-sub g-sub-${kind}`}
+      >
+        {line}
+      </text>
+    ))
+  }
+</g>

@@ -1,4 +1,5 @@
 ---
+import WhoSignsIn from "../../components/graph/WhoSignsIn.astro";
 import Base from "../../layouts/Base.astro";
 import { REPO } from "../../i18n/ui";
 ---
@@ -16,48 +17,33 @@ import { REPO } from "../../i18n/ui";
     machine in the house is neither — it holds no Azure credential at all.
   </p>
 
-  <div class="diagram" role="group" aria-label="Who authenticates how">
-    <div class="zone">
-      <p class="zone-name">Who signs in</p>
-      <div class="nodes">
-        <div class="node">
-          <b>Parent</b>
-          <span>Entra External ID (CIAM), self-service registration</span>
-        </div>
-        <div class="node">
-          <b>Administrator</b>
-          <span>workforce tenant, app role <code>Lanternina.Admin</code></span>
-        </div>
-        <div class="node strong">
-          <b>The house</b>
-          <span>a per-household device key over TLS, no Entra identity</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="flowgap">
-      <p class="arrow">separate audiences →</p>
-      <p class="arrow back">← one API</p>
-    </div>
-
-    <div class="zone">
-      <p class="zone-name">What it reaches</p>
-      <div class="nodes">
-        <div class="node">
-          <b>Parent routes</b>
-          <span>their own household only</span>
-        </div>
-        <div class="node">
-          <b>Admin routes</b>
-          <span>admitting and rejecting accounts</span>
-        </div>
-        <div class="node">
-          <b>Device routes</b>
-          <span>ask for work, fetch approved items, return a reading</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <WhoSignsIn
+    title="Who signs in, and what they reach"
+    desc="Three callers on the left reach one API in the middle, which reaches three sets of routes on the right. A parent arrives with an Entra External ID token and reaches only their own household. An administrator arrives from the workforce tenant with the app role Lanternina.Admin and reaches the routes that admit and reject accounts. The house arrives with a per-household device key over TLS, holding no Entra identity, and reaches the routes that ask for work, fetch approved items and return a reading."
+    caption="Three edges into one node, and none of the three credentials can be presented in place of another."
+    parent={{
+      title: "A parent",
+      sub: ["Entra External ID (CIAM)", "self-service registration"],
+    }}
+    admin={{
+      title: "An administrator",
+      sub: ["workforce tenant, app role", "Lanternina.Admin"],
+    }}
+    house={{
+      title: "The house",
+      sub: ["a per-household device key", "over TLS — no Entra identity"],
+    }}
+    api={{
+      title: "One API",
+      sub: ["separate audiences, checked", "before any logic of ours runs"],
+    }}
+    parentRoutes={{ title: "Parent routes", sub: ["their own household only"] }}
+    adminRoutes={{ title: "Admin routes", sub: ["admitting and rejecting accounts"] }}
+    deviceRoutes={{
+      title: "Device routes",
+      sub: ["ask for work, fetch approved", "items, return a reading"],
+    }}
+  />
 
   <h2>Why the administrator is not a parent with a flag</h2>
 
