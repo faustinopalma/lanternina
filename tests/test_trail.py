@@ -122,6 +122,94 @@ def test_a_long_body_is_kept_short_rather_than_lost() -> None:
     assert clipped("short") == "short"
 
 
+# ── Emptying the record, and the fourteen stores that share its container ────────────
+
+
+class _OneContainer:
+    """Enough of a Cosmos container to show what a query does and does not match.
+
+    It honours a ``c.type IN (...)`` restriction and ignores everything else, which is the
+    only part of the dialect this needs. A query without that clause matches every document
+    for the household — which is exactly what the real container did.
+    """
+
+    def __init__(self, documents: list[dict[str, str]]) -> None:
+        self.documents = documents
+
+    def query_items(self, query: str, parameters: list[dict[str, str]], **_: object):
+        family = next(one["value"] for one in parameters if one["name"] == "@family")
+        wanted: set[str] | None = None
+        if "c.type IN" in query:
+            inside = query.split("c.type IN", 1)[1].split("(", 1)[1].split(")", 1)[0]
+            wanted = {one.strip().strip("'\"") for one in inside.split(",")}
+        return [
+            {"id": one["id"]}
+            for one in self.documents
+            if one["familyId"] == family and (wanted is None or one["type"] in wanted)
+        ]
+
+    def delete_item(self, item: str, partition_key: str) -> None:
+        self.documents = [one for one in self.documents if one["id"] != item]
+
+
+def test_emptying_the_record_leaves_every_other_setting_alone() -> None:
+    """The data loss of 5 September 2026, as the test that was missing.
+
+    `forget_everything` selected on the household alone. Fourteen stores share the `sources`
+    container and all of them partition on the household, so pressing the button deleted the
+    themes, the rhythm, the preferences, the guidelines, the reminders, the device
+    assignments and the whole queue of devised afternoons along with the record.
+
+    The in-memory store could not catch it: it keeps trails in a dictionary of its own, so
+    the fake deleted only its own rows and passed while the real one emptied a household.
+    That is why this one stands in for the container instead.
+    """
+    from panel.cosmos_store import CosmosTrailStore
+
+    documents = [
+        {"id": "trail_aft_1", "familyId": "hh_1", "type": "trail"},
+        {"id": "made_1", "familyId": "hh_1", "type": "made"},
+        {"id": "theme-hh_1-a", "familyId": "hh_1", "type": "theme"},
+        {"id": "rhythm-hh_1", "familyId": "hh_1", "type": "rhythm"},
+        {"id": "reminder-hh_1-a", "familyId": "hh_1", "type": "reminder"},
+        {"id": "prefs-hh_1", "familyId": "hh_1", "type": "preferences"},
+        {"id": "aftn-1", "familyId": "hh_1", "type": "experience"},
+        {"id": "trail_aft_2", "familyId": "hh_2", "type": "trail"},
+    ]
+    store = object.__new__(CosmosTrailStore)
+    store._container = _OneContainer(list(documents))  # type: ignore[attr-defined]
+
+    gone = store.forget_everything("hh_1")
+
+    left = {one["id"] for one in store._container.documents}  # type: ignore[attr-defined]
+    assert gone == 2
+    assert left == {
+        "theme-hh_1-a",
+        "rhythm-hh_1",
+        "reminder-hh_1-a",
+        "prefs-hh_1",
+        "aftn-1",
+        "trail_aft_2",
+    }
+
+
+def test_emptying_one_household_does_not_reach_another() -> None:
+    from panel.cosmos_store import CosmosTrailStore
+
+    store = object.__new__(CosmosTrailStore)
+    store._container = _OneContainer(  # type: ignore[attr-defined]
+        [
+            {"id": "trail_aft_1", "familyId": "hh_1", "type": "trail"},
+            {"id": "trail_aft_2", "familyId": "hh_2", "type": "trail"},
+        ]
+    )
+
+    assert store.forget_everything("hh_1") == 1
+    assert [one["id"] for one in store._container.documents] == [  # type: ignore[attr-defined]
+        "trail_aft_2"
+    ]
+
+
 def test_one_run_opens_one_trail() -> None:
     """A house that retries must not leave a parent two cards for one afternoon."""
     store = InMemoryTrailStore()
