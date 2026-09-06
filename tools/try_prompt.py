@@ -31,6 +31,7 @@ from typing import Any
 from agents import experience_deviser as deviser
 from shared.capabilities import HouseCapability
 from shared.experience import Experience
+from shared.profile import Axis, Band, Profile
 
 # What a house certainly has, and what a script may therefore ask for without saying where
 # it came from. Anything else has to be named in the afternoon itself as something found.
@@ -106,8 +107,7 @@ async def once(
     *,
     language: str,
     capabilities: frozenset[HouseCapability],
-    shape: str = "",
-    distance: str = "",
+    pitch: str = "",
     note: str = "",
     words_per_line: int = deviser.DEFAULT_WORDS_PER_LINE,
 ) -> dict[str, Any]:
@@ -136,8 +136,7 @@ async def once(
             context,
             capabilities=capabilities,
             language=language,
-            shape=shape,
-            distance=distance,
+            pitch=pitch,
             note=note,
             words_per_line=words_per_line,
         )
@@ -177,18 +176,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--swap", action="append", default=[], help="worth=path/to/file.md")
     parser.add_argument("--keep", default="", help="write the documents under experiments/<name>")
     parser.add_argument(
-        "--shape",
-        default=deviser.DEFAULT_DIFFICULTY,
-        choices=sorted(deviser.SHAPES),
-        help="what the parent chose under how it should be made",
+        "--load",
+        default="",
+        choices=("", "low", "middle", "high"),
+        help="where this house sits on shared.profile.Axis.LOAD; empty is a house with no history",
     )
     parser.add_argument("--words-per-line", type=int, default=deviser.DEFAULT_WORDS_PER_LINE)
-    parser.add_argument(
-        "--variety",
-        default=deviser.DEFAULT_VARIETY,
-        choices=sorted(deviser.DISTANCES),
-        help="how far to go from the afternoons already offered",
-    )
     parser.add_argument("--note", default="", help="what is true in the house at the moment")
     args = parser.parse_args(argv)
 
@@ -206,6 +199,8 @@ def main(argv: list[str] | None = None) -> int:
     if where:
         where.mkdir(parents=True, exist_ok=True)
 
+    pitch = Profile(where={Axis.LOAD: Band(args.load)}).as_material() if args.load else ""
+
     from tools.as_it_arrives import read
 
     every: list[dict[str, Any]] = []
@@ -216,8 +211,7 @@ def main(argv: list[str] | None = None) -> int:
                 once(
                     language=args.language,
                     capabilities=capabilities,
-                    shape=deviser.SHAPES[args.shape],
-                    distance=deviser.DISTANCES[args.variety],
+                    pitch=pitch,
                     note=args.note,
                     words_per_line=args.words_per_line,
                 )

@@ -114,6 +114,17 @@ python -m research.run --iterations 4 --label after-the-sheets-rule
 
 `--households` takes a name to run one alone. `--seed` fixes which mood and which weight each afternoon is drawn with, so two runs of the same prompts differ only by the model.
 
+## The short loop: one afternoon with the prompt open beside it
+
+A run is the measurement and takes an hour. [officina.ipynb](officina.ipynb) is the other half — one afternoon at a time, so a sentence can be changed and its effect looked at before an hour is spent finding out whether it moved a number. `pip install -e ".[bench]"`, then pick the project's own interpreter as the kernel.
+
+It walks the same path the panel does, in the steps it actually has: which method the model chose out of `methods/`, the whole assembled prompt before it is paid for, the call with the repair log on, the document read as somebody in the room meets it, the checks, the afternoon played against the stand-in, and the eight axes on that one afternoon. Measured 6 September 2026: the notebook end to end in 106–207 s, of which 64–164 s is the devise call.
+
+**No prompt is copied into it.** The blocks stay in the `.md` files beside the modules that send them; [bench.py](bench.py) only makes the running process read them again, through `shared.prompts.forget()` and a reload in the order the instructions are assembled in. So there is nothing to transcribe afterwards: the file the workbench read is the file the container sends, and finishing means committing it, running `python -m tools.prompts --write`, and measuring with a run.
+
+**One afternoon is n=1, and this repository has already been fooled by that once.** On 3 September a set of changes that read as improvements moved all eight axes down, from 3.49 to 2.93. The notebook is for deciding what to try; the run is what answers whether it worked.
+
+
 About **145 s and one and a half cents** per afternoon, measured 29 August 2026: one devising call, one call per sheet collected, one appraisal. Six households by four iterations is roughly an hour.
 
 ## What is published

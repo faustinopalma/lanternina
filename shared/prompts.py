@@ -73,6 +73,16 @@ class Prompts:
 _READ: dict[tuple[Path, str], str] = {}
 
 
+def forget() -> None:
+    """Drop what has been read, so the next call reads the Markdown from disk again.
+
+    For a workbench where the prompt is being edited while the process stays alive. Nothing
+    in the product calls it: a container that re-read its prompts halfway through a month
+    would have no way of saying which text produced which afternoon.
+    """
+    _READ.clear()
+
+
 def beside(module_file: str) -> Prompts:
     """The prompts belonging to this module. Pass ``__file__``."""
     path = Path(module_file).resolve()

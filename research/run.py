@@ -27,25 +27,15 @@ from typing import Any
 
 from agents.experience_deviser import PROMPT_FINGERPRINT
 from panel.devising import RefusedByTheChecks, devise_experience
-from panel.what_happened import Answered, as_material, how_it_has_gone, remembered, the_ground
-from shared.capabilities import HouseCapability
-from shared.experience import Drawn, ExperienceError, Weight
+from panel.what_happened import Answered, how_it_has_gone, remembered, the_ground
+from shared.experience import ExperienceError, Weight
 
 from .calls import a_context, appraise
-from .households import HOUSEHOLDS, Household, Memory
+from .households import HOUSEHOLDS, Household, Memory, arguments
 from .play import play
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
-
-# What every synthetic house can do. The same three the real houses declare.
-CAN = frozenset(
-    {
-        HouseCapability("print_a4"),
-        HouseCapability("scan_a4"),
-        HouseCapability("show_800x480_1bit"),
-    }
-)
 
 # How the day is going, drawn per afternoon. Three, because the blank branch is the one a
 # willing simulation never reaches and the one the format most needs exercised.
@@ -84,10 +74,9 @@ async def one_afternoon(
             "language": house.language,
             "interests": list(house.interests),
             "avoid": list(house.avoid),
-            "difficulty": house.difficulty,
-            "variety": house.variety,
             "sheets": house.sheets,
             "note": house.note,
+            "pitch": house.pitch(),
             "guidelines": list(house.guidelines),
             "already": [one.title for one in ran if getattr(one, "title", "")],
             "ground": ground.to_dict() if ground.anything() else {},
@@ -97,20 +86,7 @@ async def one_afternoon(
     built_from: dict[str, str] = {}
     try:
         experience, spent = await devise_experience(
-            capabilities=CAN,
-            language=house.language,
-            interests=house.interests,
-            avoid=house.avoid,
-            difficulty=house.difficulty,
-            variety=house.variety,
-            sheets=house.sheets,
-            note=house.note,
-            already=tuple(one.title for one in ran if getattr(one, "title", "")),  # type: ignore[attr-defined]
-            recent=_drawn(memory),
-            happened=as_material(ran),  # type: ignore[arg-type]
-            counts=json.dumps(going.to_dict(), ensure_ascii=False),
-            direction=going.direction(),
-            ground=json.dumps(ground.to_dict(), ensure_ascii=False) if ground.anything() else "",
+            **arguments(house, memory),
             built_from=built_from,
             now=time.time(),
         )
@@ -214,16 +190,6 @@ def _tally(what: Iterable[str]) -> dict[str, int]:
     for one in what:
         counted[one] = counted.get(one, 0) + 1
     return dict(sorted(counted.items(), key=lambda pair: (-pair[1], pair[0])))
-
-
-def _drawn(memory: Memory) -> tuple[Drawn, ...]:
-    out: list[Drawn] = []
-    for one in memory.ran[-5:]:
-        try:
-            out.append(Drawn.from_dict(getattr(one, "drawn", None)))
-        except (ExperienceError, AttributeError):
-            continue
-    return tuple(out)
 
 
 def _averages(rows: list[dict[str, Any]]) -> dict[str, float]:

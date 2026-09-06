@@ -53,6 +53,39 @@ def test_the_driver_devises_through_the_real_path_and_not_a_copy() -> None:
 
 
 @pytest.mark.asyncio
+async def test_the_driver_calls_that_path_with_arguments_it_still_takes(monkeypatch) -> None:  # noqa: ANN001
+    """Pointing at the real function is not the same as being able to call it.
+
+    On 4 September 2026 a parent stopped choosing ``difficulty`` and ``variety`` and the
+    deviser took a pitch instead. The identity check above went on passing and every
+    research run died on its first afternoon with a TypeError, for two days, because
+    nothing here ever bound the arguments against the signature.
+    """
+    import inspect
+    import random
+
+    import panel.devising
+    from research.households import HOUSEHOLDS, Memory, arguments
+
+    takes = inspect.signature(panel.devising.devise_experience)
+    house, memory = HOUSEHOLDS[0], Memory()
+    takes.bind(**arguments(house, memory), now=0.0)
+
+    sent: dict[str, object] = {}
+
+    async def instead(**asked: object) -> None:
+        takes.bind(**asked)  # TypeError the moment a caller here goes stale
+        sent.update(asked)
+        raise panel.devising.RefusedByTheChecks(())
+
+    monkeypatch.setattr(driver, "devise_experience", instead)
+    row = await driver.one_afternoon(None, house, memory, random.Random(0))
+
+    assert row["refused"]["by"] == "checks"
+    assert sent["capabilities"] and sent["language"] == house.language
+
+
+@pytest.mark.asyncio
 async def test_an_afternoon_played_through_reaches_its_close(monkeypatch) -> None:  # noqa: ANN001
     fake = Pretend()
     monkeypatch.setattr("research.play.what_they_did", fake.what_they_did)
@@ -187,8 +220,9 @@ def test_a_household_carries_no_person(tmp_path: Path) -> None:
         "name",
         "interests",
         "avoid",
-        "difficulty",
-        "variety",
+        "load",
+        "ink",
+        "span",
         "language",
         "sheets",
         "note",
@@ -196,3 +230,37 @@ def test_a_household_carries_no_person(tmp_path: Path) -> None:
     }
     assert len(HOUSEHOLDS) == 6
     assert json.dumps([one.name for one in HOUSEHOLDS])
+
+
+def test_a_block_is_read_again_once_the_workbench_forgets_it() -> None:
+    """The workbench in `research/officina.ipynb` is worth nothing if the process goes on
+    sending the text it read at import. Held down here rather than by editing a real prompt
+    inside a test, because a test that rewrites a source file leaves it rewritten when it is
+    interrupted."""
+    from shared.prompts import Prompts, forget
+
+    stem = Path(__file__).resolve().parent.parent / "tmp" / "test_block"
+    stem.parent.mkdir(parents=True, exist_ok=True)
+    said = stem.with_name(f"{stem.name}.only.md")
+    try:
+        said.write_text("prima\n", encoding="utf-8", newline="")
+        assert Prompts(stem).text("only") == "prima\n"
+        said.write_text("dopo\n", encoding="utf-8", newline="")
+        assert Prompts(stem).text("only") == "prima\n", "senza forget() resta quello letto"
+        forget()
+        assert Prompts(stem).text("only") == "dopo\n"
+    finally:
+        said.unlink(missing_ok=True)
+        forget()
+
+
+def test_every_module_the_workbench_reloads_is_one_that_exists() -> None:
+    """A name that stops resolving would make `reload_prompts` quietly skip that module, so
+    a block edited in it would go on being sent as it was."""
+    import importlib
+
+    from research.bench import IN_ORDER, blocks
+
+    for name in IN_ORDER:
+        importlib.import_module(name)
+    assert blocks("agents.experience_deviser"), "il deviser ha dei blocchi su disco"
