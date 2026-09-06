@@ -8,8 +8,6 @@
 export const LANGS = ["en", "it"] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const OTHER: Record<Lang, Lang> = { en: "it", it: "en" };
-
 export const LOCALE: Record<Lang, string> = { en: "en_GB", it: "it_IT" };
 
 export const LANG_NAME: Record<Lang, string> = { en: "English", it: "Italiano" };

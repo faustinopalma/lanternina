@@ -8,10 +8,10 @@
 import Mark from "../components/Mark.astro";
 import {
   LANG_NAME,
+  LANGS,
   LOCALE,
   NAV,
   NAV_NOTE,
-  OTHER,
   PAGES,
   REPO,
   UI,
@@ -33,7 +33,6 @@ const { lang, page, title, description, eyebrow } = Astro.props;
 const site = Astro.site!.origin;
 const slug = PAGES.find((p) => p.key === page)!.slug;
 const here = pathFor(lang, slug);
-const other = OTHER[lang];
 
 const index = PAGES.findIndex((p) => p.key === page);
 const prev = index > 0 ? PAGES[index - 1] : null;
@@ -79,14 +78,31 @@ const next = index < PAGES.length - 1 ? PAGES[index + 1] : null;
           </a>
         </div>
 
-        <div class="langsw" role="group" aria-label={UI.langGroup[lang]}>
-          <a class="langbtn is-on" href={here} hreflang={lang} lang={lang} aria-current="true">
+        {/* Every language, always in the order they are declared. The old control put the
+           current language first, so switching swapped the two and the row appeared to
+           move on its own. */}
+        <details class="langsw">
+          <summary>
+            <span class="sr-only">{UI.langGroup[lang]}: </span>
             {LANG_NAME[lang]}
-          </a>
-          <a class="langbtn" href={pathFor(other, slug)} hreflang={other} lang={other}>
-            {LANG_NAME[other]}
-          </a>
-        </div>
+          </summary>
+          <ul>
+            {
+              LANGS.map((code) => (
+                <li>
+                  <a
+                    href={pathFor(code, slug)}
+                    hreflang={code}
+                    lang={code}
+                    aria-current={code === lang ? "true" : undefined}
+                  >
+                    {LANG_NAME[code]}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </details>
 
         <nav aria-label={UI.sections[lang]}>
           {

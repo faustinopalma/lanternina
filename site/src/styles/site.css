@@ -177,33 +177,70 @@ main:focus {
   margin-top: 0.3rem;
 }
 
+/* The switch names the current language and opens a list of all of them, in the order they
+   are declared. Two buttons side by side had the current one first, so every switch swapped
+   their places; and a row of buttons runs out of rail at the third language. */
 .langsw {
-  display: flex;
-  gap: 0.35rem;
-  margin: 1.3rem 0 0;
-}
-
-.langbtn {
-  flex: 1 1 auto;
-  text-align: center;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  color: var(--rail-soft);
-  text-decoration: none;
+  margin: 1.2rem 0 0;
   font-size: 0.9rem;
 }
 
-.langbtn:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.45);
+.langsw > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  padding: 0.2rem 0;
+  color: var(--rail-soft);
+  cursor: pointer;
+  list-style: none;
 }
 
-.langbtn.is-on {
-  background: var(--rail-glow);
-  border-color: var(--rail-glow);
-  color: #24211c;
-  font-weight: 600;
+.langsw > summary::-webkit-details-marker {
+  display: none;
+}
+
+.langsw > summary::after {
+  content: "";
+  width: 0.38rem;
+  height: 0.38rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-0.12em) rotate(45deg);
+}
+
+.langsw[open] > summary::after {
+  transform: translateY(0.08em) rotate(-135deg);
+}
+
+.langsw > summary:hover {
+  color: var(--rail-ink);
+}
+
+.langsw ul {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.langsw li {
+  margin: 0;
+}
+
+.langsw ul a {
+  display: block;
+  padding: 0.28rem 0 0.28rem 0.7rem;
+  color: var(--rail-soft);
+  text-decoration: none;
+}
+
+.langsw ul a:hover {
+  color: var(--rail-ink);
+}
+
+.langsw ul a[aria-current] {
+  color: var(--rail-glow);
 }
 
 .sidebar nav {
