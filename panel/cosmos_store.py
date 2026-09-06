@@ -657,6 +657,12 @@ class CosmosTrailStore:
     def forget_everything(self, household_id: str) -> int:
         """Delete every afternoon and everything filed under it, for one household.
 
+        **The two types are named, and leaving them out destroyed a household's settings.**
+        Fourteen stores share this container and all of them partition on the household, so
+        a query that selected on `familyId` alone matched the themes, the rhythm, the
+        preferences, the guidelines, the reminders, the devices and the whole queue of
+        devised afternoons. Written, shipped and pressed on 5 September 2026.
+
         Deletion and not a flag. A record kept and hidden is still a record, which is the
         same reasoning `_still_kept` applies to a lapsed row — and the point of this is that
         what was thrown away is gone rather than merely out of sight.
@@ -664,7 +670,9 @@ class CosmosTrailStore:
         from azure.cosmos import exceptions
 
         rows = self._container.query_items(
-            query="SELECT c.id FROM c WHERE c.familyId = @family",
+            query=(
+                "SELECT c.id FROM c WHERE c.familyId = @family AND c.type IN ('trail', 'made')"
+            ),
             parameters=[{"name": "@family", "value": household_id}],
             partition_key=household_id,
         )
