@@ -1,5 +1,7 @@
 # Hardware
 
+The [handheld camera miniproject](macchina-fotografica/README.md) records the XIAO ESP32S3 Sense kit purchased by Fausto, identified from photographs on 7 September 2026, with its OV3660 camera, button and LED wiring, and tests still to perform. Its firmware and hub integration remain unimplemented. The catalogue below preserves earlier research; its historical design restrictions must be read alongside the current repository instructions, which put those rules under review.
+
 A catalogue of what this system could be made of, and what it must never be made of.
 
 This is a **thinking document**, not a shopping list and not a plan. Most of what is below will never be built. It exists so that selection is a choice among understood options rather than a reaction to whatever appeared in a search result.

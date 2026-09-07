@@ -6,6 +6,14 @@ Everything below is evidence about *design*, and reading it that way is what mak
 
 The sources are in `_reference/progettare-per-adolescenti/`, downloaded by `build/fetch_evidence.py` on 28 August 2026. That folder is gitignored: it is other people's text. What is committed is this reading of it.
 
+## Camera hardware references, 7 September 2026
+
+The [camera miniproject](macchina-fotografica/README.md) uses photographs of the purchased kit as evidence of the XIAO ESP32S3 base board and the OV3660 module marking. Photographs establish component identity, not electrical operation. [Seeed's hardware overview](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/) maps D3 to GPIO4 and D0 to GPIO1 and identifies GPIO3 as a JTAG strapping pin. [Its peripheral pin table](https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/) leaves GPIO1 and GPIO4 outside the camera, microphone and microSD assignments. [Espressif's camera example](https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h) independently agrees on the XIAO camera pin assignments. These references support the proposed wiring; measurements on the purchased board are still required.
+
+[Prilchen's camera article](https://prilchen.de/diy-fotoapparat-mit-esp32-s3-das-die-bilder-direkt-in-dein-google-drive-schickt/) supplies the button-and-LED starting point and reports stale frame buffers in its own setup. We have not reproduced that fault. Its text, images and code are not copied. The proposal uses GPIO1 rather than its GPIO3 LED connection and makes lanternina hub the intended receiver. The article's WebDAV example disables certificate verification and treats any positive HTTP code as success; neither establishes authenticated delivery. The planned receiver must authenticate the connection and acknowledge the particular image only after accepting durable responsibility for it. These are protocol requirements, not an implemented integration.
+
+Seeed reports roughly 3 mA in deep sleep for the Sense with expansion, compared with 14 microamps for the base board. These are manufacturer figures for different configurations, not battery-life measurements for this kit. The [decision note](../ideas/macchina-fotografica-xiao.md) records the storage and feedback tradeoffs. The educational literature below does not establish that this particular camera or LED sequence is usable; that needs a physical trial.
+
 ---
 
 ## The sources, and how much weight each carries
