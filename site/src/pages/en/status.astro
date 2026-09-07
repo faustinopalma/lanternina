@@ -6,95 +6,40 @@ import { REPO } from "../../i18n/ui";
 <Base
   lang="en"
   page="status"
-  eyebrow="Local code and dated trials"
+  eyebrow="Features and limits"
   title="Current implementation"
-  description="What runs in the house and in Azure, what the tests enforce, and which implementation gaps remain open."
+  description="Available features, the checks applied and what remains to be completed."
 >
   <p class="lede">
-    On 24 August 2026, one activity ran end to end on the deployed system. A parent approved it in
-    the browser; the house printed and scanned it, continued from the returned page, and closed it
-    at the configured hour. The run exposed four defects while a person observed the printer.
+    Lanternina is a prototype used in one home. Its activity path includes approval, printing, page reading and continuation. Some functions remain incomplete, and installation in other homes still needs to be tried.
   </p>
 
-  <p>
-    On 7 September 2026 the local notebook completed a synthetic activity with two pages, handwriting, reading and continuation in 345.4 measured seconds. The untouched-page control returned blank. Hardware and the deployed revision were not checked, and no deployment was performed.
-  </p>
-
-  <h2>Implemented in code</h2>
+  <h2>Available features</h2>
 
   <ul>
     <li>
-      The cloud tier, the parent panel and its API, the model router with real credentials, and the
-      content-safety gate.
+      The panel lets the parent prepare ideas, approve activities and choose preferences and hours.
     </li>
     <li>
-      The hub services that serve the displays, pull an hourly picture, print, scan and answer a
-      button press inside the same HTTP response.
+      The house shows instructions on displays, prints pages and starts a scan when a button is pressed.
     </li>
     <li>
-      The activity format and its structural checks, a second model that rereads activities when the call succeeds and usage limits permit,
-      parent approval, whole-page generation, comparison against the blank, and deadline control.
+      The system generates activities and pages, reads added marks and prepares continuations. The household clock manages help and the start of the ending.
     </li>
-    <li>The picture archive, and usage accounting with a per-household cap.</li>
+    <li>Reminders, pictures generated from the parent's themes and an image archive.</li>
     <li>
-      Identity: Entra External ID for parents, a separate workforce app registration with an app
-      role for administrators, per-household device keys for the house.
+      Device job assignments, an activity log and a household service-usage limit.
     </li>
   </ul>
 
-  <h2>Enforced by tests</h2>
-
-  <p>
-    Each boundary below has an automated test. Each test was also mutation-checked by injecting the
-    violation and observing the failure.
-  </p>
-
-  <table class="numbers descriptions">
-    <tbody>
-      <tr>
-        <th scope="row">Parent approval is separate from generation</th>
-        <td>the panel stores decisions on <code>OfferedExperience</code>; the hub retrieves approved records</td>
-      </tr>
-      <tr>
-        <th scope="row">Generated output passes through Content Safety</th>
-        <td>generation and continuation functions call the gate before returning documents</td>
-      </tr>
-      <tr>
-        <th scope="row">The older Proposal path verifies two seals</th>
-        <td>this property does not extend to the current activity and continuation path</td>
-      </tr>
-      <tr>
-        <th scope="row">Only one component talks to a model</th>
-        <td>import-level check across every package</td>
-      </tr>
-      <tr>
-        <th scope="row">Model runtimes stay in the cloud path</th>
-        <td>import-level check across device packages and router boundaries</td>
-      </tr>
-      <tr>
-        <th scope="row">Readings block implicit copying and pickling</th>
-        <td>the HTTP dictionary remains serializable; derived observations and development exceptions are retained</td>
-      </tr>
-      <tr>
-        <th scope="row">Interaction excludes engagement mechanics</th>
-        <td>a vocabulary check across storage, panel, browser and prompts</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p>
-    Every push to <code>main</code> runs <code>ruff</code> and the test suite on a clean checkout. The
-    workflow records the current test count, failures and elapsed time. It reports independently of
-    deployment rather than acting as its release gate.
-  </p>
+  <h2>Checks</h2>
+  <p>The parent approves the initial activity. Generated activities and continuations pass format and safety checks; continuations do not require a second approval. Reading pages requires cloud connectivity. Retained data and deletion options are described under <a href="/en/#memory">memory</a>.</p>
 
   <h2>Open implementation gaps</h2>
 
   <ul>
     <li>
-      <b>The handheld camera.</b> The physical object is still being assembled and
-      <code>vision/</code> is an empty Python package. Camera behavior currently exists as design
-      decisions without an implementation or enforcing tests.
+      <b>The handheld camera.</b> The portable camera is not yet available as an input for activities.
     </li>
     <li>
       <b>The button panel.</b> The current hardware has one button per display. It closes the paper
@@ -106,10 +51,9 @@ import { REPO } from "../../i18n/ui";
     <li>
       <b>Activity quality.</b> Building, drawing and investigating can have open outcomes. Checks do not establish comprehension or interest; automatic judges retain false positives. A trial with a person is still needed.
     </li>
-    <li><b>Print failure and moment timing.</b> The hub shows <code>instead</code>, but the runner does not execute <code>if_no_page</code>. Consecutive non-collection moments advance without waiting their declared duration.</li>
+    <li><b>Print failure and moment timing.</b> A failed print shows a message already written in the activity, but the alternative path without a sheet is not executed. Consecutive non-collection moments advance without waiting their declared duration.</li>
     <li>
-      <b>A second house.</b> Provisioning has been exercised with one household. The installer's
-      <code>--install</code> path has not yet been run for another one.
+      <b>Other homes.</b> A complete installation has been tried in only one home.
     </li>
   </ul>
 

@@ -99,11 +99,7 @@ import { REPO } from "../../i18n/ui";
   <h2>Activity approval</h2>
 
   <p>
-    The panel stores decisions on <code>OfferedExperience</code>. The hub retrieves approved documents through authenticated HTTPS and chooses when to begin. Continuations are checked and screened in the container but receive no second parent approval.
-  </p>
-
-  <p>
-    The older <code>Proposal</code> path uses separate HMAC keys and verifies seals at delivery. Its tests cover that property; they do not describe the current activity path. Key placement on the deployed installation was not rechecked on 7 September 2026.
+    The panel stores parent decisions. The hub retrieves approved activities through authenticated HTTPS and chooses when to begin. Continuations are checked and screened in the container but receive no second parent approval.
   </p>
 
   <h2>OIDC deployment</h2>
@@ -114,26 +110,12 @@ import { REPO } from "../../i18n/ui";
     push to one registry, read that registry and update one container app.
   </p>
 
-  <p class="note">
-    The subject of a federated credential carries numeric ids, not names:
-    <code>repo:owner@12345/repo@67890:ref:refs/heads/main</code>. The rejection message quotes the
-    subject it received in full, so the reliable method is to register once, run once, and read the
-    real subject out of the refusal rather than writing it from memory. It also survives a rename of
-    the repository.
-  </p>
-
   <h2>Known authorization gaps</h2>
 
   <p>
     The token validator checks audience, issuer, expiry and subject but omits <code>scp</code>. The
     current app exposes one scope. Adding another scope would require a scope check before it could
     separate permissions.
-  </p>
-
-  <p>
-    App registrations are provisioned manually from the documented steps. The manifest must set
-    <code>requestedAccessTokenVersion: 2</code>; the default v1 issuer does not match the API's token
-    validation configuration.
   </p>
 
   <p>

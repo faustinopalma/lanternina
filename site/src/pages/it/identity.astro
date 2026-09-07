@@ -101,11 +101,7 @@ import { REPO } from "../../i18n/ui";
   <h2>Approvazione delle attività</h2>
 
   <p>
-    Il pannello conserva le decisioni su <code>OfferedExperience</code>. L'hub ritira i documenti approvati attraverso HTTPS autenticato e sceglie quando avviarli. Le continuazioni sono verificate e filtrate nel container, ma non ricevono una seconda approvazione del genitore.
-  </p>
-
-  <p>
-    Il percorso precedente <code>Proposal</code> usa due chiavi HMAC separate e verifica i sigilli alla consegna. Quella proprietà resta coperta dai suoi test; non descrive il percorso attuale delle attività. La posizione delle chiavi sull'installazione distribuita non è stata ricontrollata il 7 settembre 2026.
+    Il pannello conserva le decisioni del genitore. L'hub ritira le attività approvate attraverso HTTPS autenticato e sceglie quando avviarle. Le continuazioni sono verificate e filtrate nel container, ma non ricevono una seconda approvazione del genitore.
   </p>
 
   <h2>Deploy tramite OIDC</h2>
@@ -117,26 +113,12 @@ import { REPO } from "../../i18n/ui";
     una container app.
   </p>
 
-  <p class="note">
-    Il soggetto di una credenziale federata porta gli id numerici, non i nomi:
-    <code>repo:owner@12345/repo@67890:ref:refs/heads/main</code>. Il messaggio di rifiuto cita per
-    intero il soggetto che ha ricevuto, quindi il metodo affidabile è registrare una volta, lanciare
-    una volta, e leggere il soggetto vero dal rifiuto invece di scriverlo a memoria. Sopravvive anche
-    a una rinomina del repository.
-  </p>
-
   <h2>Lacune note nell'autorizzazione</h2>
 
   <p>
     Il validatore controlla audience, issuer, scadenza e subject del token, ma omette
     <code>scp</code>. L'applicazione espone oggi un solo scope. L'aggiunta di un altro scope richiede
     un controllo dello scope prima che possa separare i permessi.
-  </p>
-
-  <p>
-    Le app registration vengono create a mano seguendo i passi documentati. Il manifesto deve
-    impostare <code>requestedAccessTokenVersion: 2</code>; l'issuer v1 predefinito non corrisponde alla
-    configurazione con cui l'API verifica i token.
   </p>
 
   <p>

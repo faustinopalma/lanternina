@@ -18,8 +18,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    Un mini-PC collega gli schermi a inchiostro elettronico, la stampante e lo scanner della casa. Il numero degli schermi è configurabile: due sono quelli del prototipo, non un requisito del sistema.
-    L'hub chiede pagine, letture e continuazioni al container API, che chiama i modelli Foundry. La casa tiene l'orologio e avvia le richieste. Questa descrizione riguarda il codice locale verificato il 7 settembre 2026; hardware e versione distribuita non sono stati ricontrollati.
+    Un mini-PC collega gli schermi a inchiostro elettronico, la stampante e lo scanner della casa. Si possono aggiungere altri schermi. Il mini-PC gestisce l'orologio e chiede al servizio cloud pagine, letture e continuazioni.
   </p>
 
   <figure class="band">
@@ -76,17 +75,17 @@ import { REPO } from "../../i18n/ui";
 
   <figure>
     <a href="/images/panel-activities-it.webp"><img src="/images/panel-activities-it.webp" width="1200" height="900" loading="lazy" alt="Il pannello delle attività: descrizione della proposta, copione consultabile e pulsanti Approva, Rifiuta e Lavoraci sopra." /></a>
-    <figcaption>La pagina delle decisioni nell'interfaccia attuale, con dati inventati nell'anteprima locale.</figcaption>
+    <figcaption>Le attività da approvare, con dati inventati.</figcaption>
   </figure>
 
   <p>Nelle impostazioni sceglie giorni e ore, quante attività possono cominciare, interessi, argomenti da evitare e lingua. Può aggiungere una nota temporanea e stabilire i limiti entro cui il seguito può cambiare. Durante un'attività può anticiparne la fine o chiedere di avviare la chiusura. Il registro raccoglie ciò che il sistema ha generato e mostrato.</p>
 
   <h3>I dispositivi della casa</h3>
-  <p>Il pannello elenca gli schermi registrati e le stampanti e gli scanner rilevati. Il genitore dà loro un nome, assegna i compiti e vede quali richiedono attenzione. Può aggiungere altri schermi: lo stesso compito può essere assegnato a più dispositivi e un dispositivo può avere più compiti. Questo non implica una capacità illimitata, che non è stata misurata.</p>
+  <p>Il pannello elenca gli schermi registrati e le stampanti e gli scanner rilevati. Il genitore dà loro un nome, assegna i compiti e vede quali richiedono attenzione. Lo stesso compito può essere assegnato a più dispositivi e un dispositivo può avere più compiti.</p>
 
   <figure>
     <a href="/images/panel-devices-it.webp"><img src="/images/panel-devices-it.webp" width="1200" height="900" loading="lazy" alt="La pagina Dispositivi del pannello, con nomi modificabili, stato degli schermi e caselle per assegnare i compiti." /></a>
-    <figcaption>Un esempio di assegnazione dei dispositivi, con dati inventati. Il numero degli schermi nell'immagine non è un limite del sistema.</figcaption>
+    <figcaption>I nomi e i compiti dei dispositivi, con dati inventati.</figcaption>
   </figure>
 
   <h2>Ricostruire una ferrovia</h2>
@@ -124,15 +123,15 @@ import { REPO } from "../../i18n/ui";
     </figure>
   </div>
 
-  <p>Questo esempio viene dal notebook di ricerca. La compilazione è una proposta sintetica, non una soluzione verificata. Il lettore ha riconosciuto la freccia e la direzione scritte; il seguito ha chiesto di rivederle dopo una nuova indicazione sull'orientamento della mappa.</p>
+  <p>In questo esempio sintetico, il lettore ha riconosciuto la freccia e la direzione scritte. Il seguito ha chiesto di rivederle dopo una nuova indicazione sull'orientamento della mappa.</p>
 
   <p>
-    Il lettore descrive i segni aggiunti. Il runner sceglie il ramo segni o bianca; una lettura degradata lo lascia in attesa. Quando il ramo dice <code>ask</code>, le descrizioni entrano nel prompt della continuazione. Il seguito viene verificato e filtrato, senza una seconda approvazione del genitore e senza riparazioni.
+    Il sistema distingue un foglio compilato da uno bianco e usa ciò che legge per continuare. Se non riesce a leggere il foglio, resta in attesa. Il seguito passa dai controlli di sicurezza, senza una seconda approvazione del genitore.
   </p>
 
   <h2 id="la-memoria">La memoria</h2>
   <p>Il sistema conserva configurazione, attività prodotte, esiti, durate riportate e sintesi delle letture. Una chiamata separata osserva le pagine per calibrare carico e quantità di scrittura; il profilo viene ricalcolato dalle osservazioni recenti e orienta i prompt. Il pannello non espone il profilo come punteggio. Il genitore può cancellare memoria delle attività e osservazioni. Manca una vista completa della memoria in linguaggio corrente.</p>
-  <p>Il contratto della lettura blocca copia e pickle impliciti, ma permette il corpo della richiesta HTTP. Un amministratore può attivare una conservazione di sviluppo per 14 giorni: ogni lettura conservata ha una propria scadenza di 14 giorni dalla scrittura. Questa eccezione è distinta dalle osservazioni ordinarie usate dal profilo.</p>
+  <p>Per lo sviluppo, un amministratore può attivare anche la conservazione delle letture complete per 14 giorni. Ogni lettura conservata scade 14 giorni dopo la scrittura. Le osservazioni usate dal profilo sono conservate separatamente.</p>
 
   <h2>Lo stack</h2>
 

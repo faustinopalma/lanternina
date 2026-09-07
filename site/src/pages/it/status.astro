@@ -6,96 +6,40 @@ import { REPO } from "../../i18n/ui";
 <Base
   lang="it"
   page="status"
-  eyebrow="Codice locale e prove datate"
+  eyebrow="Funzionalità e limiti"
   title="Implementazione attuale"
-  description="Cosa gira in casa e su Azure, quali confini impongono i test e quali lacune di implementazione restano aperte."
+  description="Le funzionalità disponibili, i controlli applicati e ciò che resta da completare."
 >
   <p class="lede">
-    Il 24 agosto 2026 un'attività ha percorso da capo a fondo il sistema pubblicato. Un genitore l'ha
-    approvata nel browser; la casa l'ha stampata e scansionata, ha continuato dalla pagina restituita
-    e l'ha chiusa all'ora configurata. Una persona accanto alla stampante ha osservato quattro guasti.
+    Lanternina è un prototipo usato in una casa. Il percorso comprende approvazione, stampa, lettura del foglio e continuazione; restano da completare alcune funzioni e da provarne l'installazione in altre case.
   </p>
 
-  <p>
-    Il 7 settembre 2026 il notebook locale ha completato un'attività sintetica con due pagine, scrittura, lettura e continuazione in 345,4 secondi misurati. Il controllo sul foglio intatto ha restituito bianca. Hardware e versione distribuita non sono stati verificati e nessun deploy è stato eseguito.
-  </p>
-
-  <h2>Implementato nel codice</h2>
+  <h2>Funzionalità disponibili</h2>
 
   <ul>
     <li>
-      Il tier cloud, il pannello del genitore e la sua API, il router dei modelli con credenziali
-      vere, e il filtro di sicurezza.
+      Il pannello permette al genitore di preparare idee, approvare attività e scegliere preferenze e orari.
     </li>
     <li>
-      I servizi dell'hub che servono gli schermi, tirano un quadro ogni ora, stampano, scansionano e
-      rispondono a una pressione del pulsante dentro la stessa risposta HTTP.
+      La casa mostra istruzioni sugli schermi, stampa le pagine e avvia la scansione alla pressione di un pulsante.
     </li>
     <li>
-      Il formato dell'attività e i suoi controlli strutturali, un secondo modello che rilegge ogni
-      attività quando la chiamata riesce e il limite d'uso lo consente, l'approvazione del genitore, la generazione della pagina intera, il confronto con il
-      bianco e il controllo della scadenza.
+      Il sistema genera le attività e le pagine, legge i segni aggiunti e prepara il seguito. L'orologio della casa gestisce gli aiuti e l'avvio della chiusura.
     </li>
-    <li>L'archivio dei quadri, e la contabilità d'uso con un tetto per nucleo.</li>
+    <li>Promemoria, quadri generati dai temi del genitore e archivio delle immagini.</li>
     <li>
-      Identità: Entra External ID per i genitori, una app registration workforce separata con un app
-      role per gli amministratori, device key per nucleo per la casa.
+      Assegnazione dei compiti ai dispositivi, registro delle attività e limite d'uso del servizio per la casa.
     </li>
   </ul>
 
-  <h2>Imposto dai test</h2>
-
-  <p>
-    Ogni confine qui sotto ha un test automatico. Ogni test è stato verificato anche inserendo la
-    violazione e osservando il fallimento.
-  </p>
-
-  <table class="numbers descriptions">
-    <tbody>
-      <tr>
-        <th scope="row">L'approvazione del genitore è separata dalla generazione</th>
-        <td>il pannello conserva la decisione su <code>OfferedExperience</code>; l'hub ritira gli approvati</td>
-      </tr>
-      <tr>
-        <th scope="row">L'uscita generata passa da Content Safety</th>
-        <td>le funzioni di generazione e continuazione chiamano il filtro prima di restituire il documento</td>
-      </tr>
-      <tr>
-        <th scope="row">Il vecchio percorso Proposal verifica due sigilli</th>
-        <td>questa proprietà non si estende al percorso attuale delle attività e dei seguiti</td>
-      </tr>
-      <tr>
-        <th scope="row">Un solo componente parla con un modello</th>
-        <td>controllo a livello di import su ogni package</td>
-      </tr>
-      <tr>
-        <th scope="row">I runtime dei modelli restano nel percorso cloud</th>
-        <td>controllo degli import nei package del dispositivo e ai confini del router</td>
-      </tr>
-      <tr>
-        <th scope="row">La lettura blocca copia e pickle impliciti</th>
-        <td>il dizionario HTTP resta serializzabile; osservazioni derivate ed eccezioni di sviluppo sono conservate</td>
-      </tr>
-      <tr>
-        <th scope="row">L'interazione esclude meccaniche di aggancio</th>
-        <td>controllo di vocabolario su store, pannello, browser e prompt</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p>
-    Ogni push su <code>main</code> esegue <code>ruff</code> e la suite di test su un checkout pulito. Il
-    workflow registra il numero attuale dei test, i fallimenti e il tempo impiegato. Produce il
-    proprio esito separatamente dal deploy invece di agire come gate della pubblicazione.
-  </p>
+  <h2>I controlli</h2>
+  <p>Il genitore approva l'attività iniziale. Le attività generate e i seguiti passano dai controlli di formato e sicurezza; i seguiti non richiedono una seconda approvazione. La lettura dei fogli richiede il cloud. I dati conservati e le possibilità di cancellazione sono descritti nella <a href="/it/#la-memoria">sezione sulla memoria</a>.</p>
 
   <h2>Lacune di implementazione aperte</h2>
 
   <ul>
     <li>
-      <b>La macchina fotografica.</b> L'oggetto fisico è ancora in fase di montaggio e
-      <code>vision/</code> è un package Python vuoto. Il comportamento della telecamera esiste oggi
-      come decisione di progetto, senza implementazione o test che lo impongano.
+      <b>La macchina fotografica.</b> La fotocamera portatile non è ancora utilizzabile come ingresso per le attività.
     </li>
     <li>
       <b>La pulsantiera.</b> L'hardware attuale ha un pulsante per schermo. Chiude il giro della carta
@@ -107,10 +51,9 @@ import { REPO } from "../../i18n/ui";
     <li>
       <b>La qualità dell'attività.</b> Costruzioni, disegni e indagini possono ammettere risultati aperti. I controlli non dimostrano comprensibilità o interesse; i giudici automatici conservano falsi positivi. La prova con una persona resta necessaria.
     </li>
-    <li><b>Stampa fallita e tempi dei momenti.</b> L'hub mostra <code>instead</code>, ma il runner non esegue <code>if_no_page</code>. I momenti consecutivi senza raccolta avanzano senza attendere la durata dichiarata.</li>
+    <li><b>Stampa fallita e tempi dei momenti.</b> Se la stampa fallisce, compare un messaggio previsto dall'attività, ma il percorso alternativo senza foglio non viene eseguito. I momenti consecutivi senza raccolta avanzano senza attendere la durata dichiarata.</li>
     <li>
-      <b>Una seconda casa.</b> Il provisioning è stato esercitato con un solo nucleo. Il percorso
-      <code>--install</code> dell'installer non è ancora stato eseguito per un altro nucleo.
+      <b>Altre case.</b> L'installazione completa è stata provata in una sola casa.
     </li>
   </ul>
 

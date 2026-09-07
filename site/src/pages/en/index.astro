@@ -17,8 +17,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    A mini-PC connects the home's e-paper displays, printer and scanner. The number of displays is configurable: two belong to the prototype, not to a system requirement. Every
-    page, reading and continuation request goes from the hub to the container API, which calls Foundry models. The house holds the clock and initiates requests. This describes local code checked on 7 September 2026; hardware and the deployed revision were not rechecked.
+    A mini-PC connects the home's e-paper displays, printer and scanner. More displays can be added. The mini-PC manages the clock and requests pages, readings and continuations from the cloud service.
   </p>
 
   <figure class="band">
@@ -74,17 +73,17 @@ import { REPO } from "../../i18n/ui";
 
   <figure>
     <a href="/images/panel-activities-en.webp"><img src="/images/panel-activities-en.webp" width="1200" height="900" loading="lazy" alt="The activity panel showing a proposed activity, its expandable script and the Approve, Refuse and Work on it controls." /></a>
-    <figcaption>The decision page in the current interface, with invented data in the local preview. This sample activity is in Italian.</figcaption>
+    <figcaption>Activities awaiting approval, with invented data. The sample activity is in Italian.</figcaption>
   </figure>
 
   <p>Settings cover days and hours, how many activities may begin, interests, subjects to avoid and language. The parent can add a temporary note and set bounds on how a continuation may change. During an activity, they can bring its end time forward or ask it to start closing. The activity log collects what the system generated and showed.</p>
 
   <h3>Devices in the house</h3>
-  <p>The panel lists registered displays and discovered printers and scanners. The parent names them, assigns jobs and sees which need attention. More displays can be added: several devices can hold the same job, and one device can hold several jobs. This does not imply unlimited capacity, which has not been measured.</p>
+  <p>The panel lists registered displays and discovered printers and scanners. The parent names them, assigns jobs and sees which need attention. Several devices can hold the same job, and one device can hold several jobs.</p>
 
   <figure>
     <a href="/images/panel-devices-en.webp"><img src="/images/panel-devices-en.webp" width="1200" height="900" loading="lazy" alt="The panel's Devices page with editable names, display status and checkboxes for assigning jobs." /></a>
-    <figcaption>Example device assignments with invented data. The number of displays shown is not a system limit.</figcaption>
+    <figcaption>Device names and jobs, with invented data.</figcaption>
   </figure>
 
   <h2>Reconstructing a railway</h2>
@@ -122,15 +121,15 @@ import { REPO } from "../../i18n/ui";
     </figure>
   </div>
 
-  <p>This example comes from the research notebook. The filled sheet is a synthetic proposal, not a verified solution. The reader recognized the written arrow and direction; the continuation asked for them to be revised after a new indication of the map's orientation.</p>
+  <p>In this synthetic example, the reader recognized the written arrow and direction. The continuation asked for them to be revised after a new indication of the map's orientation.</p>
 
   <p>
-    The reader describes added marks. The runner selects marks or blank; a degraded reading leaves it waiting. An <code>ask</code> branch sends the descriptions in the continuation prompt. The continuation is checked and screened, without a second parent approval or a repair.
+    The system distinguishes a filled sheet from a blank one and uses what it reads to continue. If it cannot read the sheet, it waits. The continuation passes safety checks without a second parent approval.
   </p>
 
   <h2 id="memory">Memory</h2>
   <p>The system stores configuration, generated activities, endings, reported durations and reading-derived summaries. A separate call observes pages to calibrate load and writing; recent observations are used to compute the profile that steers prompts. The panel does not expose that profile as a score. The parent can clear activity memory and observations. A complete plain-language memory view is not built.</p>
-  <p>The reading contract blocks implicit copying and pickling but permits the HTTP request body. An administrator can enable development retention for 14 days. Each retained reading has its own 14-day lifetime from writing. This exception is separate from ordinary observations used by the profile.</p>
+  <p>For development, an administrator can also enable retention of complete readings for 14 days. Each retained reading expires 14 days after writing. Observations used by the profile are stored separately.</p>
 
   <h2>The stack</h2>
 
