@@ -1,6 +1,6 @@
 # A loop that plays activities against nobody
 
-This is a research apparatus, not part of the product. It devises activities with **the same prompts the house uses**, plays them against a model standing in for an adolescent, and scores what happened on eight axes. When a prompt changes, a run says what moved.
+This is synthetic research, not part of the product. The textual loop generates activities through production functions and asks a model to play and appraise them. Its automatic findings have false positives and its transcript omits information. Its scores do not by themselves demonstrate a quality improvement.
 
 Everything here is public and nothing in it was written by a person in a household. The synthetic households in [households.py](households.py) are invented and obviously so; the transcripts are two models talking to each other. That is the whole reason the outputs can be committed — see [What is published](#what-is-published).
 
@@ -81,7 +81,7 @@ Same seed, same six households, four iterations each, three prompt states. 29 Au
 
 **One real tension, and the loop is what made it visible.** Telling a sheet to print what to do with it moved `sheetStandsAlone` by 1.66 and cost 0.39 on `notASchoolSheet`: a page that says plainly what to do reads like a worksheet. Softening it into the object's own voice gave the voice back — nearly a whole point — and returned about half the clarity. The two pull against each other and neither run is simply better than the other.
 
-The third state is the one in the repository, on the argument that it is the flattest: no axis below 2.79, against 2.09 in the second. If clarity is worth more than voice, the second run's wording is in the history and the change is two sentences.
+Those three states are historical. Current prompts changed again on 7 September 2026 to allow rich, open activities with explicit instructions. The older numbers are not measurements of the current prompts.
 
 ## What this does not answer
 
@@ -114,15 +114,17 @@ python -m research.run --iterations 4 --label after-the-sheets-rule
 
 `--households` takes a name to run one alone. `--seed` fixes which mood and which weight each activity is drawn with, so two runs of the same prompts differ only by the model.
 
-## The short loop: one activity with the prompt open beside it
+## The workbench
 
-A run is the measurement and takes an hour. [officina.ipynb](officina.ipynb) is the other half — one activity at a time, so a sentence can be changed and its effect looked at before an hour is spent finding out whether it moved a number. `pip install -e ".[bench]"`, then pick the project's own interpreter as the kernel.
+[officina.ipynb](officina.ipynb) calls `panel.devising.devise_experience`, draws pages, adds synthetic handwriting, reads it with `PageReader` and calls `panel.continuing.continue_experience`. [workbench.py](workbench.py) records successful and failed logical calls and saves synthetic images. It reports conclusion, error and interruption separately; fallback events remain explicit. The handwritten target receives the other available sheets as image references.
 
-It walks the same path the panel does, in the steps it actually has: which method the model chose out of `methods/`, the whole assembled prompt before it is paid for, the call with the repair log on, the document read as somebody in the room meets it, the checks, the activity played against the stand-in, and the eight axes on that one activity. Measured 6 September 2026: the notebook end to end in 106–207 s, of which 64–164 s is the devise call.
+Run `python -m research.execute_officina` from the repository interpreter. It needs the `bench` extra and cloud dependencies. It saves notebook outputs even on failure. The notebook loads `research/env.ps1`, reloads prompts before constructing agents and creates a new output directory. It calls paid services. Its branch tests remove inherited cloud settings; do the same before running the complete pytest suite.
 
-**No prompt is copied into it.** The blocks stay in the `.md` files beside the modules that send them; [bench.py](bench.py) only makes the running process read them again, through `shared.prompts.forget()` and a reload in the order the instructions are assembled in. So there is nothing to transcribe afterwards: the file the workbench read is the file the container sends, and finishing means committing it, running `python -m tools.prompts --write`, and measuring with a run.
+The run on 7 September 2026 completed in 345.4 seconds in the notebook executor, including 335.6 seconds inside the model-path verification. It drew two pages, read one synthetic return, sent seven descriptions in the continuation prompt and reached a close. An untouched-page control was blank and not degraded. [verification.json](runs/2026-09-07-officina-104746-339138/verification.json) stores the checks; the directory also holds prompts, responses and full-size images.
 
-**One activity is n=1, and this repository has already been fooled by that once.** On 3 September a set of changes that read as improvements moved all eight axes down, from 3.49 to 2.93. The notebook is for deciding what to try; the run is what answers whether it worked.
+The workbench does not exercise device HTTP authentication, parent approval, deployed storage, physical printing or scanning, the household clock or the separate profile-placement task. Its `if_no_page` simulation exercises the contract; the current hub runner does not implement that branch. Consecutive non-collection moments do not wait their declared duration. A notebook completion therefore does not prove that an activity is paced or understood in a room.
+
+The textual loop remains separate: it omits illustrations and help from parts of its transcript and stops at `ask`. Its appraisal assumes a single written answer in places where an open task may need examples or observation instead. Preserve its historical output, but do not use its counts as proof of quality. The reasoning and physical checks still needed are in [ideas/13](../ideas/13-prompts-and-simulation.md).
 
 
 About **145 s and one and a half cents** per activity, measured 29 August 2026: one devising call, one call per sheet collected, one appraisal. Six households by four iterations is roughly an hour.

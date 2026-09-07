@@ -537,6 +537,11 @@ figcaption {
   font-weight: 400;
 }
 
+.numbers.descriptions td:nth-of-type(1) {
+  white-space: normal;
+  font-weight: 400;
+}
+
 /* ── graphs ───────────────────────────────────────────────────────────────── */
 
 /* Drawn as SVG rather than as boxes with a sentence between them, because the edges are

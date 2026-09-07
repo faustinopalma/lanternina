@@ -31,18 +31,21 @@ def sent(monkeypatch: pytest.MonkeyPatch) -> list[bytes]:
     seen: list[bytes] = []
 
     def edit(**kwargs: Any) -> Any:
-        seen.append(kwargs["image"].read())
+        images = kwargs["image"]
+        seen.extend(image.read() for image in (images if isinstance(images, list) else [images]))
         return SimpleNamespace(
             data=[SimpleNamespace(b64_json=base64.b64encode(a_page("RGB")).decode())]
         )
 
     monkeypatch.setenv("LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT", "https://example.invalid")
     monkeypatch.setenv("LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT", "an-image-model")
-    monkeypatch.setattr("azure.identity.DefaultAzureCredential", lambda *a, **k: object())
+    monkeypatch.setattr(
+        "azure.identity.DefaultAzureCredential", lambda *a, **k: SimpleNamespace(close=lambda: None)
+    )
     monkeypatch.setattr("azure.identity.get_bearer_token_provider", lambda *a, **k: str)
     monkeypatch.setattr(
         "openai.AzureOpenAI",
-        lambda **k: SimpleNamespace(images=SimpleNamespace(edit=edit)),
+        lambda **k: SimpleNamespace(images=SimpleNamespace(edit=edit), close=lambda: None),
     )
     return seen
 
@@ -69,3 +72,26 @@ def test_every_hand_has_words() -> None:
         assert asked_of(hand).strip()
     with pytest.raises(ValueError):
         asked_of("nobody")
+
+
+def test_reference_sheets_follow_the_target_and_are_rgb(sent: list[bytes]) -> None:
+    target, reference = a_page("RGB"), a_page("L")
+    written_on(target, reference_pages=(reference,))
+    assert sent[0] == target
+    assert len(sent) == 2
+    assert Image.open(io.BytesIO(sent[1])).mode == "RGB"
+    assert "FIRST image" in asked_of("teenager", references=1)
+
+
+def test_client_and_credential_close_after_image_error(monkeypatch, sent):
+    from unittest.mock import Mock
+
+    credential = Mock()
+    client = Mock()
+    client.images.edit.side_effect = RuntimeError("synthetic failure")
+    monkeypatch.setattr("azure.identity.DefaultAzureCredential", lambda: credential)
+    monkeypatch.setattr("openai.AzureOpenAI", lambda **kwargs: client)
+    with pytest.raises(RuntimeError, match="synthetic failure"):
+        written_on(a_page("L"))
+    client.close.assert_called_once()
+    credential.close.assert_called_once()

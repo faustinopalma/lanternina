@@ -70,18 +70,18 @@ import Base from "../../layouts/Base.astro";
 
   <AfternoonLife
     title="La vita di un'attività"
-    desc="Il genitore approva un'idea nel pannello. L'API chiede a un modello di scrivere l'attività, verifica il risultato e lo conserva per quel nucleo. L'hub lo ritira con una richiesta successiva e lo avvia quando la durata intera ci sta ancora. Ogni lettura seleziona il momento successivo, richiede un seguito previsto oppure chiude l'attività."
+    desc="L'hub richiede un'attività. Il container la genera, verifica e filtra, poi attende l'approvazione del genitore. L'hub ritira gli approvati. Una lettura seleziona un momento o richiede un seguito verificato senza una seconda approvazione."
     caption="L'arco di ritorno a sinistra è una riparazione dopo la verifica. Quello a destra è un seguito previsto che dipende dalla pagina restituita."
-    idea={{ title: "Il genitore approva un'idea", sub: ["panoramica · temi · copione"] }}
+    idea={{ title: "La casa chiede un'attività", sub: ["preferenze · eventuale brief"] }}
     devise={{
       title: "Un modello scrive l'attività intera",
-      sub: ["ogni momento in un colpo — 68–157 s"],
+      sub: ["momenti, aiuti e vie d'uscita"],
     }}
     checks={{
-      title: "Controlli strutturali, poi un secondo modello",
-      sub: ["rilegge tutto — 14,4–22,8 s"],
+      title: "Formato, controlli e sicurezza",
+      sub: ["il giudice è una lettura separata"],
     }}
-    waits={{ title: "L'API la conserva", sub: ["in attesa per quel nucleo"] }}
+    waits={{ title: "L'API attende l'approvazione", sub: ["il genitore legge l'attività"] }}
     begins={{ title: "La casa lo fa cominciare", sub: ["solo se la durata intera ci sta ancora"] }}
     moment={{ title: "Un momento gira", sub: ["dire · consegnare · ritirare"] }}
     cameBack={{ title: "Cosa è tornato", sub: ["segni, oppure bianca"] }}
@@ -89,9 +89,9 @@ import Base from "../../layouts/Base.astro";
     ask={{
       title: "ask",
       sub: [
-        "la casa manda su il bianco e la pagina",
-        "tornata, e riceve un seguito nello",
-        "stesso formato",
+        "la casa invia la lettura dei segni",
+        "il container verifica il seguito",
+        "senza seconda approvazione",
       ],
     }}
     refused="rifiutato"
@@ -104,10 +104,7 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    La riparazione dopo la verifica ripete l'intera chiamata di generazione, quindi ogni controllo
-    deve valutare un fatto nel documento e non una formulazione particolare. L'hub avvia un'attività
-    soltanto quando la durata intera ci sta prima della scadenza fissata dal genitore. Trenta minuti
-    prima della scadenza, l'esecuzione entra nel percorso dal momento corrente fino alla fine.
+    La generazione può avere una riparazione del formato e una separata dei controlli; la continuazione non ha riparazioni. L'hub rispetta ore e limite giornaliero. Il timer avvia la via d'uscita al controllo utile dopo la soglia dei trenta minuti. I momenti consecutivi senza raccolta non attendono la durata dichiarata.
   </p>
 
   <h2>Il giro della carta</h2>
@@ -123,29 +120,20 @@ import Base from "../../layouts/Base.astro";
     desc="Le parole già passate dal filtro entrano in una sola chiamata di immagini, che disegna il foglio intero. Il foglio si stampa e il suo bianco si conserva. Qualcuno ci scrive sopra, oppure no. Lo scanner lo riprende, le due immagini vanno a un modello, e la risposta è segni oppure bianca. Da quella risposta si scrivono le parole dopo."
     caption="L'azione della persona è l'unico passaggio di questo ciclo che il software non esegue."
     words={{ title: "Le parole", sub: ["già passate dal filtro"] }}
-    drawn={{ title: "Una chiamata di immagini", sub: ["il foglio A4 intero, in un colpo", "19–33 s"] }}
+    drawn={{ title: "Una chiamata di immagini", sub: ["il foglio A4 intero"] }}
     printed={{
       title: "Stampata",
       sub: ["il bianco si tiene: è l'unica cosa", "contro cui si leggerà"],
     }}
     person={{ title: "Qualcuno ci scrive", sub: ["oppure no"] }}
-    scanned={{ title: "Scanner", sub: ["≈ 26 s"] }}
-    read={{ title: "Due immagini a un modello", sub: ["cosa è cambiato? — 4,4–5,5 s"] }}
-    outcome={{ title: "segni · bianca", sub: ["tutto il vocabolario,", "poi la lettura sparisce"] }}
+    scanned={{ title: "Scanner", sub: ["acquisisce il foglio restituito"] }}
+    read={{ title: "Due immagini a un modello", sub: ["descrive i segni aggiunti"] }}
+    outcome={{ title: "segni · bianca", sub: ["descrizioni per il seguito", "lettura degradata: attesa"] }}
     feeds="e da lì si scrivono le parole dopo"
   />
 
   <p>
-    Il risultato della visione è <b>segni</b> oppure <b>bianca</b>. Il servizio di esecuzione lo usa
-    senza scriverlo in archivi o log, e il tipo della lettura chiude le vie di serializzazione, copia
-    e cache. Questa rappresentazione non fornisce al codice successivo un conteggio da trasformare
-    in un punteggio.
-  </p>
-
-  <p class="note">
-    Misurato col dito su un pulsante vero: dalla pressione alla lettura sullo schermo, circa 35 s, di
-    cui 26 s sono lo scanner. Il pavimento è lo scanner più al massimo un ciclo di risveglio dello
-    schermo, e il firmware aggiunge 5–11 s a qualunque intervallo di aggiornamento gli si chieda.
+    Il ramo dipende dalla presenza di segni; le descrizioni servono al seguito. Le osservazioni conservate per il profilo e l'eccezione di sviluppo sono descritte nella <a href="/it/#la-memoria">memoria del sistema</a>.
   </p>
 
   <h2>Il percorso delle chiamate ai modelli</h2>
@@ -172,12 +160,6 @@ import Base from "../../layouts/Base.astro";
       della verifica strutturale.
     </figcaption>
   </figure>
-
-  <p>
-    Un rifiuto che ricorre in più attività indica il prompt o il contratto. Un rifiuto di questo tipo
-    ha fermato la ricerca per due giorni; mancava la regola che stabilisce l'ordine in cui si
-    percorrono i momenti.
-  </p>
 
   <p>
     <a href={NOTEBOOK}>research/officina.ipynb</a> registra ogni richiesta e risposta nel router. Gli

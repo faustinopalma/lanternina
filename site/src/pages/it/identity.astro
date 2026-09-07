@@ -98,20 +98,14 @@ import { REPO } from "../../i18n/ui";
     cloud per leggere una pagina.
   </p>
 
-  <h2>Chiavi separate per approvazione e sicurezza</h2>
+  <h2>Approvazione delle attività</h2>
 
   <p>
-    Il filtro di sicurezza e l'approvazione del genitore usano chiavi HMAC separate. Il sigillo di
-    approvazione copre quello di sicurezza, quindi il componente di sicurezza può esaminare il
-    contenuto ma non può coniare la decisione del genitore.
+    Il pannello conserva le decisioni su <code>OfferedExperience</code>. L'hub ritira i documenti approvati attraverso HTTPS autenticato e sceglie quando avviarli. Le continuazioni sono verificate e filtrate nel container, ma non ricevono una seconda approvazione del genitore.
   </p>
 
   <p>
-    Il sigillo di approvazione viene coniato e verificato in una sola esecuzione del dispositivo, per
-    cui la chiave può ruotare tra le esecuzioni. Il sigillo di sicurezza attraversa processi e giorni:
-    il filtro lo conia, il pannello lo conserva e un processo successivo lo verifica. La ricerca dei
-    due valori letterali nel filesystem dell'hub ha verificato che le chiavi non vengono distribuite
-    lì.
+    Il percorso precedente <code>Proposal</code> usa due chiavi HMAC separate e verifica i sigilli alla consegna. Quella proprietà resta coperta dai suoi test; non descrive il percorso attuale delle attività. La posizione delle chiavi sull'installazione distribuita non è stata ricontrollata il 7 settembre 2026.
   </p>
 
   <h2>Deploy tramite OIDC</h2>

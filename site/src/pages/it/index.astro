@@ -19,9 +19,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     Un mini-PC in una casa pilota due schermi a inchiostro elettronico, una stampante e uno scanner.
-    Ogni chiamata di linguaggio e di visione va a Microsoft Foundry, in UE, quindi l'inferenza
-    richiede la connessione al cloud. La casa tiene l'orologio e le chiavi dei sigilli, avvia ogni
-    richiesta e controlla quando comincia il lavoro.
+    L'hub chiede pagine, letture e continuazioni al container API, che chiama i modelli Foundry. La casa tiene l'orologio e avvia le richieste. Questa descrizione riguarda il codice locale verificato il 7 settembre 2026; hardware e versione distribuita non sono stati ricontrollati.
   </p>
 
   <figure class="band">
@@ -40,26 +38,18 @@ import { REPO } from "../../i18n/ui";
   <h2>Come va un'attività</h2>
 
   <p>
-    La sequenza comincia nel pannello del genitore. Il mini-PC esegue poi l'attività approvata
-    secondo il proprio orologio.
+    L'hub richiede attività da proporre. Il genitore può anche preparare un brief nel pannello. L'attività generata e verificata attende una decisione prima che l'hub la avvii.
   </p>
 
   <ol class="steps">
     <li>
-      <b>Il genitore esamina le idee e ne approva una.</b> Il pannello mostra la panoramica, i temi e
-      il copione di ogni idea. Il genitore può modificare il brief prima di approvarlo e fissa l'ora
-      entro cui l'attività deve finire.
+      <b>Il genitore orienta la proposta.</b> Scrive interessi, argomenti da evitare, lingua e circostanze del momento. Può preparare un brief e fissa le ore disponibili.
     </li>
     <li>
-      <b>L'API trasforma il brief approvato in un'attività.</b> Il router dei modelli manda il brief
-      a Microsoft Foundry. Una risposta contiene il grafo dell'attività, tre lunghezze per ogni
-      momento, quattro livelli di aiuto e un percorso verso la fine da ogni punto.
+      <b>Il container genera l'attività.</b> Il router manda al modello il materiale della casa, la forma e la mossa scelte. La risposta contiene i momenti, tre durate per ciascuno, gli aiuti e le vie d'uscita.
     </li>
     <li>
-      <b>L'API verifica e conserva l'attività.</b> I controlli strutturali verificano i percorsi, gli
-      oggetti e le risposte. Un controllo fallito concede al modello un tentativo di riparazione.
-      Azure AI Content Safety esamina poi il testo e l'attività completa viene conservata per quel
-      nucleo.
+      <b>L'API verifica e conserva l'attività.</b> Una risposta illeggibile può avere una riparazione del formato. I controlli strutturali possono richiedere una riparazione separata. Contestazioni residue fermano la richiesta; Content Safety esamina il testo accettato. Il genitore può approvare o rifiutare l'attività offerta.
     </li>
     <li>
       <b>Il mini-PC ritira l'attività.</b> Interroga la device API secondo il proprio programma. L'API
@@ -67,9 +57,7 @@ import { REPO } from "../../i18n/ui";
       prima di preparare la prima pagina.
     </li>
     <li>
-      <b>Il mini-PC stampa la prima pagina.</b> Il router manda a un modello di immagini il testo già
-      esaminato e la descrizione della pagina. Il modello disegna il foglio A4 completo e il servizio
-      di stampa lo manda alla stampante a getto d'inchiostro tramite IPP.
+      <b>Il mini-PC chiede la pagina al container e la stampa.</b> Il modello di immagini riceve il contratto della pagina, non il copione intero. Il container restituisce il foglio disegnato; l'hub lo manda alla stampante tramite IPP.
     </li>
     <li>
       <b>Lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la scansione e
@@ -83,98 +71,50 @@ import { REPO } from "../../i18n/ui";
     </li>
   </ol>
 
-  <h2>Cosa esce, e cosa torna indietro</h2>
+  <h2>Ricostruire una ferrovia</h2>
 
   <p>
-    La pagina qui sotto è stata disegnata per intero da un modello di immagini, a partire da parole
-    già filtrate. Qualcuno ci scrive sopra e la rimette sul vetro dello scanner; la lettura decide i
-    momenti dopo, che vengono scritti mentre il foglio è ancora sul tavolo.
+    Una vecchia ferrovia collegava un casello a una trincea, passando fra i filari e sopra un ponte. La mappa conserva queste osservazioni, ma lascia incerto il passaggio accanto allo stagno. L'attività chiede di disegnare nel taccuino un tracciato possibile, indicarne la direzione e proporre un'alternativa.
   </p>
 
   <div class="pair">
     <figure>
+      <a href="/images/valle-lunga-map.webp">
       <img
-        src="/images/page.jpg"
-        width="919"
-        height="1300"
+        src="/images/valle-lunga-map.webp"
+        width="1024"
+        height="1536"
         loading="lazy"
-        alt="Una pagina stampata, bianca."
+        alt="La mappa di Valle Lunga: casello, filari, ponte, stagno e trincea, con le osservazioni da seguire."
       />
-      <figcaption>Consegnata. Uscita del modello non ritoccata, 19–33 s per disegnarla.</figcaption>
+      </a>
+      <figcaption>Il primo foglio contiene la mappa e le osservazioni.</figcaption>
     </figure>
     <figure>
+      <a href="/images/valle-lunga-written.webp">
       <img
-        src="/images/page-written.jpg"
-        width="866"
-        height="1300"
+        src="/images/valle-lunga-written.webp"
+        width="1024"
+        height="1536"
         loading="lazy"
-        alt="La stessa pagina, riempita a mano."
+        alt="Il secondo foglio, un taccuino compilato da un modello con un tracciato blu, una freccia nord e un'ipotesi alternativa."
       />
+      </a>
       <figcaption>
-        Tornata. Una mano simulata ha compilato questo esempio per esercitare automaticamente la
-        corsa completa.
+        Il secondo foglio è compilato da una mano simulata, non da una persona. <a href="/images/valle-lunga-notebook.webp">Il taccuino prima della compilazione.</a>
       </figcaption>
     </figure>
   </div>
 
-  <p>
-    Il risultato della visione ha due valori: <b>segni</b> e <b>bianca</b>. Questo vocabolario
-    impedisce al percorso di lettura di trasformare i segni di qualcuno in un conteggio o in un
-    punteggio. Dopo la scelta del momento successivo, il tipo della lettura chiude le vie di
-    serializzazione, copia e cache fuori dalla memoria.
-  </p>
-
-  <h2>Misurato sul sistema in funzione</h2>
+  <p>Questo esempio viene dal notebook di ricerca. La compilazione è una proposta sintetica, non una soluzione verificata. Il lettore ha riconosciuto la freccia e la direzione scritte; il seguito ha chiesto di rivederle dopo una nuova indicazione sull'orientamento della mappa.</p>
 
   <p>
-    Le date ci sono perché i prompt cambiano e i numeri si spostano con loro. Tutto quello che segue
-    è stato misurato contro i servizi veri, non stimato.
+    Il lettore descrive i segni aggiunti. Il runner sceglie il ramo segni o bianca; una lettura degradata lo lascia in attesa. Quando il ramo dice <code>ask</code>, le descrizioni entrano nel prompt della continuazione. Il seguito viene verificato e filtrato, senza una seconda approvazione del genitore e senza riparazioni.
   </p>
 
-  <table class="numbers">
-    <tbody>
-      <tr>
-        <th scope="row">Inventare un'attività intera</th>
-        <td>68–157 s</td>
-        <td class="when">n=22, set 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Rileggerlo con un secondo modello</th>
-        <td>14,4–22,8 s</td>
-        <td class="when">set 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Disegnare una pagina</th>
-        <td>19–33 s</td>
-        <td class="when">ago 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Inchiostro su una pagina disegnata</th>
-        <td>0,5–2,7 %</td>
-        <td class="when">ago 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Leggere una pagina tornata</th>
-        <td>4,4–5,5 s</td>
-        <td class="when">ago 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Dalla pressione alla lettura sullo schermo</th>
-        <td>≈ 35 s</td>
-        <td class="when">19 ago 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Righello stampato, misurato con un righello</th>
-        <td>50 mm chiesti, 50 mm ottenuti</td>
-        <td class="when">4 ago 2026</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p class="note">
-    L'ultima riga verifica la scala fisica. Una misura fatta a mano ha confermato che la catena di
-    stampa conserva le dimensioni dall'immagine generata al foglio.
-  </p>
+  <h2 id="la-memoria">La memoria</h2>
+  <p>Il sistema conserva configurazione, attività prodotte, esiti, durate riportate e sintesi delle letture. Una chiamata separata osserva le pagine per calibrare carico e quantità di scrittura; il profilo viene ricalcolato dalle osservazioni recenti e orienta i prompt. Il pannello non espone il profilo come punteggio. Il genitore può cancellare memoria delle attività e osservazioni. Manca una vista completa della memoria in linguaggio corrente.</p>
+  <p>Il contratto della lettura blocca copia e pickle impliciti, ma permette il corpo della richiesta HTTP. Un amministratore può attivare una conservazione di sviluppo per 14 giorni: ogni lettura conservata ha una propria scadenza di 14 giorni dalla scrittura. Questa eccezione è distinta dalle osservazioni ordinarie usate dal profilo.</p>
 
   <h2>Lo stack</h2>
 
@@ -190,16 +130,8 @@ import { REPO } from "../../i18n/ui";
   <p>
     Microsoft Foundry in UE per ogni chiamata di linguaggio, visione e immagini, dietro un unico
     modulo router che è l'unico posto a cui è permesso importare un SDK di modelli. Azure AI Content
-    Safety su tutto ciò che viene generato e su ogni immagine in ingresso. Container Apps per l'API,
+    Safety sui percorsi di generazione. La rotta di lettura delle scansioni non applica un filtro Content Safety alle immagini in ingresso. Container Apps per l'API,
     Cosmos DB, Blob Storage, Static Web Apps. Infrastruttura in Bicep.
-  </p>
-
-  <h3>Come si pubblica</h3>
-  <p>
-    Un push su <code>main</code> pubblica l'API tramite GitHub OIDC, una credenziale federata e una
-    managed identity assegnata dall'utente. Il tempo misurato da capo a fondo è 1 m 35 s. Il runner
-    costruisce l'immagine localmente, così i ruoli limitati alle risorse possono scrivere nel
-    registro e aggiornare la container app senza poter riconfigurare il registro.
   </p>
 
   <figure class="narrow">
@@ -218,12 +150,6 @@ import { REPO } from "../../i18n/ui";
 
   <h2>Confini imposti dal codice</h2>
 
-  <p>
-    <code>tests/test_boundaries.py</code> cerca il vocabolario dell'ottimizzazione dell'aggancio nello
-    schema salvato, nel pannello, nel browser e nei prompt. Ogni controllo è stato verificato
-    inserendo una violazione e osservando il fallimento.
-  </p>
-
   <ul>
     <li>L'attività fornisce da sola il motivo per continuare; il sistema non aggiunge serie di giorni, obiettivi giornalieri o ricompense trattenute.</li>
     <li>Il programma risponde alle attività approvate e alle loro scadenze, invece che all'assenza o a misure del tempo trascorso.</li>
@@ -237,13 +163,6 @@ import { REPO } from "../../i18n/ui";
       invece di volti, identità, emozioni, attenzione o dati biometrici.
     </li>
   </ul>
-
-  <p>
-    Le decisioni del genitore vivono nel registro delle approvazioni, separato dalla
-    <code>Proposal</code> generata. Soltanto il filtro di sicurezza conia il tipo richiesto dai
-    contenuti destinati alle persone. Tipi e sigilli rappresentano questi confini, quindi il codice
-    che li aggira fallisce prima dell'esecuzione.
-  </p>
 
   <p>
     <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}

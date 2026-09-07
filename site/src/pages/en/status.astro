@@ -6,7 +6,7 @@ import { REPO } from "../../i18n/ui";
 <Base
   lang="en"
   page="status"
-  eyebrow="Verified on real hardware"
+  eyebrow="Local code and dated trials"
   title="Current implementation"
   description="What runs in the house and in Azure, what the tests enforce, and which implementation gaps remain open."
 >
@@ -17,11 +17,10 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    This remains a hackathon project. The components listed below run against deployed services with
-    real credentials and physical hardware in a room.
+    On 7 September 2026 the local notebook completed a synthetic activity with two pages, handwriting, reading and continuation in 345.4 measured seconds. The untouched-page control returned blank. Hardware and the deployed revision were not checked, and no deployment was performed.
   </p>
 
-  <h2>Built and running</h2>
+  <h2>Implemented in code</h2>
 
   <ul>
     <li>
@@ -33,7 +32,7 @@ import { REPO } from "../../i18n/ui";
       button press inside the same HTTP response.
     </li>
     <li>
-      The activity format and its structural checks, a second model that rereads every activity,
+      The activity format and its structural checks, a second model that rereads activities when the call succeeds and usage limits permit,
       parent approval, whole-page generation, comparison against the blank, and deadline control.
     </li>
     <li>The picture archive, and usage accounting with a per-household cap.</li>
@@ -50,19 +49,19 @@ import { REPO } from "../../i18n/ui";
     violation and observing the failure.
   </p>
 
-  <table class="numbers">
+  <table class="numbers descriptions">
     <tbody>
       <tr>
         <th scope="row">Parent approval is separate from generation</th>
-        <td>decisions live in the approval ledger, outside <code>Proposal</code></td>
+        <td>the panel stores decisions on <code>OfferedExperience</code>; the hub retrieves approved records</td>
       </tr>
       <tr>
         <th scope="row">Generated output passes through Content Safety</th>
-        <td>the payload type is minted only by the gate</td>
+        <td>generation and continuation functions call the gate before returning documents</td>
       </tr>
       <tr>
-        <th scope="row">Approval binds the exact screened content</th>
-        <td>the approval seal covers the safety seal</td>
+        <th scope="row">The older Proposal path verifies two seals</th>
+        <td>this property does not extend to the current activity and continuation path</td>
       </tr>
       <tr>
         <th scope="row">Only one component talks to a model</th>
@@ -73,8 +72,8 @@ import { REPO } from "../../i18n/ui";
         <td>import-level check across device packages and router boundaries</td>
       </tr>
       <tr>
-        <th scope="row">A reading remains in process memory</th>
-        <td>the type closes every implicit route out of memory</td>
+        <th scope="row">Readings block implicit copying and pickling</th>
+        <td>the HTTP dictionary remains serializable; derived observations and development exceptions are retained</td>
       </tr>
       <tr>
         <th scope="row">Interaction excludes engagement mechanics</th>
@@ -102,43 +101,15 @@ import { REPO } from "../../i18n/ui";
       loop but cannot yet capture an answer with several choices.
     </li>
     <li>
-      <b>End-to-end reading retention.</b> The reading type blocks local serialization, copying and
-      caching. The HTTP request body still crosses the house and panel, and either endpoint can
-      persist it. One named household retains it for fifteen days during development.
+      <b>Memory visibility.</b> A complete view is missing. The system stores profile observations and activity summaries. Administrator development permission lasts 14 days; each permitted reading expires 14 days after its own write.
     </li>
     <li>
-      <b>The answer and keepsake property.</b> The specification requires each moment to allow a
-      wrong answer and the final moment to produce something worth keeping. Validation does not yet
-      enforce this property, so a plan that violates it can be stored.
+      <b>Activity quality.</b> Building, drawing and investigating can have open outcomes. Checks do not establish comprehension or interest; automatic judges retain false positives. A trial with a person is still needed.
     </li>
+    <li><b>Print failure and moment timing.</b> The hub shows <code>instead</code>, but the runner does not execute <code>if_no_page</code>. Consecutive non-collection moments advance without waiting their declared duration.</li>
     <li>
       <b>A second house.</b> Provisioning has been exercised with one household. The installer's
       <code>--install</code> path has not yet been run for another one.
-    </li>
-  </ul>
-
-  <h2>What the failures taught</h2>
-
-  <p>
-    The defects worth reading are in the repository with their measurements attached. Three of them
-    changed the design:
-  </p>
-
-  <ul>
-    <li>
-      A per-cell threshold computed with Otsu reported 45 % ink on visibly empty boxes, and the
-      synthetic test passed — because a uniform white patch makes Otsu degenerate. Only real paper
-      showed it.
-    </li>
-    <li>
-      A length cap on one field was being hit in 6 attempts out of 11, and each overrun cost a
-      second full model call. The cap protected nothing physical: it was shaping the output instead
-      of bounding it.
-    </li>
-    <li>
-      A validation rule compared a whole sentence as a substring, so an activity that named the
-      same object twice in different words was refused. The rule was reading a phrasing rather than
-      a fact, and it was the single most frequent refusal.
     </li>
   </ul>
 

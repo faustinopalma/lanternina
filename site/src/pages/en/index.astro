@@ -18,9 +18,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     A mini-PC in a house drives two e-paper displays, an inkjet and a flatbed scanner. Every
-    language and vision call goes to Microsoft Foundry in the EU, so inference requires cloud
-    connectivity. The house holds the clock and sealing keys, initiates each request and controls
-    when work begins.
+    page, reading and continuation request goes from the hub to the container API, which calls Foundry models. The house holds the clock and initiates requests. This describes local code checked on 7 September 2026; hardware and the deployed revision were not rechecked.
   </p>
 
   <figure class="band">
@@ -39,25 +37,18 @@ import { REPO } from "../../i18n/ui";
   <h2>How an activity goes</h2>
 
   <p>
-    The sequence begins in the parent panel. The mini-PC then runs the approved activity on its own
-    clock.
+    The hub requests activities to offer. A parent can also prepare a brief in the panel. The generated, checked activity waits for a decision before the hub starts it.
   </p>
 
   <ol class="steps">
     <li>
-      <b>A parent reviews the ideas and approves one.</b> The panel shows the overview, themes and
-      script for each idea. The parent can edit the brief before approval and sets the hour by which
-      the activity must end.
+      <b>The parent steers the proposal.</b> They write interests, subjects to avoid, language and current circumstances. They can prepare a brief and set the available hours.
     </li>
     <li>
-      <b>The API turns the approved brief into an activity.</b> The model router sends the brief to
-      Microsoft Foundry. One response contains the activity graph, three lengths for each moment,
-      four levels of help and a route to the ending from every point.
+      <b>The container generates the activity.</b> The router sends household material and the chosen form and move. The response contains moments, three durations for each, help and ways out.
     </li>
     <li>
-      <b>The API validates and stores the activity.</b> Structural checks verify its routes, objects
-      and answers. A failed check gives the model one repair attempt. Azure AI Content Safety then
-      screens the text, and the completed activity is stored for that household.
+      <b>The API checks and stores the activity.</b> An unreadable answer can receive a format repair. Structural complaints can trigger a separate repair. Remaining complaints stop the request; Content Safety screens accepted text. The parent can approve or refuse the offered activity.
     </li>
     <li>
       <b>The mini-PC collects the activity.</b> It polls the device API on its own schedule. The API
@@ -65,9 +56,7 @@ import { REPO } from "../../i18n/ui";
       preparing the first page.
     </li>
     <li>
-      <b>The mini-PC prints the first page.</b> The router sends the screened text and a page
-      description to an image model. The model draws the complete A4 sheet, and the print service
-      sends it to the inkjet over IPP.
+      <b>The mini-PC requests a page from the container and prints it.</b> The image model receives the page contract, not the whole script. The container returns the drawing; the hub sends it to the printer over IPP.
     </li>
     <li>
       <b>The scanner returns the completed page.</b> A vision model receives the scan and the
@@ -80,96 +69,50 @@ import { REPO } from "../../i18n/ui";
     </li>
   </ol>
 
-  <h2>What comes out, and what goes back</h2>
+  <h2>Reconstructing a railway</h2>
 
   <p>
-    The page below was drawn whole by an image model, from words that had already been screened.
-    Somebody writes on it and puts it back on the scanner glass; the reading decides the next
-    moments, which are written while the sheet is still on the table.
+    An old railway connected a hut to a cutting, passing between rows of trees and over a bridge. The map preserves these observations but leaves the route beside the pond uncertain. The activity asks for a possible route in the notebook, its direction and an alternative.
   </p>
 
   <div class="pair">
     <figure>
+      <a href="/images/valle-lunga-map.webp">
       <img
-        src="/images/page.jpg"
-        width="919"
-        height="1300"
+        src="/images/valle-lunga-map.webp"
+        width="1024"
+        height="1536"
         loading="lazy"
-        alt="A printed page, blank."
+        alt="The Valle Lunga map: a railway hut, rows of trees, bridge, pond and cutting, with observations written in Italian."
       />
-      <figcaption>Handed over. Unedited model output, 19–33 s to draw.</figcaption>
+      </a>
+      <figcaption>The first sheet contains the map and observations. This example is in Italian.</figcaption>
     </figure>
     <figure>
+      <a href="/images/valle-lunga-written.webp">
       <img
-        src="/images/page-written.jpg"
-        width="866"
-        height="1300"
+        src="/images/valle-lunga-written.webp"
+        width="1024"
+        height="1536"
         loading="lazy"
-        alt="The same page, filled in by hand."
+        alt="The second sheet, a notebook filled in by a model with a blue route, north arrow and an alternative hypothesis."
       />
+      </a>
       <figcaption>
-        Came back. A simulated hand filled this example to exercise the complete run automatically.
+        The second sheet is filled in by a simulated hand, not a person. <a href="/images/valle-lunga-notebook.webp">The notebook before it was filled in.</a>
       </figcaption>
     </figure>
   </div>
 
-  <p>
-    The vision result has two values: <b>marks</b> and <b>blank</b>. This vocabulary prevents the
-    reading path from turning somebody's marks into a count or score. After the next moment is
-    selected, the reading type closes the pickle, copy and cache paths out of memory.
-  </p>
-
-  <h2>Measured on the deployment</h2>
+  <p>This example comes from the research notebook. The filled sheet is a synthetic proposal, not a verified solution. The reader recognized the written arrow and direction; the continuation asked for them to be revised after a new indication of the map's orientation.</p>
 
   <p>
-    Dates are attached because prompts change and the numbers move with them. Everything here was
-    measured against the real services, not estimated.
+    The reader describes added marks. The runner selects marks or blank; a degraded reading leaves it waiting. An <code>ask</code> branch sends the descriptions in the continuation prompt. The continuation is checked and screened, without a second parent approval or a repair.
   </p>
 
-  <table class="numbers">
-    <tbody>
-      <tr>
-        <th scope="row">Devising a whole activity</th>
-        <td>68–157 s</td>
-        <td class="when">n=22, Sep 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Rereading it with a second model</th>
-        <td>14.4–22.8 s</td>
-        <td class="when">Sep 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Drawing one page</th>
-        <td>19–33 s</td>
-        <td class="when">Aug 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Ink on a drawn page</th>
-        <td>0.5–2.7 %</td>
-        <td class="when">Aug 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Reading a returned page</th>
-        <td>4.4–5.5 s</td>
-        <td class="when">Aug 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Button press to reading on the display</th>
-        <td>≈ 35 s</td>
-        <td class="when">19 Aug 2026</td>
-      </tr>
-      <tr>
-        <th scope="row">Printed ruler, measured with a ruler</th>
-        <td>50 mm asked, 50 mm got</td>
-        <td class="when">4 Aug 2026</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p class="note">
-    The final row validates physical scale. A hand measurement confirmed that the print chain
-    preserves dimensions from the generated image to the sheet.
-  </p>
+  <h2 id="memory">Memory</h2>
+  <p>The system stores configuration, generated activities, endings, reported durations and reading-derived summaries. A separate call observes pages to calibrate load and writing; recent observations are used to compute the profile that steers prompts. The panel does not expose that profile as a score. The parent can clear activity memory and observations. A complete plain-language memory view is not built.</p>
+  <p>The reading contract blocks implicit copying and pickling but permits the HTTP request body. An administrator can enable development retention for 14 days. Each retained reading has its own 14-day lifetime from writing. This exception is separate from ordinary observations used by the profile.</p>
 
   <h2>The stack</h2>
 
@@ -184,16 +127,8 @@ import { REPO } from "../../i18n/ui";
   <p>
     Microsoft Foundry in the EU for every language, vision and image call, behind a single router
     module that is the only place allowed to import a model SDK. Azure AI Content Safety on
-    everything generated and on every inbound image. Container Apps for the API, Cosmos DB, Blob
+    generation paths. The scan-reading route does not apply inbound-image Content Safety. Container Apps for the API, Cosmos DB, Blob
     Storage, Static Web Apps. Infrastructure as Bicep.
-  </p>
-
-  <h3>How it ships</h3>
-  <p>
-    A push to <code>main</code> publishes the API through GitHub OIDC, a federated credential and a
-    user-assigned managed identity. The measured end-to-end time is 1 m 35 s. The runner builds the
-    image locally, which lets its resource-scoped roles push to the registry and update the
-    container app without permission to reconfigure the registry.
   </p>
 
   <figure class="narrow">
@@ -211,12 +146,6 @@ import { REPO } from "../../i18n/ui";
 
   <h2>Boundaries enforced in code</h2>
 
-  <p>
-    <code>tests/test_boundaries.py</code> checks the stored schema, panel, browser and prompts for the
-    vocabulary of engagement optimisation. Each check was mutation-tested by inserting a violation
-    and observing the failure.
-  </p>
-
   <ul>
     <li>The activity itself provides the reason to continue; the system does not add streaks, daily targets or withheld rewards.</li>
     <li>The scheduler responds to approved activities and their deadlines, rather than absence or time-spent metrics.</li>
@@ -226,12 +155,6 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>The vision path processes returned sheets. Its schema carries marks or blank, rather than faces, identity, emotion, attention or biometric data.</li>
   </ul>
-
-  <p>
-    Parent decisions live in the approval ledger, separate from the generated <code>Proposal</code>.
-    The safety gate alone mints the payload type required by user-facing content. These boundaries
-    are represented by types and seals, so code that bypasses them fails before it can run.
-  </p>
 
   <p>
     <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}>Why each boundary exists, and what it costs</a

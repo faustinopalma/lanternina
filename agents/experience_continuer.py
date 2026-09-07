@@ -240,13 +240,15 @@ class ExperienceContinuer:
         return str(payload.body)
 
 
-def _ink(reading: dict[str, Any]) -> list[dict[str, str]]:
-    """What was on the page, in the reader's own three words and nothing more.
-
-    The reading carries ids, confidences and notes for the parent panel. What a model
-    needs to decide what happens next is which of the printed places carry a mark, so
-    that is all it is given: fewer fields is fewer things for a prompt to be about.
-    """
+def _ink(reading: dict[str, Any]) -> dict[str, Any] | list[dict[str, str]]:
+    """Keep the current reader's descriptions and status, without diagnostic metadata."""
+    if "describes" in reading:
+        return {
+            "written": bool(reading.get("written", False)),
+            "same_sheet": bool(reading.get("same_sheet", True)),
+            "describes": list(reading["describes"]),
+            "degraded": bool(reading.get("degraded", False)),
+        }
     out: list[dict[str, str]] = []
     for cell in reading.get("cells", []):
         if not isinstance(cell, dict):

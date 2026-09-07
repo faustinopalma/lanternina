@@ -35,7 +35,7 @@ export const NAV_NOTE: Record<PageKey, Dict> = {
   overview: { en: "The system in one page", it: "Il sistema in una pagina" },
   flows: { en: "Requests, state and model calls", it: "Richieste, stato e chiamate ai modelli" },
   identity: { en: "Two tenants, two audiences", it: "Due tenant, due audience" },
-  status: { en: "Verified on real hardware", it: "Verificato su hardware reale" },
+  status: { en: "Code and dated trials", it: "Codice e prove datate" },
 };
 
 export const UI = {

@@ -6,7 +6,7 @@ import { REPO } from "../../i18n/ui";
 <Base
   lang="it"
   page="status"
-  eyebrow="Verificato su hardware reale"
+  eyebrow="Codice locale e prove datate"
   title="Implementazione attuale"
   description="Cosa gira in casa e su Azure, quali confini impongono i test e quali lacune di implementazione restano aperte."
 >
@@ -17,11 +17,10 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    Questo resta un progetto da hackathon. I componenti elencati qui sotto usano servizi pubblicati,
-    credenziali vere e hardware fisico in una stanza.
+    Il 7 settembre 2026 il notebook locale ha completato un'attività sintetica con due pagine, scrittura, lettura e continuazione in 345,4 secondi misurati. Il controllo sul foglio intatto ha restituito bianca. Hardware e versione distribuita non sono stati verificati e nessun deploy è stato eseguito.
   </p>
 
-  <h2>Costruito e in funzione</h2>
+  <h2>Implementato nel codice</h2>
 
   <ul>
     <li>
@@ -34,7 +33,7 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>
       Il formato dell'attività e i suoi controlli strutturali, un secondo modello che rilegge ogni
-      attività, l'approvazione del genitore, la generazione della pagina intera, il confronto con il
+      attività quando la chiamata riesce e il limite d'uso lo consente, l'approvazione del genitore, la generazione della pagina intera, il confronto con il
       bianco e il controllo della scadenza.
     </li>
     <li>L'archivio dei quadri, e la contabilità d'uso con un tetto per nucleo.</li>
@@ -51,19 +50,19 @@ import { REPO } from "../../i18n/ui";
     violazione e osservando il fallimento.
   </p>
 
-  <table class="numbers">
+  <table class="numbers descriptions">
     <tbody>
       <tr>
         <th scope="row">L'approvazione del genitore è separata dalla generazione</th>
-        <td>le decisioni vivono nel registro delle approvazioni, fuori da <code>Proposal</code></td>
+        <td>il pannello conserva la decisione su <code>OfferedExperience</code>; l'hub ritira gli approvati</td>
       </tr>
       <tr>
         <th scope="row">L'uscita generata passa da Content Safety</th>
-        <td>il tipo lo conia solo il filtro</td>
+        <td>le funzioni di generazione e continuazione chiamano il filtro prima di restituire il documento</td>
       </tr>
       <tr>
-        <th scope="row">L'approvazione lega il contenuto esaminato esatto</th>
-        <td>il sigillo di approvazione copre quello di sicurezza</td>
+        <th scope="row">Il vecchio percorso Proposal verifica due sigilli</th>
+        <td>questa proprietà non si estende al percorso attuale delle attività e dei seguiti</td>
       </tr>
       <tr>
         <th scope="row">Un solo componente parla con un modello</th>
@@ -74,8 +73,8 @@ import { REPO } from "../../i18n/ui";
         <td>controllo degli import nei package del dispositivo e ai confini del router</td>
       </tr>
       <tr>
-        <th scope="row">Una lettura resta nella memoria del processo</th>
-        <td>il tipo chiude ogni via implicita fuori dalla memoria</td>
+        <th scope="row">La lettura blocca copia e pickle impliciti</th>
+        <td>il dizionario HTTP resta serializzabile; osservazioni derivate ed eccezioni di sviluppo sono conservate</td>
       </tr>
       <tr>
         <th scope="row">L'interazione esclude meccaniche di aggancio</th>
@@ -103,45 +102,15 @@ import { REPO } from "../../i18n/ui";
       ma non può ancora acquisire una risposta con più scelte.
     </li>
     <li>
-      <b>Conservazione della lettura da capo a fondo.</b> Il tipo della lettura blocca
-      serializzazione locale, copia e cache. Il corpo della richiesta HTTP attraversa però casa e
-      pannello, e ciascun capo può conservarlo. Un nucleo nominato lo conserva per quindici giorni
-      durante lo sviluppo.
+      <b>Visibilità della memoria.</b> Manca una vista completa. Il sistema conserva osservazioni per il profilo e sintesi delle attività. Il permesso amministrativo di sviluppo dura 14 giorni; ogni lettura ammessa scade 14 giorni dopo la propria scrittura.
     </li>
     <li>
-      <b>La proprietà della risposta e dell'oggetto da conservare.</b> La specifica richiede che ogni
-      momento ammetta una risposta sbagliata e che il momento finale produca qualcosa che valga la
-      pena conservare. La validazione non impone ancora questa proprietà, quindi può essere salvato
-      un piano che la viola.
+      <b>La qualità dell'attività.</b> Costruzioni, disegni e indagini possono ammettere risultati aperti. I controlli non dimostrano comprensibilità o interesse; i giudici automatici conservano falsi positivi. La prova con una persona resta necessaria.
     </li>
+    <li><b>Stampa fallita e tempi dei momenti.</b> L'hub mostra <code>instead</code>, ma il runner non esegue <code>if_no_page</code>. I momenti consecutivi senza raccolta avanzano senza attendere la durata dichiarata.</li>
     <li>
       <b>Una seconda casa.</b> Il provisioning è stato esercitato con un solo nucleo. Il percorso
       <code>--install</code> dell'installer non è ancora stato eseguito per un altro nucleo.
-    </li>
-  </ul>
-
-  <h2>Cosa hanno insegnato i guasti</h2>
-
-  <p>
-    I difetti che vale la pena leggere stanno nel repository con le loro misure attaccate. Tre hanno
-    cambiato il disegno:
-  </p>
-
-  <ul>
-    <li>
-      Una soglia calcolata con Otsu su ogni singola cella riportava il 45 % di inchiostro su caselle
-      visibilmente vuote, e il test sintetico passava — perché un riquadro bianco uniforme fa
-      degenerare Otsu. Solo la carta vera l'ha mostrato.
-    </li>
-    <li>
-      Un tetto di lunghezza su un campo veniva sforato 6 volte su 11, e ogni sforamento costava una
-      seconda chiamata intera al modello. Il tetto non proteggeva niente di fisico: stava plasmando
-      l'uscita invece di limitarla.
-    </li>
-    <li>
-      Una regola di validazione confrontava una frase intera come sottostringa, quindi un'attività
-      che nominava lo stesso oggetto due volte con parole diverse veniva rifiutato. La regola leggeva
-      una formulazione invece di un fatto, ed era il rifiuto più frequente in assoluto.
     </li>
   </ul>
 

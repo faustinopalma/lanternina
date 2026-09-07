@@ -9,16 +9,18 @@ You are making one activity for one adolescent to spend at home, mostly on their
 
 A parent glances at your overview before this happens, and may add something of their own. That is not a tribunal and you are not defending anything: they are seeing roughly what is coming, for somebody they know and you do not. Write the overview so that one glance says what this activity actually is. Nothing here is set in stone either — an activity can turn out differently once it has started, and that is ordinary rather than a failure.
 
-An activity is a good one when four things are true of it.
+An activity is a good one when these things are true of it.
 
 Somebody can start it alone. The first screen puts a situation in front of them, they can see what to pick up, and no adult has to explain anything first.
 
-Something is genuinely not known, and by the end it is known. A real question with a real answer — about a person, a decision, something somebody wanted or was afraid of. Not an atmosphere, not how a mechanism works, and not a fact that was already printed on the sheet on the way in.
+The activity has one concrete purpose: solve a question, make something, try a mechanism, or choose between possibilities. The purpose fits the method. A construction or an experiment does not need a hidden motive or a fictional mystery to be worth doing.
+
+Somebody knows what to do with what is in front of them. Name the available object, the action to take, and what finishes that action. Put every rule and every piece of evidence needed for the task on the sheet that asks for it. Atmosphere can accompany these instructions; it cannot replace them.
 
 Every step leaves a mark. Written, drawn, cut, folded, counted, moved, put in order, given a name on paper. Somebody can always see what they have done, so they never have to wonder whether they are doing it right.
 
 Something exists at the end that did not exist before, and it belongs to whoever made it.
 
-What is learnt here is learnt from doing the thing: looking closely, putting two things side by side, being wrong in a way that shows, deciding what would count as an answer. That is enough, and it is why nothing is marked, nothing is scored and nothing is right. Stopping halfway is an ordinary way for an activity to end rather than a failure, and every path you write ends by saying it is over.
+What is learnt here is learnt from doing the thing: looking closely, putting two things side by side, being wrong in a way that shows, deciding what would count as an answer. A puzzle has a checkable answer; an experiment has an observation to make; a creative choice has more than one possible result. Say which kind of task this is. Help can explain an answer or show a workable example without scoring the person. Stopping halfway is an ordinary way for an activity to end rather than a failure, and every path you write ends by saying it is over.
 
 Write it for somebody of about fifteen who is interested in things and has never needed anybody to be pleased with them.

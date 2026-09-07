@@ -1,0 +1,382 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-167d1874",
+  "title": "La ferrovia ruotata",
+  "overview": "Confronta una carta ferroviaria con un taccuino, traccia un percorso possibile e annota un’alternativa. Dalla stampante escono una mappa con osservazioni e una pagina di taccuino per la ricostruzione. Alla fine restano la mappa segnata e il tracciato corretto. Non serve altro. Un fatto finale rende falsa l’orientazione usata all’inizio.",
+  "themes": [
+    "ferrovie dismesse",
+    "cartografia storica",
+    "tracciati alternativi",
+    "orientamento"
+  ],
+  "script": "THE WORLD La carta raffigura una ferrovia immaginaria, chiusa prima che il suo tracciato fosse registrato con precisione. Restano un casello, due filari, un ponte sul ruscello, uno stagno e una trincea tra due colline. Sono tutti elementi fittizi. Il copista della carta ha indicato il bordo alto come nord. THE WAY IN La stampante consegna prima la carta del tracciato. Chi la prende individua e cerchia il casello. Subito dopo arriva il taccuino della ricostruzione, da mettere accanto alla carta. Le due pagine contengono insieme immagini, osservazioni e spazi necessari. THE QUESTION Traccia una ricostruzione possibile della ferrovia e mostra come cambia quando viene corretta l’orientazione della carta. The operation: confrontare le due pagine, copiare approssimativamente i luoghi, unirli con una linea, scrivere il lato scelto per lo stagno, la direzione generale e un’alternativa. The evidence or materials: la carta “Il tracciato di Valle Lunga” fornisce i cinque luoghi, le osservazioni e il nord attribuito dal copista; il taccuino “Ipotesi per Valle Lunga” fornisce il riquadro e i tre spazi brevi; la matita lascia tutti i segni. The result: è un compito aperto. Un esempio completo parte dal casello, passa tra i filari, raggiunge il ponte, lascia lo stagno a destra e termina nella trincea; indica nord-est e propone il passaggio con lo stagno a sinistra come alternativa. Altri tracciati coerenti con le osservazioni sono accettati. L’azione è completa con una linea, il lato dello stagno, una direzione e un’alternativa. The reason to do it: la stessa disposizione può sostenere più ricostruzioni, mentre un solo fatto sull’orientazione cambia il significato delle direzioni già scritte. THE BEATS old-map: è disponibile la carta; viene cerchiato il casello; il momento finisce con quel cerchio. route-book: carta e taccuino sono affiancati; vengono aggiunti percorso, lato, direzione e alternativa; il momento finisce con l’ultima annotazione. read-scan: il taccuino viene messo sul vetro; la scansione distingue segni e pagina bianca; con segni passa ad ask, senza segni passa a blank-ending. blank-ending: sono disponibili carta e taccuino; la carta cerchiata viene presa in mano; l’attività è finita. WHAT IS HELD BACK La disposizione dei luoghi e tutte le regole iniziali sono sui fogli. Dopo l’esito marks, ask legge ciò che è stato aggiunto e rivela un solo fatto già vero: “Il registro di legatura mostra che il bordo destro, non quello alto, era nord.” La continuazione fa riprendere il taccuino dal vetro, barrare una volta la direzione precedente e scrivere quella corretta. Con questi estremi, nord-est diventa nord-ovest. Se manca una direzione leggibile, propone di scrivere “nord-ovest” come esempio. Poi fa prendere il taccuino corretto e chiude dicendo che la ricostruzione è finita. WHAT IS MADE “Il tracciato di Valle Lunga” è una mappa vista dall’alto. Contiene quattro osservazioni dirette e i cinque elementi distinguibili; il casello viene cerchiato e la pagina resta come fonte. “Ipotesi per Valle Lunga” è una pagina di taccuino. Contiene le istruzioni per affiancare la carta, un riquadro per il tracciato e tre spazi brevi: lato dello stagno, direzione generale e altra linea possibile. WHERE IT CAN GO DIFFERENTLY Se il taccuino torna pieno, ask riprende i segni presenti, consegna il fatto sull’orientazione e fa correggere una sola parola direzionale. Se torna intatto, blank-ending lascia la carta cerchiata come oggetto concluso. Se l’interesse si ferma durante il disegno, la via d’uscita fa prendere il taccuino con qualunque linea presente e dichiara conclusa la ricostruzione. WHAT WOULD SPOIL IT Trasformare una ricostruzione aperta in una soluzione unica. Mostrare il fatto sull’orientazione prima che venga scritta una direzione. Affidare alla sola immagine una misura o una posizione esatta.",
+  "minutes": 85,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "una ferrovia immaginaria già scomparsa",
+    "role": "ricostruttore di un tracciato storico",
+    "mechanic": "affiancare, tracciare e riorientare",
+    "progress": "dalla carta all’ipotesi corretta",
+    "paper": "mappa fonte e taccuino personale",
+    "glass": "leggere i segni della ricostruzione",
+    "displays": "consegnare svolta e chiusura",
+    "camera": "nessuna fotografia",
+    "tone": "preciso, curioso e non solenne",
+    "ending": "una direzione barrata e riscritta"
+  },
+  "moments": [
+    {
+      "act": "hand_over",
+      "id": "old-map",
+      "heading": "La massicciata scompare",
+      "weights": {
+        "short": {
+          "minutes": 3,
+          "lines": [
+            "La massicciata finisce nel bianco.",
+            "Prendi la carta del tracciato.",
+            "Trova e cerchia il casello."
+          ]
+        },
+        "standard": {
+          "minutes": 9,
+          "lines": [
+            "La massicciata finisce nel bianco.",
+            "Prendi la carta del tracciato.",
+            "Guarda ponte, stagno e trincea.",
+            "Trova e cerchia il casello."
+          ]
+        },
+        "extended": {
+          "minutes": 15,
+          "lines": [
+            "La massicciata finisce nel bianco.",
+            "Prendi la carta del tracciato.",
+            "Segui i luoghi senza unirli.",
+            "Trova e cerchia il casello."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Il punto iniziale ha un tetto.",
+            "Cercalo nella parte più bassa."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Il casello è il rettangolo piccolo.",
+            "È vicino al bordo inferiore."
+          ]
+        },
+        {
+          "after_minutes": 6,
+          "lines": [
+            "Metti un cerchio sul rettangolo.",
+            "Non tracciare ancora la ferrovia."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Cerchia il piccolo casello in basso.",
+            "Poi tieni davanti la carta."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "la carta del tracciato",
+        "heading": "La carta resta",
+        "lines": [
+          "Prendi la carta del tracciato.",
+          "Il cerchio può essere l’unico segno.",
+          "La ricerca è finita."
+        ],
+        "minutes": 2
+      },
+      "page": {
+        "kind": "map",
+        "title": "Il tracciato di Valle Lunga",
+        "illustration": "A clean overhead map of an invented valley. A small rectangular railway hut stands near the lower left. Two parallel rows of round-topped trees occupy the center-left. A winding stream crosses the middle with one simple arched bridge. An oval pond lies to the right of the bridge. Two rounded hills near the upper right leave a narrow gap between them. Pale broken traces suggest several possible curves but no complete railway line.",
+        "note": [
+          "Il copista scrisse: il bordo alto è nord.",
+          "La linea univa il casello alla trincea, passando tra i filari.",
+          "Attraversava il ruscello sul ponte; il lato dello stagno è incerto.",
+          "Cerchia il casello. Poi usa questa carta insieme al taccuino."
+        ],
+        "spaces": []
+      },
+      "instead": [
+        "Osserva la carta sullo schermo.",
+        "Il casello è in basso a sinistra.",
+        "Segna quel punto sul tuo foglio.",
+        "Tieni il foglio davanti a te."
+      ]
+    },
+    {
+      "act": "hand_over",
+      "id": "route-book",
+      "heading": "Una linea possibile",
+      "weights": {
+        "short": {
+          "minutes": 12,
+          "lines": [
+            "Metti carta e taccuino affiancati.",
+            "Disegna la linea nel riquadro.",
+            "Scrivi lato, direzione, alternativa."
+          ]
+        },
+        "standard": {
+          "minutes": 36,
+          "lines": [
+            "Metti carta e taccuino affiancati.",
+            "Ricopia i luoghi nel riquadro.",
+            "Disegna una linea possibile.",
+            "Aggiungi direzione e alternativa."
+          ]
+        },
+        "extended": {
+          "minutes": 48,
+          "lines": [
+            "Metti carta e taccuino affiancati.",
+            "Disegna una prima linea possibile.",
+            "Prova anche l’altro lato.",
+            "Annota direzione e alternativa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 4,
+          "lines": [
+            "La linea ha due estremi certi.",
+            "Il centro ammette una scelta."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Parti dal casello cerchiato.",
+            "Passa tra i due filari."
+          ]
+        },
+        {
+          "after_minutes": 12,
+          "lines": [
+            "Raggiungi ponte e trincea.",
+            "Scegli un lato dello stagno."
+          ]
+        },
+        {
+          "after_minutes": 16,
+          "lines": [
+            "Esempio: casello, filari, ponte.",
+            "Stagno a destra, poi trincea.",
+            "Direzione nord-est.",
+            "Alternativa: stagno a sinistra."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il taccuino",
+        "heading": "La linea resta",
+        "lines": [
+          "Prendi il taccuino.",
+          "Tieni qualunque linea già tracciata.",
+          "La ricostruzione è finita."
+        ],
+        "minutes": 3
+      },
+      "page": {
+        "kind": "notebook",
+        "title": "Ipotesi per Valle Lunga",
+        "illustration": "A lightly worn field-book leaf with a large clear open area. In one corner are a small closed pencil, a simple curve like a loose length of rail, and two tiny parallel strokes. No map, symbols, lettering, compass, measurements, or labels.",
+        "note": [
+          "Metti la carta accanto a questa pagina.",
+          "Ricopia i luoghi e uniscili seguendo le osservazioni.",
+          "Segna il lato dello stagno e la direzione data dal nord stampato.",
+          "Una linea, due parole e un’alternativa completano l’ipotesi."
+        ],
+        "spaces": [
+          {
+            "label": "Tracciato possibile",
+            "room": "a_box"
+          },
+          {
+            "label": "Lo stagno resta a",
+            "room": "a_line"
+          },
+          {
+            "label": "Direzione generale",
+            "room": "a_line"
+          },
+          {
+            "label": "Altra linea possibile",
+            "room": "a_line"
+          }
+        ]
+      },
+      "instead": [
+        "Usa il foglio già sul tavolo.",
+        "Disegna lì una linea possibile.",
+        "Scrivi lato e direzione.",
+        "Aggiungi un percorso alternativo."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "read-scan",
+      "heading": "La carta viene riletta",
+      "weights": {
+        "short": {
+          "minutes": 2,
+          "lines": [
+            "Metti il taccuino sul vetro.",
+            "Lascia visibili tutti i segni."
+          ]
+        },
+        "standard": {
+          "minutes": 6,
+          "lines": [
+            "Prendi il taccuino compilato.",
+            "Mettilo diritto sul vetro.",
+            "Lascia visibili tutti i segni."
+          ]
+        },
+        "extended": {
+          "minutes": 10,
+          "lines": [
+            "Guarda un’ultima volta la linea.",
+            "Aggiungi una parola, se serve.",
+            "Metti il taccuino sul vetro."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Ora conta ciò che resta visibile.",
+            "Serve la pagina con la linea."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Prendi il taccuino, non la carta.",
+            "Portalo allo scanner."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Appoggia il lato scritto sul vetro.",
+            "Lascia il foglio fermo."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Metti il taccuino sul vetro.",
+            "Avvia la scansione della pagina."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "il taccuino",
+        "heading": "Il segno basta",
+        "lines": [
+          "Riprendi il taccuino dal vetro.",
+          "Conserva la linea che contiene.",
+          "La ricostruzione è finita."
+        ],
+        "minutes": 3
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "blank-ending"
+        }
+      ],
+      "if_no_page": "blank-ending"
+    },
+    {
+      "act": "close",
+      "id": "blank-ending",
+      "heading": "La carta rimane",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Prendi la carta del tracciato.",
+            "La ricerca è finita."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Prendi la carta del tracciato.",
+            "Il casello resta il punto scelto.",
+            "La ricerca è finita."
+          ]
+        },
+        "extended": {
+          "minutes": 6,
+          "lines": [
+            "Prendi la carta del tracciato.",
+            "Ripiega il taccuino sotto di lei.",
+            "La ricerca è finita."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "La carta può restare così."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Non serve aggiungere una linea."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Prendi la carta con il casello."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Tieni la carta del tracciato.",
+            "Non aggiungere altri segni."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "la carta del tracciato",
+        "heading": "Il casello resta",
+        "lines": [
+          "Tieni la carta del tracciato.",
+          "Il cerchio conclude la ricerca.",
+          "L’attività è finita."
+        ],
+        "minutes": 2
+      }
+    }
+  ]
+}

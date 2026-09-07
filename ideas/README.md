@@ -22,6 +22,7 @@ The order inside each file runs from most useful to least, by one criterion only
 | [10-the-page.md](10-the-page.md) | What a printed page is allowed to be, defined before the code |
 | [11-the-methods.md](11-the-methods.md) | A child of the encyclopedia: which of the 395 forms can actually be run, and how one reaches a prompt |
 | [12-the-profile.md](12-the-profile.md) | Where an afternoon is pitched for this house, worked out from what comes back off the glass |
+| [13-prompts-and-simulation.md](13-prompts-and-simulation.md) | Prompt changes measured on six synthetic activities, the lost continuation reading, and the notebook and documentation work to resume |
 
 ## Where to start
 

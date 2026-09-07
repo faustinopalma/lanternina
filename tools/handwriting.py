@@ -39,8 +39,7 @@ _HANDS: Final[dict[str, str]] = {
         "mind about it"
     ),
     "hurried": (
-        "filled in fast in biro, large and loose, some words trailing off, one box left "
-        "half done"
+        "filled in fast in biro, large and loose, some words trailing off, one box left half done"
     ),
     "drawing": (
         "filled in mostly by drawing rather than writing: pencil sketches in the spaces, "
@@ -84,17 +83,27 @@ def in_colour(png: bytes) -> bytes:
         return kept.getvalue()
 
 
-def asked_of(hand: str) -> str:
+def asked_of(hand: str, *, references: int = 0) -> str:
     """The prompt, so a test can read it without paying for a page."""
     if hand not in _HANDS:
         raise ValueError(f"{hand!r} is not a hand; there is {', '.join(_HANDS)}")
-    return (
-        f"The same sheet of paper, now {_HANDS[hand]}.\n{_WHAT_TO_WRITE}\n{_KEEP_THE_PAGE}"
-    )
+    prompt = f"The same sheet of paper, now {_HANDS[hand]}.\n{_WHAT_TO_WRITE}\n{_KEEP_THE_PAGE}"
+    if references:
+        prompt += (
+            f"\nWrite only on the FIRST image. The other {references} images are sheets "
+            "already on the table. Use their content when the first sheet refers to them. "
+            "Return only the first sheet, with the added handwriting."
+        )
+    return prompt
 
 
 def written_on(
-    blank: bytes, *, hand: str = "teenager", size: str = "1024x1536", tries: int = 4
+    blank: bytes,
+    *,
+    hand: str = "teenager",
+    size: str = "1024x1536",
+    tries: int = 4,
+    reference_pages: tuple[bytes, ...] = (),
 ) -> bytes:
     """The sheet with somebody's writing on it, as PNG bytes.
 
@@ -112,13 +121,12 @@ def written_on(
     from azure.identity import DefaultAzureCredential, get_bearer_token_provider
     from openai import AzureOpenAI
 
+    credential = DefaultAzureCredential()
     client = AzureOpenAI(
         azure_endpoint=os.environ["LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT"],
-        api_version=os.environ.get(
-            "LANTERNINA_FOUNDRY_IMAGE_API_VERSION", "2025-04-01-preview"
-        ),
+        api_version=os.environ.get("LANTERNINA_FOUNDRY_IMAGE_API_VERSION", "2025-04-01-preview"),
         azure_ad_token_provider=get_bearer_token_provider(
-            DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+            credential, "https://cognitiveservices.azure.com/.default"
         ),
         timeout=TIMEOUT_SECONDS,
         max_retries=tries,
@@ -126,14 +134,20 @@ def written_on(
     page = io.BytesIO(in_colour(blank))
     # Named, because the service reads the format off the filename rather than the bytes.
     page.name = "page.png"
-    answer = client.images.edit(
-        model=os.environ["LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT"],
-        image=page,
-        prompt=asked_of(hand),
-        n=1,
-        size=size,
-    )
+    references = [io.BytesIO(in_colour(png)) for png in reference_pages]
+    for index, reference in enumerate(references):
+        reference.name = f"reference-{index}.png"
+    try:
+        answer = client.images.edit(
+            model=os.environ["LANTERNINA_FOUNDRY_IMAGE_DEPLOYMENT"],
+            image=[page, *references] if references else page,
+            prompt=asked_of(hand, references=len(references)),
+            n=1,
+            size=size,
+        )
+    finally:
+        client.close()
+        credential.close()
     if not answer.data or not answer.data[0].b64_json:
         raise RuntimeError("the hand did not write: the model answered without a page")
     return base64.b64decode(answer.data[0].b64_json)
-

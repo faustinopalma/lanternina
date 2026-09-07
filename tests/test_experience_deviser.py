@@ -239,7 +239,8 @@ def test_being_worth_doing_is_never_asked_for_as_being_hard_to_stop() -> None:
     assert "none of this works by making it hard to stop" in said
     assert "no streak" in said
     assert "nothing withheld until later" in said
-    assert "worth nothing at all afterwards" in said
+    assert "no penalty for leaving it unfinished" in said
+    assert "no obligation to return" in said
 
 
 def test_what_is_hard_in_a_house_never_becomes_what_an_afternoon_is_about() -> None:

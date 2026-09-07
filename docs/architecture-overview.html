@@ -85,8 +85,8 @@
 
 <header class="hero">
   <h1>Lanternina</h1>
-  <div class="sub">A home system that offers activities to adolescents across cognitive profiles, <strong>with a parent steering</strong>. Interests, difficulty, reading support and content variety are explicit settings. Content is generated in the cloud and printed on paper; handwriting is read back by a scanner. Nothing reaches the adolescent that a parent has not approved.</div>
-  <div class="pill">Azure · swedencentral (+ westeurope for the Static Web App) · Cosmos DB serverless · Container Apps</div>
+  <div class="sub">Lanternina offers activities to adolescents with a parent steering. The hub controls paper, scanning, displays and the clock. The container calls the models. The parent approves the initial activity; later pages and continuations are generated and screened without another parent review.</div>
+  <div class="pill">Local code checked 7 September 2026. Deployed version and hardware not rechecked.</div>
   <div class="doclinks">
     <a class="primary" href="ARCHITECTURE.md">ARCHITECTURE.md (the reasoning) →</a>
     <a href="DEPLOY.md">DEPLOY.md (how to reproduce it)</a>
@@ -121,7 +121,7 @@
     </div>
     <div class="card">
       <h3 style="margin-top:0">A profile is kept, and it is never shown</h3>
-      <p class="muted">What an afternoon should be pitched at is kept at system level and written into the prompt of the model that devises an afternoon and the model that runs one. It reaches no display, no printed sheet and no page in the parent's panel, and a review gate is what enforces that rather than the prompt asking politely. What comes back off the glass is still read, acted on and then gone, and vision output describes ink on paper (<em>"cell 3 is empty"</em>), never what that means about the person.</p>
+      <p class="muted">The system stores page observations and activity outcomes. It computes a profile over recent evidence and sends its prose to generation and continuation. The panel does not expose it as a score. Block-list checks reject named ways of revealing adaptation; they do not prove that every generated sentence respects that boundary.</p>
     </div>
   </div>
 
@@ -134,33 +134,31 @@
   </div>
 
   <div class="callout good">
-    <strong>It reads what comes back, and keeps none of it.</strong> Topics, formats and difficulty start from what the household chose, and Lanternina may move within and beyond that on what it observes — what a sheet came back with, what was left blank, what was picked again. A system that cannot do that is a fixed system. What bounds it is duration: the reading lasts as long as the afternoon needs it and is then gone, the durable memory holds what was made and what was configured, and what the system decides to offer still arrives as a proposal the parent can refuse.
+    The memory includes configuration, generated material, reported activity duration and endings, reading-derived summaries and profile observations. The raw reading contract blocks implicit copy and pickle, but an explicit HTTP dictionary can be retained. Administrator development retention defaults off, permits writes for 14 days and gives each admitted reading its own 14-day lifetime.
   </div>
 </section>
 
 <!-- ============ SHAPE ============ -->
 <section id="shape">
   <h2><span class="num">02</span> The shape</h2>
-  <p>Three zones. The parent can be anywhere; the learner's data never leaves the house; the loop that actually reaches the adolescent is made of paper.</p>
-  <p>Two names are used from here on, because <em>the device</em> and <em>the cloud</em> stopped being precise once both grew parts. <strong>Lanternina Hub</strong> is the machine in the house: sealing keys, ledger, scanner, and the link to the display. <strong>Lanternina Cloud</strong> is the Azure tier: the parent dashboard, the stored themes and approvals, and the single door to the models.</p>
+  <p>The hub sends household material and page images to the container. The container holds the model clients and household stores. No model runs in the house.</p>
+  <p>The hub controls the scanner, printer, display files and clock. The container stores parent decisions and returns documents, images and readings through replies to hub requests.</p>
 
   <div class="mermaid">
 flowchart TB
     subgraph WORLD["🌍 anywhere"]
       PAR["Parent<br/><i>phone or laptop</i>"]:::person
-      SWA["Static Web App<br/><i>westeurope · static assets</i>"]:::cloud
+      SWA["Static Web App<br/><i>static assets</i>"]:::cloud
     end
 
     subgraph AZ["☁️ Azure — swedencentral"]
       API["Container App: api<br/><i>HTTP scale 0→N</i>"]:::cloud
-      WRK["Container App: worker<br/><i>queue scale 0→N</i>"]:::cloud
-      Q[("Storage queue")]:::data
       COS[("Cosmos DB serverless<br/><i>households as opaque ids</i>")]:::data
       MOD["Model backend<br/><i>generation · vision · safety</i>"]:::cloud
     end
 
     subgraph HOME["🏠 the house"]
-      DEV["Mini-PC<br/><i>sealing keys · ledger</i>"]:::home
+      DEV["Mini-PC<br/><i>equipment · clock · run state</i>"]:::home
       PRN["Printer"]:::paper
       SCN["Scanner"]:::paper
       SHEET["Sheet of paper"]:::paper
@@ -168,15 +166,12 @@ flowchart TB
     end
 
     PAR -->|"authenticated"| SWA
-    SWA -->|"state reads / writes only"| API
+    SWA -->|"settings, decisions, brief editing"| API
     DEV -->|"request when locally chosen"| API
-    API -->|"dispatch for this request only"| Q
-    Q --> WRK
-    WRK -->|"prompts only"| MOD
+    API -->|"prompts and page pairs"| MOD
     API --- COS
-    WRK --- COS
 
-    DEV -->|"seals the approval"| PRN
+    DEV -->|"prints returned page image"| PRN
     PRN --> SHEET
     SHEET --> GIRL
     GIRL -->|"handwriting"| SHEET
@@ -203,7 +198,7 @@ flowchart TB
   </div>
 
   <div class="callout good">
-    <strong>A dashboard write stops at storage.</strong> Adding content, approving it or changing configuration does not call a model, enqueue work, notify the house or schedule anything. The server in the home starts work only when its own local logic chooses to make a request.
+    Settings and approval writes store state for the next hub request. Model-assisted brief editing is a separate browser path. Neither operation opens a connection to the house.
   </div>
 </section>
 
@@ -213,7 +208,7 @@ flowchart TB
   <p>The answer shapes the rest of the design: the cloud tier is deliberately given less authority than it could have.</p>
 
   <div class="callout good">
-    <strong>The cloud records and displays. The device decides.</strong> The parent taps <em>approve</em> in the cloud, but the cloud can only record an <em>intention</em>. The seal that makes an item deliverable is minted on the mini-PC, with a key that never leaves the house. <span class="muted">Consequence: even the operator of the service cannot approve content for your child.</span>
+    The panel stores a parent decision on an offered activity. The hub retrieves approved documents over authenticated HTTPS and decides when to start. This path trusts the container's selection; it does not use the older Proposal delivery seals.
   </div>
 
   <div class="mermaid">
@@ -226,26 +221,25 @@ sequenceDiagram
 
     D->>C: outbound request, chosen locally
     C->>C: agent proposes content
-    Note over C: a Proposal has no "approved" field.<br/>It is inert by construction.
+    Note over C: OfferedExperience waits for a parent decision.
     C->>C: content safety screens it
     C-->>D: no deliverable item yet
     P->>C: reviews, taps approve
-    C->>C: persists the decision; starts no work
+    C->>C: persists the decision and starts no equipment
     D->>C: a later outbound request, chosen locally
-    C-->>D: returns the approved assertion
-    D->>D: verifies the parent assertion
-    D->>D: mints the PARENT_APPROVAL seal 🔑
-    Note over D: only now does an ApprovedItem exist
+    C-->>D: returns approved activity documents
+    D->>D: checks capability, hours and daily allowance
+    Note over D: snapshots the activity it begins
     D->>G: prints the sheet
   </div>
 
   <table>
     <thead><tr><th>Guarantee</th><th>How it is made real</th></tr></thead>
     <tbody>
-      <tr><td>An agent cannot approve its own output</td><td><code>Proposal</code> has no <code>approved</code> flag, no <code>status</code>, no <code>publish()</code>. Agents are never handed a ledger.</td></tr>
-      <tr><td>Only the parent's decision is deliverable</td><td><code>ApprovedItem.__post_init__</code> refuses any seal whose purpose is not <code>PARENT_APPROVAL</code>, and any decision that does not refer to that exact proposal.</td></tr>
-      <tr><td>The safety gate cannot mint approvals</td><td><strong>Two different keys.</strong> Sharing one would let the content-safety gate forge parent consent.</td></tr>
-      <tr><td>Approval can be revoked</td><td><code>ApprovalLedger.withdraw</code> takes effect before the next delivery.</td></tr>
+      <tr><td>Initial activity approval</td><td>Parent decision stored on OfferedExperience; device retrieval selects approved records.</td></tr>
+      <tr><td>Continuation</td><td>Parsed, checked and screened without repair or second parent approval.</td></tr>
+      <tr><td>Older Proposal path</td><td>Two HMAC seals remain tested there; they do not bind the current activity path.</td></tr>
+      <tr><td>Withdrawal</td><td>Changes what can be retrieved later. A running hub keeps the document it began.</td></tr>
     </tbody>
   </table>
 </section>
@@ -341,7 +335,7 @@ flowchart TB
   </div>
 
   <div class="callout">
-    <strong>Two apps, because they answer to different signals.</strong> <code>api</code> scales on HTTP: a request to a zero-scaled app triggers activation and <em>is served</em>. <code>worker</code> scales on the queue, for content generation, vision reads and safety checks that genuinely take tens of seconds. Putting a queue in front of an interactive API would not make it faster — it would make it asynchronous.
+    The activity, drawing, reading and continuation paths execute in the API process. A worker or queue described in infrastructure is not evidence that these calls use it. Long requests can fail at ingress; a durable correlation-and-result protocol is not implemented for this activity path.
   </div>
 </section>
 
@@ -354,24 +348,24 @@ flowchart TB
     <div class="card">
       <h3 style="margin-top:0"><span class="badge b-ok">leaves the house</span></h3>
       <ul class="muted">
-        <li>content-generation prompts, which may carry a name, a profile, and the reading of the page on the table at that moment — the parent decides what is sent, and nothing from a previous afternoon is carried, because nothing about one was kept</li>
+        <li>generation prompts containing household settings, recent activity history, profile prose and the current reading when continuing</li>
         <li>a page off the glass, together with the blank it was printed from</li>
-        <li>the household memory, which lives in the cloud rather than in the house: what has already been offered, and what the parent configured</li>
+        <li>household memory, including observations and reported activity outcomes</li>
         <li>photographs from the handheld camera, once it exists</li>
       </ul>
     </div>
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-no">never leaves the house</span></h3>
+      <h3 style="margin-top:0"><span class="badge b-no">controlled in the house</span></h3>
       <ul class="muted">
-        <li>the sealing keys</li>
-        <li>the approval ledger</li>
+        <li>equipment operations and display files</li>
+        <li>the clock and current run snapshot</li>
       </ul>
-      <p class="muted">Two things, and both are about who may authorise — not about who may know. Nothing about a named person goes in the shared catalogue, which crosses households.</p>
+      <p class="muted">Activity approval is stored in the container's household store. The current installation's credentials were not inspected in this revision.</p>
     </div>
   </div>
 
   <div class="callout">
-    <strong>What replaced locality.</strong> The memory is the most sensitive object in the system, and it is no longer protected by where it sits. It is protected by being readable: the parent can read all of it, in plain language, in the panel, and a store read as sentences by the person who steers cannot quietly become a dossier. <em>That view is not built yet</em> — see the README's Status.
+    A complete plain-language view of household memory is not built. The parent can clear activity memory and profile observations; deleting the generated trail is a separate operation. These routes do not establish complete tenant-wide erasure.
   </div>
 
   <div class="callout warn">
@@ -389,13 +383,13 @@ flowchart TB
   <p>Recorded here rather than discovered later. A design that only documents its happy path is not documentation.</p>
 
   <h3>Work begins on a request from the house</h3>
-  <p>The dashboard persists state and returns. It never wakes compute on behalf of the device. The server in the home decides when to ask for something; the frequency and decision rule are intentionally still open.</p>
+  <p>The hub checks rhythm, work already running, the approved backlog and the daily limit. Browser-assisted brief editing can call a model, but cannot start equipment in the house.</p>
 
   <div class="callout good">
-    <strong>Cold start is machine-facing latency.</strong> API and worker can both be at zero. The home server keeps its request open while Container Apps activates and the cloud computes. No parent or adolescent is waiting on that request, so the interface does not need a spinner, a completion notification or a follow-up prompt.
+    Cold start adds latency to the hub's request. A scan or continuation can have somebody waiting at the equipment, so this latency can be visible. Current replica configuration was not checked in this session.
   </div>
 
-  <p class="muted">Container Apps HTTP ingress has a documented <strong>240 second timeout</strong>. Longer work uses a correlation id and durable result. If the request expires, the home server waits according to its local policy and contacts the API again. Completion still does not call the house or notify a person.</p>
+  <p class="muted">The historical ingress budget used here is 240 seconds. A timeout can lose the activity response. A durable result protocol would be additional work, not an existing recovery guarantee.</p>
 
   <div class="callout warn">
     <strong>One origin for queued work.</strong> If the implementation uses the queue, a message may be created only while handling an authenticated home-server request. Dashboard routes do not receive dispatch authority.
@@ -415,7 +409,7 @@ flowchart TB
 <!-- ============ STATUS ============ -->
 <section id="status">
   <h2><span class="num">08</span> Honest status</h2>
-  <p>So that nobody mistakes scaffolding for a system. Stubs in this repository raise <code>NotImplementedError</code> or return obviously fake data — if something looks like it works, it works.</p>
+  <p>The 7 September 2026 workbench completed a synthetic two-page activity in 345.4 seconds. The actual reading reached the continuation prompt and a blank control passed. This verifies local model calls, not hardware or deployed revision. See <a href="ARCHITECTURE.md">the current code audit</a> for limits.</p>
 
   <table>
     <thead><tr><th>Area</th><th>State</th></tr></thead>
@@ -430,11 +424,11 @@ flowchart TB
       <tr><td>safety gate</td><td><span class="badge b-ok">on the path of everything the Cloud paints</span></td></tr>
       <tr><td><code>devices/</code> Hub services</td><td><span class="badge b-ok">display server · hourly picture pull · status push</span></td></tr>
       <tr><td>picture archive and restore</td><td><span class="badge b-ok">restores byte-identical</span></td></tr>
-      <tr><td>approval ledger, planner</td><td><span class="badge b-no">not written</span></td></tr>
-      <tr><td><code>agents/</code> vision, scheduling, print</td><td><span class="badge b-no">not written</span></td></tr>
+      <tr><td>activity approval and profile</td><td><span class="badge b-ok">implemented in the panel</span></td></tr>
+      <tr><td>page drawing, reading and continuation</td><td><span class="badge b-ok">local model path exercised</span></td></tr>
       <tr><td><code>vision/</code> as a package</td><td><span class="badge b-todo">logic exists in <code>tools/</code></span></td></tr>
       <tr><td>usage accounting and per-household cap</td><td><span class="badge b-ok">deployed · tokens, cache reads, reasoning, request id</span></td></tr>
-      <tr><td><code>firmware/</code></td><td><span class="badge b-todo">may never be needed · the display runs stock firmware</span></td></tr>
+      <tr><td>display firmware</td><td><span class="badge b-todo">patched TRMNL; installed version not rechecked</span></td></tr>
     </tbody>
   </table>
 
@@ -447,7 +441,7 @@ flowchart TB
 
 <footer>
   Lanternina · architecture overview · generated from the repository documentation.<br />
-  Every number on this page was measured, not estimated. Where something is unverified, it says so.
+  Historical measurements are not a check of the current deployment. Local code audit: 7 September 2026.
 </footer>
 
 <script>

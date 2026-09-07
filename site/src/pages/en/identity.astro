@@ -96,18 +96,14 @@ import { REPO } from "../../i18n/ui";
     for page reading.
   </p>
 
-  <h2>Separate approval and safety keys</h2>
+  <h2>Activity approval</h2>
 
   <p>
-    Content safety and parental approval use separate HMAC keys. The approval seal covers the safety
-    seal, so the content-safety component can screen content but cannot mint a parent's decision.
+    The panel stores decisions on <code>OfferedExperience</code>. The hub retrieves approved documents through authenticated HTTPS and chooses when to begin. Continuations are checked and screened in the container but receive no second parent approval.
   </p>
 
   <p>
-    The approval seal is minted and verified within one device execution, so its key can rotate
-    between runs. The safety seal crosses processes and days: the gate mints it, the panel stores it,
-    and a later process verifies it. The hub filesystem was searched for both literal key values to
-    verify that neither key is deployed there.
+    The older <code>Proposal</code> path uses separate HMAC keys and verifies seals at delivery. Its tests cover that property; they do not describe the current activity path. Key placement on the deployed installation was not rechecked on 7 September 2026.
   </p>
 
   <h2>OIDC deployment</h2>

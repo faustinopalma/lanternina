@@ -69,18 +69,18 @@ import Base from "../../layouts/Base.astro";
 
   <AfternoonLife
     title="The life of an activity"
-    desc="A parent approves an idea in the panel. The API asks a model to write the activity, validates the result and stores it for that household. The hub collects it on a later poll and begins it when the full duration still fits. Each reading selects the next moment, requests a planned continuation, or closes the activity."
+    desc="The hub requests an activity. The container generates, validates and screens it, then waits for parent approval. The hub retrieves approved activities. A returned reading selects a moment or requests a checked continuation without another parent approval."
     caption="The left return edge is a repair after validation. The right return edge is a planned continuation based on the page that came back."
-    idea={{ title: "A parent approves an idea", sub: ["overview · themes · script"] }}
+    idea={{ title: "The house requests an activity", sub: ["preferences · optional brief"] }}
     devise={{
       title: "A model writes the whole activity",
-      sub: ["every moment at once — 68–157 s"],
+      sub: ["moments, help and ways out"],
     }}
     checks={{
-      title: "Structural checks, then a second model",
-      sub: ["rereads the whole thing — 14.4–22.8 s"],
+      title: "Format, checks and safety",
+      sub: ["the judge is a separate reading"],
     }}
-    waits={{ title: "The API stores it", sub: ["waiting for that household"] }}
+    waits={{ title: "The API awaits approval", sub: ["the parent reads the activity"] }}
     begins={{ title: "The house begins it", sub: ["only if the whole length still fits"] }}
     moment={{ title: "A moment runs", sub: ["say · hand over · collect"] }}
     cameBack={{ title: "What came back", sub: ["marks, or blank"] }}
@@ -88,9 +88,9 @@ import Base from "../../layouts/Base.astro";
     ask={{
       title: "ask",
       sub: [
-        "the house sends up the blank and the",
-        "page that came back, and receives a",
-        "continuation in the same format",
+        "the house sends descriptions of ink",
+        "the container checks the next segment",
+        "without a second parent approval",
       ],
     }}
     refused="refused"
@@ -103,10 +103,7 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    Validation repair repeats the full devising call, so each check must evaluate a fact in the
-    document rather than a particular phrasing. The hub starts an activity only when its full
-    duration fits before the parent's deadline. Thirty minutes before that deadline, execution
-    enters the route from the current moment to the ending.
+    Generation permits a format repair and a separate checks repair; continuation has no repair. The hub obeys the hours and daily allowance. The timer starts the way out on its first check after the thirty-minute threshold. Consecutive non-collection moments do not wait their declared durations.
   </p>
 
   <h2>The paper round trip</h2>
@@ -121,28 +118,20 @@ import Base from "../../layouts/Base.astro";
     desc="Words that have already passed the safety gate go into one image call, which draws the whole sheet. The sheet is printed and its blank is kept. Somebody writes on it, or does not. The scanner takes it back, both images go to a model, and the answer is either marks or blank. That answer is what the next words are written from."
     caption="The person's action is the only step in this loop that software does not perform."
     words={{ title: "Words", sub: ["already through the safety gate"] }}
-    drawn={{ title: "One image call", sub: ["the whole A4 sheet, in one pass", "19–33 s"] }}
+    drawn={{ title: "One image call", sub: ["the whole A4 sheet"] }}
     printed={{
       title: "Printed",
       sub: ["the blank is kept: it is what the", "reading is compared against"],
     }}
     person={{ title: "Somebody writes on it", sub: ["or does not"] }}
-    scanned={{ title: "Scanner", sub: ["≈ 26 s"] }}
-    read={{ title: "Two images to a model", sub: ["what is different? — 4.4–5.5 s"] }}
-    outcome={{ title: "marks · blank", sub: ["the whole vocabulary,", "then the reading is gone"] }}
+    scanned={{ title: "Scanner", sub: ["captures the returned sheet"] }}
+    read={{ title: "Two images to a model", sub: ["describes the added marks"] }}
+    outcome={{ title: "marks · blank", sub: ["descriptions for continuation", "degraded reading: wait"] }}
     feeds="and the next words are written from it"
   />
 
   <p>
-    The vision result is <b>marks</b> or <b>blank</b>. The execution service consumes it without
-    writing it to storage or logs, and the reading type closes the pickle, copy and cache paths.
-    This representation gives later code no count from which to derive a score.
-  </p>
-
-  <p class="note">
-    Measured with a finger on a real button: press to reading on the display, about 35 s, of which
-    26 s is the scanner. The floor is the scanner plus up to one wake cycle of the display, and the
-    firmware adds 5–11 s to any refresh interval you ask for.
+    The branch depends on whether marks were added; the descriptions inform the continuation. Retained profile observations and the development exception are described under <a href="/en/#memory">system memory</a>.
   </p>
 
   <h2>The model-call path</h2>
@@ -167,11 +156,6 @@ import Base from "../../layouts/Base.astro";
       boxes run only when format parsing or structural validation refuses an answer.
     </figcaption>
   </figure>
-
-  <p>
-    A refusal that recurs across activities points to the prompt or contract. One such refusal held
-    the research loop for two days; the missing rule was the order in which the moments are walked.
-  </p>
 
   <p>
     <a href={NOTEBOOK}>research/officina.ipynb</a> records each request and response at the router.

@@ -1,0 +1,23 @@
+{
+  "status": "concluded",
+  "reason": "",
+  "built_from": {
+    "form": "what-changed-between-two-pictures",
+    "move": "one-fact-that-changes-what-was-already-read"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1788778072.1684253,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_f249720b",
+      "latency_s": 2.07
+    }
+  },
+  "reading_in_continuation_prompt": true,
+  "continuations": 1,
+  "seconds": 335.597
+}

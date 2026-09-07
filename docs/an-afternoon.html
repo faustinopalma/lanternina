@@ -195,7 +195,7 @@ flowchart LR
 <section id="devise">
   <h2><span class="num">1</span> Devising — where an afternoon comes from</h2>
 
-  <p>Nothing is devised on a schedule. The house asks for one only when it has looked and found nothing: no approved afternoon it can run, and nothing already sitting with the parent unread. Press the button below to walk the chain.</p>
+  <p>The hub checks the configured rhythm and activity backlog before requesting work. The panel also supports parent-authored briefs. The diagram illustrates the hub-requested path; it does not verify the installed service or its current settings.</p>
 
   <div class="stage" id="devise-stage">
     <div class="stage-controls">
@@ -218,7 +218,7 @@ flowchart LR
   <div class="grid grid-4">
     <div class="card"><span class="badge b-data">1</span><p><strong>Parsed.</strong> JSON out of the text. Not JSON, or not an object, and it is refused.</p></div>
     <div class="card"><span class="badge b-data">2</span><p><strong>Checked.</strong> <code>shared/experience_checks.py</code> returns a <em>list</em> of complaints, each naming a field and the offending value.</p></div>
-    <div class="card"><span class="badge b-data">3</span><p><strong>Repaired, once.</strong> <code>ExperienceDeviser.repair()</code> gets the complaints and is told to change what each one names. Rewording is not a repair, and the prompt says that.</p></div>
+    <div class="card"><span class="badge b-data">3</span><p>The generator can repair an unreadable format once and then repair structural complaints once separately. Remaining complaints stop the request before Content Safety.</p></div>
     <div class="card"><span class="badge b-data">4</span><p><strong>Screened and stored.</strong> Through the gate, then written as an offer the parent has not seen yet.</p></div>
   </div>
 
@@ -285,7 +285,7 @@ flowchart TD
 <section id="begin">
   <h2><span class="num">4</span> Beginning — and the four verbs</h2>
 
-  <p>On a chosen day, inside the band, with nothing already running, the house takes the oldest approved afternoon whose whole length still fits before the band closes and begins it. When one finishes early it begins the next, as long as that one fits too.</p>
+  <p>On a chosen day, inside the band, with nothing already running, the house chooses an approved activity whose duration fits. Further starts also obey the parent's daily limit. A manual start can bypass day and start hour, but not the end of the band or that limit.</p>
 
   <div class="mermaid">
 flowchart LR
@@ -365,22 +365,22 @@ flowchart LR
     <tr><th>What came back</th><th>Where it goes</th></tr>
     <tr><td><code>marks</code> — anything at all was added</td><td>the moment id the plan names, or <code>ask</code></td></tr>
     <tr><td><code>blank</code> — nothing was added</td><td>the moment id the plan names, or <code>ask</code>. A good answer, not a failure.</td></tr>
-    <tr><td>nothing was ever printed</td><td><code>if_no_page</code></td></tr>
+    <tr><td>nothing was printed</td><td><code>instead</code> is shown. The contract defines <code>if_no_page</code>, but the current hub runner does not execute that branch.</td></tr>
     <tr><td>the reading was degraded</td><td>the afternoon waits rather than guessing</td></tr>
   </table>
 
   <h3>When the plan says <code>ask</code></h3>
-  <p>The afternoon was written before anyone knew how it would go, and <code>ask</code> is the plan admitting it. The house sends the afternoon so far, which moment asked, whether a page came back, and the reader's own three words per cell — nothing else. <code>agents/experience_continuer.py</code> writes the moments that follow, they are checked and screened the same way, and they are appended to the run file as a <em>segment</em>.</p>
+  <p>The hub sends the original activity, collection identifier, branch and <code>WhatCameBack.to_dict()</code>. Its descriptions and reading status reach the continuation prompt; metadata and timestamps do not. The checked and screened continuation replaces the active segment. It is not appended to the old graph. The 7 September 2026 synthetic run verified the actual descriptions in the sent prompt.</p>
 
   <div class="callout warn">
-    <strong>A continuation gets one repair and no more.</strong> Somebody is standing at the scanner while this happens, and a second model call is another fifteen seconds. Refused twice, the afternoon takes its way out rather than making them wait.
+    A continuation has no repair loop and no second parent approval. A refused response leaves the hub without new moments. The existing clock can later bring the activity to its way out; rejection does not itself prove an immediate visible ending.
   </div>
 </section>
 
 <section id="clock">
   <h2><span class="num">7</span> The clock — help, the way out, and the ending</h2>
 
-  <p>Every minute, a second unit looks at every run on disk and asks three questions: is a rung of help due, is it time to start leaving, and is it over. Press play to watch one afternoon.</p>
+  <p>The clock checks whether help is due at the waiting collection, whether the way out should begin and whether the close is due. The animation illustrates those deadlines. The runner does not wait the declared duration between consecutive non-collection moments; it executes them immediately.</p>
 
   <div class="stage">
     <div class="stage-controls">
@@ -415,7 +415,7 @@ flowchart LR
 <section id="parent">
   <h2><span class="num">8</span> The parent while it is running</h2>
 
-  <p>There is no progress view. No help log, no list of what was answered, and no timing of how long the person took over anything. How long the <em>models</em> took is measured — a page is read in 4.4–5.5 s — because a runaway agent and a cost that has lost its mind are visible in nothing else. The two are different data about different subjects. The person who did it is the only source on how it went, and that is a decision rather than an omission.</p>
+  <p>The panel has an activity trail of generated material and operations. It also stores activity endings, reported durations and reading-derived summaries, while separate observations steer the profile. These records are not a direct measure of how long a person worked. Raw readings can additionally be retained under the administrator's time-limited development permission.</p>
 
   <p>What the parent <em>can</em> do is send a typed fact. Not free text — free text would reach a model and colour what it writes. Exactly two things, both about the clock:</p>
 
@@ -434,7 +434,7 @@ flowchart LR
 
   <table>
     <tr><th>Step</th><th>Time</th><th>Measured</th></tr>
-    <tr><td>Devising a whole afternoon</td><td>29.1 s, and 76–91 s under the current format</td><td>21 and 23 Aug 2026, from the hub</td></tr>
+    <tr><td>Devising a whole afternoon</td><td>29.1 s, and 76–91 s under the format then in use</td><td>21 and 23 Aug 2026, from the hub</td></tr>
     <tr><td>Repairing a refused one</td><td>21.3–35.3 s</td><td>23 Aug 2026</td></tr>
     <tr><td>Drawing one whole page</td><td>18.8–32.5 s</td><td>24 Aug 2026, four kinds</td></tr>
     <tr><td>Ink on a printed page</td><td>0.54 % – 2.72 % of the sheet</td><td>24 Aug 2026, after flattening</td></tr>
@@ -464,16 +464,16 @@ flowchart LR
       <p>The reader can describe eight things about the ink, and the plan is allowed to use exactly one bit of it: was there any. Everything the reader saw is passed to the continuer and then only when the plan happened to say <code>ask</code>. The richest signal in the system is mostly discarded.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-no">3</span> Nothing about the afternoon survives it</h3>
-      <p>The run file and its pages are deleted at the end, and the reading of what came back is never written down at all. Since 27 August 2026 that is a decision rather than an unanswered question: the durable memory holds what was <em>made</em> and what the household <em>configured</em>, never what was done with it, and the bound is where the parent's judgement enters — they see the sheets, they change the settings. It is still a real cost, and it is the cost the design accepts knowingly: nothing here can notice from one week to the next that a subject keeps being avoided, or that a form keeps being abandoned.</p>
+      <h3 style="margin-top:0"><span class="badge b-no">3</span> The memory needs a complete view</h3>
+      <p>Generated material, activity outcomes and profile observations survive. The parent can clear activity memory and observations, but cannot inspect the whole memory in one plain-language view. Development retention is a separate administrator permission lasting 14 days; each retained reading has its own 14-day lifetime from writing.</p>
     </div>
     <div class="card">
-      <h3 style="margin-top:0"><span class="badge b-no">4</span> One shot, and then it is fixed</h3>
-      <p>The whole afternoon is written before it starts, by one call, and then only patched at <code>ask</code>. A model that could see the page come back and rewrite what is left would be a different system. The reason it is not that today is latency: somebody is standing at the scanner, and that is 15 s per call.</p>
+      <h3 style="margin-top:0"><span class="badge b-no">4</span> Continuation depends on a planned collection</h3>
+      <p>An <code>ask</code> can replace the remaining moments using the returned reading. Other branches follow the initial graph. Arbitrarily repeated continuations are not established: the hub keeps sending the original document even when the active segment has changed.</p>
     </div>
     <div class="card">
       <h3 style="margin-top:0"><span class="badge b-todo">5</span> The devising prompt is long and does two jobs</h3>
-      <p>11 608 characters, and most of them describe the JSON. The part that says what makes an afternoon worth doing is eight lines. The ratio is probably backwards, and the format could enforce more of what the prose currently asks for.</p>
+      <p>The prompt contains both format requirements and activity guidance. Its size changes with the method and household material. The workbench records the exact sent text; historical character counts do not describe the current prompt. Open tasks can admit several outcomes, and automatic judges retain false positives.</p>
     </div>
     <div class="card">
       <h3 style="margin-top:0"><span class="badge b-todo">6</span> The seam is silent</h3>
@@ -518,10 +518,10 @@ flowchart LR
         "<strong>Every minute.</strong> Not on a schedule of its own — the same tick does everything: reads the parent's messages, looks for a run already going, and only then thinks about starting something.",
         "<strong>Read fresh, never cached.</strong> There was a six-hour cache here until 21 August 2026. A parent turned afternoons on at 15:21 and watched nothing happen, because the house was still deciding on a rhythm it had read at 14:02.",
         "<strong>Two answers, not one.</strong> What is approved, and how many are still sitting unread with the parent. The second number is what stops it devising behind their back.",
-        "<strong>Only when both are empty.</strong> Nothing approved and nothing waiting. And once a day: the stamp is written <em>before</em> the asking, so a panel that refuses is not asked again in a minute.",
+        "The hub uses the configured backlog and daily allowance. The earlier once-a-day request stamp is not the current start policy.",
         "<strong>Assembled, not stored whole.</strong> Markdown blocks beside the agent, plus the format describing itself, plus this household's language, capabilities, interests, what to avoid, and the titles already offered.",
-        "<strong>29.1 s when it worked; 76–91 s under the current format.</strong> The document that comes back is 6 000–7 400 characters, four or five moments.",
-        "<strong>A list of complaints, not a yes or no.</strong> Each names a field and the value that broke it, so a repair can be asked for precisely. One repair, then it gives up.",
+        "The August measurements were 29.1 s and 76–91 s under the formats then in use. The September workbench records the current prompts and responses separately.",
+        "A format repair and a separate structural-check repair can both occur. Persistent complaints stop the request before screening.",
         "<strong>Nothing is delivered yet.</strong> It is a row a parent has not read. The house will not see it until they approve it.",
         "<strong>The loop closes here, at human speed.</strong> The parent reads it whenever they read it, and the house finds it the next time it looks.",
       ],
@@ -543,7 +543,7 @@ flowchart LR
         "<strong>Blank first, written second, and the instruction names them in that order.</strong> Get the order wrong and every answer inverts.",
         "<strong>13.0 s.</strong> It answers with a boolean, whether it is even the same sheet, and up to eight short phrases about where the ink sits. It is forbidden from saying anything about the person or whether anything is correct.",
         "<strong>One bit of it decides.</strong> Was anything added at all. Blank is a real answer and goes somewhere written in advance — it is not a failure and nothing says so.",
-        "<strong>A named moment is instant; <code>ask</code> is another 14.6 s.</strong> And somebody is standing there for it, which is why <code>ask</code> gets one repair and no more.",
+        "A named moment follows the active graph. An ask sends the actual descriptions to the container, which checks and screens a new segment without repair or second approval. The 14.6-second figure is a historical measurement from August.",
       ],
     },
   };

@@ -38,6 +38,7 @@ IN_ORDER: Final = (
     "agents.experience_continuer",
     "agents.experience_judge",
     "agents.page_maker",
+    "agents.page_reader",
     "research.calls",
     "research.play",
 )
