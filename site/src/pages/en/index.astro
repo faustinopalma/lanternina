@@ -36,49 +36,56 @@ import { REPO } from "../../i18n/ui";
     </figcaption>
   </figure>
 
-  <h2>Four decisions worth arguing about</h2>
+  <h2>How an afternoon goes</h2>
 
-  <div class="cards">
-    <article class="card">
-      <h3>One prompt draws the whole sheet</h3>
-      <p>
-        There is no layout engine. An image model is given every string that has already passed the
-        safety gate, told to letter exactly those characters, and returns a finished A4 page. The
-        design work is the prompt, and the page format lives in one Markdown file rather than in
-        code.
-      </p>
-    </article>
+  <p>
+    Seven steps, in the order they happen. The house starts all of them; nothing in the cloud can
+    start anything.
+  </p>
 
-    <article class="card">
-      <h3>A page is read against its own blank</h3>
-      <p>
-        No QR code, no ArUco markers, no declared grid — nothing printed on the paper that is there
-        for a machine. Reading is handing a model two images, the blank and what came back off the
-        glass, and asking what is different. An earlier version had all three, and they were
-        deleted.
-      </p>
-    </article>
-
-    <article class="card">
-      <h3>The cloud cannot start anything</h3>
-      <p>
-        The dashboard is inert by construction: approving writes a row and does nothing else. The
-        house asks, on its own clock, and the answer arrives inside the reply. There is no inbound
-        path to a device in a room, which is also why there is nothing on the home network to
-        attack.
-      </p>
-    </article>
-
-    <article class="card">
-      <h3>The guarantees are types, not conventions</h3>
-      <p>
-        An agent has nowhere to record that its own output is acceptable, because
-        <code>Proposal</code> has no status field. Only the safety gate can mint the type a
-        user-facing payload requires. Each boundary test was mutation-checked: the violation was
-        injected and the test watched to fail.
-      </p>
-    </article>
-  </div>
+  <ol class="steps">
+    <li>
+      <b>The house asks whether there is an afternoon to be had.</b> The mini-PC asks on its own
+      clock, and the answer arrives inside the reply. Approving something in the dashboard writes a
+      row and does nothing else, and the house finds that row the next time it asks. No path leads
+      into a device in a room, which is also why there is nothing on the home network to attack.
+    </li>
+    <li>
+      <b>A model writes the whole afternoon in one answer.</b> Every moment of it, three lengths for
+      each moment, a four-rung ladder of help under each, and a way out from anywhere. Nothing is
+      added while it runs. That is what lets the same moment be shortened when the clock is tight,
+      or put on a display that holds forty words, and still reach the same ending.
+    </li>
+    <li>
+      <b>Seven checks and a safety gate read it before anybody does.</b> The checks read its shape:
+      that every moment can be reached, that the way out reaches for something already in the
+      person's hands, that no question is asked the afternoon never answers. A refused afternoon is
+      handed back to be repaired, once. The gate reads the words.
+    </li>
+    <li>
+      <b>A parent reads the overview and approves it.</b> Once, and from the overview rather than
+      moment by moment: approving every branch would need an adult awake at the moment each branch
+      was taken. The parent also sets the hour the afternoon has to be over by.
+    </li>
+    <li>
+      <b>The house prints a page.</b> There is no layout engine. An image model is given every
+      string that has already passed the gate, told to letter exactly those characters, and returns
+      a finished A4 page — a map, a museum label, a leaf out of a field notebook. The design work is
+      the prompt, and the page format lives in one Markdown file rather than in code.
+    </li>
+    <li>
+      <b>Somebody writes on it and puts it back on the glass.</b> A model is handed two images, the
+      blank as it was printed and what came back, and asked what is different. Nothing on the paper
+      is there for a machine: no QR code, no corner markers, no declared grid. An earlier version
+      had all three, and they were deleted.
+    </li>
+    <li>
+      <b>What came back decides what happens next, and then it ends.</b> The rest of the afternoon
+      is written while the sheet is still on the table. Thirty minutes before the hour the parent
+      set, whatever has been reached, the way out begins — and it arrives at the same ending, never
+      announced as a shortened one.
+    </li>
+  </ol>
 
   <h2>What comes out, and what goes back</h2>
 
@@ -217,7 +224,8 @@ import { REPO } from "../../i18n/ui";
   <p>
     Engagement optimisation is easy to add to a system like this and would do harm, so it is a
     written rule rather than a matter of judgement. <code>tests/test_boundaries.py</code> refuses the
-    vocabulary in the stored shape, in the panel, in the browser and in the prompts.
+    vocabulary in the stored shape, in the panel, in the browser and in the prompts. Each of those
+    tests was checked by injecting the violation and watching the test fail.
   </p>
 
   <ul>
@@ -230,6 +238,12 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>No face or person detection, no emotion or attention inference, no biometrics.</li>
   </ul>
+
+  <p>
+    An agent also has nowhere to record that its own output is acceptable: <code>Proposal</code> has
+    no status field, and only the safety gate can mint the type a user-facing payload requires. The
+    boundary is a type rather than a convention, so breaking it does not compile.
+  </p>
 
   <p>
     <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}>Why each boundary exists, and what it costs</a

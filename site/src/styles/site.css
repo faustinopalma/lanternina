@@ -336,7 +336,6 @@ main:focus {
 }
 
 .page > .band,
-.page > .cards,
 .page > .pair,
 .page > .graph {
   grid-column: full;
@@ -417,6 +416,11 @@ li::marker {
   color: var(--glow);
 }
 
+/* A sequence somebody reads once, so a step gets the room a short paragraph gets. */
+.steps li {
+  margin-bottom: 1rem;
+}
+
 a {
   color: var(--ember);
   text-decoration-thickness: 1px;
@@ -495,42 +499,6 @@ figcaption {
 
 .narrow {
   max-width: 26rem;
-}
-
-/* ── cards ────────────────────────────────────────────────────────────────── */
-
-.cards {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-  margin: 1.8rem 0;
-}
-
-@media (min-width: 44rem) {
-  .cards {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.card {
-  border: 1px solid var(--rule);
-  border-top: 3px solid var(--glow);
-  border-radius: 4px;
-  padding: 1.15rem 1.25rem;
-  background: #fffefc;
-}
-
-.card h3 {
-  margin: 0 0 0.45rem;
-  font-size: 1rem;
-}
-
-.card p {
-  margin: 0;
-  font-size: 0.97rem;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  max-width: none;
 }
 
 /* ── table of numbers ─────────────────────────────────────────────────────── */

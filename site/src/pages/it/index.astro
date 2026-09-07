@@ -37,49 +37,61 @@ import { REPO } from "../../i18n/ui";
     </figcaption>
   </figure>
 
-  <h2>Quattro decisioni su cui vale la pena discutere</h2>
+  <h2>Come va un pomeriggio</h2>
 
-  <div class="cards">
-    <article class="card">
-      <h3>Un prompt disegna il foglio intero</h3>
-      <p>
-        Non c'è un motore di impaginazione. A un modello di immagini vengono date tutte le stringhe
-        già passate dal filtro di sicurezza, con l'istruzione di scriverle carattere per carattere, e
-        torna una pagina A4 finita. Il lavoro di design è il prompt, e il formato della pagina vive
-        in un file Markdown invece che nel codice.
-      </p>
-    </article>
+  <p>
+    Sette passi, nell'ordine in cui succedono. Li fa partire tutti la casa: nel cloud non c'è niente
+    che possa dare inizio a qualcosa.
+  </p>
 
-    <article class="card">
-      <h3>Una pagina si legge contro il proprio bianco</h3>
-      <p>
-        Niente QR, niente marker ArUco, nessuna griglia dichiarata — niente sulla carta che sia lì
-        per una macchina. Leggere vuol dire dare a un modello due immagini, il bianco e quello che è
-        tornato dal vetro, e chiedere cosa è cambiato. Una versione precedente aveva tutti e tre, e
-        sono stati cancellati.
-      </p>
-    </article>
-
-    <article class="card">
-      <h3>Il cloud non può far partire niente</h3>
-      <p>
-        Il pannello è inerte per costruzione: approvare scrive una riga e nient'altro. È la casa che
-        chiede, sul proprio orologio, e la risposta arriva dentro la replica. Non esiste una strada
-        in ingresso verso un dispositivo in una stanza, ed è anche il motivo per cui sulla rete di
-        casa non c'è niente da attaccare.
-      </p>
-    </article>
-
-    <article class="card">
-      <h3>Le garanzie sono tipi, non convenzioni</h3>
-      <p>
-        Un agente non ha dove annotare che la propria uscita va bene, perché <code>Proposal</code> non
-        ha un campo di stato. Solo il filtro di sicurezza può coniare il tipo che un contenuto
-        destinato a una persona richiede. Ogni test di confine è stato verificato al negativo:
-        violazione iniettata, e test guardato mentre falliva.
-      </p>
-    </article>
-  </div>
+  <ol class="steps">
+    <li>
+      <b>La casa chiede se c'è un pomeriggio da fare.</b> Il mini-PC chiede sul proprio orologio, e
+      la risposta arriva dentro la replica. Approvare qualcosa nel pannello scrive una riga e
+      nient'altro, e la casa trova quella riga la volta dopo che chiede. Nessuna strada porta dentro
+      un dispositivo in una stanza, ed è anche il motivo per cui sulla rete di casa non c'è niente
+      da attaccare.
+    </li>
+    <li>
+      <b>Un modello scrive il pomeriggio intero in una risposta sola.</b> Tutti i suoi momenti, tre
+      lunghezze per ciascuno, una scala di aiuto a quattro pioli sotto ognuno, e una via d'uscita da
+      qualsiasi punto. Mentre gira non si aggiunge niente. È questo che permette di accorciare lo
+      stesso momento quando l'orologio stringe, o di metterlo su uno schermo che tiene quaranta
+      parole, arrivando comunque alla stessa fine.
+    </li>
+    <li>
+      <b>Sette controlli e un filtro di sicurezza lo leggono prima di chiunque altro.</b> I
+      controlli ne leggono la forma: che ogni momento sia raggiungibile, che la via d'uscita cerchi
+      un oggetto che sta già in mano a qualcuno, che non venga fatta una domanda a cui il pomeriggio
+      non risponde mai. Un pomeriggio rifiutato torna indietro a farsi riparare, una volta sola. Il
+      filtro legge le parole.
+    </li>
+    <li>
+      <b>Un genitore legge la panoramica e approva.</b> Una volta, e dalla panoramica invece che
+      momento per momento: approvare ogni ramo richiederebbe un adulto sveglio nell'istante in cui
+      quel ramo viene preso. Il genitore fissa anche l'ora entro cui il pomeriggio deve finire.
+    </li>
+    <li>
+      <b>La casa stampa una pagina.</b> Non c'è un motore di impaginazione. A un modello di immagini
+      vengono date tutte le stringhe già passate dal filtro, con l'istruzione di scriverle carattere
+      per carattere, e torna una pagina A4 finita: una mappa, un cartellino da museo, un foglio
+      staccato da un taccuino di campagna. Il lavoro di design è il prompt, e il formato della
+      pagina vive in un file Markdown invece che nel codice.
+    </li>
+    <li>
+      <b>Qualcuno ci scrive sopra e la rimette sul vetro.</b> A un modello vengono date due
+      immagini, il bianco com'è stato stampato e quello che è tornato, e la domanda è che cosa è
+      cambiato. Sulla carta non c'è niente che stia lì per una macchina: niente QR, niente marker
+      agli angoli, nessuna griglia dichiarata. Una versione precedente aveva tutti e tre, e sono
+      stati cancellati.
+    </li>
+    <li>
+      <b>Quello che è tornato decide come si va avanti, e poi finisce.</b> Il resto del pomeriggio
+      viene scritto mentre il foglio è ancora sul tavolo. Mezz'ora prima dell'ora fissata dal
+      genitore, comunque sia andata, comincia la via d'uscita — e arriva alla stessa fine, senza mai
+      dire che è stata accorciata.
+    </li>
+  </ol>
 
   <h2>Cosa esce, e cosa torna indietro</h2>
 
@@ -220,7 +232,8 @@ import { REPO } from "../../i18n/ui";
   <p>
     Ottimizzare l'aggancio è facile da aggiungere a un sistema così, e farebbe danno: quindi è una
     regola scritta e non una questione di buon senso. <code>tests/test_boundaries.py</code> rifiuta
-    quel vocabolario nella forma salvata, nel pannello, nel browser e nei prompt.
+    quel vocabolario nella forma salvata, nel pannello, nel browser e nei prompt. Ognuno di quei
+    test è stato verificato iniettando la violazione e guardandolo fallire.
   </p>
 
   <ul>
@@ -236,6 +249,13 @@ import { REPO } from "../../i18n/ui";
       dato biometrico.
     </li>
   </ul>
+
+  <p>
+    Un agente non ha nemmeno dove annotare che la propria uscita va bene: <code>Proposal</code> non
+    ha un campo di stato, e solo il filtro di sicurezza può coniare il tipo che un contenuto
+    destinato a una persona richiede. Il confine è un tipo e non una convenzione, quindi violarlo
+    non compila.
+  </p>
 
   <p>
     <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}
