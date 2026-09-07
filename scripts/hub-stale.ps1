@@ -31,8 +31,14 @@ $work = Join-Path ([IO.Path]::GetTempPath()) "lnt-hub-$(Get-Random)"
 $tree = Join-Path $work 'tree'
 New-Item -ItemType Directory -Path $tree -Force | Out-Null
 try {
+    # The `.md` beside a module is a prompt block, read at runtime by `shared/prompts.py`.
+    # Comparing only `*.py` reported a clean hub on 3 September 2026 while every prompt on
+    # it was a rename behind: the code was identical and the words the model reads were not.
+    # `grep` and not `find -name ... -o -name ...`: the parentheses that group the two names
+    # arrive at the remote shell unterminated through PowerShell's quoting, and ssh then
+    # waits for input for ever with nothing on screen.
     $names = $Packages -join ' '
-    $listing = ssh $Hub "cd /opt/lanternina && find $names -name '*.py' | sort | xargs sha256sum | sed 's|  |,|'"
+    $listing = ssh $Hub "cd /opt/lanternina && find $names -type f | grep -E '[.](py|md)$' | sort | xargs sha256sum | sed 's|  |,|'"
     if ($LASTEXITCODE -ne 0) { throw "could not list the hub's files" }
 
     $archive = Join-Path $work 'hub.tar'
@@ -58,7 +64,9 @@ try {
     try {
         foreach ($package in $Packages) {
             if (-not (Test-Path $package)) { continue }
-            foreach ($file in Get-ChildItem $package -Recurse -Filter *.py) {
+            $mine_files = Get-ChildItem $package -Recurse -File |
+                Where-Object { $_.Extension -in '.py', '.md' }
+            foreach ($file in $mine_files) {
                 $compared++
                 $rel = (Resolve-Path -Relative $file.FullName) -replace '^\.\\', '' -replace '\\', '/'
                 $mine = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLower()
