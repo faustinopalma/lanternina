@@ -23,6 +23,7 @@ the printed page underneath untouched.
 
 from __future__ import annotations
 
+import io
 import os
 from typing import Final
 
@@ -65,6 +66,24 @@ _KEEP_THE_PAGE: Final = (
 TIMEOUT_SECONDS: Final = 300
 
 
+def in_colour(png: bytes) -> bytes:
+    """The page as three channels.
+
+    A page arrives from `agents/page_maker.py` in one channel, and `images/edits` answers a
+    one-channel page with a black rectangle: measured 7 September 2026 on the same sheet,
+    mean brightness 0 of 255 sent as it was against 242 sent as RGB. The reader then says
+    `written: false, same_sheet: false`, which reads as a person who wrote nothing.
+    """
+    from PIL import Image
+
+    with Image.open(io.BytesIO(png)) as one:
+        if one.mode == "RGB":
+            return png
+        kept = io.BytesIO()
+        one.convert("RGB").save(kept, format="PNG")
+        return kept.getvalue()
+
+
 def asked_of(hand: str) -> str:
     """The prompt, so a test can read it without paying for a page."""
     if hand not in _HANDS:
@@ -89,7 +108,6 @@ def written_on(
     is the client's own, so it reads `Retry-After` rather than the sentence in the body.
     """
     import base64
-    import io
 
     from azure.identity import DefaultAzureCredential, get_bearer_token_provider
     from openai import AzureOpenAI
@@ -105,7 +123,7 @@ def written_on(
         timeout=TIMEOUT_SECONDS,
         max_retries=tries,
     )
-    page = io.BytesIO(blank)
+    page = io.BytesIO(in_colour(blank))
     # Named, because the service reads the format off the filename rather than the bytes.
     page.name = "page.png"
     answer = client.images.edit(
