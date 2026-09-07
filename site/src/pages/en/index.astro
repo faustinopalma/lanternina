@@ -17,7 +17,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    A mini-PC in a house drives two e-paper displays, an inkjet and a flatbed scanner. Every
+    A mini-PC connects the home's e-paper displays, printer and scanner. The number of displays is configurable: two belong to the prototype, not to a system requirement. Every
     page, reading and continuation request goes from the hub to the container API, which calls Foundry models. The house holds the clock and initiates requests. This describes local code checked on 7 September 2026; hardware and the deployed revision were not rechecked.
   </p>
 
@@ -29,8 +29,7 @@ import { REPO } from "../../i18n/ui";
       alt="A 7.5-inch e-paper display in a 3D printed frame, showing an engraving."
     />
     <figcaption>
-      One of two displays. The frame is 3D printed and the unit was assembled by hand; the picture
-      on it was generated an hour earlier from a theme the parent wrote.
+      A prototype display in a 3D-printed frame. The picture comes from a theme the parent wrote.
     </figcaption>
   </figure>
 
@@ -68,6 +67,25 @@ import { REPO } from "../../i18n/ui";
       hour set by the parent, it enters the planned route from the current moment to the ending.
     </li>
   </ol>
+
+  <h2>The parent's panel</h2>
+
+  <p>The parent opens <a href="https://app.lanternina.com">the panel</a> in a browser. Waiting activities show their title, duration, planned sheets and a description of what will happen. The parent can read the script, approve, refuse or work on the idea. Approval makes the activity available to the house without starting it immediately.</p>
+
+  <figure>
+    <a href="/images/panel-activities-en.webp"><img src="/images/panel-activities-en.webp" width="1200" height="900" loading="lazy" alt="The activity panel showing a proposed activity, its expandable script and the Approve, Refuse and Work on it controls." /></a>
+    <figcaption>The decision page in the current interface, with invented data in the local preview. This sample activity is in Italian.</figcaption>
+  </figure>
+
+  <p>Settings cover days and hours, how many activities may begin, interests, subjects to avoid and language. The parent can add a temporary note and set bounds on how a continuation may change. During an activity, they can bring its end time forward or ask it to start closing. The activity log collects what the system generated and showed.</p>
+
+  <h3>Devices in the house</h3>
+  <p>The panel lists registered displays and discovered printers and scanners. The parent names them, assigns jobs and sees which need attention. More displays can be added: several devices can hold the same job, and one device can hold several jobs. This does not imply unlimited capacity, which has not been measured.</p>
+
+  <figure>
+    <a href="/images/panel-devices-en.webp"><img src="/images/panel-devices-en.webp" width="1200" height="900" loading="lazy" alt="The panel's Devices page with editable names, display status and checkboxes for assigning jobs." /></a>
+    <figcaption>Example device assignments with invented data. The number of displays shown is not a system limit.</figcaption>
+  </figure>
 
   <h2>Reconstructing a railway</h2>
 
@@ -118,9 +136,7 @@ import { REPO } from "../../i18n/ui";
 
   <h3>In the house</h3>
   <p>
-    Raspberry Pi Compute Module 5 on a PoE base board, Raspberry Pi OS. Two 7.5" e-paper displays on
-    XIAO ESP32-S3, running a patched TRMNL firmware against our own BYOS server. Epson ET-2870 over
-    IPP and eSCL, driverless. Frames 3D printed, units assembled by hand.
+    The prototype uses a Raspberry Pi Compute Module 5 on a PoE base board with Raspberry Pi OS, 7.5" displays on XIAO ESP32-S3 with patched TRMNL firmware, and an Epson ET-2870 over IPP and eSCL. In the panel, the parent names devices and assigns display jobs. One display can follow activities, show reminders and hold pictures, or have only some of these jobs.
   </p>
 
   <h3>In the cloud</h3>
@@ -160,4 +176,13 @@ import { REPO } from "../../i18n/ui";
     <a href={`${REPO}/blob/main/docs/ARCHITECTURE.md`}>Why each boundary exists, and what it costs</a
     > · <a href={`${REPO}/tree/main/docs/prompts`}>every prompt, whole, as the model receives it</a>
   </p>
+  <h2>Between activities</h2>
+
+  <h3>Pictures</h3>
+  <p>Displays can show images generated from themes chosen by the parent. The panel provides theme editing, hours and frequency for picture changes, and an archive of generated pictures. Pictures have their own display job: a dedicated screen can show them while another follows an activity.</p>
+
+  <h3>Reminders</h3>
+  <p>The parent writes a reminder as a sentence with a time and optional days, such as "On Tuesdays at 5 pm, pack the swimming bag." The house shows it on displays assigned to reminders. A button press dismisses it; otherwise it disappears at the end of its window, normally after thirty minutes. The press is not retained as evidence that the task was done.</p>
+
+  <p>These functions also work without an activity running. On a display with several jobs, reminders take precedence over activity instructions, which take precedence over pictures. When the higher-priority content ends, the content underneath becomes visible again.</p>
 </Base>

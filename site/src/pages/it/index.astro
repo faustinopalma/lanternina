@@ -18,7 +18,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    Un mini-PC in una casa pilota due schermi a inchiostro elettronico, una stampante e uno scanner.
+    Un mini-PC collega gli schermi a inchiostro elettronico, la stampante e lo scanner della casa. Il numero degli schermi è configurabile: due sono quelli del prototipo, non un requisito del sistema.
     L'hub chiede pagine, letture e continuazioni al container API, che chiama i modelli Foundry. La casa tiene l'orologio e avvia le richieste. Questa descrizione riguarda il codice locale verificato il 7 settembre 2026; hardware e versione distribuita non sono stati ricontrollati.
   </p>
 
@@ -30,8 +30,7 @@ import { REPO } from "../../i18n/ui";
       alt="Uno schermo a inchiostro elettronico da 7,5 pollici in una cornice stampata in 3D, con un'incisione."
     />
     <figcaption>
-      Uno dei due schermi. La cornice è stampata in 3D e l'unità è montata a mano; il quadro sopra è
-      stato generato un'ora prima a partire da un tema scritto dal genitore.
+      Uno schermo del prototipo, in una cornice stampata in 3D. Il quadro nasce da un tema scritto dal genitore.
     </figcaption>
   </figure>
 
@@ -70,6 +69,25 @@ import { REPO } from "../../i18n/ui";
       fino alla fine.
     </li>
   </ol>
+
+  <h2>Il pannello del genitore</h2>
+
+  <p>Il genitore apre <a href="https://app.lanternina.com">il pannello</a> dal browser. Le attività in attesa mostrano titolo, durata, fogli previsti e una descrizione di ciò che succederà. Può leggere il copione, approvare, rifiutare o lavorare ancora sull'idea. L'approvazione mette l'attività a disposizione della casa, senza avviarla subito.</p>
+
+  <figure>
+    <a href="/images/panel-activities-it.webp"><img src="/images/panel-activities-it.webp" width="1200" height="900" loading="lazy" alt="Il pannello delle attività: descrizione della proposta, copione consultabile e pulsanti Approva, Rifiuta e Lavoraci sopra." /></a>
+    <figcaption>La pagina delle decisioni nell'interfaccia attuale, con dati inventati nell'anteprima locale.</figcaption>
+  </figure>
+
+  <p>Nelle impostazioni sceglie giorni e ore, quante attività possono cominciare, interessi, argomenti da evitare e lingua. Può aggiungere una nota temporanea e stabilire i limiti entro cui il seguito può cambiare. Durante un'attività può anticiparne la fine o chiedere di avviare la chiusura. Il registro raccoglie ciò che il sistema ha generato e mostrato.</p>
+
+  <h3>I dispositivi della casa</h3>
+  <p>Il pannello elenca gli schermi registrati e le stampanti e gli scanner rilevati. Il genitore dà loro un nome, assegna i compiti e vede quali richiedono attenzione. Può aggiungere altri schermi: lo stesso compito può essere assegnato a più dispositivi e un dispositivo può avere più compiti. Questo non implica una capacità illimitata, che non è stata misurata.</p>
+
+  <figure>
+    <a href="/images/panel-devices-it.webp"><img src="/images/panel-devices-it.webp" width="1200" height="900" loading="lazy" alt="La pagina Dispositivi del pannello, con nomi modificabili, stato degli schermi e caselle per assegnare i compiti." /></a>
+    <figcaption>Un esempio di assegnazione dei dispositivi, con dati inventati. Il numero degli schermi nell'immagine non è un limite del sistema.</figcaption>
+  </figure>
 
   <h2>Ricostruire una ferrovia</h2>
 
@@ -120,10 +138,7 @@ import { REPO } from "../../i18n/ui";
 
   <h3>In casa</h3>
   <p>
-    Raspberry Pi Compute Module 5 su base board PoE, Raspberry Pi OS. Due schermi a inchiostro
-    elettronico da 7,5" su XIAO ESP32-S3, con firmware TRMNL modificato contro un server BYOS
-    nostro. Epson ET-2870 via IPP ed eSCL, senza driver. Cornici stampate in 3D, unità montate a
-    mano.
+    Il prototipo usa un Raspberry Pi Compute Module 5 su base board PoE con Raspberry Pi OS, schermi da 7,5" su XIAO ESP32-S3 e firmware TRMNL modificato, e una Epson ET-2870 via IPP ed eSCL. Dal pannello il genitore dà un nome ai dispositivi e assegna i compiti agli schermi. Uno schermo può seguire le attività, mostrare promemoria e ospitare quadri, oppure avere soltanto alcuni di questi compiti.
   </p>
 
   <h3>Nel cloud</h3>
@@ -169,4 +184,13 @@ import { REPO } from "../../i18n/ui";
       >Perché ogni confine esiste, e quanto costa</a
     > · <a href={`${REPO}/tree/main/docs/prompts`}>ogni prompt, intero, come lo riceve il modello</a>
   </p>
+  <h2>Quando non c'è un'attività</h2>
+
+  <h3>I quadri</h3>
+  <p>Gli schermi possono mostrare immagini generate dai temi scelti dal genitore. Il pannello permette di aggiungere temi, scegliere gli orari e la frequenza del cambio e sfogliare i quadri già prodotti. I quadri hanno un compito proprio: uno schermo dedicato può mostrarli anche mentre un altro segue un'attività.</p>
+
+  <h3>I promemoria</h3>
+  <p>Il genitore scrive un promemoria in una frase, con l'ora e gli eventuali giorni: per esempio, «Il martedì alle 17 prepara la borsa per nuoto». La casa lo mostra sugli schermi assegnati ai promemoria. Una pressione del pulsante lo toglie; altrimenti scompare alla fine della sua finestra, di norma dopo trenta minuti. La pressione non viene conservata come prova che la cosa sia stata fatta.</p>
+
+  <p>Queste funzioni lavorano anche senza un'attività in corso. Su uno schermo con più compiti, un promemoria ha precedenza sull'attività, che a sua volta ha precedenza sul quadro. Quando il contenuto prioritario termina, torna visibile quello sottostante.</p>
 </Base>
