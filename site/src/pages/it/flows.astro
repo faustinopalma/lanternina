@@ -11,10 +11,10 @@ import Base from "../../layouts/Base.astro";
   page="flows"
   eyebrow="Quattro diagrammi"
   title="Come funziona"
-  description="Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere inventato e l'essere finito, e cosa fa un foglio di carta nel suo giro."
+  description="Chi può chiedere a chi, cosa succede a un'attività fra l'essere inventata e l'essere finita, e cosa fa un foglio di carta nel suo giro."
 >
   <p class="lede">
-    Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere inventato e l'essere finito, e
+    Chi può chiedere a chi, cosa succede a un'attività fra l'essere inventata e l'essere finita, e
     cosa fa un foglio di carta nel suo giro.
   </p>
 
@@ -60,7 +60,7 @@ import Base from "../../layouts/Base.astro";
     irraggiungibile resta non letta finché non lo è di nuovo.
   </p>
 
-  <h2>2. La vita di un pomeriggio</h2>
+  <h2>2. La vita di un'attività</h2>
 
   <p>
     Un documento solo, scritto in un colpo prima che qualcuno ne abbia letto una parola. Contiene
@@ -71,12 +71,12 @@ import Base from "../../layouts/Base.astro";
   </p>
 
   <AfternoonLife
-    title="La vita di un pomeriggio"
-    desc="La casa chiede un'idea. Un modello scrive il pomeriggio intero in un colpo. Sei controlli e un secondo modello lo rileggono, e un rifiuto lo rimanda indietro a farsi riscrivere. Poi aspetta un genitore, che approva. La casa lo fa cominciare. Un momento gira, e quello che è tornato o avvia il momento dopo, o viene mandato su come ask e riceve un seguito, oppure chiude il pomeriggio sul suo oggetto."
-    caption="Le due frecce che tornano indietro sono dove sta il costo. Un rifiuto, a sinistra, compra un'invenzione intera da capo; un ask, a destra, è il pomeriggio che ammette di non essere finito di scrivere."
+    title="La vita di un'attività"
+    desc="La casa chiede un'idea. Un modello scrive l'attività intera in un colpo. Sei controlli e un secondo modello lo rileggono, e un rifiuto lo rimanda indietro a farsi riscrivere. Poi aspetta un genitore, che approva. La casa lo fa cominciare. Un momento gira, e quello che è tornato o avvia il momento dopo, o viene mandato su come ask e riceve un seguito, oppure chiude l'attività sul suo oggetto."
+    caption="Le due frecce che tornano indietro sono dove sta il costo. Un rifiuto, a sinistra, compra un'invenzione intera da capo; un ask, a destra, è l'attività che ammette di non essere finita di scrivere."
     idea={{ title: "La casa chiede un'idea", sub: ["ne tiene qualcuna pronta"] }}
     devise={{
-      title: "Un modello scrive il pomeriggio intero",
+      title: "Un modello scrive l'attività intera",
       sub: ["ogni momento in un colpo — 68–157 s"],
     }}
     checks={{
@@ -108,7 +108,7 @@ import Base from "../../layouts/Base.astro";
   <p>
     Due frecce vanno lette due volte. Un rifiuto costa un'invenzione intera da capo: per questo un
     controllo che legge una formulazione invece di un fatto costa caro, e uno di questi è stato il
-    rifiuto più frequente finché non è stato corretto. E un pomeriggio comincia solo se la sua durata
+    rifiuto più frequente finché non è stato corretto. E un'attività comincia solo se la sua durata
     intera ci sta ancora prima dell'ora fissata dal genitore — mezz'ora prima di quell'ora comincia
     la via d'uscita, comunque sia andata, e nessuno schermo dice che è stata accorciata.
   </p>
@@ -153,7 +153,7 @@ import Base from "../../layouts/Base.astro";
 
   <p>
     I tre diagrammi sopra dicono chi parla con chi. Questo dice quante volte e con che cosa. Un
-    pomeriggio costa sei chiamate a un modello, e ognuna porta un testo scritto a mano che può essere
+    attività costa sei chiamate a un modello, e ognuna porta un testo scritto a mano che può essere
     sbagliato per conto suo. Quando quello che arriva sul tavolo non va bene, la domanda utile non è
     quale modello ha risposto: è quale dei sei testi lo ha chiesto male.
   </p>
@@ -162,7 +162,7 @@ import Base from "../../layouts/Base.astro";
     <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
       <img
         src="/images/calls-it.svg"
-        alt="Il pannello chiede al modello quale mestiere usare, mandando sessanta nomi e nessuna scheda, e riceve una forma e una mossa. Poi manda il pomeriggio intero, circa 34 000 caratteri, e riceve un documento JSON. Se il formato non riesce a leggerlo, rimanda la risposta com'era insieme al rifiuto. Se un controllo lo rifiuta, rimanda il documento insieme ai reclami, una volta sola. Alla fine manda le parole del documento al filtro di sicurezza, che lo lascia passare o lo blocca."
+        alt="Il pannello chiede al modello quale mestiere usare, mandando sessanta nomi e nessuna scheda, e riceve una forma e una mossa. Poi manda l'attività intera, circa 34 000 caratteri, e riceve un documento JSON. Se il formato non riesce a leggerlo, rimanda la risposta com'era insieme al rifiuto. Se un controllo lo rifiuta, rimanda il documento insieme ai reclami, una volta sola. Alla fine manda le parole del documento al filtro di sicurezza, che lo lascia passare o lo blocca."
         width="814"
         height="721"
       />
@@ -174,7 +174,7 @@ import Base from "../../layouts/Base.astro";
   </figure>
 
   <p>
-    Le due chiamate facoltative sono le più istruttive. Un rifiuto che torna a ogni pomeriggio non è
+    Le due chiamate facoltative sono le più istruttive. Un rifiuto che torna a ogni attività non è
     un difetto del modello: è una frase del prompt che chiede una cosa impossibile, oppure che non
     dice una cosa necessaria. Un rifiuto di questo tipo ha tenuto ferma la ricerca per due giorni, e
     la regola che mancava era una riga sola — in che ordine si percorrono i momenti.

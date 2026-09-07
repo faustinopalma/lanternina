@@ -5,8 +5,8 @@ The parent chooses a shape in the panel and that is the starting point. This say
 
 The counts go in beside the sentence on purpose. A model given only the conclusion argues with it or over-applies it; a model given the six numbers it was drawn from can see how thin the evidence is when it is thin. Under three runs the sentence says to stay put whatever the numbers look like.
 
-The last clause of the "less" direction is the one that matters most. Every instinct a model has when told to ask for less is to shorten and to simplify the language, and both are wrong here: what is heavy is how many things have to be held at once, and an afternoon that says the same thing in shorter words is the same afternoon read faster.
+The last clause of the "less" direction is the one that matters most. Every instinct a model has when told to ask for less is to shorten and to simplify the language, and both are wrong here: what is heavy is how many things have to be held at once, and an activity that says the same thing in shorter words is the same activity read faster.
 -->
-How the last afternoons in this house went: $counts
+How the last activities in this house went: $counts
 $direction
-That is about how much an afternoon holds at once and nothing else. Never write a word about how anybody did, and never let this change the tone, the register or the subject.
+That is about how much an activity holds at once and nothing else. Never write a word about how anybody did, and never let this change the tone, the register or the subject.

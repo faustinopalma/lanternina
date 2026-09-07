@@ -36,13 +36,13 @@ The addresses are here rather than only in `build/fetch_evidence.py`, because `b
 
 ## 1. The defect we found by hand on 28 August has a name
 
-Three afternoons were written by hand and their pages drawn by the real model (`private/`, gitignored). One page did not work: an acquisition sheet whose premise — *go and find something in the house that no longer works* — was only ever said on the display. The paper assumed somebody had read the display and remembered it.
+Three activities were written by hand and their pages drawn by the real model (`private/`, gitignored). One page did not work: an acquisition sheet whose premise — *go and find something in the house that no longer works* — was only ever said on the display. The paper assumed somebody had read the display and remembered it.
 
 That is the **split-attention effect** (Chandler & Sweller 1992): when two sources of information are each incomprehensible alone and must be held together, working memory pays for the integration, and the payment comes out of the same pool the task needs. It is the textbook case of extraneous load — load that the design imposed and the design can remove.
 
 **W3C COGA says the same thing twice**, from the user's side. Objective 5, *help users focus*: after attention is lost, somebody needs to restore the context. Objective 6, *ensure processes do not rely on memory*. A display shows one thing for a few minutes; a sheet lies on a table for forty-five. Putting the premise on the display and the task on the paper is a process that relies on memory, in a system whose whole design is otherwise built not to.
 
-**What this changes.** The first sheet an afternoon hands over carries its own premise and its own first physical step. Later sheets may lean on the sheets already on the table, because those are still there. This is not a matter of taste and it is not about good writing — it is about which of the two objects survives the ten minutes after it is read.
+**What this changes.** The first sheet an activity hands over carries its own premise and its own first physical step. Later sheets may lean on the sheets already on the table, because those are still there. This is not a matter of taste and it is not about good writing — it is about which of the two objects survives the ten minutes after it is read.
 
 ## 2. Two sheets are better than one crowded sheet
 
@@ -52,17 +52,17 @@ The easy-to-read standards go further and are checkable: one idea per sentence, 
 
 Measured on the eight pages drawn on 28 August: ink covered 1.79 % to 4.57 % of the sheet, mean 3.1 %. The two heaviest were the two that asked for four things; the two lightest asked for one. The page judged best asked for nothing at all — it was a notice to be read standing up, and the sheet to be filled in came after it.
 
-**What this changes.** An afternoon may print more than one sheet, and where the alternative is one crowded page it should. How many is a setting the parent holds — two by default, one to three — and it is a ceiling rather than a target: `shared/experience_checks.py` refuses a document that goes over and asks nothing of one that stays under, because a check that wanted the number met would be a check that produced padding. "Not an encyclopedia every time" is the other half of the same sentence, and it is the half the ceiling is for.
+**What this changes.** An activity may print more than one sheet, and where the alternative is one crowded page it should. How many is a setting the parent holds — two by default, one to three — and it is a ceiling rather than a target: `shared/experience_checks.py` refuses a document that goes over and asks nothing of one that stays under, because a check that wanted the number met would be a check that produced padding. "Not an encyclopedia every time" is the other half of the same sentence, and it is the half the ceiling is for.
 
-**What the number counts, corrected 28 August 2026.** It is what may be on the table **at one time**, not what the afternoon spends in total. The evidence above is about a crowded page and a crowded table — how much somebody is looking at at once — and it says nothing about a three-hour afternoon that hands something over, takes it back on the glass, and hands over the next thing. That afternoon is four sheets and four uncrowded tables, and the first reading of this section refused it. So the count resets at every `collect`: `shared/experience.sheets_at_once`. The whole afternoon keeps no number of its own, because it already has one — a `collect` must follow a `hand_over` and there are at most twelve moments, so a house allowed two at a time cannot reach nine however hard it tries.
+**What the number counts, corrected 28 August 2026.** It is what may be on the table **at one time**, not what the activity spends in total. The evidence above is about a crowded page and a crowded table — how much somebody is looking at at once — and it says nothing about a three-hour activity that hands something over, takes it back on the glass, and hands over the next thing. That activity is four sheets and four uncrowded tables, and the first reading of this section refused it. So the count resets at every `collect`: `shared/experience.sheets_at_once`. The whole activity keeps no number of its own, because it already has one — a `collect` must follow a `hand_over` and there are at most twelve moments, so a house allowed two at a time cannot reach nine however hard it tries.
 
 ## 3. A question with one right answer is allowed. A wrong answer with a consequence is not
 
 Kirschner, Sweller & Clark (2006) argue that minimally guided instruction — discover it yourself, work it out — is the format that fails hardest for people with the least prior knowledge, because it loads working memory with search instead of with the thing being learnt. The remedy they give is the **worked example**: show one done, then ask for the next.
 
-This cuts against a reading of Lanternina's own rules that nobody wrote but everybody could reach: that because *nothing can be failed*, nothing may have an answer. That reading produces afternoons where every question is open, every answer is accepted, and nothing is ever actually asked. It is the failure `ideas/08 §15` describes from the other direction.
+This cuts against a reading of Lanternina's own rules that nobody wrote but everybody could reach: that because *nothing can be failed*, nothing may have an answer. That reading produces activities where every question is open, every answer is accepted, and nothing is ever actually asked. It is the failure `ideas/08 §15` describes from the other direction.
 
-**What this changes.** *Nothing can be failed* is about **consequence**, not about the existence of a right answer. An afternoon may pose a question that has one — a thing to work out, a code to break, a shape that fits — provided that getting it wrong costs nothing, that the ending stays reachable from wherever it got to, and that the way through is written down and given rather than left to be discovered. The seventh property already required this and was reading as though it did not.
+**What this changes.** *Nothing can be failed* is about **consequence**, not about the existence of a right answer. An activity may pose a question that has one — a thing to work out, a code to break, a shape that fits — provided that getting it wrong costs nothing, that the ending stays reachable from wherever it got to, and that the way through is written down and given rather than left to be discovered. The seventh property already required this and was reading as though it did not.
 
 ## 4. Why there are no streaks, stated with its limit
 
@@ -76,11 +76,11 @@ Lepper, Greene & Nisbett (1973) gave children who already enjoyed drawing an exp
 
 COGA is direct about it: *"People with social or communication disabilities may need clear literal language and may not understand metaphors or non-literal text."* Amy, its autistic persona, is written around exactly this: images that do not directly represent something make her uneasy; *"the wheels of justice turn slowly"* is a sentence she would rather not have been written. The easy-to-read standards say the same in one line: do not use metaphors.
 
-The afternoons written so far lean the other way. *La stanza che qualcuno ha descritto male* is a figure held for ninety minutes; *il museo delle cose che non hanno funzionato* is an inversion, and the inversion is the game.
+The activities written so far lean the other way. *La stanza che qualcuno ha descritto male* is a figure held for ninety minutes; *il museo delle cose che non hanno funzionato* is an inversion, and the inversion is the game.
 
 **Both are right and they are about different households.** This is not a rule to be applied to everybody, because applying it to everybody would remove from every adolescent something some of them enjoy — the same mistake in the opposite direction. It is a setting a parent already has: `panel/preferences.py` carries `difficulty` and a standing note. What is missing is a way to say *literal, please*, and that is a legitimate thing to add.
 
-**What this changes.** A new content setting, phrased about the material and never about the person: whether an afternoon may be built on a figure, or should say what it means. Default is the current behaviour; the parent moves it. It reaches the deviser prompt the way `shape` and `distance` already do.
+**What this changes.** A new content setting, phrased about the material and never about the person: whether an activity may be built on a figure, or should say what it means. Default is the current behaviour; the parent moves it. It reaches the deviser prompt the way `shape` and `distance` already do.
 
 ## 6. Things that are simply checkable, and are not checked
 
@@ -90,7 +90,7 @@ From the easy-to-read standards, and each of these is a line in a checker rather
 - **Never split a word across a line break.** Nothing checks this.
 - **Sans-serif type.** `agents/page_maker.kind-label.md` produced a serif, printed-looking page on 28 August, while `how-it-is-drawn.md` two files away asks for hand-drawn. That is now a documented defect rather than a matter of taste.
 - **Numbers as digits, not words** — *3*, not *tre* — and avoid percentages and large numbers entirely. Jonathan, COGA's persona with dyscalculia, needs *"words rather than numbers"*; the easy-to-read standards want digits where a number is unavoidable. The two are not in conflict: prefer no number, and where one is needed write the digit.
-- **Say what a task needs before it starts.** COGA objective 7, task management: *"I need to know how to start a task, and what is involved: the steps, a time estimate, any materials I may need."* The format has no field for the materials an afternoon needs, and a moment that asks for scissors in a house with no scissors is a moment that fails silently.
+- **Say what a task needs before it starts.** COGA objective 7, task management: *"I need to know how to start a task, and what is involved: the steps, a time estimate, any materials I may need."* The format has no field for the materials an activity needs, and a moment that asks for scissors in a house with no scissors is a moment that fails silently.
 
 ## 7. One way to answer is one way too few
 
@@ -103,9 +103,9 @@ This is a framework's suggestion, not a finding, and it is written here as one.
 ## What the evidence does not say
 
 - **Nothing here is about adolescents specifically.** COGA's personas are adults; the cognitive-load work is mostly on students and school-age children; the overjustification work spans both and reports the effect differs by age. Reading any of it as though it were about a fifteen-year-old at a kitchen table is an extrapolation, and it is stated here so that it does not quietly become a citation.
-- **Nothing here validates a single afternoon.** These are constraints on form. Whether *il turno delle 15:40* is worth an hour of somebody's Saturday is a question no literature answers, and the only way to find out is the one already in use: run it, and look at the paper.
+- **Nothing here validates a single activity.** These are constraints on form. Whether *il turno delle 15:40* is worth an hour of somebody's Saturday is a question no literature answers, and the only way to find out is the one already in use: run it, and look at the paper.
 - **Nothing here supports grading the person to fit the material.** The expertise-reversal effect (Kalyuga et al. 2003) says support that helps somebody with little prior knowledge harms somebody with a lot — which is a real argument for adapting, and would be a bad argument for storing an estimate of anybody. What it supports is what is already built: three written weights, four rungs of help, and a parent who moves the setting.
 
 ## Where this is meant to be used
 
-By whoever writes the prompts in `agents/`, and by whoever reviews an afternoon before it is offered. It is not a specification and nothing in it is enforced. Where a finding here has become a check, the check is in `shared/experience_checks.py` or `shared/page.py`. Everything else in this file is an argument, and arguments are for reading.
+By whoever writes the prompts in `agents/`, and by whoever reviews an activity before it is offered. It is not a specification and nothing in it is enforced. Where a finding here has become a check, the check is in `shared/experience_checks.py` or `shared/page.py`. Everything else in this file is an argument, and arguments are for reading.

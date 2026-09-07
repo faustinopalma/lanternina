@@ -1,5 +1,5 @@
 <!--
-The one prompt in the repository that asks a model to place somebody's work on a scale. What keeps it honest is what it is not given: no profile, no history, no other afternoon, no household, no name. It sees one page against the blank it was printed from and what that page asked for, and it answers about that page and nothing else.
+The one prompt in the repository that asks a model to place somebody's work on a scale. What keeps it honest is what it is not given: no profile, no history, no other activity, no household, no name. It sees one page against the blank it was printed from and what that page asked for, and it answers about that page and nothing else.
 
 That is the "without bias" the parent asked for on 4 September 2026, and it is a property of the call rather than a sentence in the text. A model handed the current state and asked whether it still holds will confirm it, because agreeing with the context is what a model does; a model that has never seen the state cannot.
 

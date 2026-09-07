@@ -63,7 +63,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p class="note">
-    A trap worth recording, because it costs an afternoon: an app role assignment can silently land
+    A trap worth recording, because it costs an activity: an app role assignment can silently land
     on <b>Default Access</b>, whose <code>appRoleId</code> is all zeros. The token is then perfectly
     valid and simply carries no <code>roles</code> claim, so the refusal looks like a credential
     problem rather than an assignment problem. Check
@@ -91,7 +91,7 @@ import { REPO } from "../../i18n/ui";
   <p>
     The hub in the room cannot sign in to Azure and does not try. It presents a device key on an
     <code>X-Device-Key</code> header over TLS, and everything that needs a model — reading a page,
-    interpreting a reminder, continuing an afternoon — is a request to the API, which holds the
+    interpreting a reminder, continuing an activity — is a request to the API, which holds the
     credential. Default closed: with no device key configured, those routes answer 503 rather than
     allowing anything.
   </p>

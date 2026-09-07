@@ -40,8 +40,8 @@ export const NAV_NOTE: Record<PageKey, Dict> = {
 
 export const UI = {
   tagline: {
-    en: "An afternoon on paper, invented for one person and approved by a parent",
-    it: "Un pomeriggio su carta, inventato per una persona e approvato da un genitore",
+    en: "An activity on paper, invented for one person and approved by a parent",
+    it: "Un'attività su carta, inventata per una persona e approvata da un genitore",
   },
   skip: { en: "Skip to content", it: "Salta al contenuto" },
   menu: { en: "Menu", it: "Menu" },

@@ -63,7 +63,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p class="note">
-    Una trappola che vale la pena scrivere, perché costa un pomeriggio: l'assegnazione di un app role
+    Una trappola che vale la pena scrivere, perché costa un'attività: l'assegnazione di un app role
     può finire in silenzio su <b>Default Access</b>, il cui <code>appRoleId</code> è tutto zeri. Il
     token è perfettamente valido e semplicemente non porta il claim <code>roles</code>, quindi il
     rifiuto sembra un problema di credenziali invece che di assegnazione. Si controlla su
@@ -91,7 +91,7 @@ import { REPO } from "../../i18n/ui";
   <p>
     L'hub nella stanza non può autenticarsi ad Azure e non ci prova. Presenta una device key in
     un'intestazione <code>X-Device-Key</code> su TLS, e tutto quello che ha bisogno di un modello —
-    leggere una pagina, interpretare un promemoria, continuare un pomeriggio — è una richiesta
+    leggere una pagina, interpretare un promemoria, continuare un'attività — è una richiesta
     all'API, che la credenziale ce l'ha. Chiuso per difetto: senza device key configurata quelle
     rotte rispondono 503 invece di lasciar passare qualcosa.
   </p>

@@ -1,5 +1,5 @@
 <!--
-The household material, appended after the standing instruction. Everything here is a fact about this afternoon, not a rule: the labels exist so a model can tell one from another.
+The household material, appended after the standing instruction. Everything here is a fact about this activity, not a rule: the labels exist so a model can tell one from another.
 
 "What was on it" is the reader's three words per cell — where the mark sits and whether there is ink — and never a judgement about the person who made it.
 

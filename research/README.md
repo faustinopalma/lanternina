@@ -1,6 +1,6 @@
-# A loop that plays afternoons against nobody
+# A loop that plays activities against nobody
 
-This is a research apparatus, not part of the product. It devises afternoons with **the same prompts the house uses**, plays them against a model standing in for an adolescent, and scores what happened on eight axes. When a prompt changes, a run says what moved.
+This is a research apparatus, not part of the product. It devises activities with **the same prompts the house uses**, plays them against a model standing in for an adolescent, and scores what happened on eight axes. When a prompt changes, a run says what moved.
 
 Everything here is public and nothing in it was written by a person in a household. The synthetic households in [households.py](households.py) are invented and obviously so; the transcripts are two models talking to each other. That is the whole reason the outputs can be committed — see [What is published](#what-is-published).
 
@@ -8,7 +8,7 @@ Everything here is public and nothing in it was written by a person in a househo
 research/
   households.py     six invented households, and what they have been through in this run
   run.py            the driver: devise → play → score → write it down
-  play.py           walks an afternoon's moments with nobody in the room
+  play.py           walks an activity's moments with nobody in the room
   calls.py          the two model calls this loop makes that the house never makes
   calls.adolescent.md   what the stand-in is told
   calls.appraisal.md    the axes, and the demand for quoted evidence
@@ -16,7 +16,7 @@ research/
   runs/<stamp>/     afternoons.json · summary.json · README.md
 ```
 
-## How one afternoon goes through
+## How one activity goes through
 
 ```mermaid
 flowchart TD
@@ -31,17 +31,17 @@ flowchart TD
   P -->|"how it went"| H
 ```
 
-The devising call is not a copy. `run.py` imports `panel.devising.devise_experience`, so a run exercises the prompt blocks in `agents/`, the format in `shared/experience.py`, the seven checks in `shared/experience_checks.py` and the Content Safety gate — and an afternoon the checks refuse is written down as a refusal rather than being retried until it passes. **A change to a prompt shows up here without anything in this folder being edited.** That is the design.
+The devising call is not a copy. `run.py` imports `panel.devising.devise_experience`, so a run exercises the prompt blocks in `agents/`, the format in `shared/experience.py`, the seven checks in `shared/experience_checks.py` and the Content Safety gate — and an activity the checks refuse is written down as a refusal rather than being retried until it passes. **A change to a prompt shows up here without anything in this folder being edited.** That is the design.
 
-Within one run a household accumulates a memory, so the second afternoon is devised knowing how the first went, through `panel/what_happened.py`. A single afternoon cannot exercise that at all, which is why the driver takes `--iterations`.
+Within one run a household accumulates a memory, so the second activity is devised knowing how the first went, through `panel/what_happened.py`. A single activity cannot exercise that at all, which is why the driver takes `--iterations`.
 
 ## The two model calls that are ours
 
-They live here and not in `agents/` on purpose. One stands in for a person and one grades work; putting either inside the product would put a judge of an adolescent's afternoon inside a system whose first rule is that it does not judge anybody.
+They live here and not in `agents/` on purpose. One stands in for a person and one grades work; putting either inside the product would put a judge of an adolescent's activity inside a system whose first rule is that it does not judge anybody.
 
 **The stand-in** ([calls.adolescent.md](calls.adolescent.md)) is handed the screens so far and the sheet as the words that would be printed on it, plus how the day is going, and answers with what a scanner would see: `marks` or `blank`, what is on the paper described as ink, and whether this is where they stopped. It is told to work only from the sheet — a page that has to be guessed at is the thing being measured.
 
-**The judge** ([calls.appraisal.md](calls.appraisal.md)) reads the transcript and scores the eight axes, **and every axis needs a line quoted word for word from the afternoon**. A score with nothing quoted is useless for tuning a prompt: what a prompt can be changed against is a line and a sentence saying what is wrong with it.
+**The judge** ([calls.appraisal.md](calls.appraisal.md)) reads the transcript and scores the eight axes, **and every axis needs a line quoted word for word from the activity**. A score with nothing quoted is useless for tuning a prompt: what a prompt can be changed against is a line and a sentence saying what is wrong with it.
 
 ## The eight axes
 
@@ -49,7 +49,7 @@ Five come from [docs/EVIDENCE.md](../docs/EVIDENCE.md), which is the reading beh
 
 | axis | what it catches | where it comes from |
 | --- | --- | --- |
-| `canBeStarted` | announcing what the afternoon is called instead of putting a situation in front of somebody | `EVIDENCE §1` |
+| `canBeStarted` | announcing what the activity is called instead of putting a situation in front of somebody | `EVIDENCE §1` |
 | `sheetStandsAlone` | a sheet that only makes sense with a screen that has already gone | `EVIDENCE §1`, and the defect of 28 August |
 | `oneThingAtATime` | how much has to be held together at once — not the same as length | COGA objective 3, `EVIDENCE §2` |
 | `everyStepLeavesAMark` | a beat whose whole content is *notice which one lasts longer* | `ideas/09 §16` |
@@ -87,11 +87,11 @@ The third state is the one in the repository, on the argument that it is the fla
 
 Stated here rather than discovered in a pull request.
 
-- **A model standing in for an adolescent is a model writing what it thinks an adolescent would write.** That is a genre, not a person. A high score here means the afternoon survived a plausible reading; it does not mean anybody enjoyed it. The loop exists to make the first pass cheap, and it is meant to be replaced at the top by people.
-- **No page is drawn.** An image is about 25 s and four cents, and this loop measures whether an afternoon works rather than whether it is pretty, so a sheet reaches the stand-in as the words that would be lettered onto it. Whether the drawing works is measured separately, by hand.
-- **A branch that says `ask` ends the run.** The continuer is a second prompt with its own failures, and scoring a mixture of the two would produce a number that cannot say which one it is about. Those runs end `asked`, which is where *the apparatus* stopped and not where the afternoon did — the first run filed them as `way_out` and so reported that no afternoon ever reached its close, which was half true and read as worse than it was.
+- **A model standing in for an adolescent is a model writing what it thinks an adolescent would write.** That is a genre, not a person. A high score here means the activity survived a plausible reading; it does not mean anybody enjoyed it. The loop exists to make the first pass cheap, and it is meant to be replaced at the top by people.
+- **No page is drawn.** An image is about 25 s and four cents, and this loop measures whether an activity works rather than whether it is pretty, so a sheet reaches the stand-in as the words that would be lettered onto it. Whether the drawing works is measured separately, by hand.
+- **A branch that says `ask` ends the run.** The continuer is a second prompt with its own failures, and scoring a mixture of the two would produce a number that cannot say which one it is about. Those runs end `asked`, which is where *the apparatus* stopped and not where the activity did — the first run filed them as `way_out` and so reported that no activity ever reached its close, which was half true and read as worse than it was.
 - **The judge and the devisor are the same family of model.** A shared blind spot is invisible to this apparatus by construction.
-- **The axes are not independent.** An afternoon that cannot be started scores badly on most of them, so the mean across axes is a summary and not a measurement.
+- **The axes are not independent.** An activity that cannot be started scores badly on most of them, so the mean across axes is a summary and not a measurement.
 
 ## Reading one
 
@@ -99,9 +99,9 @@ Stated here rather than discovered in a pull request.
 python -m research.reader
 ```
 
-Writes `build/research.html` and opens it: every afternoon of every run, and for each one the three things a score cannot be acted on without — the **input** that decided it (the household's settings, what had already been offered there, the method drawn from `methods/`), the **output** it produced (the overview, the script, the devised document and the transcript of it being played), and the **score** with the judge's sentence beside each axis. One self-contained file, no server, gitignored because it rebuilds in under a second.
+Writes `build/research.html` and opens it: every activity of every run, and for each one the three things a score cannot be acted on without — the **input** that decided it (the household's settings, what had already been offered there, the method drawn from `methods/`), the **output** it produced (the overview, the script, the devised document and the transcript of it being played), and the **score** with the judge's sentence beside each axis. One self-contained file, no server, gitignored because it rebuilds in under a second.
 
-Two smaller things come out of `python -m research.scores`, which runs at the end of a run and can be re-run at any time: `scores.json`, the eight axes per run, and `afternoons.md`, one line per afternoon across every run. Both are committed and small, so a change in a score shows up in a diff.
+Two smaller things come out of `python -m research.scores`, which runs at the end of a run and can be re-run at any time: `scores.json`, the eight axes per run, and `afternoons.md`, one line per activity across every run. Both are committed and small, so a change in a score shows up in a diff.
 
 ⚠️ This used to be a page in the parent's panel, and it was in the wrong product: axis means are a developer's material, and a parent has no decision that changes because one of them moved. It was removed on 4 September 2026 — route, section, catalogue strings and the one file the image carried for it.
 
@@ -112,25 +112,25 @@ Two smaller things come out of `python -m research.scores`, which runs at the en
 python -m research.run --iterations 4 --label after-the-sheets-rule
 ```
 
-`--households` takes a name to run one alone. `--seed` fixes which mood and which weight each afternoon is drawn with, so two runs of the same prompts differ only by the model.
+`--households` takes a name to run one alone. `--seed` fixes which mood and which weight each activity is drawn with, so two runs of the same prompts differ only by the model.
 
-## The short loop: one afternoon with the prompt open beside it
+## The short loop: one activity with the prompt open beside it
 
-A run is the measurement and takes an hour. [officina.ipynb](officina.ipynb) is the other half — one afternoon at a time, so a sentence can be changed and its effect looked at before an hour is spent finding out whether it moved a number. `pip install -e ".[bench]"`, then pick the project's own interpreter as the kernel.
+A run is the measurement and takes an hour. [officina.ipynb](officina.ipynb) is the other half — one activity at a time, so a sentence can be changed and its effect looked at before an hour is spent finding out whether it moved a number. `pip install -e ".[bench]"`, then pick the project's own interpreter as the kernel.
 
-It walks the same path the panel does, in the steps it actually has: which method the model chose out of `methods/`, the whole assembled prompt before it is paid for, the call with the repair log on, the document read as somebody in the room meets it, the checks, the afternoon played against the stand-in, and the eight axes on that one afternoon. Measured 6 September 2026: the notebook end to end in 106–207 s, of which 64–164 s is the devise call.
+It walks the same path the panel does, in the steps it actually has: which method the model chose out of `methods/`, the whole assembled prompt before it is paid for, the call with the repair log on, the document read as somebody in the room meets it, the checks, the activity played against the stand-in, and the eight axes on that one activity. Measured 6 September 2026: the notebook end to end in 106–207 s, of which 64–164 s is the devise call.
 
 **No prompt is copied into it.** The blocks stay in the `.md` files beside the modules that send them; [bench.py](bench.py) only makes the running process read them again, through `shared.prompts.forget()` and a reload in the order the instructions are assembled in. So there is nothing to transcribe afterwards: the file the workbench read is the file the container sends, and finishing means committing it, running `python -m tools.prompts --write`, and measuring with a run.
 
-**One afternoon is n=1, and this repository has already been fooled by that once.** On 3 September a set of changes that read as improvements moved all eight axes down, from 3.49 to 2.93. The notebook is for deciding what to try; the run is what answers whether it worked.
+**One activity is n=1, and this repository has already been fooled by that once.** On 3 September a set of changes that read as improvements moved all eight axes down, from 3.49 to 2.93. The notebook is for deciding what to try; the run is what answers whether it worked.
 
 
-About **145 s and one and a half cents** per afternoon, measured 29 August 2026: one devising call, one call per sheet collected, one appraisal. Six households by four iterations is roughly an hour.
+About **145 s and one and a half cents** per activity, measured 29 August 2026: one devising call, one call per sheet collected, one appraisal. Six households by four iterations is roughly an hour.
 
 ## What is published
 
-`runs/` is committed. Each directory holds `afternoons.json` — everything, including full transcripts, the input each afternoon was devised from and the document that came back — `summary.json`, and a `README.md` that is the run as a page.
+`runs/` is committed. Each directory holds `afternoons.json` — everything, including full transcripts, the input each activity was devised from and the document that came back — `summary.json`, and a `README.md` that is the run as a page.
 
-Nothing in it came from a person in a household: the settings are invented, the afternoons are generated, and both sides of every transcript are a model. Committing it is what makes two runs comparable with `git diff` and what lets somebody argue with a score by reading the quote under it.
+Nothing in it came from a person in a household: the settings are invented, the activities are generated, and both sides of every transcript are a model. Committing it is what makes two runs comparable with `git diff` and what lets somebody argue with a score by reading the quote under it.
 
 Runs will be pruned. Keeping every one of them is keeping a lot of generated prose to say something a handful of them already say.

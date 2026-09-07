@@ -33,7 +33,7 @@ The displays are dumb on purpose. They receive a finished 1-bit bitmap and rende
 
 ### The frames are 3D printed, and everything is assembled by hand
 
-Two different printers appear in this page and it is worth separating them once. One is an inkjet, and it produces the paper an afternoon runs on; it is part of the system. The other is a filament 3D printer, and it made the objects the hardware sits in; it is not part of the system at all. Everything in this section is the second one.
+Two different printers appear in this page and it is worth separating them once. One is an inkjet, and it produces the paper an activity runs on; it is part of the system. The other is a filament 3D printer, and it made the objects the hardware sits in; it is not part of the system at all. Everything in this section is the second one.
 
 Every enclosure in the house is 3D printed here — the frames that hold a panel, its board and its battery, and the stand under the one on the table. There are two, and the difference is only how they attach: the black one has a foot and sits on a surface, the white one has a hook that engages the slots of a pegboard.
 
@@ -80,13 +80,13 @@ The models all run in Microsoft Foundry, in the EU region. No model runs on the 
 
 ---
 
-## 3. An afternoon, from approval to the last page
+## 3. An activity, from approval to the last page
 
-An afternoon is one document, written in one pass by a model, before anybody has read a word of it. It holds every moment, every version of every moment, the ladder of help under each, and the way out. Nothing is added while it runs.
+An activity is one document, written in one pass by a model, before anybody has read a word of it. It holds every moment, every version of every moment, the ladder of help under each, and the way out. Nothing is added while it runs.
 
 ```mermaid
 flowchart TD
-    A["The house asks for an idea<br/>(it keeps a few ready)"] --> B["A model writes the whole afternoon"]
+    A["The house asks for an idea<br/>(it keeps a few ready)"] --> B["A model writes the whole activity"]
     B --> C{"Six checks<br/>and a second model rereads it"}
     C -- refused --> B
     C -- passes --> D["It waits for the parent"]
@@ -108,7 +108,7 @@ flowchart TD
 
 *Screenshot of the panel in preview mode. The content is invented by the fixture, not by a household.*
 
-The parent sees the whole activity and decides once. Approving does not print anything or wake anything: it writes a row, and the house takes it on its next run. There is no button here that starts an afternoon, because the house is the only thing that knows whether now is a sensible moment.
+The parent sees the whole activity and decides once. Approving does not print anything or wake anything: it writes a row, and the house takes it on its next run. There is no button here that starts an activity, because the house is the only thing that knows whether now is a sensible moment.
 
 ### 3.2 The display says something is waiting
 
@@ -126,7 +126,7 @@ One thing at a time, and nothing to scroll. The display does not refresh unless 
 
 The whole sheet is one image, drawn in one pass. There is no layout engine: no declared grid, no corner markers, no QR code, nothing printed on the paper that exists for a machine to find. The design work is the prompt.
 
-The words are not invented by the image model. Every string on the page was written by the model that devised the afternoon, passed the safety gate, and is then quoted into the drawing prompt with an instruction to letter exactly those characters. That is what makes the accented Italian come out right.
+The words are not invented by the image model. Every string on the page was written by the model that devised the activity, passed the safety gate, and is then quoted into the drawing prompt with an instruction to letter exactly those characters. That is what makes the accented Italian come out right.
 
 It is not a guarantee. The next image is the counter-example.
 
@@ -142,13 +142,13 @@ Two more figures, measured on this deployment: a page takes 19–33 s to draw, a
 | --- | --- |
 | ![blank](images/paper/label-blank.png) | ![written](images/paper/label-written.png) |
 
-*Left: what the printer produced. Right: the same sheet filled in. The right-hand image is the simulated hand — `tools/handwriting.py` asks an image model to fill the blank in, so that a whole afternoon can be exercised with no person in it. A real afternoon's sheet is never committed to this repository.*
+*Left: what the printer produced. Right: the same sheet filled in. The right-hand image is the simulated hand — `tools/handwriting.py` asks an image model to fill the blank in, so that a whole activity can be exercised with no person in it. A real activity's sheet is never committed to this repository.*
 
 Reading is done by handing a model both images and asking what is different. That is the whole mechanism. It takes 4.4–5.5 s, measured.
 
 The reader's vocabulary is deliberately poor: a page came back with **marks** or **blank**, and nothing else. Not a count, not a fraction, not "half of them" — because a count of somebody's marks is one step away from a score. Which particular boxes carry a mark is a richer question, and it is only ever carried upward inside an `ask`, to write the next moments with.
 
-The reading is not kept. It lasts as long as the afternoon needs it and is then gone: `WhatCameBack` refuses to be pickled, copied or cached. The only account of how an afternoon went is the paper, and the paper stays on the table.
+The reading is not kept. It lasts as long as the activity needs it and is then gone: `WhatCameBack` refuses to be pickled, copied or cached. The only account of how an activity went is the paper, and the paper stays on the table.
 
 ### 3.5 It ends
 
@@ -156,7 +156,7 @@ The reading is not kept. It lasts as long as the afternoon needs it and is then 
 
 *Rendered by the hub, as sent to the display.*
 
-Thirty minutes before the hour the parent agreed to, the way out begins, whatever the afternoon has reached. The ending it arrives at is the same ending, and no display ever says that it was shortened. That is possible because every moment was written in three lengths at the time the document was written — shortening is picking a column somebody already wrote, not editing somebody's words at runtime.
+Thirty minutes before the hour the parent agreed to, the way out begins, whatever the activity has reached. The ending it arrives at is the same ending, and no display ever says that it was shortened. That is possible because every moment was written in three lengths at the time the document was written — shortening is picking a column somebody already wrote, not editing somebody's words at runtime.
 
 ### 3.6 The shape of one moment
 
@@ -174,7 +174,7 @@ flowchart LR
 
 Every moment carries all three. That is what lets the same moment be shortened when the clock is tight, put on a display that holds forty words, or turned into a page — and reach the same ending whichever way it went.
 
-Measured across the four batches recorded in [experiments/](../experiments/README.md), 22 afternoons: devising one takes **68–157 s**. In the most recent batch of six, on 4 September 2026, the median was **139.8 s** and six of six passed the checks.
+Measured across the four batches recorded in [experiments/](../experiments/README.md), 22 activities: devising one takes **68–157 s**. In the most recent batch of six, on 4 September 2026, the median was **139.8 s** and six of six passed the checks.
 
 ---
 
@@ -201,7 +201,7 @@ Two of the four are being built right now, as objects, and neither has a line of
 
 ## 5. Pictures, when nothing is running
 
-Most of the time no afternoon is running, and the display is a picture that changes.
+Most of the time no activity is running, and the display is a picture that changes.
 
 ![The display in its place, showing one picture](images/photos/display-in-the-room.jpg)
 
@@ -285,7 +285,7 @@ Every figure here was measured on this deployment, not estimated. Dates matter b
 
 | | Measured | When |
 | --- | --- | --- |
-| Devising an afternoon | 68–157 s over 22 afternoons; median 139.8 s in the last batch of 6 | 3–4 Sep 2026 |
+| Devising an activity | 68–157 s over 22 activities; median 139.8 s in the last batch of 6 | 3–4 Sep 2026 |
 | Rereading it with a second model | 14.4–22.8 s | 3 Sep 2026 |
 | Drawing one page | 19–33 s | 24 Aug 2026 |
 | Ink on a drawn page | 0.5–2.7 % of the sheet | 24 Aug 2026 |

@@ -6,15 +6,15 @@ One line can be written now, because it was decided on 4 September 2026 and it r
 
 ## A profile is kept. It is never shown.
 
-The old rule said there was nothing about a person anywhere, and that this was a fact of the types rather than a caution. It has been withdrawn. It was utopian and it prevented the work being done well: an afternoon written without any idea of the level it should be pitched at is an afternoon pitched at nobody, and every mechanism the system had for calibrating — a parent's one-off setting, a list of subjects already covered — is a proxy for the thing it was refusing to hold.
+The old rule said there was nothing about a person anywhere, and that this was a fact of the types rather than a caution. It has been withdrawn. It was utopian and it prevented the work being done well: an activity written without any idea of the level it should be pitched at is an activity pitched at nobody, and every mechanism the system had for calibrating — a parent's one-off setting, a list of subjects already covered — is a proxy for the thing it was refusing to hold.
 
-So a profile is kept and updated at system level, on axes still to be defined, and it is what lets a task and an afternoon be corrected towards the person actually doing them.
+So a profile is kept and updated at system level, on axes still to be defined, and it is what lets a task and an activity be corrected towards the person actually doing them.
 
-Built the same day. Three axes — how many things an afternoon holds at once, how much a sheet asks somebody to put on it, how long it runs — in [shared/profile.py](../shared/profile.py), read off a series of pages placed one at a time by [agents/page_judge.py](../agents/page_judge.py), which is shown one page and nothing about the house. The reasoning, the measurements and what it cost are in [ideas/12](../ideas/12-the-profile.md).
+Built the same day. Three axes — how many things an activity holds at once, how much a sheet asks somebody to put on it, how long it runs — in [shared/profile.py](../shared/profile.py), read off a series of pages placed one at a time by [agents/page_judge.py](../agents/page_judge.py), which is shown one page and nothing about the house. The reasoning, the measurements and what it cost are in [ideas/12](../ideas/12-the-profile.md).
 
 **Three things did not move, and they are the whole of what is refused now.**
 
-**It reaches the models and nothing else.** The profile is written into the prompt of the agent that devises an afternoon and the agent that runs one, because that is what it is for. It reaches no display, no printed sheet, and no page in the parent's panel. Nothing about how somebody is doing is rendered anywhere a person can read it.
+**It reaches the models and nothing else.** The profile is written into the prompt of the agent that devises an activity and the agent that runs one, because that is what it is for. It reaches no display, no printed sheet, and no page in the parent's panel. Nothing about how somebody is doing is rendered anywhere a person can read it.
 
 **A review gate is what enforces that, not a hope.** What comes back from a model passes a gate whose job is that the profile does not surface explicitly — no sentence saying this was made easier, no remark on how somebody did, no figure about them. The prompt asking for it is not the protection; the gate is.
 

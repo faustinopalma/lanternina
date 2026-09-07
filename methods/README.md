@@ -6,9 +6,9 @@ It is the operational half of [enciclopedia/](../enciclopedia/README.md), which 
 
 ## Why it exists
 
-`agents/experience_deviser.py` devises an afternoon from nothing. Nothing in its prompt said what forms exist, so it reached for the ten anybody reaches for. The encyclopedia's own statement of purpose is the statement of purpose here too: *chi deve proporre qualcosa da fare ne conosce una decina e usa sempre quelle.* A record in the prompt is how one of the other hundred and seventy gets a turn.
+`agents/experience_deviser.py` devises an activity from nothing. Nothing in its prompt said what forms exist, so it reached for the ten anybody reaches for. The encyclopedia's own statement of purpose is the statement of purpose here too: *chi deve proporre qualcosa da fare ne conosce una decina e usa sempre quelle.* A record in the prompt is how one of the other hundred and seventy gets a turn.
 
-**How it is served, since 3 September 2026.** Not by pouring the corpus into the prompt, which the arithmetic forbids: a record's prompt-facing half averages 2 320 characters, so 180 of them are some 440 kB against a rendered prompt of 27 kB. The model is given a catalogue of ids and names — 12 kB, 2.8% of the corpus — and answers with the one form and the one move it wants; those two arrive in full in the call that writes the afternoon. `shared/methods.py` filters the catalogue to what the house can run before the model ever sees it, which is what makes *a house is never offered a form it cannot run* a property rather than a hope, and draws at random if the choosing call fails, because a step that exists to improve an afternoon may never be the step that costs one.
+**How it is served, since 3 September 2026.** Not by pouring the corpus into the prompt, which the arithmetic forbids: a record's prompt-facing half averages 2 320 characters, so 180 of them are some 440 kB against a rendered prompt of 27 kB. The model is given a catalogue of ids and names — 12 kB, 2.8% of the corpus — and answers with the one form and the one move it wants; those two arrive in full in the call that writes the activity. `shared/methods.py` filters the catalogue to what the house can run before the model ever sees it, which is what makes *a house is never offered a form it cannot run* a property rather than a hope, and draws at random if the choosing call fails, because a step that exists to improve an activity may never be the step that costs one.
 
 ## What is in it, measured
 
@@ -28,9 +28,9 @@ It is the operational half of [enciclopedia/](../enciclopedia/README.md), which 
 
 The collapse is real but smaller than expected: 103 of 180 records come from a single entry. The chapter that folded hardest is 12, classical Italian word puzzles, and it is also the one the pruning emptied most, because that is where the letter work lives.
 
-**72 entries have no record, and the reasons are not equal.** Chapter 3's ten leave whole and by kind: they are a taxonomy of what a request arrives on, not techniques, and their content is the schema of properties instead. Chapter 9 lost five to a rule rather than to a failing — a run of days, a variable-ratio reward, an inactivity notice, a progress bar and a campaign across twelve afternoons all work by making it hard to stop, which this system refuses. Chapter 11 lost one ending for the same reason. Entry 289 was discarded because it is documentation of a product wearing the vocabulary of a form; it had already survived one automated check that way.
+**72 entries have no record, and the reasons are not equal.** Chapter 3's ten leave whole and by kind: they are a taxonomy of what a request arrives on, not techniques, and their content is the schema of properties instead. Chapter 9 lost five to a rule rather than to a failing — a run of days, a variable-ratio reward, an inactivity notice, a progress bar and a campaign across twelve activities all work by making it hard to stop, which this system refuses. Chapter 11 lost one ending for the same reason. Entry 289 was discarded because it is documentation of a product wearing the vocabulary of a form; it had already survived one automated check that way.
 
-The rest is thinness rather than judgement, and should be said plainly: **chapter 4, how a request is packaged, has 17 of its 27 entries untaken, and chapter 7, formal constraints, has 13 of 18.** Those are the two chapters to write next, and chapter 4 is the one that matters most, because it is the catalogue of wrappers and the deviser's prompt already asks for an afternoon that begins in the middle of something.
+The rest is thinness rather than judgement, and should be said plainly: **chapter 4, how a request is packaged, has 17 of its 27 entries untaken, and chapter 7, formal constraints, has 13 of 18.** Those are the two chapters to write next, and chapter 4 is the one that matters most, because it is the catalogue of wrappers and the deviser's prompt already asks for an activity that begins in the middle of something.
 
 ## Two kinds
 
@@ -57,7 +57,7 @@ One JSON file per method, `<method_id>.json`.
 | `format_version` | `1` |
 | `method_id` | the file's name: lowercase, digits and hyphens, 3 to 48 characters |
 | `kind` | `form` or `move` |
-| `name` | at most 60 characters, a phrase saying what somebody does. This is the label two afternoons using this method would both be written into, which is what makes them comparable |
+| `name` | at most 60 characters, a phrase saying what somebody does. This is the label two activities using this method would both be written into, which is what makes them comparable |
 | `also` | the other names, including the Italian ones, so a person coming from the encyclopedia finds it |
 | `one_line` | what it is, in one sentence, at most 160 characters |
 | `from_entries` | the encyclopedia entries this came from, by number. Many allowed, none allowed when the record is new |
@@ -80,7 +80,7 @@ The contract above is version 1 as revised on 3 September 2026, after chapter 13
 
 **`verification` had no value for *the object settles it*.** Scissors counting whole paper rings, a compass closing on a heptagon, a soap film pulling into the shortest network: none of those is checked by the sheet, by a person, or by nothing. Written as `in_the_sheet` — the nearest of the three that existed — a record contradicted its own `breaks` field, which said in the same file that the sheet could not catch a wrong row. `in_the_object` is the fourth value, and the distinction it carries is one a builder needs: an object that cannot lie, against a sheet that can be filled in wrongly.
 
-**`moments` was removed.** It was meant to say how few moments of an afternoon a method needs. Sixteen records were written and all sixteen said `one`, because nothing in the research says how long anything takes. A field with one value carries no information, and each of those values was a guess written in the grammar of a declaration.
+**`moments` was removed.** It was meant to say how few moments of an activity a method needs. Sixteen records were written and all sixteen said `one`, because nothing in the research says how long anything takes. A field with one value carries no information, and each of those values was a guess written in the grammar of a declaration.
 
 **`needs_letters_inside_words` became `letters_inside_words`, with four values.** A cryptarithm is solved by doing a sum and never by reading the words — the entry says it can be solved without knowing the language. Composing one is a search inside words, and that is the half a model gets wrong. One boolean could not say which side the difficulty was on, so the flag was set to the wrong answer whichever way it went.
 

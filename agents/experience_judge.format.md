@@ -19,6 +19,6 @@ Answer with one JSON object and nothing else. No prose before it and none after.
     given_away  no_question  not_worth_having  can_be_failed
     no_way_in  a_beat_with_no_mark  something_not_in_a_house  does_not_end_on_the_object
 
-`where` names the place the way the document names it — `moments[3].way_out`, `moments[0].page.lines[2]` — so that somebody can go straight to it. Where a finding is about the whole afternoon, write `experience`.
+`where` names the place the way the document names it — `moments[3].way_out`, `moments[0].page.lines[2]` — so that somebody can go straight to it. Where a finding is about the whole activity, write `experience`.
 
 `findings` is an empty list when there is nothing to report, and that is a normal answer.
