@@ -595,6 +595,13 @@ figcaption {
   font-family: var(--sans);
 }
 
+/* A diagram drawn by a tool and committed as a file, framed like the hand-drawn ones and
+   held to the same rule: it scrolls rather than shrinking its own text. */
+.graph-frame img {
+  min-width: 34rem;
+  border-radius: 0;
+}
+
 .g-zone {
   fill: #f7f2e8;
   stroke: var(--rule);

@@ -2,13 +2,14 @@
 import AfternoonLife from "../../components/graph/AfternoonLife.astro";
 import PaperTrip from "../../components/graph/PaperTrip.astro";
 import RequestLoop from "../../components/graph/RequestLoop.astro";
+import { NOTEBOOK } from "../../i18n/ui";
 import Base from "../../layouts/Base.astro";
 ---
 
 <Base
   lang="it"
   page="flows"
-  eyebrow="Tre diagrammi"
+  eyebrow="Quattro diagrammi"
   title="Come funziona"
   description="Chi può chiedere a chi, cosa succede a un pomeriggio fra l'essere inventato e l'essere finito, e cosa fa un foglio di carta nel suo giro."
 >
@@ -146,5 +147,44 @@ import Base from "../../layouts/Base.astro";
     Misurato col dito su un pulsante vero: dalla pressione alla lettura sullo schermo, circa 35 s, di
     cui 26 s sono lo scanner. Il pavimento è lo scanner più al massimo un ciclo di risveglio dello
     schermo, e il firmware aggiunge 5–11 s a qualunque intervallo di aggiornamento gli si chieda.
+  </p>
+
+  <h2>4. Le chiamate al modello, in ordine</h2>
+
+  <p>
+    I tre diagrammi sopra dicono chi parla con chi. Questo dice quante volte e con che cosa. Un
+    pomeriggio costa sei chiamate a un modello, e ognuna porta un testo scritto a mano che può essere
+    sbagliato per conto suo. Quando quello che arriva sul tavolo non va bene, la domanda utile non è
+    quale modello ha risposto: è quale dei sei testi lo ha chiesto male.
+  </p>
+
+  <figure class="graph">
+    <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
+      <img
+        src="/images/calls-it.svg"
+        alt="Il pannello chiede al modello quale mestiere usare, mandando sessanta nomi e nessuna scheda, e riceve una forma e una mossa. Poi manda il pomeriggio intero, circa 34 000 caratteri, e riceve un documento JSON. Se il formato non riesce a leggerlo, rimanda la risposta com'era insieme al rifiuto. Se un controllo lo rifiuta, rimanda il documento insieme ai reclami, una volta sola. Alla fine manda le parole del documento al filtro di sicurezza, che lo lascia passare o lo blocca."
+        width="814"
+        height="721"
+      />
+    </div>
+    <figcaption id="calls-t">
+      I due riquadri facoltativi tengono quattro chiamate, e si pagano solo quando qualcosa ha
+      rifiutato la risposta. Le altre due chiamate, e il filtro, si pagano tutte le volte.
+    </figcaption>
+  </figure>
+
+  <p>
+    Le due chiamate facoltative sono le più istruttive. Un rifiuto che torna a ogni pomeriggio non è
+    un difetto del modello: è una frase del prompt che chiede una cosa impossibile, oppure che non
+    dice una cosa necessaria. Un rifiuto di questo tipo ha tenuto ferma la ricerca per due giorni, e
+    la regola che mancava era una riga sola — in che ordine si percorrono i momenti.
+  </p>
+
+  <p>
+    Un quaderno dentro il repository mostra il testo mandato a ogni chiamata e la risposta che ne è
+    tornata, per intero: <a href={NOTEBOOK}>research/officina.ipynb</a>, che GitHub apre già
+    eseguito. Registra le chiamate al router e non ai singoli agenti, quindi non gliene sfugge
+    nessuna, e scrive la conversazione intera in un file. Gli esiti dell'ultima corsa sono salvati
+    dentro il quaderno, quindi si legge senza eseguire niente e senza credenziali.
   </p>
 </Base>

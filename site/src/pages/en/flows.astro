@@ -2,13 +2,14 @@
 import AfternoonLife from "../../components/graph/AfternoonLife.astro";
 import PaperTrip from "../../components/graph/PaperTrip.astro";
 import RequestLoop from "../../components/graph/RequestLoop.astro";
+import { NOTEBOOK } from "../../i18n/ui";
 import Base from "../../layouts/Base.astro";
 ---
 
 <Base
   lang="en"
   page="flows"
-  eyebrow="Three diagrams"
+  eyebrow="Four diagrams"
   title="How it flows"
   description="Who is allowed to ask whom, what happens to an afternoon between being invented and being over, and what a sheet of paper does on its round trip."
 >
@@ -145,5 +146,44 @@ import Base from "../../layouts/Base.astro";
     Measured with a finger on a real button: press to reading on the display, about 35 s, of which
     26 s is the scanner. The floor is the scanner plus up to one wake cycle of the display, and the
     firmware adds 5–11 s to any refresh interval you ask for.
+  </p>
+
+  <h2>4. The calls to a model, in order</h2>
+
+  <p>
+    The three diagrams above say who talks to whom. This one says how many times and with what. One
+    afternoon costs six calls to a model, and each carries a text written by hand that can be wrong
+    on its own. When what arrives on the table is no good, the useful question is not which model
+    answered: it is which of the six texts asked badly.
+  </p>
+
+  <figure class="graph">
+    <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
+      <img
+        src="/images/calls-en.svg"
+        alt="The panel asks the model which method to build out of, sending sixty names and no records, and gets back a form and a move. It then sends the whole afternoon, about 34 000 characters, and gets back one JSON document. If the format cannot read it, the answer goes back up as it was together with the refusal. If a check refuses it, the document goes back up with the complaints, once and no more. Finally the document's own words go to the safety gate, which lets them through or blocks them."
+        width="833"
+        height="721"
+      />
+    </div>
+    <figcaption id="calls-t">
+      The two optional boxes hold four calls, and they are paid for only when something has refused
+      the answer. The other two calls, and the gate, are paid for every time.
+    </figcaption>
+  </figure>
+
+  <p>
+    The two optional calls are the instructive ones. A refusal that comes back every afternoon is not
+    a defect in the model: it is a sentence in the prompt asking for something impossible, or one
+    that fails to say something necessary. A refusal of that kind held the research loop up for two
+    days, and the missing rule was a single line — the order the moments are walked in.
+  </p>
+
+  <p>
+    A notebook in the repository shows the text sent on every call and the answer that came back,
+    whole: <a href={NOTEBOOK}>research/officina.ipynb</a>, which GitHub opens already run. It records
+    the calls at the router rather than at each agent, so none escapes it, and it writes the whole
+    conversation to a file. The last run's outputs are stored in the notebook, so it reads without
+    running anything and without credentials.
   </p>
 </Base>

@@ -33,7 +33,7 @@ export const NAV: Record<PageKey, Dict> = {
 
 export const NAV_NOTE: Record<PageKey, Dict> = {
   overview: { en: "The system in one page", it: "Il sistema in una pagina" },
-  flows: { en: "Three diagrams", it: "Tre diagrammi" },
+  flows: { en: "Four diagrams", it: "Quattro diagrammi" },
   identity: { en: "Two tenants, two audiences", it: "Due tenant, due audience" },
   status: { en: "Running, and not", it: "Ciò che gira e ciò che no" },
 };
@@ -61,6 +61,9 @@ export const UI = {
 } satisfies Record<string, Dict>;
 
 export const REPO = "https://github.com/faustinopalma/lanternina";
+
+/** The workbench, which GitHub renders with its stored output. */
+export const NOTEBOOK = `${REPO}/blob/main/research/officina.ipynb`;
 
 export function pathFor(lang: Lang, slug: string): string {
   return slug ? `/${lang}/${slug}/` : `/${lang}/`;

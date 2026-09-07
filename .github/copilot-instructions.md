@@ -24,6 +24,9 @@ What follows is craft, not design: how to work in this repository, and how to wr
 Applies to everything that stays in the repository, in Italian and in English alike. The reference for the tone is the author's thesis, <https://laquantistica.com>: plain, unhurried, specific, never raising its voice.
 
 - **Declarative and calm.** State what a thing does. No bold as emphasis-by-shouting.
+- **Subject, verb, object, in that order.** Do not front a number or a fragment and explain it afterwards: "The container makes six calls" and not "Six, and every one of them is the call the container makes". Do not invert for emphasis: "There is a cell wherever the product loops on its own" and not "Where the product loops on its own, there is a cell". The inverted forms read as literary and cost the reader a second pass.
+- **A verb, not an apposition.** "The diagram names roles and not deployments" and not "A role and not a deployment: which model answers each one is the router's business". If a sentence has a colon in the middle and no verb before it, it is this defect.
+- **An aphorism may follow a plain statement and may not replace one.** Say the fact first, in the plainest words available, and only then say the thing that generalises it. A sentence that is only memorable leaves the reader guessing at what happened.
 - **Direct concepts over metaphors.** An analogy is allowed only when it does explanatory work, and is made literal in the next sentence.
 - **No superlatives and no marketing adjectives** — not "powerful", "seamless", "robust". When something is hard or unresolved, say so plainly.
 - **Numbers with units, and their provenance** — measured, computed or estimated. That is the part a reader cannot reconstruct on their own.
