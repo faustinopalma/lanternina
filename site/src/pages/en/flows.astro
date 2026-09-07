@@ -9,7 +9,7 @@ import Base from "../../layouts/Base.astro";
 <Base
   lang="en"
   page="flows"
-  eyebrow="Four diagrams"
+  eyebrow="Requests, state and model calls"
   title="How it flows"
   description="Who is allowed to ask whom, what happens to an activity between being invented and being over, and what a sheet of paper does on its round trip."
 >
@@ -18,19 +18,18 @@ import Base from "../../layouts/Base.astro";
     and what a sheet of paper does on its round trip.
   </p>
 
-  <h2>1. Who asks whom</h2>
+  <h2>Who asks whom</h2>
 
   <p>
-    Every arrow that crosses into the house is the answer to a request the house made. There is no
-    inbound path: the panel writes a row, and the hub finds it the next time it asks. That is what
-    makes the dashboard inert — changing a setting stores a new state and makes nothing happen in a
-    room.
+    The hub initiates every network exchange with the house. A parent action changes state in the
+    panel, and the hub receives that state on its next poll. Cloud-to-house data therefore travels
+    inside replies to outbound HTTPS requests from the hub.
   </p>
 
   <RequestLoop
     title="Who asks whom"
-    desc="The house holds a hub, two e-paper displays, a button, a printer and a scanner. The hub sends one arrow out to the panel and API in Azure, and the panel answers inside the reply. Inside Azure the panel passes work to the model router, the router to Content Safety, and Content Safety to Microsoft Foundry. A parent in a browser writes a row to the panel. No arrow starts in Azure and ends in the house."
-    caption="Both edges across the middle begin on the left. A parent's approval enters at the top right and stops there: it is a row, not an instruction."
+    desc="The house contains a hub, two e-paper displays, a button, a printer and a scanner. The hub calls the panel API in Azure and receives work in the response. Inside Azure, the API sends model work through the router and Content Safety to Microsoft Foundry. A parent's approval is stored by the panel until the hub polls again."
+    caption="Both exchanges across the boundary start at the hub. The panel persists a parent's decision; the next poll carries it into the house."
     house="The house"
     cloud="Azure, EU region"
     parent={{ title: "A parent, in a browser", sub: ["approves, and sets the hours"] }}
@@ -45,7 +44,7 @@ import Base from "../../layouts/Base.astro";
     shows="shows"
     press="a press"
     sheet="out, and back in"
-    api={{ title: "panel + API", sub: ["holds decisions, starts nothing"] }}
+    api={{ title: "panel + API", sub: ["stores decisions for the next poll"] }}
     router={{ title: "model router", sub: ["the only module allowed a model SDK"] }}
     gate={{ title: "Content Safety", sub: ["mints the screened payload"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["language · vision · image"] }}
@@ -54,35 +53,34 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p class="note">
-    No model runs on the device, and an import-level test refuses an on-device runtime in every
-    package including the router. The trade is stated plainly: one inference path instead of two, no
-    weights to ship — at the price that a page which comes back while the cloud is unreachable stays
-    unread until it is reachable.
+    Every inference call uses Microsoft Foundry through the router. An import-level test keeps model
+    runtimes out of the device packages. This gives the system one inference path and one set of
+    deployed models; reading a returned page therefore requires cloud connectivity.
   </p>
 
-  <h2>2. The life of an activity</h2>
+  <h2>The life of an activity</h2>
 
   <p>
-    One document, written in a single pass before anybody has read a word of it. It holds every
-    moment, three lengths of each, a four-rung ladder of help under each, and a way out. Nothing is
-    added while it runs — which is what lets the same moment be shortened, or put on a display that
-    holds forty words, and still reach the same ending.
+    The initial document contains every moment, three lengths for each, four levels of help and a
+    route to the ending. The execution service selects from that graph as time and responses change.
+    A planned <code>ask</code> can send a returned page to the API and receive a continuation in the
+    same format.
   </p>
 
   <AfternoonLife
     title="The life of an activity"
-    desc="The house asks for an idea. A model writes the whole activity in one pass. Six checks and a second model reread it, and a refusal sends it back to be written again. It then waits for a parent, who approves. The house begins it. A moment runs, and what came back either starts the next moment, or is sent up as an ask which returns a continuation, or closes the activity on its object."
-    caption="The two edges that turn back are where the cost is. A refusal on the left buys another whole devise; an ask on the right is the activity admitting it is not finished being written."
-    idea={{ title: "The house asks for an idea", sub: ["it keeps a few ready"] }}
+    desc="A parent approves an idea in the panel. The API asks a model to write the activity, validates the result and stores it for that household. The hub collects it on a later poll and begins it when the full duration still fits. Each reading selects the next moment, requests a planned continuation, or closes the activity."
+    caption="The left return edge is a repair after validation. The right return edge is a planned continuation based on the page that came back."
+    idea={{ title: "A parent approves an idea", sub: ["overview · themes · script"] }}
     devise={{
       title: "A model writes the whole activity",
       sub: ["every moment at once — 68–157 s"],
     }}
     checks={{
-      title: "Six checks, then a second model",
+      title: "Structural checks, then a second model",
       sub: ["rereads the whole thing — 14.4–22.8 s"],
     }}
-    waits={{ title: "It waits for a parent", sub: ["nothing prints, nothing wakes"] }}
+    waits={{ title: "The API stores it", sub: ["waiting for that household"] }}
     begins={{ title: "The house begins it", sub: ["only if the whole length still fits"] }}
     moment={{ title: "A moment runs", sub: ["say · hand over · collect"] }}
     cameBack={{ title: "What came back", sub: ["marks, or blank"] }}
@@ -97,7 +95,7 @@ import Base from "../../layouts/Base.astro";
     }}
     refused="refused"
     passes="passes"
-    approving="approving writes a row"
+    approving="the next device poll"
     nextMoment="the next moment"
     askEdge="ask"
     continuation="a continuation, in the same format"
@@ -105,24 +103,23 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    Two edges are worth reading twice. A refusal costs a whole new devise, which is why a check that
-    reads a phrasing instead of a fact is expensive: one such check was the most frequent refusal
-    until it was fixed. And an activity begins only if its whole length still fits before the hour
-    the parent set — thirty minutes before that hour the way out starts, whatever has been reached,
-    and no display says it was shortened.
+    Validation repair repeats the full devising call, so each check must evaluate a fact in the
+    document rather than a particular phrasing. The hub starts an activity only when its full
+    duration fits before the parent's deadline. Thirty minutes before that deadline, execution
+    enters the route from the current moment to the ending.
   </p>
 
-  <h2>3. The paper round trip</h2>
+  <h2>The paper round trip</h2>
 
   <p>
-    The part with the least machinery in it. Nothing is printed on the paper for a machine to find,
-    so there is nothing to detect, rectify or decode.
+    The paper contains only the page a person reads and writes on. The vision call compares the
+    returned scan with the original image, so the page needs no machine-readable registration layer.
   </p>
 
   <PaperTrip
     title="The paper round trip"
     desc="Words that have already passed the safety gate go into one image call, which draws the whole sheet. The sheet is printed and its blank is kept. Somebody writes on it, or does not. The scanner takes it back, both images go to a model, and the answer is either marks or blank. That answer is what the next words are written from."
-    caption="One box in the ring is not machinery, and nothing in the system can make it happen."
+    caption="The person's action is the only step in this loop that software does not perform."
     words={{ title: "Words", sub: ["already through the safety gate"] }}
     drawn={{ title: "One image call", sub: ["the whole A4 sheet, in one pass", "19–33 s"] }}
     printed={{
@@ -137,9 +134,9 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    The reading is gone in the strong sense: not written to storage, not to a log, not anywhere a
-    person could read it later. Not a count and not a fraction either, because a count of somebody's
-    marks is one step from a score.
+    The vision result is <b>marks</b> or <b>blank</b>. The execution service consumes it without
+    writing it to storage or logs, and the reading type closes the pickle, copy and cache paths.
+    This representation gives later code no count from which to derive a score.
   </p>
 
   <p class="note">
@@ -148,42 +145,37 @@ import Base from "../../layouts/Base.astro";
     firmware adds 5–11 s to any refresh interval you ask for.
   </p>
 
-  <h2>4. The calls to a model, in order</h2>
+  <h2>The model-call path</h2>
 
   <p>
-    The three diagrams above say who talks to whom. This one says how many times and with what. One
-    activity costs six calls to a model, and each carries a text written by hand that can be wrong
-    on its own. When what arrives on the table is no good, the useful question is not which model
-    answered: it is which of the six texts asked badly.
+    The normal path selects a method, devises the activity, rereads it and screens its text. Format
+    repair and validation repair add calls only after a refusal. Each call has its own prompt, input
+    contract and output contract, so a failed result can be traced to the request that produced it.
   </p>
 
   <figure class="graph">
     <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
       <img
         src="/images/calls-en.svg"
-        alt="The panel asks the model which method to build out of, sending sixty names and no records, and gets back a form and a move. It then sends the whole activity, about 34 000 characters, and gets back one JSON document. If the format cannot read it, the answer goes back up as it was together with the refusal. If a check refuses it, the document goes back up with the complaints, once and no more. Finally the document's own words go to the safety gate, which lets them through or blocks them."
+        alt="The panel sends method names to the model and receives a form and a move. It then requests the complete activity and receives one JSON document. A format refusal returns the original answer for repair. A structural refusal returns the document with the failed checks for one repair attempt. Finally the document text goes to the safety gate."
         width="833"
         height="721"
       />
     </div>
     <figcaption id="calls-t">
-      The two optional boxes hold four calls, and they are paid for only when something has refused
-      the answer. The other two calls, and the gate, are paid for every time.
+      Method selection, devising, rereading and safety screening form the normal path. The repair
+      boxes run only when format parsing or structural validation refuses an answer.
     </figcaption>
   </figure>
 
   <p>
-    The two optional calls are the instructive ones. A refusal that comes back every activity is not
-    a defect in the model: it is a sentence in the prompt asking for something impossible, or one
-    that fails to say something necessary. A refusal of that kind held the research loop up for two
-    days, and the missing rule was a single line — the order the moments are walked in.
+    A refusal that recurs across activities points to the prompt or contract. One such refusal held
+    the research loop for two days; the missing rule was the order in which the moments are walked.
   </p>
 
   <p>
-    A notebook in the repository shows the text sent on every call and the answer that came back,
-    whole: <a href={NOTEBOOK}>research/officina.ipynb</a>, which GitHub opens already run. It records
-    the calls at the router rather than at each agent, so none escapes it, and it writes the whole
-    conversation to a file. The last run's outputs are stored in the notebook, so it reads without
-    running anything and without credentials.
+    <a href={NOTEBOOK}>research/officina.ipynb</a> records each request and response at the router.
+    The checked-in outputs show the complete call sequence without running the notebook or supplying
+    credentials.
   </p>
 </Base>

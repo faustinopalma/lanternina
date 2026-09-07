@@ -9,18 +9,18 @@ import { REPO } from "../../i18n/ui";
   page="identity"
   eyebrow="Due tenant, due audience"
   title="Identità e accessi"
-  description="I genitori entrano da un tenant Entra External ID; gli amministratori da una app registration workforce separata, con un app role. La casa non tiene nessuna credenziale Azure."
+  description="I genitori usano Entra External ID, gli amministratori un app role workforce e ogni casa si autentica all'API con la propria device key."
 >
   <p class="lede">
-    Al sistema arrivano tre tipi di chiamante e nessuno si autentica allo stesso modo. Un genitore è
-    un'identità consumer esterna. Un amministratore è un'identità workforce con un app role. La
-    macchina in casa non è né l'una né l'altro: non tiene nessuna credenziale Azure.
+    L'API accetta tre tipi di credenziale. I genitori presentano token Entra External ID, gli
+    amministratori token workforce con l'app role <code>Lanternina.Admin</code> e ogni casa presenta
+    una device key su TLS. Ogni credenziale raggiunge un gruppo di rotte separato.
   </p>
 
   <WhoSignsIn
     title="Chi entra, e cosa raggiunge"
-    desc="Tre chiamanti a sinistra raggiungono una sola API al centro, che raggiunge tre gruppi di rotte a destra. Un genitore arriva con un token Entra External ID e raggiunge solo il proprio nucleo. Un amministratore arriva dal tenant workforce con l'app role Lanternina.Admin e raggiunge le rotte che ammettono e rifiutano account. La casa arriva con una device key per nucleo su TLS, senza nessuna identità Entra, e raggiunge le rotte per chiedere lavoro, ritirare gli approvati e restituire una lettura."
-    caption="Tre frecce dentro un solo nodo, e nessuna delle tre credenziali si può presentare al posto di un'altra."
+    desc="Tre chiamanti raggiungono una sola API e tre gruppi di rotte. Un token Entra External ID risolve il nucleo del genitore. Un token workforce con l'app role Lanternina.Admin autorizza l'amministrazione degli account. Una device key per nucleo autorizza la richiesta di lavoro, il ritiro degli approvati e la restituzione delle letture."
+    caption="L'API sceglie il percorso di autenticazione dal gruppo di rotte e verifica la credenziale prima della logica applicativa."
     parent={{
       title: "Un genitore",
       sub: ["Entra External ID (CIAM)", "registrazione autonoma"],
@@ -45,38 +45,35 @@ import { REPO } from "../../i18n/ui";
     }}
   />
 
-  <h2>Perché l'amministratore non è un genitore con un flag</h2>
+  <h2>Identità separate per genitori e amministratori</h2>
 
   <p>
-    Sarebbe stato un booleano. Il motivo per cui non lo è: la directory External ID è aperta alla
-    registrazione autonoma, e un flag vivrebbe nello stesso container Cosmos che un amministratore
-    modifica — quindi il privilegio e la cosa che lo concede condividerebbero il raggio d'esplosione,
-    e servirebbe comunque un percorso di bootstrap per crearne il primo.
+    Entra External ID permette ai genitori di registrarsi autonomamente. Il privilegio
+    amministrativo arriva da una app registration workforce separata, invece che da un flag nel
+    container Cosmos modificato dall'amministratore. Il privilegio e i dati applicativi hanno così
+    piani di controllo e percorsi di bootstrap separati.
   </p>
 
   <p>
-    Invece l'amministratore entra da una app registration distinta nel tenant workforce, e il
-    privilegio arriva nel claim <code>roles</code> del token. Le due applicazioni hanno audience
-    diverse, quindi il token di un genitore viene rifiutato dal controllo di audience prima che giri
-    una qualunque logica nostra. È un'affermazione più forte di «controlliamo un campo»: non esiste
-    un percorso di codice in cui un token consumer venga esaminato per diritti amministrativi.
+    Il token dell'amministratore porta il privilegio nel claim <code>roles</code>. Le applicazioni del
+    genitore e dell'amministratore hanno audience diverse e l'API controlla l'audience prima della
+    logica applicativa. Soltanto un token workforce raggiunge il controllo dell'app role sulle rotte
+    amministrative.
   </p>
 
   <p class="note">
-    Una trappola che vale la pena scrivere, perché costa un'attività: l'assegnazione di un app role
-    può finire in silenzio su <b>Default Access</b>, il cui <code>appRoleId</code> è tutto zeri. Il
-    token è perfettamente valido e semplicemente non porta il claim <code>roles</code>, quindi il
-    rifiuto sembra un problema di credenziali invece che di assegnazione. Si controlla su
-    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code>, guardando l'id.
+    Un'assegnazione di app role può finire su <b>Default Access</b>, il cui <code>appRoleId</code> è
+    tutto zeri. Il token risultante è valido ma non contiene il claim <code>roles</code>. Quando un
+    token amministrativo supera l'autenticazione ma fallisce l'autorizzazione, si controlla l'id in
+    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code>.
   </p>
 
   <h2>Multi-tenant per costruzione</h2>
 
   <p>
-    Niente nel modello dei dati presuppone un nucleo solo. Ogni riga salvata è partizionata per id di
-    nucleo, ogni device key appartiene esattamente a un nucleo, e ogni rotta del genitore risolve il
-    nucleo dal token e non da qualcosa che il chiamante manda. Una seconda casa richiede un
-    provisioning, non un cambio di schema.
+    Ogni riga salvata è partizionata per id del nucleo. Ogni device key corrisponde a un nucleo e ogni
+    rotta del genitore ricava il nucleo dal token verificato. Aggiungere una casa richiede un
+    provisioning e usa lo schema esistente.
   </p>
 
   <p>
@@ -86,46 +83,44 @@ import { REPO } from "../../i18n/ui";
     siano stati osservati affiancati.
   </p>
 
-  <h2>La casa non ha credenziali Azure</h2>
+  <h2>Autenticazione della casa</h2>
 
   <p>
-    L'hub nella stanza non può autenticarsi ad Azure e non ci prova. Presenta una device key in
-    un'intestazione <code>X-Device-Key</code> su TLS, e tutto quello che ha bisogno di un modello —
-    leggere una pagina, interpretare un promemoria, continuare un'attività — è una richiesta
-    all'API, che la credenziale ce l'ha. Chiuso per difetto: senza device key configurata quelle
-    rotte rispondono 503 invece di lasciar passare qualcosa.
+    L'hub presenta la device key nell'intestazione <code>X-Device-Key</code> su TLS. L'API conserva la
+    credenziale Azure ed esegue le chiamate ai modelli per leggere una pagina, interpretare un
+    promemoria e continuare un'attività. Le rotte del dispositivo rispondono 503 finché non viene
+    configurata una device key.
   </p>
 
   <p>
-    Così una macchina fisicamente asportabile da una casa non porta mai qualcosa che si possa
-    rigiocare contro una sottoscrizione. Il costo è quello dichiarato nei flussi: senza cloud, niente
-    lettura.
+    L'hub contiene quindi una credenziale per le rotte del proprio nucleo, invece di una credenziale
+    riutilizzabile contro la sottoscrizione Azure. Questo confine rende necessaria la connessione al
+    cloud per leggere una pagina.
   </p>
 
-  <h2>Due chiavi che non sono la stessa chiave</h2>
+  <h2>Chiavi separate per approvazione e sicurezza</h2>
 
   <p>
-    Il filtro di sicurezza e l'approvazione del genitore sono entrambi sigillati con HMAC, con due
-    chiavi separate, e il sigillo di approvazione copre quello di sicurezza. Condividerne una
-    permetterebbe al filtro di coniare approvazioni del genitore, che è esattamente il guasto per cui
-    la separazione esiste.
+    Il filtro di sicurezza e l'approvazione del genitore usano chiavi HMAC separate. Il sigillo di
+    approvazione copre quello di sicurezza, quindi il componente di sicurezza può esaminare il
+    contenuto ma non può coniare la decisione del genitore.
   </p>
 
   <p>
-    Il sigillo di approvazione si conia e si verifica dentro una singola esecuzione sul dispositivo,
-    quindi ruotare quella chiave non costa niente. Il sigillo di sicurezza attraversa processi e
-    giorni — coniato quando il contenuto viene offerto, salvato dal pannello, verificato più tardi —
-    quindi è quella la chiave da proteggere. Nessuna delle due sta sull'hub, e questo è stato
-    verificato cercando i valori letterali nel filesystem invece di fidarsi dello script di deploy.
+    Il sigillo di approvazione viene coniato e verificato in una sola esecuzione del dispositivo, per
+    cui la chiave può ruotare tra le esecuzioni. Il sigillo di sicurezza attraversa processi e giorni:
+    il filtro lo conia, il pannello lo conserva e un processo successivo lo verifica. La ricerca dei
+    due valori letterali nel filesystem dell'hub ha verificato che le chiavi non vengono distribuite
+    lì.
   </p>
 
-  <h2>Pubblicare senza un segreto</h2>
+  <h2>Deploy tramite OIDC</h2>
 
   <p>
-    La pipeline che pubblica l'API non tiene nessuna password. Una managed identity assegnata
-    dall'utente porta una credenziale federata, GitHub Actions scambia il proprio token OIDC con uno
-    di Azure, e fanno il resto tre assegnazioni di ruolo legate a singole risorse: spingere su un
-    registro, leggerlo, e aggiornare una container app.
+    GitHub Actions scambia il proprio token OIDC con un token Azure tramite una credenziale federata
+    su una managed identity assegnata dall'utente. Tre assegnazioni di ruolo limitate alle singole
+    risorse permettono alla pipeline di scrivere in un registro, leggere quel registro e aggiornare
+    una container app.
   </p>
 
   <p class="note">
@@ -136,19 +131,18 @@ import { REPO } from "../../i18n/ui";
     a una rinomina del repository.
   </p>
 
-  <h2>Due buchi, dichiarati</h2>
+  <h2>Lacune note nell'autorizzazione</h2>
 
   <p>
-    <code>scp</code> non viene verificato. Audience, issuer, scadenza e subject del token si
-    controllano, lo scope no. È innocuo finché lo scope è uno solo, e diventa un buco nel momento in
-    cui qualcuno ne aggiunge un secondo credendo che separi permessi.
+    Il validatore controlla audience, issuer, scadenza e subject del token, ma omette
+    <code>scp</code>. L'applicazione espone oggi un solo scope. L'aggiunta di un altro scope richiede
+    un controllo dello scope prima che possa separare i permessi.
   </p>
 
   <p>
-    Le app registration si creano a mano nel portale, di proposito, e i passi sono scritti invece che
-    scriptati. Quello che si dimentica ogni volta è
-    <code>requestedAccessTokenVersion: 2</code> nel manifesto: senza, l'issuer è l'endpoint v1 e ogni
-    accesso fallisce senza dire perché.
+    Le app registration vengono create a mano seguendo i passi documentati. Il manifesto deve
+    impostare <code>requestedAccessTokenVersion: 2</code>; l'issuer v1 predefinito non corrisponde alla
+    configurazione con cui l'API verifica i token.
   </p>
 
   <p>

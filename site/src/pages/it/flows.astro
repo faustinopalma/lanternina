@@ -9,7 +9,7 @@ import Base from "../../layouts/Base.astro";
 <Base
   lang="it"
   page="flows"
-  eyebrow="Quattro diagrammi"
+  eyebrow="Richieste, stato e chiamate ai modelli"
   title="Come funziona"
   description="Chi può chiedere a chi, cosa succede a un'attività fra l'essere inventata e l'essere finita, e cosa fa un foglio di carta nel suo giro."
 >
@@ -18,19 +18,18 @@ import Base from "../../layouts/Base.astro";
     cosa fa un foglio di carta nel suo giro.
   </p>
 
-  <h2>1. Chi chiede a chi</h2>
+  <h2>Chi chiede a chi</h2>
 
   <p>
-    Ogni freccia che entra in casa è la risposta a una richiesta che la casa ha fatto. Non esiste una
-    strada in ingresso: il pannello scrive una riga, e l'hub la trova la volta dopo che chiede. È
-    questo che rende il pannello inerte — cambiare un'impostazione salva uno stato nuovo e non fa
-    succedere niente in una stanza.
+    L'hub avvia ogni scambio di rete con la casa. Un'azione del genitore modifica lo stato nel
+    pannello e l'hub riceve quello stato alla richiesta successiva. I dati dal cloud alla casa
+    viaggiano quindi nelle risposte alle richieste HTTPS in uscita dall'hub.
   </p>
 
   <RequestLoop
     title="Chi chiede a chi"
-    desc="In casa stanno l'hub, due schermi a inchiostro elettronico, un pulsante, una stampante e uno scanner. L'hub manda una freccia fuori, al pannello e alla sua API su Azure, e il pannello risponde dentro la replica. Dentro Azure il pannello passa il lavoro al router dei modelli, il router a Content Safety, e Content Safety a Microsoft Foundry. Un genitore dal browser scrive una riga al pannello. Nessuna freccia parte da Azure e finisce in casa."
-    caption="Tutte e due le frecce che attraversano il centro partono da sinistra. L'approvazione del genitore entra in alto a destra e si ferma lì: è una riga, non un ordine."
+    desc="La casa contiene un hub, due schermi a inchiostro elettronico, un pulsante, una stampante e uno scanner. L'hub chiama l'API del pannello su Azure e riceve il lavoro nella risposta. Dentro Azure, l'API manda il lavoro ai modelli attraverso il router e Content Safety fino a Microsoft Foundry. Il pannello conserva l'approvazione del genitore fino alla richiesta successiva dell'hub."
+    caption="Entrambi gli scambi oltre il confine partono dall'hub. Il pannello conserva la decisione del genitore; la richiesta successiva la porta in casa."
     house="La casa"
     cloud="Azure, regione UE"
     parent={{ title: "Un genitore, dal browser", sub: ["approva e fissa le ore"] }}
@@ -45,7 +44,7 @@ import Base from "../../layouts/Base.astro";
     shows="mostra"
     press="una pressione"
     sheet="esce, e rientra"
-    api={{ title: "pannello + API", sub: ["tiene le decisioni, non avvia niente"] }}
+    api={{ title: "pannello + API", sub: ["conserva le decisioni per la richiesta successiva"] }}
     router={{ title: "router dei modelli", sub: ["l'unico modulo con un SDK di modelli"] }}
     gate={{ title: "Content Safety", sub: ["conia il contenuto filtrato"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["linguaggio · visione · immagini"] }}
@@ -54,36 +53,35 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p class="note">
-    Nessun modello gira sul dispositivo, e un test a livello di import rifiuta un runtime locale in
-    ogni package, router compreso. Il compromesso si dichiara: una sola strada di inferenza invece di
-    due, nessun peso da distribuire — al prezzo che una pagina tornata mentre il cloud è
-    irraggiungibile resta non letta finché non lo è di nuovo.
+    Ogni chiamata di inferenza usa Microsoft Foundry attraverso il router. Un test a livello di
+    import tiene i runtime dei modelli fuori dai package del dispositivo. Il sistema ha così un solo
+    percorso di inferenza e un solo insieme di modelli pubblicati; leggere una pagina restituita
+    richiede quindi la connessione al cloud.
   </p>
 
-  <h2>2. La vita di un'attività</h2>
+  <h2>La vita di un'attività</h2>
 
   <p>
-    Un documento solo, scritto in un colpo prima che qualcuno ne abbia letto una parola. Contiene
-    ogni momento, tre lunghezze per ciascuno, una scala di aiuto a quattro pioli sotto ognuno, e una
-    via d'uscita. Niente viene aggiunto mentre gira — ed è quello che permette di accorciare lo
-    stesso momento, o di metterlo su uno schermo che tiene quaranta parole, arrivando comunque alla
-    stessa fine.
+    Il documento iniziale contiene ogni momento, tre lunghezze per ciascuno, quattro livelli di aiuto
+    e un percorso verso la fine. Il servizio di esecuzione sceglie dentro quel grafo quando cambiano
+    il tempo e le risposte. Un <code>ask</code> previsto può mandare la pagina restituita all'API e
+    ricevere un seguito nello stesso formato.
   </p>
 
   <AfternoonLife
     title="La vita di un'attività"
-    desc="La casa chiede un'idea. Un modello scrive l'attività intera in un colpo. Sei controlli e un secondo modello lo rileggono, e un rifiuto lo rimanda indietro a farsi riscrivere. Poi aspetta un genitore, che approva. La casa lo fa cominciare. Un momento gira, e quello che è tornato o avvia il momento dopo, o viene mandato su come ask e riceve un seguito, oppure chiude l'attività sul suo oggetto."
-    caption="Le due frecce che tornano indietro sono dove sta il costo. Un rifiuto, a sinistra, compra un'invenzione intera da capo; un ask, a destra, è l'attività che ammette di non essere finita di scrivere."
-    idea={{ title: "La casa chiede un'idea", sub: ["ne tiene qualcuna pronta"] }}
+    desc="Il genitore approva un'idea nel pannello. L'API chiede a un modello di scrivere l'attività, verifica il risultato e lo conserva per quel nucleo. L'hub lo ritira con una richiesta successiva e lo avvia quando la durata intera ci sta ancora. Ogni lettura seleziona il momento successivo, richiede un seguito previsto oppure chiude l'attività."
+    caption="L'arco di ritorno a sinistra è una riparazione dopo la verifica. Quello a destra è un seguito previsto che dipende dalla pagina restituita."
+    idea={{ title: "Il genitore approva un'idea", sub: ["panoramica · temi · copione"] }}
     devise={{
       title: "Un modello scrive l'attività intera",
       sub: ["ogni momento in un colpo — 68–157 s"],
     }}
     checks={{
-      title: "Sei controlli, poi un secondo modello",
+      title: "Controlli strutturali, poi un secondo modello",
       sub: ["rilegge tutto — 14,4–22,8 s"],
     }}
-    waits={{ title: "Aspetta un genitore", sub: ["non stampa niente, non sveglia niente"] }}
+    waits={{ title: "L'API la conserva", sub: ["in attesa per quel nucleo"] }}
     begins={{ title: "La casa lo fa cominciare", sub: ["solo se la durata intera ci sta ancora"] }}
     moment={{ title: "Un momento gira", sub: ["dire · consegnare · ritirare"] }}
     cameBack={{ title: "Cosa è tornato", sub: ["segni, oppure bianca"] }}
@@ -98,7 +96,7 @@ import Base from "../../layouts/Base.astro";
     }}
     refused="rifiutato"
     passes="passa"
-    approving="approvare scrive una riga"
+    approving="la richiesta successiva del dispositivo"
     nextMoment="il momento dopo"
     askEdge="ask"
     continuation="un seguito, nello stesso formato"
@@ -106,24 +104,24 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    Due frecce vanno lette due volte. Un rifiuto costa un'invenzione intera da capo: per questo un
-    controllo che legge una formulazione invece di un fatto costa caro, e uno di questi è stato il
-    rifiuto più frequente finché non è stato corretto. E un'attività comincia solo se la sua durata
-    intera ci sta ancora prima dell'ora fissata dal genitore — mezz'ora prima di quell'ora comincia
-    la via d'uscita, comunque sia andata, e nessuno schermo dice che è stata accorciata.
+    La riparazione dopo la verifica ripete l'intera chiamata di generazione, quindi ogni controllo
+    deve valutare un fatto nel documento e non una formulazione particolare. L'hub avvia un'attività
+    soltanto quando la durata intera ci sta prima della scadenza fissata dal genitore. Trenta minuti
+    prima della scadenza, l'esecuzione entra nel percorso dal momento corrente fino alla fine.
   </p>
 
-  <h2>3. Il giro della carta</h2>
+  <h2>Il giro della carta</h2>
 
   <p>
-    La parte con meno meccanica dentro. Sulla carta non c'è niente stampato perché una macchina lo
-    trovi, quindi non c'è niente da rilevare, raddrizzare o decodificare.
+    La carta contiene soltanto la pagina che una persona legge e compila. La chiamata di visione
+    confronta la scansione restituita con l'immagine originale, quindi la pagina non richiede uno
+    strato di registrazione leggibile dalla macchina.
   </p>
 
   <PaperTrip
     title="Il giro della carta"
     desc="Le parole già passate dal filtro entrano in una sola chiamata di immagini, che disegna il foglio intero. Il foglio si stampa e il suo bianco si conserva. Qualcuno ci scrive sopra, oppure no. Lo scanner lo riprende, le due immagini vanno a un modello, e la risposta è segni oppure bianca. Da quella risposta si scrivono le parole dopo."
-    caption="Una scatola dell'anello non è meccanica, e niente nel sistema può farla succedere."
+    caption="L'azione della persona è l'unico passaggio di questo ciclo che il software non esegue."
     words={{ title: "Le parole", sub: ["già passate dal filtro"] }}
     drawn={{ title: "Una chiamata di immagini", sub: ["il foglio A4 intero, in un colpo", "19–33 s"] }}
     printed={{
@@ -138,9 +136,10 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    La lettura sparisce nel senso forte: non finisce in un archivio, non in un log, e in nessun posto
-    dove qualcuno possa rileggerla dopo. E non è un conteggio né una frazione, perché contare i segni
-    di qualcuno è a un passo da un punteggio.
+    Il risultato della visione è <b>segni</b> oppure <b>bianca</b>. Il servizio di esecuzione lo usa
+    senza scriverlo in archivi o log, e il tipo della lettura chiude le vie di serializzazione, copia
+    e cache. Questa rappresentazione non fornisce al codice successivo un conteggio da trasformare
+    in un punteggio.
   </p>
 
   <p class="note">
@@ -149,42 +148,40 @@ import Base from "../../layouts/Base.astro";
     schermo, e il firmware aggiunge 5–11 s a qualunque intervallo di aggiornamento gli si chieda.
   </p>
 
-  <h2>4. Le chiamate al modello, in ordine</h2>
+  <h2>Il percorso delle chiamate ai modelli</h2>
 
   <p>
-    I tre diagrammi sopra dicono chi parla con chi. Questo dice quante volte e con che cosa. Un
-    attività costa sei chiamate a un modello, e ognuna porta un testo scritto a mano che può essere
-    sbagliato per conto suo. Quando quello che arriva sul tavolo non va bene, la domanda utile non è
-    quale modello ha risposto: è quale dei sei testi lo ha chiesto male.
+    Il percorso normale sceglie un metodo, genera l'attività, la rilegge e ne esamina il testo. La
+    riparazione del formato e quella della verifica aggiungono chiamate soltanto dopo un rifiuto.
+    Ogni chiamata ha il proprio prompt, contratto di ingresso e contratto di uscita, quindi un esito
+    fallito si può ricondurre alla richiesta che lo ha prodotto.
   </p>
 
   <figure class="graph">
     <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
       <img
         src="/images/calls-it.svg"
-        alt="Il pannello chiede al modello quale mestiere usare, mandando sessanta nomi e nessuna scheda, e riceve una forma e una mossa. Poi manda l'attività intera, circa 34 000 caratteri, e riceve un documento JSON. Se il formato non riesce a leggerlo, rimanda la risposta com'era insieme al rifiuto. Se un controllo lo rifiuta, rimanda il documento insieme ai reclami, una volta sola. Alla fine manda le parole del documento al filtro di sicurezza, che lo lascia passare o lo blocca."
+        alt="Il pannello manda al modello i nomi dei metodi e riceve una forma e una mossa. Poi richiede l'attività completa e riceve un documento JSON. Un rifiuto del formato rimanda la risposta originale alla riparazione. Un rifiuto strutturale rimanda il documento con i controlli falliti per un tentativo di riparazione. Infine il testo del documento va al filtro di sicurezza."
         width="814"
         height="721"
       />
     </div>
     <figcaption id="calls-t">
-      I due riquadri facoltativi tengono quattro chiamate, e si pagano solo quando qualcosa ha
-      rifiutato la risposta. Le altre due chiamate, e il filtro, si pagano tutte le volte.
+      La scelta del metodo, la generazione, la rilettura e il filtro di sicurezza formano il percorso
+      normale. I riquadri di riparazione vengono eseguiti soltanto dopo un rifiuto del formato o
+      della verifica strutturale.
     </figcaption>
   </figure>
 
   <p>
-    Le due chiamate facoltative sono le più istruttive. Un rifiuto che torna a ogni attività non è
-    un difetto del modello: è una frase del prompt che chiede una cosa impossibile, oppure che non
-    dice una cosa necessaria. Un rifiuto di questo tipo ha tenuto ferma la ricerca per due giorni, e
-    la regola che mancava era una riga sola — in che ordine si percorrono i momenti.
+    Un rifiuto che ricorre in più attività indica il prompt o il contratto. Un rifiuto di questo tipo
+    ha fermato la ricerca per due giorni; mancava la regola che stabilisce l'ordine in cui si
+    percorrono i momenti.
   </p>
 
   <p>
-    Un quaderno dentro il repository mostra il testo mandato a ogni chiamata e la risposta che ne è
-    tornata, per intero: <a href={NOTEBOOK}>research/officina.ipynb</a>, che GitHub apre già
-    eseguito. Registra le chiamate al router e non ai singoli agenti, quindi non gliene sfugge
-    nessuna, e scrive la conversazione intera in un file. Gli esiti dell'ultima corsa sono salvati
-    dentro il quaderno, quindi si legge senza eseguire niente e senza credenziali.
+    <a href={NOTEBOOK}>research/officina.ipynb</a> registra ogni richiesta e risposta nel router. Gli
+    esiti salvati nel repository mostrano la sequenza completa senza eseguire il quaderno o fornire
+    credenziali.
   </p>
 </Base>

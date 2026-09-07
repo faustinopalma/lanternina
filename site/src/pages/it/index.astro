@@ -8,7 +8,7 @@ import { REPO } from "../../i18n/ui";
   page="overview"
   eyebrow="Un sistema di casa, nato per un hackathon"
   title="Un'attività su carta, inventata per una persona"
-  description="Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore e la esegue su carta e su schermi a inchiostro elettronico. I modelli stanno in Microsoft Foundry; sul dispositivo non gira nessuna inferenza."
+  description="Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore e la esegue su carta e su schermi a inchiostro elettronico. Le inferenze di linguaggio, visione e immagini girano in Microsoft Foundry."
 >
   <p class="lede">
     Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore, e poi la fa
@@ -19,9 +19,9 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     Un mini-PC in una casa pilota due schermi a inchiostro elettronico, una stampante e uno scanner.
-    Ogni chiamata di linguaggio e di visione va a Microsoft Foundry, in UE. Nessun modello gira sul
-    dispositivo e non esiste una modalità offline. La casa tiene l'orologio e le chiavi dei sigilli,
-    ed è l'unica cosa che dà inizio al lavoro.
+    Ogni chiamata di linguaggio e di visione va a Microsoft Foundry, in UE, quindi l'inferenza
+    richiede la connessione al cloud. La casa tiene l'orologio e le chiavi dei sigilli, avvia ogni
+    richiesta e controlla quando comincia il lavoro.
   </p>
 
   <figure class="band">
@@ -40,55 +40,46 @@ import { REPO } from "../../i18n/ui";
   <h2>Come va un'attività</h2>
 
   <p>
-    Sette passi, nell'ordine in cui succedono. Li fa partire tutti la casa: nel cloud non c'è niente
-    che possa dare inizio a qualcosa.
+    La sequenza comincia nel pannello del genitore. Il mini-PC esegue poi l'attività approvata
+    secondo il proprio orologio.
   </p>
 
   <ol class="steps">
     <li>
-      <b>La casa chiede se c'è un'attività da fare.</b> Il mini-PC chiede sul proprio orologio, e
-      la risposta arriva dentro la replica. Approvare qualcosa nel pannello scrive una riga e
-      nient'altro, e la casa trova quella riga la volta dopo che chiede. Nessuna strada porta dentro
-      un dispositivo in una stanza, ed è anche il motivo per cui sulla rete di casa non c'è niente
-      da attaccare.
+      <b>Il genitore esamina le idee e ne approva una.</b> Il pannello mostra la panoramica, i temi e
+      il copione di ogni idea. Il genitore può modificare il brief prima di approvarlo e fissa l'ora
+      entro cui l'attività deve finire.
     </li>
     <li>
-      <b>Un modello scrive l'attività intera in una risposta sola.</b> Tutti i suoi momenti, tre
-      lunghezze per ciascuno, una scala di aiuto a quattro pioli sotto ognuno, e una via d'uscita da
-      qualsiasi punto. Mentre gira non si aggiunge niente. È questo che permette di accorciare lo
-      stesso momento quando l'orologio stringe, o di metterlo su uno schermo che tiene quaranta
-      parole, arrivando comunque alla stessa fine.
+      <b>L'API trasforma il brief approvato in un'attività.</b> Il router dei modelli manda il brief
+      a Microsoft Foundry. Una risposta contiene il grafo dell'attività, tre lunghezze per ogni
+      momento, quattro livelli di aiuto e un percorso verso la fine da ogni punto.
     </li>
     <li>
-      <b>Sette controlli e un filtro di sicurezza lo leggono prima di chiunque altro.</b> I
-      controlli ne leggono la forma: che ogni momento sia raggiungibile, che la via d'uscita cerchi
-      un oggetto che sta già in mano a qualcuno, che non venga fatta una domanda a cui l'attività
-      non risponde mai. Un'attività rifiutata torna indietro a farsi riparare, una volta sola. Il
-      filtro legge le parole.
+      <b>L'API verifica e conserva l'attività.</b> I controlli strutturali verificano i percorsi, gli
+      oggetti e le risposte. Un controllo fallito concede al modello un tentativo di riparazione.
+      Azure AI Content Safety esamina poi il testo e l'attività completa viene conservata per quel
+      nucleo.
     </li>
     <li>
-      <b>Un genitore legge la panoramica e approva.</b> Una volta, e dalla panoramica invece che
-      momento per momento: approvare ogni ramo richiederebbe un adulto sveglio nell'istante in cui
-      quel ramo viene preso. Il genitore fissa anche l'ora entro cui l'attività deve finire.
+      <b>Il mini-PC ritira l'attività.</b> Interroga la device API secondo il proprio programma. L'API
+      restituisce l'attività in attesa nella risposta HTTPS e il mini-PC la conserva localmente
+      prima di preparare la prima pagina.
     </li>
     <li>
-      <b>La casa stampa una pagina.</b> A un modello di immagini vengono date tutte le stringhe già
-      passate dal filtro, con l'istruzione di scriverle carattere per carattere, e disegna il foglio
-      A4 intero in un colpo: una mappa, un cartellino da museo, un foglio staccato da un taccuino di
-      campagna. La pagina è descritta a parole invece che impaginata nel codice, quindi il lavoro di
-      design è il prompt e il formato vive in un file Markdown.
+      <b>Il mini-PC stampa la prima pagina.</b> Il router manda a un modello di immagini il testo già
+      esaminato e la descrizione della pagina. Il modello disegna il foglio A4 completo e il servizio
+      di stampa lo manda alla stampante a getto d'inchiostro tramite IPP.
     </li>
     <li>
-      <b>Qualcuno ci scrive sopra e la rimette sul vetro.</b> Sulla carta c'è solo quello che legge
-      una persona: a un modello vengono date due immagini, il bianco com'è stato stampato e quello
-      che è tornato, e la domanda è che cosa è cambiato. Una versione precedente stampava un QR,
-      marker agli angoli e una griglia di caselle dichiarate, e sono stati cancellati tutti e tre.
+      <b>Lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la scansione e
+      l'immagine originale. Le confronta e restituisce una lettura dei segni aggiunti.
     </li>
     <li>
-      <b>Quello che è tornato decide come si va avanti, e poi finisce.</b> Il resto dell'attività
-      viene scritto mentre il foglio è ancora sul tavolo. Mezz'ora prima dell'ora fissata dal
-      genitore, comunque sia andata, comincia la via d'uscita — e arriva alla stessa fine, senza mai
-      dire che è stata accorciata.
+      <b>La lettura seleziona il momento successivo.</b> Il servizio di esecuzione segue l'arco
+      corrispondente nel grafo dell'attività e prepara lo schermo o la pagina successiva. Trenta
+      minuti prima dell'ora fissata dal genitore entra nel percorso previsto dal momento corrente
+      fino alla fine.
     </li>
   </ol>
 
@@ -120,17 +111,17 @@ import { REPO } from "../../i18n/ui";
         alt="La stessa pagina, riempita a mano."
       />
       <figcaption>
-        Tornata. Qui riempita da una mano simulata, così una corsa intera si può esercitare senza
-        nessuna persona dentro.
+        Tornata. Una mano simulata ha compilato questo esempio per esercitare automaticamente la
+        corsa completa.
       </figcaption>
     </figure>
   </div>
 
   <p>
-    Il vocabolario del lettore è volutamente povero: una pagina è tornata con <b>segni</b> oppure
-    <b>bianca</b>, e nient'altro. Non un conteggio e non una frazione, perché contare i segni di
-    qualcuno è a un passo da un punteggio. Poi la lettura sparisce: il tipo si rifiuta di essere
-    serializzato, copiato o messo in cache.
+    Il risultato della visione ha due valori: <b>segni</b> e <b>bianca</b>. Questo vocabolario
+    impedisce al percorso di lettura di trasformare i segni di qualcuno in un conteggio o in un
+    punteggio. Dopo la scelta del momento successivo, il tipo della lettura chiude le vie di
+    serializzazione, copia e cache fuori dalla memoria.
   </p>
 
   <h2>Misurato sul sistema in funzione</h2>
@@ -181,9 +172,8 @@ import { REPO } from "../../i18n/ui";
   </table>
 
   <p class="note">
-    L'ultima riga è quella che non parla di velocità. La catena di stampa non riscala, e la verifica
-    è stata fatta a mano: una catena che riscala in silenzio renderebbe sbagliata ogni misura fisica
-    di ogni pagina, in un modo che nessun test noterebbe.
+    L'ultima riga verifica la scala fisica. Una misura fatta a mano ha confermato che la catena di
+    stampa conserva le dimensioni dall'immagine generata al foglio.
   </p>
 
   <h2>Lo stack</h2>
@@ -206,10 +196,10 @@ import { REPO } from "../../i18n/ui";
 
   <h3>Come si pubblica</h3>
   <p>
-    Un push su <code>main</code> pubblica l'API attraverso una managed identity assegnata dall'utente
-    con credenziale federata, quindi nella pipeline non c'è nessuna password — misurato end to end in
-    1 m 35 s. L'immagine si costruisce sul runner e non con <code>az acr build</code>, perché
-    quest'ultimo richiede diritti che permetterebbero all'identità di riconfigurare il registro.
+    Un push su <code>main</code> pubblica l'API tramite GitHub OIDC, una credenziale federata e una
+    managed identity assegnata dall'utente. Il tempo misurato da capo a fondo è 1 m 35 s. Il runner
+    costruisce l'immagine localmente, così i ruoli limitati alle risorse possono scrivere nel
+    registro e aggiornare la container app senza poter riconfigurare il registro.
   </p>
 
   <figure class="narrow">
@@ -226,34 +216,33 @@ import { REPO } from "../../i18n/ui";
     </figcaption>
   </figure>
 
-  <h2>Quello che non fa</h2>
+  <h2>Confini imposti dal codice</h2>
 
   <p>
-    Ottimizzare l'aggancio è facile da aggiungere a un sistema così, e farebbe danno: quindi è una
-    regola scritta e non una questione di buon senso. <code>tests/test_boundaries.py</code> rifiuta
-    quel vocabolario nella forma salvata, nel pannello, nel browser e nei prompt. Ognuno di quei
-    test è stato verificato iniettando la violazione e guardandolo fallire.
+    <code>tests/test_boundaries.py</code> cerca il vocabolario dell'ottimizzazione dell'aggancio nello
+    schema salvato, nel pannello, nel browser e nei prompt. Ogni controllo è stato verificato
+    inserendo una violazione e osservando il fallimento.
   </p>
 
   <ul>
-    <li>Nessuna serie di giorni, nessun obiettivo giornaliero, niente tenuto da parte per far tornare qualcuno.</li>
-    <li>Nessuna notifica innescata dall'assenza, e nessuna misura del tempo passato.</li>
+    <li>L'attività fornisce da sola il motivo per continuare; il sistema non aggiunge serie di giorni, obiettivi giornalieri o ricompense trattenute.</li>
+    <li>Il programma risponde alle attività approvate e alle loro scadenze, invece che all'assenza o a misure del tempo trascorso.</li>
     <li>
-      Un profilo viene tenuto, e arriva ai due modelli che scrivono ed eseguono un'attività — e a
-      nessuno schermo, nessun foglio stampato e nessuna pagina del pannello. Lo impone un gate di
-      revisione, non la speranza che un prompt sia stato educato.
+      Il gate di revisione rende il profilo disponibile soltanto ai modelli che scrivono ed eseguono
+      un'attività. Gli schermi, i fogli stampati e le pagine del pannello ricevono contenuti già
+      esaminati.
     </li>
     <li>
-      Nessun riconoscimento di volti o persone, nessuna inferenza di emozione o attenzione, nessun
-      dato biometrico.
+      Il percorso di visione elabora i fogli restituiti. Il suo schema contiene segni o bianca,
+      invece di volti, identità, emozioni, attenzione o dati biometrici.
     </li>
   </ul>
 
   <p>
-    Un agente non ha nemmeno dove annotare che la propria uscita va bene: <code>Proposal</code> non
-    ha un campo di stato, e solo il filtro di sicurezza può coniare il tipo che un contenuto
-    destinato a una persona richiede. Il confine è un tipo e non una convenzione, quindi violarlo
-    non compila.
+    Le decisioni del genitore vivono nel registro delle approvazioni, separato dalla
+    <code>Proposal</code> generata. Soltanto il filtro di sicurezza conia il tipo richiesto dai
+    contenuti destinati alle persone. Tipi e sigilli rappresentano questi confini, quindi il codice
+    che li aggira fallisce prima dell'esecuzione.
   </p>
 
   <p>

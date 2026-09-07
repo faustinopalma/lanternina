@@ -28,14 +28,14 @@ export const NAV: Record<PageKey, Dict> = {
   overview: { en: "Overview", it: "Che cos'è" },
   flows: { en: "How it flows", it: "Come funziona" },
   identity: { en: "Identity and access", it: "Identità e accessi" },
-  status: { en: "What is built", it: "Cosa c'è davvero" },
+  status: { en: "Current implementation", it: "Implementazione attuale" },
 };
 
 export const NAV_NOTE: Record<PageKey, Dict> = {
   overview: { en: "The system in one page", it: "Il sistema in una pagina" },
-  flows: { en: "Four diagrams", it: "Quattro diagrammi" },
+  flows: { en: "Requests, state and model calls", it: "Richieste, stato e chiamate ai modelli" },
   identity: { en: "Two tenants, two audiences", it: "Due tenant, due audience" },
-  status: { en: "Running, and not", it: "Ciò che gira e ciò che no" },
+  status: { en: "Verified on real hardware", it: "Verificato su hardware reale" },
 };
 
 export const UI = {

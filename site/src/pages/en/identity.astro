@@ -9,18 +9,18 @@ import { REPO } from "../../i18n/ui";
   page="identity"
   eyebrow="Two tenants, two audiences"
   title="Identity and access"
-  description="Parents sign in through an Entra External ID tenant; administrators through a separate workforce app registration with an app role. The house holds no Azure credential at all."
+  description="Parents use Entra External ID, administrators use a workforce app role, and each house authenticates to the API with its own device key."
 >
   <p class="lede">
-    Three kinds of caller reach this system and none of them authenticates the same way. A parent is
-    an external consumer identity. An administrator is a workforce identity with an app role. The
-    machine in the house is neither — it holds no Azure credential at all.
+    The API accepts three credential types. Parents present Entra External ID tokens, administrators
+    present workforce tokens with the <code>Lanternina.Admin</code> app role, and each house presents
+    a device key over TLS. Each credential reaches a separate route group.
   </p>
 
   <WhoSignsIn
     title="Who signs in, and what they reach"
-    desc="Three callers on the left reach one API in the middle, which reaches three sets of routes on the right. A parent arrives with an Entra External ID token and reaches only their own household. An administrator arrives from the workforce tenant with the app role Lanternina.Admin and reaches the routes that admit and reject accounts. The house arrives with a per-household device key over TLS, holding no Entra identity, and reaches the routes that ask for work, fetch approved items and return a reading."
-    caption="Three edges into one node, and none of the three credentials can be presented in place of another."
+    desc="Three callers reach one API and three route groups. An Entra External ID token resolves a parent's household. A workforce token with the Lanternina.Admin app role authorizes account administration. A per-household device key authorizes work polling, approved-item retrieval and returned readings."
+    caption="The API selects an authentication path from the route group and validates the credential before application logic runs."
     parent={{
       title: "A parent",
       sub: ["Entra External ID (CIAM)", "self-service registration"],
@@ -45,38 +45,34 @@ import { REPO } from "../../i18n/ui";
     }}
   />
 
-  <h2>Why the administrator is not a parent with a flag</h2>
+  <h2>Separate identities for parents and administrators</h2>
 
   <p>
-    It would have been one boolean. The reason it is not is that the External ID directory is open
-    to self-service registration, and a flag would live in the same Cosmos container that an
-    administrator edits — so the privilege and the thing that grants it would share a blast radius,
-    and a bootstrap path would have to exist to create the first one.
+    Entra External ID supports self-service parent registration. Administrative privilege comes
+    from a separate workforce app registration, rather than a flag in the Cosmos container that an
+    administrator edits. The privilege and the application data therefore have separate control
+    planes and bootstrap paths.
   </p>
 
   <p>
-    Instead the administrator signs in against a distinct app registration in the workforce tenant,
-    and the privilege arrives in the <code>roles</code> claim of the token. The two applications have
-    different audiences, so a parent's token is rejected by the audience check before any logic of
-    ours runs. That is a stronger statement than "we check a field": there is no code path in which a
-    consumer token is examined for administrative rights.
+    The administrator's token carries the privilege in its <code>roles</code> claim. Parent and admin
+    applications have different audiences, and the API checks the audience before application
+    logic. Only a workforce token reaches the app-role check on administrative routes.
   </p>
 
   <p class="note">
-    A trap worth recording, because it costs an activity: an app role assignment can silently land
-    on <b>Default Access</b>, whose <code>appRoleId</code> is all zeros. The token is then perfectly
-    valid and simply carries no <code>roles</code> claim, so the refusal looks like a credential
-    problem rather than an assignment problem. Check
-    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code> and look at the id.
+    An app-role assignment can land on <b>Default Access</b>, whose <code>appRoleId</code> is all zeros.
+    The resulting token is valid but has no <code>roles</code> claim. Inspect
+    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code> and verify the assigned id when an admin
+    token passes authentication but fails authorization.
   </p>
 
   <h2>Multi-tenant by construction</h2>
 
   <p>
-    Nothing in the data model assumes one household. Every stored row is partitioned by household
-    id, every device key belongs to exactly one household, and every parent route resolves the
-    household from the token rather than from anything the caller sends. A second house needs a
-    provisioning run, not a schema change.
+    Every stored row is partitioned by household id. Each device key maps to one household, and each
+    parent route resolves the household from the validated token. Adding a house requires a
+    provisioning run and uses the existing schema.
   </p>
 
   <p>
@@ -86,44 +82,40 @@ import { REPO } from "../../i18n/ui";
     observed side by side.
   </p>
 
-  <h2>The house has no Azure credential</h2>
+  <h2>House authentication</h2>
 
   <p>
-    The hub in the room cannot sign in to Azure and does not try. It presents a device key on an
-    <code>X-Device-Key</code> header over TLS, and everything that needs a model — reading a page,
-    interpreting a reminder, continuing an activity — is a request to the API, which holds the
-    credential. Default closed: with no device key configured, those routes answer 503 rather than
-    allowing anything.
+    The hub presents its device key in the <code>X-Device-Key</code> header over TLS. The API holds
+    the Azure credential and performs model calls for page reading, reminder interpretation and
+    activity continuation. Device routes return 503 until a device key is configured.
   </p>
 
   <p>
-    So a machine physically removable from a house never carries something that could be replayed
-    against a subscription. The cost is the one stated in the flows: no cloud, no reading.
+    A hub therefore carries a credential for its household routes rather than a credential that can
+    be replayed against the Azure subscription. This boundary makes cloud connectivity a requirement
+    for page reading.
   </p>
 
-  <h2>Two keys that are not the same key</h2>
+  <h2>Separate approval and safety keys</h2>
 
   <p>
-    Content safety and parental approval are both sealed with HMAC, with two separate keys, and the
-    approval seal covers the safety seal. Sharing one key would let the content-safety gate mint
-    parent approvals, which is exactly the failure the separation exists to prevent.
+    Content safety and parental approval use separate HMAC keys. The approval seal covers the safety
+    seal, so the content-safety component can screen content but cannot mint a parent's decision.
   </p>
 
   <p>
-    The approval seal is minted and verified inside a single execution on the device, so rotating
-    that key costs nothing. The safety seal crosses processes and days — minted when content is
-    offered, stored by the panel, verified later — so that is the key worth protecting. Both are
-    absent from the hub entirely, which was verified by searching the filesystem for the literal
-    values rather than by trusting the deployment script.
+    The approval seal is minted and verified within one device execution, so its key can rotate
+    between runs. The safety seal crosses processes and days: the gate mints it, the panel stores it,
+    and a later process verifies it. The hub filesystem was searched for both literal key values to
+    verify that neither key is deployed there.
   </p>
 
-  <h2>Publishing without a secret</h2>
+  <h2>OIDC deployment</h2>
 
   <p>
-    The pipeline that deploys the API holds no password. A user-assigned managed identity carries a
-    federated credential, GitHub Actions exchanges its OIDC token for an Azure one, and three
-    role assignments bound to single resources do the rest: push to one registry, read it, and
-    update one container app.
+    GitHub Actions exchanges its OIDC token for an Azure token through a federated credential on a
+    user-assigned managed identity. Three resource-scoped role assignments allow the pipeline to
+    push to one registry, read that registry and update one container app.
   </p>
 
   <p class="note">
@@ -134,19 +126,18 @@ import { REPO } from "../../i18n/ui";
     the repository.
   </p>
 
-  <h2>Two gaps, named</h2>
+  <h2>Known authorization gaps</h2>
 
   <p>
-    <code>scp</code> is not verified. The token's audience, issuer, expiry and subject are checked
-    and the scope is not. It is harmless while there is exactly one scope, and it becomes a hole the
-    moment somebody adds a second one believing it separates permissions.
+    The token validator checks audience, issuer, expiry and subject but omits <code>scp</code>. The
+    current app exposes one scope. Adding another scope would require a scope check before it could
+    separate permissions.
   </p>
 
   <p>
-    App registrations are created by hand in the portal, deliberately, and the steps are written
-    down rather than scripted. The one that is forgotten every time is
-    <code>requestedAccessTokenVersion: 2</code> in the manifest — without it the issuer is the v1
-    endpoint and every sign-in fails without saying why.
+    App registrations are provisioned manually from the documented steps. The manifest must set
+    <code>requestedAccessTokenVersion: 2</code>; the default v1 issuer does not match the API's token
+    validation configuration.
   </p>
 
   <p>

@@ -8,7 +8,7 @@ import { REPO } from "../../i18n/ui";
   page="overview"
   eyebrow="A home system, built for a hackathon"
   title="An activity on paper, invented for one person"
-  description="Lanternina invents an activity for an adolescent, has a parent approve it, and runs it on paper and e-paper. Models in Microsoft Foundry; nothing infers on the device."
+  description="Lanternina invents an activity for an adolescent, has a parent approve it, and runs it on paper and e-paper. Language, vision and image inference runs in Microsoft Foundry."
 >
   <p class="lede">
     Lanternina invents an activity for an adolescent, has a parent approve it, and then runs it in
@@ -18,9 +18,9 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     A mini-PC in a house drives two e-paper displays, an inkjet and a flatbed scanner. Every
-    language and vision call goes to Microsoft Foundry in the EU. No model runs on the device, and
-    there is no offline mode. The house holds the clock and the sealing keys, and it is the only
-    thing that starts work.
+    language and vision call goes to Microsoft Foundry in the EU, so inference requires cloud
+    connectivity. The house holds the clock and sealing keys, initiates each request and controls
+    when work begins.
   </p>
 
   <figure class="band">
@@ -39,52 +39,44 @@ import { REPO } from "../../i18n/ui";
   <h2>How an activity goes</h2>
 
   <p>
-    Seven steps, in the order they happen. The house starts all of them; nothing in the cloud can
-    start anything.
+    The sequence begins in the parent panel. The mini-PC then runs the approved activity on its own
+    clock.
   </p>
 
   <ol class="steps">
     <li>
-      <b>The house asks whether there is an activity to be had.</b> The mini-PC asks on its own
-      clock, and the answer arrives inside the reply. Approving something in the dashboard writes a
-      row and does nothing else, and the house finds that row the next time it asks. No path leads
-      into a device in a room, which is also why there is nothing on the home network to attack.
+      <b>A parent reviews the ideas and approves one.</b> The panel shows the overview, themes and
+      script for each idea. The parent can edit the brief before approval and sets the hour by which
+      the activity must end.
     </li>
     <li>
-      <b>A model writes the whole activity in one answer.</b> Every moment of it, three lengths for
-      each moment, a four-rung ladder of help under each, and a way out from anywhere. Nothing is
-      added while it runs. That is what lets the same moment be shortened when the clock is tight,
-      or put on a display that holds forty words, and still reach the same ending.
+      <b>The API turns the approved brief into an activity.</b> The model router sends the brief to
+      Microsoft Foundry. One response contains the activity graph, three lengths for each moment,
+      four levels of help and a route to the ending from every point.
     </li>
     <li>
-      <b>Seven checks and a safety gate read it before anybody does.</b> The checks read its shape:
-      that every moment can be reached, that the way out reaches for something already in the
-      person's hands, that no question is asked the activity never answers. A refused activity is
-      handed back to be repaired, once. The gate reads the words.
+      <b>The API validates and stores the activity.</b> Structural checks verify its routes, objects
+      and answers. A failed check gives the model one repair attempt. Azure AI Content Safety then
+      screens the text, and the completed activity is stored for that household.
     </li>
     <li>
-      <b>A parent reads the overview and approves it.</b> Once, and from the overview rather than
-      moment by moment: approving every branch would need an adult awake at the moment each branch
-      was taken. The parent also sets the hour the activity has to be over by.
+      <b>The mini-PC collects the activity.</b> It polls the device API on its own schedule. The API
+      returns the waiting activity in that HTTPS response, and the mini-PC stores it locally before
+      preparing the first page.
     </li>
     <li>
-      <b>The house prints a page.</b> An image model is given every string that has already passed
-      the gate, told to letter exactly those characters, and draws the whole A4 sheet in one pass —
-      a map, a museum label, a leaf out of a field notebook. The page is described in words rather
-      than laid out in code, so the design work is the prompt, and the format lives in one Markdown
-      file.
+      <b>The mini-PC prints the first page.</b> The router sends the screened text and a page
+      description to an image model. The model draws the complete A4 sheet, and the print service
+      sends it to the inkjet over IPP.
     </li>
     <li>
-      <b>Somebody writes on it and puts it back on the glass.</b> The paper carries only what a
-      person reads: a model is handed two images, the blank as it was printed and what came back,
-      and asked what is different. An earlier version printed a QR code, corner markers and a grid
-      of declared boxes, and all three were deleted.
+      <b>The scanner returns the completed page.</b> A vision model receives the scan and the
+      original image. It compares them and returns a reading of the marks that were added.
     </li>
     <li>
-      <b>What came back decides what happens next, and then it ends.</b> The rest of the activity
-      is written while the sheet is still on the table. Thirty minutes before the hour the parent
-      set, whatever has been reached, the way out begins — and it arrives at the same ending, never
-      announced as a shortened one.
+      <b>The reading selects the next moment.</b> The execution service follows the corresponding
+      edge in the activity graph and prepares the next display or page. Thirty minutes before the
+      hour set by the parent, it enters the planned route from the current moment to the ending.
     </li>
   </ol>
 
@@ -116,17 +108,15 @@ import { REPO } from "../../i18n/ui";
         alt="The same page, filled in by hand."
       />
       <figcaption>
-        Came back. Filled in here by a simulated hand, so a whole run can be exercised with no
-        person in it.
+        Came back. A simulated hand filled this example to exercise the complete run automatically.
       </figcaption>
     </figure>
   </div>
 
   <p>
-    The reader's vocabulary is deliberately poor: a page came back with <b>marks</b> or
-    <b>blank</b>, and nothing else. Not a count and not a fraction, because a count of somebody's
-    marks is one step from a score. The reading is then gone — the type refuses to be pickled,
-    copied or cached.
+    The vision result has two values: <b>marks</b> and <b>blank</b>. This vocabulary prevents the
+    reading path from turning somebody's marks into a count or score. After the next moment is
+    selected, the reading type closes the pickle, copy and cache paths out of memory.
   </p>
 
   <h2>Measured on the deployment</h2>
@@ -177,9 +167,8 @@ import { REPO } from "../../i18n/ui";
   </table>
 
   <p class="note">
-    The last row is the one that is not about speed. The print chain does not rescale, and that was
-    checked by hand — a chain that silently rescales would make every physical dimension on every
-    page wrong in a way no test would notice.
+    The final row validates physical scale. A hand measurement confirmed that the print chain
+    preserves dimensions from the generated image to the sheet.
   </p>
 
   <h2>The stack</h2>
@@ -201,10 +190,10 @@ import { REPO } from "../../i18n/ui";
 
   <h3>How it ships</h3>
   <p>
-    A push to <code>main</code> publishes the API through a user-assigned managed identity with a
-    federated credential, so there is no password anywhere in the pipeline — measured end to end at
-    1 m 35 s. The image is built on the runner rather than with <code>az acr build</code>, because
-    the latter needs rights that would let the identity reconfigure the registry.
+    A push to <code>main</code> publishes the API through GitHub OIDC, a federated credential and a
+    user-assigned managed identity. The measured end-to-end time is 1 m 35 s. The runner builds the
+    image locally, which lets its resource-scoped roles push to the registry and update the
+    container app without permission to reconfigure the registry.
   </p>
 
   <figure class="narrow">
@@ -220,30 +209,28 @@ import { REPO } from "../../i18n/ui";
     </figcaption>
   </figure>
 
-  <h2>What it does not do</h2>
+  <h2>Boundaries enforced in code</h2>
 
   <p>
-    Engagement optimisation is easy to add to a system like this and would do harm, so it is a
-    written rule rather than a matter of judgement. <code>tests/test_boundaries.py</code> refuses the
-    vocabulary in the stored shape, in the panel, in the browser and in the prompts. Each of those
-    tests was checked by injecting the violation and watching the test fail.
+    <code>tests/test_boundaries.py</code> checks the stored schema, panel, browser and prompts for the
+    vocabulary of engagement optimisation. Each check was mutation-tested by inserting a violation
+    and observing the failure.
   </p>
 
   <ul>
-    <li>No streak, no daily goal, nothing withheld as a reason to come back.</li>
-    <li>No notification triggered by absence, and no measure of time spent.</li>
+    <li>The activity itself provides the reason to continue; the system does not add streaks, daily targets or withheld rewards.</li>
+    <li>The scheduler responds to approved activities and their deadlines, rather than absence or time-spent metrics.</li>
     <li>
-      A profile is kept, and it reaches the two models that write and run an activity — and no
-      display, no printed sheet and no page of the panel. A review gate enforces that, not the hope
-      that a prompt was polite.
+      The review gate makes the profile available only to the models that write and run an activity.
+      User-facing displays, printed sheets and panel pages receive reviewed activity content.
     </li>
-    <li>No face or person detection, no emotion or attention inference, no biometrics.</li>
+    <li>The vision path processes returned sheets. Its schema carries marks or blank, rather than faces, identity, emotion, attention or biometric data.</li>
   </ul>
 
   <p>
-    An agent also has nowhere to record that its own output is acceptable: <code>Proposal</code> has
-    no status field, and only the safety gate can mint the type a user-facing payload requires. The
-    boundary is a type rather than a convention, so breaking it does not compile.
+    Parent decisions live in the approval ledger, separate from the generated <code>Proposal</code>.
+    The safety gate alone mints the payload type required by user-facing content. These boundaries
+    are represented by types and seals, so code that bypasses them fails before it can run.
   </p>
 
   <p>
