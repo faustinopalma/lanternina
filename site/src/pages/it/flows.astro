@@ -21,9 +21,7 @@ import Base from "../../layouts/Base.astro";
   <h2>Chi chiede a chi</h2>
 
   <p>
-    L'hub avvia ogni scambio di rete con la casa. Un'azione del genitore modifica lo stato nel
-    pannello e l'hub riceve quello stato alla richiesta successiva. I dati dal cloud alla casa
-    viaggiano quindi nelle risposte alle richieste HTTPS in uscita dall'hub.
+    I dispositivi sono distribuiti per casa e comunicano con l'hub sulla rete locale. Gli schermi a batteria usano il Wi-Fi; l'hub può restare fuori vista. Le frecce rappresentano scambi di dati, non cavi. Verso il cloud è l'hub ad avviare le richieste: le decisioni del genitore arrivano nella risposta successiva.
   </p>
 
   <RequestLoop
@@ -34,16 +32,16 @@ import Base from "../../layouts/Base.astro";
     cloud="Azure, regione UE"
     parent={{ title: "Un genitore, dal browser", sub: ["approva e fissa le ore"] }}
     writes="scrive una riga"
-    displays={{ title: "schermi e-paper", sub: ["una bitmap a 1 bit, già fatta"] }}
+    displays={{ title: "schermi e-paper", sub: ["batteria · Wi-Fi"] }}
     button={{ title: "un pulsante", sub: ["risposta nella replica"] }}
     hub={{
       title: "Hub",
-      sub: ["orologio · chiavi · coda di stampa", "l'unica cosa che dà inizio al lavoro"],
+      sub: ["mini-PC sulla rete di casa", "fuori vista · alimentazione fissa"],
     }}
     paper={{ title: "stampante · scanner", sub: ["un foglio A4 per volta"] }}
-    shows="mostra"
+    shows="via Wi-Fi"
     press="una pressione"
-    sheet="esce, e rientra"
+    sheet="via rete locale"
     api={{ title: "pannello + API", sub: ["conserva le decisioni per la richiesta successiva"] }}
     router={{ title: "router dei modelli", sub: ["l'unico modulo con un SDK di modelli"] }}
     gate={{ title: "Content Safety", sub: ["conia il contenuto filtrato"] }}

@@ -21,9 +21,7 @@ import Base from "../../layouts/Base.astro";
   <h2>Who asks whom</h2>
 
   <p>
-    The hub initiates every network exchange with the house. A parent action changes state in the
-    panel, and the hub receives that state on its next poll. Cloud-to-house data therefore travels
-    inside replies to outbound HTTPS requests from the hub.
+    Devices sit around the home and communicate with the hub over the local network. Battery-powered displays use Wi-Fi; the hub can stay out of sight. Arrows represent data exchanges, not cables. The hub initiates requests to the cloud and receives parent decisions in subsequent responses.
   </p>
 
   <RequestLoop
@@ -34,16 +32,16 @@ import Base from "../../layouts/Base.astro";
     cloud="Azure, EU region"
     parent={{ title: "A parent, in a browser", sub: ["approves, and sets the hours"] }}
     writes="writes a row"
-    displays={{ title: "e-paper displays", sub: ["a finished 1-bit bitmap"] }}
+    displays={{ title: "e-paper displays", sub: ["battery · Wi-Fi"] }}
     button={{ title: "a button", sub: ["answered in the reply"] }}
     hub={{
       title: "Hub",
-      sub: ["clock · sealing keys · print queue", "the only thing that starts work"],
+      sub: ["mini-PC on the home network", "out of sight · fixed power supply"],
     }}
     paper={{ title: "printer · scanner", sub: ["one A4 sheet at a time"] }}
-    shows="shows"
+    shows="via Wi-Fi"
     press="a press"
-    sheet="out, and back in"
+    sheet="via local network"
     api={{ title: "panel + API", sub: ["stores decisions for the next poll"] }}
     router={{ title: "model router", sub: ["the only module allowed a model SDK"] }}
     gate={{ title: "Content Safety", sub: ["mints the screened payload"] }}
