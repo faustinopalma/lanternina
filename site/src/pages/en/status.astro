@@ -6,7 +6,7 @@ import { REPO } from "../../i18n/ui";
 <Base
   lang="en"
   page="status"
-  eyebrow="A hackathon project, honestly described"
+  eyebrow="Running, and not"
   title="What is built"
   description="An afternoon has run end to end in a house. What is running, what is not, and what the tests actually enforce."
 >
@@ -18,9 +18,8 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    This is a hackathon project and it is not a finished product. It is also not a demo: the parts
-    below run against real services, with real credentials, on hardware in a room. Both of those
-    things are true at once, and the point of this page is to say which is which.
+    This is a hackathon project and not a finished product. It is also not a demo: the parts below
+    run against real services, with real credentials, on hardware in a room.
   </p>
 
   <h2>Running</h2>
@@ -50,8 +49,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     Each of these is a test rather than a convention, and each was mutation-checked: the violation
-    was injected and the test was watched to fail. If you change the design so one no longer holds,
-    please change the product rather than the test.
+    was injected and the test was watched to fail.
   </p>
 
   <table class="numbers">
@@ -99,9 +97,7 @@ import { REPO } from "../../i18n/ui";
     <li>
       <b>The handheld camera.</b> The object is being assembled by hand; <code>vision/</code> is an
       empty Python package and nothing in the repository takes a photograph. Every guarantee stated
-      about the camera is a design decision that no test would notice being dropped. A device on a
-      bench and an empty package are not the same distance from working, and the second is the
-      longer one.
+      about the camera is a design decision that no test would notice being dropped.
     </li>
     <li>
       <b>The button panel.</b> Also an object on a bench. Today there is one button per display, and
@@ -127,9 +123,8 @@ import { REPO } from "../../i18n/ui";
   <h2>What the failures taught</h2>
 
   <p>
-    The defects worth reading are in the repository with their measurements attached, because a
-    system like this is mostly the record of things that turned out to be false. Three that changed
-    the design:
+    The defects worth reading are in the repository with their measurements attached. Three of them
+    changed the design:
   </p>
 
   <ul>

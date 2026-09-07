@@ -68,16 +68,17 @@ import { REPO } from "../../i18n/ui";
       was taken. The parent also sets the hour the afternoon has to be over by.
     </li>
     <li>
-      <b>The house prints a page.</b> There is no layout engine. An image model is given every
-      string that has already passed the gate, told to letter exactly those characters, and returns
-      a finished A4 page — a map, a museum label, a leaf out of a field notebook. The design work is
-      the prompt, and the page format lives in one Markdown file rather than in code.
+      <b>The house prints a page.</b> An image model is given every string that has already passed
+      the gate, told to letter exactly those characters, and draws the whole A4 sheet in one pass —
+      a map, a museum label, a leaf out of a field notebook. The page is described in words rather
+      than laid out in code, so the design work is the prompt, and the format lives in one Markdown
+      file.
     </li>
     <li>
-      <b>Somebody writes on it and puts it back on the glass.</b> A model is handed two images, the
-      blank as it was printed and what came back, and asked what is different. Nothing on the paper
-      is there for a machine: no QR code, no corner markers, no declared grid. An earlier version
-      had all three, and they were deleted.
+      <b>Somebody writes on it and puts it back on the glass.</b> The paper carries only what a
+      person reads: a model is handed two images, the blank as it was printed and what came back,
+      and asked what is different. An earlier version printed a QR code, corner markers and a grid
+      of declared boxes, and all three were deleted.
     </li>
     <li>
       <b>What came back decides what happens next, and then it ends.</b> The rest of the afternoon
