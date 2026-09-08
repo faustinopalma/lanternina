@@ -1,0 +1,52 @@
+---
+import Frame from "./Frame.astro";
+import Node from "./Node.astro";
+
+interface Props {
+  lang: "it" | "en";
+}
+
+const { lang } = Astro.props;
+const words = lang === "it"
+  ? {
+      title: "I componenti cloud",
+      desc: "Static Web Apps serve sito e pannello. Il pannello chiama l'API in Container Apps. L'API chiama Microsoft Foundry e Content Safety e legge e scrive in Cosmos DB e Blob Storage. Anche l'hub di casa chiama la stessa API.",
+      web: ["sito pubblico e pannello"],
+      api: ["API e router dei modelli"],
+      models: ["linguaggio, visione", "e immagini"],
+      safety: ["controllo dei", "contenuti generati"],
+      records: ["configurazione", "e registri"],
+      images: ["quadri e pagine", "generate"],
+      request: "richieste del pannello",
+      caption: "Anche l'hub chiama l'API. I modelli e gli archivi sono raggiunti dal container, non dai dispositivi in casa.",
+    }
+  : {
+      title: "Cloud components",
+      desc: "Static Web Apps serves the site and panel. The panel calls the API in Container Apps. The API calls Microsoft Foundry and Content Safety and reads and writes Cosmos DB and Blob Storage. The home hub also calls the same API.",
+      web: ["public site and parent panel"],
+      api: ["API and model router"],
+      models: ["language, vision", "and images"],
+      safety: ["checks generated", "content"],
+      records: ["configuration", "and records"],
+      images: ["generated pictures", "and pages"],
+      request: "panel requests",
+      caption: "The hub also calls the API. The container accesses models and storage; devices in the home do not access them directly.",
+    };
+---
+
+<Frame id="cloud-components" viewBox="0 0 820 410" title={words.title} desc={words.desc} caption={words.caption}>
+  <Node x={270} y={16} w={280} h={62} title="Static Web Apps" sub={words.web} />
+  <line x1="410" y1="78" x2="410" y2="152" class="g-edge" marker-end="url(#cloud-components-h)" />
+  <text x="424" y="119" class="g-lbl">{words.request}</text>
+  <Node x={270} y={154} w={280} h={68} title="Container Apps" sub={words.api} kind="strong" />
+
+  <path d="M410 222 V268 M104 268 H716" class="g-edge" fill="none" />
+  {[104, 308, 512, 716].map(center => (
+    <line x1={center} y1="268" x2={center} y2="320" class="g-edge" marker-end="url(#cloud-components-h)" />
+  ))}
+
+  <Node x={8} y={322} w={192} h={76} title="Microsoft Foundry" sub={words.models} />
+  <Node x={212} y={322} w={192} h={76} title="Content Safety" sub={words.safety} kind="gate" />
+  <Node x={416} y={322} w={192} h={76} title="Cosmos DB" sub={words.records} />
+  <Node x={620} y={322} w={192} h={76} title="Blob Storage" sub={words.images} />
+</Frame>

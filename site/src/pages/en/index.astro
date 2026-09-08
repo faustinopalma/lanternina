@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CloudComponents from "../../components/graph/CloudComponents.astro";
 import { REPO } from "../../i18n/ui";
 ---
 
@@ -145,14 +146,6 @@ import { REPO } from "../../i18n/ui";
     <figcaption>The prototype hub with its enclosure open. It stays out of sight on the home network; displays communicate with it over Wi-Fi.</figcaption>
   </figure>
 
-  <h3>In the cloud</h3>
-  <p>
-    Microsoft Foundry in the EU for every language, vision and image call, behind a single router
-    module that is the only place allowed to import a model SDK. Azure AI Content Safety on
-    generation paths. The scan-reading route does not apply inbound-image Content Safety. Container Apps for the API, Cosmos DB, Blob
-    Storage, Static Web Apps. Infrastructure as Bicep.
-  </p>
-
   <figure class="narrow">
     <img
       src="/images/kit.jpg"
@@ -165,6 +158,11 @@ import { REPO } from "../../i18n/ui";
       What goes into a frame: panel, XIAO ESP32-S3, a 2000 mAh cell, and the ribbon between them.
     </figcaption>
   </figure>
+
+  <h3>In the cloud</h3>
+  <p>Static Web Apps serves the site and panel. The API in Container Apps receives requests from the panel and hub, calls models on Microsoft Foundry and applies Content Safety to generated content. Cosmos DB stores configuration and records; Blob Storage stores images. The scan-reading path does not apply inbound-image Content Safety.</p>
+
+  <CloudComponents lang="en" />
 
   <h2>Boundaries enforced in code</h2>
 

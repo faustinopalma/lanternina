@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import CloudComponents from "../../components/graph/CloudComponents.astro";
 import { REPO } from "../../i18n/ui";
 ---
 
@@ -147,14 +148,6 @@ import { REPO } from "../../i18n/ui";
     <figcaption>L'hub del prototipo, a custodia aperta. Resta fuori vista sulla rete di casa; gli schermi comunicano con lui via Wi-Fi.</figcaption>
   </figure>
 
-  <h3>Nel cloud</h3>
-  <p>
-    Microsoft Foundry in UE per ogni chiamata di linguaggio, visione e immagini, dietro un unico
-    modulo router che è l'unico posto a cui è permesso importare un SDK di modelli. Azure AI Content
-    Safety sui percorsi di generazione. La rotta di lettura delle scansioni non applica un filtro Content Safety alle immagini in ingresso. Container Apps per l'API,
-    Cosmos DB, Blob Storage, Static Web Apps. Infrastruttura in Bicep.
-  </p>
-
   <figure class="narrow">
     <img
       src="/images/kit.jpg"
@@ -168,6 +161,11 @@ import { REPO } from "../../i18n/ui";
       due.
     </figcaption>
   </figure>
+
+  <h3>Nel cloud</h3>
+  <p>Static Web Apps serve il sito e il pannello. L'API in Container Apps riceve le richieste del pannello e dell'hub, chiama i modelli su Microsoft Foundry e applica Content Safety ai contenuti generati. Cosmos DB conserva configurazione e registri; Blob Storage conserva le immagini. La lettura delle scansioni non applica Content Safety alle immagini in ingresso.</p>
+
+  <CloudComponents lang="it" />
 
   <h2>Confini imposti dal codice</h2>
 
