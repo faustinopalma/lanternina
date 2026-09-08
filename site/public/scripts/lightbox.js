@@ -1,14 +1,14 @@
-const lightbox = document.querySelector<HTMLDialogElement>(".lightbox");
-const enlarged = lightbox?.querySelector<HTMLImageElement>("img");
-const closeButton = lightbox?.querySelector<HTMLButtonElement>(".lightbox-close");
+const lightbox = document.querySelector(".lightbox");
+const enlarged = lightbox?.querySelector("img");
+const closeButton = lightbox?.querySelector(".lightbox-close");
 
 function closeLightbox() {
   lightbox?.close();
   enlarged?.removeAttribute("src");
 }
 
-document.querySelectorAll<HTMLAnchorElement>("main a").forEach((link) => {
-  const image = link.querySelector<HTMLImageElement>(":scope > img");
+document.querySelectorAll("main a").forEach((link) => {
+  const image = link.querySelector(":scope > img");
   if (!image) return;
   image.classList.add("zoomable");
   image.addEventListener("click", (event) => {
