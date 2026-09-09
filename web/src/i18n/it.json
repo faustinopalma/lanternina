@@ -1,4 +1,7 @@
 {
+  "photos.diagnostics": "Diagnostica fotocamera",
+  "photos.sleepConfirmed": "risveglio da deep sleep confermato",
+  "photos.sleepPlanned": "sonno annunciato, non ancora confermato",
   "photos.title": "Fotografie",
   "photos.hubContact": "Ultimo contatto dell’hub: {date}",
   "photos.syncPending": "Foto o aggiornamenti da sincronizzare: {count}",

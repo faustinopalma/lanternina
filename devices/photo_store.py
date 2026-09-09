@@ -42,6 +42,13 @@ class PhotoStore:
 
     def record_camera(self, report: dict[str, Any]) -> None:
         with self.connect() as database:
+            previous = database.execute(
+                "SELECT report FROM camera_status WHERE id=?", (report["id"],)
+            ).fetchone()
+            history = json.loads(previous[0]).get("diagnosticHistory", []) if previous else []
+            if "diagnostics" in report:
+                history.append({"receivedAt": report["lastSeen"], **report["diagnostics"]})
+            report = {**report, "diagnosticHistory": history[-20:]}
             database.execute(
                 "INSERT OR REPLACE INTO camera_status VALUES (?, ?)",
                 (report["id"], json.dumps(report)),

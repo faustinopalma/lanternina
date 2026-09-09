@@ -1,4 +1,7 @@
 {
+  "photos.diagnostics": "Camera diagnostics",
+  "photos.sleepConfirmed": "wake from deep sleep confirmed",
+  "photos.sleepPlanned": "sleep announced, not yet confirmed",
   "kind.camera": "camera",
   "job.photo": "shows photographs",
   "level.unknown": "battery level unavailable",

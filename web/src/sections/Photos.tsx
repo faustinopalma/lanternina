@@ -120,6 +120,24 @@ export function Photos() {
       <Button disabled={disabled || state.status !== "ready" || !state.data.total} onClick={() => void preview({ mode: "all" })}><Trash2 className="mr-2 size-4" />{t("photos.all")}</Button>
       {(start || end) && range === null ? <p className="w-full text-sm text-quiet">{t("photos.invalidDates")}</p> : null}
     </div>
+    {state.status === "ready" && state.data.hub?.cameras?.length ? <details>
+      <summary className="cursor-pointer">{t("photos.diagnostics")}</summary>
+      {state.data.hub.cameras.map(camera => <section key={camera.id} className="my-3 min-w-0">
+        <h4 className="text-sm">{camera.id}</h4>
+        {[...camera.history].reverse().map((event, index) => <details key={index} className="border-b border-edge py-2 text-sm">
+          <summary className="cursor-pointer break-words">
+            {typeof event.receivedAt === "number" ? dateTime(event.receivedAt) : ""} · {String(event.phase ?? "")}
+            {event.previousSleepConfirmed === true ? ` · ${t("photos.sleepConfirmed")}` : ""}
+            {event.phase === "sleep_planned" ? ` · ${t("photos.sleepPlanned")}` : ""}
+          </summary>
+          <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-x-3 gap-y-1 font-mono text-xs">
+            {Object.entries(event).map(([key, value]) => <div key={key} className="contents">
+              <dt className="break-words">{key}</dt><dd className="break-all">{String(value)}</dd>
+            </div>)}
+          </dl>
+        </details>)}
+      </section>)}
+    </details> : null}
     {message ? <p role="status">{message}</p> : null}
     {state.status === "ready" ? <>
       {!state.data.total ? <Quiet>{t("photos.empty")}</Quiet> : null}

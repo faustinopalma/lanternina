@@ -66,4 +66,16 @@ describe("family photographs", () => {
       end: new Date("2026-09-10T00:00:00").getTime()/1000 });
     expect(dateSelection("", "2026-09-09")).toBeNull();
   });
+
+  it("does not call announced sleep confirmed sleep", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi({ photos: async () => ({ ...data, hub: {
+      contactAt: 103, pending: 0, localPhotos: 1, lastReceivedAt: 102,
+      cameras: [{ id: "camera", history: [{ receivedAt: 103, phase: "sleep_planned",
+        previousSleepConfirmed: false, captureMs: 2866, queued: 0 }] }],
+    } }) }), <Photos />);
+    await user.click(await screen.findByText("Diagnostica fotocamera"));
+    expect(screen.getByText(/sonno annunciato, non ancora confermato/)).toBeVisible();
+    expect(screen.queryByText(/risveglio da deep sleep confermato/)).toBeNull();
+  });
 });

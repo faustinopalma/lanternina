@@ -33,6 +33,10 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
                 "pending": len(hub.store.unsynced()),
                 "localPhotos": len(rows),
                 "lastReceivedAt": max((row["received"] for row in rows), default=None),
+                "cameras": [
+                    {"id": row["id"], "history": row.get("diagnosticHistory", [])}
+                    for row in hub.store.cameras()[:16]
+                ],
             },
         )
 

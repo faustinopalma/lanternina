@@ -5,8 +5,10 @@ from __future__ import annotations
 import base64
 import hashlib
 import io
+import json
+import math
 import time
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, HTTPException, Request, Response
 from PIL import Image
@@ -57,6 +59,37 @@ class SyncReport(BaseModel):
     pending: int = Field(ge=0)
     localPhotos: int = Field(ge=0)
     lastReceivedAt: Timestamp | None = None
+    cameras: list[dict[str, Any]] = Field(default_factory=list, max_length=16)
+
+    @model_validator(mode="after")
+    def diagnostics(self) -> SyncReport:
+        from devices.camera_diagnostics import clean_diagnostics
+
+        if len(json.dumps(self.cameras)) > 100000:
+            raise ValueError("camera diagnostics too large")
+        for camera in self.cameras:
+            if set(camera) - {"id", "history"} or not isinstance(camera.get("id"), str):
+                raise ValueError("invalid diagnostic camera")
+            if len(camera["id"]) > 64 or not isinstance(camera.get("history"), list):
+                raise ValueError("invalid diagnostic history")
+            if len(camera["history"]) > 20:
+                raise ValueError("diagnostic history too long")
+            for event in camera["history"]:
+                if not isinstance(event, dict):
+                    raise ValueError("invalid diagnostic event")
+                received = event.get("receivedAt")
+                if (
+                    isinstance(received, bool)
+                    or not isinstance(received, (int, float))
+                    or not math.isfinite(received)
+                    or received < 0
+                ):
+                    raise ValueError("invalid diagnostic receipt time")
+            camera["history"] = [
+                {"receivedAt": event["receivedAt"], **clean_diagnostics(event)}
+                for event in camera["history"]
+            ]
+        return self
 
 
 @router.post("/api/device/{household_id}/photos/sync")

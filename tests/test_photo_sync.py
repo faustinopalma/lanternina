@@ -23,6 +23,14 @@ def test_hub_sync_shows_photo_and_propagates_parent_deletion(tmp_path):
         tmp_path / "screen.bmp",
     )
     hub.store.accept(PHOTO, "cam", jpeg(), captured=100, target=None)
+    hub.store.record_camera(
+        {
+            "id": "cam",
+            "kind": "camera",
+            "lastSeen": 100,
+            "diagnostics": {"phase": "sleep_planned", "previousSleepConfirmed": False},
+        }
+    )
 
     def ask(url, body, **kwargs):
         response = client.post(
@@ -35,6 +43,8 @@ def test_hub_sync_shows_photo_and_propagates_parent_deletion(tmp_path):
     page = client.get("/api/photos", headers=headers()).json()
     assert page["photos"][0]["id"] == PHOTO
     assert page["hub"]["pending"] == 0
+    assert page["hub"]["cameras"][0]["history"][0]["phase"] == "sleep_planned"
+    assert page["hub"]["cameras"][0]["history"][0]["previousSleepConfirmed"] is False
     client.post("/api/photos/delete", headers=headers(), json={"mode": "all", "ids": [PHOTO]})
     synchronize(hub, ask)
     assert hub.store.get(PHOTO)["jpeg"] is None

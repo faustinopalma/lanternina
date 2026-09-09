@@ -55,7 +55,9 @@ export interface PhotoPage {
   page: number;
   pages: number;
   lastReceivedAt: number | null;
-  hub?: { contactAt: number; pending: number; localPhotos: number; lastReceivedAt: number | null } | null;
+  hub?: { contactAt: number; pending: number; localPhotos: number; lastReceivedAt: number | null;
+    cameras?: { id: string; history: Record<string, string | number | boolean>[] }[];
+  } | null;
 }
 
 export type PhotoSelection = { mode: "single"; id: string }

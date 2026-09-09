@@ -145,6 +145,9 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                 if not 0 < size <= 2048 or self.headers.get("Transfer-Encoding"):
                     raise ValueError("invalid status length")
                 values = json.loads(self.rfile.read(size))
+                from devices.camera_diagnostics import clean_diagnostics
+
+                diagnostics = clean_diagnostics(values.get("diagnostics", {}))
                 voltage = values.get("voltage")
                 if voltage is not None:
                     voltage = float(voltage)
@@ -173,6 +176,7 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                         "rssi": rssi,
                         "firmware": str(values.get("firmware", ""))[:64],
                         "address": self.client_address[0],
+                        "diagnostics": diagnostics,
                     }
                 )
             except (ValueError, TypeError, KeyError, AttributeError):
