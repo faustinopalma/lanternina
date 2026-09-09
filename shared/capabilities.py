@@ -34,9 +34,6 @@ class HouseCapability(StrEnum):
     PRINT_A4 = "print_a4"
     SHOW_800X480_1BIT = "show_800x480_1bit"
     SCAN_A4 = "scan_a4"
-    # Named, and not yet reachable: no verb asks for it, so no blueprint can require it
-    # today. It is here so that the capture station has a name waiting when the verb is
-    # written, and so that the name is agreed before an agent gets to invent one.
     PHOTOGRAPH_TABLE = "photograph_table"
 
 
@@ -190,7 +187,9 @@ _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
 }
 
 # Every capability an experience can ask for, which is the set a pretend house claims.
-REACHABLE: Final[frozenset[HouseCapability]] = frozenset(NEEDS.values())
+REACHABLE: Final[frozenset[HouseCapability]] = frozenset(NEEDS.values()) | {
+    HouseCapability.PHOTOGRAPH_TABLE,
+}
 
 
 
@@ -216,5 +215,9 @@ def capabilities_of(things: Iterable[Assigned]) -> frozenset[HouseCapability]:
     morning is a question about now; this answers what the house is equipped to do, and
     conflating the two would make a catalogue flicker with the network.
     """
+    things = tuple(things)
     found = (provided_by(thing.kind, job) for thing in things for job in thing.jobs)
-    return frozenset(capability for capability in found if capability is not None)
+    capabilities = frozenset(capability for capability in found if capability is not None)
+    if any(thing.kind == KIND_CAMERA for thing in things):
+        capabilities |= {HouseCapability.PHOTOGRAPH_TABLE}
+    return capabilities

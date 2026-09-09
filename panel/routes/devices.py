@@ -11,7 +11,7 @@ import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from shared.capabilities import KIND_CAMERA, KIND_DISPLAY
 
@@ -66,6 +66,14 @@ class NewAssignment(BaseModel):
 
     jobs: list[str] | None = None
     name: str | None = None
+    displayPollMinutes: int | None = Field(default=None, strict=True, ge=1, le=1440)
+
+
+def with_display_interval(row: dict[str, Any], request: Request, household: str) -> dict[str, Any]:
+    if row["kind"] == KIND_DISPLAY and row.get("displayPollMinutes") is None:
+        return {**row, "displayPollMinutes":
+                request.app.state.rhythm.get(household).display_poll_minutes}
+    return row
 
 
 @router.post("/api/device/{household_id}/devices")
@@ -118,7 +126,7 @@ def report_devices(
         "recorded": recorded,
         "displayPollMinutes": request.app.state.rhythm.get(household_id).display_poll_minutes,
         "things": [
-            row.to_public()
+            with_display_interval(row.to_public(), request, household_id)
             for row in inventory.list(household_id)
             if row.forgotten_at == 0.0
         ],
@@ -152,7 +160,7 @@ def list_devices(account: CurrentAccount, request: Request) -> Any:
     # had been taken off the list that nobody had touched.
     forgotten_ids = {row.id for row in gone}
     return {
-        "devices": merged(here, seen),
+        "devices": [with_display_interval(row, request, household) for row in merged(here, seen)],
         # Kept apart rather than mixed in. What was taken off the list is not part of the
         # house any more, and the only thing to do with it is put it back.
         "forgotten": merged(gone, [row for row in seen if row.id in forgotten_ids]),
@@ -172,12 +180,17 @@ def assign_device(
     known = {row.id: row for row in inventory.list(household)}.get(thing_id)
     if known is None:
         raise HTTPException(status_code=404, detail="unknown_device")
+    if new.displayPollMinutes is not None and known.kind != KIND_DISPLAY:
+        raise HTTPException(status_code=400, detail="only displays have a polling interval")
     try:
         jobs = None if new.jobs is None else clean_jobs(known.kind, new.jobs)
         name = None if new.name is None else clean_name(new.name)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return inventory.assign(household, thing_id, jobs=jobs, name=name).to_public()
+    updated = inventory.assign(
+        household, thing_id, jobs=jobs, name=name, display_poll_minutes=new.displayPollMinutes,
+    )
+    return with_display_interval(updated.to_public(), request, household)
 
 
 @router.post("/api/devices/{thing_id}/remove")

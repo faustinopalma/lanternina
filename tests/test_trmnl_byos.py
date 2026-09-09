@@ -56,6 +56,7 @@ def server(tmp_path: Path) -> tuple[str, ThreadingHTTPServer]:
     httpd_poll_file = config.display_poll_file
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
     httpd.poll_file = httpd_poll_file
+    httpd.registry = registry
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     yield f"http://127.0.0.1:{httpd.server_port}", httpd
@@ -115,6 +116,24 @@ def test_display_receives_updated_interval_on_next_wifi_request(server):
     headers["USB-Connected"] = "false"
     headers["Battery-Voltage"] = "3.65"
     assert json.loads(get(f"{base_url}/api/display", headers)[1])["refresh_rate"] == "3600"
+
+
+def test_two_displays_receive_independent_intervals_without_firmware_update(server):
+    from devices.display_poll import save_interval
+
+    base_url, httpd = server
+    second = register_device(httpd.registry, "94:A9:90:CF:7D:05")
+    save_interval(httpd.poll_file, 10, [
+        {"id": MAC, "kind": "display", "displayPollMinutes": 5},
+        {"id": second.mac, "kind": "display", "displayPollMinutes": 30},
+    ])
+    for mac, token, expected in ((MAC, TOKEN, "300"), (second.mac, second.token, "1800")):
+        headers = {"ID": mac, "Access-Token": token, "Battery-Voltage": "4.1"}
+        reply = json.loads(get(f"{base_url}/api/display", headers)[1])
+        assert reply["refresh_rate"] == expected
+        assert reply["update_firmware"] is False
+        headers["Battery-Voltage"] = "3.55"
+        assert json.loads(get(f"{base_url}/api/display", headers)[1])["refresh_rate"] == "21600"
 
 
 def test_battery_level_thresholds() -> None:

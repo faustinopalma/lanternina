@@ -1,5 +1,5 @@
 continuer  —  agents/experience_continuer.py :: the_prompt()
-19558 characters, 111 lines
+20312 characters, 112 lines
 invented for this rendering: an afternoon of one moment, a page that came back with one cell written and one left blank, and a line a parent might have typed
 ==============================================================================
 You are writing the rest of an activity in one household. It was planned this far and the plan says the rest depends on what came back on paper.
@@ -22,9 +22,10 @@ A moment is one of these, and carries no key other than the five above and the o
   {"act": "hand_over", ..., "page": {"kind": "...", "title": "<text>", "note": [ ... ], "spaces": [ ... ], "illustration": "<text>"}, "instead": [a list of at most 4 lines, each at most 44 characters]}
      It prints one page and leaves it where it can be picked up.
      instead is what the display says when there is no printer, so that this moment still reaches the same point in the story with no paper at all. It is not an apology and it does not mention the printer.
-  {"act": "collect", ..., "outcomes": [{"when": "marks", "then": "<a later moment id, or ask>"}, {"when": "blank", "then": "<a later moment id, or ask>"}], "if_no_page": "<a later moment id, or ask>"}
+  {"act": "collect", "source": "scanner or camera", ..., "outcomes": [{"when": "marks", "then": "<a later moment id, or ask>"}, {"when": "blank", "then": "<a later moment id, or ask>"}], "if_no_page": "<a later moment id, or ask>"}
      It takes a page back and reads what was added to it.
-     if_no_page is where the activity goes when nothing was printed at all.
+     For collect, source is "scanner" by default. Use "camera" when photograph_table is available and the return is an object, a construction, an arrangement or work that should stay on the table. Prefer the camera for these returns. Keep the scanner available for flat pages whose small writing benefits from scanning. A camera collect needs no preceding hand_over. Ask for a photograph explicitly in the preceding visible instructions. The camera returns a visible-material description: marks means relevant material is visible, blank means it is clearly absent, and an uncertain photograph leaves the moment waiting. Use ask when the next step depends on the description. A camera is not a sensor that observes continuously.
+if_no_page is where the activity goes when nothing was printed at all.
   {"act": "close", ...}
      It ends the afternoon on the display, from wherever it got to.
 A page is an object out of the story, and it is drawn whole: you say what it is and what it says, and it is drawn from that. You never say where anything goes.

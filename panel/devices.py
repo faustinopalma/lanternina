@@ -140,6 +140,7 @@ class Thing:
     # the row straight back -- without its job and without its name, because a report
     # carries neither. So a mistaken press silently unassigned a display.
     forgotten_at: float = 0.0
+    display_poll_minutes: int | None = None
 
     def silent_for(self, now: float | None = None) -> float:
         return max(0.0, (now or time.time()) - self.last_seen)
@@ -158,6 +159,7 @@ class Thing:
             "nameRefused": self.name_refused,
             "lastSeen": self.last_seen,
             "forgottenAt": self.forgotten_at,
+            "displayPollMinutes": self.display_poll_minutes,
             "silentSeconds": silent,
             # The panel is where a fault is allowed to appear. Nothing in the house says it.
             "silent": silent > SILENT_AFTER_SECONDS,
@@ -175,6 +177,7 @@ class InventoryStore(Protocol):
         *,
         jobs: Sequence[str] | None = None,
         name: str | None = None,
+        display_poll_minutes: int | None = None,
     ) -> Thing: ...
 
     def list(self, household_id: str) -> list[Thing]: ...
@@ -222,6 +225,7 @@ class InMemoryInventoryStore:
         *,
         jobs: Sequence[str] | None = None,
         name: str | None = None,
+        display_poll_minutes: int | None = None,
     ) -> Thing:
         with self._lock:
             current = self._rows[(household_id, thing_id)]
@@ -229,6 +233,8 @@ class InMemoryInventoryStore:
                 current,
                 jobs=current.jobs if jobs is None else tuple(jobs),
                 name=current.name if name is None else name,
+                display_poll_minutes=(current.display_poll_minutes if display_poll_minutes is None
+                                      else display_poll_minutes),
                 # A new name is a new attempt: the house has not judged it yet.
                 name_refused=current.name_refused if name is None else False,
             )

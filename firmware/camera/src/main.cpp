@@ -29,11 +29,15 @@ static uint32_t lastUsb = 0;
 static uint32_t lastFrame = 0;
 static uint32_t lastAttempt = 0;
 static const char *captureResult = "not_requested";
+static bool usbTestMode = false;
+static bool captureRequested = false;
+static int warmupFrames = 0;
 static String captureId;
 static String uploadId;
 static const char *trigger = "boot";
 static const char *networkResult = "not_attempted";
 static uint32_t captureMs = 0, uploadMs = 0, workMs = 0;
+static uint32_t sensorInitMs = 0, frameReadyMs = 0, storageMs = 0;
 static size_t jpegBytes = 0, frameWidth = 0, frameHeight = 0;
 static int uploadHttp = 0;
 static bool uploadAccepted = false;
@@ -140,17 +144,22 @@ static bool capture() {
     config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
     if (!psramFound()) return captureFailed("psram_unavailable");
     esp_err_t initialized = esp_camera_init(&config);
+    sensorInitMs = millis() - capturedMillis;
     if (initialized != ESP_OK) {
         Serial.printf("camera_init_error=0x%x\n", initialized);
         return captureFailed("sensor_initialization");
     }
     Serial.printf("sensor=%04x psram=%u\n", esp_camera_sensor_get()->id.PID, ESP.getPsramSize());
-    for (int frame = 0; frame < 2; ++frame) {
+    for (int frame = 0; frame < warmupFrames; ++frame) {
         camera_fb_t *warmup = esp_camera_fb_get();
         if (warmup) esp_camera_fb_return(warmup);
         delay(80);
     }
     camera_fb_t *image = esp_camera_fb_get();
+    frameReadyMs = millis() - capturedMillis;
+    uint32_t storageBegan = millis();
+    Serial.printf("capture_timing sensor_init_ms=%u frame_ready_ms=%u\n",
+                  sensorInitMs, frameReadyMs);
     if (image) {
         jpegBytes = image->len;
         frameWidth = image->width;
@@ -191,6 +200,7 @@ static bool capture() {
             record["boot"] = bootTag;
             record["millis"] = capturedMillis;
             record["epoch"] = capturedEpoch > 1700000000 ? capturedEpoch : 0;
+            record["diagnostic"] = strcmp(trigger, "usb_command") == 0;
             File metadata = LittleFS.open(path + ".meta", "w");
             saved = metadata && serializeJson(record, metadata) > 0;
             metadata.flush(); metadata.close();
@@ -203,6 +213,7 @@ static bool capture() {
             LittleFS.remove(path + ".jpg");
         }
     }
+    storageMs = millis() - storageBegan;
     if (image) esp_camera_fb_return(image);
     esp_camera_deinit();
     if (!saved) return captureFailed("frame_or_storage");
@@ -245,10 +256,11 @@ static void reportStatus(const char *phase) {
             status["voltage"] = millivolts * 2.0f / 16000.0f;
 #endif
             status["rssi"] = WiFi.RSSI();
-            status["firmware"] = "camera-2026-09-09-diag1";
+            status["firmware"] = "camera-2026-09-09-photo";
             status["captureResult"] = captureResult;
             status["queued"] = storageReady ? queued() : -1;
             JsonObject diagnostics = status.createNestedObject("diagnostics");
+            diagnostics["captureRequested"] = captureRequested;
             diagnostics["phase"] = phase;
             diagnostics["bootId"] = String(bootTag, HEX);
             diagnostics["previousBootId"] = String(previousBoot, HEX);
@@ -264,6 +276,9 @@ static void reportStatus(const char *phase) {
             diagnostics["captureId"] = captureId;
             diagnostics["uploadId"] = uploadId;
             diagnostics["captureMs"] = captureMs;
+            diagnostics["sensorInitMs"] = sensorInitMs;
+            diagnostics["frameReadyMs"] = frameReadyMs;
+            diagnostics["storageMs"] = storageMs;
             diagnostics["uploadMs"] = uploadMs;
             diagnostics["workMs"] = workMs;
             diagnostics["jpegBytes"] = jpegBytes;
@@ -323,6 +338,7 @@ static bool deliver() {
         http.addHeader("Authorization", String("Bearer ") + CAMERA_TOKEN);
         http.addHeader("Content-Type", "image/jpeg");
         http.addHeader("X-Camera-Id", WiFi.macAddress());
+        if (record["diagnostic"] == true) http.addHeader("X-Capture-Purpose", "diagnostic");
         if (record["epoch"].as<long long>() > 1700000000) {
             http.addHeader("X-Captured-At", String(record["epoch"].as<long long>()));
         } else if (record["boot"].as<uint32_t>() == bootTag) {
@@ -358,14 +374,14 @@ static void work(void *argument) {
     uint32_t workBegan = millis();
     workMs = 0;
     bool takePhoto = argument == (void *)1;
+    captureRequested = takePhoto;
     bool sleepOnly = argument == (void *)2;
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     if (takePhoto) {
         captureResult = "started";
         captureId = ""; uploadId = "";
         jpegBytes = 0; frameWidth = 0; frameHeight = 0;
         uploadHttp = 0; uploadMs = 0; uploadAccepted = false;
+        sensorInitMs = 0; frameReadyMs = 0; storageMs = 0;
         uint32_t captureBegan = millis();
         bool captured = capture();
         captureMs = millis() - captureBegan;
@@ -375,6 +391,8 @@ static void work(void *argument) {
             while (feedback != 0) delay(20);
         }
     }
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     if (sleepOnly) connectForReport();
     else {
         if (storageReady) deliver();
@@ -476,8 +494,9 @@ void loop() {
         stable = pressed;
         if (stable == HIGH) armed = true;
         else {
-            if (armed && !busy && !feedback && !activeFeedback) {
+            if (armed && !busy && !feedback && !activeFeedback && !usbTestMode) {
                 trigger = "button";
+                warmupFrames = 0;
                 feedback = 1;
                 startWork(true);
             }
@@ -485,6 +504,7 @@ void loop() {
         }
     }
     bool usb = now - lastUsb < 2000;
+    if (!usb) usbTestMode = false;
     if (usb) sleepReportAttempted = false;
     static char command[32];
     static size_t commandLength = 0;
@@ -493,11 +513,19 @@ void loop() {
         if (character == '\r') continue;
         if (character == '\n') {
             command[commandLength] = '\0';
-            if (strcmp(command, "CAPTURE") == 0 && usb) {
+            if (strcmp(command, "USB_TEST_ON") == 0 && usb) {
+                usbTestMode = true;
+                Serial.println("usb_test=on button_triggers_disabled_until_disconnect");
+            } else if (strcmp(command, "USB_TEST_OFF") == 0) {
+                usbTestMode = false;
+                Serial.println("usb_test=off");
+            } else if ((strcmp(command, "CAPTURE") == 0 ||
+                        strcmp(command, "CAPTURE_SETTLED") == 0) && usb) {
                 if (busy || feedback || activeFeedback) Serial.println("command=BUSY");
                 else {
                     Serial.println("command=CAPTURE accepted");
                     trigger = "usb_command";
+                    warmupFrames = strcmp(command, "CAPTURE_SETTLED") == 0 ? 2 : 0;
                     feedback = 1;
                     startWork(true);
                 }
@@ -508,9 +536,10 @@ void loop() {
                               (buttonMux & FUN_PD) != 0, (buttonMux & FUN_IE) != 0,
                               (REG_READ(GPIO_ENABLE_REG) & (1UL << BUTTON)) != 0,
                               (unsigned long)buttonMux);
-                Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s\n",
+                Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s identity=%s\n",
                               usb, busy, ESP.getPsramSize(), storageReady,
-                              (!busy && storageReady) ? queued() : -1, captureResult);
+                              (!busy && storageReady) ? queued() : -1, captureResult,
+                              WiFi.macAddress().c_str());
             } else if (strcmp(command, "STORAGE") == 0 && usb && !busy && storageReady) {
                 probeStorage();
             } else Serial.println("command=UNKNOWN_OR_NO_USB");
@@ -524,8 +553,8 @@ void loop() {
                       usb, stable, busy, storageReady, (!busy && storageReady) ? queued() : -1, LED);
         lastStatus = now;
     }
-    if (!busy && !feedback && !activeFeedback && stable == HIGH) {
-        if (!usb && now > 5000) {
+    if (!busy && !feedback && !activeFeedback) {
+        if (!usb && stable == HIGH && now > 5000) {
             if (!sleepReportAttempted) {
                 startWork(false, true);
                 return;

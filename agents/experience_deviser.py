@@ -60,7 +60,7 @@ from collections.abc import Sequence
 from typing import Any, Final
 
 from shared.agents import AgentContext
-from shared.capabilities import NEEDS, HouseCapability
+from shared.capabilities import HouseCapability
 from shared.experience import (
     EXPERIENCE_FORMAT_VERSION,
     MAX_MINUTES,
@@ -551,7 +551,9 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
     # Parsed once here to derive what the house must be able to do, and parsed again by
     # `Experience.from_dict` below. A moment that does not parse raises on this pass, which
     # is the same refusal one line earlier.
-    needs = sorted({str(NEEDS[moment_from_dict(m).act]) for m in raw})
+    from shared.experience import moment_needs
+
+    needs = sorted({str(moment_needs(moment_from_dict(moment))) for moment in raw})
     return Experience.from_dict(
         {
             "format_version": EXPERIENCE_FORMAT_VERSION,

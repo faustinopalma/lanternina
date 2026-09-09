@@ -1,6 +1,6 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-27426 characters, 159 lines
-fingerprint: 8035a0fd81c4
+28180 characters, 160 lines
+fingerprint: ad68d6a1d15b
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, one title already offered, and a house with enough behind it to be pitched
 ==============================================================================
 You are making one activity for one adolescent to spend at home, mostly on their own, in a house with a printer, a scanner and a small screen or two. Not a lesson, not a test, and not an exercise with a story painted over it. One thing worth doing, that happens once, and is over when it is over.
@@ -63,9 +63,10 @@ A moment is one of these, and carries no key other than the five above and the o
   {"act": "hand_over", ..., "page": {"kind": "...", "title": "<text>", "note": [ ... ], "spaces": [ ... ], "illustration": "<text>"}, "instead": [a list of at most 4 lines, each at most 44 characters]}
      It prints one page and leaves it where it can be picked up.
      instead is what the display says when there is no printer, so that this moment still reaches the same point in the story with no paper at all. It is not an apology and it does not mention the printer.
-  {"act": "collect", ..., "outcomes": [{"when": "marks", "then": "<a later moment id, or ask>"}, {"when": "blank", "then": "<a later moment id, or ask>"}], "if_no_page": "<a later moment id, or ask>"}
+  {"act": "collect", "source": "scanner or camera", ..., "outcomes": [{"when": "marks", "then": "<a later moment id, or ask>"}, {"when": "blank", "then": "<a later moment id, or ask>"}], "if_no_page": "<a later moment id, or ask>"}
      It takes a page back and reads what was added to it.
-     if_no_page is where the activity goes when nothing was printed at all.
+     For collect, source is "scanner" by default. Use "camera" when photograph_table is available and the return is an object, a construction, an arrangement or work that should stay on the table. Prefer the camera for these returns. Keep the scanner available for flat pages whose small writing benefits from scanning. A camera collect needs no preceding hand_over. Ask for a photograph explicitly in the preceding visible instructions. The camera returns a visible-material description: marks means relevant material is visible, blank means it is clearly absent, and an uncertain photograph leaves the moment waiting. Use ask when the next step depends on the description. A camera is not a sensor that observes continuously.
+if_no_page is where the activity goes when nothing was printed at all.
   {"act": "close", ...}
      It ends the afternoon on the display, from wherever it got to.
 A page is an object out of the story, and it is drawn whole: you say what it is and what it says, and it is drawn from that. You never say where anything goes.

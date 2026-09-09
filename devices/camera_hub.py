@@ -126,10 +126,28 @@ class CameraHub:
                     metadata.with_suffix(".bmp").unlink(missing_ok=True)
                     metadata.unlink(missing_ok=True)
 
+    def archive_reviewed(self, photo_id: str) -> bool:
+        with self.processing:
+            changed = self.store.archive_reviewed(photo_id)
+            self.sync_changed.set()
+            return changed
+
 
 def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
     class Handler(BaseHTTPRequestHandler):
         def do_POST(self) -> None:
+            if self.path.startswith("/photos/") and self.path.endswith("/archive"):
+                if not self.family():
+                    return
+                photo_id = self.path[len("/photos/"):-len("/archive")]
+                if not PHOTO_ID.fullmatch(photo_id):
+                    self.respond(404, b"{}")
+                    return
+                changed = hub.archive_reviewed(photo_id)
+                self.respond(200 if changed else 409, json.dumps({
+                    "id": photo_id, "archived": changed, "replayed": False,
+                }).encode())
+                return
             camera = self.headers.get("X-Camera-Id", "").upper()
             token = hub.config["cameras"].get(camera)
             if not token or not hmac.compare_digest(
@@ -248,7 +266,8 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                     camera,
                     body,
                     captured=captured,
-                    target=camera_target(
+                    target=None if self.headers.get("X-Capture-Purpose") == "diagnostic"
+                    else camera_target(
                         hub.house.sheets_dir,
                         captured if self.headers.get("X-Captured-At") else None,
                     ),

@@ -1,6 +1,6 @@
 # Hardware
 
-The [handheld camera miniproject](macchina-fotografica/README.md) records the XIAO ESP32S3 Sense kit, its OV3660 camera and assembled D2 LED/D3 button wiring. USB identity, 8 MiB flash, 8 MiB PSRAM, backup and firmware installation were verified on 9 September 2026. The [operations guide](../firmware/camera/README.md) describes the firmware, hub receiver and parent archive. Physical capture and battery wake tests remain necessary. The catalogue below preserves earlier research; its historical retention restrictions are superseded by the current development rules.
+The [handheld camera miniproject](macchina-fotografica/README.md) records the XIAO ESP32S3 Sense kit, its OV3660 camera and assembled D2 LED/D3 button wiring. USB identity, 8 MiB flash, 8 MiB PSRAM, backup, firmware installation, explicit USB capture and receiver-offline retry were verified on 9 September 2026. The [operations guide](../firmware/camera/README.md) describes the identity-bound build, photographic activity path, recovery procedure and parent archive. The shutter fault, LED reconnection, battery-powered deliberate capture, current measurement and power-interruption tests remain physical work. The catalogue below preserves earlier research; its historical retention restrictions are superseded by the current development rules.
 
 A catalogue of what this system could be made of, and what it must never be made of.
 

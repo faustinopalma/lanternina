@@ -53,3 +53,28 @@ def test_bad_upload_never_receives_a_receipt(tmp_path: Path, photo_id: str, data
     with pytest.raises((ValueError, OSError)):
         store.accept(photo_id, "camera", data, captured=None, target=None)
     assert store.listing() == []
+
+
+def test_restart_requires_review_and_never_replays_claimed_work(tmp_path):
+    store = PhotoStore(tmp_path / "photos.db")
+    store.accept(PHOTO, "camera", jpeg(), captured=10, target={"run": "one"})
+    assert not store.archive_reviewed(PHOTO)
+    assert store.claim()["id"] == PHOTO
+    restarted = PhotoStore(store.path)
+    assert restarted.claim() is None
+    assert restarted.archive_reviewed(PHOTO)
+    assert restarted.claim() is None
+    assert restarted.get(PHOTO)["target"] == "null"
+    assert not restarted.accept(PHOTO, "camera", jpeg(), captured=10, target={"run": "one"})
+    assert restarted.claim() is None
+
+
+def test_deletion_wins_over_completion_and_review(tmp_path):
+    store = PhotoStore(tmp_path / "photos.db")
+    store.accept(PHOTO, "camera", jpeg(), captured=None, target=None)
+    store.claim()
+    store.delete(PHOTO)
+    store.finish(PHOTO, "done", "late completion")
+    assert not store.archive_reviewed(PHOTO)
+    assert store.get(PHOTO)["state"] == "deleted"
+    assert store.get(PHOTO)["jpeg"] is None

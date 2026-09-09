@@ -113,7 +113,7 @@ def _busy(said: str) -> bool:
 
 
 def read_page(
-    blank: NDArray[np.uint8],
+    blank: NDArray[np.uint8] | None,
     came_back: NDArray[np.uint8],
     *,
     about: str,
@@ -121,6 +121,7 @@ def read_page(
     household: str,
     key: str,
     timeout: int = READ_TIMEOUT_SECONDS,
+    photograph: bool = False,
 ) -> WhatCameBack:
     """What is on the sheet that was not on the blank.
 
@@ -133,11 +134,12 @@ def read_page(
     answer = _ask(
         f"{panel.rstrip('/')}/api/device/{household}/read-page",
         {
-            "blankBase64": _png(blank),
+            "blankBase64": _png(blank) if blank is not None else "",
             "cameBackBase64": _png(came_back),
             "width": int(width),
             "height": int(height),
             "about": about,
+            **({"photograph": True} if photograph else {}),
         },
         key=key,
         timeout=timeout,

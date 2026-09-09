@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import json
+import sqlite3
 import time
+from pathlib import Path
 
 
 def open_port(name: str):
@@ -12,10 +15,20 @@ def open_port(name: str):
     return serial.Serial(name, 115200, timeout=1, write_timeout=3)
 
 
+def authenticated_since(mac: str, since: float) -> bool:
+    config = json.loads(Path("/etc/lanternina/camera.json").read_text())
+    with sqlite3.connect(config["database"]) as database:
+        row = database.execute("SELECT report FROM camera_status WHERE id=?", (mac,)).fetchone()
+    return bool(row and json.loads(row[0]).get("lastSeen", 0) >= since)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("CAPTURE", "STATUS", "STORAGE"))
+    parser.add_argument(
+        "command", choices=("CAPTURE", "STATUS", "STORAGE", "USB_TEST_ON", "USB_TEST_OFF")
+    )
     parser.add_argument("--mac", default="94:A9:90:D0:9D:D0")
+    parser.add_argument("--authenticated-since", type=float)
     args = parser.parse_args()
     began = time.monotonic()
     port_name = (
@@ -27,6 +40,7 @@ def main() -> None:
             port.write((args.command + "\n").encode("ascii"))
             acknowledged = False
             short_probe = False
+            usb_status = False
             while time.monotonic() - began < 60:
                 line = port.readline().decode("utf-8", "replace").strip()
                 if not line:
@@ -34,7 +48,20 @@ def main() -> None:
                 print(line, flush=True)
                 if "command=BUSY" in line or "UNKNOWN_OR_NO_USB" in line:
                     raise RuntimeError("camera did not accept the command")
+                if args.command == "USB_TEST_ON" and line == (
+                    "usb_test=on button_triggers_disabled_until_disconnect"
+                ):
+                    return
+                if args.command == "USB_TEST_OFF" and line == "usb_test=off":
+                    return
                 if args.command == "STATUS" and line.startswith("status usb="):
+                    if args.authenticated_since is None:
+                        return
+                    usb_status = "filesystem=1" in line and f"identity={args.mac.upper()}" in line
+                if usb_status and authenticated_since(args.mac.upper(), args.authenticated_since):
+                    print(
+                        "VERDICT: USB identity, filesystem and fresh authenticated status verified"
+                    )
                     return
                 if args.command == "STORAGE":
                     short_probe |= "length=16 opened=1" in line

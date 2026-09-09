@@ -196,19 +196,13 @@ describe("the gallery", () => {
 describe("the rhythm", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("saves display polling separately from picture cadence", async () => {
+  it("keeps display polling out of the rhythm form", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
     renderPanel(api);
     await open(user, "Ritmo");
-    const interval = await screen.findByLabelText("Collega ogni");
-    expect(interval).toHaveValue(10);
-    await user.clear(interval);
-    await user.type(interval, "30");
-    await user.click(screen.getByRole("button", { name: "Salva" }));
-    await waitFor(() => expect(api.recorded.rhythm).toHaveLength(1));
-    expect(api.recorded.rhythm[0]!.displayPollMinutes).toBe(30);
-    expect(api.recorded.rhythm[0]!.cadenceMinutes).toBe(60);
+    await screen.findByLabelText("Quadro nuovo ogni");
+    expect(screen.queryByLabelText("Collega ogni")).toBeNull();
   });
 
   it("keeps the save button grey until something differs, and greys it again after", async () => {
@@ -289,7 +283,6 @@ describe("the rhythm", () => {
       picturesFrom: "07:00",
       picturesUntil: "21:30",
       cadenceMinutes: 90,
-      displayPollMinutes: 10,
       // Sent back untouched: one form saves three sections, and changing the spacing must
       // not quietly clear the days an afternoon may begin on, nor move the house back
       // onto whatever clock the hub's own machine happens to be set to.

@@ -18,11 +18,12 @@ that looked broken.
 
 from __future__ import annotations
 
+import json
 import os
 import random
 import stat
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import numpy as np
@@ -46,6 +47,14 @@ class CannotRun(RuntimeError):
 _chown = getattr(os, "chown", None)
 
 
+def camera_in() -> bool:
+    path = Path(os.environ.get("LANTERNINA_CAMERA_CONFIG", "/etc/lanternina/camera.json"))
+    try:
+        return bool(json.loads(path.read_text(encoding="utf-8")).get("cameras"))
+    except (OSError, ValueError, AttributeError):
+        return False
+
+
 @dataclass(frozen=True, slots=True)
 class House:
     """The three things a run touches, or nothing where a thing is absent."""
@@ -65,6 +74,7 @@ class House:
     # cannot reach a real display: not because something checks, but because the real
     # paths are never built. See :mod:`devices.pretend`.
     pretend: Path | None = None
+    camera: bool = field(default_factory=camera_in)
 
     @property
     def capabilities(self) -> frozenset[HouseCapability]:
@@ -78,6 +88,8 @@ class House:
             found.add(HouseCapability.PRINT_A4)
         if self.scanner:
             found.add(HouseCapability.SCAN_A4)
+        if self.camera:
+            found.add(HouseCapability.PHOTOGRAPH_TABLE)
         if self.screen is not None:
             found.add(HouseCapability.SHOW_800X480_1BIT)
         return frozenset(found)

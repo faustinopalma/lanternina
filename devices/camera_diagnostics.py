@@ -20,6 +20,9 @@ TEXT_FIELDS = {
 NUMBER_FIELDS = {
     "uptimeMs",
     "captureMs",
+    "sensorInitMs",
+    "frameReadyMs",
+    "storageMs",
     "uploadMs",
     "workMs",
     "jpegBytes",
@@ -36,7 +39,10 @@ NUMBER_FIELDS = {
     "wakeCount",
     "resetCode",
 }
-BOOL_FIELDS = {"usb", "buttonPressed", "clockSet", "previousSleepConfirmed", "uploadAccepted"}
+BOOL_FIELDS = {
+    "usb", "buttonPressed", "clockSet", "previousSleepConfirmed", "uploadAccepted",
+    "captureRequested",
+}
 
 
 def clean_diagnostics(values: Any) -> dict[str, Any]:

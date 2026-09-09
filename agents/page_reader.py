@@ -50,6 +50,11 @@ _INSTRUCTION: Final = beside(__file__).text(
     max_description_chars=MAX_DESCRIPTION_CHARS,
 ).rstrip("\n")  # what the sheet asked for is appended with its own leading newline
 
+_PHOTOGRAPH: Final = beside(__file__).text(
+    "photograph", max_descriptions=MAX_DESCRIPTIONS,
+    max_description_chars=MAX_DESCRIPTION_CHARS,
+).rstrip("\n")
+
 # The wrapper plus the room the descriptions are allowed. Generous by half, so a model that
 # pretty-prints its JSON is not cut off in the middle of a sentence and thrown away.
 _MAX_OUTPUT: Final = 300 + MAX_DESCRIPTIONS * (MAX_DESCRIPTION_CHARS + 10) * 2
@@ -64,9 +69,10 @@ class PageReader:
         self,
         ctx: AgentContext,
         *,
-        blank: PageImage,
+        blank: PageImage | None,
         came_back: PageImage,
         about: str = "",
+        photograph: bool = False,
     ) -> WhatCameBack:
         """``about`` is what the moment asked for, in the household's own words, or empty.
 
@@ -74,21 +80,29 @@ class PageReader:
         drawing and a page asking for a list are read differently — and never to tell the
         model what a good answer would be. There is no good answer.
         """
-        prompt = _INSTRUCTION
+        prompt = _PHOTOGRAPH if photograph else _INSTRUCTION
+        if not photograph and blank is None:
+            raise ValueError("a scanned page needs its blank")
         if about:
-            prompt += f"\nWhat the sheet asked for, for context only: {about}"
+            prompt += f"\nWhat the activity asked for, for context only: {about}"
         answer = await ctx.router.analyze(
             ModelRequest(
                 capability=Capability.VISION_READ,
                 prompt=prompt,
                 request_id=new_request_id(),
                 # The blank first, in the order the instruction names them.
-                images=(blank, came_back),
+                images=(came_back,) if photograph else (blank, came_back),
                 max_output_chars=_MAX_OUTPUT,
-                purpose="reading a page against its blank",
+                purpose="reading an activity photograph" if photograph else
+                    "reading a page against its blank",
             )
         )
         said = {} if answer.truncated else _said_in(answer.text)
+        uncertain = photograph and (
+            said.get("uncertain") is not False
+            or not isinstance(said.get("written"), bool)
+            or not isinstance(said.get("describes"), list)
+        )
         return WhatCameBack(
             written=bool(said.get("written", False)),
             # An answer that did not say is treated as the sheet it was expecting, because
@@ -96,7 +110,7 @@ class PageReader:
             same_sheet=bool(said.get("same_sheet", True)),
             describes=_clean(said.get("describes", ())),
             read_at=ctx.now or time.time(),
-            degraded=not said,
+            degraded=not said or uncertain,
             metadata={
                 "read_by": self.name,
                 "request_id": str(answer.request_id),

@@ -152,6 +152,16 @@ class PhotoStore:
             database.execute("UPDATE photos SET state='processing' WHERE id=?", (row["id"],))
         return dict(row)
 
+    def archive_reviewed(self, photo_id: str) -> bool:
+        with self.connect() as database:
+            result = database.execute(
+                "UPDATE photos SET state='done', target='null', "
+                "detail='archived after explicit review; effects not replayed' "
+                "WHERE id=? AND state IN ('processing', 'failed') AND jpeg IS NOT NULL",
+                (photo_id,),
+            )
+        return result.rowcount == 1
+
     def finish(self, photo_id: str, state: str, detail: str) -> None:
         with self.connect() as database:
             database.execute(

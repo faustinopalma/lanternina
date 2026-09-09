@@ -172,3 +172,29 @@ def test_it_survives_the_wire() -> None:
     _, came = read(an_answer(describes=["tre parole sulla prima riga"]))
 
     assert WhatCameBack.from_dict(came.to_dict()) == came
+
+
+def test_photograph_reads_an_object_without_an_invented_blank():
+    router = StubRouter(replies=[an_answer(
+        uncertain=False, describes=["Two cardboard tubes support a folded card."],
+    )])
+    context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
+    reading = asyncio.run(PageReader().read(
+        context, blank=None, came_back=WRITTEN_ON, photograph=True, about="Build a bridge",
+    ))
+    assert router.seen[0].images == (WRITTEN_ON,)
+    assert "construction" in router.seen[0].prompt
+    assert reading.written and not reading.degraded
+
+
+def test_uncertain_photograph_cannot_advance_the_activity():
+    from devices.run_experience import came_back
+
+    for reply in (an_answer(uncertain=True), an_answer(), '{"written": "false"}'):
+        router = StubRouter(replies=[reply])
+        context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
+        reading = asyncio.run(PageReader().read(
+            context, blank=None, came_back=WRITTEN_ON, photograph=True,
+        ))
+        assert reading.degraded
+        assert came_back(reading) is None

@@ -66,7 +66,8 @@ class PagesToCompare(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    blankBase64: str
+    blankBase64: str = ""
+    photograph: bool = False
     cameBackBase64: str
     width: int = 0
     height: int = 0
@@ -191,7 +192,7 @@ async def read_a_page(
 
     from ..paper import read_the_page
 
-    blank = PageImage(
+    blank = None if pages.photograph else PageImage(
         png=base64.b64decode(pages.blankBase64), width=pages.width, height=pages.height
     )
     came_back = PageImage(
@@ -201,14 +202,16 @@ async def read_a_page(
     outcome = FAILED
     try:
         came, spent = await read_the_page(
-            blank, came_back, about=pages.about, now=time.time()
+            blank, came_back, about=pages.about, now=time.time(),
+            **({"photograph": True} if pages.photograph else {}),
         )
         outcome = SERVED
     except (NoCapacityError, CloudUnavailable, ValueError) as exc:
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_READ, outcome, spent)
-    _place_it(afterwards, request, household_id, blank, came_back, pages.about)
+    if blank is not None:
+        _place_it(afterwards, request, household_id, blank, came_back, pages.about)
     return came.to_dict()
 
 

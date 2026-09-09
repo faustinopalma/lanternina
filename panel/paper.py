@@ -63,7 +63,8 @@ async def draw_page(page: Page, *, now: float) -> tuple[bytes, str, ModelUsage |
 
 
 async def read_the_page(
-    blank: PageImage, came_back: PageImage, *, about: str, now: float
+    blank: PageImage | None, came_back: PageImage, *, about: str, now: float,
+    photograph: bool = False,
 ) -> tuple[WhatCameBack, ModelUsage | None]:
     """What is on the second image that is not on the first, and what the call consumed.
 
@@ -74,7 +75,9 @@ async def read_the_page(
 
     router, context, gate = _cloud(now)
     try:
-        came = await PageReader().read(context, blank=blank, came_back=came_back, about=about)
+        came = await PageReader().read(
+            context, blank=blank, came_back=came_back, about=about, photograph=photograph,
+        )
     finally:
         await gate.aclose()
     return came, router.last_usage

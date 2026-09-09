@@ -151,8 +151,15 @@ def every_prompt() -> list[Prompt]:
             "page-reader",
             "agents/page_reader.py :: _INSTRUCTION",
             page_reader._INSTRUCTION
-            + "\nWhat the sheet asked for, for context only: Le nuvole del ventiquattro",
+            + "\nWhat the activity asked for, for context only: Le nuvole del ventiquattro",
             "the line naming what the sheet asked for; two images go with it",
+        ),
+        Prompt(
+            "photograph-reader",
+            "agents/page_reader.py :: _PHOTOGRAPH",
+            page_reader._PHOTOGRAPH
+            + "\nWhat the activity asked for, for context only: Build a cardboard bridge",
+            "an invented construction activity; one photograph goes with it",
         ),
         Prompt(
             "page-judge",

@@ -10,12 +10,15 @@ import secrets
 import subprocess
 from pathlib import Path
 
+from devices.camera_provision import camera_mac, provisioning_lock
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mac", required=True)
     parser.add_argument("--hub-address", required=True)
     parser.add_argument("--renew-certificate", action="store_true")
+    parser.add_argument("--build-user", default="fausto")
     args = parser.parse_args()
     root = Path("/etc/lanternina")
     certificate = root / "camera-cert.pem"
@@ -61,38 +64,19 @@ def main() -> None:
             "cameras": {},
         }
     )
-    mac = args.mac.upper()
+    mac = camera_mac(args.mac)
     config["cameras"].setdefault(mac, secrets.token_urlsafe(32))
+    config["hub_address"] = args.hub_address
     config_path.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8", newline="")
     group = grp.getgrnam("lanternina").gr_gid
     for path in (config_path, certificate, private_key):
         path.chmod(0o640)
         os.chown(path, 0, group)
-    wifi = json.loads((root / "trmnl-provisioning.json").read_text())
-    values = {
-        "WIFI_SSID": wifi["ssid"],
-        "WIFI_PASSWORD": wifi["password"],
-        "HUB_URL": f"https://{args.hub_address}:8443",
-        "CAMERA_TOKEN": config["cameras"][mac],
-        "HUB_CA": certificate.read_text(),
-    }
-    header = Path("/srv/lanternina/build/camera/include/camera_secrets.h")
-    header.write_text(
-        "#pragma once\n"
-        + "".join(
-            f"static const char *{key} = {json.dumps(value)};\n" for key, value in values.items()
-        ),
-        encoding="utf-8",
-        newline="",
-    )
     import pwd
 
-    owner = pwd.getpwnam("fausto")
-    os.chown(header, owner.pw_uid, owner.pw_gid)
-    header.chmod(0o600)
-    header.parents[1].chmod(0o700)
+    owner = pwd.getpwnam(args.build_user)
     archive = Path("/srv/lanternina/photos")
-    archive.mkdir(exist_ok=True, mode=0o750)
+    archive.mkdir(parents=True, exist_ok=True, mode=0o750)
     os.chown(archive, owner.pw_uid, group)
     from devices.trmnl_byos import _write_devices, load_devices
 
@@ -105,4 +89,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    with provisioning_lock():
+        main()

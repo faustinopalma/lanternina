@@ -1,7 +1,6 @@
 {
-  "rhythm.displaySection": "Display connections",
-  "rhythm.displayPoll": "Connect every",
-  "rhythm.displayPollNote": "Longer intervals save battery but delay photos and reminders. Each display receives the change on its next Wi-Fi connection after the hub fetches it. Low battery can extend the interval; after a button press it stays short until the response. No USB connection is needed.",
+  "devices.displayPoll": "Connect every",
+  "devices.savePoll": "Save interval",
   "photos.diagnostics": "Camera diagnostics",
   "photos.sleepConfirmed": "wake from deep sleep confirmed",
   "photos.sleepPlanned": "sleep announced, not yet confirmed",
@@ -9,7 +8,6 @@
   "job.photo": "shows photographs",
   "level.unknown": "battery level unavailable",
   "level.usb": "USB power",
-  "devices.cameraBatteryUnknown": "Battery cannot be measured: this board needs an additional sensing circuit.",
   "photos.title": "Photographs",
   "photos.hubContact": "Last hub contact: {date}",
   "photos.syncPending": "Photographs or updates awaiting synchronization: {count}",

@@ -985,14 +985,9 @@ def carry_on(
         if image is None:
             raise CannotRun("the photograph could not be decoded")
         sheet_id = run.printed[-1] if run.printed else ""
-        blank = recall(house.sheets_dir, SheetId(sheet_id)) if sheet_id else np.full(
-            (480, 800), 255, dtype=np.uint8
-        )
         reading = read_page(
-            blank, image,
-            about=(f"{run.experience.title}. Camera return at {run.waiting_at}: "
-                   "the second image may show a construction, object or drawing, not paper. "
-                   "Describe the visible work in relation to the activity."),
+            None, image, photograph=True,
+            about=f"{run.experience.title}. Camera return at {run.waiting_at}",
             panel=house.panel, household=house.household, key=house.device_key,
         )
     else:

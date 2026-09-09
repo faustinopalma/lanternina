@@ -361,6 +361,7 @@ export interface Guidelines {
  *  reading as it arrived, unrounded: `level` is a judgement about it and this is the
  *  measurement, which is the half somebody can check. */
 export interface Device {
+  displayPollMinutes?: number | null;
   id: string;
   kind: string;
   label: string;
@@ -388,6 +389,7 @@ export interface Inventory {
 /** What the parent decided about one thing. Either half may be sent on its own: naming a
  *  printer and telling it to print are two moments. */
 export interface NewAssignment {
+  displayPollMinutes?: number;
   jobs?: string[];
   name?: string;
 }

@@ -1376,6 +1376,7 @@ class CosmosInventoryStore:
         *,
         jobs: Sequence[str] | None = None,
         name: str | None = None,
+        display_poll_minutes: int | None = None,
     ) -> Thing:
         rows = {row.id: row for row in self.list(household_id)}
         current = rows[thing_id]
@@ -1383,6 +1384,8 @@ class CosmosInventoryStore:
             current,
             jobs=current.jobs if jobs is None else tuple(jobs),
             name=current.name if name is None else name,
+            display_poll_minutes=(current.display_poll_minutes if display_poll_minutes is None
+                                  else display_poll_minutes),
             name_refused=current.name_refused if name is None else False,
         )
         self._container.upsert_item(_from_thing(updated))
@@ -1440,6 +1443,7 @@ def _from_thing(thing: Thing) -> dict[str, Any]:
         "lastSeen": thing.last_seen,
         "firstSeen": thing.first_seen,
         "forgottenAt": thing.forgotten_at,
+        "displayPollMinutes": thing.display_poll_minutes,
     }
 
 
@@ -1459,6 +1463,7 @@ def _to_thing(document: dict[str, Any]) -> Thing:
         last_seen=float(document.get("lastSeen") or 0.0),
         first_seen=float(document.get("firstSeen") or 0.0),
         forgotten_at=float(document.get("forgottenAt") or 0.0),
+        display_poll_minutes=document.get("displayPollMinutes"),
     )
 
 

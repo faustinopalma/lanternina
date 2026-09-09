@@ -27,7 +27,7 @@ def test_unknown_or_invalid_capture_time_is_not_current(header: dict[str, str]) 
     assert captured_at(header, 100) is None
 
 
-def test_upload_requires_camera_identity_and_durable_receipt(tmp_path: Path) -> None:
+def test_upload_requires_camera_identity_and_durable_receipt(tmp_path: Path, monkeypatch) -> None:
     hub = CameraHub(
         {
             "database": str(tmp_path / "photos.db"),
@@ -47,6 +47,10 @@ def test_upload_requires_camera_identity_and_durable_receipt(tmp_path: Path) -> 
             urllib.request.urlopen(urllib.request.Request(url, jpeg(), headers, method="PUT"))
         assert denied.value.code == 401
         headers["Authorization"] = "Bearer secret"
+        headers["X-Capture-Purpose"] = "diagnostic"
+        monkeypatch.setattr("devices.camera_hub.camera_target", lambda *_: pytest.fail(
+            "a diagnostic photograph must not reach an activity"
+        ))
         for expected in (201, 200):
             with urllib.request.urlopen(
                 urllib.request.Request(url, jpeg(), headers, method="PUT")

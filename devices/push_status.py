@@ -187,7 +187,10 @@ def main() -> int:
     if "displayPollMinutes" in answer:
         from devices.display_poll import save_interval
 
-        save_interval(jobs_file.with_name("display-poll.json"), answer["displayPollMinutes"])
+        save_interval(
+            jobs_file.with_name("display-poll.json"),
+            answer["displayPollMinutes"], answer.get("things"),
+        )
     things = answer.get("things")
     if isinstance(things, list):
         # A name a parent typed reaches a model as material. This is the only side that

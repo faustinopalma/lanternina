@@ -766,8 +766,11 @@ class Collect(_Moment):
 
     outcomes: tuple[Outcome, ...]
     if_no_page: str
+    source: str = "scanner"
 
     def _also(self) -> None:
+        if self.source not in ("scanner", "camera"):
+            raise ExperienceError("collect source must be scanner or camera")
         seen = [outcome.when for outcome in self.outcomes]
         missing = [str(came) for came in Came if came not in seen]
         if missing:
@@ -783,11 +786,12 @@ class Collect(_Moment):
             **_common_dict(self),
             "outcomes": [outcome.to_dict() for outcome in self.outcomes],
             "if_no_page": self.if_no_page,
+            **({"source": self.source} if self.source != "scanner" else {}),
         }
 
     @staticmethod
     def from_dict(values: Mapping[str, Any]) -> Collect:
-        _only(values, _COMMON_KEYS | {"outcomes", "if_no_page"}, "a collect moment")
+        _only(values, _COMMON_KEYS | {"outcomes", "if_no_page", "source"}, "a collect moment")
         raw = values.get("outcomes", [])
         if not isinstance(raw, Sequence) or isinstance(raw, str):
             raise ExperienceError("outcomes must be a list")
@@ -798,6 +802,7 @@ class Collect(_Moment):
             **_common(values),
             outcomes=tuple(Outcome.from_dict(o) for o in raw),
             if_no_page=str(if_no_page),
+            source=values.get("source", "scanner"),
         )
 
 
@@ -957,7 +962,7 @@ class Experience:
         if len(ids) != len(set(ids)):
             raise ExperienceError("two moments share an id, so a branch cannot name one")
 
-        needed = frozenset(NEEDS[moment.act] for moment in self.moments)
+        needed = frozenset(moment_needs(moment) for moment in self.moments)
         if self.requires != needed:
             raise ExperienceError(
                 f"declares it requires {_names(self.requires)} and its moments need "
@@ -1079,7 +1084,7 @@ class Continuation:
     @property
     def requires(self) -> frozenset[HouseCapability]:
         """What these moments need. Computed rather than declared: nobody is reading it."""
-        return frozenset(NEEDS[moment.act] for moment in self.moments)
+        return frozenset(moment_needs(moment) for moment in self.moments)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -1132,6 +1137,12 @@ def _capabilities(raw: object) -> frozenset[HouseCapability]:
     return frozenset(found)
 
 
+def moment_needs(moment: Moment) -> HouseCapability:
+    if isinstance(moment, Collect) and moment.source == "camera":
+        return HouseCapability.PHOTOGRAPH_TABLE
+    return NEEDS[moment.act]
+
+
 def _check_paper(moments: Sequence[Moment]) -> None:
     """A page can only be collected if this experience put one on the table.
 
@@ -1143,7 +1154,7 @@ def _check_paper(moments: Sequence[Moment]) -> None:
     for position, moment in enumerate(moments, start=1):
         if moment.act is Act.HAND_OVER:
             handed = True
-        elif moment.act is Act.COLLECT and not handed:
+        elif isinstance(moment, Collect) and moment.source == "scanner" and not handed:
             raise ExperienceError(
                 f"moment {position} collects a page that was never handed over"
             )

@@ -67,7 +67,12 @@ def test_a_pretend_house_can_do_everything_a_verb_asks_for() -> None:
     A capability reachable from a document but missing from `REACHABLE` is a device that
     cannot be exercised without buying the hardware first.
     """
-    assert REACHABLE == set(NEEDS.values())
+    import afternoons
+
+    from shared.experience import Collect, moment_needs
+
+    camera = Collect.from_dict(afternoons.collect(source="camera"))
+    assert REACHABLE == set(NEEDS.values()) | {moment_needs(camera)}
     assert all(hand.needs in REACHABLE for hand in HANDS)
 
 

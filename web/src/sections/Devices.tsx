@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Save } from "lucide-react";
 
 import { useApi } from "@/api/client";
 import type { Device, NewAssignment } from "@/api/types";
@@ -22,6 +23,9 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
   const api = useApi();
   const [name, setName] = useState(device.name);
   const [jobs, setJobs] = useState(device.jobs);
+  const [poll, setPoll] = useState(String(device.displayPollMinutes ?? 10));
+  const [savedPoll, setSavedPoll] = useState(poll);
+  const [savingPoll, setSavingPoll] = useState(false);
   const [problem, setProblem] = useState<MessageKey | null>(null);
 
   /* Saving persists a choice and returns. Nothing is printed and nothing is scanned: the
@@ -65,7 +69,6 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
           {volts === null ? "" : ` \u00b7 ${volts}`} {"\u00b7"} {device.kind === "camera" ? cameraSince : since}
         </span>
       </div>
-      {device.kind === "camera" && volts === null ? <Quiet>{t("devices.cameraBatteryUnknown")}</Quiet> : null}
       <div className="flex flex-wrap items-center gap-2.5">
         <Input
           className="min-w-0 flex-auto"
@@ -106,6 +109,29 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
           )}
         </fieldset>
       </div>
+      {device.kind === "display" ? <form className="flex flex-wrap items-center gap-2"
+        onSubmit={async event => {
+          event.preventDefault();
+          setSavingPoll(true);
+          setProblem(null);
+          try {
+            const updated = await api.assignDevice(device.id, { displayPollMinutes: Number(poll) });
+            const value = String(updated.displayPollMinutes ?? Number(poll));
+            setPoll(value);
+            setSavedPoll(value);
+          } catch { setProblem("devices.saveFailed"); }
+          finally { setSavingPoll(false); }
+        }}>
+        <label htmlFor={`poll-${device.id}`}>{t("devices.displayPoll")}</label>
+        <Input id={`poll-${device.id}`} type="number" min={1} max={1440} step={1} required
+          className="w-26" value={poll} disabled={savingPoll}
+          onChange={event => setPoll(event.target.value)} />
+        <span className="text-quiet">{t("rhythm.minutes")}</span>
+        <Button type="submit" size="small" title={t("devices.savePoll")}
+          aria-label={t("devices.savePoll")} disabled={savingPoll || poll === savedPoll}>
+          <Save className="size-4" />
+        </Button>
+      </form> : null}
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
       {device.silent && device.kind !== "camera" ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
     </div>

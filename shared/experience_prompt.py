@@ -68,7 +68,7 @@ _WRITTEN_AS: Final[Mapping[Act, str]] = {
         f'"instead": [{_LINES}]}}'
     ),
     Act.COLLECT: (
-        '{"act": "collect", ..., "outcomes": ['
+        '{"act": "collect", "source": "scanner or camera", ..., "outcomes": ['
         '{"when": "marks", "then": "<a later moment id, or ask>"}, '
         '{"when": "blank", "then": "<a later moment id, or ask>"}], '
         '"if_no_page": "<a later moment id, or ask>"}'

@@ -33,3 +33,21 @@ def test_invalid_update_preserves_last_good_interval(tmp_path, bad):
 def test_missing_cache_uses_existing_configuration(tmp_path):
     assert interval_seconds(tmp_path / "missing") is None
     assert interval_seconds(None) is None
+
+
+def test_individual_intervals_and_legacy_cache(tmp_path):
+    path = tmp_path / "display-poll.json"
+    path.write_text('{"minutes": 17}', encoding="utf-8")
+    assert interval_seconds(path, "first") == 1020
+    save_interval(path, 17, [
+        {"id": "first", "kind": "display", "displayPollMinutes": 5},
+        {"id": "second", "kind": "display", "displayPollMinutes": 30},
+    ])
+    assert interval_seconds(path, "first") == 300
+    assert interval_seconds(path, "second") == 1800
+    assert interval_seconds(path, "unknown") == 1020
+    with pytest.raises(ValueError):
+        save_interval(path, 17, [
+            {"id": "first", "kind": "display", "displayPollMinutes": 0},
+        ])
+    assert interval_seconds(path, "first") == 300

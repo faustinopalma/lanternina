@@ -30,6 +30,9 @@ import { REPO } from "../../i18n/ui";
     <li>
       Device job assignments, an activity log and a household service-usage limit.
     </li>
+    <li>Each display has its own connection interval in Devices. It receives changes at its next connection; low-battery protection can extend the interval.</li>
+    <li>The handheld camera saves photographs before starting Wi-Fi. Authenticated originals can be viewed, downloaded and deleted by the family. Offline delivery was tested on the installed camera; retries preserve the capture identifier.</li>
+    <li>Activities can request photographs of objects and constructions. The photo reader describes visible material; uncertain or late photographs do not advance the activity. The scanner remains available for paper.</li>
   </ul>
 
   <h2>Checks</h2>
@@ -39,7 +42,7 @@ import { REPO } from "../../i18n/ui";
 
   <ul>
     <li>
-      <b>The handheld camera.</b> The portable camera is not yet available as an input for activities.
+      <b>Camera acceptance.</b> USB capture, storage, authenticated delivery and offline retry have been tested. The activity path has automated tests. The shutter has an intermittent electrical fault; physical activity trials, LED feedback, varied lighting and power-interruption tests remain open. A first JPEG was ready in 543 ms in USB tests; this excludes boot and physical button handling.
     </li>
     <li>
       <b>The button panel.</b> The current hardware has one button per display. It closes the paper

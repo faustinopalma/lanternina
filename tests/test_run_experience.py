@@ -107,6 +107,7 @@ def test_camera_advances_the_activity_without_touching_the_scanner(
     result = carry_on(house, now=2.0, send=False, photograph=jpeg(), target=target)
     assert seen[0][0] == (48, 64, 3)
     assert "Camera return" in seen[0][1]["about"]
+    assert seen[0][1]["photograph"] is True
     assert result == "the afternoon is finished"
 
 
@@ -121,6 +122,32 @@ def test_old_or_undated_photo_does_not_advance_a_new_moment(
         "run": "previous", "moment": "previous", "since": 99.0,
     })
     assert "archived" in result
+
+
+def test_camera_only_activity_needs_no_printer_or_scanner(house, monkeypatch):
+    from dataclasses import replace
+
+    from shared.capabilities import HouseCapability
+    from tests.test_photo_store import jpeg
+
+    experience = Experience.from_dict(a.an_afternoon(
+        requires=["photograph_table", "show_800x480_1bit"],
+        moments=[a.say(), a.collect(source="camera"), a.close()],
+    ))
+    camera_house = replace(house, scanner="", printer="", camera=True)
+    assert HouseCapability.PHOTOGRAPH_TABLE in camera_house.capabilities
+    begin(camera_house, experience, now=100, send=False)
+    target = run_experience.camera_target(house.sheets_dir, 101)
+    monkeypatch.setattr(run_experience, "read_page", lambda *args, **kw: _reading(
+        marks=True, degraded=True,
+    ))
+    assert "not clear enough" in carry_on(
+        camera_house, now=102, photograph=jpeg(), target=target, send=False,
+    )
+    assert run_experience.camera_target(house.sheets_dir, 101) == target
+    monkeypatch.setattr(run_experience, "read_page", lambda *args, **kw: _reading(marks=True))
+    assert carry_on(camera_house, now=103, photograph=jpeg(), target=target,
+                    send=False) == "the afternoon is finished"
 
 
 # ── Beginning ────────────────────────────────────────────────────────────────────────

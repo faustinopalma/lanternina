@@ -797,7 +797,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             )
             from devices.display_poll import interval_seconds
 
-            chosen_interval = interval_seconds(config.display_poll_file)
+            chosen_interval = interval_seconds(config.display_poll_file, device.mac)
             if chosen_interval is not None:
                 refresh = max(chosen_interval, {
                     LEVEL_CRITICAL: CRITICAL_BATTERY_REFRESH,

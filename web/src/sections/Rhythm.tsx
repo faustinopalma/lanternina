@@ -156,7 +156,6 @@ function Form({ spacing }: { spacing: Spacing }) {
   const [picturesFrom, setPicturesFrom] = useState(spacing.picturesFrom);
   const [picturesUntil, setPicturesUntil] = useState(spacing.picturesUntil);
   const [cadence, setCadence] = useState(String(spacing.cadenceMinutes));
-  const [displayPoll, setDisplayPoll] = useState(String(spacing.displayPollMinutes));
   const [days, setDays] = useState<string[]>(spacing.afternoonDays);
   const [afternoonFrom, setAfternoonFrom] = useState(spacing.afternoonFrom);
   const [afternoonUntil, setAfternoonUntil] = useState(spacing.afternoonUntil);
@@ -188,7 +187,6 @@ function Form({ spacing }: { spacing: Spacing }) {
     picturesFrom,
     picturesUntil,
     cadence,
-    displayPoll,
     days,
     afternoonFrom,
     afternoonUntil,
@@ -206,7 +204,6 @@ function Form({ spacing }: { spacing: Spacing }) {
         picturesFrom,
         picturesUntil,
         cadenceMinutes: Number(cadence),
-        displayPollMinutes: Number(displayPoll),
         afternoonDays: days,
         afternoonFrom,
         afternoonUntil,
@@ -281,18 +278,6 @@ function Form({ spacing }: { spacing: Spacing }) {
             </span>
           </span>
           <Quiet>{t("rhythm.timeZoneNote")}</Quiet>
-        </fieldset>
-
-        <fieldset className="flex flex-col gap-2 border-0 p-0">
-          <legend className="mb-1 font-medium">{t("rhythm.displaySection")}</legend>
-          <div className="flex flex-wrap items-center gap-2">
-            <Label htmlFor="display-poll">{t("rhythm.displayPoll")}</Label>
-            <Input id="display-poll" type="number" min={1} max={1440} step={1} required
-              className="w-26" value={displayPoll}
-              onChange={event => setDisplayPoll(event.target.value)} />
-            <span className="text-quiet">{t("rhythm.minutes")}</span>
-          </div>
-          <Quiet>{t("rhythm.displayPollNote")}</Quiet>
         </fieldset>
 
         {/* The hours a picture may change, said as hours it may — not as a pause. Until

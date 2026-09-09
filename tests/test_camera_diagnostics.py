@@ -6,6 +6,17 @@ from devices.camera_diagnostics import clean_diagnostics
 from devices.photo_store import PhotoStore
 
 
+def test_capture_latency_is_distinct_from_storage_and_network(tmp_path):
+    measured = {
+        "sensorInitMs": 1000, "frameReadyMs": 1700,
+        "storageMs": 600, "captureMs": 2300, "uploadMs": 500,
+    }
+    store = PhotoStore(tmp_path / "photos.db")
+    store.record_camera({"id": "camera", "lastSeen": 10,
+                         "diagnostics": clean_diagnostics(measured)})
+    assert store.cameras()[0]["diagnostics"] == measured
+
+
 def test_sleep_intent_is_not_promoted_to_confirmation(tmp_path):
     store = PhotoStore(tmp_path / "photos.db")
     for number in range(25):
