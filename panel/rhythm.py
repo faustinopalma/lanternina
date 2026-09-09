@@ -127,12 +127,14 @@ class Rhythm:
     time_zone: str = ""
     updated_at: float = 0.0
     updated_by: str = ""
+    display_poll_minutes: int = 10
 
     def to_public(self) -> dict[str, Any]:
         return {
             "picturesFrom": clock(self.pictures_from_minutes),
             "picturesUntil": clock(self.pictures_until_minutes),
             "cadenceMinutes": self.cadence_minutes,
+            "displayPollMinutes": self.display_poll_minutes,
             "afternoonDays": list(self.afternoon_days),
             "afternoonFrom": clock(self.afternoon_from_minutes),
             "afternoonUntil": clock(self.afternoon_until_minutes),
@@ -218,8 +220,12 @@ def clean_rhythm(
     scripts_wanted: Any = None,
     afternoons_a_day: Any = None,
     updated_by: str = "",
+    display_poll_minutes: Any = 10,
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
+    if (isinstance(display_poll_minutes, bool) or not isinstance(display_poll_minutes, int)
+            or not 1 <= display_poll_minutes <= 1440):
+        raise ValueError("display connection interval must be 1 to 1440 whole minutes")
     if isinstance(cadence_minutes, bool) or not isinstance(cadence_minutes, int):
         raise ValueError("the spacing is a whole number of minutes")
     if not MIN_CADENCE_MINUTES <= cadence_minutes <= MAX_CADENCE_MINUTES:
@@ -262,6 +268,7 @@ def clean_rhythm(
         pictures_from_minutes=minutes_of(pictures_from, "the start of the picture hours"),
         pictures_until_minutes=minutes_of(pictures_until, "the end of the picture hours"),
         cadence_minutes=cadence_minutes,
+        display_poll_minutes=display_poll_minutes,
         afternoon_days=days_of(afternoon_days),
         afternoon_from_minutes=begins,
         afternoon_until_minutes=ends,

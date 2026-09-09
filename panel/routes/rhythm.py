@@ -37,6 +37,7 @@ class NewRhythm(BaseModel):
     # How many activities may begin in one day. Absent leaves what was saved, so a panel
     # that has not been rebuilt cannot quietly reset the ceiling to the default.
     afternoonsADay: int | None = None
+    displayPollMinutes: int | None = None
 
 
 @router.get("/api/rhythm")
@@ -70,6 +71,8 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
                 kept.afternoons_a_day if new.afternoonsADay is None else new.afternoonsADay
             ),
             updated_by=str(account.id),
+            display_poll_minutes=(kept.display_poll_minutes if new.displayPollMinutes is None
+                                  else new.displayPollMinutes),
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

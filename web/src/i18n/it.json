@@ -1,4 +1,7 @@
 {
+  "rhythm.displaySection": "Collegamento dei display",
+  "rhythm.displayPoll": "Collega ogni",
+  "rhythm.displayPollNote": "Intervalli più lunghi risparmiano batteria ma ritardano foto e promemoria. Ogni display riceve la modifica al prossimo collegamento Wi-Fi, dopo che l’hub l’ha acquisita. Con batteria scarica l’attesa può aumentare; dopo una pressione resta breve fino alla risposta. Non serve collegare il cavo USB.",
   "photos.diagnostics": "Diagnostica fotocamera",
   "photos.sleepConfirmed": "risveglio da deep sleep confermato",
   "photos.sleepPlanned": "sonno annunciato, non ancora confermato",

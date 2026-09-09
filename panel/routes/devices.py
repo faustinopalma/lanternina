@@ -116,6 +116,7 @@ def report_devices(
     # row -- and the job and the name on it -- having to be destroyed.
     return {
         "recorded": recorded,
+        "displayPollMinutes": request.app.state.rhythm.get(household_id).display_poll_minutes,
         "things": [
             row.to_public()
             for row in inventory.list(household_id)

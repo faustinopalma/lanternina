@@ -412,6 +412,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     picturesFrom: "07:00",
     picturesUntil: "21:30",
     cadenceMinutes: 60,
+    displayPollMinutes: 10,
     minCadenceMinutes: 1,
     maxCadenceMinutes: 1440,
     afternoonDays: ["wed", "sat"],

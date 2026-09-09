@@ -46,6 +46,7 @@ export function warmUp(): void {
 const DRAFT_FIELDS = ["id", "title", "overview", "themes", "script", "said", "state"] as const;
 
 const RHYTHM_FIELDS = [
+  "displayPollMinutes",
   "picturesFrom",
   "picturesUntil",
   "cadenceMinutes",

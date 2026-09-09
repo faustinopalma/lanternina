@@ -50,6 +50,23 @@ def headers() -> dict[str, str]:
     return {DEV_SUBJECT_HEADER: "parent-1", DEV_CONTACT_HEADER: PARENT}
 
 
+def test_display_polling_is_independent_and_preserved_by_older_clients():
+    client = client_for()
+    body = {"picturesFrom": "07:00", "picturesUntil": "22:00", "cadenceMinutes": 60}
+    assert client.get("/api/rhythm", headers=headers()).json()["displayPollMinutes"] == 10
+    response = client.post(
+        "/api/rhythm", headers=headers(), json={**body, "displayPollMinutes": 25}
+    )
+    assert response.status_code == 200
+    assert response.json()["displayPollMinutes"] == 25
+    saved = client.post("/api/rhythm", headers=headers(), json=body).json()
+    assert saved["displayPollMinutes"] == 25
+    for minutes in (0, -1, 1441):
+        assert client.post("/api/rhythm", headers=headers(), json={
+            **body, "displayPollMinutes": minutes,
+        }).status_code == 400
+
+
 def test_a_household_that_never_chose_still_has_a_rhythm() -> None:
     """The hub has to be able to run before anyone has opened the panel."""
     client = client_for()

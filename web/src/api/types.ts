@@ -279,6 +279,7 @@ export interface TypedText {
 }
 
 export interface Rhythm {
+  displayPollMinutes: number;
   picturesFrom: string;
   picturesUntil: string;
   cadenceMinutes: number;
@@ -309,6 +310,7 @@ export interface Rhythm {
 }
 
 export interface NewRhythm {
+  displayPollMinutes?: number;
   picturesFrom: string;
   picturesUntil: string;
   cadenceMinutes: number;

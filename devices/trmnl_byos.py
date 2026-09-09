@@ -115,6 +115,7 @@ class Config:
     # What the parent said each display is for, as the panel last gave it to us. Absent
     # means the panel has never been reached, and every display keeps behaving as before.
     jobs_file: Path | None = None
+    display_poll_file: Path | None = None
 
     @classmethod
     def from_env(cls) -> Config:
@@ -149,6 +150,8 @@ class Config:
                 os.environ.get("TRMNL_PRESS_REFRESH_RATE", str(PRESS_REFRESH))
             ),
             jobs_file=Path(jobs) if jobs else None,
+            display_poll_file=(Path(jobs).with_name("display-poll.json") if jobs else
+                               Path(os.environ["TRMNL_SCREEN_FILE"]).with_name("display-poll.json")),
         )
 
     def screen_url(self, token: str, origin: str = "") -> str:
@@ -792,6 +795,14 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
                     LEVEL_LOW: LOW_BATTERY_REFRESH,
                 }.get(level, config.refresh_rate)
             )
+            from devices.display_poll import interval_seconds
+
+            chosen_interval = interval_seconds(config.display_poll_file)
+            if chosen_interval is not None:
+                refresh = max(chosen_interval, {
+                    LEVEL_CRITICAL: CRITICAL_BATTERY_REFRESH,
+                    LEVEL_LOW: LOW_BATTERY_REFRESH,
+                }.get(level, 0))
             if holding(device, now):
                 # Answered in this same response: the waiting screen goes out now, and a
                 # short spacing brings the result back in seconds rather than at the next
@@ -802,6 +813,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             # `filename` is the firmware's cache key, so it follows the bytes: any new
             # picture changes it, and an unchanged one does not.
             fingerprint = hashlib.sha256(screen_now(device, now)).hexdigest()[:12]
+            self.log_message("display %s next poll=%ss", device.friendly_id, refresh)
             self._json(
                 HTTPStatus.OK,
                 {

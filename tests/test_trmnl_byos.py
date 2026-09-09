@@ -50,7 +50,12 @@ def server(tmp_path: Path) -> tuple[str, ThreadingHTTPServer]:
     registry.write_text(json.dumps(document), encoding="utf-8")
     assert device.mac == MAC
     config = Config("http://127.0.0.1", screen, registry)
+    from dataclasses import replace
+
+    config = replace(config, display_poll_file=tmp_path / "display-poll.json")
+    httpd_poll_file = config.display_poll_file
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    httpd.poll_file = httpd_poll_file
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     yield f"http://127.0.0.1:{httpd.server_port}", httpd
@@ -94,6 +99,22 @@ def test_unknown_device_and_wrong_token_are_refused(
     base_url, _ = server
     assert get(f"{base_url}/api/setup", {"ID": "00:00:00:00:00:00"})[0] == 404
     assert get(f"{base_url}/api/display", {"ID": MAC, "Access-Token": "wrong"})[0] == 403
+
+
+def test_display_receives_updated_interval_on_next_wifi_request(server):
+    from devices.display_poll import save_interval
+
+    base_url, httpd = server
+    headers = {"ID": MAC, "Access-Token": TOKEN, "USB-Connected": "true"}
+    save_interval(httpd.poll_file, 10)
+    assert json.loads(get(f"{base_url}/api/display", headers)[1])["refresh_rate"] == "600"
+    save_interval(httpd.poll_file, 25)
+    answer = json.loads(get(f"{base_url}/api/display", headers)[1])
+    assert answer["refresh_rate"] == "1500"
+    assert answer["update_firmware"] is False
+    headers["USB-Connected"] = "false"
+    headers["Battery-Voltage"] = "3.65"
+    assert json.loads(get(f"{base_url}/api/display", headers)[1])["refresh_rate"] == "3600"
 
 
 def test_battery_level_thresholds() -> None:

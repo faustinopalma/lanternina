@@ -906,6 +906,7 @@ class CosmosRhythmStore:
                 "picturesFromMinutes": rhythm.pictures_from_minutes,
                 "picturesUntilMinutes": rhythm.pictures_until_minutes,
                 "cadenceMinutes": rhythm.cadence_minutes,
+                "displayPollMinutes": rhythm.display_poll_minutes,
                 "afternoonDays": list(rhythm.afternoon_days),
                 "afternoonFromMinutes": rhythm.afternoon_from_minutes,
                 "afternoonUntilMinutes": rhythm.afternoon_until_minutes,
@@ -933,6 +934,7 @@ def _to_rhythm(document: dict[str, Any]) -> Rhythm:
             document.get("picturesUntilMinutes") or DEFAULT_PICTURES_UNTIL_MINUTES
         ),
         cadence_minutes=_minutes(document, "cadenceMinutes", "cadenceHours", 60),
+        display_poll_minutes=_whole(document.get("displayPollMinutes"), 10),
         # A document written before afternoons existed has no days, which is the same
         # thing as a household that has not chosen any: the house begins none.
         afternoon_days=tuple(str(day) for day in (document.get("afternoonDays") or ())),

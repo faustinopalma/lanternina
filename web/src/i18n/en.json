@@ -1,4 +1,7 @@
 {
+  "rhythm.displaySection": "Display connections",
+  "rhythm.displayPoll": "Connect every",
+  "rhythm.displayPollNote": "Longer intervals save battery but delay photos and reminders. Each display receives the change on its next Wi-Fi connection after the hub fetches it. Low battery can extend the interval; after a button press it stays short until the response. No USB connection is needed.",
   "photos.diagnostics": "Camera diagnostics",
   "photos.sleepConfirmed": "wake from deep sleep confirmed",
   "photos.sleepPlanned": "sleep announced, not yet confirmed",
