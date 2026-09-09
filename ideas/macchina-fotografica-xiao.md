@@ -12,9 +12,9 @@ This choice follows the handheld direction recorded on 25 August in [ideas/06-ca
 
 ## The chosen connections
 
-The selected shutter connection is D1/GPIO2 to ground; the external LED remains on D2/GPIO3 with its series resistor, reported as approximately 220 ohms. The owner measured 3.2 V on D1 with its pull-up enabled and chose it to replace D3, which remained near 0.23 V with the shutter wire cut. The firmware disables both pulls on D3 and uses GPIO2 for the button and deep-sleep wakeup. Installation and soldering remain pending. The earlier D0 LED proposal does not describe the assembled unit.
+The shutter connects D1/GPIO2 to ground; the external LED uses D4/GPIO5 through its series resistor. The owner reported both wiring changes on 9 September and the matching firmware is installed. GPIO2 handles capture and deep-sleep wakeup; the retired GPIO4 and GPIO3 inputs have both pulls disabled. D1 measured 3.2 V in the preceding unloaded test. Physical press, LED and battery-wake acceptance remain open.
 
-GPIO3 also selects the JTAG source at startup. The assembled circuit remains accessible through USB Serial/JTAG: chip identification, backup and firmware updates succeeded on 9 September. This observation supports keeping the soldered wiring; it does not replace a battery cold-start test.
+The former LED pin GPIO3 also selects the JTAG source at startup. It is now unused. USB Serial/JTAG identification and firmware updates succeeded after the D1/D4 rewiring; this does not replace a battery cold-start test.
 
 The built-in LED uses GPIO21, which the expansion also uses for the microSD chip select. An external LED remains visible on the enclosure and does not interfere with that signal; it costs a component, a resistor and wiring.
 
@@ -26,7 +26,7 @@ The LED stays off between these events. The initial design uses 150 ms flashes, 
 
 This replaces the earlier proposal of steady light during capture and confirmation after local storage. It tells the person that the image has reached the system, but makes confirmation depend on the network. A queued image receives its two flashes only when delivery is acknowledged, possibly much later. Duplicate receipts must not replay the signal, and overlapping feedback sequences must be serialised. One LED cannot identify which queued photograph arrived; the hub's receipt record must retain that association.
 
-The [wiring diagram](../docs/macchina-fotografica/images/button-led-wiring.svg) shows the D1 shutter and D2 LED. The button and LED share ground, with no connection between their signal pins.
+The [wiring diagram](../docs/macchina-fotografica/images/button-led-wiring.svg) shows the D1 shutter and D4 LED. The button and LED share ground, with no connection between their signal pins.
 
 ## The photograph must be able to wait
 
@@ -40,7 +40,7 @@ The receiver binds a timestamped photograph to the run, collect and arrival time
 
 ## Where to start
 
-After installing the D1 firmware, the owner will solder the shutter signal to D1 with USB and battery disconnected, keeping the old D3 wire insulated. Check D1 voltage released, pressed and released again, then verify one photograph per accepted press, LED feedback and battery sleep/wake. No further investigation of D3 is required by the owner.
+The wiring and firmware installation are complete. Check D1 voltage released, pressed and released again, then verify one photograph per accepted press, LED feedback and battery sleep/wake. Keep unused wire ends insulated. No further investigation of D3 is required by the owner.
 
 We use Espressif's `esp32-camera` driver for JPEG capture. Alternating subjects checks that each capture contains the current subject. Discarding a frame is not assumed to establish freshness in every configuration.
 

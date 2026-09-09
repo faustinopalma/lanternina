@@ -2,7 +2,7 @@
 
 Lanternina's camera uses a Seeed Studio XIAO ESP32S3 and Sense expansion board. The person holding it frames an object and presses a button. The device takes a photograph and signals the outcome with an LED. The design calls for delivery to lanternina hub over the home Wi-Fi network.
 
-The current firmware assigns the shutter to D1/GPIO2 and the external LED to D2/GPIO3. On 9 September 2026 the owner measured 3.2 V on D1 with its internal pull-up enabled, after D3 remained near 0.23 V with the shutter wire cut. The D1 firmware has compiled; installation and soldering are pending. D3 is retired, with both internal pulls disabled. The [firmware operations guide](../../firmware/camera/README.md) describes installation, the LittleFS queue, parent archive and physical acceptance checks.
+The installed firmware assigns the shutter to D1/GPIO2 and the external LED to D4/GPIO5. The owner reported both wiring changes on 9 September 2026. Flash verification and authenticated status passed; D1 reads HIGH and D4 is an output at LOW while idle. D3 and the former LED pin D2 are unused inputs without internal pulls. The [firmware operations guide](../../firmware/camera/README.md) records the checks; button, visible LED and battery-wake acceptance remain physical tests.
 
 ## The device
 
@@ -27,9 +27,9 @@ The button must close a contact when pressed and open it again when released. Il
 
 ## Wiring diagram
 
-The shutter connects D1/GPIO2 to ground. The LED connects D2/GPIO3 through its series resistor, approximately 220 ohms in the reported assembly. Keep the cut board-side D3 wire insulated and separate from the new D1 connection. The owner will solder the button to D1 after firmware installation. The pin map below describes the current target.
+The shutter connects D1/GPIO2 to ground. The LED connects D4/GPIO5 through its series resistor, approximately 220 ohms in the earlier reported assembly. Keep unused wire ends insulated, including the board-side D3 wire. The pin map below describes the wiring reported by the owner.
 
-The button and LED share only ground. The LED anode connects to `D2/GPIO3` through its resistor; the cathode returns to ground. There is no wire between the button signal and the LED. The firmware reads one GPIO and controls the other, so it can flash the LED after the button has been released.
+The button and LED share only ground. The LED anode connects to `D4/GPIO5` through its resistor; the cathode returns to ground. There is no wire between the button signal and the LED. The firmware reads one GPIO and controls the other, so it can flash the LED after the button has been released.
 
 ## Where to solder on this board
 
@@ -42,25 +42,25 @@ The view below matches the second photograph. We are looking at the rear, with t
              +---------------+
      VUSB   o               o   D0  GPIO1
      GND    o               o   D1  GPIO2  --> button
-     3V3    o               o   D2  GPIO3  --> resistor and LED
+     3V3    o               o   D2  GPIO3  --> unused
      D10    o               o   D3  GPIO4  --> unused; old wire insulated
-      D9     o               o   D4  GPIO5
+     D9     o               o   D4  GPIO5  --> resistor and LED
       D8     o               o   D5  GPIO6
       D7     o               o   D6  GPIO43
              +---------------+
                   REAR VIEW
 ```
 
-We use three edge pads on the base board: `D1`, `D2` and `GND`. In the photograph, `D1` is the second pad from the top on the right, `D2` is the third on the right and `GND` is the second on the left. Check the printed labels before soldering. The central `BAT`, `D+`, `D-`, `EN` and JTAG pads are not needed for these connections.
+We use three edge pads on the base board: `D1`, `D4` and `GND`. In the photograph, D1 is the second pad from the top on the right, D4 is the fifth on the right and GND is the second on the left. Check the printed labels before soldering. The central BAT, D+, D-, EN and JTAG pads are not needed for these connections.
 
 | Function | Board label | Chip GPIO | Firmware configuration |
 | --- | --- | --- | --- |
 | Button input and sleep wakeup | D1 | GPIO2 | `INPUT_PULLUP`; pressed = `LOW` |
 | Retired button input | D3 | GPIO4 | Input without pull-up or pull-down; leave disconnected |
-| External LED output | D2 | GPIO3 | `OUTPUT`; lit = `HIGH` |
+| External LED output | D4 | GPIO5 | `OUTPUT`; lit = `HIGH` |
 | Common return | GND | Ground | Connected to both the button and the LED cathode |
 
-The board labels differ from GPIO numbers: D1 is GPIO2 and D2 is GPIO3. PlatformIO uses the `seeed_xiao_esp32s3` board target.
+The board labels differ from GPIO numbers: D1 is GPIO2 and D4 is GPIO5. PlatformIO uses the `seeed_xiao_esp32s3` board target.
 
 Seeed assigns GPIO10-18, GPIO38-40, GPIO47 and GPIO48 to the camera. The microSD uses GPIO7, GPIO8, GPIO9 and GPIO21; the microphone uses GPIO41 and GPIO42. GPIO2 and GPIO3 are outside these assignments. The built-in user LED is on GPIO21, shared with the microSD chip select: we do not use it to confirm a photograph. The charging LED indicates the state of the power circuit, not a capture.
 
@@ -82,10 +82,10 @@ A four-leg tactile button contains two internally connected pairs. With the boar
 
 ## Wiring the LED
 
-Connect `D2` to one end of the series resistor. The reported assembly uses approximately 220 ohms; the earlier proposal used 470 ohms, which gives less LED current. Connect the other end to the LED anode. Connect the cathode to `GND`, the same return used by the button.
+Connect `D4` to one end of the series resistor. The earlier reported assembly uses approximately 220 ohms; the earlier proposal used 470 ohms, which gives less LED current. Connect the other end to the LED anode. Connect the cathode to `GND`, the same return used by the button.
 
 ```text
-     D2 / GPIO3 ---- [ 220 ohm ] ---- anode LED cathode ---- GND
+     D4 / GPIO5 ---- [ 220 ohm ] ---- anode LED cathode ---- GND
 ```
 
 On a new LED, the anode usually has the longer lead. The cathode usually has the shorter lead and sits next to the flat side of the base. If the leads have been cut or the package differs, check polarity against the datasheet or with the multimeter's diode function. The resistor has no polarity and may sit on either side of the LED, provided it is in series.
@@ -96,7 +96,7 @@ The firmware controls the LED, rather than the button contact. Wiring it directl
 
 ## Assembly order
 
-1. Disconnect all power sources. Identify `D1`, `D2` and `GND` from the rear silkscreen labels.
+1. Disconnect all power sources. Identify `D1`, `D4` and `GND` from the rear silkscreen labels.
 2. Test the button with the multimeter and identify the LED anode and cathode.
 3. Solder the connections to the edge pads, or solder the kit's headers and test on a breadboard. Avoid solder bridges to neighbouring pads or the metal shield.
 4. Join the two ground returns at a small insulated junction and run a single wire to `GND`. This avoids crowding two wires onto the small pad.

@@ -2,6 +2,8 @@
 
 ## Current decision
 
+The owner subsequently reported soldering the shutter to D1 and moving the LED to D4 after a wire broke. Revision `camera-2026-09-09-d1-d4` is now installed on camera 94:A9:90:D0:9D:D0. GPIO2 handles presses and EXT0 wakeup; GPIO5 drives the LED. GPIO4 and GPIO3 are unused inputs with pulls disabled. Flash hashes, filesystem and fresh authenticated telemetry passed. Serial diagnostics read GPIO2 HIGH with pull-up, GPIO4 with neither pull, and GPIO5 as an output at LOW. This supersedes the pending-installation state below; physical press, LED and sleep/wake acceptance remain open.
+
 The owner measured 3.2 V on D1/GPIO2 with the diagnostic pull-up enabled and requested permanent migration of the shutter to that pin. The current source uses GPIO2 for awake capture and EXT0 wakeup, retires GPIO4 with both pulls off, and removes PIN_TEST mode. It compiled successfully in 10.48 seconds on the isolated hub toolchain. Installation remains pending because the camera was absent from USB at the check. The owner will solder the shutter to D1 later and verify released/pressed voltage, capture and sleep wakeup. No further fault isolation of D3 is requested. The paragraphs below record the earlier temporary test, not the current source behavior.
 
 The owner measured 3.3 V on the supply and initially 2.5 to 2.7 V on D3/GPIO4 with the shutter released. Later both the oscilloscope and multimeter showed approximately 0.23 V. Removing the oscilloscope probe did not change that value. The owner cut the shutter signal wire midway, leaving the board-side wire and solder joint attached, and reported the same low voltage. These observations do not distinguish a board-side leakage path from pin configuration or damage.

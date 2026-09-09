@@ -18,7 +18,8 @@
 
 static constexpr gpio_num_t BUTTON = GPIO_NUM_2;
 static constexpr gpio_num_t RETIRED_BUTTON = GPIO_NUM_4;
-static constexpr int LED = 3;
+static constexpr int LED = 5;
+static constexpr gpio_num_t RETIRED_LED = GPIO_NUM_3;
 static constexpr uint32_t NETWORK_MS = 20000;
 static constexpr size_t MAX_JPEG = 750000;
 static constexpr int QUEUE_LIMIT = 3;
@@ -257,7 +258,7 @@ static void reportStatus(const char *phase) {
             status["voltage"] = millivolts * 2.0f / 16000.0f;
 #endif
             status["rssi"] = WiFi.RSSI();
-            status["firmware"] = "camera-2026-09-09-d1";
+            status["firmware"] = "camera-2026-09-09-d1-d4";
             status["captureResult"] = captureResult;
             status["queued"] = storageReady ? queued() : -1;
             JsonObject diagnostics = status.createNestedObject("diagnostics");
@@ -424,6 +425,10 @@ static void startWork(bool takePhoto, bool sleepOnly = false) {
 }
 
 void setup() {
+    rtc_gpio_pullup_dis(RETIRED_LED);
+    rtc_gpio_pulldown_dis(RETIRED_LED);
+    rtc_gpio_deinit(RETIRED_LED);
+    pinMode(RETIRED_LED, INPUT);
     rtc_gpio_pullup_dis(RETIRED_BUTTON);
     rtc_gpio_pulldown_dis(RETIRED_BUTTON);
     rtc_gpio_deinit(RETIRED_BUTTON);
@@ -535,6 +540,9 @@ void loop() {
                     startWork(true);
                 }
             } else if (strcmp(command, "STATUS") == 0) {
+                Serial.printf("led_gpio=%d output_enabled=%d level=%d\n", LED,
+                              (REG_READ(GPIO_ENABLE_REG) & (1UL << LED)) != 0,
+                              (REG_READ(GPIO_OUT_REG) & (1UL << LED)) != 0);
                 uint32_t retiredMux = REG_READ(IO_MUX_GPIO4_REG);
                 Serial.printf("retired_gpio=4 pullup=%d pulldown=%d input_enabled=%d output_enabled=%d\n",
                               (retiredMux & FUN_PU) != 0, (retiredMux & FUN_PD) != 0,
