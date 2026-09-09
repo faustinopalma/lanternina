@@ -10,6 +10,7 @@
 #include <soc/soc.h>
 #include <soc/usb_serial_jtag_reg.h>
 #include <time.h>
+#include <errno.h>
 #include "camera_secrets.h"
 
 static constexpr gpio_num_t BUTTON = GPIO_NUM_4;
@@ -24,6 +25,13 @@ static uint32_t bootTag;
 static uint32_t lastUsb = 0;
 static uint32_t lastFrame = 0;
 static uint32_t lastAttempt = 0;
+static const char *captureResult = "not_requested";
+
+static bool captureFailed(const char *reason) {
+    captureResult = reason;
+    Serial.printf("capture_failed=%s\n", reason);
+    return false;
+}
 
 static String identifier() {
     char value[33];
@@ -31,6 +39,10 @@ static String identifier() {
              (unsigned long)esp_random(), (unsigned long)esp_random(),
              (unsigned long)esp_random(), (unsigned long)esp_random());
     return String(value);
+}
+
+static String queuePath(const String &id) {
+    return "/" + id.substring(0, 24);
 }
 
 static int queued() {
@@ -42,8 +54,29 @@ static int queued() {
     return count;
 }
 
+static void probeStorage() {
+    Serial.printf("storage total=%u used=%u\n", LittleFS.totalBytes(), LittleFS.usedBytes());
+    String prefix = "/probe-" + String(esp_random(), HEX);
+    for (int length : {16, 37}) {
+        String path = prefix;
+        while (path.length() < length) path += "x";
+        errno = 0;
+        File probe = LittleFS.open(path, "w");
+        int openedError = errno;
+        size_t written = probe ? probe.write((const uint8_t *)"test", 4) : 0;
+        Serial.printf("storage_probe length=%u opened=%d errno=%d written=%u\n",
+                      path.length(), (bool)probe, openedError, written);
+        if (probe) {
+            probe.close();
+            LittleFS.remove(path);
+        }
+    }
+}
+
 static bool capture() {
-    if (!storageReady || queued() >= QUEUE_LIMIT) return false;
+    if (!storageReady) return captureFailed("filesystem_unavailable");
+    if (queued() >= QUEUE_LIMIT) return captureFailed("queue_full");
+    Serial.printf("capture_started psram=%u free_heap=%u\n", ESP.getPsramSize(), ESP.getFreeHeap());
     uint32_t capturedMillis = millis();
     time_t capturedEpoch = time(nullptr);
     camera_config_t config = {};
@@ -62,7 +95,12 @@ static bool capture() {
     config.fb_count = 1;
     config.fb_location = CAMERA_FB_IN_PSRAM;
     config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
-    if (!psramFound() || esp_camera_init(&config) != ESP_OK) return false;
+    if (!psramFound()) return captureFailed("psram_unavailable");
+    esp_err_t initialized = esp_camera_init(&config);
+    if (initialized != ESP_OK) {
+        Serial.printf("camera_init_error=0x%x\n", initialized);
+        return captureFailed("sensor_initialization");
+    }
     Serial.printf("sensor=%04x psram=%u\n", esp_camera_sensor_get()->id.PID, ESP.getPsramSize());
     for (int frame = 0; frame < 2; ++frame) {
         camera_fb_t *warmup = esp_camera_fb_get();
@@ -70,11 +108,21 @@ static bool capture() {
         delay(80);
     }
     camera_fb_t *image = esp_camera_fb_get();
+    if (!image) Serial.println("frame=null");
+    else Serial.printf("frame width=%u height=%u format=%d bytes=%u\n",
+                       image->width, image->height, image->format, image->len);
     bool saved = false;
     if (image && image->format == PIXFORMAT_JPEG && image->len <= MAX_JPEG) {
-        String id = identifier();
-        String path = "/" + id;
+        String id;
+        String path;
+        do {
+            id = identifier();
+            path = queuePath(id);
+        } while (LittleFS.exists(path + ".json") || LittleFS.exists(path + ".jpg") ||
+                 LittleFS.exists(path + ".part") || LittleFS.exists(path + ".meta"));
         File temporary = LittleFS.open(path + ".part", "w");
+        if (!temporary) Serial.printf("capture_open_errno=%d total=%u used=%u\n",
+                           errno, LittleFS.totalBytes(), LittleFS.usedBytes());
         saved = temporary && temporary.write(image->buf, image->len) == image->len;
         temporary.flush(); temporary.close();
         File verify = LittleFS.open(path + ".part", "r");
@@ -108,6 +156,8 @@ static bool capture() {
     }
     if (image) esp_camera_fb_return(image);
     esp_camera_deinit();
+    if (!saved) return captureFailed("frame_or_storage");
+    captureResult = "saved";
     return saved;
 }
 
@@ -127,7 +177,7 @@ static bool deliver() {
         http.setConnectTimeout(5000);
         http.setTimeout(10000);
         if (http.begin(tls, String(HUB_URL) + "/status")) {
-            StaticJsonDocument<256> status;
+            StaticJsonDocument<384> status;
             status["usb"] = millis() - lastUsb < 2000;
             status["voltage"] = nullptr;
 #ifdef CAMERA_BATTERY_GPIO
@@ -141,6 +191,8 @@ static bool deliver() {
 #endif
             status["rssi"] = WiFi.RSSI();
             status["firmware"] = "camera-2026-09-09";
+            status["captureResult"] = captureResult;
+            status["queued"] = queued();
             http.addHeader("Authorization", String("Bearer ") + CAMERA_TOKEN);
             http.addHeader("X-Camera-Id", WiFi.macAddress());
             http.addHeader("Content-Type", "application/json");
@@ -154,10 +206,19 @@ static bool deliver() {
     for (File entry = root.openNextFile(); entry; entry = root.openNextFile()) {
         if (!String(entry.name()).endsWith(".json")) continue;
         StaticJsonDocument<256> record;
-        if (deserializeJson(record, entry)) continue;
+        DeserializationError parseError = deserializeJson(record, entry);
+        if (parseError) {
+            Serial.printf("queue_parse_error=%s file=%s\n", parseError.c_str(), entry.name());
+            continue;
+        }
+        entry.close();
         String id = record["id"].as<String>();
-        File image = LittleFS.open("/" + id + ".jpg", "r");
-        if (!image || image.size() == 0) continue;
+        String path = queuePath(id);
+        File image = LittleFS.open(path + ".jpg", "r");
+        if (!image || image.size() == 0) {
+            Serial.printf("queued_image_missing=%s\n", id.c_str());
+            continue;
+        }
         WiFiClientSecure tls;
         tls.setCACert(HUB_CA);
         tls.setHandshakeTimeout(10);
@@ -182,8 +243,11 @@ static bool deliver() {
         http.end();
         Serial.printf("upload=%s status=%d accepted=%d\n", id.c_str(), status, accepted);
         if (!accepted) return false;
-        LittleFS.remove("/" + id + ".json");
-        LittleFS.remove("/" + id + ".jpg");
+        if (!LittleFS.remove(path + ".json")) {
+            Serial.printf("receipt_cleanup_failed=%s\n", id.c_str());
+            return false;
+        }
+        LittleFS.remove(path + ".jpg");
         while (feedback != 0) delay(20);
         feedback = 2;
         while (feedback != 0) delay(20);
@@ -231,7 +295,9 @@ void setup() {
         for (File entry = root.openNextFile(); entry; entry = root.openNextFile()) {
             String path = String("/") + entry.name();
             if (path.endsWith(".part") || path.endsWith(".meta") ||
-                (path.endsWith(".jpg") && !LittleFS.exists(path.substring(0, path.length() - 4) + ".json"))) {
+                (path.endsWith(".jpg") && !LittleFS.exists(path.substring(0, path.length() - 4) + ".json")) ||
+                (path.endsWith(".json") && !LittleFS.exists(path.substring(0, path.length() - 5) + ".jpg"))) {
+                Serial.printf("queue_incomplete=%s\n", path.c_str());
                 entry.close();
                 LittleFS.remove(path);
             }
@@ -285,6 +351,31 @@ void loop() {
         }
     }
     bool usb = now - lastUsb < 2000;
+    static char command[32];
+    static size_t commandLength = 0;
+    while (Serial.available()) {
+        char character = (char)Serial.read();
+        if (character == '\r') continue;
+        if (character == '\n') {
+            command[commandLength] = '\0';
+            if (strcmp(command, "CAPTURE") == 0 && usb) {
+                if (busy || feedback || activeFeedback) Serial.println("command=BUSY");
+                else {
+                    Serial.println("command=CAPTURE accepted");
+                    feedback = 1;
+                    startWork(true);
+                }
+            } else if (strcmp(command, "STATUS") == 0) {
+                Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s\n",
+                              usb, busy, ESP.getPsramSize(), storageReady,
+                              (!busy && storageReady) ? queued() : -1, captureResult);
+            } else if (strcmp(command, "STORAGE") == 0 && usb && !busy && storageReady) {
+                probeStorage();
+            } else Serial.println("command=UNKNOWN_OR_NO_USB");
+            commandLength = 0;
+        } else if (commandLength < sizeof(command) - 1) command[commandLength++] = character;
+        else commandLength = 0;
+    }
     static uint32_t lastStatus = 0;
     if (usb && now - lastStatus >= 5000) {
         Serial.printf("usb=%d button=%d busy=%d filesystem=%d queued=%d led_gpio=%d\n",

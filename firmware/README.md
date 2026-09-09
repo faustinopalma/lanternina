@@ -7,7 +7,7 @@ The [camera firmware](camera/README.md) is an isolated PlatformIO project for th
 ## Rules for anything added here
 
 - A device shows what it is told to show. It does not decide, generate, or cache content beyond the last message it received.
-- The capture button is the only capture trigger in the entire system. No timer, no auto-trigger, no repeat.
+- The capture button triggers photographs during normal use. The camera also accepts an explicit USB-only development capture command, authorized by the owner on 9 September 2026. No timer or network command triggers a capture.
 - A device must never display an error code, a stack trace, or anything that implies the person reading it did something wrong. Faults go to the parent panel; the display either keeps its last content or shows something calm.
 - Wi-Fi and broker credentials live in a gitignored `wifi_secrets.h` generated from a committed template. Never commit real values.
 
