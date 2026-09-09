@@ -9,6 +9,8 @@
 #include <esp_sleep.h>
 #include <esp_system.h>
 #include <soc/soc.h>
+#include <soc/io_mux_reg.h>
+#include <soc/gpio_reg.h>
 #include <soc/usb_serial_jtag_reg.h>
 #include <time.h>
 #include <errno.h>
@@ -500,6 +502,12 @@ void loop() {
                     startWork(true);
                 }
             } else if (strcmp(command, "STATUS") == 0) {
+                uint32_t buttonMux = REG_READ(IO_MUX_GPIO4_REG);
+                Serial.printf("button_gpio=4 raw=%d pullup=%d pulldown=%d input_enabled=%d output_enabled=%d mux=0x%lx\n",
+                              digitalRead(BUTTON), (buttonMux & FUN_PU) != 0,
+                              (buttonMux & FUN_PD) != 0, (buttonMux & FUN_IE) != 0,
+                              (REG_READ(GPIO_ENABLE_REG) & (1UL << BUTTON)) != 0,
+                              (unsigned long)buttonMux);
                 Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s\n",
                               usb, busy, ESP.getPsramSize(), storageReady,
                               (!busy && storageReady) ? queued() : -1, captureResult);
