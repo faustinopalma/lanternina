@@ -136,6 +136,14 @@ class PhotoStore:
 
     def delete(self, photo_id: str) -> None:
         with self.connect() as database:
+            database.execute("BEGIN IMMEDIATE")
+            database.execute(
+                "UPDATE photos SET state='done', target='null', "
+                "detail='archived with deleted interrupted moment; effects not replayed' "
+                "WHERE state='pending' AND target!='null' AND target IN ("
+                "SELECT target FROM photos WHERE id=? AND state IN ('processing','failed'))",
+                (photo_id,),
+            )
             database.execute(
                 "UPDATE photos SET jpeg=NULL, target='null', state='deleted', detail='' WHERE id=?",
                 (photo_id,),
@@ -145,7 +153,10 @@ class PhotoStore:
         with self.connect() as database:
             database.execute("BEGIN IMMEDIATE")
             row = database.execute(
-                "SELECT * FROM photos WHERE state='pending' ORDER BY received LIMIT 1"
+                "SELECT * FROM photos AS candidate WHERE state='pending' AND NOT EXISTS ("
+                "SELECT 1 FROM photos AS blocked WHERE blocked.target=candidate.target "
+                "AND blocked.target!='null' AND blocked.state IN ('processing','failed')) "
+                "ORDER BY received LIMIT 1"
             ).fetchone()
             if not row:
                 return None
@@ -154,6 +165,19 @@ class PhotoStore:
 
     def archive_reviewed(self, photo_id: str) -> bool:
         with self.connect() as database:
+            database.execute("BEGIN IMMEDIATE")
+            row = database.execute(
+                "SELECT target FROM photos WHERE id=? AND state IN ('processing','failed') "
+                "AND jpeg IS NOT NULL", (photo_id,),
+            ).fetchone()
+            if row is None:
+                return False
+            if row["target"] != "null":
+                database.execute(
+                    "UPDATE photos SET state='done', target='null', "
+                    "detail='archived with interrupted moment; effects not replayed' "
+                    "WHERE target=? AND state='pending'", (row["target"],),
+                )
             result = database.execute(
                 "UPDATE photos SET state='done', target='null', "
                 "detail='archived after explicit review; effects not replayed' "

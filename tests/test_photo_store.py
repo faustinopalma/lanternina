@@ -78,3 +78,18 @@ def test_deletion_wins_over_completion_and_review(tmp_path):
     assert not store.archive_reviewed(PHOTO)
     assert store.get(PHOTO)["state"] == "deleted"
     assert store.get(PHOTO)["jpeg"] is None
+
+
+@pytest.mark.parametrize("resolve", ["archive_reviewed", "delete"])
+def test_another_queued_photo_cannot_replay_an_interrupted_moment(tmp_path, resolve):
+    store = PhotoStore(tmp_path / "photos.db")
+    target = {"run": "one", "moment": "build", "since": 10}
+    store.accept(PHOTO, "camera", jpeg(), captured=11, target=target)
+    store.claim()
+    store.accept("b" * 32, "camera", jpeg(), captured=12, target=target)
+    restarted = PhotoStore(store.path)
+    assert restarted.claim() is None
+    getattr(restarted, resolve)(PHOTO)
+    assert restarted.claim() is None
+    assert restarted.get("b" * 32)["state"] == "done"
+    assert restarted.get("b" * 32)["target"] == "null"
