@@ -1,177 +1,195 @@
-# La macchina fotografica
+# The camera
 
-La macchina fotografica di Lanternina parte dalla Seeed Studio XIAO ESP32S3 con espansione Sense acquistata da Fausto. Chi la tiene in mano inquadra un oggetto e preme un pulsante. Il dispositivo acquisisce una fotografia e segnala l'esito con un LED. Il progetto prevede l'invio a lanternina hub attraverso il Wi-Fi di casa.
+Lanternina's camera uses a Seeed Studio XIAO ESP32S3 and Sense expansion board. The person holding it frames an object and presses a button. The device takes a photograph and signals the outcome with an LED. The design calls for delivery to lanternina hub over the home Wi-Fi network.
 
-Al 7 settembre 2026 abbiamo identificato i componenti dalle fotografie e verificato i collegamenti nella documentazione del produttore. Il cablaggio, il firmware fotografico e la ricezione sull'hub devono ancora essere realizzati e provati. Questa sezione descrive il montaggio e il comportamento previsto; non documenta una macchina gia' funzionante.
+On 9 September 2026 the board was identified over USB, backed up, compiled and flashed. Fausto confirmed the assembled D2 LED and D3 shutter wiring. The [firmware operations guide](../../firmware/camera/README.md) describes the implementation, parent archive and verification limits. The earlier assembly proposal below preserves design details; the operations guide is current where implementation differs, including the internal LittleFS queue instead of microSD. Capture, LED interpretation and battery wake still require physical tests.
 
-## Il dispositivo acquistato
+## The device
 
-![Il kit acquistato: scheda XIAO ESP32S3, espansione Sense con camera OV3660, antenna e connettori non saldati](images/kit-ov3660.jpg)
+![XIAO ESP32S3 board, Sense expansion with OV3660 camera, antenna and unsoldered headers](images/kit-ov3660.jpg)
 
-La foto mostra la scheda base marcata `XIAO-ESP32-S3`, l'espansione Sense, l'antenna a 2,4 GHz e due file di pin ancora separate. La scritta `OV3660` sul cavetto identifica il modulo fotografico. Seeed dichiara per questo sensore una risoluzione massima di 2048 x 1536 pixel; il modello e la risoluzione effettivamente utilizzati andranno confermati dal firmware. Non e' il sensore OV2640 del tutorial di partenza.
+The photograph shows the base board marked `XIAO-ESP32-S3`, the Sense expansion, the 2.4 GHz antenna and two separate pin headers. The `OV3660` marking on the ribbon cable identifies the camera module. Seeed specifies a maximum resolution of 2048 x 1536 pixels for this sensor; the firmware must confirm the model and resolution actually used. This is not the OV2640 sensor used in the source tutorial.
 
-L'espansione comprende anche uno slot microSD e un microfono. Il progetto usa la camera e prevede la microSD per le fotografie in attesa di consegna. Il firmware fotografico non inizializzera' il microfono. L'acquisto di una microSD, di un pulsante, di un LED e di una batteria non e' attestato dalle foto.
+The expansion also includes a microSD slot and a microphone. The design uses the camera and proposes microSD storage for photographs awaiting delivery. The camera firmware will not initialise the microphone. A microSD card, button, LED and battery are not shown in the photographs.
 
-## Il materiale per pulsante e LED
+## Parts for the button and LED
 
-| Quantita' | Componente | Caratteristica richiesta |
+| Quantity | Component | Required specification |
 | --- | --- | --- |
-| 1 | Pulsante momentaneo | Contatto normalmente aperto, senza ritenuta; due terminali oppure contatti `COM` e `NO` |
-| 1 | LED diffuso rosso o ambra | LED ordinario a due terminali, adatto a pochi mA; non un modulo indicatore da 12 V |
-| 1 | Resistenza da 470 ohm | Potenza nominale di 0,25 W; in serie al LED |
-| Alcuni | Fili flessibili isolati | Corti, come indicazione di montaggio entro circa 15 cm nel contenitore |
-| Quanto serve | Guaina termorestringente e supporto | Isolamento dei terminali e fissaggio che impedisca ai fili di tirare le saldature |
-| 1 | Cavo USB-C dati | Alimentazione e programmazione durante il collaudo |
+| 1 | Momentary push button | Normally open, non-latching contact; two terminals or `COM` and `NO` contacts |
+| 1 | Diffused red or amber LED | Ordinary two-lead LED suitable for a few mA; not a 12 V indicator module |
+| 1 | 470 ohm resistor | Rated at 0.25 W; connected in series with the LED |
+| Several | Flexible insulated wires | Keep them short; approximately 15 cm or less inside the enclosure is an assembly guideline |
+| As needed | Heat-shrink tubing and support | Insulation for terminals and strain relief to keep wires from pulling on solder joints |
+| 1 | USB-C data cable | Power and programming during testing |
 
-Il pulsante deve chiudere un contatto quando viene premuto e riaprirlo al rilascio. Nei pulsanti illuminati i contatti della luce sono separati da quelli dell'interruttore: questa guida usa un LED esterno indipendente.
+The button must close a contact when pressed and open it again when released. Illuminated buttons have separate contacts for the light and the switch: this guide uses an independent external LED.
 
-## Dove saldare sulla tua scheda
+## Wiring diagram
 
-![Retro della scheda acquistata, con USB-C in alto e serigrafia dei pin leggibile](images/scheda-retro.jpg)
+Fausto confirmed on 9 September 2026 that the assembled camera follows the source schematic: the button connects `D3/GPIO4` to ground and the LED uses `D2/GPIO3` through a series resistor, shown as approximately 220 ohms in that schematic. The firmware uses these connections. The earlier [D0 proposal](images/button-led-wiring.svg) is retained as a historical drawing and does not describe the assembled unit.
 
-La vista seguente corrisponde alla seconda fotografia: guardiamo il retro, quello con la scritta `XIAO ESP32S3` e le piazzole `BAT`; teniamo la presa USB-C in alto. Guardando invece il lato dei componenti, destra e sinistra si scambiano.
+The button and LED share only ground. The LED anode connects to `D2/GPIO3` through its resistor; the cathode returns to ground. There is no wire between the button signal and the LED. The firmware reads one GPIO and controls the other, so it can flash the LED after the button has been released.
+
+## Where to solder on this board
+
+![Rear of the board, with USB-C at the top and readable pin labels](images/scheda-retro.jpg)
+
+The view below matches the second photograph. We are looking at the rear, with the `XIAO ESP32S3` marking and `BAT` pads, and the USB-C socket at the top. Left and right are reversed when looking at the component side instead.
 
 ```text
                    USB-C
              +---------------+
-      VUSB   o               o   D0  GPIO1  --> resistenza e LED
+     VUSB   o               o   D0  GPIO1
       GND    o               o   D1  GPIO2
-      3V3    o               o   D2  GPIO3
-      D10    o               o   D3  GPIO4  --> pulsante
+     3V3    o               o   D2  GPIO3  --> resistor and LED
+      D10    o               o   D3  GPIO4  --> button
       D9     o               o   D4  GPIO5
       D8     o               o   D5  GPIO6
       D7     o               o   D6  GPIO43
              +---------------+
-                 VISTA RETRO
+                  REAR VIEW
 ```
 
-Usiamo tre piazzole laterali della scheda base: `D0`, `D3` e `GND`. Nella foto `D0` e' la prima a destra dall'alto, `D3` la quarta a destra e `GND` la seconda a sinistra. Le sigle sono il riferimento principale: controllale prima di saldare. Le piazzole centrali `BAT`, `D+`, `D-`, `EN` e JTAG non servono a questi collegamenti.
+We use three edge pads on the base board: `D2`, `D3` and `GND`. In the photograph, `D2` is the third pad from the top on the right, `D3` is the fourth on the right and `GND` is the second on the left. The printed labels are the primary reference: check them before soldering. The central `BAT`, `D+`, `D-`, `EN` and JTAG pads are not needed for these connections.
 
-| Funzione | Sigla sulla scheda | GPIO del chip | Configurazione firmware |
+| Function | Board label | Chip GPIO | Firmware configuration |
 | --- | --- | --- | --- |
-| Ingresso pulsante | D3 | GPIO4 | `INPUT_PULLUP`; premuto = `LOW` |
-| Uscita LED esterno | D0 | GPIO1 | `OUTPUT`; acceso = `HIGH` |
-| Ritorno comune | GND | Massa | Collegato sia al pulsante sia al catodo del LED |
+| Button input | D3 | GPIO4 | `INPUT_PULLUP`; pressed = `LOW` |
+| External LED output | D2 | GPIO3 | `OUTPUT`; lit = `HIGH` |
+| Common return | GND | Ground | Connected to both the button and the LED cathode |
 
-`D3` non significa `GPIO3`: nel codice Arduino si usera' `D3` oppure il numero GPIO `4`. Per il LED si usera' `D0` oppure `1`. La selezione della scheda dovra' essere `XIAO_ESP32S3`.
+`D3` does not mean `GPIO3`: the button uses GPIO4 and the LED uses GPIO3. PlatformIO uses the `seeed_xiao_esp32s3` board target.
 
-Seeed assegna alla camera GPIO10-18, GPIO38-40, GPIO47 e GPIO48. La microSD usa GPIO7, GPIO8, GPIO9 e GPIO21; il microfono usa GPIO41 e GPIO42. GPIO1 e GPIO4 restano disponibili per questi due collegamenti. Il LED utente integrato e' su GPIO21, condiviso con il chip select della microSD: non lo usiamo come conferma fotografica. Il LED di carica indica lo stato del circuito di alimentazione e non lo scatto.
+Seeed assigns GPIO10-18, GPIO38-40, GPIO47 and GPIO48 to the camera. The microSD uses GPIO7, GPIO8, GPIO9 and GPIO21; the microphone uses GPIO41 and GPIO42. GPIO1 and GPIO4 remain available for these two connections. The built-in user LED is on GPIO21, shared with the microSD chip select: we do not use it to confirm a photograph. The charging LED indicates the state of the power circuit, not a capture.
 
-## Il collegamento del pulsante
+## Wiring the button
 
-Esegui le saldature con USB e batteria scollegati. Collega un terminale del pulsante a `D3` e l'altro a `GND`. Il pulsante non ha polarita'. Se ha tre terminali marcati, usa `COM` e `NO`, lasciando libero `NC`.
-
-```text
-  3V3 interno
-       |
-  pull-up interno al chip, abilitato dal firmware
-       |
-  D3 / GPIO4 -------- pulsante normalmente aperto -------- GND
-```
-
-La resistenza interna mantiene l'ingresso alto quando il pulsante e' rilasciato. Premendo, il contatto porta l'ingresso a massa. Per il prototipo alimentato da USB non serve una resistenza esterna sul pulsante. Non collegare il pulsante a `VUSB`, a 5 V o al positivo della batteria: i GPIO lavorano a 3,3 V e non sono tolleranti a 5 V.
-
-Un pulsante tattile a quattro piedini contiene due coppie gia' unite internamente. A scheda scollegata, usa il multimetro in continuita' per individuare una coppia di terminali che risulti aperta a riposo e chiusa alla pressione. Collega quei due terminali; due piedini della stessa coppia darebbero un ingresso sempre premuto. La disposizione fisica dei piedini da sola non basta a identificarli.
-
-## Il collegamento del LED
-
-Collega `D0` a un capo della resistenza da 470 ohm. Collega l'altro capo all'anodo del LED. Collega il catodo a `GND`, lo stesso ritorno del pulsante.
+Solder with USB and battery disconnected. Connect one button terminal to `D3` and the other to `GND`. The button has no polarity. If it has three labelled terminals, use `COM` and `NO`, leaving `NC` unconnected.
 
 ```text
-  D0 / GPIO1 ---- [ 470 ohm ] ---- anodo LED catodo ---- GND
+  Internal 3V3
+       |
+  Internal chip pull-up, enabled by firmware
+       |
+  D3 / GPIO4 -------- normally open button -------- GND
 ```
 
-Nel LED nuovo l'anodo ha di solito il terminale piu' lungo. Il catodo ha di solito il terminale corto ed e' vicino al lato piatto della base. Se i terminali sono stati tagliati o il contenitore e' diverso, verifica la polarita' con il datasheet o con la funzione diodo del multimetro. La resistenza non ha verso e puo' stare su qualunque lato del LED, purche' sia in serie.
+The internal resistor holds the input high while the button is released. Pressing the button connects the input to ground. The USB-powered prototype needs no external resistor on the button. Do not connect the button to `VUSB`, 5 V or battery positive: the GPIOs operate at 3.3 V and are not 5 V tolerant.
 
-Con uscita a 3,3 V e caduta del LED assunta tra 1,8 e 2,2 V, la corrente calcolata e' tra 2,3 e 3,2 mA: `(3,3 V - Vf) / 470 ohm`. La potenza calcolata nella resistenza resta sotto 5 mW. Sono stime elettriche, non misure sul LED acquistato; luminosita' e caduta reale dipendono dal componente. La resistenza da 0,25 W ha margine rispetto a questo carico.
+A four-leg tactile button contains two internally connected pairs. With the board disconnected, use a multimeter in continuity mode to find two terminals that are open at rest and connected when pressed. Use those terminals; two legs from the same internally connected pair would make the input appear permanently pressed. The physical arrangement of the legs alone is not enough to identify them.
 
-Il LED e' comandato dal firmware, non dal contatto del pulsante. Collegarlo direttamente al pulsante indicherebbe soltanto che il contatto si e' chiuso, anche con il programma fermo. Collegarlo direttamente al GPIO senza resistenza puo' danneggiare il LED o l'uscita. Un indicatore da pannello a 5 V o 12 V richiede un circuito diverso: non sostituirlo al LED qui descritto.
+## Wiring the LED
 
-## L'ordine di montaggio
+Connect `D2` to one end of the series resistor. The source schematic uses approximately 220 ohms; the earlier proposal used 470 ohms, which gives less LED current. Connect the other end to the LED anode. Connect the cathode to `GND`, the same return used by the button.
 
-1. Scollega ogni alimentazione. Identifica `D0`, `D3` e `GND` sulla serigrafia del retro.
-2. Prova il pulsante con il multimetro e identifica anodo e catodo del LED.
-3. Salda i collegamenti sulle piazzole laterali, oppure salda i connettori del kit e prova su breadboard. Evita ponti di stagno verso le piazzole vicine e la schermatura metallica.
-4. Unisci i due ritorni di massa su un piccolo punto di giunzione isolato e porta un solo filo a `GND`. Questo evita di ammassare due fili sulla piazzola piccola.
-5. Isola la resistenza e le giunzioni con guaina. Fissa i fili al supporto, lasciando un poco di gioco vicino alla scheda.
-6. Controlla in continuita' che `D3` e `GND` si uniscano solo premendo. Verifica che non ci siano ponti metallici tra piazzole adiacenti. Le misure attraverso i semiconduttori della scheda non sono equivalenti a un corto metallico.
-7. Monta il modulo camera e l'antenna secondo le istruzioni Seeed, operazione gia' nota. Togli la pellicola protettiva dall'obiettivo, visibile nella prima foto, prima delle prove fotografiche.
-8. Alimenta inizialmente soltanto da USB-C. Interrompi la prova se compaiono odore, riscaldamento anomalo o riavvii ripetuti.
+```text
+     D2 / GPIO3 ---- [ 220 ohm ] ---- anode LED cathode ---- GND
+```
 
-Il contenitore deve sostenere il pulsante senza trasferire la pressione alla scheda. Il LED deve essere visibile a chi inquadra, non rivolto verso il soggetto come un flash. La lente, l'antenna e la presa USB-C devono restare libere; distanziali isolanti impediscono contatti tra scheda, viti e batteria.
+On a new LED, the anode usually has the longer lead. The cathode usually has the shorter lead and sits next to the flat side of the base. If the leads have been cut or the package differs, check polarity against the datasheet or with the multimeter's diode function. The resistor has no polarity and may sit on either side of the LED, provided it is in series.
 
-## Che cosa deve confermare la luce
+With a 3.3 V output and an assumed LED forward voltage between 1.8 and 2.2 V, the calculated current is between 2.3 and 3.2 mA: `(3.3 V - Vf) / 470 ohm`. Calculated resistor dissipation stays below 5 mW. These are electrical estimates, not measurements of the LED; brightness and actual forward voltage depend on the component. The 0.25 W resistor has margin for this load.
 
-Il firmware deve distinguere il comando ricevuto dalla fotografia salvata. Proponiamo questa sequenza, da verificare con il dispositivo in mano:
+The firmware controls the LED, rather than the button contact. Wiring it directly to the button would indicate only that the contact has closed, even if the program has stopped. Connecting it directly to the GPIO without a resistor can damage the LED or the output. A 5 V or 12 V panel indicator requires a different circuit: do not substitute it for the LED described here.
 
-| Evento | LED esterno | Significato |
+## Assembly order
+
+1. Disconnect all power sources. Identify `D2`, `D3` and `GND` from the rear silkscreen labels.
+2. Test the button with the multimeter and identify the LED anode and cathode.
+3. Solder the connections to the edge pads, or solder the kit's headers and test on a breadboard. Avoid solder bridges to neighbouring pads or the metal shield.
+4. Join the two ground returns at a small insulated junction and run a single wire to `GND`. This avoids crowding two wires onto the small pad.
+5. Insulate the resistor and joints with tubing. Secure the wires to the support, leaving a little slack near the board.
+6. Check continuity between `D3` and `GND`: they should connect only when pressed. Check for metallic bridges between adjacent pads. Measurements through the board's semiconductors are not equivalent to a metallic short circuit.
+7. Fit the camera module and antenna following Seeed's instructions, an operation already familiar to the builder. Remove the lens protection film visible in the first photograph before testing image capture.
+8. Start with USB-C power only. Stop the test if there is an unusual smell, abnormal heating or repeated resets.
+
+The enclosure must support the button without transferring pressure to the board. The LED must be visible to the person framing the photograph, rather than pointing at the subject like a flash. The lens, antenna and USB-C socket must remain unobstructed; insulating spacers prevent contact between the board, screws and battery.
+
+## What the light must confirm
+
+The firmware must distinguish an accepted button press from an image delivered to the system. Here, delivery means that lanternina hub has acknowledged durable storage of that image. It does not mean that a model has read it or that an activity has used it. The sequence below is the design agreed on 7 September 2026; it still requires firmware and a physical test.
+
+| Event | External LED | Meaning |
 | --- | --- | --- |
-| Attesa, dispositivo alimentato | Spento | Nessuna acquisizione in corso; da solo non distingue attesa da mancanza di alimentazione |
-| Pressione stabile riconosciuta | Si accende | Il firmware ha ricevuto il comando |
-| Acquisizione e salvataggio | Resta acceso | L'operazione e' in corso |
-| JPEG salvato e verificato su microSD | Si spegne per 150 ms, si accende per 500 ms, poi si spegne | La fotografia e' conservata sul dispositivo |
-| Acquisizione o salvataggio falliti | Tre impulsi da 150 ms, separati da 150 ms spenti, poi spento | La fotografia non e' stata conservata |
+| Idle, device powered | Off | No feedback being signalled; this alone cannot distinguish idle from loss of power |
+| Stable press accepted for capture | One 150 ms flash, then off | The firmware has accepted the command; the photograph is not yet confirmed |
+| Capture, local storage, upload or waiting for Wi-Fi | Off after the initial flash | Delivery has not yet been confirmed; a local save produces no success signal |
+| Valid hub acknowledgement for this capture after durable storage | Two 150 ms flashes separated by 150 ms off, then off | The image has been received and stored by lanternina hub |
+| Upload timeout, rejected response or missing acknowledgement | No delivery-confirmation flashes | Keep the local copy for retry; do not declare success |
+| Capture or storage failed | Three 150 ms pulses separated by 150 ms off, then off | The photograph was not stored |
 
-Queste durate sono valori iniziali di progetto, non tempi misurati. L'invio all'hub procede separatamente: la conferma locale non significa che la foto sia stata ricevuta dall'hub o usata nell'attivita'. Nel collaudo elettrico iniziale, un impulso puo' confermare la sola lettura del pulsante, ma quel programma non va presentato come firmware fotografico.
+These durations are initial design values, not measured timings. Keep at least 500 ms of darkness between the initial flash and the final sequence, even if delivery is fast, so they do not merge into three flashes. The light must use a non-blocking timer; upload work must not leave it on beyond the intended pulse. During the initial electrical test, only the single press flash is available: that program must not simulate a successful upload.
 
-Il firmware dovra' applicare un antirimbalzo iniziale di 30 ms, produrre un solo evento per pressione e richiedere un rilascio stabile prima di riarmarsi. Una pressione lunga non deve generare una raffica. Le pressioni durante acquisizione e segnalazione finale non si accodano. Con alimentazione USB, l'avvio a pulsante gia' premuto attende il rilascio; una futura modalita' di risveglio dal pulsante richiedera' invece una gestione esplicita della causa di risveglio.
+The firmware will use an initial debounce interval of 30 ms, generate one event per accepted press and require a stable release before rearming. A long press must not produce a burst or hold the LED on. Presses during capture or a feedback sequence are not queued and receive no acceptance flash. Waiting for network delivery alone does not block a new capture if local queue capacity remains. On USB power, startup with the button already held waits for release; a future button-wake mode will instead require explicit handling of the wake cause.
 
-Un errore deve interrompere l'operazione entro un tempo massimo configurato; i valori andranno scelti dopo le prime misure. Il programma deve liberare il frame anche in errore e tornare disponibile. Il breve segnale d'errore permette di sapere che la foto manca, ma la sua comprensibilita' resta una prova da fare, non una proprieta' dimostrata.
+Each acknowledgement must match a pending capture identifier. Duplicate acknowledgements must not replay its completion signal. If an acknowledgement arrives during another flash sequence, finish that sequence and preserve the dark interval before signalling delivery. When Wi-Fi returns, two flashes can therefore confirm an earlier queued image, not necessarily the most recent press. A single LED cannot identify which photograph was delivered; that information belongs in the hub's receipt record. The firmware must remain awake until a scheduled confirmation sequence finishes.
 
-## Come entra in Lanternina
+An error must end the operation within a configured timeout; values will be chosen after the first measurements. The program must release the frame on failure too and become ready again. The brief error signal makes a missing photograph observable, but whether people understand it remains a test to perform, not an established property.
 
-La macchina serve a fotografare costruzioni, oggetti e lavori che non entrano nello scanner. Chi la usa sceglie il soggetto e il momento dello scatto. Lo scanner resta il percorso gia' esistente per i fogli.
+## How it fits into Lanternina
 
-La proposta completa prevede questa successione:
+The camera photographs constructions, objects and work that do not fit in the scanner. The person using it chooses the subject and when to capture it. The scanner remains the existing path for sheets of paper.
 
-1. Il pulsante avvia una singola acquisizione con il driver `esp32-camera`, configurato per la XIAO Sense e il sensore rilevato. La PSRAM deve essere abilitata; il solo nome della scheda non basta a dimostrare che sia disponibile.
-2. Il firmware scrive il JPEG in un file temporaneo su microSD, controlla byte scritti e rilettura, chiude il file e lo promuove nella coda delle foto pronte. Il recupero al riavvio deve distinguere file incompleti e completi; il filesystem FAT da solo non garantisce resistenza a un'interruzione di alimentazione.
-3. Il LED conferma il salvataggio. La coda ha un limite esplicito e non sovrascrive silenziosamente fotografie ancora da consegnare. Capacita' e limite saranno fissati dopo aver misurato la dimensione dei JPEG reali.
-4. Sulla rete di casa il dispositivo consegna il JPEG a un ricevitore autenticato di lanternina hub. Identita' del dispositivo e identificativo persistente dello scatto consentono di riprovare senza creare copie. Un nome basato solo su `millis()` non sopravvive ai riavvii.
-5. L'hub conferma solo dopo aver acquisito durevolmente la responsabilita' del file. La macchina elimina la propria copia dopo quella conferma. Una risposta persa provoca una nuova consegna con lo stesso identificativo, non una nuova foto.
-6. L'hub presenta la foto nel percorso deciso per l'attivita'. Una foto ricevuta in ritardo non viene attribuita automaticamente al momento attivo: l'associazione deve essere definita prima dell'integrazione.
+The complete proposal follows this sequence:
 
-Il ricevitore, la coda e l'associazione alle attivita' sono da implementare. Durante le prime prove si useranno oggetti di test. Le fotografie reali resteranno fuori dal repository. Prima dell'uso domestico vanno definite conservazione, cancellazione anche delle copie ancora in coda, accesso del genitore e trattamento delle persone eventualmente inquadrate. La microSD contiene immagini estraibili fisicamente: il contenitore chiuso ne limita l'accesso, ma non equivale a cifrarla.
+1. The button triggers a single capture through the `esp32-camera` driver, configured for the XIAO Sense and the detected sensor. PSRAM must be enabled; the board name alone does not establish that it is available.
+2. The firmware writes the JPEG to a temporary file on microSD, checks the bytes written and reads them back, closes the file and promotes it to the queue of ready photographs. Recovery at startup must distinguish incomplete files from complete ones; the FAT filesystem alone does not guarantee resilience to power loss.
+3. The saved image enters the delivery queue without a success flash. The queue has an explicit limit and never silently overwrites photographs awaiting delivery. Capacity and limits will be set after measuring actual JPEG sizes.
+4. On the home network, the device delivers the JPEG to an authenticated receiver on lanternina hub. Device identity and a persistent capture identifier allow retries without creating copies. A name based only on `millis()` does not survive restarts.
+5. The hub acknowledges only after accepting durable responsibility for the file. The camera validates the acknowledgement against the capture identifier, schedules the two-flash delivery confirmation and deletes its local copy after acknowledgement. A lost response triggers delivery with the same identifier, not a new photograph or a premature success signal.
+6. The hub presents the photograph through the path chosen for the activity. A late photograph is not automatically assigned to the active moment: that association must be defined before integration.
 
-Le credenziali saranno individuali e revocabili, fuori dai sorgenti. Il trasporto dovra' autenticare anche il ricevitore, per esempio con HTTPS e verifica del certificato; il Wi-Fi di casa non sostituisce questa verifica. La ricezione di un codice HTTP qualsiasi non basta a dichiarare successo: servono lo stato atteso e una conferma riferita allo stesso scatto. Google Drive, WebDAV e FTP non sono dipendenze di questo miniprogetto.
+The receiver, queue and activity association remain to be implemented. Initial trials will use test objects. Real household photographs will stay outside the repository. Before domestic use, we must define retention, deletion including copies still queued, parent access and the treatment of people who may appear in the frame. The microSD holds physically extractable images: a closed enclosure limits access but does not provide encryption.
 
-## Alimentazione e autonomia
+Credentials will be individual, revocable and kept outside source files. The transport must also authenticate the receiver, for example through HTTPS with certificate verification; home Wi-Fi does not replace that check. Receiving an arbitrary HTTP code is not enough to declare success: the expected status and an acknowledgement of the same capture are required. Google Drive, WebDAV and FTP are not dependencies of this miniproject.
 
-Il primo prototipo usa USB-C per separare le prove fotografiche dai problemi di alimentazione. La versione portatile richiedera' una batteria ricaricabile LiPo a singola cella, nominalmente 3,7 V, protetta e compatibile con il caricatore della revisione posseduta. Le piazzole `BAT` sono sulla scheda base; questa guida non prescrive ancora il cablaggio della batteria. Non usare `VUSB` o `3V3` al posto di `BAT` e non saldare direttamente sulla cella.
+## Power and battery life
 
-Seeed riporta per la Sense con espansione circa 3 mA in deep sleep, contro 14 microampere per la scheda base: sono valori del produttore, non misure di questa unita'. Non possiamo dedurre l'autonomia dal solo ESP32-S3. Servono misure con camera, microSD, LED e regolazione di alimentazione realmente montati, anche durante i picchi di acquisizione e Wi-Fi.
+The base XIAO ESP32S3 has no internal connection from BAT to an ADC input. Seeed states this explicitly in its Battery Usage documentation. The current device therefore reports USB presence and an unavailable battery voltage. The parent inventory must not call that missing reading a charged battery.
 
-GPIO4 puo' essere destinato al risveglio in una fase successiva. Prima vanno verificati pull-up mantenuto in sonno o resistenza esterna verso 3V3, causa del risveglio, rilascio del pulsante e prevenzione dei risvegli ripetuti. Il normale `INPUT_PULLUP` del prototipo non costituisce da solo una configurazione di deep sleep.
+An optional measurement circuit can use BAT+ through 100 kilohms to D0/GPIO1, with another 100 kilohms from D0 to GND and a 100 nF capacitor from D0 to GND. The calculated divider voltage at a 4.2 V battery is 2.1 V, and its continuous draw is 21 microamps. Connect it only with USB and battery disconnected; never connect BAT+ directly to a GPIO. Enable `CAMERA_BATTERY_GPIO=1` only after verifying the divider wiring and comparing its reading with a meter. The firmware supports that optional 2:1 divider, but it is disabled on the current unit because the circuit has not been assembled or calibrated.
 
-## Il collaudo
+The camera reports its last observed state to the hub at boot, during capture delivery and once a minute on a live USB bus. While sleeping on battery it makes no periodic network calls. The parent panel displays the last observation rather than inferring a fault from sleep. USB presence does not establish whether a battery is connected or charging.
 
-| Prova | Risultato richiesto | Stato al 7 settembre 2026 |
+The first prototype uses USB-C to separate capture tests from power-supply problems. The portable version will require a protected, rechargeable single-cell LiPo battery, nominally 3.7 V, compatible with the charger on this board revision. The `BAT` pads are on the base board; this guide does not yet prescribe battery wiring. Do not use `VUSB` or `3V3` in place of `BAT`, and do not solder directly to the cell.
+
+Seeed reports approximately 3 mA in deep sleep for the Sense with expansion, compared with 14 microamps for the base board: these are manufacturer figures, not measurements of this unit. We cannot infer battery life from the ESP32-S3 alone. Measurements must include the actual camera, microSD, LED and power regulation, including capture and Wi-Fi current peaks.
+
+GPIO4 may be used for wake-up in a later stage. First we must verify a pull-up retained during sleep or an external resistor to 3V3, the wake cause, button release and prevention of repeated wakes. The prototype's ordinary `INPUT_PULLUP` setting does not by itself configure deep sleep.
+
+## Testing
+
+| Test | Required result | Status on 7 September 2026 |
 | --- | --- | --- |
-| Identificazione dalle foto | XIAO ESP32S3, espansione Sense, scritta OV3660 | Verificato sulle due foto |
-| Piedinatura | GPIO1 e GPIO4 disponibili; mappa del retro coerente con Seeed | Verificato su foto e documentazione |
-| Conversione delle foto del kit | Due JPEG leggibili, 3024 x 4032 pixel, senza EXIF | Verificato con Pillow |
-| Pulsante rilasciato e premuto | GPIO4 rispettivamente alto e basso | Da misurare |
-| Dieci pressioni distinte | Dieci eventi, ciascuno con riscontro LED | Da provare |
-| Pressione mantenuta per 5 s | Un solo evento, riarmo dopo rilascio | Da provare |
-| Accensione USB con pulsante premuto | Nessuno scatto fino al rilascio e alla nuova pressione | Da provare |
-| Alternanza tra due soggetti riconoscibili | Ogni file contiene il soggetto attuale, non il frame precedente | Da provare |
-| microSD assente o piena | Nessuna conferma di salvataggio e nessuna sovrascrittura | Da provare |
-| Wi-Fi assente | Foto salvata localmente e inviata al ritorno della rete | Da provare |
-| Risposta dell'hub persa | Nuovo invio dello stesso scatto; una sola acquisizione logica sull'hub | Da provare |
-| Alimentazione interrotta durante la scrittura | File incompleto riconosciuto; foto precedenti ancora utilizzabili | Da provare |
-| Contenitore chiuso | Pulsante comodo, LED visibile, immagine orientata e leggibile | Da provare |
+| Identification from photographs | XIAO ESP32S3, Sense expansion, OV3660 marking | Verified in both photographs |
+| Pin assignments | GPIO1 and GPIO4 available; rear map agrees with Seeed | Verified against photographs and documentation |
+| Kit photograph conversion | Two readable JPEGs, 3024 x 4032 pixels, without EXIF | Verified with Pillow |
+| Button released and pressed | GPIO4 high and low respectively | To measure |
+| Ten separate presses while ready | Ten events, each with one acceptance flash | To test |
+| Button held for 5 s | One event and one initial flash only; LED does not follow the held contact | To test |
+| Valid hub receipt after button release | Two flashes only after acknowledgement of durable storage for that capture | To test |
+| Immediate hub receipt | At least 500 ms dark between the initial flash and the two-flash sequence | To test |
+| Duplicate or mismatched acknowledgement | No replay for a completed capture; no success for an unknown identifier | To test |
+| USB startup with button held | No capture until release and a new press | To test |
+| Alternating two recognisable subjects | Each file contains the current subject, not the previous frame | To test |
+| microSD missing or full | No delivery confirmation and no overwrite; failed capture receives the error sequence | To test |
+| Wi-Fi unavailable | One acceptance flash, local storage, no success flashes until delivery is acknowledged after reconnection | To test |
+| Hub response lost or upload rejected | No success flashes; same capture retried without duplication on the hub | To test |
+| Power interrupted during writing | Incomplete file recognised; earlier photographs remain usable | To test |
+| Enclosure closed | Comfortable button, visible LED, correctly oriented and readable image | To test |
 
-La prova con soggetti alternati controlla il problema dei frame vecchi descritto nel tutorial. Scartare un frame puo' essere utile in una configurazione, ma non dimostra freschezza per ogni numero di buffer o modalita' di acquisizione. Il risultato richiesto e' una foto del soggetto presente al nuovo scatto.
+The alternating-subject test checks the stale-frame problem described in the tutorial. Discarding one frame may help in a particular configuration, but does not establish freshness for every buffer count or capture mode. The required result is a photograph of the subject present at the new capture.
 
-## Fotografie e fonti
+## Photographs and sources
 
-Le due foto sono state fornite da Fausto il 7 settembre 2026. `20260907_135427752_iOS.HEIC` e' diventata `images/kit-ov3660.jpg`; `20260907_135509834_iOS.HEIC` e' diventata `images/scheda-retro.jpg`. La conversione usa Pillow con pillow-heif, qualita' JPEG 95, sottocampionamento cromatico disattivato, orientamento EXIF applicato e metadati EXIF rimossi. Non sono state ridimensionate. Gli originali sono conservati localmente in `private/macchina-fotografica/originali/`, esclusa da Git; la cartella temporanea di provenienza e' stata rimossa prima del commit.
+Fausto supplied both photographs on 7 September 2026. `20260907_135427752_iOS.HEIC` became `images/kit-ov3660.jpg`; `20260907_135509834_iOS.HEIC` became `images/scheda-retro.jpg`. Conversion uses Pillow with pillow-heif, JPEG quality 95, chroma subsampling disabled, EXIF orientation applied and EXIF metadata removed. The images were not resized. Originals are retained locally in `private/macchina-fotografica/originali/`, excluded from Git; the source temporary directory was removed before the commit.
 
-Fonti consultate il 7 settembre 2026:
+Sources consulted on 7 September 2026:
 
-- [Seeed, XIAO ESP32-S3 Series](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/): modelli, piedinatura, strapping, alimentazione e specifiche dichiarate.
-- [Seeed, Pin Multiplexing](https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/): GPIO occupati da camera, microfono e microSD.
-- [Espressif, piedinature CameraWebServer](https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h): riscontro della mappa `CAMERA_MODEL_XIAO_ESP32S3`.
-- [Prilchen, macchina fotografica ESP32-S3](https://prilchen.de/diy-fotoapparat-mit-esp32-s3-das-die-bilder-direkt-in-dein-google-drive-schickt/): spunto per l'oggetto con pulsante e LED, e segnalazione del problema del frame precedente. Testo, immagini, codice e contenitore non sono riprodotti qui.
+- [Seeed, XIAO ESP32-S3 Series](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/): models, pin assignments, strapping, power and stated specifications.
+- [Seeed, Pin Multiplexing](https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/): GPIOs used by the camera, microphone and microSD.
+- [Espressif, CameraWebServer pin assignments](https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h): cross-check of the `CAMERA_MODEL_XIAO_ESP32S3` map.
+- [Prilchen, ESP32-S3 camera](https://prilchen.de/diy-fotoapparat-mit-esp32-s3-das-die-bilder-direkt-in-dein-google-drive-schickt/): starting point for the device with a button and LED, and report of the previous-frame problem. Its text, images, code and enclosure design are not reproduced here.
 
-Le motivazioni delle scelte sono in [ideas/macchina-fotografica-xiao.md](../../ideas/macchina-fotografica-xiao.md). La lettura delle fonti e' registrata in [docs/EVIDENCE.md](../EVIDENCE.md#camera-hardware-references-7-september-2026).
+The reasoning behind these choices is in [ideas/macchina-fotografica-xiao.md](../../ideas/macchina-fotografica-xiao.md). Our reading of the sources is recorded in [docs/EVIDENCE.md](../EVIDENCE.md#camera-hardware-references-7-september-2026).

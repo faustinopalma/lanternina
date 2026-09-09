@@ -157,7 +157,7 @@ What the change is still worth: 341 MB less to pull on a first deployment or a n
 
 ## 5. Objects still to be conceived
 
-One rule before the list: **a camera frames the paper, never the person.** It is the first thing an agent would propose, and it is forbidden as an intermediate step too. The blueprint must be able to say "photograph the table" and must have no way to say anything else.
+The handheld camera photographs what the person holding it chooses. A photograph can include people and can be retained and displayed for the family. This choice, confirmed on 9 September 2026, supersedes the earlier paper-only restriction. Activities ask for a deliberate capture and do not identify or assess people in the image.
 
 - **A button.** It reverses the direction: the system does not call, the adolescent asks. It is the only object that makes starting their own decision, and the firmware already handles a press.
 - **A speaker**, for reading aloud — already `05 §7`, waiting on a decision that is not technical.

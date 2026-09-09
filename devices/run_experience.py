@@ -50,6 +50,7 @@ from pathlib import Path
 from typing import Any
 
 from devices import hands
+from devices.activity_lock import exclusive
 from devices.ask_panel import PanelUnreachable, read_page
 from devices.house import CannotRun, House, screen_in, the_sheet_layer_is_done
 from devices.print_page import recall
@@ -280,6 +281,7 @@ def _read_run(path: Path) -> Afternoon | None:
         return None
 
 
+@exclusive
 def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> list[str]:
     """Bring every afternoon whose hour has come to its ending, and then forget it.
 
@@ -350,6 +352,7 @@ def _forget_orphan_pages(sheets_dir: Path) -> None:
 # ── What the parent said ─────────────────────────────────────────────────────────────
 
 
+@exclusive
 def hear(house: House, said: Sequence[Message], now: float) -> list[str]:
     """Apply what a parent said to every afternoon under way. Returns what changed.
 
@@ -436,6 +439,7 @@ def _over_at(run: Afternoon, when: float) -> Afternoon:
 # ── Help ─────────────────────────────────────────────────────────────────────────────
 
 
+@exclusive
 def offer_help(house: House, now: float, *, send: bool = True) -> list[str]:
     """Put the next rung of the ladder on the display, for every afternoon whose is due.
 
@@ -782,6 +786,7 @@ def _pause(
         _write(_page_file(house.sheets_dir, sheet_id), {"run_id": run.run_id})
 
 
+@exclusive
 def begin(
     house: House,
     experience: Experience,
@@ -942,24 +947,65 @@ def _ask(
     return carrying_on
 
 
-def carry_on(house: House, *, now: float | None = None, send: bool = True) -> str:
+def camera_target(sheets_dir: Path, captured: float | None) -> dict[str, Any] | None:
+    if captured is None:
+        return None
+    runs = [_read_run(_run_file(sheets_dir, name)) for name in waiting_runs(sheets_dir)]
+    candidates = [
+        run for run in runs if run is not None and not run.leaving_at
+        and run.waited_since <= captured < run.ending_starts_at
+    ]
+    if len(candidates) != 1:
+        return None
+    run = candidates[0]
+    return {"run": run.run_id, "moment": run.waiting_at, "since": run.waited_since}
+
+
+@exclusive
+def carry_on(
+    house: House, *, now: float | None = None, send: bool = True,
+    photograph: bytes | None = None, target: dict[str, Any] | None = None,
+) -> str:
     """Read the page on the glass and play the stretch of afternoon that follows it.
 
     Returns a sentence for whoever is watching. It says what happened to the afternoon
     and nothing about the person who filled the page in.
     """
     moment = time.time() if now is None else now
-    sheet_id, reading = _read(house)
-    pointer = _page_file(house.sheets_dir, sheet_id)
-    if not pointer.is_file():
-        raise CannotRun(f"sheet {sheet_id} does not belong to an afternoon this house started")
-    run_id = str(json.loads(pointer.read_text(encoding="utf-8"))["run_id"])
-    run_path = _run_file(house.sheets_dir, run_id)
-    if not run_path.is_file():
-        # The afternoon ended and took its own file with it; this is the paper catching up.
-        pointer.unlink(missing_ok=True)
-        raise CannotRun("that afternoon is already over")
-    run = Afternoon.from_dict(json.loads(run_path.read_text(encoding="utf-8")))
+    if photograph is not None:
+        if target is None or camera_target(house.sheets_dir, float(target["since"])) != target:
+            return "photograph archived; its moment is no longer waiting"
+        run = _read_run(_run_file(house.sheets_dir, str(target["run"])))
+        if run is None or moment >= run.ending_starts_at:
+            return "photograph archived; its afternoon is finishing"
+        import cv2
+        import numpy as np
+
+        image = cv2.imdecode(np.frombuffer(photograph, dtype=np.uint8), cv2.IMREAD_COLOR)
+        if image is None:
+            raise CannotRun("the photograph could not be decoded")
+        sheet_id = run.printed[-1] if run.printed else ""
+        blank = recall(house.sheets_dir, SheetId(sheet_id)) if sheet_id else np.full(
+            (480, 800), 255, dtype=np.uint8
+        )
+        reading = read_page(
+            blank, image,
+            about=(f"{run.experience.title}. Camera return at {run.waiting_at}: "
+                   "the second image may show a construction, object or drawing, not paper. "
+                   "Describe the visible work in relation to the activity."),
+            panel=house.panel, household=house.household, key=house.device_key,
+        )
+    else:
+        sheet_id, reading = _read(house)
+        pointer = _page_file(house.sheets_dir, sheet_id)
+        if not pointer.is_file():
+            raise CannotRun(f"sheet {sheet_id} does not belong to an afternoon this house started")
+        run_id = str(json.loads(pointer.read_text(encoding="utf-8"))["run_id"])
+        run_path = _run_file(house.sheets_dir, run_id)
+        if not run_path.is_file():
+            pointer.unlink(missing_ok=True)
+            raise CannotRun("that afternoon is already over")
+        run = Afternoon.from_dict(json.loads(run_path.read_text(encoding="utf-8")))
 
     if run.leaving_at:
         # The ending is already on the display. A page arriving now is not late for

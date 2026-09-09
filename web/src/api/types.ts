@@ -38,6 +38,29 @@ export interface PicturePage {
   pageSizes: number[];
 }
 
+export interface Photograph {
+  id: string;
+  camera: string;
+  capturedAt: number | null;
+  receivedAt: number;
+  date: number;
+  width: number;
+  height: number;
+  state: "pending" | "processing" | "done" | "failed";
+}
+
+export interface PhotoPage {
+  photos: Photograph[];
+  total: number;
+  page: number;
+  pages: number;
+  lastReceivedAt: number | null;
+  hub?: { contactAt: number; pending: number; localPhotos: number; lastReceivedAt: number | null } | null;
+}
+
+export type PhotoSelection = { mode: "single"; id: string }
+  | { mode: "range"; start: number; end: number } | { mode: "all" };
+
 export interface Theme {
   id: string;
   label: string;
@@ -448,6 +471,10 @@ export interface Api {
   decide(id: string, state: Decision): Promise<void>;
   pictures(page: number, perPage: number): Promise<PicturePage>;
   pictureContent(id: string): Promise<Blob>;
+  photos(page: number): Promise<PhotoPage>;
+  photoContent(id: string): Promise<Blob>;
+  previewPhotoDeletion(selection: PhotoSelection): Promise<{ ids: string[] }>;
+  deletePhotos(selection: PhotoSelection, ids: string[]): Promise<{ deleted: string[]; failed: string[] }>;
   themes(): Promise<Theme[]>;
   addTheme(label: string): Promise<Theme>;
   removeTheme(id: string): Promise<void>;

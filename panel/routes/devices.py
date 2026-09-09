@@ -13,7 +13,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict
 
-from shared.capabilities import KIND_DISPLAY
+from shared.capabilities import KIND_CAMERA, KIND_DISPLAY
 
 from ..devices import (
     MAX_NAME_LENGTH,
@@ -83,7 +83,7 @@ def report_devices(
     recorded: list[str] = []
     for item in reported:
         seen = item.lastSeen or time.time()
-        if item.kind == KIND_DISPLAY:
+        if item.kind in (KIND_DISPLAY, KIND_CAMERA):
             store.record(
                 DeviceStatus(
                     id=item.id,

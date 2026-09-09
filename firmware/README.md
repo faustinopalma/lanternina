@@ -2,7 +2,7 @@
 
 ESP32 code for the devices in the house: e-paper displays, the LCD, and the physical buttons.
 
-Nothing is written yet. This directory holds the boundary, not an implementation.
+The [camera firmware](camera/README.md) is an isolated PlatformIO project for the XIAO ESP32S3 Sense. The e-paper firmware and provisioning procedures below remain separate.
 
 ## Rules for anything added here
 
@@ -33,7 +33,7 @@ The proven binary is kept at `/opt/lanternina/firmware/trmnl-7inch5-og-diy-kit-r
 
 Recovery does not depend on the button: the hub keeps 16 MiB of original flash per unit in `/var/lib/lanternina/trmnl-backups/` and reprovisions over USB, which is the same cable the reset would have forced anyway.
 
-USB is provisioning only. The hub stores one Wi-Fi configuration in `/etc/lanternina/trmnl-provisioning.json`; udev provisions a connected ESP32-S3 with the common firmware and a per-device NVS partition. After that, the display wakes, fetches over Wi-Fi, updates the paper and sleeps. It does not remain connected over USB.
+For e-paper displays, USB supports explicit provisioning with the Wi-Fi configuration in `/etc/lanternina/trmnl-provisioning.json`. Automatic udev calls ignore unknown or incompletely enrolled boards, so a camera cannot receive the display image. The display wakes, fetches over Wi-Fi, updates the paper and sleeps. The camera instead stays awake on a live USB data bus.
 
 The local BYOS server has no content-write endpoint. It accepts setup only for MAC addresses registered by the physical USB provisioner and issues a different token to each display. MAC-based bootstrap can still be spoofed by a peer already on the home LAN; this is the remaining limit of the upstream TRMNL protocol, not a device identity proof.
 

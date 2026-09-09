@@ -25,6 +25,37 @@ function answering(body: unknown, status = 200) {
 
 afterEach(() => vi.unstubAllGlobals());
 
+it("gets a current bearer for every request instead of keeping the first one", async () => {
+  const fetcher = answering({ proposals: [] });
+  vi.stubGlobal("fetch", fetcher);
+  const bearer = vi.fn().mockResolvedValueOnce("first").mockResolvedValueOnce("renewed");
+  const api = httpApi(bearer);
+  await api.proposals();
+  await api.proposals();
+  expect(bearer).toHaveBeenCalledTimes(2);
+  expect(fetcher.mock.calls.map((call) => call[1].headers.Authorization)).toEqual([
+    "Bearer first", "Bearer renewed",
+  ]);
+});
+
+it("does not send a request while sign-in is redirecting", async () => {
+  const fetcher = answering({ proposals: [] });
+  vi.stubGlobal("fetch", fetcher);
+  await expect(httpApi(async () => null).proposals()).rejects.toThrow();
+  expect(fetcher).not.toHaveBeenCalled();
+});
+
+it("bounds reads without imposing the same deadline on a long-running write", async () => {
+  const fetcher = answering({ proposals: [] });
+  vi.stubGlobal("fetch", fetcher);
+  await httpApi("token").proposals();
+  expect(fetcher.mock.calls[0]?.[1].signal).toBeInstanceOf(AbortSignal);
+  expect(fetcher.mock.calls[0]?.[1].cache).toBe("no-store");
+  await httpApi("token").decide("proposal", "approved");
+  expect(fetcher).toHaveBeenCalledTimes(2);
+  expect(fetcher.mock.calls[1]?.[1].signal).toBeUndefined();
+});
+
 describe("an answer that is not the shape the panel needs", () => {
   const CURRENT_PICTURES = {
     pictures: [],

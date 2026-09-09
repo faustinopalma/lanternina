@@ -15,6 +15,7 @@ import pytest
 from panel import devices
 from shared.capabilities import (
     JOB_NONE,
+    JOB_PHOTO,
     JOB_PICTURE,
     JOB_REMIND,
     JOBS_BY_KIND,
@@ -28,7 +29,7 @@ from shared.capabilities import (
 # A display kept for the pictures, or for the reminders, can draw the image all the same.
 # Lending it to an experience would take away what it is standing there for, so neither
 # job contributes a capability, and both absences are decisions rather than oversights.
-DEDICATED = {(KIND_DISPLAY, JOB_PICTURE), (KIND_DISPLAY, JOB_REMIND)}
+DEDICATED = {(KIND_DISPLAY, job) for job in (JOB_PICTURE, JOB_REMIND, JOB_PHOTO)}
 
 
 def test_every_job_the_parent_can_hand_out_is_accounted_for() -> None:

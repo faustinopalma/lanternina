@@ -305,9 +305,7 @@ FORBIDDEN_IN_VISION = {
 def test_vision_does_not_look_at_people_or_stream() -> None:
     """Faces will be in frame; what is forbidden is inferring anything from them.
 
-    Where a photograph goes is not enforced here. It is enforced by `RawFrame`, which
-    raises rather than being pickled, copied or written out — a guarantee about the object
-    rather than a guess from an identifier.
+    Family photographs are retained separately from the legacy RawFrame buffer.
     """
     for path in _python_files("vision"):
         leaked = _identifiers(path) & FORBIDDEN_IN_VISION
@@ -340,34 +338,19 @@ def test_raw_frames_cannot_be_serialised() -> None:
 # ── What a returned page said is read, and not kept ──────────────────────────────────
 
 
-def test_what_a_page_said_cannot_be_pickled_copied_or_cached() -> None:
-    """The reading lasts as long as the afternoon needs it.
-
-    The one door left open is `to_dict`, which is the body of the request that carries the
-    reading to the panel writing the continuation. Everything else is closed, because none
-    of it is how somebody would decide to keep a reading — it is how one ends up kept
-    anyway, in a cache, on a queue, in a session, in a background job's payload.
-
-    That a reading is never written down is enforced elsewhere and by absence:
-    `tests/test_trail.py` names the fields the record has, and none of them would hold one.
-    """
+def test_development_readings_can_be_copied_and_serialized() -> None:
+    """The owner removed the non-retention restriction on 9 September 2026."""
     import copy
     import pickle
 
-    from shared.errors import RetentionViolation
     from shared.vision_contracts import WhatCameBack
 
     reading = WhatCameBack(
         written=True, same_sheet=True, describes=("three lines at the top",), read_at=1.0
     )
-    for attempt in (
-        lambda: pickle.dumps(reading),
-        lambda: copy.copy(reading),
-        lambda: copy.deepcopy(reading),
-        reading.__getstate__,
-    ):
-        with pytest.raises(RetentionViolation):
-            attempt()
+    assert pickle.loads(pickle.dumps(reading)) == reading
+    assert copy.copy(reading) == reading
+    assert copy.deepcopy(reading) == reading
     assert reading.to_dict()["describes"] == ["three lines at the top"]
 
 

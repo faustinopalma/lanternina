@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1060" viewBox="0 0 1400 1060" role="img" aria-labelledby="title desc">
+  <title id="title">XIAO ESP32S3 Sense: button and independent status LED</title>
+  <desc id="desc">Normally open button from D3 GPIO4 to ground, with internal pull-up enabled by firmware. Separate D0 GPIO1 output drives a 470 ohm resistor and an LED anode; the cathode returns to ground. One flash acknowledges an accepted press. Two flashes acknowledge durable receipt by lanternina hub. Rear pad locator has USB-C at the top.</desc>
+  <defs>
+    <style>
+      text { font-family: 'Segoe UI', sans-serif; fill: #172322; }
+      .title { font-size: 32px; font-weight: 600; }
+      .heading { font-size: 23px; font-weight: 600; }
+      .body { font-size: 20px; }
+      .small { font-size: 17px; }
+      .pin { font-family: Consolas, monospace; font-size: 20px; }
+      .wire { fill: none; stroke: #263834; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .input { stroke: #1769aa; }
+      .output { stroke: #ae5b00; }
+      .internal { fill: none; stroke: #6b7873; stroke-width: 2; stroke-dasharray: 6 5; }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#ae5b00" stroke-width="1.3"/></marker>
+  </defs>
+  <rect width="1400" height="1060" fill="#ffffff"/>
+  <text x="60" y="62" class="title">Camera button and status LED</text>
+  <text x="60" y="99" class="body">XIAO ESP32S3 Sense / OV3660  |  Proposed wiring and firmware behaviour</text>
+  <path d="M60 125 H1340" stroke="#ccd5d1" stroke-width="2"/>
+
+  <text x="60" y="169" class="heading">Electrical connections</text>
+  <text x="60" y="200" class="small">USB power for the first test. Disconnect USB and battery before soldering.</text>
+  <rect x="420" y="230" width="450" height="350" rx="5" fill="#f1f5f3" stroke="#263834" stroke-width="2"/>
+  <text x="450" y="272" class="heading">XIAO ESP32S3</text>
+  <text x="450" y="302" class="small">Functional diagram, not pad positions</text>
+
+  <text x="530" y="342" class="small">Internal 3.3 V</text>
+  <path d="M550 354 V368" class="internal"/>
+  <rect x="538" y="368" width="24" height="48" fill="#fff" stroke="#6b7873" stroke-width="2"/>
+  <path d="M550 416 V440 H420" class="internal"/>
+  <text x="580" y="380" class="small">Internal pull-up</text>
+  <text x="580" y="405" class="small">INPUT_PULLUP</text>
+  <circle cx="550" cy="440" r="5" fill="#263834"/>
+  <text x="450" y="476" class="pin">D3 / GPIO4</text>
+  <text x="450" y="505" class="small">Input: pressed = LOW</text>
+
+  <path d="M420 440 H270 V466" class="wire input"/>
+  <circle cx="270" cy="473" r="6" fill="#fff" stroke="#1769aa" stroke-width="3"/>
+  <circle cx="270" cy="533" r="6" fill="#fff" stroke="#1769aa" stroke-width="3"/>
+  <path d="M270 527 L236 482 M220 501 H235" class="wire input"/>
+  <path d="M270 539 V620 H1090" class="wire"/>
+  <text x="65" y="339" class="heading">S1 / Button</text>
+  <text x="65" y="371" class="body">Momentary, normally open</text>
+  <text x="65" y="402" class="small">Two terminals, or COM + NO</text>
+  <text x="290" y="471" class="small">NO</text>
+  <text x="290" y="544" class="small">COM</text>
+
+  <text x="691" y="476" class="pin">D0 / GPIO1</text>
+  <text x="680" y="505" class="small">Output: lit = HIGH</text>
+  <path d="M870 440 H940 M1000 440 H1090 V480" class="wire output"/>
+  <rect x="940" y="429" width="60" height="22" fill="#fff" stroke="#ae5b00" stroke-width="3"/>
+  <text x="917" y="372" class="heading">R1</text>
+  <text x="917" y="404" class="body">470 ohm / 0.25 W</text>
+  <path d="M1074 480 H1106 L1090 512 Z M1072 515 H1108" fill="none" stroke="#ae5b00" stroke-width="3"/>
+  <path d="M1090 515 V620" class="wire"/>
+  <path d="M1110 482 L1136 456 M1120 505 L1146 479" class="wire output" marker-end="url(#arrow)"/>
+  <text x="1170" y="465" class="heading">LED1</text>
+  <text x="1170" y="496" class="small">Red or amber</text>
+  <text x="940" y="494" class="small">A / anode</text>
+  <text x="940" y="534" class="small">K / cathode</text>
+  <text x="1140" y="564" class="small">K: short lead / flat edge</text>
+  <text x="590" y="557" class="pin">GND</text>
+  <path d="M620 580 V650 M600 650 H640 M606 659 H634 M613 668 H627" class="wire"/>
+  <circle cx="620" cy="620" r="5" fill="#263834"/>
+  <circle cx="1090" cy="620" r="5" fill="#263834"/>
+  <text x="60" y="690" class="body">Common ground only. The LED is not connected to the button signal.</text>
+
+  <path d="M60 702 H1340" stroke="#ccd5d1" stroke-width="2"/>
+  <text x="60" y="745" class="heading">Firmware-controlled feedback</text>
+  <text x="60" y="780" class="body">1 flash: accepted press</text>
+  <path d="M65 831 H90 V803 H140 V831 H235" class="wire output"/>
+  <text x="65" y="861" class="small">150 ms ON, then OFF</text>
+  <text x="380" y="780" class="body">2 flashes: hub confirms receipt</text>
+  <path d="M385 831 H410 V803 H460 V831 H510 V803 H560 V831 H605" class="wire output"/>
+  <text x="385" y="861" class="small">150 ms ON / OFF / ON, then OFF</text>
+  <text x="60" y="908" class="small">LED stays off while saving, uploading or waiting for Wi-Fi.</text>
+  <text x="60" y="938" class="small">Two flashes require a verified acknowledgement for that capture after durable storage on the hub.</text>
+  <text x="60" y="968" class="small">A local save, timeout or failed upload does not confirm delivery. Timings are initial design values.</text>
+  <text x="60" y="1018" class="small">7 September 2026  |  Pin assignments checked against Seeed documentation. Physical test pending.</text>
+
+  <rect x="1040" y="722" width="300" height="206" fill="#fff" stroke="#ccd5d1" stroke-width="1.5"/>
+  <text x="1058" y="750" class="small">Pad locator / REAR VIEW</text>
+  <rect x="1160" y="765" width="60" height="20" fill="#e5ebe8" stroke="#263834"/>
+  <text x="1166" y="780" font-size="13">USB-C</text>
+  <rect x="1140" y="790" width="100" height="116" fill="none" stroke="#263834" stroke-width="1.5"/>
+  <g fill="#fff" stroke="#66756d" stroke-width="1.5">
+    <circle cx="1140" cy="800" r="4"/><circle cx="1140" cy="816" r="4"/><circle cx="1140" cy="832" r="4"/><circle cx="1140" cy="848" r="4"/><circle cx="1140" cy="864" r="4"/><circle cx="1140" cy="880" r="4"/><circle cx="1140" cy="896" r="4"/>
+    <circle cx="1240" cy="800" r="4"/><circle cx="1240" cy="816" r="4"/><circle cx="1240" cy="832" r="4"/><circle cx="1240" cy="848" r="4"/><circle cx="1240" cy="864" r="4"/><circle cx="1240" cy="880" r="4"/><circle cx="1240" cy="896" r="4"/>
+  </g>
+  <circle cx="1140" cy="816" r="5" fill="#263834"/><circle cx="1240" cy="800" r="5" fill="#ae5b00"/><circle cx="1240" cy="848" r="5" fill="#1769aa"/>
+  <text x="1075" y="822" class="small">GND</text><text x="1260" y="806" class="small">D0</text><text x="1260" y="854" class="small">D3</text>
+</svg>

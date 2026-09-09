@@ -1,47 +1,51 @@
-# La macchina fotografica con XIAO ESP32S3 Sense
+# The XIAO ESP32S3 Sense camera
 
-Fausto ha acquistato una XIAO ESP32S3 con espansione Sense e camera OV3660. Il 7 settembre 2026 le due fotografie del kit hanno permesso di leggere il modello della scheda e la sigla sul cavetto. La [sezione dedicata](../docs/macchina-fotografica/README.md) descrive il cablaggio del pulsante e del LED e conserva i JPEG del kit.
+The camera uses a XIAO ESP32S3 with a Sense expansion board and OV3660 sensor. On 7 September 2026, the two photographs of the kit allowed us to read the board model and the marking on the ribbon cable. The [dedicated section](../docs/macchina-fotografica/README.md) describes the button and LED wiring and holds the kit photographs as JPEGs.
 
-## Che cosa aggiunge al pomeriggio
+## What it adds to an afternoon
 
-La macchina permette di restituire una costruzione, un oggetto trovato o un disegno appeso. Lo scanner raccoglie gia' i fogli; la camera rende possibile scegliere qualcosa che resta nel suo posto. Il primo uso da provare e' fotografare una costruzione per conservarne un'immagine prima di modificarla. Il secondo e' portare due fotografie di dettagli a una successiva attivita' di confronto.
+The camera allows someone to return an image of a construction, a found object or a drawing on a wall. The scanner already collects sheets; the camera makes it possible to choose something that stays where it is. The first use to test is photographing a construction to keep an image before changing it. The second is bringing two photographs of details to a later comparison activity.
 
-Il pulsante assegna lo scatto a chi tiene la macchina. Un LED conferma l'azione senza richiedere un menu. Il costo di una macchina senza schermo e' l'incertezza dell'inquadratura: la forma del contenitore, una distanza di lavoro provata e un eventuale mirino ottico devono essere valutati su fotografie reali. L'assenza di uno schermo non garantisce che la foto riesca.
+The button puts the decision to capture in the hands of the person holding the camera. An LED confirms the action without requiring a menu. A screenless camera costs certainty about framing: the enclosure shape, a tested working distance and a possible optical viewfinder must be assessed through actual photographs. The absence of a screen does not guarantee a successful photograph.
 
-La scelta riprende la direzione portatile annotata il 25 agosto in [ideas/06-capture.md](06-capture.md). La vecchia postazione fissa resta una ricerca storica. Le regole di progetto sono in revisione; il cablaggio non dipende dal ripristino dei suoi precedenti divieti.
+This choice follows the handheld direction recorded on 25 August in [ideas/06-capture.md](06-capture.md). The old fixed station remains historical research. The project's design rules are under review; the wiring does not depend on reinstating its earlier prohibitions.
 
-## I collegamenti scelti
+## The chosen connections
 
-Il pulsante chiude `D3/GPIO4` verso massa, con pull-up interno durante il prototipo USB. Il LED esterno usa `D0/GPIO1`, una resistenza da 470 ohm e il ritorno a massa. Questa scelta lascia liberi i collegamenti della camera e della microSD e costa due GPIO.
+Fausto confirmed the assembled wiring on 9 September 2026: the button connects `D3/GPIO4` to ground and the external LED uses `D2/GPIO3`, following the source schematic with its approximately 220 ohm series resistor. The firmware follows this wiring. The earlier D0/GPIO1 and 470 ohm proposal was not the circuit he assembled.
 
-Il tutorial di Prilchen usa `D2/GPIO3` per il LED. GPIO3 e' anche uno strapping pin che seleziona la sorgente JTAG all'avvio. Il collegamento del tutorial non e' per questo automaticamente guasto, ma GPIO1 evita di caricare quel pin senza richiedere componenti aggiuntivi. La mappa Seeed e la foto del retro permettono di verificare la scelta prima di saldare.
+GPIO3 also selects the JTAG source at startup. The assembled circuit remains accessible through USB Serial/JTAG: chip identification, backup and firmware updates succeeded on 9 September. This observation supports keeping the soldered wiring; it does not replace a battery cold-start test.
 
-Il LED integrato usa GPIO21, che l'espansione impiega anche per il chip select della microSD. Un LED esterno resta visibile sul contenitore e non interferisce con quel segnale; costa un componente, una resistenza e il cablaggio.
+The built-in LED uses GPIO21, which the expansion also uses for the microSD chip select. An external LED remains visible on the enclosure and does not interfere with that signal; it costs a component, a resistor and wiring.
 
-## Che cosa significa eseguito
+## What completion means
 
-Una luce collegata al pulsante confermerebbe solo la chiusura del contatto. La luce comandata dal firmware puo' invece confermare che il programma ha ricevuto il comando. La sequenza finale di conferma deve arrivare dopo il salvataggio verificato del JPEG, non dopo la sola pressione o una chiamata fallita alla camera.
+A light wired to the button would confirm only that the contact has closed. A firmware-controlled light can instead distinguish acceptance of the command from delivery of the photograph. On 7 September 2026, Fausto chose one flash when the firmware accepts the press and two flashes when the image has been uploaded into the system. We define that second event as a valid acknowledgement from lanternina hub after durable storage of the identified capture, not a local microSD write or completion of model processing.
 
-La guida propone luce continua durante l'operazione, un impulso finale piu' lungo dopo il salvataggio e tre impulsi brevi se il salvataggio fallisce. Le durate sono iniziali e non misurate. Questa distinzione rende osservabile la perdita di uno scatto, ma chiede di riconoscere due sequenze: va provata prima di fissarla come interfaccia.
+The LED stays off between these events. The initial design uses 150 ms flashes, 150 ms between the two completion flashes and at least 500 ms of darkness between the initial flash and a final sequence. These are proposed timings, not measurements. Three short flashes remain the proposed signal for capture or local storage failure. The firmware must schedule pulses independently of network work so a blocking upload cannot stretch a flash into a steady light.
 
-## La foto deve poter aspettare
+This replaces the earlier proposal of steady light during capture and confirmation after local storage. It tells the person that the image has reached the system, but makes confirmation depend on the network. A queued image receives its two flashes only when delivery is acknowledged, possibly much later. Duplicate receipts must not replay the signal, and overlapping feedback sequences must be serialised. One LED cannot identify which queued photograph arrived; the hub's receipt record must retain that association.
 
-Proponiamo di salvare prima su microSD e consegnare poi all'hub. Questo permette di fotografare anche quando il Wi-Fi manca, ma introduce una copia fisica da proteggere e cancellare. La conferma dello scatto resta locale; la ricevuta dell'hub riguarda un passaggio successivo.
+The earlier [wiring image](../docs/macchina-fotografica/images/button-led-wiring.png) documents the D0 proposal, not the assembled unit. The independent input and output principle is unchanged: the button and LED share ground, with no connection between GPIO4 and the LED.
 
-La sola RAM semplificherebbe la gestione dei dati, ma perderebbe la foto al riavvio o all'esaurimento della batteria. Il documento hardware aveva gia' separato acquisizione fuori casa e invio sulla rete domestica. La coda persistente rende questa possibilita' concreta, senza dichiararla gia' implementata.
+## The photograph must be able to wait
 
-L'hub e' il destinatario proposto perche' coordina gia' gli strumenti della casa. Questa scelta evita credenziali di un archivio cloud nella macchina, ma richiede un ricevitore autenticato, conferme durevoli e deduplicazione. Nessuno di questi elementi nasce dal semplice collegamento al Wi-Fi.
+The implementation uses a LittleFS partition in the board's flash, rather than requiring a microSD card. It holds at most three pending JPEGs, each at most 750,000 bytes. This gives offline capture without another component, but costs flash writes and limits the queue. A full queue refuses a new capture with the error signal and does not overwrite an earlier image.
 
-L'associazione alle attivita' resta da definire. Una fotografia scattata durante un'attivita' e consegnata dopo non appartiene necessariamente all'attivita' aperta al momento dell'arrivo. Prima dell'integrazione dovremo scegliere come conservare il contesto dello scatto e come presentare fotografie senza un contesto certo.
+RAM alone would simplify data management, but would lose the photograph on restart or battery depletion. The hardware document had already separated capture away from home from delivery over the home network. A persistent queue provides a way to support this, without claiming it is already implemented.
 
-## Da dove partire
+The hub is the proposed recipient because it already coordinates the household equipment. This choice keeps cloud archive credentials out of the camera, but requires an authenticated receiver, acknowledgements backed by durable storage and deduplication. Simply connecting to Wi-Fi supplies none of these.
 
-La prima prova e' elettrica: pulsante su GPIO4 e LED su GPIO1, alimentazione USB, un evento per pressione. La seconda acquisisce fotografie di due oggetti alternati e misura pressione, disponibilita' del frame, fine scrittura e riscontro LED. La terza interrompe rete e alimentazione su una microSD di prova e verifica recupero e consegna. L'integrazione con l'attivita' segue queste prove. Batteria e sonno vengono dopo, perche' cambiano avvio, latenza e recupero.
+The receiver binds a timestamped photograph to the run, collect and arrival time at that collect. The worker checks that binding again under the activity lock. An undated photograph or one whose collect has changed remains in the archive. The camera synchronises its clock while connected; a cold-start capture made before that succeeds cannot advance the activity. This costs one automatic association rather than attributing an old photograph to a new task.
 
-Usiamo il driver Espressif `esp32-camera` per acquisire JPEG. Il tutorial segnala un frame precedente restituito allo scatto successivo; la prova con oggetti alternati deve verificare il problema nella configurazione scelta. Non assumiamo che scartare sempre un singolo frame sia una soluzione universale.
+## Where to start
 
-## Fatto quando
+The next physical test starts with the released button reading HIGH on GPIO4. On 9 September the installed firmware reported USB present, filesystem mounted and GPIO4 LOW over successive five-second samples. The button state needs confirmation before testing a press. Then photograph two alternating subjects, verify the LED sequences and receipts, and test battery sleep, wake and failed delivery. USB reachability is measured; those physical outcomes are not yet measured.
 
-La documentazione e' pronta quando i collegamenti corrispondono alla scheda fotografata, le fonti sono rintracciabili, le foto sono leggibili senza HEIC e la cartella temporanea e' rimossa. Questi controlli sono stati eseguiti il 7 settembre 2026.
+We choose Espressif's `esp32-camera` driver for JPEG capture. The tutorial reports a previous frame being returned at the next capture; the alternating-object test must check this in the chosen configuration. We do not assume that always discarding a single frame is a universal solution.
 
-Il prototipo sara' pronto quando una pressione produce una fotografia attuale, una pressione lunga ne produce una sola, il LED conferma soltanto uno stato realmente raggiunto e un invio ripetuto non duplica la fotografia sull'hub. La macchina domestica richiedera' inoltre un contenitore provato, autonomia misurata e una procedura di cancellazione che comprenda dispositivo e hub. Nessuna di queste prove fisiche e' stata eseguita in questa sessione.
+## Completion criteria
+
+The documentation is ready when the wiring matches the photographed board, sources can be traced, photographs can be viewed without HEIC support and the temporary directory has been removed. These checks were performed on 7 September 2026.
+
+The prototype will be ready when an accepted press produces one flash and a current photograph, a long press produces only one capture, and the two-flash confirmation occurs only after a valid hub receipt. Missing, rejected or duplicate receipts must not produce a false or repeated success signal. Repeated delivery must not duplicate the photograph on the hub. A camera for domestic use will also require a tested enclosure, measured battery life and a deletion procedure covering both device and hub. None of these physical tests was performed in this session.

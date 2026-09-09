@@ -141,6 +141,14 @@ def create_app(
         pictures if pictures is not None else _picture_archive(app.state.settings)
     )
     app.state.pages = pages if pages is not None else _page_archive(app.state.settings)
+    from .photos import BlobPhotoArchive, MemoryPhotoArchive
+    from .routes.photos import router as photos_router
+
+    app.state.photos = (
+        BlobPhotoArchive(app.state.settings.blob_endpoint, app.state.settings.pictures_container)
+        if app.state.settings.blob_endpoint else MemoryPhotoArchive()
+    )
+    app.include_router(photos_router)
     app.state.themes = themes if themes is not None else _theme_store(app.state.settings)
     app.state.devices = devices if devices is not None else _device_store(app.state.settings)
     app.state.inventory = (

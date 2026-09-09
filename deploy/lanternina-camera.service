@@ -1,0 +1,27 @@
+[Unit]
+Description=Receive photographs and deliver them to the current activity or picture display
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=fausto
+Group=lanternina
+EnvironmentFile=/etc/lanternina/trmnl-byos.env
+EnvironmentFile=/etc/lanternina/panel.env
+EnvironmentFile=-/etc/lanternina/scanner.env
+EnvironmentFile=/etc/lanternina/experience.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/lanternina
+ExecStart=/usr/bin/python3 -m devices.camera_hub
+Restart=on-failure
+RestartSec=5
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/lanternina/state /srv/lanternina/photos
+
+[Install]
+WantedBy=multi-user.target

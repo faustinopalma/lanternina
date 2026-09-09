@@ -1,9 +1,7 @@
 """What a camera and a scanner hand over, and what may be done with it.
 
-:class:`WhatCameBack` is live: it is what a model says about a sheet that came back off the
-glass, and the continuation is written from it. It is sealed against every implicit route
-into storage, because the reading is meant to last as long as the afternoon needs it and no
-longer.
+:class:`WhatCameBack` is what a model says about returned material. It can be copied,
+serialized and retained during development. The owning store decides its lifetime.
 
 :class:`RawFrame` is left over from the marker-and-QR pipeline and nothing constructs one.
 The rule it enforced — only the rectified region inside the ArUco quadrilateral is ever
@@ -25,7 +23,7 @@ if TYPE_CHECKING:  # keeps `shared` importable without numpy installed
 
 
 class RawFrame:
-    """A full camera frame. In-memory only, for the lifetime of one capture.
+    """A legacy temporary buffer, separate from the family photograph archive.
 
     Nothing constructs one. Deliberately *not* a dataclass: it must not be frozen-copyable,
     comparable or serialisable, and every escape hatch Python would normally provide is
@@ -82,16 +80,16 @@ class RawFrame:
 
     # -- every serialisation route, closed -------------------------------------------
     def __getstate__(self) -> Any:
-        raise RetentionViolation("full camera frames must never be serialised or persisted")
+        raise RetentionViolation("this temporary RawFrame cannot be serialised")
 
     def __reduce__(self) -> Any:
-        raise RetentionViolation("full camera frames must never be pickled")
+        raise RetentionViolation("this temporary RawFrame cannot be pickled")
 
     def __deepcopy__(self, memo: dict) -> Any:
-        raise RetentionViolation("full camera frames must never be copied")
+        raise RetentionViolation("this temporary RawFrame cannot be copied")
 
     def __copy__(self) -> Any:
-        raise RetentionViolation("full camera frames must never be copied")
+        raise RetentionViolation("this temporary RawFrame cannot be copied")
 
 
 # How many descriptions are kept. A page is one thing somebody did in an afternoon, and a
@@ -123,14 +121,8 @@ class WhatCameBack:
     one handed over is still a page somebody worked on, and what the afternoon does about that
     is the afternoon's business.
 
-    **It is read, and it is not kept.** The afternoon is written from this and then it is
-    gone: the only account of how the afternoon went is the paper, which is on a table in the
-    room it was filled in. So every implicit route out of memory is closed — pickle, copy,
-    deepcopy, the state protocol — and one explicit door is left. :meth:`to_dict` exists for
-    the single hop this reading has to make, from the house to the panel that writes the
-    continuation and back again; it is a request body, not a document. What keeps that hop
-    from becoming a record is the record itself, which has no field a reading would fit in
-    (`tests/test_trail.py`).
+    Readings may be retained during development, as requested on 9 September 2026.
+    The parent photo archive stores images separately from these model descriptions.
     """
 
     written: bool
@@ -162,20 +154,3 @@ class WhatCameBack:
             degraded=bool(values.get("degraded", False)),
             metadata=dict(values.get("metadata", {})),
         )
-
-    # -- the implicit routes out of memory, closed -------------------------------------
-    #
-    # None of these is how somebody would decide to keep a reading. They are how one ends up
-    # kept anyway: in a cache, on a queue, in a session, in the payload of a background job.
-
-    def __getstate__(self) -> Any:
-        raise RetentionViolation("what a page said is read and not kept; see to_dict")
-
-    def __reduce__(self) -> Any:
-        raise RetentionViolation("what a page said must never be pickled")
-
-    def __copy__(self) -> Any:
-        raise RetentionViolation("what a page said must never be copied")
-
-    def __deepcopy__(self, memo: dict) -> Any:
-        raise RetentionViolation("what a page said must never be copied")

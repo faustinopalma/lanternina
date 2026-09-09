@@ -276,10 +276,10 @@ export function Pictures() {
   const api = useApi();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(() => Number(readStored(PAGE_SIZE_KEY)) || 20);
-  const [state] = useLoad(() => api.pictures(page, perPage), [page, perPage]);
+  const [state] = useLoad(() => api.pictures(page, perPage), [page, perPage], { live: true });
   // Which picture the house has not yet come to collect, so a parent who reloads sees the
   // request they already made instead of a button that looks unpressed.
-  const [request] = useLoad(() => api.standingRequest(), []);
+  const [request] = useLoad(() => api.standingRequest(), [], { live: true });
   const standing =
     request.status === "ready" && request.data !== null ? request.data.subject : null;
   const [open, setOpen] = useState<{ picture: Picture; bytes: Blob } | null>(null);

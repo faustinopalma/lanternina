@@ -14,6 +14,7 @@ import { Drafts } from "@/sections/Drafts";
 import { Experiences } from "@/sections/Experiences";
 import { Guidelines } from "@/sections/Guidelines";
 import { Pictures } from "@/sections/Pictures";
+import { Photos } from "@/sections/Photos";
 import { Preferences } from "@/sections/Preferences";
 import { Proposals } from "@/sections/Proposals";
 import { Reminders } from "@/sections/Reminders";
@@ -99,6 +100,7 @@ export function Dashboard({ api }: { api: Api }) {
           note: t("pictures.note"),
           Body: Pictures,
         },
+        { name: "photos", title: t("photos.title"), note: "", Body: Photos },
         {
           name: "reminders",
           title: t("reminders.title"),

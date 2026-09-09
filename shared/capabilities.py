@@ -88,7 +88,8 @@ NEVER_CAME_BACK: Final = "never"
 KIND_DISPLAY: Final = "display"
 KIND_PRINTER: Final = "printer"
 KIND_SCANNER: Final = "scanner"
-KINDS: Final = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER)
+KIND_CAMERA: Final = "camera"
+KINDS: Final = (KIND_DISPLAY, KIND_PRINTER, KIND_SCANNER, KIND_CAMERA)
 
 # No job at all, which is not the same as never having been named — see `panel/devices.py`.
 JOB_NONE: Final = ""
@@ -97,15 +98,17 @@ JOB_SHEET: Final = "sheet"
 JOB_REMIND: Final = "remind"
 JOB_PRINT: Final = "print"
 JOB_SCAN: Final = "scan"
+JOB_PHOTO: Final = "photo"
 
 # The jobs the parent can hand out, by kind. A thing holds as many as the parent gives it,
 # and a job may be held by several things at once: a house with two displays and three
 # things to show cannot work any other way, and when more than one thing can do something
 # the house picks between them, which is where the variation comes from.
 JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
-    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET, JOB_REMIND),
+    KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET, JOB_REMIND, JOB_PHOTO),
     KIND_PRINTER: (JOB_PRINT,),
     KIND_SCANNER: (JOB_SCAN,),
+    KIND_CAMERA: (),
 }
 
 # A display given only the picture job is absent from this table on purpose. It can draw

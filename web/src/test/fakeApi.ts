@@ -465,6 +465,10 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
       if (state === "withdrawn") approved = approved.filter((row) => row.id !== id);
     },
     pictures: async (page, perPage) => ({ ...SAMPLE_PICTURES, page, perPage }),
+    photos: async () => ({ photos: [], page: 1, pages: 1, total: 0, lastReceivedAt: null }),
+    photoContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),
+    previewPhotoDeletion: async () => ({ ids: [] }),
+    deletePhotos: async () => ({ deleted: [], failed: [] }),
     pictureContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),
     pageContent: async () => new Blob([TINY_BITMAP], { type: "image/png" }),
     themes: async () => themes,

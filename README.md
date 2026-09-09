@@ -71,7 +71,7 @@ Only the value `1` selects pretend mode. Do not run equipment commands against a
 | [ideas/13-prompts-and-simulation.md](ideas/13-prompts-and-simulation.md) | Decisions, measurements and remaining checks from this revision |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Deployment procedure |
 | [docs/HARDWARE.md](docs/HARDWARE.md) | Hardware and physical measurements |
-| [docs/macchina-fotografica/README.md](docs/macchina-fotografica/README.md) | Handheld camera miniproject: purchased XIAO Sense, photographs, button and LED wiring, planned behaviour and physical tests (Italian) |
+| [docs/macchina-fotografica/README.md](docs/macchina-fotografica/README.md) | Handheld camera miniproject: XIAO Sense, photographs, button and LED wiring, planned behaviour and physical tests |
 
 `shared/` contains contracts; `agents/` contains model instructions and parsers; `orchestrator/` contains model transport and safety. `panel/` hosts the API, `devices/` runs the house, `printing/` prepares paper, `web/` is the parent panel and `site/` is the public site. `research/` and `tools/` include synthetic apparatus that is not a production privacy boundary. `attic/` contains retired implementations.
 

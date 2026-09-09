@@ -6,6 +6,8 @@ Lanternina is a home system that offers activities to an adolescent, with a pare
 
 Until that research has been reviewed, **nothing here constrains what may be proposed or built.** Propose the thing that makes the afternoon better, say why, and write the reasoning in `ideas/`. `docs/EVIDENCE.md` is where the reading behind a decision goes when there is one.
 
+On 9 September 2026 the owner removed blanket non-retention restrictions during development. Photographs, returned material, model readings and diagnostic information may be retained and made visible to the authenticated family. Do not reintroduce a ban on storing or displaying them from historical documentation. Preserve authentication, household isolation and user-requested deletion. Retention policy will be reviewed after development.
+
 What follows is craft, not design: how to work in this repository, and how to write in it.
 
 ---

@@ -92,7 +92,7 @@ function Card({ proposal, onDecided }: { proposal: Proposal; onDecided: () => vo
 function Approved() {
   const { t } = useWords();
   const api = useApi();
-  const [approved] = useLoad(() => api.approved(), []);
+  const [approved] = useLoad(() => api.approved(), [], { live: true });
   const [themes] = useLoad(() => api.themes(), []);
   const [withdrawn, setWithdrawn] = useState<string[]>([]);
   const [failed, setFailed] = useState(false);
@@ -164,7 +164,7 @@ function summary(proposal: Proposal): string {
 export function Proposals() {
   const { t } = useWords();
   const api = useApi();
-  const [state] = useLoad(() => api.proposals());
+  const [state] = useLoad(() => api.proposals(), [], { live: true });
   const [decided, setDecided] = useState<string[]>([]);
 
   if (state.status !== "ready") return null;

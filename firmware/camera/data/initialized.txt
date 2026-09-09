@@ -1,0 +1,1 @@
+Lanternina camera queue. Flash this filesystem only for first provisioning.

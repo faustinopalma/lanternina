@@ -151,7 +151,7 @@ function Step({ made }: { made: Made }) {
 function Whole({ runId }: { runId: string }) {
   const api = useApi();
   const { t } = useWords();
-  const [state] = useLoad(() => api.trail(runId), [runId]);
+  const [state] = useLoad(() => api.trail(runId), [runId], { live: true });
 
   if (state.status === "loading") return <Quiet className="mt-2.5">{t("trail.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet className="mt-2.5">{t("trail.unreadable")}</Quiet>;
@@ -202,7 +202,7 @@ function Card({ trail }: { trail: Trail }) {
 export function TheTrail() {
   const api = useApi();
   const { t } = useWords();
-  const [state, again] = useLoad(() => api.trails());
+  const [state, again] = useLoad(() => api.trails(), [], { live: true });
   /* Two presses, not a dialog. The first turns the button into what it will actually do,
      which is the sentence a parent needs before the second — and it is the parent's own
      record, so nothing here asks anybody's permission, only their attention. */

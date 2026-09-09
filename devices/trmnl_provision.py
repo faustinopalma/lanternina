@@ -97,10 +97,13 @@ def provision(
     backup_dir: Path,
     force: bool = False,
     wait_seconds: float = 0.0,
+    registered_only: bool = False,
 ) -> str:
     wait_for_port(port, wait_seconds)
     mac = device_mac(port)
     existing = load_devices(registry_file).get(mac) if registry_file.exists() else None
+    if registered_only and (existing is None or not existing.provisioned):
+        return f"not an enrolled display: {mac}"
     # Plugging a cable must never reflash on its own; only an explicit --force may.
     if existing is not None and existing.provisioned and not force:
         return f"already provisioned: {mac}"
@@ -222,6 +225,7 @@ def main() -> None:
         default=Path("/var/lib/lanternina/trmnl-backups"),
     )
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--registered-only", action="store_true")
     parser.add_argument("--wait-seconds", type=float, default=0.0)
     args = parser.parse_args()
     print(provision(
@@ -235,6 +239,7 @@ def main() -> None:
         backup_dir=args.backup_dir,
         force=args.force,
         wait_seconds=args.wait_seconds,
+        registered_only=args.registered_only,
     ))
 
 

@@ -431,6 +431,10 @@ def picture_for(shared: Path, friendly_id: str) -> Path:
     return shared.with_name(f"{shared.stem}-{friendly_id}-picture{shared.suffix}")
 
 
+def photo_for(shared: Path, friendly_id: str) -> Path:
+    return shared.with_name(f"{shared.stem}-{friendly_id}-photo{shared.suffix}")
+
+
 def identify_for(shared: Path, friendly_id: str) -> Path:
     """Set while this display is saying which one it is.
 
@@ -509,6 +513,16 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
             if own is not None:
                 return own
+        if _holds(jobs, "photo") or _holds(jobs, JOB_PICTURE):
+            photo = photo_for(config.screen_file, device.friendly_id)
+            picture = picture_for(config.screen_file, device.friendly_id)
+            if photo.exists() and (
+                not _holds(jobs, JOB_PICTURE) or not picture.exists()
+                or photo.stat().st_mtime >= picture.stat().st_mtime
+            ):
+                photographed = _valid_or_none(photo)
+                if photographed is not None:
+                    return photographed
         if _holds(jobs, JOB_PICTURE):
             painted = _valid_or_none(picture_for(config.screen_file, device.friendly_id))
             if painted is not None:

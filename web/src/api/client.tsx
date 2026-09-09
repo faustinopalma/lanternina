@@ -22,6 +22,7 @@ import {
   type NewRhythm,
   type OfferedList,
   type PicturePage,
+  type PhotoPage,
   type Preferences,
   type Proposal,
   type Reminder,
@@ -76,9 +77,13 @@ const PREFERENCES_FIELDS = [
 
 const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;
 
-export function httpApi(token: string): Api {
+export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
   async function call(path: string, options: RequestInit = {}): Promise<Response> {
+    const token = typeof bearer === "string" ? bearer : await bearer();
+    if (token === null) throw new ApiError("sign-in required");
     return fetch(`${config.apiBase}${path}`, {
+      cache: "no-store",
+      signal: (options.method ?? "GET") === "GET" ? AbortSignal.timeout(30_000) : undefined,
       ...options,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -160,6 +165,17 @@ export function httpApi(token: string): Api {
       if (!response.ok) throw new ApiError("picture");
       return response.blob();
     },
+
+    photos: (page) => json<PhotoPage>(`/api/photos?page=${page}`, {}, [
+      "photos", "total", "page", "pages", "lastReceivedAt",
+    ]),
+    async photoContent(id: string): Promise<Blob> {
+      const response = await call(`/api/photos/${encodeURIComponent(id)}/content`);
+      if (!response.ok) throw new ApiError("photo");
+      return response.blob();
+    },
+    previewPhotoDeletion: (selection) => json("/api/photos/delete-preview", write(selection), ["ids"]),
+    deletePhotos: (selection, ids) => json("/api/photos/delete", write({ ...selection, ids }), ["deleted", "failed"]),
 
     async pageContent(id: string): Promise<Blob> {
       const response = await call(`/api/pages/${id}/content`);

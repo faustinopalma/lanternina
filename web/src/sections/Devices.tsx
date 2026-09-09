@@ -52,6 +52,8 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
     : device.silentSeconds < 120
       ? t("devices.justNow")
       : t("devices.heard", { ago: ago(device.silentSeconds) });
+  const cameraSince = device.silentSeconds < 120 ? t("devices.justNow")
+    : t("devices.heard", { ago: ago(device.silentSeconds) });
 
   return (
     <div className="flex flex-col gap-2.5 py-3.5">
@@ -60,9 +62,10 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
         <span className="text-[0.92rem] text-quiet">
           {kind}
           {level === null ? "" : ` \u00b7 ${level}`}
-          {volts === null ? "" : ` \u00b7 ${volts}`} {"\u00b7"} {since}
+          {volts === null ? "" : ` \u00b7 ${volts}`} {"\u00b7"} {device.kind === "camera" ? cameraSince : since}
         </span>
       </div>
+      {device.kind === "camera" && volts === null ? <Quiet>{t("devices.cameraBatteryUnknown")}</Quiet> : null}
       <div className="flex flex-wrap items-center gap-2.5">
         <Input
           className="min-w-0 flex-auto"
@@ -104,7 +107,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
         </fieldset>
       </div>
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
-      {device.silent ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
+      {device.silent && device.kind !== "camera" ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
     </div>
   );
 }
@@ -112,7 +115,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
 export function Devices() {
   const { t } = useWords();
   const api = useApi();
-  const [state, reload] = useLoad(() => api.devices());
+  const [state, reload] = useLoad(() => api.devices(), [], { live: true });
   const [removing, setRemoving] = useState<string | null>(null);
   const [asked, setAsked] = useState<string | null>(null);
   const [looked, setLooked] = useState(false);

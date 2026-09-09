@@ -81,6 +81,7 @@ shared = ["py.typed", "*.md"]
 # so they are data and not documentation.
 agents = ["*.md"]
 panel = ["*.md"]
+devices = ["*.html"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

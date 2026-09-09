@@ -126,6 +126,24 @@ def test_force_reflashes_and_keeps_the_token(
 def test_the_udev_unit_cannot_reflash_on_its_own() -> None:
     unit = Path("deploy/lanternina-trmnl-provision@.service").read_text(encoding="utf-8")
     assert "--force" not in unit
+    assert "--registered-only" in unit
+
+
+@pytest.mark.parametrize("registered", [False, True])
+def test_automatic_provisioning_ignores_other_boards(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, registered: bool
+) -> None:
+    paths, commands = _prepare(tmp_path, monkeypatch)
+    document = json.loads(paths["registry"].read_text(encoding="utf-8"))
+    if registered:
+        document["devices"][MAC]["provisioned"] = False
+    else:
+        document["devices"] = {}
+    paths["registry"].write_text(json.dumps(document), encoding="utf-8")
+    before = paths["registry"].read_bytes()
+    assert _provision(paths, registered_only=True) == f"not an enrolled display: {MAC}"
+    assert commands == []
+    assert paths["registry"].read_bytes() == before
 
 
 def test_waiting_for_a_sleeping_display_gives_up_instead_of_hanging(tmp_path: Path) -> None:

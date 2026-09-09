@@ -319,7 +319,7 @@ export function Drafts() {
   const api = useApi();
   const { t } = useWords();
   const [round, setRound] = useState(0);
-  const [state] = useLoad(() => api.drafts(), [round]);
+  const [state] = useLoad(() => api.drafts(), [round], { live: true });
   const [working, setWorking] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
 

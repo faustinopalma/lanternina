@@ -1,4 +1,4 @@
-/* Sign in, then hold one access token for the panel.
+/* Sign in and obtain a current access token for each API request.
  *
  * MSAL comes from npm rather than a CDN: the file is pinned by the lockfile, ships from
  * the same origin as the panel, and lets the page's script-src stay 'self'.
@@ -30,9 +30,18 @@ export const msalInstance = new PublicClientApplication({
   // browser is sent alongside a token request. Read from the shipped source, not assumed.
 });
 
-/** Resolves to a token, or to null when a redirect is under way and this page is about to
- *  be replaced. */
-export async function bearerFor(account: AccountInfo): Promise<string | null> {
+const pending = new Map<string, Promise<string | null>>();
+
+export function bearerFor(account: AccountInfo): Promise<string | null> {
+  const key = `${account.homeAccountId}:${account.localAccountId}`;
+  const existing = pending.get(key);
+  if (existing) return existing;
+  const getting = acquireBearer(account).finally(() => pending.delete(key));
+  pending.set(key, getting);
+  return getting;
+}
+
+async function acquireBearer(account: AccountInfo): Promise<string | null> {
   const request = { scopes: [...config.scopes], account };
   try {
     const result = await msalInstance.acquireTokenSilent(request);

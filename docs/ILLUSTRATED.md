@@ -148,7 +148,7 @@ Reading is done by handing a model both images and asking what is different. Tha
 
 The reader's vocabulary is deliberately poor: a page came back with **marks** or **blank**, and nothing else. Not a count, not a fraction, not "half of them" — because a count of somebody's marks is one step away from a score. Which particular boxes carry a mark is a richer question, and it is only ever carried upward inside an `ask`, to write the next moments with.
 
-The reading is not kept. It lasts as long as the activity needs it and is then gone: `WhatCameBack` refuses to be pickled, copied or cached. The only account of how an activity went is the paper, and the paper stays on the table.
+Readings and photographs may be kept during development. On 9 September 2026 the owner removed the earlier non-retention restriction. The parent photograph archive supports viewing and deliberate deletion; its contents remain private to the household.
 
 ### 3.5 It ends
 
@@ -304,7 +304,7 @@ A page of photographs makes a system look more finished than it is, so this sect
 
 - **The handheld camera.** Being assembled by hand as an object; nothing here takes a photograph. `vision/` is empty. The acknowledgment on the display within seconds of a press is part of the channel and is not built either. A device on a bench and an empty package are not the same distance from working, and the second is the longer one.
 - **The button panel.** Being assembled by hand as well. Nothing in the repository expects more than the one button already on each display.
-- **That a reading never lands in a store.** The type refuses to be pickled, copied or cached, but the reading travels from the house to the panel and back as a request body, and nothing stops either end writing that body down. One household named in `panel/keeping.py` deliberately does keep it, for a fortnight, while this is being built.
+- Development readings may be stored. Existing development-store expiry remains an operational setting, not a prohibition on adding other storage during development.
 - **The seventh property.** That every moment has an answer that can be wrong, and that the last moment produces something worth keeping, is specified and not checked. A plan that fails it is saved.
 - **The plain-language memory view.** There is no page that renders the whole household memory as sentences. Until there is, the enforcement that replaces locality does not exist.
 - **A second house.** Never provisioned. The installer's `--install` has never been run.

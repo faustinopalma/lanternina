@@ -7,7 +7,7 @@ Requires=lanternina-trmnl.service
 Type=oneshot
 WorkingDirectory=/opt/lanternina
 Environment=PYTHONDONTWRITEBYTECODE=1
-ExecStart=/usr/bin/python3 -m devices.trmnl_provision --port /dev/%I
+ExecStart=/usr/bin/python3 -m devices.trmnl_provision --port /dev/%I --registered-only
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=true

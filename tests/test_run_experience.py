@@ -90,6 +90,39 @@ def pointers(house: House) -> list[Path]:
     return sorted((house.sheets_dir / "afternoons" / "pages").glob("*.json"))
 
 
+def test_camera_advances_the_activity_without_touching_the_scanner(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from tests.test_photo_store import jpeg
+
+    begin(house, an_experience(), now=0.0, send=False)
+    target = run_experience.camera_target(house.sheets_dir, 1.0)
+    assert target is not None
+    monkeypatch.setattr(run_experience, "_read", lambda *_: pytest.fail("scanner called"))
+    seen = []
+    monkeypatch.setattr(
+        run_experience, "read_page",
+        lambda blank, image, **kwargs: seen.append((image.shape, kwargs)) or _reading(marks=False),
+    )
+    result = carry_on(house, now=2.0, send=False, photograph=jpeg(), target=target)
+    assert seen[0][0] == (48, 64, 3)
+    assert "Camera return" in seen[0][1]["about"]
+    assert result == "the afternoon is finished"
+
+
+def test_old_or_undated_photo_does_not_advance_a_new_moment(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    begin(house, an_experience(), now=100.0, send=False)
+    assert run_experience.camera_target(house.sheets_dir, None) is None
+    assert run_experience.camera_target(house.sheets_dir, 99.0) is None
+    monkeypatch.setattr(run_experience, "read_page", lambda *_args, **_kw: pytest.fail("read"))
+    result = carry_on(house, now=101.0, photograph=b"old", target={
+        "run": "previous", "moment": "previous", "since": 99.0,
+    })
+    assert "archived" in result
+
+
 # ── Beginning ────────────────────────────────────────────────────────────────────────
 
 

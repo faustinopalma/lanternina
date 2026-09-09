@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useApi } from "@/api/client";
-import type { Backlog, Decision, Moment, OfferedExperience } from "@/api/types";
+import type { Backlog, Decision, Moment, OfferedExperience, OfferedList } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
@@ -162,7 +162,7 @@ function Saying({ when }: { when: number }) {
   const [saying, setSaying] = useState(false);
   const [failed, setFailed] = useState(false);
   const [again, setAgain] = useState(0);
-  const [waiting] = useLoad(() => api.messages(), [again]);
+  const [waiting] = useLoad(() => api.messages(), [again], { live: true });
 
   async function say(said: { says: string; at?: string }) {
     setSaying(true);
@@ -370,7 +370,7 @@ function Card({
 function Approved({ again }: { again: number }) {
   const { t } = useWords();
   const api = useApi();
-  const [state] = useLoad(() => api.experiences("approved"), [again]);
+  const [state] = useLoad(() => api.experiences("approved"), [again], { live: true });
   const [withdrawn, setWithdrawn] = useState<string[]>([]);
 
   if (state.status !== "ready") return null;
@@ -414,14 +414,14 @@ function Approved({ again }: { again: number }) {
 export function Experiences() {
   const { t } = useWords();
   const api = useApi();
-  const [state] = useLoad(() => api.experiences("pending"));
+  const [state] = useLoad(() => api.experiences("pending"), [], { live: true });
   const [decided, setDecided] = useState<string[]>([]);
   const [approvals, setApprovals] = useState(0);
   // What the parent has ticked in this sitting but not yet sent. Held here rather than on
   // each card, because the whole point is that they go up together.
   const [picked, setPicked] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
-  const [stock, setStock] = useState<Backlog | null>(null);
+  const [stock, setStock] = useState<{ backlog: Backlog; before: OfferedList } | null>(null);
   // A draft the parent opened from one of these. Shown in place: sending them to another
   // section and asking them to find it there is two steps for something they just asked for.
   const [working, setWorking] = useState<string | null>(null);
@@ -432,13 +432,14 @@ export function Experiences() {
   if (state.status === "failed") return <Quiet>{t("experiences.unreadable")}</Quiet>;
 
   const waiting = state.data.experiences.filter((offered) => !decided.includes(offered.id));
-  const backlog = stock ?? state.data.backlog;
+  const answer = state.data;
+  const backlog = stock?.before === answer ? stock.backlog : answer.backlog;
 
   async function sit(decision: "approved" | "rejected") {
     const ids = picked;
     setSending(true);
     try {
-      setStock(await api.decideSeveral(ids, decision));
+      setStock({ backlog: await api.decideSeveral(ids, decision), before: answer });
       setDecided((seen) => [...seen, ...ids]);
       setPicked([]);
       if (decision === "approved") setApprovals((n) => n + 1);

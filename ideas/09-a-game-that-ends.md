@@ -109,8 +109,8 @@ A camera with no screen cannot be aimed badly and its result cannot be judged. T
 
 Three rules, and they are stricter than the ones already written here because the existing ones are about the scanner:
 
-- The photograph is **transformed, never described and never assessed**. Not "I see a chair", not "nice framing". It is raw material for an image, not a subject of conversation.
-- No person is identified and no recognisable face is returned to a display. The original does not outlive the session, and no photograph appears in the panel.
+- A photograph can return work to an activity or become a picture on a display. An activity may describe the visible material without assessing the person who made it.
+- The family may retain, view and delete originals, including photographs in which people appear. This replaces the session-only retention and display prohibition on 9 September 2026. Person identification and inferences about people remain outside the camera workflow.
 - A photograph of something irrelevant is accepted and transformed like any other, with no comment and no correction. There is no rejected-photograph path.
 
 The display is one bit, or a few greys, at low resolution. An image generated without that in mind arrives as a smudge: high contrast, large shapes, thick strokes, no gradients, and that belongs in the image prompt rather than in hope. `HouseCapability.PHOTOGRAPH_TABLE` is already named in `shared/capabilities.py` and no verb asks for it yet, which is the right order — the rules above should be written before the verb is.
