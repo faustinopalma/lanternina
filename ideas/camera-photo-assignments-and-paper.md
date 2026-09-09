@@ -15,3 +15,9 @@ The owner requested a physical trial using the camera to return a written sheet.
 The API preserves the supplied original in photograph mode. Both photographic modes skip the separate page-placement task intended for scans. Tests check exact original pixels at the runner, image order at the model request, both images through the HTTP route, uncertainty and the existing single-image construction path. The physical handwriting trial has not yet occurred. It should use the original already printed for the waiting paper moment, one deliberate photo and inspection of the actual transcription before treating camera acquisition as readable.
 
 Unfinished scan-archive changes remain separate and are not part of this publication.
+
+## Publication and checks
+
+Commit c071f9a passed CI run 34388017303 and was published by API run 34388017243 and panel run 34388017242. Local verification passed 111 focused Python tests, full Ruff, 1,075 Python tests in the worktree with two skips, 143 web tests and the web production build. The worktree count includes the separate unpublished scan-archive test; CI validates the committed tree.
+
+The committed camera_hub, trmnl_byos and run_experience modules were installed on the hub. Both services restarted successfully. Authenticated BMP requests to the running display server verified that CF7D04 and FB9F18, each holding picture/sheet/remind but not photo, no longer receive the stored camera photo layer. The check did not simulate button presses or battery readings. Physical pixels change at each display's next connection. The new paper-reading contract is verified by automated tests; no handwriting legibility trial or new physical capture was performed during this correction.
