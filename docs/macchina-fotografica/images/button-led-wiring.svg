@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1060" viewBox="0 0 1400 1060" role="img" aria-labelledby="title desc">
   <title id="title">XIAO ESP32S3 Sense: button and independent status LED</title>
-  <desc id="desc">Normally open button from D1 GPIO2 to ground, with internal pull-up enabled by firmware. Separate D4 GPIO5 output drives a 220 ohm resistor and an LED anode; the cathode returns to ground. D2 and D3 are unused with old wire ends insulated. One flash acknowledges an accepted press. Two flashes acknowledge durable receipt by lanternina hub. Rear pad locator has USB-C at the top.</desc>
+  <desc id="desc">Normally open button from D1 GPIO2 to ground, with internal pull-up enabled by firmware. Separate D4 GPIO5 output drives a 220 ohm resistor and an LED anode; the cathode returns to ground. D2 and D3 are unused with old wire ends insulated. Continuous light lasts until acquisition ends. Two flashes acknowledge durable receipt by lanternina hub. Rear pad locator has USB-C at the top.</desc>
   <defs>
     <style>
       text { font-family: 'Segoe UI', sans-serif; fill: #172322; }
@@ -70,9 +70,9 @@
 
   <path d="M60 702 H1340" stroke="#ccd5d1" stroke-width="2"/>
   <text x="60" y="745" class="heading">Firmware-controlled feedback</text>
-  <text x="60" y="780" class="body">1 flash: accepted press</text>
+  <text x="60" y="780" class="body">ON: image acquisition</text>
   <path d="M65 831 H90 V803 H140 V831 H235" class="wire output"/>
-  <text x="65" y="861" class="small">150 ms ON, then OFF</text>
+  <text x="65" y="861" class="small">OFF when acquisition ends</text>
   <text x="380" y="780" class="body">2 flashes: hub confirms receipt</text>
   <path d="M385 831 H410 V803 H460 V831 H510 V803 H560 V831 H605" class="wire output"/>
   <text x="385" y="861" class="small">150 ms ON / OFF / ON, then OFF</text>

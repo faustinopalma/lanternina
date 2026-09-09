@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <atomic>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <LittleFS.h>
@@ -25,6 +26,7 @@ static constexpr size_t MAX_JPEG = 750000;
 static constexpr int QUEUE_LIMIT = 3;
 static volatile bool busy = false;
 static volatile int feedback = 0;
+static std::atomic<bool> acquiring{false};
 static bool storageReady = false;
 static uint32_t bootTag;
 static uint32_t lastUsb = 0;
@@ -159,6 +161,7 @@ static bool capture() {
     }
     camera_fb_t *image = esp_camera_fb_get();
     frameReadyMs = millis() - capturedMillis;
+    acquiring.store(false);
     uint32_t storageBegan = millis();
     Serial.printf("capture_timing sensor_init_ms=%u frame_ready_ms=%u\n",
                   sensorInitMs, frameReadyMs);
@@ -258,7 +261,7 @@ static void reportStatus(const char *phase) {
             status["voltage"] = millivolts * 2.0f / 16000.0f;
 #endif
             status["rssi"] = WiFi.RSSI();
-            status["firmware"] = "camera-2026-09-09-d1-d4";
+            status["firmware"] = "camera-2026-09-09-capture-led";
             status["captureResult"] = captureResult;
             status["queued"] = storageReady ? queued() : -1;
             JsonObject diagnostics = status.createNestedObject("diagnostics");
@@ -386,6 +389,7 @@ static void work(void *argument) {
         sensorInitMs = 0; frameReadyMs = 0; storageMs = 0;
         uint32_t captureBegan = millis();
         bool captured = capture();
+        acquiring.store(false);
         captureMs = millis() - captureBegan;
         if (!captured) {
             while (feedback != 0) delay(20);
@@ -415,10 +419,17 @@ static void work(void *argument) {
 
 static void startWork(bool takePhoto, bool sleepOnly = false) {
     busy = true;
+    if (takePhoto) {
+        acquiring.store(true);
+        feedback = 1;
+        digitalWrite(LED, HIGH);
+    }
     if (xTaskCreatePinnedToCore(work, "camera", 16384,
                                sleepOnly ? (void *)2 : takePhoto ? (void *)1 : nullptr,
                                1, nullptr, 0) != pdPASS) {
         busy = false;
+        acquiring.store(false);
+        digitalWrite(LED, LOW);
         if (sleepOnly) sleepReportAttempted = true;
         feedback = 3;
     }
@@ -466,7 +477,6 @@ void setup() {
     Serial.printf("camera ready filesystem=%d wake=%d\n", storageReady, esp_sleep_get_wakeup_cause());
     if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT0) {
         trigger = "wake_button";
-        feedback = 1;
         startWork(true);
     } else if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_UNDEFINED) {
         startWork(false);
@@ -480,11 +490,19 @@ void loop() {
     static int activeFeedback = 0;
     static uint32_t feedbackBegan = 0;
     static uint32_t lastDark = 0;
-    if (!activeFeedback && feedback && now - lastDark >= 500) {
+    if (!activeFeedback && feedback && (feedback == 1 || now - lastDark >= 500)) {
         activeFeedback = feedback;
         feedbackBegan = now;
     }
-    if (activeFeedback) {
+    if (activeFeedback == 1) {
+        if (!acquiring.load()) {
+            digitalWrite(LED, LOW);
+            Serial.printf("capture_light=off frame_ready_ms=%u\n", frameReadyMs);
+            if (feedback == 1) feedback = 0;
+            activeFeedback = 0;
+            lastDark = now;
+        }
+    } else if (activeFeedback) {
         uint32_t elapsed = now - feedbackBegan;
         digitalWrite(LED, elapsed / 150 % 2 == 0 && elapsed < activeFeedback * 300 - 150);
         if (elapsed >= activeFeedback * 300) {
@@ -507,7 +525,6 @@ void loop() {
             if (armed && !busy && !feedback && !activeFeedback && !usbTestMode) {
                 trigger = "button";
                 warmupFrames = 0;
-                feedback = 1;
                 startWork(true);
             }
             armed = false;
@@ -536,7 +553,6 @@ void loop() {
                     Serial.println("command=CAPTURE accepted");
                     trigger = "usb_command";
                     warmupFrames = strcmp(command, "CAPTURE_SETTLED") == 0 ? 2 : 0;
-                    feedback = 1;
                     startWork(true);
                 }
             } else if (strcmp(command, "STATUS") == 0) {

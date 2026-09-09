@@ -109,20 +109,20 @@ The enclosure must support the button without transferring pressure to the board
 
 ## What the light must confirm
 
-The firmware must distinguish an accepted button press from an image delivered to the system. Here, delivery means that lanternina hub has acknowledged durable storage of that image. It does not mean that a model has read it or that an activity has used it. The sequence below is the design agreed on 7 September 2026; it still requires firmware and a physical test.
+The firmware distinguishes image acquisition from delivery. Delivery means that lanternina hub has acknowledged durable storage of that image, not that a model has read it or an activity has used it. The sequence below is installed as of 9 September 2026; visible timing and movement after acquisition remain physical acceptance checks.
 
 | Event | External LED | Meaning |
 | --- | --- | --- |
 | Idle, device powered | Off | No feedback being signalled; this alone cannot distinguish idle from loss of power |
-| Stable press accepted for capture | One 150 ms flash, then off | The firmware has accepted the command; the photograph is not yet confirmed |
-| Capture, local storage, upload or waiting for Wi-Fi | Off after the initial flash | Delivery has not yet been confirmed; a local save produces no success signal |
+| Accepted press and image acquisition | Continuously on until the selected framebuffer is acquired | Keep the framing still while lit; light-off means acquisition has ended |
+| Local storage, upload or waiting for Wi-Fi | Off | Framing may change, but storage and delivery are not yet confirmed; keep power connected |
 | Valid hub acknowledgement for this capture after durable storage | Two 150 ms flashes separated by 150 ms off, then off | The image has been received and stored by lanternina hub |
 | Upload timeout, rejected response or missing acknowledgement | No delivery-confirmation flashes | Keep the local copy for retry; do not declare success |
 | Capture or storage failed | Three 150 ms pulses separated by 150 ms off, then off | The photograph was not stored |
 
-These durations are initial design values, not measured timings. Keep at least 500 ms of darkness between the initial flash and the final sequence, even if delivery is fast, so they do not merge into three flashes. The light must use a non-blocking timer; upload work must not leave it on beyond the intended pulse. During the initial electrical test, only the single press flash is available: that program must not simulate a successful upload.
+The initial light duration follows acquisition, not a fixed timer. The installed firmware uses 150 ms delivery/error pulses and at least 500 ms of darkness between acquisition and later feedback. An atomic flag communicates framebuffer completion to the LED loop. An acquisition failure also ends the light, followed by the error sequence; light-off does not certify a saved photograph. The USB test measured framebuffer readiness at 543 ms and verified the LED output had switched off before delivery. This is not a physical press-to-exposure measurement.
 
-The firmware will use an initial debounce interval of 30 ms, generate one event per accepted press and require a stable release before rearming. A long press must not produce a burst or hold the LED on. Presses during capture or a feedback sequence are not queued and receive no acceptance flash. Waiting for network delivery alone does not block a new capture if local queue capacity remains. On USB power, startup with the button already held waits for release; a future button-wake mode will instead require explicit handling of the wake cause.
+The firmware uses a 30 ms debounce interval, generates one event per accepted press and requires a stable release before rearming. Holding the button does not extend the acquisition light. Presses while capture, storage, network work or feedback are in progress are ignored without a new light signal and are not queued. At cold startup a held button waits for release; an EXT0 button wake starts one capture.
 
 Each acknowledgement must match a pending capture identifier. Duplicate acknowledgements must not replay its completion signal. If an acknowledgement arrives during another flash sequence, finish that sequence and preserve the dark interval before signalling delivery. When Wi-Fi returns, two flashes can therefore confirm an earlier queued image, not necessarily the most recent press. A single LED cannot identify which photograph was delivered; that information belongs in the hub's receipt record. The firmware must remain awake until a scheduled confirmation sequence finishes.
 
@@ -167,15 +167,15 @@ The D1 firmware uses GPIO2 for EXT0 wakeup and enables its RTC pull-up before sl
 | Pin assignments | GPIO1 and GPIO4 available; rear map agrees with Seeed | Verified against photographs and documentation |
 | Kit photograph conversion | Two readable JPEGs, 3024 x 4032 pixels, without EXIF | Verified with Pillow |
 | Button released and pressed | GPIO2 high and low respectively | 3.2 V measured unloaded; button wiring pending |
-| Ten separate presses while ready | Ten events, each with one acceptance flash | To test |
-| Button held for 5 s | One event and one initial flash only; LED does not follow the held contact | To test |
+| Ten separate presses while ready | Ten events, each with continuous light until acquisition ends | To test |
+| Button held for 5 s | One capture; acquisition light follows framebuffer completion, not button release | To test |
 | Valid hub receipt after button release | Two flashes only after acknowledgement of durable storage for that capture | To test |
-| Immediate hub receipt | At least 500 ms dark between the initial flash and the two-flash sequence | To test |
+| Immediate hub receipt | At least 500 ms dark after acquisition before the two-flash sequence | To test |
 | Duplicate or mismatched acknowledgement | No replay for a completed capture; no success for an unknown identifier | To test |
 | USB startup with button held | No capture until release and a new press | To test |
 | Alternating two recognisable subjects | Each file contains the current subject, not the previous frame | To test |
 | microSD missing or full | No delivery confirmation and no overwrite; failed capture receives the error sequence | To test |
-| Wi-Fi unavailable | One acceptance flash, local storage, no success flashes until delivery is acknowledged after reconnection | To test |
+| Wi-Fi unavailable | Acquisition light then off, local storage, no success flashes until delivery is acknowledged | Receiver-offline retry verified; full Wi-Fi loss still to test |
 | Hub response lost or upload rejected | No success flashes; same capture retried without duplication on the hub | To test |
 | Power interrupted during writing | Incomplete file recognised; earlier photographs remain usable | To test |
 | Enclosure closed | Comfortable button, visible LED, correctly oriented and readable image | To test |
