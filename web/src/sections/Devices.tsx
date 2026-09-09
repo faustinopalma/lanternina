@@ -82,12 +82,9 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
             if (name !== device.name) void save({ name });
           }}
         />
-        <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+        {device.jobChoices.length > 0 ? <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
           <legend className="sr-only">{t("devices.jobAria")}</legend>
-          {device.jobChoices.length === 0 ? (
-            <Quiet>{t("devices.noJob")}</Quiet>
-          ) : (
-            device.jobChoices.map((choice) => (
+          {device.jobChoices.map((choice) => (
               <label key={choice} className="flex items-center gap-2 text-[0.98rem]">
                 <input
                   type="checkbox"
@@ -105,9 +102,8 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
                 />
                 {t(known(choice, "job", "devices.noJob"))}
               </label>
-            ))
-          )}
-        </fieldset>
+            ))}
+        </fieldset> : null}
       </div>
       {device.kind === "display" ? <form className="flex flex-wrap items-center gap-2"
         onSubmit={async event => {

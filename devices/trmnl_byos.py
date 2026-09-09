@@ -516,7 +516,7 @@ def make_handler(config: Config) -> type[BaseHTTPRequestHandler]:
             own = _valid_or_none(screen_for(config.screen_file, device.friendly_id))
             if own is not None:
                 return own
-        if _holds(jobs, "photo") or _holds(jobs, JOB_PICTURE):
+        if jobs is not None and "photo" in jobs:
             photo = photo_for(config.screen_file, device.friendly_id)
             picture = picture_for(config.screen_file, device.friendly_id)
             if photo.exists() and (

@@ -344,6 +344,34 @@ def test_reading_a_page_is_counted(monkeypatch: pytest.MonkeyPatch) -> None:
     assert summary.by_kind[KIND_TEXT].calls == 0
 
 
+@pytest.mark.parametrize("with_original", [True, False])
+def test_photographic_api_preserves_original_when_supplied(monkeypatch, with_original):
+    store = InMemoryUsageStore()
+    client = client_for(store)
+    household = household_of(client)
+    seen = []
+
+    async def reads(blank, came_back, **kwargs):
+        seen.append((blank, came_back, kwargs))
+        return a_reading(), READING_REPORTED
+
+    monkeypatch.setattr("panel.paper.read_the_page", reads)
+    monkeypatch.setattr("panel.routes.paper._place_it", lambda *args: pytest.fail(
+        "photographs must not invoke the scanner page-placement task"
+    ))
+    original, photograph = b"original print pixels", b"photographed return pixels"
+    body = {**a_page_body(), "photograph": True,
+            "blankBase64": base64.b64encode(original).decode() if with_original else "",
+            "cameBackBase64": base64.b64encode(photograph).decode()}
+    response = client.post(f"/api/device/{household}/read-page", json=body,
+                           headers={"X-Device-Key": DEVICE_KEY})
+    assert response.status_code == 200
+    assert (seen[0][0].png if seen[0][0] else None) == (original if with_original else None)
+    assert seen[0][1].png == photograph
+    assert seen[0][2]["photograph"] is True
+    assert store.summary(household, month_of(time.time())).by_kind[KIND_READ].calls == 1
+
+
 def test_a_reading_the_cloud_refused_is_counted_and_not_billed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

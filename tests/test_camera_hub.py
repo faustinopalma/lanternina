@@ -22,6 +22,26 @@ def test_photo_frame_contains_the_whole_portrait() -> None:
     assert image.mode == "1"
 
 
+@pytest.mark.parametrize("jobs,displayed", [(["picture"], False), (["photo"], True), ([], False)])
+def test_photographs_only_reach_explicitly_assigned_displays(
+    tmp_path, monkeypatch, jobs, displayed,
+):
+    from devices.trmnl_byos import photo_for
+
+    shared = tmp_path / "screen.bmp"
+    assignments = tmp_path / "jobs.json"
+    monkeypatch.setenv("LANTERNINA_JOBS_FILE", str(assignments))
+    monkeypatch.setattr("devices.inventory.load_jobs", lambda _: [
+        {"id": "display", "kind": "display", "label": "screen", "jobs": jobs},
+    ])
+    hub = CameraHub({"database": str(tmp_path / "photos.db")}, House(sheets_dir=tmp_path), shared)
+    hub.store.accept(PHOTO, "camera", jpeg(), captured=None, target=None)
+    assert hub.process_one()
+    assert photo_for(shared, "screen").exists() is displayed
+    assert hub.store.get(PHOTO)["jpeg"] == jpeg()
+    assert hub.store.get(PHOTO)["state"] == "done"
+
+
 @pytest.mark.parametrize("header", [{}, {"X-Capture-Age": "-2"}, {"X-Captured-At": "nan"}])
 def test_unknown_or_invalid_capture_time_is_not_current(header: dict[str, str]) -> None:
     assert captured_at(header, 100) is None

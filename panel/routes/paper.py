@@ -192,7 +192,7 @@ async def read_a_page(
 
     from ..paper import read_the_page
 
-    blank = None if pages.photograph else PageImage(
+    blank = None if pages.photograph and not pages.blankBase64 else PageImage(
         png=base64.b64decode(pages.blankBase64), width=pages.width, height=pages.height
     )
     came_back = PageImage(
@@ -210,7 +210,7 @@ async def read_a_page(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_READ, outcome, spent)
-    if blank is not None:
+    if blank is not None and not pages.photograph:
         _place_it(afterwards, request, household_id, blank, came_back, pages.about)
     return came.to_dict()
 

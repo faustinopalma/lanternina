@@ -400,6 +400,22 @@ describe("the rhythm", () => {
 describe("the devices", () => {
   beforeEach(() => window.localStorage.clear());
 
+  it("lists multiple cameras without an unassignable job label", async () => {
+    const original = await fakeApi().devices();
+    const cameras = ["D09DD0", "D09DD1"].map(id => ({
+      ...original.devices[0]!, id, label: `XIAO ${id}`, kind: "camera" as const,
+      name: "", jobs: [], jobChoices: [],
+    }));
+    const user = userEvent.setup();
+    renderPanel(fakeApi({ devices: async () => ({ ...original, devices: cameras }) }));
+    await open(user, "Dispositivi");
+    expect(await screen.findByText("XIAO D09DD0")).toBeVisible();
+    expect(screen.getByText("XIAO D09DD1")).toBeVisible();
+    expect(screen.queryByText("nessun compito", { exact: false })).toBeNull();
+    expect(screen.queryByRole("group", { name: "A cosa serve questo dispositivo" })).toBeNull();
+    expect(screen.getAllByLabelText("Nome di questo dispositivo")).toHaveLength(2);
+  });
+
   it("says the charge in words, never as a percentage", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());

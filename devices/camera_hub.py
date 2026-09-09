@@ -20,7 +20,6 @@ from PIL import Image, ImageOps
 from devices.epaper import _encode
 from devices.house import House, printer_in, replace, scanner_in, screen_in
 from devices.photo_store import MAX_PHOTO_BYTES, PHOTO_ID, PhotoStore
-from devices.pull_picture import picture_target
 from devices.run_experience import camera_target, carry_on
 from devices.trmnl_byos import photo_for
 
@@ -75,9 +74,6 @@ class CameraHub:
                         for device in holders(load_jobs(jobs), "photo")
                         if device.get("label")
                     ]
-                    if not displays:
-                        label, _ = picture_target(self.shared, jobs)
-                        displays = [label] if label else []
                     if displays:
                         label = min(
                             displays,
@@ -92,7 +88,7 @@ class CameraHub:
                         replace(path.with_suffix(".json"), json.dumps({"id": row["id"]}).encode())
                         result = f"photograph displayed on {label}"
                     else:
-                        result = "photograph archived; no picture display assigned"
+                        result = "photograph archived; no photo display assigned"
                 self.store.finish(row["id"], "done", result)
             except Exception as exc:
                 self.store.finish(row["id"], "failed", type(exc).__name__)

@@ -170,6 +170,13 @@ def every_prompt() -> list[Prompt]:
             "go with it, and nothing about the house does",
         ),
         Prompt(
+            "photographed-sheet-reader",
+            "agents/page_reader.py :: _PHOTOGRAPHED_SHEET",
+            page_reader._PHOTOGRAPHED_SHEET
+            + "\nWhat the activity asked for, for context only: Add the cloud names",
+            "an invented paper task; the printed original and a returned photograph go with it",
+        ),
+        Prompt(
             "judge",
             "agents/experience_judge.py :: _INSTRUCTION",
             experience_judge._INSTRUCTION

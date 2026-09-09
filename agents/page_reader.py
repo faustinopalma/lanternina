@@ -55,6 +55,11 @@ _PHOTOGRAPH: Final = beside(__file__).text(
     max_description_chars=MAX_DESCRIPTION_CHARS,
 ).rstrip("\n")
 
+_PHOTOGRAPHED_SHEET: Final = beside(__file__).text(
+    "photographed-sheet", max_descriptions=MAX_DESCRIPTIONS,
+    max_description_chars=MAX_DESCRIPTION_CHARS,
+).rstrip("\n")
+
 # The wrapper plus the room the descriptions are allowed. Generous by half, so a model that
 # pretty-prints its JSON is not cut off in the middle of a sentence and thrown away.
 _MAX_OUTPUT: Final = 300 + MAX_DESCRIPTIONS * (MAX_DESCRIPTION_CHARS + 10) * 2
@@ -80,7 +85,10 @@ class PageReader:
         drawing and a page asking for a list are read differently — and never to tell the
         model what a good answer would be. There is no good answer.
         """
-        prompt = _PHOTOGRAPH if photograph else _INSTRUCTION
+        prompt = (
+            _PHOTOGRAPHED_SHEET if photograph and blank is not None
+            else _PHOTOGRAPH if photograph else _INSTRUCTION
+        )
         if not photograph and blank is None:
             raise ValueError("a scanned page needs its blank")
         if about:
@@ -91,9 +99,11 @@ class PageReader:
                 prompt=prompt,
                 request_id=new_request_id(),
                 # The blank first, in the order the instruction names them.
-                images=(came_back,) if photograph else (blank, came_back),
+                images=(came_back,) if blank is None else (blank, came_back),
                 max_output_chars=_MAX_OUTPUT,
-                purpose="reading an activity photograph" if photograph else
+                purpose="comparing a photographed sheet with its original"
+                if photograph and blank is not None else
+                    "reading an activity photograph" if photograph else
                     "reading a page against its blank",
             )
         )

@@ -310,6 +310,35 @@ def test_a_display_that_loses_the_picture_job_stops_showing_a_picture(
         thread.join()
 
 
+def test_existing_photo_layer_requires_explicit_photo_job(tmp_path):
+    from devices.inventory import save_jobs
+    from devices.trmnl_byos import photo_for
+
+    shared = tmp_path / "screen.bmp"
+    make_screen(shared)
+    registry = tmp_path / "devices.json"
+    display = register_device(registry, MAC)
+    jobs = tmp_path / "jobs.json"
+    photo = photo_for(shared, display.friendly_id)
+    Image.new("1", (800, 480), 1).save(photo, format="BMP")
+    save_jobs(jobs, [{"id": MAC, "label": display.friendly_id, "jobs": ["photo"]}])
+    config = Config("http://127.0.0.1", shared, registry, jobs_file=jobs)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(config))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    url = f"http://127.0.0.1:{server.server_port}/screen/{display.token}.bmp"
+    try:
+        assert get(url)[1] == photo.read_bytes()
+        save_jobs(jobs, [{"id": MAC, "label": display.friendly_id, "jobs": ["picture"]}])
+        assert get(url)[1] == shared.read_bytes()
+        jobs.unlink()
+        assert get(url)[1] != photo.read_bytes()
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join()
+
+
 def test_a_display_with_work_but_nothing_to_show_says_the_name_it_was_given(
     tmp_path: Path,
 ) -> None:

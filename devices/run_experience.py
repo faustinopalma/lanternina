@@ -985,9 +985,16 @@ def carry_on(
         if image is None:
             raise CannotRun("the photograph could not be decoded")
         sheet_id = run.printed[-1] if run.printed else ""
+        waiting_at = run.moments[_index_of(run, run.waiting_at)]
+        blank = None
+        if isinstance(waiting_at, Collect) and waiting_at.source == "scanner":
+            if not sheet_id:
+                return "photograph archived; no original sheet is available for comparison"
+            blank = recall(house.sheets_dir, SheetId(sheet_id))
         reading = read_page(
-            None, image, photograph=True,
-            about=f"{run.experience.title}. Camera return at {run.waiting_at}",
+            blank, image, photograph=True,
+                 about=(f"{run.experience.title}. Camera return at {run.waiting_at}: "
+                     f"{waiting_at.heading}"),
             panel=house.panel, household=house.household, key=house.device_key,
         )
     else:

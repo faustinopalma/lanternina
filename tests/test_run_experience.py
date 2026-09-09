@@ -98,16 +98,21 @@ def test_camera_advances_the_activity_without_touching_the_scanner(
     begin(house, an_experience(), now=0.0, send=False)
     target = run_experience.camera_target(house.sheets_dir, 1.0)
     assert target is not None
+    original = recall(house.sheets_dir, last_sheet(house))
     monkeypatch.setattr(run_experience, "_read", lambda *_: pytest.fail("scanner called"))
     seen = []
     monkeypatch.setattr(
         run_experience, "read_page",
-        lambda blank, image, **kwargs: seen.append((image.shape, kwargs)) or _reading(marks=False),
+        lambda blank, image, **kwargs: seen.append((image.shape, kwargs, blank))
+        or _reading(marks=False),
     )
     result = carry_on(house, now=2.0, send=False, photograph=jpeg(), target=target)
     assert seen[0][0] == (48, 64, 3)
     assert "Camera return" in seen[0][1]["about"]
     assert seen[0][1]["photograph"] is True
+    assert seen[0][2] is not None
+    assert seen[0][2].shape == original.shape
+    assert (seen[0][2] == original).all()
     assert result == "the afternoon is finished"
 
 

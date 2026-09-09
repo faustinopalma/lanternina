@@ -17,6 +17,8 @@ import asyncio
 import json
 from typing import Any
 
+import pytest
+
 from agents.page_reader import PageReader
 from orchestrator.router import StubRouter
 from shared.agents import AgentContext
@@ -187,14 +189,30 @@ def test_photograph_reads_an_object_without_an_invented_blank():
     assert reading.written and not reading.degraded
 
 
-def test_uncertain_photograph_cannot_advance_the_activity():
+def test_photographed_sheet_compares_original_and_photo_in_order():
+    router = StubRouter(replies=[an_answer(
+        uncertain=False, describes=["The added words on the first line read: three clouds."],
+    )])
+    context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
+    reading = asyncio.run(PageReader().read(
+        context, blank=A_PAGE, came_back=WRITTEN_ON, photograph=True,
+    ))
+    request = router.seen[0]
+    assert request.images == (A_PAGE, WRITTEN_ON)
+    assert "perspective" in request.prompt
+    assert "Transcribe legible added words" in request.prompt
+    assert reading.written and not reading.degraded
+
+
+@pytest.mark.parametrize("blank", [None, A_PAGE])
+def test_uncertain_photograph_cannot_advance_the_activity(blank):
     from devices.run_experience import came_back
 
     for reply in (an_answer(uncertain=True), an_answer(), '{"written": "false"}'):
         router = StubRouter(replies=[reply])
         context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
         reading = asyncio.run(PageReader().read(
-            context, blank=None, came_back=WRITTEN_ON, photograph=True,
+            context, blank=blank, came_back=WRITTEN_ON, photograph=True,
         ))
         assert reading.degraded
         assert came_back(reading) is None
