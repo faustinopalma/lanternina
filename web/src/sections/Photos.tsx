@@ -73,19 +73,24 @@ export function Photos() {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<{ text: string; temporary?: boolean } | null>(null);
+  useEffect(() => {
+    if (!message?.temporary) return;
+    const timer = setTimeout(() => setMessage(null), 5000);
+    return () => clearTimeout(timer);
+  }, [message]);
   const [pending, setPending] = useState<{ selection: PhotoSelection; ids: string[] } | null>(null);
   const confirmation = useRef<HTMLDialogElement>(null);
   useEffect(() => { if (pending) confirmation.current?.showModal(); }, [pending]);
   const range = dateSelection(start, end);
   const cancel = () => { if (!busy) { confirmation.current?.close(); setPending(null); } };
   async function preview(selection: PhotoSelection) {
-    setBusy(true); setMessage("");
+    setBusy(true); setMessage(null);
     try {
       const { ids } = await api.previewPhotoDeletion(selection);
       if (ids.length) setPending({ selection, ids });
-      else setMessage(t("photos.noMatch"));
-    } catch { setMessage(t("photos.deleteFailed")); }
+      else setMessage({ text: t("photos.noMatch") });
+    } catch { setMessage({ text: t("photos.deleteFailed") }); }
     finally { setBusy(false); }
   }
   async function erase() {
@@ -93,9 +98,11 @@ export function Photos() {
     setBusy(true);
     try {
       const result = await api.deletePhotos(pending.selection, pending.ids);
-      setMessage(result.failed.length ? t("photos.deleteFailed") : t("photos.deleted", { count: result.deleted.length }));
+      setMessage(result.failed.length
+        ? { text: t("photos.deleteFailed") }
+        : { text: t("photos.deleted", { count: result.deleted.length }), temporary: true });
       confirmation.current?.close(); setPending(null); reload();
-    } catch { setMessage(t("photos.deleteFailed")); }
+    } catch { setMessage({ text: t("photos.deleteFailed") }); }
     finally { setBusy(false); }
   }
   const disabled = busy || pending !== null;
@@ -138,7 +145,7 @@ export function Photos() {
         </details>)}
       </section>)}
     </details> : null}
-    {message ? <p role="status">{message}</p> : null}
+    {message ? <p role="status">{message.text}</p> : null}
     {state.status === "ready" ? <>
       {!state.data.total ? <Quiet>{t("photos.empty")}</Quiet> : null}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">

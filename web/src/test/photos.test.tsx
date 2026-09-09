@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -58,6 +58,26 @@ describe("family photographs", () => {
     expect(button).toBeEnabled();
     fireEvent.click(button);
     await waitFor(() => expect(preview).toHaveBeenCalledWith(dateSelection("2026-09-09", "2026-09-09")));
+  });
+
+  it.each([false, true])("expires only successful deletion messages (failed=%s)", async failed => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi({ photos: async () => data,
+      previewPhotoDeletion: async () => ({ ids: [photoId] }),
+      deletePhotos: async () => ({ deleted: failed ? [] : [photoId], failed: failed ? [photoId] : [] }),
+    }), <Photos />);
+    await user.click(await screen.findByRole("button", { name: "Elimina tutte" }));
+    await screen.findByRole("dialog");
+    vi.useFakeTimers();
+    try {
+      await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Conferma eliminazione" })); });
+      expect(screen.getByRole("status")).toBeVisible();
+      await act(async () => { vi.advanceTimersByTime(4999); });
+      expect(screen.getByRole("status")).toBeVisible();
+      await act(async () => { vi.advanceTimersByTime(1); });
+      if (failed) expect(screen.getByRole("status")).toBeVisible();
+      else expect(screen.queryByRole("status")).toBeNull();
+    } finally { vi.useRealTimers(); }
   });
 
   it("includes the entire final local day", () => {
