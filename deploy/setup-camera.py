@@ -15,13 +15,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mac", required=True)
     parser.add_argument("--hub-address", required=True)
+    parser.add_argument("--renew-certificate", action="store_true")
     args = parser.parse_args()
     root = Path("/etc/lanternina")
     certificate = root / "camera-cert.pem"
     private_key = root / "camera-key.pem"
     config_path = root / "camera.json"
     os.umask(0o077)
-    if not certificate.exists():
+    if not certificate.exists() or args.renew_certificate:
         subprocess.run(
             [
                 "openssl",
@@ -39,7 +40,10 @@ def main() -> None:
                 "-subj",
                 "/CN=lanternina.local",
                 "-addext",
-                f"subjectAltName=DNS:lanternina.local,IP:{args.hub_address}",
+                (
+                    f"subjectAltName=DNS:lanternina.local,DNS:{args.hub_address},"
+                    f"IP:{args.hub_address}"
+                ),
                 "-addext",
                 "basicConstraints=critical,CA:TRUE",
             ],
