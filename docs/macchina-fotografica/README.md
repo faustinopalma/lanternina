@@ -2,13 +2,13 @@
 
 Lanternina's camera uses a Seeed Studio XIAO ESP32S3 and Sense expansion board. The person holding it frames an object and presses a button. The device takes a photograph and signals the outcome with an LED. The design calls for delivery to lanternina hub over the home Wi-Fi network.
 
-On 9 September 2026 the board was identified over USB, backed up, compiled and flashed. Fausto confirmed the assembled D2 LED and D3 shutter wiring. The [firmware operations guide](../../firmware/camera/README.md) describes the implementation, parent archive and verification limits. The earlier assembly proposal below preserves design details; the operations guide is current where implementation differs, including the internal LittleFS queue instead of microSD. Capture, LED interpretation and battery wake still require physical tests.
+The current firmware assigns the shutter to D1/GPIO2 and the external LED to D2/GPIO3. On 9 September 2026 the owner measured 3.2 V on D1 with its internal pull-up enabled, after D3 remained near 0.23 V with the shutter wire cut. The D1 firmware has compiled; installation and soldering are pending. D3 is retired, with both internal pulls disabled. The [firmware operations guide](../../firmware/camera/README.md) describes installation, the LittleFS queue, parent archive and physical acceptance checks.
 
 ## The device
 
 ![XIAO ESP32S3 board, Sense expansion with OV3660 camera, antenna and unsoldered headers](images/kit-ov3660.jpg)
 
-The photograph shows the base board marked `XIAO-ESP32-S3`, the Sense expansion, the 2.4 GHz antenna and two separate pin headers. The `OV3660` marking on the ribbon cable identifies the camera module. Seeed specifies a maximum resolution of 2048 x 1536 pixels for this sensor; the firmware must confirm the model and resolution actually used. This is not the OV2640 sensor used in the source tutorial.
+The photograph shows the base board marked `XIAO-ESP32-S3`, the Sense expansion, the 2.4 GHz antenna and two separate pin headers. The `OV3660` marking on the ribbon cable identifies the camera module. Seeed specifies a maximum resolution of 2048 x 1536 pixels for this sensor; the installed capture tests identified OV3660 and produced 1600 x 1200 JPEGs.
 
 The expansion also includes a microSD slot and a microphone. The design uses the camera and proposes microSD storage for photographs awaiting delivery. The camera firmware will not initialise the microphone. A microSD card, button, LED and battery are not shown in the photographs.
 
@@ -27,7 +27,7 @@ The button must close a contact when pressed and open it again when released. Il
 
 ## Wiring diagram
 
-Fausto confirmed on 9 September 2026 that the assembled camera follows the source schematic: the button connects `D3/GPIO4` to ground and the LED uses `D2/GPIO3` through a series resistor, shown as approximately 220 ohms in that schematic. The firmware uses these connections. The earlier [D0 proposal](images/button-led-wiring.svg) is retained as a historical drawing and does not describe the assembled unit.
+The shutter connects D1/GPIO2 to ground. The LED connects D2/GPIO3 through its series resistor, approximately 220 ohms in the reported assembly. Keep the cut board-side D3 wire insulated and separate from the new D1 connection. The owner will solder the button to D1 after firmware installation. The pin map below describes the current target.
 
 The button and LED share only ground. The LED anode connects to `D2/GPIO3` through its resistor; the cathode returns to ground. There is no wire between the button signal and the LED. The firmware reads one GPIO and controls the other, so it can flash the LED after the button has been released.
 
@@ -41,9 +41,9 @@ The view below matches the second photograph. We are looking at the rear, with t
                    USB-C
              +---------------+
      VUSB   o               o   D0  GPIO1
-      GND    o               o   D1  GPIO2
+     GND    o               o   D1  GPIO2  --> button
      3V3    o               o   D2  GPIO3  --> resistor and LED
-      D10    o               o   D3  GPIO4  --> button
+     D10    o               o   D3  GPIO4  --> unused; old wire insulated
       D9     o               o   D4  GPIO5
       D8     o               o   D5  GPIO6
       D7     o               o   D6  GPIO43
@@ -51,28 +51,29 @@ The view below matches the second photograph. We are looking at the rear, with t
                   REAR VIEW
 ```
 
-We use three edge pads on the base board: `D2`, `D3` and `GND`. In the photograph, `D2` is the third pad from the top on the right, `D3` is the fourth on the right and `GND` is the second on the left. The printed labels are the primary reference: check them before soldering. The central `BAT`, `D+`, `D-`, `EN` and JTAG pads are not needed for these connections.
+We use three edge pads on the base board: `D1`, `D2` and `GND`. In the photograph, `D1` is the second pad from the top on the right, `D2` is the third on the right and `GND` is the second on the left. Check the printed labels before soldering. The central `BAT`, `D+`, `D-`, `EN` and JTAG pads are not needed for these connections.
 
 | Function | Board label | Chip GPIO | Firmware configuration |
 | --- | --- | --- | --- |
-| Button input | D3 | GPIO4 | `INPUT_PULLUP`; pressed = `LOW` |
+| Button input and sleep wakeup | D1 | GPIO2 | `INPUT_PULLUP`; pressed = `LOW` |
+| Retired button input | D3 | GPIO4 | Input without pull-up or pull-down; leave disconnected |
 | External LED output | D2 | GPIO3 | `OUTPUT`; lit = `HIGH` |
 | Common return | GND | Ground | Connected to both the button and the LED cathode |
 
-`D3` does not mean `GPIO3`: the button uses GPIO4 and the LED uses GPIO3. PlatformIO uses the `seeed_xiao_esp32s3` board target.
+The board labels differ from GPIO numbers: D1 is GPIO2 and D2 is GPIO3. PlatformIO uses the `seeed_xiao_esp32s3` board target.
 
-Seeed assigns GPIO10-18, GPIO38-40, GPIO47 and GPIO48 to the camera. The microSD uses GPIO7, GPIO8, GPIO9 and GPIO21; the microphone uses GPIO41 and GPIO42. GPIO1 and GPIO4 remain available for these two connections. The built-in user LED is on GPIO21, shared with the microSD chip select: we do not use it to confirm a photograph. The charging LED indicates the state of the power circuit, not a capture.
+Seeed assigns GPIO10-18, GPIO38-40, GPIO47 and GPIO48 to the camera. The microSD uses GPIO7, GPIO8, GPIO9 and GPIO21; the microphone uses GPIO41 and GPIO42. GPIO2 and GPIO3 are outside these assignments. The built-in user LED is on GPIO21, shared with the microSD chip select: we do not use it to confirm a photograph. The charging LED indicates the state of the power circuit, not a capture.
 
 ## Wiring the button
 
-Solder with USB and battery disconnected. Connect one button terminal to `D3` and the other to `GND`. The button has no polarity. If it has three labelled terminals, use `COM` and `NO`, leaving `NC` unconnected.
+Solder with USB and battery disconnected. Connect one button terminal to `D1` and the other to `GND`. Connect the cut wire leading to the button to D1; leave the wire attached to D3 insulated. The button has no polarity. If it has three labelled terminals, use `COM` and `NO`, leaving `NC` unconnected.
 
 ```text
   Internal 3V3
        |
   Internal chip pull-up, enabled by firmware
        |
-  D3 / GPIO4 -------- normally open button -------- GND
+     D1 / GPIO2 -------- normally open button -------- GND
 ```
 
 The internal resistor holds the input high while the button is released. Pressing the button connects the input to ground. The USB-powered prototype needs no external resistor on the button. Do not connect the button to `VUSB`, 5 V or battery positive: the GPIOs operate at 3.3 V and are not 5 V tolerant.
@@ -81,7 +82,7 @@ A four-leg tactile button contains two internally connected pairs. With the boar
 
 ## Wiring the LED
 
-Connect `D2` to one end of the series resistor. The source schematic uses approximately 220 ohms; the earlier proposal used 470 ohms, which gives less LED current. Connect the other end to the LED anode. Connect the cathode to `GND`, the same return used by the button.
+Connect `D2` to one end of the series resistor. The reported assembly uses approximately 220 ohms; the earlier proposal used 470 ohms, which gives less LED current. Connect the other end to the LED anode. Connect the cathode to `GND`, the same return used by the button.
 
 ```text
      D2 / GPIO3 ---- [ 220 ohm ] ---- anode LED cathode ---- GND
@@ -95,12 +96,12 @@ The firmware controls the LED, rather than the button contact. Wiring it directl
 
 ## Assembly order
 
-1. Disconnect all power sources. Identify `D2`, `D3` and `GND` from the rear silkscreen labels.
+1. Disconnect all power sources. Identify `D1`, `D2` and `GND` from the rear silkscreen labels.
 2. Test the button with the multimeter and identify the LED anode and cathode.
 3. Solder the connections to the edge pads, or solder the kit's headers and test on a breadboard. Avoid solder bridges to neighbouring pads or the metal shield.
 4. Join the two ground returns at a small insulated junction and run a single wire to `GND`. This avoids crowding two wires onto the small pad.
 5. Insulate the resistor and joints with tubing. Secure the wires to the support, leaving a little slack near the board.
-6. Check continuity between `D3` and `GND`: they should connect only when pressed. Check for metallic bridges between adjacent pads. Measurements through the board's semiconductors are not equivalent to a metallic short circuit.
+6. Check continuity between `D1` and `GND`: they should connect when pressed. Check for metallic bridges between adjacent pads. Measurements through the board's semiconductors are not equivalent to a metallic short circuit.
 7. Fit the camera module and antenna following Seeed's instructions, an operation already familiar to the builder. Remove the lens protection film visible in the first photograph before testing image capture.
 8. Start with USB-C power only. Stop the test if there is an unusual smell, abnormal heating or repeated resets.
 
@@ -156,7 +157,7 @@ The first prototype uses USB-C to separate capture tests from power-supply probl
 
 Seeed reports approximately 3 mA in deep sleep for the Sense with expansion, compared with 14 microamps for the base board: these are manufacturer figures, not measurements of this unit. We cannot infer battery life from the ESP32-S3 alone. Measurements must include the actual camera, microSD, LED and power regulation, including capture and Wi-Fi current peaks.
 
-GPIO4 may be used for wake-up in a later stage. First we must verify a pull-up retained during sleep or an external resistor to 3V3, the wake cause, button release and prevention of repeated wakes. The prototype's ordinary `INPUT_PULLUP` setting does not by itself configure deep sleep.
+The D1 firmware uses GPIO2 for EXT0 wakeup and enables its RTC pull-up before sleep. Its wake cause, button release and one-capture-per-press behavior require verification after soldering the new connection.
 
 ## Testing
 
@@ -165,7 +166,7 @@ GPIO4 may be used for wake-up in a later stage. First we must verify a pull-up r
 | Identification from photographs | XIAO ESP32S3, Sense expansion, OV3660 marking | Verified in both photographs |
 | Pin assignments | GPIO1 and GPIO4 available; rear map agrees with Seeed | Verified against photographs and documentation |
 | Kit photograph conversion | Two readable JPEGs, 3024 x 4032 pixels, without EXIF | Verified with Pillow |
-| Button released and pressed | GPIO4 high and low respectively | To measure |
+| Button released and pressed | GPIO2 high and low respectively | 3.2 V measured unloaded; button wiring pending |
 | Ten separate presses while ready | Ten events, each with one acceptance flash | To test |
 | Button held for 5 s | One event and one initial flash only; LED does not follow the held contact | To test |
 | Valid hub receipt after button release | Two flashes only after acknowledgement of durable storage for that capture | To test |
@@ -179,7 +180,7 @@ GPIO4 may be used for wake-up in a later stage. First we must verify a pull-up r
 | Power interrupted during writing | Incomplete file recognised; earlier photographs remain usable | To test |
 | Enclosure closed | Comfortable button, visible LED, correctly oriented and readable image | To test |
 
-The alternating-subject test checks the stale-frame problem described in the tutorial. Discarding one frame may help in a particular configuration, but does not establish freshness for every buffer count or capture mode. The required result is a photograph of the subject present at the new capture.
+The alternating-subject test checks image freshness. Discarding one frame may help in a particular configuration, but does not establish freshness for every buffer count or capture mode. The required result is a photograph of the subject present at the new capture.
 
 ## Photographs and sources
 
@@ -190,6 +191,5 @@ Sources consulted on 7 September 2026:
 - [Seeed, XIAO ESP32-S3 Series](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/): models, pin assignments, strapping, power and stated specifications.
 - [Seeed, Pin Multiplexing](https://wiki.seeedstudio.com/xiao_esp32s3_pin_multiplexing/): GPIOs used by the camera, microphone and microSD.
 - [Espressif, CameraWebServer pin assignments](https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h): cross-check of the `CAMERA_MODEL_XIAO_ESP32S3` map.
-- [Prilchen, ESP32-S3 camera](https://prilchen.de/diy-fotoapparat-mit-esp32-s3-das-die-bilder-direkt-in-dein-google-drive-schickt/): starting point for the device with a button and LED, and report of the previous-frame problem. Its text, images, code and enclosure design are not reproduced here.
 
 The reasoning behind these choices is in [ideas/macchina-fotografica-xiao.md](../../ideas/macchina-fotografica-xiao.md). Our reading of the sources is recorded in [docs/EVIDENCE.md](../EVIDENCE.md#camera-hardware-references-7-september-2026).

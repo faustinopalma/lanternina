@@ -1,0 +1,15 @@
+# Camera pin comparison, 9 September 2026
+
+## Current decision
+
+The owner measured 3.2 V on D1/GPIO2 with the diagnostic pull-up enabled and requested permanent migration of the shutter to that pin. The current source uses GPIO2 for awake capture and EXT0 wakeup, retires GPIO4 with both pulls off, and removes PIN_TEST mode. It compiled successfully in 10.48 seconds on the isolated hub toolchain. Installation remains pending because the camera was absent from USB at the check. The owner will solder the shutter to D1 later and verify released/pressed voltage, capture and sleep wakeup. No further fault isolation of D3 is requested. The paragraphs below record the earlier temporary test, not the current source behavior.
+
+The owner measured 3.3 V on the supply and initially 2.5 to 2.7 V on D3/GPIO4 with the shutter released. Later both the oscilloscope and multimeter showed approximately 0.23 V. Removing the oscilloscope probe did not change that value. The owner cut the shutter signal wire midway, leaving the board-side wire and solder joint attached, and reported the same low voltage. These observations do not distinguish a board-side leakage path from pin configuration or damage.
+
+The owner requested a clean alternate input and explicitly asked to disable the original pull-up. Seeed's pin map identifies D1 as GPIO2; this pin is unused by the current camera firmware. The diagnostic PIN_TEST_ON command configures D3/GPIO4 as INPUT without either pull and D1/GPIO2 as INPUT_PULLUP. It inhibits capture and sleep and pauses periodic USB network work while active. It does not drive either pin as an output or reassign the shutter. The command is accepted only while USB is active and the worker and feedback are idle.
+
+The firmware compiled and was flashed on camera 94:A9:90:D0:9D:D0 through the existing identity-bound procedure, without uploadfs. USB identity, mounted filesystem and fresh authenticated status passed. After activation the serial register report showed GPIO2 raw=1, pullup=1, pulldown=0, input_enabled=1, output_enabled=0. GPIO4 showed raw=0, pullup=0, pulldown=0, input_enabled=1, output_enabled=0, IO_MUX 0x1a00. This is digital/register evidence, not a voltage measurement of D1.
+
+The test remains active when USB is removed if battery power is uninterrupted. Reset or complete power loss clears it and restores ordinary firmware behavior, including the original D3 pull-up. PIN_TEST_OFF also restores ordinary behavior. Keep the cut ends separated and insulated. The next physical check is D1-to-GND voltage at the bench, with the shutter still disconnected. Expect near the measured 3.3 V supply; the owner must report the actual value before any rewiring decision. Do not infer that D3 is repaired or that D1 is suitable for sleep wakeup from this awake-input test. This temporary awake mode consumes battery and should end after the measurement.
+
+The unrelated unfinished scan-archive changes in the worktree have not been deployed as part of this probe.

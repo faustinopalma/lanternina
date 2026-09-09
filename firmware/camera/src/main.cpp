@@ -16,7 +16,8 @@
 #include <errno.h>
 #include "camera_secrets.h"
 
-static constexpr gpio_num_t BUTTON = GPIO_NUM_4;
+static constexpr gpio_num_t BUTTON = GPIO_NUM_2;
+static constexpr gpio_num_t RETIRED_BUTTON = GPIO_NUM_4;
 static constexpr int LED = 3;
 static constexpr uint32_t NETWORK_MS = 20000;
 static constexpr size_t MAX_JPEG = 750000;
@@ -256,7 +257,7 @@ static void reportStatus(const char *phase) {
             status["voltage"] = millivolts * 2.0f / 16000.0f;
 #endif
             status["rssi"] = WiFi.RSSI();
-            status["firmware"] = "camera-2026-09-09-photo";
+            status["firmware"] = "camera-2026-09-09-d1";
             status["captureResult"] = captureResult;
             status["queued"] = storageReady ? queued() : -1;
             JsonObject diagnostics = status.createNestedObject("diagnostics");
@@ -423,6 +424,10 @@ static void startWork(bool takePhoto, bool sleepOnly = false) {
 }
 
 void setup() {
+    rtc_gpio_pullup_dis(RETIRED_BUTTON);
+    rtc_gpio_pulldown_dis(RETIRED_BUTTON);
+    rtc_gpio_deinit(RETIRED_BUTTON);
+    pinMode(RETIRED_BUTTON, INPUT);
     rtc_gpio_deinit(BUTTON);
     pinMode(BUTTON, INPUT_PULLUP);
     pinMode(LED, OUTPUT);
@@ -530,16 +535,21 @@ void loop() {
                     startWork(true);
                 }
             } else if (strcmp(command, "STATUS") == 0) {
-                uint32_t buttonMux = REG_READ(IO_MUX_GPIO4_REG);
-                Serial.printf("button_gpio=4 raw=%d pullup=%d pulldown=%d input_enabled=%d output_enabled=%d mux=0x%lx\n",
-                              digitalRead(BUTTON), (buttonMux & FUN_PU) != 0,
+                uint32_t retiredMux = REG_READ(IO_MUX_GPIO4_REG);
+                Serial.printf("retired_gpio=4 pullup=%d pulldown=%d input_enabled=%d output_enabled=%d\n",
+                              (retiredMux & FUN_PU) != 0, (retiredMux & FUN_PD) != 0,
+                              (retiredMux & FUN_IE) != 0,
+                              (REG_READ(GPIO_ENABLE_REG) & (1UL << RETIRED_BUTTON)) != 0);
+                uint32_t buttonMux = REG_READ(IO_MUX_GPIO2_REG);
+                Serial.printf("button_gpio=%d raw=%d pullup=%d pulldown=%d input_enabled=%d output_enabled=%d mux=0x%lx\n",
+                              (int)BUTTON, digitalRead(BUTTON), (buttonMux & FUN_PU) != 0,
                               (buttonMux & FUN_PD) != 0, (buttonMux & FUN_IE) != 0,
                               (REG_READ(GPIO_ENABLE_REG) & (1UL << BUTTON)) != 0,
                               (unsigned long)buttonMux);
-                Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s identity=%s\n",
+                Serial.printf("status usb=%d busy=%d psram=%u filesystem=%d queued=%d last_capture=%s identity=%s button_gpio=%d usb_test=%d\n",
                               usb, busy, ESP.getPsramSize(), storageReady,
                               (!busy && storageReady) ? queued() : -1, captureResult,
-                              WiFi.macAddress().c_str());
+                              WiFi.macAddress().c_str(), (int)BUTTON, usbTestMode);
             } else if (strcmp(command, "STORAGE") == 0 && usb && !busy && storageReady) {
                 probeStorage();
             } else Serial.println("command=UNKNOWN_OR_NO_USB");
