@@ -11,7 +11,7 @@ import { REPO } from "../../i18n/ui";
   title="The home system"
   description="Lanternina runs parent-approved activities on paper and e-paper. A handheld camera returns completed sheets. Language, vision and image inference runs in Microsoft Foundry."
 >
-  <p class="lede">A mini-PC on the home network coordinates the displays, printer and scanner. It manages the clock and requests pages, readings and continuations from the cloud service.</p>
+  <p class="lede">The hub is the device that coordinates Lanternina's activities in the home. It connects the displays, printer and scanner to the cloud service, manages timing and requests pages, readings and continuations.</p>
 
   <p>The hub can sit near the router. The displays communicate with it over Wi-Fi; the printer and scanner are also reached over the network.</p>
 
@@ -34,12 +34,10 @@ import { REPO } from "../../i18n/ui";
       <b>The API checks and stores the activity.</b> An unreadable answer can receive a format repair. Structural complaints can trigger a separate repair. Remaining complaints stop the request; Content Safety screens accepted text. The parent can approve or refuse the offered activity.
     </li>
     <li>
-      <b>The mini-PC collects the activity.</b> It polls the device API on its own schedule. The API
-      returns the waiting activity in that HTTPS response, and the mini-PC stores it locally before
-      preparing the first page.
+      <b>The hub collects the activity.</b> It polls the device API on its own schedule. The API returns the waiting activity in that HTTPS response, and the hub stores it locally before preparing the first page.
     </li>
     <li>
-      <b>The mini-PC requests a page from the container and prints it.</b> The image model receives the page contract, not the whole script. The container returns the drawing; the hub sends it to the printer over IPP.
+      <b>The hub requests a page from the container and prints it.</b> The image model receives the page contract, not the whole script. The container returns the drawing; the hub sends it to the printer over IPP.
     </li>
     <li>
       <b>The camera or scanner returns the completed page.</b> A vision model receives the photograph or scan and the original page image. It compares them and returns a reading of the marks that were added.

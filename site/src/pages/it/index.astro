@@ -11,7 +11,7 @@ import { REPO } from "../../i18n/ui";
   title="Il sistema domestico"
   description="Lanternina esegue attività approvate dal genitore su carta e display e-paper. Una fotocamera portatile restituisce i fogli completati. Le inferenze girano in Microsoft Foundry."
 >
-  <p class="lede">Un mini-PC sulla rete di casa coordina schermi, stampante e scanner. Gestisce l'orologio e chiede al servizio cloud pagine, letture e continuazioni.</p>
+  <p class="lede">L'hub è il dispositivo che coordina le attività di Lanternina in casa. Collega schermi, stampante e scanner al servizio cloud, gestisce i tempi e richiede pagine, letture e continuazioni.</p>
 
   <p>L'hub può stare vicino al router. Gli schermi comunicano con lui via Wi-Fi; anche stampante e scanner si raggiungono attraverso la rete.</p>
 
@@ -34,12 +34,10 @@ import { REPO } from "../../i18n/ui";
       <b>L'API verifica e conserva l'attività.</b> Una risposta illeggibile può avere una riparazione del formato. I controlli strutturali possono richiedere una riparazione separata. Contestazioni residue fermano la richiesta; Content Safety esamina il testo accettato. Il genitore può approvare o rifiutare l'attività offerta.
     </li>
     <li>
-      <b>Il mini-PC ritira l'attività.</b> Interroga la device API secondo il proprio programma. L'API
-      restituisce l'attività in attesa nella risposta HTTPS e il mini-PC la conserva localmente
-      prima di preparare la prima pagina.
+      <b>L'hub ritira l'attività.</b> Interroga la device API secondo il proprio programma. L'API restituisce l'attività in attesa nella risposta HTTPS e l'hub la conserva localmente prima di preparare la prima pagina.
     </li>
     <li>
-      <b>Il mini-PC chiede la pagina al container e la stampa.</b> Il modello di immagini riceve il contratto della pagina, non il copione intero. Il container restituisce il foglio disegnato; l'hub lo manda alla stampante tramite IPP.
+      <b>L'hub chiede la pagina al container e la stampa.</b> Il modello di immagini riceve il contratto della pagina, non il copione intero. Il container restituisce il foglio disegnato; l'hub lo manda alla stampante tramite IPP.
     </li>
     <li>
       <b>La fotocamera o lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la fotografia o la scansione e l'immagine originale della pagina. Le confronta e restituisce una lettura dei segni aggiunti.
