@@ -32,17 +32,22 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>Each display has its own connection interval in Devices. It receives changes at its next connection; low-battery protection can extend the interval.</li>
     <li>The handheld camera saves photographs before starting Wi-Fi. Authenticated originals can be viewed, downloaded and deleted by the family. Offline delivery was tested on the installed camera; retries preserve the capture identifier.</li>
-    <li>Activities can request photographs of objects and constructions. The photo reader describes visible material; uncertain or late photographs do not advance the activity. The scanner remains available for paper.</li>
+    <li>The camera returns a photograph of the completed sheet. The reader compares it with the original printed page; uncertain or late returns do not advance the activity. The scanner remains available.</li>
   </ul>
 
   <h2>Checks</h2>
   <p>The parent approves the initial activity. Generated activities and continuations pass format and safety checks; continuations do not require a second approval. Reading pages requires cloud connectivity. Retained data and deletion options are described under <a href="/en/#memory">memory</a>.</p>
 
+  <h2 id="camera-checks">Camera checks</h2>
+  <p>On 9 September 2026, the owner used the shutter and observed light feedback while taking battery-powered photographs. Three inspected cycles reported a confirmed preceding deep sleep, HTTP 201, matching capture and upload identifiers and an empty queue. Their preceding sleeps lasted 118, 135 and 74 seconds, measured by the device RTC at one-second resolution. These records establish those cycles, not battery life.</p>
+  <p>A receiver-offline USB test kept the photograph locally and delivered the same identifier after the receiver restarted. On 10 September, a USB capture with automatic exposure, gain and white balance produced a JPEG at 1600 × 1200 pixels. The selected frame was ready in 831 ms; acquisition and verified storage took 2,307 ms. Delivery returned HTTP 201 and emptied the queue. These timings exclude boot and physical button handling, and one scene does not establish performance across lighting conditions.</p>
+  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Firmware, test conditions and diagnostic fields.</a></p>
+
   <h2>Open implementation gaps</h2>
 
   <ul>
     <li>
-      <b>Camera acceptance.</b> USB capture, storage, authenticated delivery and offline retry have been tested. The activity path has automated tests. The shutter has an intermittent electrical fault; physical activity trials, LED feedback, varied lighting and power-interruption tests remain open. A first JPEG was ready in 543 ms in USB tests; this excludes boot and physical button handling.
+      <b>Camera trials.</b> The sheet-return path has automated tests. A complete activity with photographed handwriting, varied lighting, power-interruption tests and battery-life measurements remain open. The battery cycles above concern the 9 September assembly; subsequent firmware and wiring revisions need their own physical acceptance.
     </li>
     <li>
       <b>The button panel.</b> The current hardware has one button per display. It closes the paper

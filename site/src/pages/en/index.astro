@@ -8,14 +8,10 @@ import { REPO } from "../../i18n/ui";
   lang="en"
   page="overview"
   eyebrow="A home system, built for a hackathon"
-  title="An activity on paper, invented for one person"
-  description="Lanternina invents an activity for an adolescent, has a parent approve it, and runs it on paper and e-paper. Language, vision and image inference runs in Microsoft Foundry."
+  title="The home system"
+  description="Lanternina runs parent-approved activities on paper and e-paper. A handheld camera returns completed sheets. Language, vision and image inference runs in Microsoft Foundry."
 >
-  <p class="lede">
-    Lanternina invents an activity for an adolescent, has a parent approve it, and then runs it in
-    a real room — on paper, on e-paper displays, and on physical buttons. It reads what comes back
-    in handwriting, decides what happens next from that, and stops at an hour the parent set.
-  </p>
+  <p class="lede">Lanternina invents an activity for an adolescent, has a parent approve it, and then runs it in a real room, using paper, e-paper displays and physical buttons. It reads completed sheets returned through the camera or scanner, uses the additions to continue, and stops at an hour the parent set.</p>
 
   <p>
     The mini-PC acts as a hub on the home network and can sit out of sight near the router. Displays are separate objects placed around the rooms: they communicate with the hub over Wi-Fi, without cables connecting them to the mini-PC. The printer and scanner are also reached over the network. The hub manages the clock and requests pages, readings and continuations from the cloud service.
@@ -60,8 +56,7 @@ import { REPO } from "../../i18n/ui";
       <b>The mini-PC requests a page from the container and prints it.</b> The image model receives the page contract, not the whole script. The container returns the drawing; the hub sends it to the printer over IPP.
     </li>
     <li>
-      <b>The scanner returns the completed page.</b> A vision model receives the scan and the
-      original image. It compares them and returns a reading of the marks that were added.
+      <b>The camera or scanner returns the completed page.</b> A vision model receives the photograph or scan and the original page image. It compares them and returns a reading of the marks that were added.
     </li>
     <li>
       <b>The reading selects the next moment.</b> The execution service follows the corresponding
@@ -69,6 +64,24 @@ import { REPO } from "../../i18n/ui";
       hour set by the parent, it enters the planned route from the current moment to the ending.
     </li>
   </ol>
+
+  <h2 id="camera">Returning the sheet with the camera</h2>
+  <p>The adolescent photographs the completed sheet to return it to the activity. The camera uses a XIAO ESP32S3 Sense in a 3D-printed enclosure, with a shutter button, a feedback light and a battery. The prototype produces JPEGs at 1600 × 1200 pixels.</p>
+
+  <figure>
+    <a href="/images/camera-prototype-2.webp"><img src="/images/camera-prototype-2.webp" width="1600" height="1200" loading="lazy" alt="The assembled white camera, with its lens on the front and a green shutter button and yellow feedback light on top." /></a>
+    <figcaption>The assembled prototype, photographed with an iPhone on 9 September 2026.</figcaption>
+  </figure>
+
+  <p>A press starts acquisition. The light stays on until the selected frame is ready; saving and delivery continue after it goes out. The firmware writes the JPEG to local flash and reads it back before starting Wi-Fi. It sends the image to the home hub over authenticated HTTPS. Two flashes confirm a matching receipt after the hub has stored it. A failed delivery keeps the photograph and its identifier for a later attempt.</p>
+  <p>The reader receives the photograph and the exact original page kept for printing. It compares them despite changes in perspective and lighting, transcribes legible additions and reports uncertainty. An uncertain reading or an ambiguous association with an activity leaves the activity waiting. The scanner remains available for the same return. The family can view, download and delete the photographs in the parent's panel.</p>
+
+  <figure class="narrow">
+    <a href="/images/camera-prototype-1.webp"><img src="/images/camera-prototype-1.webp" width="1200" height="1600" loading="lazy" alt="The open camera enclosure showing the controller board, antenna, wiring, shutter and battery beside it." /></a>
+    <figcaption>The enclosure during assembly on 9 September 2026. This iPhone photograph documents that assembly; it is not a wiring diagram.</figcaption>
+  </figure>
+
+  <p>Battery-powered shutter, light feedback, sleep/wake cycles and delivery were exercised on 9 September. USB tests also verified that a photograph survives an unavailable receiver and is delivered with the same identifier when it returns. <a href="/en/status/#camera-checks">The implementation page records the measured results and remaining trials.</a></p>
 
   <h2>The parent's panel</h2>
 

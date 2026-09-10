@@ -19,10 +19,10 @@ const site = Astro.site!.origin;
     <title>Lanternina</title>
     <meta name="description" content={UI.tagline.en} />
 
-    <link rel="canonical" href={`${site}/en/`} />
-    <link rel="alternate" hreflang="en" href={`${site}/en/`} />
-    <link rel="alternate" hreflang="it" href={`${site}/it/`} />
-    <link rel="alternate" hreflang="x-default" href={`${site}/en/`} />
+    <link rel="canonical" href={`${site}/en/mission/`} />
+    <link rel="alternate" hreflang="en" href={`${site}/en/mission/`} />
+    <link rel="alternate" hreflang="it" href={`${site}/it/mission/`} />
+    <link rel="alternate" hreflang="x-default" href={`${site}/en/mission/`} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/notfound.css" />
 
@@ -34,8 +34,8 @@ const site = Astro.site!.origin;
       <span class="mark-tile"><Mark size={34} /></span>
       <p class="name">Lanternina</p>
       <p class="tag">{UI.tagline.en}</p>
-      <a href="/en/" hreflang="en" lang="en">{LANG_NAME.en}</a>
-      <a href="/it/" hreflang="it" lang="it">{LANG_NAME.it}</a>
+      <a href="/en/mission/" hreflang="en" lang="en">{LANG_NAME.en}</a>
+      <a href="/it/mission/" hreflang="it" lang="it">{LANG_NAME.it}</a>
     </div>
   </body>
 </html>

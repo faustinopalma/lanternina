@@ -32,17 +32,22 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>Ogni schermo ha il proprio intervallo di collegamento in Dispositivi. Riceve le modifiche al collegamento successivo; la protezione della batteria può allungare l'intervallo.</li>
     <li>La fotocamera salva le fotografie prima di avviare il Wi-Fi. La famiglia può vedere, scaricare e cancellare gli originali autenticandosi. L'invio dopo un'interruzione del ricevitore è stato provato sulla camera installata; i tentativi conservano l'identificatore dello scatto.</li>
-    <li>Le attività possono chiedere fotografie di oggetti e costruzioni. Il lettore descrive il materiale visibile; le foto incerte o tardive non fanno avanzare l'attività. Lo scanner resta disponibile per la carta.</li>
+    <li>La fotocamera restituisce una fotografia del foglio completato. Il lettore la confronta con la pagina originale stampata; le restituzioni incerte o tardive non fanno avanzare l'attività. Lo scanner resta disponibile.</li>
   </ul>
 
   <h2>I controlli</h2>
   <p>Il genitore approva l'attività iniziale. Le attività generate e i seguiti passano dai controlli di formato e sicurezza; i seguiti non richiedono una seconda approvazione. La lettura dei fogli richiede il cloud. I dati conservati e le possibilità di cancellazione sono descritti nella <a href="/it/#la-memoria">sezione sulla memoria</a>.</p>
 
+  <h2 id="camera-checks">Le verifiche della fotocamera</h2>
+  <p>Il 9 settembre 2026 il proprietario ha usato il pulsante e osservato la segnalazione luminosa durante scatti a batteria. Tre cicli esaminati riportavano un precedente riposo profondo confermato, HTTP 201, identificatori di scatto e invio corrispondenti e coda vuota. I riposi precedenti erano durati 118, 135 e 74 secondi, misurati dall'orologio RTC del dispositivo con risoluzione di un secondo. Questi dati dimostrano quei cicli, non l'autonomia della batteria.</p>
+  <p>Una prova USB con il ricevitore fermo ha conservato la fotografia localmente e consegnato lo stesso identificatore dopo il riavvio del ricevitore. Il 10 settembre uno scatto USB con esposizione, guadagno e bilanciamento del bianco automatici ha prodotto un JPEG da 1600 × 1200 pixel. Il fotogramma scelto era pronto in 831 ms; acquisizione e salvataggio verificato hanno richiesto 2.307 ms. L'invio ha restituito HTTP 201 e svuotato la coda. I tempi escludono avvio e gestione del pulsante fisico; una sola scena non dimostra il comportamento in illuminazioni diverse.</p>
+  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Firmware, condizioni delle prove e campi diagnostici.</a></p>
+
   <h2>Lacune di implementazione aperte</h2>
 
   <ul>
     <li>
-      <b>Le prove della fotocamera.</b> Scatto USB, salvataggio, invio autenticato e recupero dell'invio sono stati provati. Il percorso delle attività ha test automatici. Il pulsante presenta un difetto elettrico intermittente; restano le prove di attività fisiche, LED, illuminazioni diverse e interruzione dell'alimentazione. Il primo JPEG era pronto in 543 ms nelle prove USB; la misura esclude avvio e gestione del pulsante fisico.
+      <b>Le prove della fotocamera.</b> La restituzione del foglio ha test automatici. Restano un'attività completa con scrittura fotografata, illuminazioni diverse, interruzioni dell'alimentazione e misure di autonomia. I cicli a batteria riportati sopra riguardano il montaggio del 9 settembre; le revisioni successive di firmware e cablaggio richiedono una propria verifica fisica.
     </li>
     <li>
       <b>La pulsantiera.</b> L'hardware attuale ha un pulsante per schermo. Chiude il giro della carta

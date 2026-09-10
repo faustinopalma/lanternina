@@ -14,6 +14,7 @@ export const LANG_NAME: Record<Lang, string> = { en: "English", it: "Italiano" }
 
 /** The pages, in sidebar order. `slug` is the directory under /<lang>/. */
 export const PAGES = [
+  { slug: "mission", key: "mission" },
   { slug: "", key: "overview" },
   { slug: "flows", key: "flows" },
   { slug: "identity", key: "identity" },
@@ -25,6 +26,7 @@ export type PageKey = (typeof PAGES)[number]["key"];
 type Dict = Record<Lang, string>;
 
 export const NAV: Record<PageKey, Dict> = {
+  mission: { en: "Mission", it: "Missione" },
   overview: { en: "Overview", it: "Che cos'è" },
   flows: { en: "How it flows", it: "Come funziona" },
   identity: { en: "Identity and access", it: "Identità e accessi" },
@@ -32,6 +34,7 @@ export const NAV: Record<PageKey, Dict> = {
 };
 
 export const NAV_NOTE: Record<PageKey, Dict> = {
+  mission: { en: "Who it is for and why", it: "Per chi e perché" },
   overview: { en: "The system in one page", it: "Il sistema in una pagina" },
   flows: { en: "Requests, state and model calls", it: "Richieste, stato e chiamate ai modelli" },
   identity: { en: "Two tenants, two audiences", it: "Due tenant, due audience" },
@@ -40,8 +43,8 @@ export const NAV_NOTE: Record<PageKey, Dict> = {
 
 export const UI = {
   tagline: {
-    en: "An activity on paper, invented for one person and approved by a parent",
-    it: "Un'attività su carta, inventata per una persona e approvata da un genitore",
+    en: "Activities in a real room, with a parent steering",
+    it: "Attività in una stanza, con la guida di un genitore",
   },
   skip: { en: "Skip to content", it: "Salta al contenuto" },
   menu: { en: "Menu", it: "Menu" },

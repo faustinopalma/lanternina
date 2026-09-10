@@ -8,15 +8,10 @@ import { REPO } from "../../i18n/ui";
   lang="it"
   page="overview"
   eyebrow="Un sistema di casa, nato per un hackathon"
-  title="Un'attività su carta, inventata per una persona"
-  description="Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore e la esegue su carta e su schermi a inchiostro elettronico. Le inferenze di linguaggio, visione e immagini girano in Microsoft Foundry."
+  title="Il sistema domestico"
+  description="Lanternina esegue attività approvate dal genitore su carta e display e-paper. Una fotocamera portatile restituisce i fogli completati. Le inferenze girano in Microsoft Foundry."
 >
-  <p class="lede">
-    Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore, e poi la fa
-    succedere in una stanza vera — su carta, su schermi a inchiostro elettronico e su pulsanti
-    fisici. Legge quello che torna scritto a mano, da lì decide come va avanti, e si ferma a un'ora
-    stabilita dal genitore.
-  </p>
+  <p class="lede">Lanternina inventa un'attività per un adolescente, la fa approvare a un genitore e poi la esegue in una stanza, usando carta, schermi a inchiostro elettronico e pulsanti fisici. Legge i fogli completati restituiti con la fotocamera o lo scanner, usa le aggiunte per proseguire e si ferma a un'ora stabilita dal genitore.</p>
 
   <p>
     Il mini-PC fa da hub sulla rete di casa e può stare fuori vista, vicino al router. Gli schermi sono oggetti separati, distribuiti nelle stanze: comunicano con l'hub via Wi-Fi, senza cavi che li colleghino al mini-PC. Anche stampante e scanner si raggiungono attraverso la rete. L'hub gestisce l'orologio e chiede al servizio cloud pagine, letture e continuazioni.
@@ -61,8 +56,7 @@ import { REPO } from "../../i18n/ui";
       <b>Il mini-PC chiede la pagina al container e la stampa.</b> Il modello di immagini riceve il contratto della pagina, non il copione intero. Il container restituisce il foglio disegnato; l'hub lo manda alla stampante tramite IPP.
     </li>
     <li>
-      <b>Lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la scansione e
-      l'immagine originale. Le confronta e restituisce una lettura dei segni aggiunti.
+      <b>La fotocamera o lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la fotografia o la scansione e l'immagine originale della pagina. Le confronta e restituisce una lettura dei segni aggiunti.
     </li>
     <li>
       <b>La lettura seleziona il momento successivo.</b> Il servizio di esecuzione segue l'arco
@@ -71,6 +65,24 @@ import { REPO } from "../../i18n/ui";
       fino alla fine.
     </li>
   </ol>
+
+  <h2 id="camera">Restituire il foglio con la fotocamera</h2>
+  <p>Il ragazzo fotografa il foglio completato per restituirlo all'attività. La fotocamera usa una XIAO ESP32S3 Sense in un contenitore stampato in 3D, con un pulsante di scatto, una spia e una batteria. Il prototipo produce JPEG da 1600 × 1200 pixel.</p>
+
+  <figure>
+    <a href="/images/camera-prototype-2.webp"><img src="/images/camera-prototype-2.webp" width="1600" height="1200" loading="lazy" alt="La fotocamera bianca montata, con l'obiettivo sul fronte e il pulsante verde di scatto e la spia gialla in alto." /></a>
+    <figcaption>Il prototipo montato, fotografato con un iPhone il 9 settembre 2026.</figcaption>
+  </figure>
+
+  <p>Una pressione avvia l'acquisizione. La spia resta accesa fino a quando il fotogramma scelto è pronto; salvataggio e invio continuano dopo lo spegnimento. Il firmware scrive il JPEG nella memoria flash locale e lo rilegge prima di avviare il Wi-Fi. Invia l'immagine al server domestico tramite HTTPS autenticato. Due lampeggi confermano una ricevuta corrispondente dopo il salvataggio sul server. Un invio fallito conserva la fotografia e il suo identificatore per un tentativo successivo.</p>
+  <p>Il lettore riceve la fotografia e la stessa pagina originale conservata per la stampa. Le confronta tenendo conto delle differenze di prospettiva e illuminazione, trascrive le aggiunte leggibili e segnala le incertezze. Una lettura incerta o un'associazione ambigua con un'attività lascia l'attività in attesa. Lo scanner resta disponibile per la stessa restituzione. La famiglia può vedere, scaricare e cancellare le fotografie nel pannello del genitore.</p>
+
+  <figure class="narrow">
+    <a href="/images/camera-prototype-1.webp"><img src="/images/camera-prototype-1.webp" width="1200" height="1600" loading="lazy" alt="Il contenitore aperto della fotocamera, con scheda, antenna, cablaggio, pulsante e batteria accanto." /></a>
+    <figcaption>Il contenitore durante il montaggio del 9 settembre 2026. Questa foto dell'iPhone documenta quel montaggio; non è uno schema di cablaggio.</figcaption>
+  </figure>
+
+  <p>Il 9 settembre sono stati provati scatto a batteria, segnalazione luminosa, cicli di riposo e risveglio e invio. Le prove USB hanno verificato anche che una fotografia resti in coda quando il ricevitore è indisponibile e venga consegnata con lo stesso identificatore al suo ritorno. <a href="/it/status/#camera-checks">La pagina di implementazione riporta i risultati misurati e le prove ancora aperte.</a></p>
 
   <h2>Il pannello del genitore</h2>
 

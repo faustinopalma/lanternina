@@ -1,4 +1,4 @@
-/* Sends a reader from / to /en/ or /it/, once.
+/* Sends a reader from / to the mission in their language, once.
  *
  * External rather than inline because the Content-Security-Policy on this site allows
  * scripts only from 'self'. An inline block would need 'unsafe-inline' or a hash, and the
@@ -29,5 +29,5 @@
     }
   }
 
-  location.replace("/" + saved + "/");
+  location.replace("/" + saved + "/mission/");
 })();
