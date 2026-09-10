@@ -10,13 +10,10 @@ import Base from "../../layouts/Base.astro";
   lang="it"
   page="flows"
   eyebrow="Richieste, stato e chiamate ai modelli"
-  title="Come funziona"
-  description="Chi può chiedere a chi, cosa succede a un'attività fra l'essere inventata e l'essere finita, e cosa fa un foglio di carta nel suo giro."
+  title="Esecuzione e flussi di dati"
+  description="Come comunicano i dispositivi, come l'hub esegue un'attività e come i fogli restituiti contribuiscono al passo successivo."
 >
-  <p class="lede">
-    Chi può chiedere a chi, cosa succede a un'attività fra l'essere inventata e l'essere finita, e
-    cosa fa un foglio di carta nel suo giro.
-  </p>
+  <p class="lede">L'hub coordina i dispositivi e i tempi delle attività. L'API cloud gestisce le chiamate ai modelli. I fogli restituiti forniscono il materiale per il passo successivo.</p>
 
   <h2>Chi chiede a chi</h2>
 
@@ -26,12 +23,12 @@ import Base from "../../layouts/Base.astro";
 
   <RequestLoop
     title="Chi chiede a chi"
-    desc="La casa contiene un hub, un numero configurabile di schermi a inchiostro elettronico con pulsanti, una stampante e uno scanner. L'hub chiama l'API del pannello su Azure e riceve il lavoro nella risposta. Dentro Azure, l'API manda il lavoro ai modelli attraverso il router e Content Safety fino a Microsoft Foundry. Il pannello conserva l'approvazione del genitore fino alla richiesta successiva dell'hub."
-    caption="Entrambi gli scambi oltre il confine partono dall'hub. Il pannello conserva la decisione del genitore; la richiesta successiva la porta in casa."
+    desc="L'hub collega i dispositivi locali all'API cloud. L'API chiama i modelli su Microsoft Foundry attraverso il router dei modelli e controlla il testo generato con Content Safety. L'hub riceve le decisioni del genitore nelle risposte alle proprie richieste."
+    caption="L'hub avvia le richieste al cloud. L'API conserva la decisione del genitore e la restituisce alla richiesta successiva dell'hub."
     house="La casa"
     cloud="Azure, regione UE"
     parent={{ title: "Un genitore, dal browser", sub: ["approva e fissa le ore"] }}
-    writes="scrive una riga"
+    writes="approva"
     displays={{ title: "schermi e-paper", sub: ["batteria · Wi-Fi"] }}
     button={{ title: "un pulsante", sub: ["risposta nella replica"] }}
     hub={{
@@ -44,10 +41,10 @@ import Base from "../../layouts/Base.astro";
     sheet="via rete locale"
     api={{ title: "pannello + API", sub: ["conserva le decisioni per la richiesta successiva"] }}
     router={{ title: "router dei modelli", sub: ["l'unico modulo con un SDK di modelli"] }}
-    gate={{ title: "Content Safety", sub: ["conia il contenuto filtrato"] }}
+    gate={{ title: "Content Safety", sub: ["controlla il testo generato"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["linguaggio · visione · immagini"] }}
-    asks={["chiede,", "sul proprio orologio"]}
-    answers={["risponde,", "dentro la replica"]}
+    asks={["richiesta HTTPS", "periodica"]}
+    answers={["decisioni nella", "risposta"]}
   />
 
   <p class="note">
@@ -56,36 +53,31 @@ import Base from "../../layouts/Base.astro";
 
   <h2>La vita di un'attività</h2>
 
-  <p>
-    Il documento iniziale contiene ogni momento, tre lunghezze per ciascuno, quattro livelli di aiuto
-    e un percorso verso la fine. Il servizio di esecuzione sceglie dentro quel grafo quando cambiano
-    il tempo e le risposte. Un <code>ask</code> previsto può mandare la pagina restituita all'API e
-    ricevere un seguito nello stesso formato.
-  </p>
+  <p>Un'attività è un grafo di fasi chiamate momenti. Ogni momento prevede tre opzioni di durata, quattro livelli di aiuto e un percorso verso la conclusione. L'hub sceglie le transizioni in base al tempo e alle risposte. Un'azione <code>ask</code> prevista nell'attività richiede un seguito all'API cloud, usando la lettura di un foglio restituito.</p>
 
   <AfternoonLife
     title="La vita di un'attività"
-    desc="L'hub richiede un'attività. Il container la genera, verifica e filtra, poi attende l'approvazione del genitore. L'hub ritira gli approvati. Una lettura seleziona un momento o richiede un seguito verificato senza una seconda approvazione."
+    desc="L'hub richiede un'attività. L'API cloud la genera, verifica e filtra, poi attende l'approvazione del genitore. L'hub ritira le attività approvate. Una lettura seleziona un momento o richiede un seguito verificato senza una seconda approvazione."
     caption="L'arco di ritorno a sinistra è una riparazione dopo la verifica. Quello a destra è un seguito previsto che dipende dalla pagina restituita."
-    idea={{ title: "La casa chiede un'attività", sub: ["preferenze · eventuale brief"] }}
+    idea={{ title: "L'hub chiede un'attività", sub: ["preferenze · eventuale brief"] }}
     devise={{
       title: "Un modello scrive l'attività intera",
-      sub: ["momenti, aiuti e vie d'uscita"],
+      sub: ["momenti, aiuti e percorsi di conclusione"],
     }}
     checks={{
       title: "Formato, controlli e sicurezza",
-      sub: ["il giudice è una lettura separata"],
+      sub: ["un altro modello esamina l'attività"],
     }}
     waits={{ title: "L'API attende l'approvazione", sub: ["il genitore legge l'attività"] }}
-    begins={{ title: "La casa lo fa cominciare", sub: ["solo se la durata intera ci sta ancora"] }}
-    moment={{ title: "Un momento gira", sub: ["dire · consegnare · ritirare"] }}
+    begins={{ title: "L'hub avvia l'attività", sub: ["se resta abbastanza tempo disponibile"] }}
+    moment={{ title: "L'hub esegue un momento", sub: ["istruzioni · pagine · risposte"] }}
     cameBack={{ title: "Cosa è tornato", sub: ["segni, oppure bianca"] }}
-    ends={{ title: "Finisce sull'oggetto", sub: ["la stessa fine, comunque sia andata"] }}
+    ends={{ title: "L'attività termina", sub: ["con la conclusione prevista"] }}
     ask={{
       title: "ask",
       sub: [
-        "la casa invia la lettura dei segni",
-        "il container verifica il seguito",
+        "l'hub invia la lettura del foglio",
+        "l'API verifica il seguito",
         "senza seconda approvazione",
       ],
     }}
@@ -99,7 +91,7 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    La generazione può avere una riparazione del formato e una separata dei controlli; la continuazione non ha riparazioni. L'hub rispetta ore e limite giornaliero. Il timer avvia la via d'uscita al controllo utile dopo la soglia dei trenta minuti. I momenti consecutivi senza raccolta non attendono la durata dichiarata.
+    La generazione consente una correzione del formato e una separata dopo la verifica; il seguito non prevede correzioni. L'hub rispetta gli orari e il limite giornaliero di attività. Avvia il percorso di conclusione al primo controllo del timer nei trenta minuti che precedono l'ora di fine. I momenti consecutivi che non raccolgono risposte avanzano senza attendere la durata dichiarata.
   </p>
 
   <h2>Il giro della carta</h2>
@@ -112,19 +104,19 @@ import Base from "../../layouts/Base.astro";
 
   <PaperTrip
     title="Il giro della carta"
-    desc="Le parole già passate dal filtro entrano in una sola chiamata di immagini, che disegna il foglio intero. Il foglio si stampa e il suo bianco si conserva. Qualcuno ci scrive sopra, oppure no. Lo scanner lo riprende, le due immagini vanno a un modello, e la risposta è segni oppure bianca. Da quella risposta si scrivono le parole dopo."
-    caption="L'azione della persona è l'unico passaggio di questo ciclo che il software non esegue."
+    desc="Un modello di immagini disegna la pagina dal testo controllato. L'hub la stampa e conserva l'immagine originale. Una fotocamera o uno scanner acquisisce il foglio restituito. Un modello di visione confronta le due immagini e descrive gli eventuali segni aggiunti. Il risultato contribuisce al seguito."
+    caption="Il modello di visione confronta il foglio restituito con l'immagine originale conservata per la stampa. Una lettura incerta lascia l'attività in attesa."
     words={{ title: "Le parole", sub: ["già passate dal filtro"] }}
     drawn={{ title: "Una chiamata di immagini", sub: ["il foglio A4 intero"] }}
     printed={{
       title: "Stampata",
-      sub: ["il bianco si tiene: è l'unica cosa", "contro cui si leggerà"],
+      sub: ["l'hub conserva l'immagine originale", "per confrontarla con il foglio restituito"],
     }}
     person={{ title: "Qualcuno ci scrive", sub: ["oppure no"] }}
-    scanned={{ title: "Scanner", sub: ["acquisisce il foglio restituito"] }}
+    scanned={{ title: "Fotocamera o scanner", sub: ["acquisisce il foglio restituito"] }}
     read={{ title: "Due immagini a un modello", sub: ["descrive i segni aggiunti"] }}
     outcome={{ title: "segni · bianca", sub: ["descrizioni per il seguito", "lettura degradata: attesa"] }}
-    feeds="e da lì si scrivono le parole dopo"
+    feeds="contribuisce al seguito"
   />
 
   <p>

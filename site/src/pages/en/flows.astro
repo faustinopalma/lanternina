@@ -10,13 +10,10 @@ import Base from "../../layouts/Base.astro";
   lang="en"
   page="flows"
   eyebrow="Requests, state and model calls"
-  title="How it flows"
-  description="Who is allowed to ask whom, what happens to an activity between being invented and being over, and what a sheet of paper does on its round trip."
+  title="Execution and data flows"
+  description="How devices communicate, how the hub runs an activity, and how returned sheets inform the next step."
 >
-  <p class="lede">
-    Who is allowed to ask whom, what happens to an activity between being invented and being over,
-    and what a sheet of paper does on its round trip.
-  </p>
+  <p class="lede">The hub coordinates devices and activity timing. The cloud API handles model calls. Returned sheets provide input for the next step.</p>
 
   <h2>Who asks whom</h2>
 
@@ -26,12 +23,12 @@ import Base from "../../layouts/Base.astro";
 
   <RequestLoop
     title="Who asks whom"
-    desc="The house contains a hub, a configurable number of e-paper displays with buttons, a printer and a scanner. The hub calls the panel API in Azure and receives work in the response. Inside Azure, the API sends model work through the router and Content Safety to Microsoft Foundry. A parent's approval is stored by the panel until the hub polls again."
-    caption="Both exchanges across the boundary start at the hub. The panel persists a parent's decision; the next poll carries it into the house."
+    desc="The hub connects local devices to the cloud API. The API calls models on Microsoft Foundry through the model router and screens generated text with Content Safety. The hub retrieves parent decisions in response to its requests."
+    caption="The hub initiates cloud requests. The API stores the parent's decision and returns it when the hub next polls."
     house="The house"
     cloud="Azure, EU region"
     parent={{ title: "A parent, in a browser", sub: ["approves, and sets the hours"] }}
-    writes="writes a row"
+    writes="approves"
     displays={{ title: "e-paper displays", sub: ["battery · Wi-Fi"] }}
     button={{ title: "a button", sub: ["answered in the reply"] }}
     hub={{
@@ -44,10 +41,10 @@ import Base from "../../layouts/Base.astro";
     sheet="via local network"
     api={{ title: "panel + API", sub: ["stores decisions for the next poll"] }}
     router={{ title: "model router", sub: ["the only module allowed a model SDK"] }}
-    gate={{ title: "Content Safety", sub: ["mints the screened payload"] }}
+    gate={{ title: "Content Safety", sub: ["checks generated text"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["language · vision · image"] }}
-    asks={["asks,", "on its own clock"]}
-    answers={["answers,", "inside the reply"]}
+    asks={["scheduled", "HTTPS request"]}
+    answers={["decisions in", "the response"]}
   />
 
   <p class="note">
@@ -56,36 +53,31 @@ import Base from "../../layouts/Base.astro";
 
   <h2>The life of an activity</h2>
 
-  <p>
-    The initial document contains every moment, three lengths for each, four levels of help and a
-    route to the ending. The execution service selects from that graph as time and responses change.
-    A planned <code>ask</code> can send a returned page to the API and receive a continuation in the
-    same format.
-  </p>
+  <p>An activity is a graph of steps called moments. Each moment provides three duration options, four levels of help and a path to the ending. The hub selects transitions as time and responses change. A planned <code>ask</code> requests a continuation from the cloud API, using the reading of a returned sheet.</p>
 
   <AfternoonLife
     title="The life of an activity"
-    desc="The hub requests an activity. The container generates, validates and screens it, then waits for parent approval. The hub retrieves approved activities. A returned reading selects a moment or requests a checked continuation without another parent approval."
+    desc="The hub requests an activity. The cloud API generates, validates and screens it, then waits for parent approval. The hub retrieves approved activities. A returned reading selects a moment or requests a checked continuation without another parent approval."
     caption="The left return edge is a repair after validation. The right return edge is a planned continuation based on the page that came back."
-    idea={{ title: "The house requests an activity", sub: ["preferences · optional brief"] }}
+    idea={{ title: "The hub requests an activity", sub: ["preferences · optional brief"] }}
     devise={{
       title: "A model writes the whole activity",
-      sub: ["moments, help and ways out"],
+      sub: ["moments, help and ending paths"],
     }}
     checks={{
       title: "Format, checks and safety",
-      sub: ["the judge is a separate reading"],
+      sub: ["a separate model reviews the activity"],
     }}
     waits={{ title: "The API awaits approval", sub: ["the parent reads the activity"] }}
-    begins={{ title: "The house begins it", sub: ["only if the whole length still fits"] }}
-    moment={{ title: "A moment runs", sub: ["say · hand over · collect"] }}
+    begins={{ title: "The hub starts the activity", sub: ["if enough scheduled time remains"] }}
+    moment={{ title: "The hub executes a moment", sub: ["instructions · pages · responses"] }}
     cameBack={{ title: "What came back", sub: ["marks, or blank"] }}
-    ends={{ title: "It ends on the object", sub: ["the same ending, however it went"] }}
+    ends={{ title: "The activity concludes", sub: ["with its planned ending"] }}
     ask={{
       title: "ask",
       sub: [
-        "the house sends descriptions of ink",
-        "the container checks the next segment",
+        "the hub sends the sheet reading",
+        "the API checks the continuation",
         "without a second parent approval",
       ],
     }}
@@ -99,7 +91,7 @@ import Base from "../../layouts/Base.astro";
   />
 
   <p>
-    Generation permits a format repair and a separate checks repair; continuation has no repair. The hub obeys the hours and daily allowance. The timer starts the way out on its first check after the thirty-minute threshold. Consecutive non-collection moments do not wait their declared durations.
+    Generation permits one format repair and a separate repair after validation; continuation has no repair. The hub respects the schedule and daily activity limit. It starts the ending path at its first timer check within thirty minutes of the scheduled end. Consecutive moments that collect no response advance without waiting for their declared durations.
   </p>
 
   <h2>The paper round trip</h2>
@@ -111,19 +103,19 @@ import Base from "../../layouts/Base.astro";
 
   <PaperTrip
     title="The paper round trip"
-    desc="Words that have already passed the safety gate go into one image call, which draws the whole sheet. The sheet is printed and its blank is kept. Somebody writes on it, or does not. The scanner takes it back, both images go to a model, and the answer is either marks or blank. That answer is what the next words are written from."
-    caption="The person's action is the only step in this loop that software does not perform."
+    desc="An image model draws the page from screened text. The hub prints it and keeps the original image. A camera or scanner captures the returned sheet. A vision model compares both images and describes added marks, if any. The result informs the continuation."
+    caption="The vision model compares the returned sheet with the original image kept for printing. An uncertain reading leaves the activity waiting."
     words={{ title: "Words", sub: ["already through the safety gate"] }}
     drawn={{ title: "One image call", sub: ["the whole A4 sheet"] }}
     printed={{
       title: "Printed",
-      sub: ["the blank is kept: it is what the", "reading is compared against"],
+      sub: ["the hub keeps the original image", "for comparison with the return"],
     }}
     person={{ title: "Somebody writes on it", sub: ["or does not"] }}
-    scanned={{ title: "Scanner", sub: ["captures the returned sheet"] }}
+    scanned={{ title: "Camera or scanner", sub: ["captures the returned sheet"] }}
     read={{ title: "Two images to a model", sub: ["describes the added marks"] }}
     outcome={{ title: "marks · blank", sub: ["descriptions for continuation", "degraded reading: wait"] }}
-    feeds="and the next words are written from it"
+    feeds="informs the continuation"
   />
 
   <p>

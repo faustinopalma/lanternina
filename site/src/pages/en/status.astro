@@ -50,8 +50,7 @@ import { REPO } from "../../i18n/ui";
       <b>Camera trials.</b> The sheet-return path has automated tests. A complete activity with photographed handwriting, varied lighting, power-interruption tests and battery-life measurements remain open. The battery cycles above concern the 9 September assembly; subsequent firmware and wiring revisions need their own physical acceptance.
     </li>
     <li>
-      <b>The button panel.</b> The current hardware has one button per display. It closes the paper
-      loop but cannot yet capture an answer with several choices.
+      <b>The button panel.</b> The current hardware has one button per display. It starts a scan of the returned sheet but cannot yet capture a multiple-choice response.
     </li>
     <li>
       <b>Memory visibility.</b> A complete view is missing. The system stores profile observations and activity summaries. Administrator development permission lasts 14 days; each permitted reading expires 14 days after its own write.
@@ -59,7 +58,7 @@ import { REPO } from "../../i18n/ui";
     <li>
       <b>Activity quality.</b> Building, drawing and investigating can have open outcomes. Checks do not establish comprehension or interest; automatic judges retain false positives. A trial with a person is still needed.
     </li>
-    <li><b>Print failure and moment timing.</b> A failed print shows a message already written in the activity, but the alternative path without a sheet is not executed. Consecutive non-collection moments advance without waiting their declared duration.</li>
+    <li><b>Print failure and timing.</b> A failed print shows a message already written in the activity, but the alternative path without a sheet is not executed. Consecutive steps that collect no response advance without waiting for their declared durations.</li>
     <li>
       <b>Other homes.</b> A complete installation has been tried in only one home.
     </li>
@@ -67,7 +66,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     <a href={`${REPO}/blob/main/docs/ILLUSTRATED.md`}>The system in photographs, page by page</a> ·
-    <a href={`${REPO}/tree/main/ideas`}>what is not built, ranked, each with a cost</a> ·
-    <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>the lines this project will not cross</a>
+    <a href={`${REPO}/tree/main/ideas`}>design notes and open proposals</a> ·
+    <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>project scope</a>
   </p>
 </Base>

@@ -35,7 +35,7 @@ import { REPO } from "../../i18n/ui";
     }}
     api={{
       title: "One API",
-      sub: ["separate audiences, checked", "before any logic of ours runs"],
+      sub: ["validates credentials", "before application logic"],
     }}
     parentRoutes={{ title: "Parent routes", sub: ["their own household only"] }}
     adminRoutes={{ title: "Admin routes", sub: ["admitting and rejecting accounts"] }}
@@ -60,14 +60,7 @@ import { REPO } from "../../i18n/ui";
     logic. Only a workforce token reaches the app-role check on administrative routes.
   </p>
 
-  <p class="note">
-    An app-role assignment can land on <b>Default Access</b>, whose <code>appRoleId</code> is all zeros.
-    The resulting token is valid but has no <code>roles</code> claim. Inspect
-    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code> and verify the assigned id when an admin
-    token passes authentication but fails authorization.
-  </p>
-
-  <h2>Multi-tenant by construction</h2>
+  <h2>Household isolation</h2>
 
   <p>
     Every stored row is partitioned by household id. Each device key maps to one household, and each
@@ -75,12 +68,7 @@ import { REPO } from "../../i18n/ui";
     provisioning run and uses the existing schema.
   </p>
 
-  <p>
-    That is a claim about shape, and it is worth being precise about how far it has been exercised:
-    the code has always run with one household in it. A second house has never been provisioned, so
-    "multi-tenant" here means the boundaries are drawn and enforced, not that two tenants have been
-    observed side by side.
-  </p>
+  <p>The code enforces household boundaries, but the system has only run in one home. Provisioning and operation across multiple households remain untested.</p>
 
   <h2>House authentication</h2>
 
@@ -121,7 +109,7 @@ import { REPO } from "../../i18n/ui";
   <p>
     <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>The deployment steps, including the manual ones</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
-      >how the pipeline changes Azure with no secret anywhere</a
+      >the pipeline's federated identity</a
     > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>what leaves the device</a>
   </p>
 </Base>

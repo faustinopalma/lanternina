@@ -11,7 +11,7 @@ import { REPO } from "../../i18n/ui";
   title="The home system"
   description="Lanternina runs parent-approved activities on paper and e-paper. A handheld camera returns completed sheets. Language, vision and image inference runs in Microsoft Foundry."
 >
-  <p class="lede">The hub is the device that coordinates Lanternina's activities in the home. It connects the displays, printer and scanner to the cloud service, manages timing and requests pages, readings and continuations.</p>
+  <p class="lede">Lanternina divides execution between a home hub and a cloud API. The hub coordinates displays, printing and returned sheets, and manages activity timing. The cloud API calls models on Microsoft Foundry to generate activities and pages, interpret returned sheets and prepare continuations.</p>
 
   <p>The hub can sit near the router. The displays communicate with it over Wi-Fi; the printer and scanner are also reached over the network.</p>
 
@@ -28,24 +28,22 @@ import { REPO } from "../../i18n/ui";
       <b>The parent steers the proposal.</b> They write interests, subjects to avoid, language and current circumstances. They can prepare a brief and set the available hours.
     </li>
     <li>
-      <b>The container generates the activity.</b> The router sends household material and the chosen form and move. The response contains moments, three durations for each, help and ways out.
+      <b>The cloud API requests an activity from a model.</b> It sends household preferences and a selected activity method. The model returns a graph of steps, called moments, with duration options, help and paths to the ending.
     </li>
     <li>
-      <b>The API checks and stores the activity.</b> An unreadable answer can receive a format repair. Structural complaints can trigger a separate repair. Remaining complaints stop the request; Content Safety screens accepted text. The parent can approve or refuse the offered activity.
+      <b>The API checks and stores the activity.</b> It validates the response format and activity structure, and applies Content Safety to the text. Failed checks can trigger a repair attempt. The parent reviews the accepted activity and can approve or refuse it.
     </li>
     <li>
       <b>The hub collects the activity.</b> It polls the device API on its own schedule. The API returns the waiting activity in that HTTPS response, and the hub stores it locally before preparing the first page.
     </li>
     <li>
-      <b>The hub requests a page from the container and prints it.</b> The image model receives the page contract, not the whole script. The container returns the drawing; the hub sends it to the printer over IPP.
+      <b>The hub requests a page from the cloud API and prints it.</b> The image model receives the content and drawing instructions for that page. The API returns the generated image; the hub sends it to the printer over IPP.
     </li>
     <li>
       <b>The camera or scanner returns the completed page.</b> A vision model receives the photograph or scan and the original page image. It compares them and returns a reading of the marks that were added.
     </li>
     <li>
-      <b>The reading selects the next moment.</b> The execution service follows the corresponding
-      edge in the activity graph and prepares the next display or page. Thirty minutes before the
-      hour set by the parent, it enters the planned route from the current moment to the ending.
+      <b>The hub selects the next moment from the reading.</b> It follows the corresponding transition in the activity graph and prepares the next display or page. At its first timer check within thirty minutes of the end time set by the parent, it starts the current moment's path to the ending.
     </li>
   </ol>
 

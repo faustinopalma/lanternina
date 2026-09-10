@@ -35,7 +35,7 @@ import { REPO } from "../../i18n/ui";
     }}
     api={{
       title: "Una sola API",
-      sub: ["audience separate, controllate", "prima di ogni logica nostra"],
+      sub: ["verifica le credenziali", "prima della logica applicativa"],
     }}
     parentRoutes={{ title: "Rotte del genitore", sub: ["solo il proprio nucleo"] }}
     adminRoutes={{ title: "Rotte dell'amministratore", sub: ["ammettere e rifiutare account"] }}
@@ -61,14 +61,7 @@ import { REPO } from "../../i18n/ui";
     amministrative.
   </p>
 
-  <p class="note">
-    Un'assegnazione di app role può finire su <b>Default Access</b>, il cui <code>appRoleId</code> è
-    tutto zeri. Il token risultante è valido ma non contiene il claim <code>roles</code>. Quando un
-    token amministrativo supera l'autenticazione ma fallisce l'autorizzazione, si controlla l'id in
-    <code>servicePrincipals/&lt;id&gt;/appRoleAssignedTo</code>.
-  </p>
-
-  <h2>Multi-tenant per costruzione</h2>
+  <h2>Isolamento dei nuclei familiari</h2>
 
   <p>
     Ogni riga salvata è partizionata per id del nucleo. Ogni device key corrisponde a un nucleo e ogni
@@ -76,12 +69,7 @@ import { REPO } from "../../i18n/ui";
     provisioning e usa lo schema esistente.
   </p>
 
-  <p>
-    È un'affermazione sulla forma, e conviene essere precisi su quanto sia stata esercitata: il
-    codice ha sempre girato con un nucleo solo dentro. Una seconda casa non è mai stata allestita,
-    quindi «multi-tenant» qui vuol dire che i confini sono tracciati e imposti, non che due nuclei
-    siano stati osservati affiancati.
-  </p>
+  <p>Il codice impone la separazione tra nuclei familiari, ma il sistema ha funzionato in una sola casa. Il provisioning e l'uso con più nuclei restano da provare.</p>
 
   <h2>Autenticazione della casa</h2>
 
@@ -124,7 +112,7 @@ import { REPO } from "../../i18n/ui";
   <p>
     <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>I passi di deploy, compresi quelli manuali</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
-      >come la pipeline cambia Azure senza un segreto</a
+      >l'identità federata della pipeline</a
     > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>cosa esce dal dispositivo</a>
   </p>
 </Base>

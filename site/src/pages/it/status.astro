@@ -50,8 +50,7 @@ import { REPO } from "../../i18n/ui";
       <b>Le prove della fotocamera.</b> La restituzione del foglio ha test automatici. Restano un'attività completa con scrittura fotografata, illuminazioni diverse, interruzioni dell'alimentazione e misure di autonomia. I cicli a batteria riportati sopra riguardano il montaggio del 9 settembre; le revisioni successive di firmware e cablaggio richiedono una propria verifica fisica.
     </li>
     <li>
-      <b>La pulsantiera.</b> L'hardware attuale ha un pulsante per schermo. Chiude il giro della carta
-      ma non può ancora acquisire una risposta con più scelte.
+      <b>La pulsantiera.</b> L'hardware attuale ha un pulsante per schermo. Avvia la scansione del foglio restituito ma non può ancora acquisire una risposta a scelta multipla.
     </li>
     <li>
       <b>Visibilità della memoria.</b> Manca una vista completa. Il sistema conserva osservazioni per il profilo e sintesi delle attività. Il permesso amministrativo di sviluppo dura 14 giorni; ogni lettura ammessa scade 14 giorni dopo la propria scrittura.
@@ -59,7 +58,7 @@ import { REPO } from "../../i18n/ui";
     <li>
       <b>La qualità dell'attività.</b> Costruzioni, disegni e indagini possono ammettere risultati aperti. I controlli non dimostrano comprensibilità o interesse; i giudici automatici conservano falsi positivi. La prova con una persona resta necessaria.
     </li>
-    <li><b>Stampa fallita e tempi dei momenti.</b> Se la stampa fallisce, compare un messaggio previsto dall'attività, ma il percorso alternativo senza foglio non viene eseguito. I momenti consecutivi senza raccolta avanzano senza attendere la durata dichiarata.</li>
+    <li><b>Stampa fallita e tempi di esecuzione.</b> Se la stampa fallisce, compare un messaggio previsto dall'attività, ma il percorso alternativo senza foglio non viene eseguito. Le fasi consecutive che non raccolgono risposte avanzano senza attendere la durata dichiarata.</li>
     <li>
       <b>Altre case.</b> L'installazione completa è stata provata in una sola casa.
     </li>
@@ -67,7 +66,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     <a href={`${REPO}/blob/main/docs/ILLUSTRATED.md`}>Il sistema in fotografie, pagina per pagina</a>
-    · <a href={`${REPO}/tree/main/ideas`}>quello che non è costruito, in ordine, ognuno col suo costo</a
-    > · <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>le linee che questo progetto non attraversa</a>
+    · <a href={`${REPO}/tree/main/ideas`}>note di progetto e proposte aperte</a
+    > · <a href={`${REPO}/blob/main/docs/NON-GOALS.md`}>l'ambito del progetto</a>
   </p>
 </Base>

@@ -11,7 +11,7 @@ import { REPO } from "../../i18n/ui";
   title="Il sistema domestico"
   description="Lanternina esegue attività approvate dal genitore su carta e display e-paper. Una fotocamera portatile restituisce i fogli completati. Le inferenze girano in Microsoft Foundry."
 >
-  <p class="lede">L'hub è il dispositivo che coordina le attività di Lanternina in casa. Collega schermi, stampante e scanner al servizio cloud, gestisce i tempi e richiede pagine, letture e continuazioni.</p>
+  <p class="lede">Lanternina divide l'esecuzione tra un hub domestico e un'API cloud. L'hub coordina schermi, stampa e restituzione dei fogli e gestisce i tempi delle attività. L'API cloud chiama i modelli su Microsoft Foundry per generare attività e pagine, interpretare i fogli restituiti e preparare i seguiti.</p>
 
   <p>L'hub può stare vicino al router. Gli schermi comunicano con lui via Wi-Fi; anche stampante e scanner si raggiungono attraverso la rete.</p>
 
@@ -28,25 +28,22 @@ import { REPO } from "../../i18n/ui";
       <b>Il genitore orienta la proposta.</b> Scrive interessi, argomenti da evitare, lingua e circostanze del momento. Può preparare un brief e fissa le ore disponibili.
     </li>
     <li>
-      <b>Il container genera l'attività.</b> Il router manda al modello il materiale della casa, la forma e la mossa scelte. La risposta contiene i momenti, tre durate per ciascuno, gli aiuti e le vie d'uscita.
+      <b>L'API cloud richiede un'attività a un modello.</b> Invia le preferenze della famiglia e il metodo scelto per l'attività. Il modello restituisce un grafo di fasi, chiamate momenti, con opzioni di durata, aiuti e percorsi verso la conclusione.
     </li>
     <li>
-      <b>L'API verifica e conserva l'attività.</b> Una risposta illeggibile può avere una riparazione del formato. I controlli strutturali possono richiedere una riparazione separata. Contestazioni residue fermano la richiesta; Content Safety esamina il testo accettato. Il genitore può approvare o rifiutare l'attività offerta.
+      <b>L'API verifica e conserva l'attività.</b> Controlla il formato della risposta e la struttura dell'attività e applica Content Safety al testo. I controlli falliti possono richiedere un tentativo di correzione. Il genitore esamina l'attività accettata e può approvarla o rifiutarla.
     </li>
     <li>
       <b>L'hub ritira l'attività.</b> Interroga la device API secondo il proprio programma. L'API restituisce l'attività in attesa nella risposta HTTPS e l'hub la conserva localmente prima di preparare la prima pagina.
     </li>
     <li>
-      <b>L'hub chiede la pagina al container e la stampa.</b> Il modello di immagini riceve il contratto della pagina, non il copione intero. Il container restituisce il foglio disegnato; l'hub lo manda alla stampante tramite IPP.
+      <b>L'hub chiede una pagina all'API cloud e la stampa.</b> Il modello di immagini riceve i contenuti e le istruzioni di disegno per quella pagina. L'API restituisce l'immagine generata; l'hub la manda alla stampante tramite IPP.
     </li>
     <li>
       <b>La fotocamera o lo scanner restituisce la pagina compilata.</b> Un modello di visione riceve la fotografia o la scansione e l'immagine originale della pagina. Le confronta e restituisce una lettura dei segni aggiunti.
     </li>
     <li>
-      <b>La lettura seleziona il momento successivo.</b> Il servizio di esecuzione segue l'arco
-      corrispondente nel grafo dell'attività e prepara lo schermo o la pagina successiva. Trenta
-      minuti prima dell'ora fissata dal genitore entra nel percorso previsto dal momento corrente
-      fino alla fine.
+      <b>L'hub sceglie il momento successivo in base alla lettura.</b> Segue la transizione corrispondente nel grafo dell'attività e prepara lo schermo o la pagina successiva. Al primo controllo del timer nei trenta minuti che precedono l'ora di fine fissata dal genitore, avvia il percorso di conclusione del momento corrente.
     </li>
   </ol>
 
