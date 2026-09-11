@@ -6,6 +6,10 @@ Everything below is evidence about *design*, and reading it that way is what mak
 
 The sources are in `_reference/progettare-per-adolescenti/`, downloaded by `build/fetch_evidence.py` on 28 August 2026. That folder is gitignored: it is other people's text. What is committed is this reading of it.
 
+## Microsoft responsible AI guidance, 11 September 2026
+
+The [responsible AI chapter](RESPONSIBLE-AI.md) connects Microsoft's guidance to Lanternina's proposals, pages, readings, continuations and memory. The [Microsoft program overview](https://learn.microsoft.com/en-us/compliance/assurance/assurance-artificial-intelligence) supports the treatment of shared responsibility and affected people; the [NIST Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) connects context, evaluation and risk management; the [Azure OpenAI guidance](https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/overview) covers layered controls and operation. These sources provide guidance, not experimental evidence about Lanternina. The chapter explains risks, the scope of existing controls and the limits of evaluation. It reports no new harm measurements and introduces no development requirements, release gates, prompt changes or retention restrictions.
+
 ## Camera hardware references, 7 September 2026
 
 Fresh measurements on 9 September 2026 used the installed first-frame firmware and an explicit USB diagnostic command. A 75,932-byte, 1600 x 1200 JPEG was ready after 543 ms; acquisition plus verified storage took 1,776 ms and upload took 707 ms. The receiver returned HTTP 201 and the device queue reached zero. A receiver-offline test later retained and delivered a 77,846-byte JPEG with one identifier and one receipt. That test exposed and then verified a fix for USB retries being blocked by a LOW shutter input. These checks establish capture, persistence and retry behavior under receiver interruption; they do not measure physical shutter latency, current consumption or resilience to power interruption. The [completion record](../ideas/camera-completion-results.md) separates software and physical checks.

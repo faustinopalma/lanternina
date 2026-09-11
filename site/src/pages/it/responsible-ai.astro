@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base lang="it" page="responsibleAI" title="IA generativa responsabile" description="Una valutazione preliminare delle attività, della partecipazione e dei dati della famiglia in Lanternina.">
+  <p class="lede">Lanternina usa l'IA generativa per proporre attività a un adolescente, produrre pagine da stampare e interpretare il materiale restituito. Questa valutazione preliminare considera gli effetti sulle persone coinvolte, i controlli presenti e gli aspetti ancora da esaminare, a partire dalle indicazioni Microsoft sull'IA responsabile.</p>
+
+  <h2>Le attività e la partecipazione</h2>
+  <p>Le istruzioni possono coinvolgere strumenti o materiali il cui uso sicuro dipende dalle condizioni della casa. L'approvazione del genitore e i filtri sui contenuti intervengono su parti di questo rischio, con ambiti diversi.</p>
+  <p>La valutazione considera anche richieste di lettura, visive e motorie che possono impedire la partecipazione, e risposte che potrebbero introdurre stereotipi, umiliazione o pressione a continuare. L'esame del materiale può rivelare alcuni di questi problemi; l'osservazione di un pomeriggio serve a capire come l'adolescente vive l'attività.</p>
+
+  <h2>Le mitigazioni presenti</h2>
+  <p>Il dispositivo può ritirare solo attività approvate dal genitore e non ancora iniziate. Il ritiro dell'approvazione toglie l'attività da questo elenco. Il controllo riguarda la consegna iniziale; le pagine e le continuazioni successive non ricevono una seconda revisione del genitore.</p>
+  <p>I testi delle attività e delle continuazioni passano da Content Safety prima di essere restituiti. Un rifiuto blocca l'intero risultato. I rilevatori coprono odio, autolesionismo, contenuti sessuali e violenza. Non verificano l'adeguatezza fisica di un'azione nella casa.</p>
+  <p>I controlli linguistici locali intercettano formulazioni specifiche di biasimo, fretta e giudizi sulla persona. Prima della visualizzazione, una stringa proposta e rifiutata viene sostituita con testo già scritto nel piano. Questi controlli riducono l'esposizione alle formulazioni riconosciute; espressioni equivalenti possono sfuggire.</p>
+
+  <h2>Le letture e la memoria</h2>
+  <p>Le interpretazioni del materiale restituito entrano nelle continuazioni e nella <a href="/it/#la-memoria">memoria</a>. Gli originali conservati permettono di confrontare una lettura con la sua fonte. Un aspetto da esaminare è se la descrizione di un foglio diventa un giudizio non fondato sulle capacità, sulle intenzioni o sul benessere dell'adolescente e influenza le interazioni successive.</p>
+
+  <h2>I dati della famiglia</h2>
+  <p>Le fotografie possono includere persone o informazioni private estranee all'attività. Le funzioni del pannello per le foto limitano l'accesso alla famiglia autenticata. La famiglia può cancellare fotografie singole o selezioni confermate; i registri di cancellazione impediscono che un nuovo invio ripristini la stessa foto. Questi controlli riguardano l'archivio fotografico, non ogni dato derivato da un'attività.</p>
+  <p>Durante lo sviluppo, fotografie, materiale restituito, letture e diagnostica possono essere conservati e mostrati alla famiglia autenticata. Questo permette di confrontare il materiale originale con la sua interpretazione. La politica di conservazione verrà rivista dopo lo sviluppo.</p>
+
+  <h2>Che cosa resta da valutare</h2>
+  <p>I test automatici coprono approvazione e ritiro, blocco delle generazioni rifiutate, accesso alle foto da un'altra famiglia e cancellazione seguita da un nuovo invio. Le <a href="/it/status/">prove esistenti</a> aggiungono verifiche funzionali e sintetiche. L'ulteriore valutazione riguarda la copertura dei rilevatori, l'adeguatezza fisica e la partecipazione durante attività complete nella casa.</p>
+  <p>Anche la risposta durante l'uso richiede un esame. Un'istruzione pericolosa già stampata resta alla famiglia dopo una correzione del software. La gestione di quel caso comprende l'individuazione del materiale interessato e la comunicazione alla famiglia. Una procedura di risposta agli incidenti di IA già esercitata resta da documentare.</p>
+
+  <h2>Fonti</h2>
+  <p><a href="https://learn.microsoft.com/en-us/training/modules/responsible-ai-studio/3-identify-harms">Microsoft Learn: individuare i possibili danni</a> e <a href="https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/overview">guida Azure OpenAI sull'IA responsabile</a>, consultate l'11 settembre 2026. Il <a href={`${REPO}/blob/main/docs/RESPONSIBLE-AI.md`}>capitolo nella documentazione</a> contiene la valutazione più estesa e i riferimenti.</p>
+</Base>

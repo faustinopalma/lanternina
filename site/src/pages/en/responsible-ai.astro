@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import { REPO } from "../../i18n/ui";
+---
+
+<Base lang="en" page="responsibleAI" title="Responsible generative AI" description="A preliminary assessment of activities, participation and household data in Lanternina.">
+  <p class="lede">Lanternina uses generative AI to propose activities for an adolescent, produce printed pages and interpret returned material. This preliminary assessment considers the effects on the people involved, the controls present and the questions still to examine, drawing on Microsoft's responsible AI guidance.</p>
+
+  <h2>Activities and participation</h2>
+  <p>Instructions can involve tools or materials whose safe use depends on conditions in the home. Parental approval and content screening address parts of this risk, with different scopes.</p>
+  <p>The assessment also considers reading, visual and motor demands that can prevent participation, and feedback that could introduce stereotypes, humiliation or pressure to continue. Reviewing the material can reveal some of these problems; observing an afternoon is needed to understand how the adolescent experiences it.</p>
+
+  <h2>Mitigations in place</h2>
+  <p>The device can retrieve only activities approved by the parent that have not begun. Withdrawing approval removes an activity from that list. This controls initial delivery; later pages and continuations receive no second parental review.</p>
+  <p>Activity and continuation text passes through Content Safety before it is returned. A refusal blocks the whole result. The detectors cover hate, self-harm, sexual content and violence. They do not verify the physical suitability of an action in the home.</p>
+  <p>Local language checks intercept specific formulations of blame, hurry and judgments about the person. Before display, a refused proposed string is replaced with text already written in the plan. These checks reduce exposure to the formulations they recognize; equivalent wording can escape them.</p>
+
+  <h2>Readings and memory</h2>
+  <p>Interpretations of returned material inform continuations and <a href="/en/#memory">memory</a>. Retained originals allow a reading to be checked against its source. One concern is whether a description of a sheet becomes an unsupported judgment about the adolescent's ability, intent or wellbeing and influences later interactions.</p>
+
+  <h2>Household data</h2>
+  <p>Photographs can include people or private information unrelated to the activity. The parent photo routes restrict access to the authenticated household. The family can delete individual photographs or confirmed selections; deletion records prevent an upload retry from restoring the same photo. These controls concern the photo archive, rather than every record derived from an activity.</p>
+  <p>During development, photographs, returned material, readings and diagnostics may be retained and shown to the authenticated family. This allows the original material to be compared with its interpretation. Retention policy will be reviewed after development.</p>
+
+  <h2>What remains to assess</h2>
+  <p>Automated tests cover approval and withdrawal, blocking a refused generation, cross-household photo access and deletion followed by an upload retry. The <a href="/en/status/">existing trials</a> add functional and synthetic checks. Further assessment concerns detector coverage, physical suitability and participation during complete activities in the home.</p>
+  <p>Response during use also needs examination. A dangerous instruction already printed remains with the family after a software correction. Handling that situation includes identifying the affected material and informing the family. An exercised AI incident response procedure remains undocumented.</p>
+
+  <h2>Sources</h2>
+  <p><a href="https://learn.microsoft.com/en-us/training/modules/responsible-ai-studio/3-identify-harms">Microsoft Learn: identifying potential harms</a> and <a href="https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/overview">Azure OpenAI responsible AI guidance</a>, consulted on 11 September 2026. The <a href={`${REPO}/blob/main/docs/RESPONSIBLE-AI.md`}>documentation chapter</a> contains the fuller assessment and references.</p>
+</Base>

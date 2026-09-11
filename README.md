@@ -63,6 +63,7 @@ Only the value `1` selects pretend mode. Do not run equipment commands against a
 | Document | Contents |
 | --- | --- |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Current control paths, approval, safety, memory and implementation limits |
+| [docs/RESPONSIBLE-AI.md](docs/RESPONSIBLE-AI.md) | Risks, controls, evaluation and responsibility throughout an activity |
 | [docs/architecture-overview.html](docs/architecture-overview.html) | Illustrated overview with dated implementation notes |
 | [docs/an-afternoon.html](docs/an-afternoon.html) | Activity walkthrough and clock illustration |
 | [docs/ILLUSTRATED.md](docs/ILLUSTRATED.md) | Historical photographs, printed pages and screenshots |

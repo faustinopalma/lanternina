@@ -19,6 +19,7 @@ export const PAGES = [
   { slug: "flows", key: "flows" },
   { slug: "identity", key: "identity" },
   { slug: "status", key: "status" },
+  { slug: "responsible-ai", key: "responsibleAI" },
 ] as const;
 
 export type PageKey = (typeof PAGES)[number]["key"];
@@ -31,6 +32,7 @@ export const NAV: Record<PageKey, Dict> = {
   flows: { en: "How it flows", it: "Come funziona" },
   identity: { en: "Identity and access", it: "Identità e accessi" },
   status: { en: "Current implementation", it: "Implementazione attuale" },
+  responsibleAI: { en: "Responsible AI", it: "IA responsabile" },
 };
 
 export const NAV_NOTE: Record<PageKey, Dict> = {
@@ -39,6 +41,7 @@ export const NAV_NOTE: Record<PageKey, Dict> = {
   flows: { en: "Requests, state and model calls", it: "Richieste, stato e chiamate ai modelli" },
   identity: { en: "Two tenants, two audiences", it: "Due tenant, due audience" },
   status: { en: "Features and limits", it: "Funzionalità e limiti" },
+  responsibleAI: { en: "Microsoft guidance and potential harms", it: "Indicazioni Microsoft e rischi" },
 };
 
 export const UI = {
