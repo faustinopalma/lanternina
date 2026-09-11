@@ -25,7 +25,8 @@ def authenticated_since(mac: str, since: float) -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "command", choices=("CAPTURE", "STATUS", "STORAGE", "USB_TEST_ON", "USB_TEST_OFF")
+        "command",
+        choices=("CAPTURE", "CAPTURE_SETTLED", "STATUS", "STORAGE", "USB_TEST_ON", "USB_TEST_OFF"),
     )
     parser.add_argument("--mac", default="94:A9:90:D0:9D:D0")
     parser.add_argument("--authenticated-since", type=float)
@@ -69,7 +70,7 @@ def main() -> None:
                         if not short_probe:
                             raise RuntimeError("short filename probe failed")
                         return
-                if args.command == "CAPTURE":
+                if args.command in ("CAPTURE", "CAPTURE_SETTLED"):
                     if "capture_failed=" in line or "accepted=0" in line:
                         raise RuntimeError("capture or delivery failed")
                     acknowledged |= "upload=" in line and "accepted=1" in line

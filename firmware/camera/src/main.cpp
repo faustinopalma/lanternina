@@ -17,7 +17,8 @@
 #include <errno.h>
 #include "camera_secrets.h"
 
-static constexpr gpio_num_t BUTTON = GPIO_NUM_2;
+static constexpr gpio_num_t BUTTON = GPIO_NUM_7;
+static constexpr gpio_num_t RETIRED_BUTTON_D1 = GPIO_NUM_2;
 static constexpr gpio_num_t RETIRED_BUTTON = GPIO_NUM_4;
 static constexpr int LED = 5;
 static constexpr gpio_num_t RETIRED_LED = GPIO_NUM_3;
@@ -35,7 +36,7 @@ static uint32_t lastAttempt = 0;
 static const char *captureResult = "not_requested";
 static bool usbTestMode = false;
 static bool captureRequested = false;
-static int warmupFrames = 0;
+static constexpr int WARMUP_FRAMES = 2;
 static String captureId;
 static String uploadId;
 static const char *trigger = "boot";
@@ -153,10 +154,22 @@ static bool capture() {
         Serial.printf("camera_init_error=0x%x\n", initialized);
         return captureFailed("sensor_initialization");
     }
-    Serial.printf("sensor=%04x psram=%u\n", esp_camera_sensor_get()->id.PID, ESP.getPsramSize());
-    for (int frame = 0; frame < warmupFrames; ++frame) {
+    sensor_t *sensor = esp_camera_sensor_get();
+    if (!sensor || sensor->set_exposure_ctrl(sensor, 1) != 0 ||
+        sensor->set_gain_ctrl(sensor, 1) != 0 || sensor->set_whitebal(sensor, 1) != 0) {
+        esp_camera_deinit();
+        return captureFailed("automatic_controls");
+    }
+    Serial.printf("sensor=%04x psram=%u aec=%u agc=%u awb=%u warmup_frames=%d\n",
+                  sensor->id.PID, ESP.getPsramSize(), sensor->status.aec,
+                  sensor->status.agc, sensor->status.awb, WARMUP_FRAMES);
+    for (int frame = 0; frame < WARMUP_FRAMES; ++frame) {
         camera_fb_t *warmup = esp_camera_fb_get();
-        if (warmup) esp_camera_fb_return(warmup);
+        if (!warmup) {
+            esp_camera_deinit();
+            return captureFailed("warmup_frame");
+        }
+        esp_camera_fb_return(warmup);
         delay(80);
     }
     camera_fb_t *image = esp_camera_fb_get();
@@ -261,7 +274,7 @@ static void reportStatus(const char *phase) {
             status["voltage"] = millivolts * 2.0f / 16000.0f;
 #endif
             status["rssi"] = WiFi.RSSI();
-            status["firmware"] = "camera-2026-09-09-capture-led";
+            status["firmware"] = "camera-2026-09-10-d8-autoexposure";
             status["captureResult"] = captureResult;
             status["queued"] = storageReady ? queued() : -1;
             JsonObject diagnostics = status.createNestedObject("diagnostics");
@@ -444,6 +457,10 @@ void setup() {
     rtc_gpio_pulldown_dis(RETIRED_BUTTON);
     rtc_gpio_deinit(RETIRED_BUTTON);
     pinMode(RETIRED_BUTTON, INPUT);
+    rtc_gpio_pullup_dis(RETIRED_BUTTON_D1);
+    rtc_gpio_pulldown_dis(RETIRED_BUTTON_D1);
+    rtc_gpio_deinit(RETIRED_BUTTON_D1);
+    pinMode(RETIRED_BUTTON_D1, INPUT);
     rtc_gpio_deinit(BUTTON);
     pinMode(BUTTON, INPUT_PULLUP);
     pinMode(LED, OUTPUT);
@@ -524,7 +541,6 @@ void loop() {
         else {
             if (armed && !busy && !feedback && !activeFeedback && !usbTestMode) {
                 trigger = "button";
-                warmupFrames = 0;
                 startWork(true);
             }
             armed = false;
@@ -552,7 +568,6 @@ void loop() {
                 else {
                     Serial.println("command=CAPTURE accepted");
                     trigger = "usb_command";
-                    warmupFrames = strcmp(command, "CAPTURE_SETTLED") == 0 ? 2 : 0;
                     startWork(true);
                 }
             } else if (strcmp(command, "STATUS") == 0) {
@@ -564,7 +579,12 @@ void loop() {
                               (retiredMux & FUN_PU) != 0, (retiredMux & FUN_PD) != 0,
                               (retiredMux & FUN_IE) != 0,
                               (REG_READ(GPIO_ENABLE_REG) & (1UL << RETIRED_BUTTON)) != 0);
-                uint32_t buttonMux = REG_READ(IO_MUX_GPIO2_REG);
+                uint32_t retiredD1Mux = REG_READ(IO_MUX_GPIO2_REG);
+                Serial.printf("retired_gpio=2 pullup=%d pulldown=%d input_enabled=%d output_enabled=%d\n",
+                              (retiredD1Mux & FUN_PU) != 0, (retiredD1Mux & FUN_PD) != 0,
+                              (retiredD1Mux & FUN_IE) != 0,
+                              (REG_READ(GPIO_ENABLE_REG) & (1UL << RETIRED_BUTTON_D1)) != 0);
+                uint32_t buttonMux = REG_READ(IO_MUX_GPIO7_REG);
                 Serial.printf("button_gpio=%d raw=%d pullup=%d pulldown=%d input_enabled=%d output_enabled=%d mux=0x%lx\n",
                               (int)BUTTON, digitalRead(BUTTON), (buttonMux & FUN_PU) != 0,
                               (buttonMux & FUN_PD) != 0, (buttonMux & FUN_IE) != 0,
