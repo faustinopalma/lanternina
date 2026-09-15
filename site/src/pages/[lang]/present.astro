@@ -1,5 +1,5 @@
 ---
-import { ArrowLeft, ArrowRight, NotebookPen, Maximize, X, Cpu, Cloud, ShieldCheck, BookOpen, Scale, PenLine, Undo2, Trash, MousePointer2 } from "@lucide/astro";
+import { ArrowLeft, ArrowRight, NotebookPen, Maximize, X, Cpu, ShieldCheck, BookOpen, Scale, PenLine, Undo2, Trash, MousePointer2 } from "@lucide/astro";
 import { presentation } from "../../i18n/presentation";
 import "../../styles/presentation.css";
 
@@ -102,18 +102,31 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
 
       <section class="slide technology" id="slide-4" aria-labelledby="title-4" data-slide>
         <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-4">{text.technologyTitle}</h2></div>
-        <div class="technology-body">
+        <div class="execution-flow">
+          <div class="cloud-system">
+            <div class="system-heading"><img src="/images/presentation-foundry.svg" width="40" height="40" alt="Microsoft Foundry" /><h3>{text.cloudTitle}</h3></div>
+            <p>{text.cloudText}</p>
+            <dl class="agent-roles">{text.agentRoles.map(([role, task]) => <div><dt>{role}</dt><dd>{task}</dd></div>)}</dl>
+          </div>
+          <ArrowRight class="execution-arrow" size={28} aria-hidden="true" />
           <div class="home-system">
             <div class="system-heading"><Cpu size={28} aria-hidden="true" /><h3>{text.homeTitle}</h3></div>
             <p>{text.homeText}</p>
             <img src="/images/hub.webp" width="750" height="1000" alt={text.hubAlt} />
           </div>
-          <div class="cloud-system">
-            <div class="system-heading"><Cloud size={28} aria-hidden="true" /><h3>{text.cloudTitle}</h3></div>
-            <p>{text.cloudText}</p>
-            <dl class="model-roles">{text.modelRoles.map(([role, task]) => <div><dt>{role}</dt><dd>{task}</dd></div>)}</dl>
-            <p class="safety"><ShieldCheck size={24} aria-hidden="true" /><span>{text.safety}</span></p>
+          <ArrowRight class="execution-arrow" size={28} aria-hidden="true" />
+          <div class="device-system">
+            <h3>{text.devicesTitle}</h3>
+            <div class="device-list">
+              <figure><img src="/images/presentation-printer.webp" width="960" height="715" alt={text.printerAlt} /><figcaption><span class="device-name">{text.printerName}</span><span>{text.printerRole}</span></figcaption></figure>
+              <figure><img src="/images/presentation-display.webp" width="960" height="749" alt={text.displayAlt} /><figcaption><span class="device-name">{text.displayName}</span><span>{text.displayRole}</span></figcaption></figure>
+              <figure><img src="/images/camera-prototype-2.webp" width="1600" height="1200" alt={text.cameraAlt} /><figcaption><span class="device-name">{text.cameraName}</span><span>{text.cameraRole}</span></figcaption></figure>
+            </div>
           </div>
+        </div>
+        <div class="technology-footer">
+          <p class="return-path"><ArrowLeft size={24} aria-hidden="true" /><span>{text.returnPath}</span></p>
+          <p class="connection-note">{text.connectionNote} {text.safety}</p>
         </div>
       </section>
 
