@@ -68,9 +68,9 @@ export const presentation = {
       },
       {
         name: "Responsible AI",
-        purpose: "Usare l'AI con responsabilità.",
-        practice: "Equità, inclusione e trasparenza. Controlli sui contenuti e supervisione umana.",
-        limit: "I controlli riducono i rischi; la valutazione continua.",
+        purpose: "Suscitare interesse, non trattenere l'attenzione.",
+        practice: "Attività coinvolgenti che richiedano uno sforzo adatto alla persona: scegliere, provare, ragionare.",
+        limit: "Lo sforzo deve servire a imparare, non a prolungare l'uso.",
       },
     ],
     speech: [
@@ -79,7 +79,7 @@ export const presentation = {
       "Qui, per esempio, c'è una vecchia ferrovia da ricostruire. Un foglio contiene la mappa e gli indizi; un altro lascia spazio per disegnare un percorso. L'adolescente lavora sul foglio e lo fotografa. Lanternina legge ciò che è stato aggiunto e prepara il seguito. Le annotazioni blu di questo esempio sono simulate da un modello: mostrano il meccanismo, non una prova con una persona. L'attività può continuare attraverso diversi scambi, fino alla sua conclusione.",
       "Tecnicamente, un hub Linux tiene il tempo e coordina la stampante, i display e la fotocamera. Un'API in un container su Azure chiama i modelli attraverso Microsoft Foundry. Il modello di linguaggio prepara l'attività, quello di immagine disegna le pagine e quello di visione legge il materiale restituito. I testi passano controlli di formato e Content Safety. Il genitore approva la proposta iniziale; i seguiti passano i controlli automatici. Questi controlli non garantiscono che l'attività interessi alla persona.",
       "Il punto è il tempo che passa fuori dallo schermo. La carta resta sul tavolo mentre si disegna, si costruisce o si ragiona con qualcuno. L'attività arriva a una fine e il display torna a mostrare un quadro. Non c'è un feed da continuare a scorrere. Oggi il prototipo funziona in una casa; la qualità delle attività va ancora provata con le persone. Lanternina vuole rendere più facile preparare quel pomeriggio, lasciando alla famiglia la scelta di cosa farne.",
-      "Tre principi guidano il lavoro tecnico. La sicurezza informatica deve proteggere la casa e i dati da accessi non autorizzati. La pedagogia chiede attività utili per imparare, da verificare con le persone. Il Responsible AI richiede equità, inclusione, trasparenza e responsabilità, con controlli sui contenuti e supervisione umana.",
+      "Tre principi guidano il lavoro tecnico. La sicurezza informatica deve proteggere la casa e i dati. La pedagogia chiede attività utili per imparare, da verificare con le persone. Per il Responsible AI, assorbire attenzione non basta. L'attività deve attrarre e richiedere uno sforzo adatto alla persona: scegliere, provare, ragionare. Questo impegno deve sostenere l'apprendimento, non prolungare l'uso. Restano necessari equità, inclusione, trasparenza, controlli sui contenuti e supervisione umana.",
     ],
   },
   en: {
@@ -151,9 +151,9 @@ export const presentation = {
       },
       {
         name: "Responsible AI",
-        purpose: "Use AI responsibly.",
-        practice: "Fairness, inclusion and transparency. Content checks and human oversight.",
-        limit: "Checks reduce risks; assessment continues.",
+        purpose: "Engage interest, not capture attention.",
+        practice: "Engaging activities that ask for effort suited to the person: choosing, trying and reasoning.",
+        limit: "Effort should support learning, not longer use.",
       },
     ],
     speech: [
@@ -162,7 +162,7 @@ export const presentation = {
       "Here, for example, there is an old railway to reconstruct. One sheet has the map and clues; another leaves room to draw a possible route. The teenager works on the sheet and photographs it. Lanternina reads what was added and prepares the next response. A model simulated the blue annotations in this example: they show the mechanism, not a trial with a person. The activity can develop through several exchanges until it reaches its ending.",
       "Technically, a Linux hub keeps time and coordinates the printer, displays and camera. A containerised API on Azure calls models through Microsoft Foundry. A language model prepares the activity, an image model draws the pages and a vision model reads the returned material. Text passes format checks and Content Safety. The parent approves the initial proposal; continuations pass the automatic checks. Those checks cannot guarantee that the person will find the activity interesting.",
       "The point is the time spent away from the screen. The paper stays on the table while you draw, build or think with someone. The activity reaches an ending, and the display returns to showing a picture. There is no feed to keep scrolling. Today, the prototype runs in one home; activity quality still needs trials with people. Lanternina aims to make that afternoon easier to prepare, leaving the family to choose what to do with it.",
-      "Three principles guide the technical work. Cybersecurity must protect the home and its data from unauthorised access. Pedagogy calls for activities that help people learn, tested with the people who use them. Responsible AI requires fairness, inclusion, transparency and accountability, with content checks and human oversight.",
+      "Three principles guide the technical work. Cybersecurity must protect the home and its data. Pedagogy calls for activities that help people learn, tested with the people who use them. For Responsible AI, absorbing attention is not enough. An activity should engage interest and ask for effort suited to the person: choosing, trying and reasoning. That effort should support learning, not longer use. Fairness, inclusion, transparency, content checks and human oversight remain necessary.",
     ],
   },
 };
