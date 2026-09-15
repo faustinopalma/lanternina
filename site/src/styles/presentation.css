@@ -131,7 +131,27 @@ figcaption, .provenance { font-size: 0.8125rem; color: var(--cp-text-soft); }
 .technology { display: grid; grid-template-rows: auto 1fr auto; gap: 24px; }
 .technology-heading h2 { max-width: 1000px; }
 .technology-heading .eyebrow { margin-bottom: 12px; }
-.execution-flow { display: grid; grid-template-columns: minmax(0, 1.15fr) 28px minmax(0, 0.65fr) 28px minmax(0, 1fr); gap: 24px; align-items: center; }
+.execution-flow { display: grid; grid-template-columns: minmax(0, 1.15fr) 76px minmax(0, 0.65fr) 76px minmax(0, 1fr); grid-template-rows: auto repeat(3, minmax(96px, 1fr)); column-gap: 16px; align-items: center; }
+.cloud-system { grid-column: 1; grid-row: 2 / 5; }
+.home-system { grid-column: 3; grid-row: 2 / 5; }
+.cloud-links { grid-column: 2; grid-row: 2 / 5; }
+.device-links { grid-column: 4; grid-row: 2 / 5; }
+.cloud-links, .device-links { position: relative; align-self: stretch; min-height: 288px; }
+.cloud-links svg, .device-links svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.flow-mobile { display: none; }
+.plan-line, .reply-line { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.plan-line { stroke: var(--cp-accent); }
+.reply-line { stroke: var(--cp-link); }
+.plan-tip { fill: var(--cp-accent); }
+.reply-tip { fill: var(--cp-link); }
+.plan-label, .reply-label { position: absolute; left: 0; width: 100%; font-size: 0.875rem; text-align: center; }
+.plan-label { bottom: calc(58.333% + 10px); color: var(--cp-accent); }
+.reply-label { top: calc(75% + 10px); color: var(--cp-link); }
+.device-system, .device-list { display: contents; }
+.device-system > h3 { grid-column: 5; grid-row: 1; margin-bottom: 12px; }
+.device-list .printer-device { grid-column: 5; grid-row: 2; }
+.device-list .display-device { grid-column: 5; grid-row: 3; }
+.device-list .camera-device { grid-column: 5; grid-row: 4; }
 .system-heading { display: flex; align-items: center; gap: 12px; }
 .system-heading svg, .system-heading img { flex-shrink: 0; color: var(--cp-accent); }
 .home-system > p, .cloud-system > p { margin-top: 12px; color: var(--cp-text-muted); font-size: 1rem; }
@@ -142,15 +162,12 @@ figcaption, .provenance { font-size: 0.8125rem; color: var(--cp-text-soft); }
 .agent-roles > div { padding: 12px 0; border-top: 1px solid var(--cp-border); }
 .agent-roles dt { font-size: 1.125rem; font-weight: 600; }
 .agent-roles dd { margin: 4px 0 0; color: var(--cp-text-muted); font-size: 1rem; }
-.execution-arrow { color: var(--cp-accent); }
-.device-list { display: grid; gap: 12px; margin-top: 20px; }
 .device-list figure { display: grid; grid-template-columns: 136px minmax(0, 1fr); gap: 16px; align-items: center; }
 .device-list img { width: 136px; height: 96px; object-fit: contain; }
 .device-list figcaption { display: grid; gap: 4px; font-size: 0.9375rem; color: var(--cp-text-muted); }
 .device-name { font-size: 1.0625rem; font-weight: 600; color: var(--cp-text); }
 .technology-footer { border-top: 1px solid var(--cp-border); padding-top: 16px; }
-.return-path { display: flex; align-items: center; gap: 12px; font-size: 1.0625rem; }
-.return-path svg { flex-shrink: 0; color: var(--cp-accent); }
+.return-path { color: var(--cp-link); font-size: 1.0625rem; font-weight: 600; }
 .connection-note { margin-top: 8px; font-size: 0.875rem; color: var(--cp-text-muted); }
 .ending { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 48px; padding-right: 0; }
 .ending h2 { max-width: 16ch; }
@@ -238,8 +255,9 @@ html.pen-in-range, html.pen-in-range .slide { touch-action: none; }
   .parent-steps h3 { font-size: 1.125rem; }
   .parent-steps p { font-size: 1rem; }
   .slide-intro { font-size: 1.125rem; }
-  .technology { gap: 20px; }
-  .execution-flow { gap: 16px; }
+  .technology { gap: 16px; }
+  .execution-flow { column-gap: 12px; grid-template-columns: minmax(0, 1.15fr) 68px minmax(0, 0.65fr) 60px minmax(0, 1fr); grid-template-rows: auto repeat(3, minmax(84px, 1fr)); }
+  .cloud-links, .device-links { min-height: 252px; }
   .system-heading { gap: 8px; }
   .home-system > img { height: 144px; margin-top: 16px; }
   .cloud-system h3 { font-size: 1.375rem; }
@@ -247,7 +265,6 @@ html.pen-in-range, html.pen-in-range .slide { touch-action: none; }
   .agent-roles > div { padding: 8px 0; }
   .agent-roles dt { font-size: 1rem; }
   .agent-roles dd { font-size: 0.9375rem; }
-  .device-list { gap: 10px; margin-top: 16px; }
   .device-list figure { grid-template-columns: 112px minmax(0, 1fr); gap: 12px; }
   .device-list img { width: 112px; height: 76px; }
   .technology-footer { padding-top: 12px; }
@@ -289,15 +306,29 @@ html.pen-in-range, html.pen-in-range .slide { touch-action: none; }
   .paper-pair figcaption { font-size: 0.75rem; }
   .provenance { grid-column: 1; font-size: 0.75rem; }
   .technology { grid-template-rows: auto; align-content: start; }
-  .execution-flow { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .execution-arrow { justify-self: center; transform: rotate(90deg); }
+  .execution-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto 64px auto 64px auto; gap: 12px 10px; }
+  .cloud-system { grid-column: 1 / -1; grid-row: 1; }
+  .cloud-links { grid-column: 1 / -1; grid-row: 2; }
+  .home-system { grid-column: 1 / -1; grid-row: 3; }
+  .device-links { grid-column: 1 / -1; grid-row: 4; }
+  .cloud-links, .device-links { min-height: 0; }
+  .flow-desktop { display: none; }
+  .flow-mobile { display: block; }
+  .plan-label, .reply-label { width: auto; top: 50%; bottom: auto; transform: translateY(-50%); }
+  .plan-label { left: 0; }
+  .reply-label { left: auto; right: 0; }
+  .device-system > h3 { display: none; }
+  .device-list .printer-device { grid-column: 1; grid-row: 5; }
+  .device-list .display-device { grid-column: 2; grid-row: 5; }
+  .device-list .camera-device { grid-column: 3; grid-row: 5; }
   .home-system { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 12px; align-items: center; }
   .home-system > p { grid-column: 1; margin-top: 0; }
   .home-system > img { grid-column: 2; grid-row: 1 / 3; height: 128px; margin: 0; }
-  .device-list figure { grid-template-columns: 112px minmax(0, 1fr); }
-  .device-list img { height: 88px; }
-  .return-path { align-items: flex-start; font-size: 1rem; }
-  .return-path svg { transform: rotate(90deg); }
+  .device-list figure { grid-template-columns: minmax(0, 1fr); gap: 8px; align-self: start; }
+  .device-list img { width: 100%; height: 80px; }
+  .device-list figcaption { font-size: 0.8125rem; }
+  .device-name { font-size: 0.875rem; overflow-wrap: anywhere; }
+  .return-path { font-size: 1rem; }
   .principles { grid-template-rows: auto; align-content: start; }
   .principles-list { grid-template-columns: minmax(0, 1fr); }
   .principle { position: relative; padding-left: 48px; }

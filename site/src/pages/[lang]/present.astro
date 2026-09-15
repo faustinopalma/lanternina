@@ -91,30 +91,58 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
 
       <section class="slide technology" id="slide-3" aria-labelledby="title-3" data-slide>
         <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-3">{text.technologyTitle}</h2></div>
-        <div class="execution-flow">
+        <div class="execution-flow" role="group" aria-label={text.flowDescription}>
           <div class="cloud-system">
             <div class="system-heading"><img src="/images/presentation-foundry.svg" width="40" height="40" alt="Microsoft Foundry" /><h3>{text.cloudTitle}</h3></div>
             <p>{text.cloudText}</p>
             <dl class="agent-roles">{text.agentRoles.map(([role, task]) => <div><dt>{role}</dt><dd>{task}</dd></div>)}</dl>
           </div>
-          <ArrowRight class="execution-arrow" size={28} aria-hidden="true" />
+          <div class="cloud-links" aria-hidden="true">
+            <span class="plan-label">{text.flowPlan}</span>
+            <span class="reply-label">{text.flowReplies}</span>
+            <svg class="flow-desktop" viewBox="0 0 100 300" preserveAspectRatio="none" focusable="false">
+              <path class="plan-line" d="M 0 125 H 90" />
+              <path class="plan-tip" d="M 88 120 L 100 125 L 88 130 Z" />
+              <path class="reply-line" d="M 100 225 H 10" />
+              <path class="reply-tip" d="M 12 220 L 0 225 L 12 230 Z" />
+            </svg>
+            <svg class="flow-mobile" viewBox="0 0 300 64" preserveAspectRatio="none" focusable="false">
+              <path class="plan-line" d="M 85 0 V 54" />
+              <path class="plan-tip" d="M 80 52 L 85 64 L 90 52 Z" />
+              <path class="reply-line" d="M 215 64 V 10" />
+              <path class="reply-tip" d="M 210 12 L 215 0 L 220 12 Z" />
+            </svg>
+          </div>
           <div class="home-system">
             <div class="system-heading"><Cpu size={28} aria-hidden="true" /><h3>{text.homeTitle}</h3></div>
             <p>{text.homeText}</p>
             <img src="/images/hub.webp" width="750" height="1000" alt={text.hubAlt} />
           </div>
-          <ArrowRight class="execution-arrow" size={28} aria-hidden="true" />
+          <div class="device-links" aria-hidden="true">
+            <svg class="flow-desktop" viewBox="0 0 100 300" preserveAspectRatio="none" focusable="false">
+              <path class="plan-line" d="M 0 125 H 40 M 40 50 V 150 M 40 50 H 90 M 40 150 H 90" />
+              <path class="plan-tip" d="M 88 45 L 100 50 L 88 55 Z M 88 145 L 100 150 L 88 155 Z" />
+              <path class="reply-line" d="M 100 250 H 60 V 225 H 10" />
+              <path class="reply-tip" d="M 12 220 L 0 225 L 12 230 Z" />
+            </svg>
+            <svg class="flow-mobile" viewBox="0 0 300 64" preserveAspectRatio="none" focusable="false">
+              <path class="plan-line" d="M 110 0 V 24 M 50 24 H 150 M 50 24 V 54 M 150 24 V 54" />
+              <path class="plan-tip" d="M 45 52 L 50 64 L 55 52 Z M 145 52 L 150 64 L 155 52 Z" />
+              <path class="reply-line" d="M 250 64 V 24 H 210 V 10" />
+              <path class="reply-tip" d="M 205 12 L 210 0 L 215 12 Z" />
+            </svg>
+          </div>
           <div class="device-system">
             <h3>{text.devicesTitle}</h3>
             <div class="device-list">
-              <figure><img src="/images/presentation-printer.webp" width="960" height="715" alt={text.printerAlt} /><figcaption><span class="device-name">{text.printerName}</span><span>{text.printerRole}</span></figcaption></figure>
-              <figure><img src="/images/presentation-display.webp" width="960" height="749" alt={text.displayAlt} /><figcaption><span class="device-name">{text.displayName}</span><span>{text.displayRole}</span></figcaption></figure>
-              <figure><img src="/images/camera-prototype-2.webp" width="1600" height="1200" alt={text.cameraAlt} /><figcaption><span class="device-name">{text.cameraName}</span><span>{text.cameraRole}</span></figcaption></figure>
+              <figure class="printer-device"><img src="/images/presentation-printer.webp" width="960" height="715" alt={text.printerAlt} /><figcaption><span class="device-name">{text.printerName}</span><span>{text.printerRole}</span></figcaption></figure>
+              <figure class="display-device"><img src="/images/presentation-display.webp" width="960" height="749" alt={text.displayAlt} /><figcaption><span class="device-name">{text.displayName}</span><span>{text.displayRole}</span></figcaption></figure>
+              <figure class="camera-device"><img src="/images/camera-prototype-2.webp" width="1600" height="1200" alt={text.cameraAlt} /><figcaption><span class="device-name">{text.cameraName}</span><span>{text.cameraRole}</span></figcaption></figure>
             </div>
           </div>
         </div>
         <div class="technology-footer">
-          <p class="return-path"><ArrowLeft size={24} aria-hidden="true" /><span>{text.returnPath}</span></p>
+          <p class="return-path">{text.returnPath}</p>
           <p class="connection-note">{text.connectionNote} {text.safety}</p>
         </div>
       </section>
