@@ -5,6 +5,30 @@ from __future__ import annotations
 import pathlib
 import re
 import sys
+from html.parser import HTMLParser
+
+
+class PresentationCheck(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.slides = 0
+        self.notes = 0
+        self.links: list[str] = []
+        self.scripts: list[str | None] = []
+        self.ids: set[str] = set()
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if tag == "section" and "data-slide" in attributes:
+            self.slides += 1
+        if tag == "template" and "data-notes" in attributes:
+            self.notes += 1
+        if tag == "a" and attributes.get("href"):
+            self.links.append(attributes["href"])
+        if tag == "script":
+            self.scripts.append(attributes.get("src"))
+        if attributes.get("id"):
+            self.ids.add(attributes["id"])
 
 DIST = pathlib.Path("site/dist")
 SITE = "https://lanternina.com"
@@ -26,6 +50,28 @@ for page in pages:
     title = re.search(r"<title>([^<]*)</title>", html)
 
     print(f"{rel:26} lang={lang.group(1) if lang else '-':3} alts={sorted(alts) or '-'}")
+
+    parsed = PresentationCheck()
+    parsed.feed(html)
+    is_presentation = rel in {"en/present/index.html", "it/present/index.html"}
+    if is_presentation:
+        if parsed.slides != 5 or parsed.notes != 5:
+            problems.append(f"{rel}: expected five slides and five speech paragraphs")
+        required = {
+            "previous", "next", "toggle-whiteboard", "mouse-draw", "ink-width",
+            "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes",
+        }
+        if not required.issubset(parsed.ids):
+            problems.append(f"{rel}: missing controls {required - parsed.ids}")
+        if not parsed.scripts or any(not src or not src.startswith("/_astro/")
+                                     for src in parsed.scripts):
+            problems.append(f"{rel}: presentation scripts must obey the self-only CSP")
+        if 'name="robots" content="noindex, nofollow"' not in html:
+            problems.append(f"{rel}: presentation must opt out of indexing")
+    elif any("/present/" in href for href in parsed.links):
+        problems.append(f"{rel}: public site links to the unlisted presentation")
+    elif "toggle-whiteboard" in parsed.ids:
+        problems.append(f"{rel}: whiteboard leaked into the main site")
 
     if rel == "404.html":
         continue
@@ -82,6 +128,13 @@ en = {p.relative_to(DIST / "en").as_posix() for p in (DIST / "en").rglob("*.html
 it = {p.relative_to(DIST / "it").as_posix() for p in (DIST / "it").rglob("*.html")}
 if en != it:
     problems.append(f"trees differ: only in en {en - it}, only in it {it - en}")
+
+for language in ("en", "it"):
+    if not (DIST / language / "present" / "index.html").exists():
+        problems.append(f"missing {language} presentation")
+for sitemap in DIST.glob("sitemap*.xml"):
+    if "/present/" in sitemap.read_text(encoding="utf-8"):
+        problems.append(f"{sitemap.name}: unlisted presentation is in the sitemap")
 
 print(f"\nen tree: {sorted(en)}")
 print(f"it tree: {sorted(it)}")

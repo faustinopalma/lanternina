@@ -9,8 +9,9 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "7.2.9",
-    "@astrojs/sitemap": "3.7.3"
+    "@astrojs/sitemap": "3.7.3",
+    "@lucide/astro": "^1.42.0",
+    "astro": "7.2.9"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.6",

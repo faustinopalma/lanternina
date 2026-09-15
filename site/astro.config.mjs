@@ -14,7 +14,7 @@ export default defineConfig({
     sitemap({
       i18n: { defaultLocale: "en", locales: { en: "en", it: "it" } },
       // The root is a redirect to a language, so it is not itself a destination.
-      filter: (page) => page !== "https://lanternina.com/",
+      filter: (page) => page !== "https://lanternina.com/" && !page.endsWith("/present/"),
     }),
   ],
 });

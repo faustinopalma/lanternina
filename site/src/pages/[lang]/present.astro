@@ -1,0 +1,155 @@
+---
+import { ArrowLeft, ArrowRight, NotebookPen, Maximize, X, Cpu, Cloud, ShieldCheck, PenLine, Undo2, Trash, MousePointer2 } from "@lucide/astro";
+import { presentation } from "../../i18n/presentation";
+import "../../styles/presentation.css";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "it" } }];
+}
+
+const lang = Astro.params.lang === "it" ? "it" : "en";
+const text = presentation[lang];
+const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technologyLabel, text.endingLabel];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={text.description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{text.title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={`https://lanternina.com/${lang}/present/`} />
+    <link rel="alternate" hreflang="en" href="https://lanternina.com/en/present/" />
+    <link rel="alternate" hreflang="it" href="https://lanternina.com/it/present/" />
+    <link rel="alternate" hreflang="x-default" href="https://lanternina.com/en/present/" />
+    <script>
+      import "../../scripts/presentation";
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="wordmark">Lanternina<span class="brand-dot" aria-hidden="true">.</span></span>
+      <div class="tools">
+        <nav class="languages" aria-label={lang === "it" ? "Lingua" : "Language"}>
+          <a href="/it/present/" lang="it" hreflang="it" aria-label="Italiano" aria-current={lang === "it" ? "page" : undefined} data-language>IT</a>
+          <a href="/en/present/" lang="en" hreflang="en" aria-label="English" aria-current={lang === "en" ? "page" : undefined} data-language>EN</a>
+        </nav>
+        <button type="button" class="icon-button" id="toggle-whiteboard" title={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-label={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-expanded="false" aria-controls="whiteboard-tools"><PenLine size={20} /></button>
+        <button type="button" class="icon-button" id="open-notes" title={text.notes} aria-label={text.notes} aria-haspopup="dialog"><NotebookPen size={20} /></button>
+        <button type="button" class="icon-button" id="fullscreen" title={text.fullscreen} aria-label={text.fullscreen} data-enter={text.fullscreen} data-exit={text.exitFullscreen}><Maximize size={20} /></button>
+      </div>
+    </header>
+
+    <div id="whiteboard-tools" class="whiteboard-tools" role="group" aria-label={lang === "it" ? "Annotazioni" : "Annotations"} hidden>
+      <label class="mouse-mode" title={lang === "it" ? "Disegna anche con il mouse" : "Draw with the mouse too"}><MousePointer2 size={18} aria-hidden="true" /><input id="mouse-draw" type="checkbox" /><span>{lang === "it" ? "Mouse disegna" : "Mouse draws"}</span></label>
+      <div class="ink-colors" role="group" aria-label={lang === "it" ? "Colore" : "Colour"}>
+        {[
+          ["accent", lang === "it" ? "Rosso" : "Red"],
+          ["link", lang === "it" ? "Blu" : "Blue"],
+          ["success", lang === "it" ? "Verde" : "Green"],
+          ["warning", lang === "it" ? "Ambra" : "Amber"],
+          ["text", lang === "it" ? "Inchiostro" : "Ink"],
+        ].map(([color, label], index) => <button type="button" class={`ink-swatch ink-${color}`} data-ink-color={color} title={label} aria-label={label} aria-pressed={index === 0}><span></span></button>)}
+      </div>
+      <label class="ink-width"><span>{lang === "it" ? "Spessore" : "Width"}</span><input id="ink-width" type="range" min="1" max="14" value="3" /><output id="ink-width-value" for="ink-width">3</output></label>
+      <button type="button" class="icon-button" id="ink-undo" title={lang === "it" ? "Annulla tratto" : "Undo stroke"} aria-label={lang === "it" ? "Annulla tratto" : "Undo stroke"}><Undo2 size={20} /></button>
+      <button type="button" class="icon-button" id="ink-clear" title={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"} aria-label={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"}><Trash size={20} /></button>
+    </div>
+
+    <main class="deck" aria-label={text.presentation}>
+      <section class="slide opening" id="slide-1" aria-labelledby="title-1" data-slide>
+        <div class="opening-copy">
+          <p class="eyebrow">{text.prototype}</p>
+          <h1 id="title-1">Lanternina<span class="brand-dot">.</span></h1>
+          <p class="opening-line">{text.opening}</p>
+          <p class="problem">{text.problem}</p>
+          <p class="promise">{text.promise}</p>
+        </div>
+        <img class="opening-image" src="/images/camera-prototype-game.webp" width="1600" height="1200" alt={text.hardwareAlt} fetchpriority="high" />
+      </section>
+
+      <section class="slide parent" id="slide-2" aria-labelledby="title-2" data-slide>
+        <div class="parent-copy">
+          <p class="eyebrow">{text.parentLabel}</p>
+          <h2 id="title-2">{text.parentTitle}</h2>
+          <ol class="parent-steps">
+            {text.parentSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
+          </ol>
+        </div>
+        <figure class="panel-example">
+          <img src={`/images/panel-activities-${lang}.webp`} width="1200" height="900" alt={text.panelAlt} />
+          <figcaption>{text.panelCaption}</figcaption>
+        </figure>
+      </section>
+
+      <section class="slide paper" id="slide-3" aria-labelledby="title-3" data-slide>
+        <div class="paper-copy">
+          <p class="eyebrow">{text.paperLabel}</p>
+          <h2 id="title-3">{text.paperTitle}</h2>
+          <p class="slide-intro">{text.paperIntro}</p>
+        </div>
+        <div class="paper-pair">
+          <figure><img src="/images/valle-lunga-map.webp" width="1024" height="1536" alt={text.mapAlt} /><figcaption>{text.mapCaption}</figcaption></figure>
+          <ArrowRight class="paper-arrow" size={28} aria-hidden="true" />
+          <figure><img src="/images/valle-lunga-written.webp" width="1024" height="1536" alt={text.writtenAlt} /><figcaption>{text.writtenCaption}</figcaption></figure>
+        </div>
+        <p class="provenance">{text.synthetic}</p>
+      </section>
+
+      <section class="slide technology" id="slide-4" aria-labelledby="title-4" data-slide>
+        <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-4">{text.technologyTitle}</h2></div>
+        <div class="technology-body">
+          <div class="home-system">
+            <div class="system-heading"><Cpu size={28} aria-hidden="true" /><h3>{text.homeTitle}</h3></div>
+            <p>{text.homeText}</p>
+            <img src="/images/hub.webp" width="750" height="1000" alt={text.hubAlt} />
+          </div>
+          <div class="cloud-system">
+            <div class="system-heading"><Cloud size={28} aria-hidden="true" /><h3>{text.cloudTitle}</h3></div>
+            <p>{text.cloudText}</p>
+            <dl class="model-roles">{text.modelRoles.map(([role, task]) => <div><dt>{role}</dt><dd>{task}</dd></div>)}</dl>
+            <p class="safety"><ShieldCheck size={24} aria-hidden="true" /><span>{text.safety}</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide ending" id="slide-5" aria-labelledby="title-5" data-slide>
+        <div class="ending-copy">
+          <p class="eyebrow">{text.endingLabel}</p>
+          <h2 id="title-5">{text.endingTitle}</h2>
+          <p class="slide-intro">{text.endingText}</p>
+          <p class="ending-line">{text.endingLine}</p>
+          <a class="site-address" href={`/${lang}/`}>lanternina.com <ArrowRight size={24} aria-hidden="true" /></a>
+          <p class="status">{text.status}</p>
+        </div>
+        <img class="ending-image" src="/images/hero.jpg" width="1800" height="771" alt={text.endingAlt} />
+      </section>
+    </main>
+
+    <footer class="controls">
+      <button type="button" id="previous" class="arrow-button" title={text.previous} aria-label={text.previous}><ArrowLeft size={24} /></button>
+      <nav class="slide-links" aria-label={text.presentation}>
+        {labels.map((label, index) => <a href={`#${index + 1}`} data-go={index} aria-label={`${text.slide} ${index + 1}: ${label}`} title={label}><span aria-hidden="true">0{index + 1}</span></a>)}
+      </nav>
+      <span class="slide-count" aria-live="polite" aria-atomic="true"><span id="current-slide">01</span><span aria-hidden="true"> / </span><span class="sr-only"> / </span>05</span>
+      <button type="button" id="next" class="arrow-button" title={text.next} aria-label={text.next}><ArrowRight size={24} /></button>
+    </footer>
+
+    <dialog id="speaker-notes" aria-labelledby="notes-heading">
+      <div class="notes-header"><h2 id="notes-heading">{text.notes}</h2><button type="button" class="icon-button" id="close-notes" title={text.close} aria-label={text.close}><X size={24} /></button></div>
+      <p class="notes-position"></p>
+      <div id="notes-content"></div>
+    </dialog>
+    <dialog id="clear-ink-dialog" aria-labelledby="clear-ink-heading">
+      <h2 id="clear-ink-heading">{lang === "it" ? "Cancellare le annotazioni di questa slide?" : "Clear this slide's annotations?"}</h2>
+      <div class="clear-actions">
+        <button type="button" id="cancel-clear">{lang === "it" ? "Annulla" : "Cancel"}</button>
+        <button type="button" id="confirm-clear"><Trash size={18} aria-hidden="true" />{lang === "it" ? "Cancella" : "Clear"}</button>
+      </div>
+    </dialog>
+    {text.speech.map((paragraph, index) => <template data-notes={index}><p>{paragraph}</p></template>)}
+  </body>
+</html>
