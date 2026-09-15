@@ -134,6 +134,9 @@ def create_app(
     watch(app)
     app.state.settings = settings if settings is not None else Settings.from_env()
     app.state.store = store if store is not None else _account_store(app.state.settings)
+    from .adolescents import BlobPortalStore, MemoryPortalStore
+
+    app.state.portal = MemoryPortalStore()
     app.state.proposals = (
         proposals if proposals is not None else _proposal_store(app.state.settings)
     )
@@ -143,12 +146,28 @@ def create_app(
     app.state.pages = pages if pages is not None else _page_archive(app.state.settings)
     from .photos import BlobPhotoArchive, MemoryPhotoArchive
     from .routes.photos import router as photos_router
+    from .routes.photos import scans_router
+    from .scans import BlobScanArchive
 
     app.state.photos = (
         BlobPhotoArchive(app.state.settings.blob_endpoint, app.state.settings.pictures_container)
         if app.state.settings.blob_endpoint else MemoryPhotoArchive()
     )
     app.include_router(photos_router)
+    if app.state.settings.blob_configured:
+        app.state.portal = BlobPortalStore(app.state.photos.container)
+    elif app.state.settings.cosmos_configured:
+        raise RuntimeError("the adolescent portal requires durable blob storage")
+    from .routes.adolescents import router as adolescents_router
+    from .routes.portal_photos import router as portal_photos_router
+
+    app.include_router(adolescents_router)
+    app.include_router(portal_photos_router)
+    app.state.scans = (
+        BlobScanArchive(app.state.settings.blob_endpoint, app.state.settings.pictures_container)
+        if app.state.settings.blob_endpoint else MemoryPhotoArchive()
+    )
+    app.include_router(scans_router)
     app.state.themes = themes if themes is not None else _theme_store(app.state.settings)
     app.state.devices = devices if devices is not None else _device_store(app.state.settings)
     app.state.inventory = (

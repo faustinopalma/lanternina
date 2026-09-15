@@ -96,6 +96,7 @@ JOB_REMIND: Final = "remind"
 JOB_PRINT: Final = "print"
 JOB_SCAN: Final = "scan"
 JOB_PHOTO: Final = "photo"
+JOB_RETURN: Final = "return"
 
 # The jobs the parent can hand out, by kind. A thing holds as many as the parent gives it,
 # and a job may be held by several things at once: a house with two displays and three
@@ -105,7 +106,7 @@ JOBS_BY_KIND: Final[Mapping[str, tuple[str, ...]]] = {
     KIND_DISPLAY: (JOB_PICTURE, JOB_SHEET, JOB_REMIND, JOB_PHOTO),
     KIND_PRINTER: (JOB_PRINT,),
     KIND_SCANNER: (JOB_SCAN,),
-    KIND_CAMERA: (),
+    KIND_CAMERA: (JOB_SCAN,),
 }
 
 # A display given only the picture job is absent from this table on purpose. It can draw
@@ -183,7 +184,10 @@ NEEDS: Final[Mapping[Act, HouseCapability]] = {hand.act: hand.needs for hand in 
 
 # Two acts share the display, so this is smaller than HANDS and that is not a mistake.
 _PROVIDED_BY: Final[Mapping[tuple[str, str], HouseCapability]] = {
-    (hand.kind, hand.job): hand.needs for hand in HANDS
+    **{(hand.kind, hand.job): hand.needs for hand in HANDS},
+    (KIND_CAMERA, JOB_RETURN): HouseCapability.SCAN_A4,
+    (KIND_CAMERA, JOB_SCAN): HouseCapability.SCAN_A4,
+    (KIND_SCANNER, JOB_RETURN): HouseCapability.SCAN_A4,
 }
 
 # Every capability an experience can ask for, which is the set a pretend house claims.
@@ -215,9 +219,14 @@ def capabilities_of(things: Iterable[Assigned]) -> frozenset[HouseCapability]:
     morning is a question about now; this answers what the house is equipped to do, and
     conflating the two would make a catalogue flicker with the network.
     """
-    things = tuple(things)
-    found = (provided_by(thing.kind, job) for thing in things for job in thing.jobs)
-    capabilities = frozenset(capability for capability in found if capability is not None)
-    if any(thing.kind == KIND_CAMERA for thing in things):
-        capabilities |= {HouseCapability.PHOTOGRAPH_TABLE}
-    return capabilities
+    return frozenset(
+        capability for thing in things for capability in capabilities_for(thing.kind, thing.jobs)
+    )
+
+
+def capabilities_for(kind: str, jobs: Iterable[str]) -> frozenset[HouseCapability]:
+    jobs = tuple(jobs)
+    found = {provided_by(kind, job) for job in jobs} - {None}
+    if kind == KIND_CAMERA and any(job in (JOB_SCAN, JOB_RETURN) for job in jobs):
+        found.add(HouseCapability.PHOTOGRAPH_TABLE)
+    return frozenset(capability for capability in found if capability is not None)

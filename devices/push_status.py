@@ -197,7 +197,7 @@ def main() -> int:
         # knows who lives here, so it is the only side that can refuse "Sofia's printer",
         # and it refuses before the name is written anywhere the house reads from.
         kept, refused = screen_names(things, learner_name())
-        save_jobs(jobs_file, kept)
+        save_jobs(jobs_file, kept, language=str(answer.get("language", "it")))
         for thing_id in refused:
             print(f"refused the name on {thing_id}: it carries a person's name")
     shared = Path(os.environ.get("TRMNL_SCREEN_FILE", ""))

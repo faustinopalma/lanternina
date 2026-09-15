@@ -226,7 +226,39 @@ def _notice(heading: str, lines: Sequence[str]) -> Image.Image:
     return canvas.point(lambda v: 255 if v > 127 else 0).convert("1")
 
 
-def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
+def _fitted_notice(heading: str, lines: Sequence[str]) -> Image.Image:
+    canvas = Image.new("L", (WIDTH, HEIGHT), 255)
+    draw = ImageDraw.Draw(canvas)
+    inner = WIDTH - 2 * MARGIN
+    for size in range(32, 11, -2):
+        title = _load(_BOLD_CANDIDATES, size + 8)
+        body = _load(_FONT_CANDIDATES, size)
+        heading_lines = _wrap(draw, heading, title, inner)
+        body_lines = [_wrap(draw, line, body, inner) for line in lines]
+        height = len(heading_lines) * (size + 18) + 16 + sum(
+            len(wrapped) * (size + 8) + 8 for wrapped in body_lines
+        )
+        fits_width = all(
+            draw.textlength(line, font=font) <= inner
+            for wrapped, font in [(heading_lines, title), *[(part, body) for part in body_lines]]
+            for line in wrapped
+        )
+        if height <= HEIGHT - 2 * MARGIN and fits_width:
+            position = MARGIN
+            for line in heading_lines:
+                draw.text((MARGIN, position), line, font=title, fill=0)
+                position += size + 18
+            position += 16
+            for wrapped in body_lines:
+                for line in wrapped:
+                    draw.text((MARGIN, position), line, font=body, fill=0)
+                    position += size + 8
+                position += 8
+            return canvas.point(lambda value: 255 if value > 127 else 0).convert("1")
+    raise ValueError("the return instructions do not fit the display")
+
+
+def render_notice_bmp(heading: str, lines: Sequence[str], *, fit: bool = False) -> bytes:
     """The house speaking about itself: a sheet waiting, a scanner ready, a reminder due.
 
     No seal is verified here, and that is not a hole in the delivery boundary. The seals
@@ -238,7 +270,7 @@ def render_notice_bmp(heading: str, lines: Sequence[str]) -> bytes:
     must never happen is this becoming a way to draw text that came from anywhere else,
     so it takes strings from the caller and the caller is the hub, not an agent.
     """
-    return _encode(_notice(heading, lines), "BMP")
+    return _encode(_fitted_notice(heading, lines) if fit else _notice(heading, lines), "BMP")
 
 
 def render_notice_png(heading: str, lines: Sequence[str]) -> bytes:

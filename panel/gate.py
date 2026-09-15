@@ -50,6 +50,8 @@ def current_account(request: Request) -> Account:
     annotation, and FastAPI cannot resolve a name that only exists inside a closure."""
     settings: Settings = request.app.state.settings
     principal = principal_from_headers(request.headers, settings, verifier_for(request.app))
+    if request.app.state.portal.known_subject(principal.subject):
+        raise HTTPException(status_code=403, detail="not_authorised")
     return resolve_account(principal, request.app.state.store, settings)
 
 

@@ -29,7 +29,9 @@ class Photo:
 
 
 class PhotoArchive(Protocol):
-    def save(self, household: str, record: Photo, image: bytes) -> Photo: ...
+    def save(
+        self, household: str, record: Photo, image: bytes, *, preserve_state: bool = False,
+    ) -> Photo: ...
     def list(self, household: str) -> list[Photo]: ...
     def get(self, household: str, photo_id: str) -> bytes: ...
     def delete(self, household: str, photo_id: str) -> None: ...
@@ -51,13 +53,17 @@ class MemoryPhotoArchive:
         with self.lock:
             return self.reports.get(household)
 
-    def save(self, household: str, record: Photo, image: bytes) -> Photo:
+    def save(
+        self, household: str, record: Photo, image: bytes, *, preserve_state: bool = False,
+    ) -> Photo:
         with self.lock:
             key = household, record.id
             old = self.rows.get(key)
             if old:
                 if old[0].digest != record.digest or old[0].camera != record.camera:
                     raise ValueError("conflicting photograph")
+                if preserve_state:
+                    return old[0]
                 record = replace(old[0], state=record.state) if not old[0].deleted else old[0]
             self.rows[key] = record, b"" if record.deleted else image
             return record
@@ -93,6 +99,9 @@ def from_metadata(values: dict[str, str]) -> Photo:
 
 
 class BlobPhotoArchive:
+    namespace = "camera"
+    media_type = "image/jpeg"
+
     def __init__(self, endpoint: str, container: str) -> None:
         from azure.identity import DefaultAzureCredential
         from azure.storage.blob import BlobServiceClient
@@ -105,7 +114,7 @@ class BlobPhotoArchive:
         ).get_container_client(container)
 
     def prefix(self, household: str) -> str:
-        return "camera/" + hashlib.sha256(household.encode()).hexdigest() + "/"
+        return self.namespace + "/" + hashlib.sha256(household.encode()).hexdigest() + "/"
 
     def report(self, household: str, status: dict[str, Any]) -> None:
         import json
@@ -130,7 +139,9 @@ class BlobPhotoArchive:
         except ResourceNotFoundError:
             return None
 
-    def save(self, household: str, record: Photo, image: bytes) -> Photo:
+    def save(
+        self, household: str, record: Photo, image: bytes, *, preserve_state: bool = False,
+    ) -> Photo:
         from azure.core import MatchConditions
         from azure.core.exceptions import ResourceExistsError, ResourceModifiedError
         from azure.storage.blob import ContentSettings
@@ -141,7 +152,7 @@ class BlobPhotoArchive:
                 image,
                 overwrite=False,
                 metadata=metadata(record),
-                content_settings=ContentSettings(content_type="image/jpeg"),
+                content_settings=ContentSettings(content_type=self.media_type),
             )
             return record
         except ResourceExistsError:
@@ -151,7 +162,7 @@ class BlobPhotoArchive:
             old = from_metadata(properties.metadata)
             if old.digest != record.digest or old.camera != record.camera:
                 raise ValueError("conflicting photograph")
-            if old.deleted or old.state == record.state:
+            if preserve_state or old.deleted or old.state == record.state:
                 return old
             updated = replace(old, state=record.state)
             try:

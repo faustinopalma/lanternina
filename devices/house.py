@@ -25,15 +25,23 @@ import stat
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
 
 from devices.epaper import render_notice_bmp
-from devices.inventory import holders, load_jobs
+from devices.inventory import holders, jobs_language, load_jobs, return_device
 from devices.pretend import Pretend
 from devices.trmnl_byos import screen_for, sheet_layer_until
-from shared.capabilities import JOB_SHEET, REACHABLE, HouseCapability
+from shared.capabilities import (
+    JOB_RETURN,
+    JOB_SCAN,
+    JOB_SHEET,
+    REACHABLE,
+    HouseCapability,
+    capabilities_for,
+)
 from shared.ids import SheetId
 
 
@@ -48,6 +56,14 @@ _chown = getattr(os, "chown", None)
 
 
 def camera_in() -> bool:
+    jobs = _jobs_file(os.environ)
+    things = load_jobs(jobs) if jobs is not None else None
+    if things is not None:
+        return any(
+            thing.get("kind") == "camera" and not thing.get("forgottenAt")
+            and any(job in (JOB_SCAN, JOB_RETURN) for job in thing.get("jobs", []))
+            for thing in things
+        )
     path = Path(os.environ.get("LANTERNINA_CAMERA_CONFIG", "/etc/lanternina/camera.json"))
     try:
         return bool(json.loads(path.read_text(encoding="utf-8")).get("cameras"))
@@ -76,6 +92,24 @@ class House:
     pretend: Path | None = None
     camera: bool = field(default_factory=camera_in)
 
+    def jobs_path(self) -> Path | None:
+        jobs = _jobs_file(os.environ)
+        if jobs is None and self.screen is not None:
+            jobs = self.screen.with_name("jobs.json")
+        return jobs
+
+    def return_devices(self) -> list[dict[str, Any]] | None:
+        jobs = self.jobs_path()
+        return load_jobs(jobs) if jobs is not None else None
+
+    def choose_return(self, *, paper: bool) -> dict[str, str] | None:
+        things = self.return_devices()
+        chosen = return_device(things, paper=paper) if things is not None else None
+        if chosen is not None:
+            jobs = self.jobs_path()
+            chosen["language"] = jobs_language(jobs) if jobs is not None else "it"
+        return chosen
+
     @property
     def capabilities(self) -> frozenset[HouseCapability]:
         # A pretend house has whatever an experience can ask for, read off the registry
@@ -90,6 +124,15 @@ class House:
             found.add(HouseCapability.SCAN_A4)
         if self.camera:
             found.add(HouseCapability.PHOTOGRAPH_TABLE)
+        things = self.return_devices()
+        if things is not None:
+            found.discard(HouseCapability.PHOTOGRAPH_TABLE)
+            found.discard(HouseCapability.SCAN_A4)
+            found.update(
+                capability for thing in things
+                if thing.get("kind") in ("camera", "scanner") and not thing.get("forgottenAt")
+                for capability in capabilities_for(thing["kind"], thing.get("jobs", []))
+            )
         if self.screen is not None:
             found.add(HouseCapability.SHOW_800X480_1BIT)
         return frozenset(found)
@@ -167,7 +210,7 @@ def scanner_in(env: Mapping[str, str]) -> str:
     return chosen_scanner(jobs, configured)
 
 
-def show(house: House, heading: str, lines: list[str]) -> None:
+def show(house: House, heading: str, lines: list[str], *, fit: bool = False) -> None:
     pretending = house.pretending
     if pretending is not None:
         from devices import pretend as simulated
@@ -179,7 +222,7 @@ def show(house: House, heading: str, lines: list[str]) -> None:
     # Something new on the sheet layer means it is current again, whatever the last
     # afternoon's ending said about when it was done.
     sheet_layer_until(house.screen).unlink(missing_ok=True)
-    replace(house.screen, render_notice_bmp(heading, lines))
+    replace(house.screen, render_notice_bmp(heading, lines, fit=fit))
 
 
 # How long an ending stays on the wall before the display goes back to its picture.

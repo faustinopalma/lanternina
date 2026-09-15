@@ -266,6 +266,7 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                     else camera_target(
                         hub.house.sheets_dir,
                         captured if self.headers.get("X-Captured-At") else None,
+                        camera,
                     ),
                 )
             except OverflowError:

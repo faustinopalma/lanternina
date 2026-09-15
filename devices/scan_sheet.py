@@ -84,7 +84,7 @@ def find_scanner(model: str) -> str:
 
 
 def scan_page(device: str) -> NDArray[np.uint8]:
-    """One page off the glass, in memory. Nothing is written to disk on the way."""
+    """Acquire and archive one page before any cloud reading is attempted."""
     finished = subprocess.run(
         [
             "scanimage",
@@ -107,6 +107,9 @@ def scan_page(device: str) -> NDArray[np.uint8]:
     image = cv2.imdecode(buffer, cv2.IMREAD_GRAYSCALE)
     if image is None:
         raise ValueError("the scanner returned something that is not an image")
+    from devices.scan_archive import keep_scan
+
+    keep_scan(image, device)
     return np.asarray(image, dtype=np.uint8)
 
 

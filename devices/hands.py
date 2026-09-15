@@ -79,13 +79,16 @@ def registered() -> frozenset[Act]:
     return frozenset(_MOVES)
 
 
-def say(house: House, heading: str, lines: Sequence[str]) -> None:
+def say(house: House, heading: str, lines: Sequence[str], *, fit: bool = False) -> None:
     """Words on the display that are not a moment: a help rung, or a way out.
 
     Here rather than in the runner so that everything an afternoon puts in front of
     somebody leaves through this module, whatever prompted it.
     """
-    show(house, heading, list(lines))
+    if fit:
+        show(house, heading, list(lines), fit=True)
+    else:
+        show(house, heading, list(lines))
 
 
 def _spoken(said: Outgoing, moment: Moment, weight: Weight) -> list[str]:

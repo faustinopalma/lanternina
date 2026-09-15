@@ -18,6 +18,14 @@ from panel.gate import CurrentAccount, DeviceKey
 from panel.photos import Photo, PhotoArchive
 
 router = APIRouter()
+
+
+def archive_for(request: Request) -> PhotoArchive:
+    return request.app.state.scans if "scans" in request.url.path.split("/") else (
+        request.app.state.photos
+    )
+
+
 PhotoId = Annotated[str, Field(pattern=r"^[0-9a-f]{32}$")]
 Timestamp = Annotated[float, Field(ge=0, allow_inf_nan=False)]
 
@@ -28,7 +36,7 @@ class UploadedPhoto(BaseModel):
     capturedAt: Timestamp | None = None
     receivedAt: Timestamp
     state: Literal["pending", "processing", "done", "failed"] = "pending"
-    imageBase64: str = Field(max_length=1_000_000)
+    imageBase64: str = Field(max_length=16_000_000)
 
 
 class DeleteSelection(BaseModel):
@@ -94,7 +102,7 @@ class SyncReport(BaseModel):
 
 @router.post("/api/device/{household_id}/photos/sync")
 def sync_report(household_id: str, body: SyncReport, _: DeviceKey, request: Request) -> dict:
-    archive: PhotoArchive = request.app.state.photos
+    archive: PhotoArchive = archive_for(request)
     archive.report(household_id, {**body.model_dump(), "contactAt": time.time()})
     return {"ids": [row.id for row in archive.list(household_id) if row.deleted]}
 
@@ -103,7 +111,7 @@ def sync_report(household_id: str, body: SyncReport, _: DeviceKey, request: Requ
 def device_delete(household_id: str, photo_id: str, _: DeviceKey, request: Request) -> dict:
     if len(photo_id) != 32 or any(char not in "0123456789abcdef" for char in photo_id):
         raise HTTPException(400, "invalid_photo_id")
-    request.app.state.photos.delete(household_id, photo_id)
+    archive_for(request).delete(household_id, photo_id)
     return {"id": photo_id, "deleted": True}
 
 
@@ -122,18 +130,21 @@ def selected(rows: list[Photo], choice: DeleteSelection) -> list[str]:
 
 @router.post("/api/device/{household_id}/photos")
 def upload(household_id: str, body: UploadedPhoto, _: DeviceKey, request: Request) -> dict:
+    scanning = "scans" in request.url.path.split("/")
     try:
         image = base64.b64decode(body.imageBase64, validate=True)
-        if not 0 < len(image) <= 750000:
+        if not 0 < len(image) <= (12_000_000 if scanning else 750000):
             raise ValueError("invalid image size")
         with Image.open(io.BytesIO(image)) as decoded:
-            if decoded.format != "JPEG" or decoded.width * decoded.height > 12_000_000:
+            if decoded.format != ("PNG" if scanning else "JPEG") or (
+                decoded.width * decoded.height > 12_000_000
+            ):
                 raise ValueError("invalid JPEG")
             decoded.load()
             width, height = decoded.size
     except (ValueError, OSError) as exc:
         raise HTTPException(400, "invalid_photo") from exc
-    archive: PhotoArchive = request.app.state.photos
+    archive: PhotoArchive = archive_for(request)
     try:
         record = archive.save(
             household_id,
@@ -156,13 +167,13 @@ def upload(household_id: str, body: UploadedPhoto, _: DeviceKey, request: Reques
 
 @router.get("/api/device/{household_id}/photos/deleted")
 def deleted(household_id: str, _: DeviceKey, request: Request) -> dict:
-    archive: PhotoArchive = request.app.state.photos
+    archive: PhotoArchive = archive_for(request)
     return {"ids": [row.id for row in archive.list(household_id) if row.deleted]}
 
 
 @router.get("/api/photos")
 def listing(account: CurrentAccount, request: Request, page: int = 1) -> dict:
-    archive: PhotoArchive = request.app.state.photos
+    archive: PhotoArchive = archive_for(request)
     rows = sorted(
         (row for row in archive.list(str(account.household_id)) if not row.deleted),
         key=lambda row: (row.date, row.id),
@@ -185,21 +196,22 @@ def content(photo_id: str, account: CurrentAccount, request: Request) -> Respons
     if len(photo_id) != 32 or any(char not in "0123456789abcdef" for char in photo_id):
         raise HTTPException(404, "unknown_photo")
     try:
-        image = request.app.state.photos.get(str(account.household_id), photo_id)
+        image = archive_for(request).get(str(account.household_id), photo_id)
     except KeyError as exc:
         raise HTTPException(404, "unknown_photo") from exc
-    return Response(image, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
+    media = "image/png" if "scans" in request.url.path.split("/") else "image/jpeg"
+    return Response(image, media_type=media, headers={"Cache-Control": "no-store"})
 
 
 @router.post("/api/photos/delete-preview")
 def preview(body: DeleteSelection, account: CurrentAccount, request: Request) -> dict:
-    return {"ids": selected(request.app.state.photos.list(str(account.household_id)), body)}
+    return {"ids": selected(archive_for(request).list(str(account.household_id)), body)}
 
 
 @router.post("/api/photos/delete")
 def delete(body: DeleteConfirmed, account: CurrentAccount, request: Request) -> dict:
     household = str(account.household_id)
-    archive: PhotoArchive = request.app.state.photos
+    archive: PhotoArchive = archive_for(request)
     allowed = set(selected(archive.list(household), body))
     removed, failed = [], []
     for photo_id in dict.fromkeys(body.ids):
@@ -211,3 +223,11 @@ def delete(body: DeleteConfirmed, account: CurrentAccount, request: Request) -> 
         except Exception:
             failed.append(photo_id)
     return {"deleted": removed, "failed": failed}
+
+
+scans_router = APIRouter()
+for photo_route in router.routes:
+    scans_router.add_api_route(
+        photo_route.path.replace("/photos", "/scans"), photo_route.endpoint,
+        methods=list(photo_route.methods), name="scan_" + photo_route.name,
+    )

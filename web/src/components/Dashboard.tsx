@@ -10,6 +10,7 @@ import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Devices } from "@/sections/Devices";
+import { Adolescents } from "@/sections/Adolescents";
 import { Drafts } from "@/sections/Drafts";
 import { Experiences } from "@/sections/Experiences";
 import { Guidelines } from "@/sections/Guidelines";
@@ -113,6 +114,7 @@ export function Dashboard({ api }: { api: Api }) {
       name: "settings",
       title: t("menu.group.settings"),
       sections: [
+        { name: "adolescents", title: t("access.title"), note: "", Body: Adolescents },
         { name: "rhythm", title: t("rhythm.title"), note: t("rhythm.note"), Body: Rhythm },
         {
           name: "preferences",

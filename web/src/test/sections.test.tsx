@@ -400,6 +400,36 @@ describe("the rhythm", () => {
 describe("the devices", () => {
   beforeEach(() => window.localStorage.clear());
 
+  it("offers one return function on each independently described camera", async () => {
+    const original = await fakeApi().devices();
+    const cameras = ["CAM-A", "CAM-B"].map(id => ({
+      ...original.devices[0]!, id, label: id, kind: "camera" as const,
+      name: id === "CAM-A" ? "Scocca bianca" : "Scocca nera", jobs: [], jobChoices: ["scan"],
+    }));
+    const api = fakeApi({ devices: async () => ({ ...original, devices: cameras }) });
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    const groups = await screen.findAllByRole("group", {
+      name: "A cosa serve questo dispositivo",
+    });
+    expect(within(groups[0]!).getAllByRole("checkbox")).toHaveLength(1);
+    expect(within(groups[1]!).getAllByRole("checkbox")).toHaveLength(1);
+    const receives = within(groups[0]!).getByRole("checkbox", {
+      name: "mostra a Lanternina",
+    });
+    await user.click(receives);
+    await user.click(within(groups[1]!).getByRole("checkbox", {
+      name: "mostra a Lanternina",
+    }));
+    await user.click(receives);
+    expect(api.recorded.assignments).toEqual([
+      { id: "CAM-A", assignment: { jobs: ["scan"] } },
+      { id: "CAM-B", assignment: { jobs: ["scan"] } },
+      { id: "CAM-A", assignment: { jobs: [] } },
+    ]);
+  });
+
   it("lists multiple cameras without an unassignable job label", async () => {
     const original = await fakeApi().devices();
     const cameras = ["D09DD0", "D09DD1"].map(id => ({

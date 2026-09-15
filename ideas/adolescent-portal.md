@@ -1,0 +1,17 @@
+# An invited adolescent can show a photograph
+
+The parent can invite an adolescent to a separate portal. The first action is taking or choosing a photograph and sending it to Lanternina. The photograph remains available to the authenticated family under the development retention decision recorded on 9 September 2026.
+
+Membership is separate from parent approval. This reuses the existing identity provider for registration and account recovery while preventing a portal account from acquiring configuration or approval permissions. An adolescent subject remains excluded from the parent gate after revocation; visiting the parent panel cannot turn revocation into a pending parent signup.
+
+The parent generates a code tied to the adolescent's email and shares it outside Lanternina. Acceptance requires possession of that code and an authenticated account whose email matches it. The service stores the secret's digest and consumes it through a conditional write. The invitation itself does not prove mailbox access; email verification remains the identity provider's responsibility.
+
+The photograph follows the existing home processing path. Reusing it preserves durable receipt, duplicate handling, moment matching and family deletion, at the cost of waiting for synchronization. A standalone photograph can be displayed or archived; it does not automatically receive a model interpretation. The portal states receipt and processing status without implying that a model has answered.
+
+The access register uses one private Blob Storage document with ETag concurrency. This avoids provisioning a database container for the current installation, but every membership lookup reads the shared document. A larger population needs partitioned invitation and subject indexes while preserving atomic consumption and revoked-subject exclusion.
+
+The owner excluded Azure Communication Services on 15 September 2026 and chose an offline-shareable redemption code. The SMTP adapter and its configuration were removed. This removes delivery configuration and failures at the cost of the parent's manual sharing step. The parent can copy either the code or a prefilled portal link. The deployment and acceptance checklist is in [the portal guide](../docs/ADOLESCENT-PORTAL.md).
+
+The changes were implemented on 15 September 2026 without reverting concurrent camera and scanner work. Invitation, authorization, photograph and browser tests demonstrate the local implementation. Production readiness additionally requires deployed frontend and API, an updated camera hub and a trial with a real invited account.
+
+The API, frontend and hub synchronizer were deployed on 15 September 2026 after 1,102 Python tests and 153 frontend tests passed. ACR run dt36 built image portal-code-20260915071502; revision 0000123 is healthy and serves the new routes. The 24 API environment settings and secret references were preserved. The live portal returns 200, anonymous protected requests return 403 and the identity provider presents registration. The hub's authenticated pull succeeded. Source and old/new frontend assets are under tmp/portal-code-20260915071502; the previous hub module is under /var/lib/lanternina/backups/portal-code-20260915071502. Real adolescent registration and redemption remain a family acceptance check. No Communication Services resource, SMTP configuration, identity change, firmware change, commit or push was needed.

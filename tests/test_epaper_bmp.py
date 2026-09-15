@@ -40,6 +40,36 @@ def test_the_notice_is_still_the_geometry_the_firmware_expects(tmp_path) -> None
     assert len(validate_screen(path)) > 0
 
 
+def test_return_notice_fits_task_and_long_device_name(monkeypatch):
+    from io import BytesIO
+
+    from PIL import Image, ImageDraw
+
+    from devices.epaper import HEIGHT, MARGIN, WIDTH
+    from shared.experience import MAX_HEADING, MAX_LINE, MAX_LINES
+
+    original = ImageDraw.ImageDraw.text
+    drawn = []
+
+    def record(draw, position, text, **kwargs):
+        bounds = draw.textbbox(position, text, font=kwargs["font"])
+        assert bounds[0] >= MARGIN and bounds[2] <= WIDTH - MARGIN
+        assert bounds[1] >= MARGIN and bounds[3] <= HEIGHT - MARGIN
+        drawn.append(text)
+        return original(draw, position, text, **kwargs)
+
+    monkeypatch.setattr(ImageDraw.ImageDraw, "text", record)
+    lines = ["W" * MAX_LINE] * MAX_LINES
+    instruction = "Quando hai finito, fotografa il lavoro con:"
+    bmp = render_notice_bmp("W" * MAX_HEADING, [*lines, instruction, "W" * 40], fit=True)
+    image = Image.open(BytesIO(bmp))
+    assert image.size == (WIDTH, HEIGHT)
+    assert image.mode == "1"
+    assert "W" * 40 in drawn
+    assert "fotografa" in " ".join(drawn)
+    assert set(image.getdata()) == {0, 255}
+
+
 def _a_drawing() -> bytes:
     """A small PNG standing in for what the model sends back."""
     from io import BytesIO

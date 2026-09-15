@@ -43,6 +43,19 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
     for photo_id in report()["ids"]:
         hub.delete(photo_id)
         hub.store.synced(photo_id, "deleted")
+    from devices.run_experience import camera_target
+
+    incoming = ask(
+        f"{house.panel.rstrip('/')}/api/device/{house.household}/portal-photos/pull",
+        {}, key=house.device_key, timeout=30,
+    )
+    for photo in incoming["photos"]:
+        image = base64.b64decode(photo["imageBase64"], validate=True)
+        if hub.store.accept(
+            photo["id"], photo["camera"], image, captured=photo["capturedAt"],
+            target=camera_target(house.sheets_dir, photo["capturedAt"]),
+        ):
+            hub.changed.set()
     completed = 0
     for pending in hub.store.unsynced()[:50]:
         row = hub.store.get(pending["id"])

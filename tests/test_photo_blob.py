@@ -68,3 +68,13 @@ def test_blob_delete_replaces_bytes_with_tombstone_in_one_conditional_write():
     assert blob.data == b""
     assert from_metadata(blob.metadata).deleted
     archive.delete("family", photo.id)
+
+
+def test_portal_duplicate_never_resets_processing_state():
+    blob = Blob()
+    archive = object.__new__(BlobPhotoArchive)
+    archive.container = SimpleNamespace(get_blob_client=lambda _: blob)
+    photo = Photo("a" * 32, "portal:member", None, 101, 1600, 1200, "done", "digest")
+    archive.save("family", photo, b"jpeg")
+    result = archive.save("family", replace(photo, state="pending"), b"jpeg", preserve_state=True)
+    assert result.state == "done"

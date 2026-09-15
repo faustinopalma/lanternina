@@ -124,6 +124,7 @@ def report_devices(
     # row -- and the job and the name on it -- having to be destroyed.
     return {
         "recorded": recorded,
+        "language": request.app.state.preferences.get(household_id).language,
         "displayPollMinutes": request.app.state.rhythm.get(household_id).display_poll_minutes,
         "things": [
             with_display_interval(row.to_public(), request, household_id)

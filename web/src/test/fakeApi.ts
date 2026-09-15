@@ -27,6 +27,37 @@ import type {
   UsageAnswer,
   HouseRequest,
 } from "@/api/types";
+import type { PortalApi } from "@/portal/api";
+
+export function fakePortalApi(): PortalApi {
+  const images = new Map<string, Blob>();
+  const photos: Awaited<ReturnType<PortalApi["send"]>>[] = [];
+  return {
+    me: async () => ({ id: "preview", email: "adolescente@example.invalid" }),
+    accept: async () => { throw new Error("Invitations unavailable in preview"); },
+    photos: async () => ({ photos: [...photos], page: 1, pages: 1, total: photos.length }),
+    content: async (id) => {
+      const blob = images.get(id);
+      if (!blob) throw new Error("Unknown preview photograph");
+      return blob;
+    },
+    send: async (id, blob) => {
+      const old = photos.find((entry) => entry.id === id);
+      if (old) return old;
+      const now = Date.now() / 1000;
+      const photo = { id, camera: "portal:preview", receivedAt: now, capturedAt: now,
+        date: now, width: 1600, height: 1200, state: "pending" as const };
+      images.set(id, blob);
+      photos.unshift(photo);
+      return photo;
+    },
+    delete: async (id) => {
+      images.delete(id);
+      const index = photos.findIndex((entry) => entry.id === id);
+      if (index >= 0) photos.splice(index, 1);
+    },
+  };
+}
 
 export interface Recorded {
   decisions: { id: string; state: Decision }[];
@@ -455,6 +486,9 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   };
 
   const base: Api = {
+    familyAccess: async () => ({ members: [], invitations: [] }),
+    inviteAdolescent: async () => { throw new Error("Invitations unavailable in preview"); },
+    revokeAdolescent: async () => { throw new Error("No adolescent in preview"); },
     admission: async (): Promise<Admission> => ({
       kind: "in",
       me: { accountId: "acct-demo", householdId: "house-demo", status: "active" },

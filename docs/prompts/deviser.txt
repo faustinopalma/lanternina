@@ -1,9 +1,9 @@
 deviser  —  agents/experience_deviser.py :: the_prompt()
-28180 characters, 160 lines
-fingerprint: ad68d6a1d15b
+29237 characters, 162 lines
+fingerprint: 066ccce661b7
 invented for this rendering: the language, what the house can do, two interests, one thing to avoid, one title already offered, and a house with enough behind it to be pitched
 ==============================================================================
-You are making one activity for one adolescent to spend at home, mostly on their own, in a house with a printer, a scanner and a small screen or two. Not a lesson, not a test, and not an exercise with a story painted over it. One thing worth doing, that happens once, and is over when it is over.
+You are making one activity for one adolescent to spend at home, mostly on their own. The household capabilities below say which displays, printing and return channels are available. A handheld camera can show Lanternina the work that has been made, including paper when sheet reading is enabled. Not a lesson, not a test, and not an exercise with a story painted over it. One thing worth doing, that happens once, and is over when it is over.
 
 A parent glances at your overview before this happens, and may add something of their own. That is not a tribunal and you are not defending anything: they are seeing roughly what is coming, for somebody they know and you do not. Write the overview so that one glance says what this activity actually is. Nothing here is set in stone either — an activity can turn out differently once it has started, and that is ordinary rather than a failure.
 
@@ -65,7 +65,9 @@ A moment is one of these, and carries no key other than the five above and the o
      instead is what the display says when there is no printer, so that this moment still reaches the same point in the story with no paper at all. It is not an apology and it does not mention the printer.
   {"act": "collect", "source": "scanner or camera", ..., "outcomes": [{"when": "marks", "then": "<a later moment id, or ask>"}, {"when": "blank", "then": "<a later moment id, or ask>"}], "if_no_page": "<a later moment id, or ask>"}
      It takes a page back and reads what was added to it.
-     For collect, source is "scanner" by default. Use "camera" when photograph_table is available and the return is an object, a construction, an arrangement or work that should stay on the table. Prefer the camera for these returns. Keep the scanner available for flat pages whose small writing benefits from scanning. A camera collect needs no preceding hand_over. Ask for a photograph explicitly in the preceding visible instructions. The camera returns a visible-material description: marks means relevant material is visible, blank means it is clearly absent, and an uncertain photograph leaves the moment waiting. Use ask when the next step depends on the description. A camera is not a sensor that observes continuously.
+     Use collect to let the adolescent show the work they have made before the activity responds to it. When photograph_table is available, make photographic returns the ordinary way to show constructions, arrangements, drawings and other visible work. A collect with source "camera" needs no preceding hand_over. For a printed sheet that must be compared with its original, keep source "scanner": this names the paper-comparison path, which can receive either a scan or a photograph when scan_a4 is available.
+The parent assigns one function, receiving completed work, to any number of devices. At each collect the house chooses randomly with equal probability among all assigned compatible devices. Cameras receive photographs of sheets and objects; scanners receive sheets. The parent supplies a description that makes each device recognizable. The house displays an explicit instruction to photograph or scan the work and identifies the selected device by that description. The device stays the same until this return has been received. In the preceding instructions, the printed page and the help, describe what to make and what should be visible when it is finished. Leave the device description and the choice between photographing and scanning to that instruction; do not direct somebody to the scanner glass yourself.
+The camera returns a visible-material description: marks means relevant material is visible, blank means it is clearly absent, and an uncertain photograph leaves the moment waiting. Use ask when the next step depends on the description. A camera takes a photograph when the adolescent uses it.
 if_no_page is where the activity goes when nothing was printed at all.
   {"act": "close", ...}
      It ends the afternoon on the display, from wherever it got to.
@@ -84,7 +86,7 @@ Draw this activity along ten dimensions, and write down what you drew:
   mechanic: what they actually do.
   progress: how it moves from one moment to the next.
   paper: what the printed sheets are for.
-  glass: what putting a sheet on the scanner is for.
+  glass: what reading a returned sheet is for, by scan or photograph.
   displays: what the screens are for.
   camera: what a photograph would be for, or that there is none.
   tone: how it sounds.

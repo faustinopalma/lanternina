@@ -20,6 +20,10 @@ Content preferences include interests, subjects to avoid, Italian or English, a 
 
 Saving configuration stores state; it does not contact the hub. The hub reads changes on its next request. Brief editing has its own model-assisted API path, so the stronger claim that every dashboard action is model-free would be incorrect. An initial approval permits the activity; it does not preapprove every later generated word or image individually.
 
+## Adolescent access
+
+The parent can generate an invitation code for the separate `/portal` interface and share the code or link outside Lanternina. The adolescent registers through the existing identity provider, redeems the code and can send photographs, see their processing state and delete them. The parent retains invitation, revocation and family archive controls. [The portal guide](docs/ADOLESCENT-PORTAL.md) describes the flow, deployment order and the remaining identity-provider and physical-device checks.
+
 ## What is remembered
 
 The system stores configuration, offered activities, generated pages and the activity trail. It also stores how activities ended, their reported duration, returned or missing sheets and bounded reading-derived summaries. A separate model places returned pages on the `load` and `ink` axes. Arithmetic combines recent observations with activity duration to compute the `span` axis. The resulting profile steers generation and continuation; the panel does not expose the profile as a score.

@@ -45,7 +45,7 @@ import time
 import urllib.error
 import urllib.request
 from collections.abc import Sequence
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
@@ -157,6 +157,7 @@ class Afternoon:
     # the current end hour one of the things a runner must be able to rebuild from, and an
     # hour derived from `started_at` cannot be moved without lying about when it began.
     over_at: float = 0.0
+    return_device: dict[str, str] = field(default_factory=dict)
 
     @property
     def moments(self) -> tuple[Moment, ...]:
@@ -197,6 +198,7 @@ class Afternoon:
             "waited_since": self.waited_since,
             "helped": self.helped,
             "over_at": self.over_at,
+            "return_device": dict(self.return_device),
         }
 
     @staticmethod
@@ -220,6 +222,7 @@ class Afternoon:
             waited_since=float(values.get("waited_since", began)),
             helped=int(values.get("helped", 0)),
             over_at=float(values.get("over_at", began + experience.minutes * 60.0)),
+            return_device=dict(values.get("return_device", {})),
         )
 
 
@@ -433,6 +436,7 @@ def _over_at(run: Afternoon, when: float) -> Afternoon:
         waited_since=run.waited_since,
         helped=run.helped,
         over_at=when,
+        return_device=run.return_device,
     )
 
 
@@ -479,8 +483,11 @@ def offer_help(house: House, now: float, *, send: bool = True) -> list[str]:
             continue
         rung, at = helped
         out = Outgoing()
-        hands.say(house, at.heading, list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines,
-                                               written=rung.lines)))
+        lines = list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines, written=rung.lines))
+        if run.return_device:
+            hands.say(house, at.heading, [*lines, *_return_lines(run)], fit=True)
+        else:
+            hands.say(house, at.heading, lines)
         _say_the_tally(out)
         _write(_run_file(house.sheets_dir, run.run_id), _one_rung_on(run).to_dict())
         given.append(f"{run.run_id} {at.id} rung {run.helped + 1}")
@@ -517,6 +524,7 @@ def _one_rung_on(run: Afternoon) -> Afternoon:
         waited_since=run.waited_since,
         helped=run.helped + 1,
         over_at=run.over_at,
+        return_device=run.return_device,
     )
 
 
@@ -546,6 +554,7 @@ def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | N
         waited_since=run.waited_since,
         helped=run.helped,
         over_at=run.over_at,
+        return_device=run.return_device,
     )
 
 
@@ -769,6 +778,9 @@ def _pause(
     Arriving at a moment resets its ladder. A rung given at the moment before has nothing to
     do with this one, and carrying the count forward would be the beginning of a tally.
     """
+    selected = house.choose_return(paper=at.source == "scanner")
+    if house.return_devices() is not None and selected is None:
+        raise CannotRun("no assigned device can receive this return")
     waiting = Afternoon(
         run_id=run.run_id,
         experience=run.experience,
@@ -780,10 +792,32 @@ def _pause(
         answered=run.answered,
         waited_since=now,
         over_at=run.over_at,
+        return_device=selected or {},
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
     for sheet_id in printed:
         _write(_page_file(house.sheets_dir, sheet_id), {"run_id": run.run_id})
+    if selected:
+        earlier = run.moments[:_index_of(run, at.id)]
+        previous = earlier[-1] if earlier else at
+        lines = previous.at(weight).lines
+        if isinstance(previous, HandOver) and not printed:
+            lines = previous.instead
+        hands.say(house, previous.heading, [*lines, *_return_lines(waiting)], fit=True)
+
+
+def _return_lines(run: Afternoon) -> list[str]:
+    camera = run.return_device.get("kind") == "camera"
+    english = run.return_device.get("language", "it") == "en"
+    if camera:
+        action = "When finished, photograph the work with:" if english else (
+            "Quando hai finito, fotografa il lavoro con:"
+        )
+    else:
+        action = "When finished, put the sheet on the scanner:" if english else (
+            "Quando hai finito, metti il foglio sullo scanner:"
+        )
+    return [action, run.return_device["name"]]
 
 
 @exclusive
@@ -947,7 +981,9 @@ def _ask(
     return carrying_on
 
 
-def camera_target(sheets_dir: Path, captured: float | None) -> dict[str, Any] | None:
+def camera_target(
+    sheets_dir: Path, captured: float | None, camera: str = ""
+) -> dict[str, Any] | None:
     if captured is None:
         return None
     runs = [_read_run(_run_file(sheets_dir, name)) for name in waiting_runs(sheets_dir)]
@@ -958,6 +994,11 @@ def camera_target(sheets_dir: Path, captured: float | None) -> dict[str, Any] | 
     if len(candidates) != 1:
         return None
     run = candidates[0]
+    if run.return_device and (
+        run.return_device.get("kind") != "camera"
+        or (camera and run.return_device.get("id", "").upper() != camera.upper())
+    ):
+        return None
     return {"run": run.run_id, "moment": run.waiting_at, "since": run.waited_since}
 
 
@@ -998,6 +1039,17 @@ def carry_on(
             panel=house.panel, household=house.household, key=house.device_key,
         )
     else:
+        active = [
+            run for name in waiting_runs(house.sheets_dir)
+            if (run := _read_run(_run_file(house.sheets_dir, name))) is not None
+            and not run.leaving_at
+        ]
+        selected_run = active[0] if len(active) == 1 else None
+        if selected_run is not None and selected_run.return_device:
+            selected = selected_run.return_device
+            if selected.get("kind") == "camera":
+                return "the afternoon is waiting for a photograph"
+            house = replace(house, scanner=selected.get("model") or house.scanner)
         sheet_id, reading = _read(house)
         pointer = _page_file(house.sheets_dir, sheet_id)
         if not pointer.is_file():

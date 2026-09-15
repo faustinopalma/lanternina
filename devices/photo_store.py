@@ -21,6 +21,10 @@ PHOTO_ID = re.compile(r"[0-9a-f]{32}")
 
 
 class PhotoStore:
+    image_format = "JPEG"
+    max_image_bytes = MAX_PHOTO_BYTES
+    initial_state = "pending"
+
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True, mode=0o750)
         self.path = path
@@ -83,11 +87,11 @@ class PhotoStore:
     ) -> bool:
         if not PHOTO_ID.fullmatch(photo_id):
             raise ValueError("invalid capture identifier")
-        if not 0 < len(jpeg) <= MAX_PHOTO_BYTES:
+        if not 0 < len(jpeg) <= self.max_image_bytes:
             raise ValueError("invalid photograph size")
         with Image.open(io.BytesIO(jpeg)) as image:
-            if image.format != "JPEG" or image.width * image.height > 12_000_000:
-                raise ValueError("expected a JPEG of at most 12 megapixels")
+            if image.format != self.image_format or image.width * image.height > 12_000_000:
+                raise ValueError(f"expected {self.image_format} of at most 12 megapixels")
             image.load()
         digest = hashlib.sha256(jpeg).hexdigest()
         with self.connect() as database:
@@ -103,8 +107,9 @@ class PhotoStore:
             if total + len(jpeg) > MAX_ARCHIVE_BYTES or count >= 10000:
                 raise OverflowError("the family photograph archive is full")
             database.execute(
-                "INSERT INTO photos VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', '')",
-                (photo_id, camera, digest, jpeg, time.time(), captured, json.dumps(target)),
+                "INSERT INTO photos VALUES (?, ?, ?, ?, ?, ?, ?, ?, '')",
+                (photo_id, camera, digest, jpeg, time.time(), captured, json.dumps(target),
+                 self.initial_state),
             )
         return True
 

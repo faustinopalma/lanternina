@@ -155,6 +155,104 @@ def test_camera_only_activity_needs_no_printer_or_scanner(house, monkeypatch):
                     send=False) == "the afternoon is finished"
 
 
+def test_return_choice_is_named_saved_and_kept_through_help(house, monkeypatch):
+    from devices.inventory import save_jobs
+
+    jobs = house.sheets_dir.parent / "jobs.json"
+    monkeypatch.setenv("LANTERNINA_JOBS_FILE", str(jobs))
+    save_jobs(jobs, [
+        {"id": "CAM-A", "kind": "camera", "name": "Rossa", "jobs": ["scan"]},
+        {"id": "CAM-B", "kind": "camera", "name": "Verde", "jobs": ["scan"]},
+        {"id": "scanner", "kind": "scanner", "jobs": ["scan"], "model": "glass"},
+    ])
+    monkeypatch.setattr("devices.inventory.random.choice", lambda candidates: candidates[1])
+    shown = []
+    monkeypatch.setattr(
+        "devices.hands.say", lambda _house, heading, lines, **kw: shown.append(lines),
+    )
+    begin(house, an_experience(), now=100, send=False)
+    run = Afternoon.from_dict(json.loads(runs(house)[0].read_text()))
+    assert run.return_device["id"] == "CAM-B"
+    assert shown[-1][-1] == "Verde"
+    assert "fotografa" in shown[-1][-2]
+    previous = run.moments[run_experience._index_of(run, run.waiting_at) - 1]
+    assert shown[-1][:-2] == list(previous.at(run.weight).lines)
+    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-A") is None
+    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-B") is not None
+    assert run_experience._one_rung_on(run).return_device == run.return_device
+    assert run_experience._over_at(run, 2000).return_device == run.return_device
+    monkeypatch.setattr(run_experience, "_read", lambda *_: pytest.fail("scanner called"))
+    assert carry_on(house, now=102) == "the afternoon is waiting for a photograph"
+
+
+def test_selected_scanner_is_the_one_read(house, monkeypatch):
+    from devices.inventory import save_jobs
+
+    jobs = house.sheets_dir.parent / "jobs.json"
+    monkeypatch.setenv("LANTERNINA_JOBS_FILE", str(jobs))
+    save_jobs(jobs, [
+        {"id": "scanner-a", "kind": "scanner", "jobs": ["scan", "return"],
+         "model": "first"},
+        {"id": "scanner-b", "kind": "scanner", "jobs": ["scan", "return"],
+         "model": "second"},
+    ])
+    monkeypatch.setattr("devices.inventory.random.choice", lambda candidates: candidates[-1])
+    begin(house, an_experience(), now=100, send=False)
+    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-A") is None
+    seen = []
+    monkeypatch.setattr(run_experience, "_read", lambda selected: (
+        seen.append(selected.scanner) or str(last_sheet(house)), _reading(marks=False)
+    ))
+    assert carry_on(house, now=102, send=False) == "the afternoon is finished"
+    assert seen == ["second"]
+
+
+def test_camera_assigned_to_read_paper_can_run_without_scanner(house, monkeypatch):
+    from dataclasses import replace
+
+    from devices.inventory import save_jobs
+    from tests.test_photo_store import jpeg
+
+    jobs = house.sheets_dir.parent / "jobs.json"
+    monkeypatch.setenv("LANTERNINA_JOBS_FILE", str(jobs))
+    save_jobs(jobs, [
+        {"id": "CAM", "kind": "camera", "jobs": ["scan", "return"], "name": "Verde"},
+    ])
+    camera_house = replace(house, scanner="", camera=True)
+    begin(camera_house, an_experience(), now=100, send=False)
+    target = run_experience.camera_target(house.sheets_dir, 101, "CAM")
+    assert target is not None
+    seen = []
+    monkeypatch.setattr(run_experience, "read_page", lambda blank, image, **kwargs: (
+        seen.append(blank) or _reading(marks=False)
+    ))
+    assert carry_on(camera_house, now=102, photograph=jpeg(), target=target,
+                    send=False) == "the afternoon is finished"
+    assert seen[0] is not None
+
+
+def test_return_instruction_uses_the_parent_language_and_unassigned_means_disabled(
+    house, monkeypatch,
+):
+    from devices.inventory import save_jobs
+    from shared.capabilities import HouseCapability
+
+    jobs = house.sheets_dir.parent / "jobs.json"
+    monkeypatch.setenv("LANTERNINA_JOBS_FILE", str(jobs))
+    save_jobs(jobs, [
+        {"id": "CAM", "kind": "camera", "jobs": ["return", "scan"], "name": "Green"},
+    ], language="en")
+    begin(house, an_experience(), now=100, send=False)
+    run = Afternoon.from_dict(json.loads(runs(house)[0].read_text()))
+    assert run_experience._return_lines(run) == [
+        "When finished, photograph the work with:", "Green",
+    ]
+    save_jobs(jobs, [{"id": "CAM", "kind": "camera", "jobs": []}])
+    assert HouseCapability.PHOTOGRAPH_TABLE not in house.capabilities
+    assert HouseCapability.SCAN_A4 not in house.capabilities
+    assert run.return_device["id"] == "CAM"
+
+
 # ── Beginning ────────────────────────────────────────────────────────────────────────
 
 

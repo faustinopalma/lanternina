@@ -8,7 +8,7 @@ Draw this activity along ten dimensions, and write down what you drew:
   mechanic: what they actually do.
   progress: how it moves from one moment to the next.
   paper: what the printed sheets are for.
-  glass: what putting a sheet on the scanner is for.
+  glass: what reading a returned sheet is for, by scan or photograph.
   displays: what the screens are for.
   camera: what a photograph would be for, or that there is none.
   tone: how it sounds.

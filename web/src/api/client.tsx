@@ -121,6 +121,12 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
   const write = (body: unknown) => ({ method: "POST", body: JSON.stringify(body) });
 
   return {
+    familyAccess: () => json("/api/adolescents", {}, ["members", "invitations"]),
+    inviteAdolescent: (email) => json("/api/adolescents/invitations", write({ email }),
+      ["id", "code", "expiresAt", "status"]),
+    async revokeAdolescent(id) {
+      await json(`/api/adolescents/${encodeURIComponent(id)}`, { method: "DELETE" });
+    },
     async admission(): Promise<Admission> {
       const response = await call("/api/me");
       if (response.ok) return { kind: "in", me: await response.json() };

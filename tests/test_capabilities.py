@@ -46,6 +46,19 @@ def test_an_unassigned_thing_contributes_nothing() -> None:
     assert provided_by(KIND_PRINTER, JOB_NONE) is None
 
 
+def test_camera_returns_are_enabled_by_the_parent() -> None:
+    camera = devices.Thing(id="camera", household_id="hh", kind="camera")
+    assert capabilities_of([camera]) == frozenset()
+    assert JOBS_BY_KIND["camera"] == ("scan",)
+    assert JOBS_BY_KIND["scanner"] == ("scan",)
+    assert capabilities_of([replace(camera, jobs=("return",))]) == frozenset(
+        {HouseCapability.PHOTOGRAPH_TABLE, HouseCapability.SCAN_A4}
+    )
+    assert capabilities_of([replace(camera, jobs=("scan",))]) == frozenset(
+        {HouseCapability.PHOTOGRAPH_TABLE, HouseCapability.SCAN_A4}
+    )
+
+
 def test_the_picture_display_is_not_offered_to_an_experience() -> None:
     """It can draw the image. Handing it over would take the pictures off the wall."""
     assert provided_by(KIND_DISPLAY, JOB_PICTURE) is None

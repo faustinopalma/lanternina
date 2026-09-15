@@ -24,8 +24,12 @@ from typing import Any, Protocol, runtime_checkable
 
 from shared.capabilities import (
     JOB_NONE,
+    JOB_RETURN,
+    JOB_SCAN,
     JOBS_BY_KIND,
+    KIND_CAMERA,
     KIND_DISPLAY,
+    KIND_SCANNER,
     KINDS,
 )
 
@@ -152,7 +156,7 @@ class Thing:
             "kind": self.kind,
             "name": self.name,
             "label": self.label,
-            "jobs": list(self.jobs),
+            "jobs": list(clean_jobs(self.kind, self.jobs)),
             "jobChoices": list(JOBS_BY_KIND.get(self.kind, ())),
             "model": self.model,
             "address": self.address,
@@ -286,6 +290,8 @@ def clean_jobs(kind: str, raw: Sequence[str]) -> tuple[str, ...]:
     that the same set always reads the same way and duplicates cannot survive.
     """
     chosen = {job.strip() for job in raw} - {JOB_NONE}
+    if kind in (KIND_CAMERA, KIND_SCANNER) and JOB_RETURN in chosen:
+        chosen = (chosen - {JOB_RETURN}) | {JOB_SCAN}
     allowed = JOBS_BY_KIND.get(kind, ())
     unknown = sorted(chosen - set(allowed))
     if unknown:

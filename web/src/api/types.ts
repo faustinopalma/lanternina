@@ -7,6 +7,18 @@ export interface Me {
   status: string;
 }
 
+export interface FamilyAccess {
+  members: { id: string; email: string; active: boolean; joinedAt: number }[];
+  invitations: { id: string; email: string; expiresAt: number; status: string }[];
+}
+
+export interface InvitationCode {
+  id: string;
+  code: string;
+  expiresAt: number;
+  status: "ready";
+}
+
 export interface Proposal {
   id: string;
   kind: string;
@@ -478,6 +490,9 @@ export interface Api {
   pictures(page: number, perPage: number): Promise<PicturePage>;
   pictureContent(id: string): Promise<Blob>;
   photos(page: number): Promise<PhotoPage>;
+  familyAccess(): Promise<FamilyAccess>;
+  inviteAdolescent(email: string): Promise<InvitationCode>;
+  revokeAdolescent(id: string): Promise<void>;
   photoContent(id: string): Promise<Blob>;
   previewPhotoDeletion(selection: PhotoSelection): Promise<{ ids: string[] }>;
   deletePhotos(selection: PhotoSelection, ids: string[]): Promise<{ deleted: string[]; failed: string[] }>;

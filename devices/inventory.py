@@ -26,13 +26,21 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import subprocess
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from shared.capabilities import JOB_PRINT, JOB_SCAN, KIND_PRINTER, KIND_SCANNER
+from shared.capabilities import (
+    JOB_PRINT,
+    JOB_RETURN,
+    JOB_SCAN,
+    KIND_CAMERA,
+    KIND_PRINTER,
+    KIND_SCANNER,
+)
 
 # What each kind answers to. Both were read off the machine in the house on 4 August 2026:
 # the Epson ET-2870 advertises `_ipp._tcp` for printing and `_uscan._tcp` for scanning.
@@ -249,10 +257,10 @@ def refused_ids(things: list[dict[str, Any]] | None) -> set[str]:
     }
 
 
-def save_jobs(path: Path, things: list[dict[str, Any]]) -> None:
+def save_jobs(path: Path, things: list[dict[str, Any]], *, language: str = "it") -> None:
     """Keep the assignment beside the rhythm, atomically."""
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps({"things": things}), encoding="utf-8")
+    temporary.write_text(json.dumps({"things": things, "language": language}), encoding="utf-8")
     temporary.replace(path)
 
 
@@ -269,6 +277,14 @@ def load_jobs(path: Path) -> list[dict[str, Any]] | None:
         return None
     things = saved.get("things")
     return things if isinstance(things, list) else None
+
+
+def jobs_language(path: Path) -> str:
+    try:
+        saved = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "it"
+    return "en" if isinstance(saved, dict) and saved.get("language") == "en" else "it"
 
 
 def holders(things: list[dict[str, Any]] | None, job: str) -> list[dict[str, Any]]:
@@ -332,10 +348,33 @@ def chosen_scanner(jobs_file: Path, configured: str = "") -> str:
     by model at the moment it scans, because a USB scanner's device name moves.
     """
     for thing in holders(load_jobs(jobs_file), JOB_SCAN):
+        if thing.get("kind") != KIND_SCANNER or thing.get("forgottenAt"):
+            continue
         model = str(thing.get("model") or thing.get("label") or "")
         if model:
             return model
     return configured
+
+
+def return_device(things: list[dict[str, Any]], *, paper: bool) -> dict[str, Any] | None:
+    candidates = [
+        thing for thing in things
+        if thing.get("kind") in (KIND_CAMERA, KIND_SCANNER)
+        and thing.get("id") and not thing.get("forgottenAt")
+        and (
+            (JOB_SCAN in _jobs(thing) or JOB_RETURN in _jobs(thing))
+            and (paper or thing.get("kind") == KIND_CAMERA)
+        )
+    ]
+    if not candidates:
+        return None
+    chosen = random.choice(sorted(candidates, key=lambda thing: str(thing["id"])))
+    return {
+        "id": str(chosen["id"]),
+        "kind": str(chosen["kind"]),
+        "name": str(chosen.get("name") or chosen.get("label") or chosen["id"]),
+        "model": str(chosen.get("label") or chosen.get("address") or chosen.get("model") or ""),
+    }
 
 
 def jobs_of(things: list[dict[str, Any]] | None, thing_id: str) -> tuple[str, ...] | None:
