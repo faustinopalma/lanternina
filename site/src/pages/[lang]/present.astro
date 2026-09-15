@@ -9,7 +9,7 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang === "it" ? "it" : "en";
 const text = presentation[lang];
-const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technologyLabel, text.endingLabel, text.principlesLabel];
+const labels = ["Lanternina", text.paperLabel, text.technologyLabel, text.principlesLabel];
 const principleIcons = [ShieldCheck, BookOpen, Scale];
 ---
 
@@ -68,29 +68,18 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
           <p class="opening-line">{text.opening}</p>
           <p class="problem">{text.problem}</p>
           <p class="promise">{text.promise}</p>
+          <p class="parent-context">{text.parentContext}</p>
         </div>
-        <img class="opening-image" src="/images/camera-prototype-game.webp" width="1600" height="1200" alt={text.hardwareAlt} fetchpriority="high" />
+        <img class="opening-image" src="/images/hero.jpg" width="1800" height="771" alt={text.openingAlt} fetchpriority="high" />
       </section>
 
-      <section class="slide parent" id="slide-2" aria-labelledby="title-2" data-slide>
-        <div class="parent-copy">
-          <p class="eyebrow">{text.parentLabel}</p>
-          <h2 id="title-2">{text.parentTitle}</h2>
-          <ol class="parent-steps">
-            {text.parentSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
-          </ol>
-        </div>
-        <figure class="panel-example">
-          <img src={`/images/panel-activities-${lang}.webp`} width="1200" height="900" alt={text.panelAlt} />
-          <figcaption>{text.panelCaption}</figcaption>
-        </figure>
-      </section>
-
-      <section class="slide paper" id="slide-3" aria-labelledby="title-3" data-slide>
+      <section class="slide paper" id="slide-2" aria-labelledby="title-2" data-slide>
         <div class="paper-copy">
           <p class="eyebrow">{text.paperLabel}</p>
-          <h2 id="title-3">{text.paperTitle}</h2>
-          <p class="slide-intro">{text.paperIntro}</p>
+          <h2 id="title-2">{text.paperTitle}</h2>
+          <ol class="activity-steps">
+            {text.paperSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
+          </ol>
         </div>
         <div class="paper-pair">
           <figure><img src="/images/valle-lunga-map.webp" width="1024" height="1536" alt={text.mapAlt} /><figcaption>{text.mapCaption}</figcaption></figure>
@@ -100,8 +89,8 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
         <p class="provenance">{text.synthetic}</p>
       </section>
 
-      <section class="slide technology" id="slide-4" aria-labelledby="title-4" data-slide>
-        <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-4">{text.technologyTitle}</h2></div>
+      <section class="slide technology" id="slide-3" aria-labelledby="title-3" data-slide>
+        <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-3">{text.technologyTitle}</h2></div>
         <div class="execution-flow">
           <div class="cloud-system">
             <div class="system-heading"><img src="/images/presentation-foundry.svg" width="40" height="40" alt="Microsoft Foundry" /><h3>{text.cloudTitle}</h3></div>
@@ -130,22 +119,10 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
         </div>
       </section>
 
-      <section class="slide ending" id="slide-5" aria-labelledby="title-5" data-slide>
-        <div class="ending-copy">
-          <p class="eyebrow">{text.endingLabel}</p>
-          <h2 id="title-5">{text.endingTitle}</h2>
-          <p class="slide-intro">{text.endingText}</p>
-          <p class="ending-line">{text.endingLine}</p>
-          <a class="site-address" href={`/${lang}/`}>lanternina.com <ArrowRight size={24} aria-hidden="true" /></a>
-          <p class="status">{text.status}</p>
-        </div>
-        <img class="ending-image" src="/images/hero.jpg" width="1800" height="771" alt={text.endingAlt} />
-      </section>
-
-      <section class="slide principles" id="slide-6" aria-labelledby="title-6" data-slide>
+      <section class="slide principles" id="slide-4" aria-labelledby="title-4" data-slide>
         <div class="principles-heading">
           <p class="eyebrow">{text.principlesLabel}</p>
-          <h2 id="title-6">{text.principlesTitle}</h2>
+          <h2 id="title-4">{text.principlesTitle}</h2>
         </div>
         <div class="principles-list">
           {text.principles.map((principle, index) => {

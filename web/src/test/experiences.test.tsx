@@ -10,12 +10,28 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { fakeApi, SAMPLE_AFTERNOON } from "@/test/fakeApi";
+import { fakeApi, SAMPLE_AFTERNOON, SHOWCASE_AFTERNOON } from "@/test/fakeApi";
 import { Experiences } from "@/sections/Experiences";
 import { renderPanel } from "@/test/render";
 
 describe("an afternoon offered to the parent", () => {
   beforeEach(() => window.localStorage.clear());
+
+  it("shows the public example and records its own approval", async () => {
+    const api = fakeApi({}, SHOWCASE_AFTERNOON);
+    const user = userEvent.setup();
+    renderPanel(api, <Experiences />);
+
+    expect(await screen.findByText("La ferrovia scomparsa di Valle Lunga")).toBeInTheDocument();
+    expect(screen.getByText(/Una vecchia mappa conserva/)).toBeInTheDocument();
+    expect(screen.getByText(/Circa 45 minuti/).textContent).toMatch(/2 fogli stampati/);
+    await user.click(screen.getByRole("button", { name: "Se vuoi vedere com'è fatta" }));
+    expect(screen.getByText("Il taccuino della ferrovia")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Approva" }));
+    await waitFor(() => expect(api.recorded.experienceDecisions).toEqual([
+      { id: "valle-lunga-demo", state: "approved" },
+    ]));
+  });
 
   it("says enough to decide on without opening anything", async () => {
     renderPanel(fakeApi(), <Experiences />);

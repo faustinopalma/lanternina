@@ -248,6 +248,74 @@ export const SAMPLE_AFTERNOON: OfferedExperience = {
   },
 };
 
+export const SHOWCASE_AFTERNOON: OfferedExperience = {
+  ...SAMPLE_AFTERNOON,
+  id: "valle-lunga-demo",
+  title: "La ferrovia scomparsa di Valle Lunga",
+  overview:
+    "Una vecchia mappa conserva gli indizi di una ferrovia scomparsa. Si cerca un percorso " +
+    "tra il casello, il ponte e lo stagno, poi si disegna nel taccuino e si confronta " +
+    "un'alternativa. Il taccuino torna dallo scanner e il seguito riparte dalle scelte fatte.",
+  themes: ["mappe e indizi", "ferrovie", "disegno"],
+  script:
+    "La mappa di Valle Lunga mostra un casello, filari di alberi, un ponte, uno stagno e una " +
+    "trincea. Alcune osservazioni aiutano a ricostruire la ferrovia; il tratto vicino allo " +
+    "stagno resta incerto. Sul taccuino si traccia una possibile strada e si sceglie un indizio " +
+    "che la sostiene. Si può aggiungere un percorso alternativo. Il genitore può leggere gli " +
+    "indizi insieme all'adolescente. La scansione del taccuino torna a Lanternina, che usa " +
+    "ciò che riesce a leggere per preparare il seguito. Alla fine restano la mappa e le ipotesi disegnate.",
+  minutes: 45,
+  experience: {
+    ...SAMPLE_AFTERNOON.experience,
+    experience_id: "valle-lunga-demo",
+    title: "La ferrovia scomparsa di Valle Lunga",
+    overview: "Ricostruire un percorso da una mappa e confrontare due ipotesi.",
+    minutes: 45,
+    drawn: {
+      frame: "una ferrovia scomparsa nella Valle Lunga",
+      role: "chi ricostruisce il percorso",
+      mechanic: "confrontare indizi e disegnare ipotesi",
+      progress: "una scelta di percorso da rivedere con nuovi indizi",
+      paper: "una mappa e un taccuino",
+      glass: "restituisce il taccuino compilato",
+      displays: "le istruzioni e il seguito",
+      camera: "nessuna in questo esempio",
+      tone: "curioso e concreto",
+      ending: "la mappa e le ipotesi restano sul tavolo",
+    },
+    moments: [
+      {
+        act: "hand_over", id: "mappa", heading: "Gli indizi di Valle Lunga",
+        weights: weighed(["Osserva la mappa e cerca il casello, il ponte e lo stagno."]),
+        help: [], way_out: wayOut,
+        page: { kind: "map", title: "Valle Lunga", illustration: "A railway map with landmarks",
+          note: ["Quale percorso potrebbe collegare il casello alla trincea?"], spaces: [] },
+      },
+      {
+        act: "hand_over", id: "taccuino", heading: "Un percorso possibile",
+        weights: weighed(["Disegna un percorso. Quale indizio ti ha aiutato a sceglierlo?"]),
+        help: [], way_out: wayOut,
+        page: { kind: "notebook", title: "Il taccuino della ferrovia", illustration: "A field notebook",
+          note: ["Prova anche un'altra strada vicino allo stagno."],
+          spaces: [{ label: "il percorso", room: "a_box" },
+            { label: "un indizio", room: "a_line" }] },
+      },
+      {
+        act: "collect", id: "scansione", heading: "Il taccuino torna a Lanternina",
+        weights: weighed(["Metti il taccuino sullo scanner per restituire il percorso."]),
+        help: [], way_out: wayOut,
+        outcomes: [{ when: "marks", then: "ask" }, { when: "blank", then: "fine" }],
+        if_no_page: "fine",
+      },
+      {
+        act: "close", id: "fine", heading: "La mappa resta a te",
+        weights: weighed(["Tieni insieme la mappa e il taccuino con le tue ipotesi."]),
+        help: [], way_out: wayOut,
+      },
+    ],
+  },
+};
+
 const SAMPLE_PICTURES: PicturePage = {  pictures: Array.from({ length: 6 }, (_, index) => ({
     id: `pic-${index + 1}`,
     theme: index === 0 ? "" : "gatti che dormono",
@@ -319,7 +387,10 @@ const TINY_BITMAP = new Uint8Array([
   0x00, 0x00, 0x00, 0x00,
 ]);
 
-export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
+export function fakeApi(
+  overrides: Partial<Api> = {},
+  sampleExperience: OfferedExperience = SAMPLE_AFTERNOON,
+): FakeApi {
   const recorded: Recorded = {
     decisions: [],
     rhythm: [],
@@ -351,7 +422,7 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
   let forgotten: Device[] = [];
   let standing: HouseRequest | null = null;
   let approved: Proposal[] = SAMPLE_APPROVED;
-  let afternoons: OfferedExperience[] = [SAMPLE_AFTERNOON];
+  let afternoons: OfferedExperience[] = [sampleExperience];
   let drafts: Draft[] = [];
 
   /* One draft, changed, with `updatedAt` moved. The text pane follows the draft only when
@@ -735,10 +806,10 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     startDraft: async (fromExperience) => {
       const one: Draft = {
         id: `dft_${drafts.length + 1}`,
-        title: fromExperience ? SAMPLE_AFTERNOON.title : "",
-        overview: fromExperience ? SAMPLE_AFTERNOON.overview : "",
-        themes: fromExperience ? SAMPLE_AFTERNOON.themes : [],
-        script: fromExperience ? SAMPLE_AFTERNOON.script : "",
+        title: fromExperience ? sampleExperience.title : "",
+        overview: fromExperience ? sampleExperience.overview : "",
+        themes: fromExperience ? sampleExperience.themes : [],
+        script: fromExperience ? sampleExperience.script : "",
         said: [],
         state: "open",
         createdAt: NOW,

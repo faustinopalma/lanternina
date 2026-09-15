@@ -108,12 +108,14 @@ figcaption, .provenance { font-size: 0.8125rem; color: var(--cp-text-soft); }
 .opening-line { font-size: 2.125rem; line-height: 1.25; margin-top: 28px; text-wrap: balance; }
 .problem { color: var(--cp-text-muted); font-size: 1.125rem; margin-top: 24px; max-width: 42ch; }
 .promise { font-size: 1.125rem; margin-top: 16px; max-width: 42ch; }
-.opening-image { width: 100%; height: 100%; max-height: 620px; object-fit: contain; object-position: right center; }
+.parent-context { margin-top: 8px; font-size: 1rem; color: var(--cp-text-muted); }
+.opening-image { width: 100%; height: 100%; max-height: 620px; object-fit: cover; object-position: 66% center; }
 .parent { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: center; gap: 48px; }
 .parent h2 { max-width: 15ch; }
-.parent-steps { list-style: none; padding: 0; margin: 36px 0 0; display: grid; gap: 24px; }
-.parent-steps li { display: flex; gap: 20px; }
-.parent-steps p { color: var(--cp-text-muted); margin-top: 4px; font-size: 1.0625rem; }
+.activity-steps { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 20px; }
+.activity-steps li { display: flex; gap: 16px; }
+.activity-steps h3 { font-size: 1.125rem; }
+.activity-steps p { color: var(--cp-text-muted); margin-top: 4px; font-size: 1rem; }
 .step-number { font-family: Consolas, "Courier New", Courier, monospace; color: var(--cp-accent); font-size: 0.875rem; padding-top: 4px; }
 .panel-example { min-width: 0; }
 .panel-example img { width: 100%; max-height: calc(100svh - 270px); object-fit: contain; }
@@ -274,7 +276,7 @@ html.pen-in-range, html.pen-in-range .slide { touch-action: none; }
   .opening-line { max-width: 26ch; margin-top: 16px; }
   .problem { margin-top: 16px; }
   .promise { margin-top: 12px; }
-  .opening-image { max-height: 300px; object-position: center; }
+  .opening-image { height: auto; aspect-ratio: 3 / 2; max-height: 300px; }
   .parent h2 { max-width: 22ch; }
   .parent-steps { grid-template-columns: 1fr; gap: 16px; }
   .panel-example img { max-height: 380px; }

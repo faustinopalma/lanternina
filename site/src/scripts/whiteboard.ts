@@ -7,7 +7,7 @@ const namespace = "http://www.w3.org/2000/svg";
 const palette: InkColor[] = ["accent", "link", "success", "warning", "text"];
 
 export function createWhiteboard(slides: HTMLElement[]) {
-  const storageKey = `lanternina-presentation-ink-v1:${document.documentElement.lang}`;
+  const storageKey = `lanternina-presentation-ink-v2:${document.documentElement.lang}`;
   const pages: Record<string, Stroke[]> = Object.fromEntries(slides.map(slide => [slide.id, []]));
   const undoHistory: Record<string, Stroke[][]> = Object.fromEntries(slides.map(slide => [slide.id, []]));
   const overlays = new Map<HTMLElement, SVGSVGElement>();

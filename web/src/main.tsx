@@ -22,7 +22,8 @@ if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("prev
     import("@/components/Shell"),
     import("@/test/fakeApi"),
     import("@/portal/Portal"),
-  ]).then(([{ Dashboard }, { Shell }, { fakeApi, fakePortalApi }, { PhotoPortal }]) => {
+  ]).then(([{ Dashboard }, { Shell }, { fakeApi, fakePortalApi, SHOWCASE_AFTERNOON }, { PhotoPortal }]) => {
+    const showcase = new URLSearchParams(window.location.search).get("preview") === "showcase";
     root.render(
       <StrictMode>
         <LanguageProvider>
@@ -31,7 +32,7 @@ if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("prev
             account={{ username: isPortal ? "adolescente@example.invalid" : "genitore@example.invalid",
               onSignOut: () => undefined }}
           >
-            {isPortal ? <PhotoPortal api={fakePortalApi()} /> : <Dashboard api={fakeApi()} />}
+            {isPortal ? <PhotoPortal api={fakePortalApi()} /> : <Dashboard api={fakeApi({}, showcase ? SHOWCASE_AFTERNOON : undefined)} />}
           </Shell>
         </LanguageProvider>
       </StrictMode>,
