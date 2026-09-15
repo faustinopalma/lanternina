@@ -22,6 +22,7 @@ interface Props {
   read: Box;
   outcome: Box;
   feeds: string;
+  original: string;
 }
 
 const p = Astro.props;
@@ -42,6 +43,8 @@ const p = Astro.props;
   <line x1="697" y1="248" x2="697" y2="308" class="g-edge" marker-end="url(#paper-h)" />
   <line x1="582" y1="349" x2="543" y2="349" class="g-edge" marker-end="url(#paper-h)" />
   <line x1="311" y1="349" x2="272" y2="349" class="g-edge" marker-end="url(#paper-h)" />
+  <path d="M582 90 H564 V280 H426 V308" class="g-edge g-edge-back" fill="none" marker-end="url(#paper-h)" />
+  <text x="438" y="270" class="g-lbl">{p.original}</text>
 
   <path d="M40 349 H 26 V 69 H 38" class="g-edge g-edge-back" marker-end="url(#paper-h)" />
   <text transform="rotate(-90 12 209)" x="12" y="209" text-anchor="middle" class="g-lbl">

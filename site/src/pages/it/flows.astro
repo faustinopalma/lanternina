@@ -24,7 +24,7 @@ import Base from "../../layouts/Base.astro";
   <RequestLoop
     title="Chi chiede a chi"
     desc="L'hub collega i dispositivi locali all'API cloud. L'API chiama i modelli su Microsoft Foundry attraverso il router dei modelli e controlla il testo generato con Content Safety. L'hub riceve le decisioni del genitore nelle risposte alle proprie richieste."
-    caption="L'hub avvia le richieste al cloud. L'API conserva la decisione del genitore e la restituisce alla richiesta successiva dell'hub."
+    caption="L'hub avvia le richieste al cloud e riceve le decisioni nella risposta. L'API chiama Foundry attraverso il router dei modelli e chiama separatamente Content Safety per controllare il testo generato. Foundry non chiama il servizio di sicurezza."
     house="La casa"
     cloud="Servizi cloud"
     parent={{ title: "I browser della famiglia", sub: ["decisioni del genitore · fotografie"] }}
@@ -58,7 +58,7 @@ import Base from "../../layouts/Base.astro";
   <AfternoonLife
     title="La vita di un'attività"
     desc="L'hub richiede un'attività. L'API cloud la genera, verifica e filtra, poi attende l'approvazione del genitore. L'hub ritira le attività approvate. Una lettura seleziona un momento o richiede un seguito verificato senza una seconda approvazione."
-    caption="L'arco di ritorno a sinistra è una riparazione dopo la verifica. Quello a destra è un seguito previsto che dipende dalla pagina restituita."
+    caption="Il ritorno a sinistra riguarda soltanto le riparazioni consentite di formato e struttura. Un rifiuto di Content Safety blocca il risultato. Il ritorno a destra è un seguito previsto che dipende dal materiale restituito. Il timer dell'hub può anche avviare la conclusione senza una restituzione; quel percorso temporale non è disegnato qui."
     idea={{ title: "L'hub chiede un'attività", sub: ["preferenze · eventuale brief"] }}
     devise={{
       title: "Un modello scrive l'attività intera",
@@ -81,9 +81,9 @@ import Base from "../../layouts/Base.astro";
         "senza seconda approvazione",
       ],
     }}
-    refused="rifiutato"
+    refused="ripara"
     passes="passa"
-    approving="la richiesta successiva del dispositivo"
+    approving="approvata; richiesta dell'hub"
     nextMoment="il momento dopo"
     askEdge="ask"
     continuation="un seguito, nello stesso formato"
@@ -119,6 +119,7 @@ import Base from "../../layouts/Base.astro";
     read={{ title: "Due immagini a un modello", sub: ["descrive i segni aggiunti"] }}
     outcome={{ title: "segni · bianca", sub: ["descrizioni per il seguito", "lettura degradata: attesa"] }}
     feeds="contribuisce al seguito"
+    original="originale conservato"
   />
 
   <p>
@@ -139,7 +140,7 @@ import Base from "../../layouts/Base.astro";
       />
     </div>
     <figcaption id="calls-t">
-      Il diagramma mostra generazione e riparazioni condizionali, fino al filtro del testo. Il giudice diagnostico in background e le chiamate durante l'attività sono separati.
+      Il diagramma mostra generazione e riparazioni condizionali, fino al filtro del testo. Il numero di metodi e la lunghezza approssimativa del prompt illustrano corse di ricerca precedenti, non limiti attuali del servizio. Il giudice diagnostico in background e le chiamate durante l'attività sono separati.
     </figcaption>
   </figure>
 

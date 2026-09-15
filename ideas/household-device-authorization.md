@@ -1,5 +1,11 @@
 # Household device authorization
 
+## Deferred next step, 15 September 2026
+
+The owner requested documentation only for parent-authorized hub enrollment with a hardware-backed key. Implementation is deferred because development time is limited and changing enrollment, TLS and hardware provisioning could disrupt the working installation. Keep the current household-bound hub credentials, and leave camera and display deployment from the hub unchanged. Local peripherals do not possess Azure service credentials, but Wi-Fi secrets, local camera tokens and access to reachable hub services remain relevant risks. The proposal, enrollment checks, recovery tradeoffs and remaining limitations are documented in [DEVICE-AUTH.md](../docs/DEVICE-AUTH.md#deferred-hardware-backed-enrollment). This decision does not authorize implementation or irreversible ESP32 security configuration.
+
+## Implemented household binding
+
 On 15 September 2026, a review of the public identity page found that the stated per-household device key guarantee was not implemented. The API compared every request with one global key and trusted the household in the URL. A local test with synthetic families reproduced cross-household access. No production records were used in that test.
 
 The common device dependency now checks a server-configured family-to-key-digest mapping before route logic. This closes the boundary in one place for all device endpoints, including their scan aliases. The legacy key requires an explicit household; development mode does not open unbound device access. The mapping validates unique families and unique digests. Deployment scripts use the existing protected YAML and transmit only hashes to Azure.

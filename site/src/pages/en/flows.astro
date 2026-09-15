@@ -24,7 +24,7 @@ import Base from "../../layouts/Base.astro";
   <RequestLoop
     title="Who asks whom"
     desc="The hub connects local devices to the cloud API. The API calls models on Microsoft Foundry through the model router and screens generated text with Content Safety. The hub retrieves parent decisions in response to its requests."
-    caption="The hub initiates cloud requests. The API stores the parent's decision and returns it when the hub next polls."
+    caption="The hub initiates cloud requests and receives decisions in the response. The API calls Foundry through the model router and separately calls Content Safety to screen generated text. Foundry does not call the safety service."
     house="The house"
     cloud="Cloud services"
     parent={{ title: "Family browsers", sub: ["parent decisions · portal photographs"] }}
@@ -58,7 +58,7 @@ import Base from "../../layouts/Base.astro";
   <AfternoonLife
     title="The life of an activity"
     desc="The hub requests an activity. The cloud API generates, validates and screens it, then waits for parent approval. The hub retrieves approved activities. A returned reading selects a moment or requests a checked continuation without another parent approval."
-    caption="The left return edge is a repair after validation. The right return edge is a planned continuation based on the page that came back."
+    caption="The left return edge covers permitted format and structural repairs only. A Content Safety refusal blocks the result. The right return edge is a planned continuation based on returned material. The hub's timer can also start the ending without receiving a return; that time-driven path is not drawn here."
     idea={{ title: "The hub requests an activity", sub: ["preferences · optional brief"] }}
     devise={{
       title: "A model writes the whole activity",
@@ -81,9 +81,9 @@ import Base from "../../layouts/Base.astro";
         "without a second parent approval",
       ],
     }}
-    refused="refused"
+    refused="repair"
     passes="passes"
-    approving="the next device poll"
+    approving="approved; next hub poll"
     nextMoment="the next moment"
     askEdge="ask"
     continuation="a continuation, in the same format"
@@ -118,6 +118,7 @@ import Base from "../../layouts/Base.astro";
     read={{ title: "Two images to a model", sub: ["describes the added marks"] }}
     outcome={{ title: "marks · blank", sub: ["descriptions for continuation", "degraded reading: wait"] }}
     feeds="informs the continuation"
+    original="stored original"
   />
 
   <p>
@@ -138,7 +139,7 @@ import Base from "../../layouts/Base.astro";
       />
     </div>
     <figcaption id="calls-t">
-      This diagram covers generation and its conditional repairs, ending with text screening. The diagnostic background judge and the calls made while an activity runs are separate.
+      This diagram covers generation and its conditional repairs, ending with text screening. Its method count and approximate prompt length illustrate earlier research runs, not current service limits. The diagnostic background judge and the calls made while an activity runs are separate.
     </figcaption>
   </figure>
 
