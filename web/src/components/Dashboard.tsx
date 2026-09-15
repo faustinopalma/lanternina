@@ -207,6 +207,7 @@ export function Dashboard({ api }: { api: Api }) {
             ref={menuRef}
             className={cn(
               "fixed inset-y-0 left-0 z-20 h-dvh w-[min(19rem,calc(100vw-48px))] overflow-y-auto",
+              "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
               "border-r border-edge bg-card p-5 shadow-[12px_0_32px_rgb(0_0_0/0.18)]",
               drawerOpen ? "block" : "hidden",
               "overscroll-y-contain wide:sticky wide:top-6 wide:z-auto wide:block wide:h-auto wide:w-auto",

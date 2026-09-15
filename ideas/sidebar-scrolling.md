@@ -1,5 +1,7 @@
 # Sidebar scrolling
 
+The owner requested an invisible menu scrollbar on 15 September 2026. The menu hides its scrollbar with `scrollbar-width: none` and the WebKit scrollbar selector while retaining native scrolling. This removes the visible track and thumb, including thumb dragging; wheel, touch and keyboard navigation remain available. The content area's scrollbar is unchanged. The browser check verifies the hidden scrollbar styles and repeats the desktop and mobile scrolling checks below.
+
 The desktop menu now scrolls independently of the content. Previously, its sticky positioning kept the top visible, but `overflow-visible` and an unconstrained height left the lower entries below the viewport. Wheel input over the menu scrolled the document until the content reached its end.
 
 The menu keeps `overflow-y-auto` on desktop and contains vertical overscroll. Its maximum height uses the current distance from the viewport top and leaves 24 CSS pixels below it at the default font size. Scroll, resize and document layout changes update that distance. This keeps the last entry reachable both below the page header and after the menu sticks near the viewport top. Measuring the position adds event listeners and a resize observer; it avoids assuming a fixed header height when text wraps or an account notice appears.
