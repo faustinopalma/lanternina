@@ -12,20 +12,20 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, ConfigDict
 
 from shared.accounts import AccountStatus, AccountStore
 from shared.ids import AccountId
 
-from ..admin import ADMISSIONS, CurrentAdmin, waiting_view
+from ..admin import ADMISSIONS, CurrentAdmin, current_admin, waiting_view
 from ..keeping import KeepingStore, granted, withdrawn
 from . import Decision
 
-router = APIRouter()
+router = APIRouter(prefix="/api/admin", dependencies=[Depends(current_admin)])
 
 
-@router.get("/api/admin/me")
+@router.get("/me")
 def admin_me(admin: CurrentAdmin) -> dict[str, Any]:
     """Who the administration surface believes is calling.
 
@@ -35,7 +35,7 @@ def admin_me(admin: CurrentAdmin) -> dict[str, Any]:
     return {"subject": admin.subject, "contact": admin.contact}
 
 
-@router.get("/api/admin/accounts")
+@router.get("/accounts")
 def waiting_accounts(_: CurrentAdmin, request: Request) -> Any:
     """The sign-ups awaiting a decision, oldest first. Deliberately not a search over
     every account: a route that answers questions about one address is a way to find
@@ -44,7 +44,7 @@ def waiting_accounts(_: CurrentAdmin, request: Request) -> Any:
     return {"accounts": [waiting_view(row) for row in store.pending()]}
 
 
-@router.post("/api/admin/accounts/{account_id}/decision")
+@router.post("/accounts/{account_id}/decision")
 def admit_account(
     account_id: str, decision: Decision, admin: CurrentAdmin, request: Request
 ) -> Any:
@@ -73,13 +73,13 @@ class BeingWorkedOn(BaseModel):
     keeping: bool
 
 
-@router.get("/api/admin/households/{household_id}/keeping")
+@router.get("/households/{household_id}/keeping")
 def is_being_worked_on(household_id: str, _: CurrentAdmin, request: Request) -> Any:
     store: KeepingStore = request.app.state.keeping
     return store.get(household_id).to_public(time.time())
 
 
-@router.post("/api/admin/households/{household_id}/keeping")
+@router.post("/households/{household_id}/keeping")
 def work_on(
     household_id: str, what: BeingWorkedOn, admin: CurrentAdmin, request: Request
 ) -> Any:

@@ -20,6 +20,7 @@ from panel.admin import ADMISSIONS
 from panel.app import create_app
 from panel.config import Settings
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
+from panel.routes.admin import router as admin_router
 from panel.store import InMemoryAccountStore
 from panel.tokens import TokenVerifier
 from shared.accounts import AccountStatus
@@ -181,6 +182,55 @@ def test_a_token_without_the_role_is_refused(keypair: tuple[Any, Any]) -> None:
         ).status_code
         == 200
     )
+
+
+def test_admin_router_protects_a_route_without_individual_auth(
+    keypair: tuple[Any, Any],
+) -> None:
+    private, public = keypair
+    original_routes = list(admin_router.routes)
+    try:
+        admin_router.add_api_route("/guard-probe", lambda: {"ok": True}, methods=["GET"])
+        client, _store, _app = panel(public)
+        for headers in (
+            {},
+            {DEV_SUBJECT_HEADER: "parent"},
+            bearer(admin_token(private, roles=None)),
+            bearer(admin_token(private, aud="parent-audience")),
+        ):
+            assert client.get("/api/admin/guard-probe", headers=headers).status_code == 403
+        assert client.get(
+            "/api/admin/guard-probe", headers=bearer(admin_token(private))
+        ).json() == {"ok": True}
+    finally:
+        admin_router.routes[:] = original_routes
+
+
+@pytest.mark.parametrize(
+    ("method", "path", "body"),
+    [
+        ("GET", "/api/admin/me", None),
+        ("GET", "/api/admin/accounts", None),
+        ("POST", "/api/admin/accounts/unknown/decision", {"state": "active"}),
+        ("GET", "/api/admin/households/unknown/keeping", None),
+        ("POST", "/api/admin/households/unknown/keeping", {"keeping": True}),
+    ],
+)
+def test_every_admin_operation_refuses_non_admin_credentials(
+    keypair: tuple[Any, Any], method: str, path: str, body: Any,
+) -> None:
+    private, public = keypair
+    client, _store, _app = panel(public)
+    for headers in (
+        {},
+        {DEV_SUBJECT_HEADER: "parent"},
+        bearer(admin_token(private, aud="parent-audience")),
+        bearer(admin_token(private, roles=None)),
+        bearer(admin_token(private, roles=["Lanternina.Reader"])),
+    ):
+        answer = client.request(method, path, headers=headers, json=body)
+        assert answer.status_code == 403
+        assert answer.json() == {"detail": "not_authorised"}
 
 
 def test_a_different_role_does_not_open_the_door(keypair: tuple[Any, Any]) -> None:

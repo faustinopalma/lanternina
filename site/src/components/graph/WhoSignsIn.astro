@@ -15,7 +15,9 @@ interface Props {
   adolescent: Box;
   admin: Box;
   house: Box;
-  api: Box;
+  ciam: Box;
+  workforce: Box;
+  deviceKey: Box;
   parentRoutes: Box;
   adolescentRoutes: Box;
   adminRoutes: Box;
@@ -24,21 +26,23 @@ interface Props {
 
 const p = Astro.props;
 const rows = [
-  { caller: p.parent, routes: p.parentRoutes },
-  { caller: p.adolescent, routes: p.adolescentRoutes },
-  { caller: p.admin, routes: p.adminRoutes },
-  { caller: p.house, routes: p.deviceRoutes },
+  { caller: p.parent, routes: p.parentRoutes, gateY: 108 },
+  { caller: p.adolescent, routes: p.adolescentRoutes, gateY: 142 },
+  { caller: p.admin, routes: p.adminRoutes, gateY: 326 },
+  { caller: p.house, routes: p.deviceRoutes, gateY: 460 },
 ];
 ---
 
 <Frame id="idn" viewBox="0 0 840 520" title={p.title} desc={p.desc} caption={p.caption}>
-  <Node x={322} y={210} w={196} h={100} title={p.api.title} sub={p.api.sub} kind="gate" />
+  <Node x={304} y={60} w={232} h={130} title={p.ciam.title} sub={p.ciam.sub} kind="gate" />
+  <Node x={304} y={284} w={232} h={84} title={p.workforce.title} sub={p.workforce.sub} kind="gate" />
+  <Node x={304} y={418} w={232} h={84} title={p.deviceKey.title} sub={p.deviceKey.sub} kind="gate" />
   {rows.map((row, index) => (
     <>
       <Node x={16} y={16 + index * 134} w={236} h={84} title={row.caller.title} sub={row.caller.sub} kind={index === 3 ? "strong" : "human"} />
       <Node x={588} y={16 + index * 134} w={236} h={84} title={row.routes.title} sub={row.routes.sub} />
-      <line x1="252" y1={58 + index * 134} x2="318" y2={228 + index * 20} class="g-edge" marker-end="url(#idn-h)" />
-      <line x1="518" y1={228 + index * 20} x2="584" y2={58 + index * 134} class="g-edge" marker-end="url(#idn-h)" />
+      <line x1="252" y1={58 + index * 134} x2="300" y2={row.gateY} class="g-edge" marker-end="url(#idn-h)" />
+      <line x1="536" y1={row.gateY} x2="584" y2={58 + index * 134} class="g-edge" marker-end="url(#idn-h)" />
     </>
   ))}
 </Frame>

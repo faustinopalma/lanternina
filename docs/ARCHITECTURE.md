@@ -19,6 +19,12 @@ The browser stores settings and decisions. The hub later retrieves them. The con
 
 The production model transport lives in `orchestrator/router.py`. Agents receive `ModelRouter` through `AgentContext`. Research and CLI tools can have separate synthetic calls, notably `tools/handwriting.py`. Import checks in `tests/test_boundaries.py` apply to their named production packages, not to every Python file in the repository. The router is not the only Azure SDK consumer: storage and Content Safety have their own clients.
 
+## Family And Administrative Access
+
+As of 15 September 2026, administrative routes are registered separately from family routes. The administrative router owns the `/api/admin` prefix and applies `current_admin` to every endpoint, including endpoints without an individual authentication parameter. The verifier checks the token's signature, issuer, audience, expiry and configured workforce app role. Family routes keep their account and household authorization. Existing URLs and response contracts are unchanged.
+
+This is a separation of route groups and authorization, not service isolation. The groups still share a process, deployment, runtime identity and stores. A process compromise or resource exhaustion can affect both. A separate administrative service would need independently restricted permissions to contain that risk. Tests exercise the common guard on a route without individual authentication and reject anonymous, development-header, wrong-audience and missing-role requests across the administrative endpoints. These are local checks, not a production audit.
+
 ## Generation and repair
 
 `panel/devising.py::devise_experience` performs the following operations:

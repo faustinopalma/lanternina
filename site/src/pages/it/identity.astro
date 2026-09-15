@@ -11,12 +11,12 @@ import { REPO } from "../../i18n/ui";
   title="Identità e accessi"
   description="I genitori usano Entra External ID, gli amministratori un app role workforce e ogni casa si autentica all'API con la propria device key."
 >
-  <p class="lede">Genitori, adolescenti invitati, amministratori e hub raggiungono gruppi di rotte distinti nella stessa API. Genitori e adolescenti condividono l'autenticazione Entra External ID, ma hanno permessi applicativi diversi. Gli amministratori usano token workforce con il ruolo <code>Lanternina.Admin</code>. Ogni hub presenta una chiave associata alla propria famiglia.</p>
+  <p class="lede">Gli accessi delle famiglie e dell'amministratore usano gruppi di rotte e controlli di autorizzazione separati. Genitori e adolescenti invitati condividono l'autenticazione Entra External ID, ma hanno permessi applicativi diversi. Il router amministrativo richiede un token workforce con il ruolo <code>Lanternina.Admin</code> per ogni operazione. Ogni hub presenta una chiave associata alla propria famiglia.</p>
 
   <WhoSignsIn
     title="Chi entra, e cosa raggiunge"
-    desc="Quattro chiamanti raggiungono la stessa applicazione. Le rotte del genitore richiedono un account attivo, quelle del portale un'adesione attiva, quelle amministrative un ruolo workforce e quelle dell'hub una chiave autorizzata per la famiglia richiesta."
-    caption="Le dipendenze delle rotte verificano credenziali e permessi prima della logica applicativa. Sono confini di autorizzazione nello stesso deploy, non quattro servizi isolati."
+    desc="Genitori e adolescenti usano il tenant CIAM Entra External ID. Gli amministratori usano un tenant workforce distinto, con audience amministrativa e ruolo Lanternina.Admin. L'hub usa una chiave familiare senza passare da Entra. Ogni percorso raggiunge soltanto le proprie rotte autorizzate."
+    caption="Il tenant CIAM emette i token delle famiglie; un tenant workforce distinto emette quelli amministrativi. Le rotte verificano emittente, audience e permessi. Le frecce indicano i percorsi di accesso, non il traffico di rete verso i provider. I controlli condividono ancora processo e permessi di esecuzione."
     adolescent={{ title: "Un adolescente", sub: ["External ID + invito", "adesione familiare attiva"] }}
     adolescentRoutes={{ title: "Rotte del portale", sub: ["solo le proprie fotografie", "nessuna impostazione"] }}
     parent={{
@@ -31,9 +31,17 @@ import { REPO } from "../../i18n/ui";
       title: "La casa",
       sub: ["una device key per nucleo,", "su TLS — nessuna identità Entra"],
     }}
-    api={{
-      title: "Una sola API",
-      sub: ["verifica le credenziali", "prima della logica applicativa"],
+    ciam={{
+      title: "Tenant CIAM",
+      sub: ["Entra External ID", "token e audience delle famiglie"],
+    }}
+    workforce={{
+      title: "Tenant workforce",
+      sub: ["tenant distinto dal CIAM", "audience admin + app role"],
+    }}
+    deviceKey={{
+      title: "Verifica chiave hub",
+      sub: ["associazione alla famiglia", "senza identity provider Entra"],
     }}
     parentRoutes={{ title: "Rotte del genitore", sub: ["solo il proprio nucleo"] }}
     adminRoutes={{ title: "Rotte dell'amministratore", sub: ["ammettere e rifiutare account"] }}
@@ -86,16 +94,16 @@ import { REPO } from "../../i18n/ui";
   <h2>Dispositivi locali</h2>
   <p>L'hub configura fotocamera e display. Il loro traffico ordinario resta sulla rete locale; non contengono credenziali dei servizi Azure né la chiave dell'hub per l'API cloud. Firmware e provisioning restano invariati. Una compromissione può comunque esporre impostazioni Wi-Fi, credenziali locali o fotografie in attesa. Il token della camera può essere usato per impersonarla verso l'hub e un dispositivo compromesso può inviare traffico ai servizi raggiungibili. L'assenza di credenziali Azure limita l'accesso diretto al cloud, ma non elimina il rischio locale.</p>
 
-  <h2>Registrazione con TPM: rinviata</h2>
+  <h2>Registrazione con TPM: proposta</h2>
   <p>Un hub futuro potrebbe registrarsi con un invito monouso e a breve scadenza creato dal genitore. Genererebbe una chiave di firma nel TPM, ne dimostrerebbe il possesso e fornirebbe un'attestazione verificabile della chiave. Il server assocerebbe il dispositivo alla famiglia dell'invito e rilascerebbe un certificato client. Gli accessi successivi userebbero mTLS o un meccanismo standard di prova di possesso legato alla chiave, con rinnovo e revoca dal genitore. Un normale bearer token copiabile non offrirebbe la stessa protezione.</p>
-  <p>La proposta non è implementata. È stata rinviata il 15 settembre 2026 per preservare l'installazione di sviluppo funzionante. Il CM5 attuale non espone un TPM a Linux; hardware compatibile e supporto dell'attestazione devono essere verificati. Una chiave non esportabile riduce il rischio di clonazione, ma non impedisce a software compromesso di usare il TPM per firmare. L'API e le chiavi attuali restano in servizio. La protezione di camera e display è fuori da questa proposta per l'hub.</p>
+  <p>La proposta non è implementata: l'hub usa ancora una chiave associata alla famiglia. Hardware compatibile e supporto dell'attestazione devono essere verificati. Una chiave non esportabile ridurrebbe il rischio di clonazione, ma non impedirebbe a software compromesso di usare il TPM per firmare.</p>
 
   <h2>Accesso dell'adolescente invitato</h2>
   <p>Il genitore crea un invito legato all'email e condivide il codice o il link. L'adolescente accede con l'indirizzo corrispondente e accetta l'invito. La sola registrazione non apre il portale. Un'adesione attiva permette di inviare, vedere e cancellare le proprie fotografie, ma non di approvare attività o cambiare le impostazioni familiari. La revoca chiude le richieste successive. Il gate del genitore esclude i subject già registrati come adolescenti, anche dopo la revoca. La sospensione del genitore che ha invitato chiude anche l'accesso al portale.</p>
   <p>Il portale usa la stessa applicazione External ID e la stessa audience dei genitori. I permessi dipendono dall'adesione verificata sul server. La prima registrazione e il riscatto con un account reale invitato restano una verifica da fare in famiglia.</p>
 
   <h2>Confini dell'applicazione</h2>
-  <p>I gruppi di rotte condividono processo, deploy e identità runtime. Questo semplifica pubblicazione e accesso ai dati condivisi, ma una compromissione del processo o l'esaurimento delle risorse può coinvolgere tutti i gruppi. Un servizio amministrativo separato aggiungerebbe un confine soltanto con permessi runtime e controlli di accesso indipendenti; un altro hostname da solo non lo fornirebbe.</p>
+  <p>Il router amministrativo è registrato separatamente e applica il controllo di autorizzazione a tutte le rotte sotto <code>/api/admin</code>. Le singole operazioni richiedono anche l'amministratore verificato quando devono registrare chi ha agito. Le rotte familiari mantengono i propri controlli sull'account e sul nucleo. I gruppi condividono ancora processo, deploy e identità di esecuzione: una compromissione del processo o l'esaurimento delle risorse può coinvolgere entrambi. L'isolamento richiederebbe un servizio amministrativo distinto con permessi e controlli di accesso indipendenti.</p>
 
   <h2>Approvazione delle attività</h2>
 
@@ -121,7 +129,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>I passi di deploy, compresi quelli manuali</a> ·
+    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>Configurazione e deploy</a> ·
     <a href={`${REPO}/blob/main/docs/DEVICE-AUTH.md`}>provisioning e revoca delle chiavi degli hub</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
       >l'identità federata della pipeline</a

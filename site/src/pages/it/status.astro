@@ -40,15 +40,14 @@ import { REPO } from "../../i18n/ui";
   <p>Il genitore approva l'attività iniziale. Le attività generate e i seguiti passano dai controlli di formato e sicurezza; i seguiti non richiedono una seconda approvazione. La lettura dei fogli richiede il cloud. I dati conservati e le possibilità di cancellazione sono descritti nella <a href="/it/#la-memoria">sezione sulla memoria</a>.</p>
 
   <h2 id="camera-checks">Le verifiche della fotocamera</h2>
-  <p>Il 9 settembre 2026 il proprietario ha usato il pulsante e osservato la segnalazione luminosa durante scatti a batteria. Tre cicli esaminati riportavano un precedente riposo profondo confermato, HTTP 201, identificatori di scatto e invio corrispondenti e coda vuota. I riposi precedenti erano durati 118, 135 e 74 secondi, misurati dall'orologio RTC del dispositivo con risoluzione di un secondo. Questi dati dimostrano quei cicli, non l'autonomia della batteria.</p>
-  <p>Una prova USB con il ricevitore fermo ha conservato la fotografia localmente e consegnato lo stesso identificatore dopo il riavvio del ricevitore. Il 10 settembre uno scatto USB con esposizione, guadagno e bilanciamento del bianco automatici ha prodotto un JPEG da 1600 × 1200 pixel. Il fotogramma scelto era pronto in 831 ms; acquisizione e salvataggio verificato hanno richiesto 2.307 ms. L'invio ha restituito HTTP 201 e svuotato la coda. I tempi escludono avvio e gestione del pulsante fisico; una sola scena non dimostra il comportamento in illuminazioni diverse.</p>
-  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Firmware, condizioni delle prove e campi diagnostici.</a></p>
+  <p>Le prove sul prototipo hanno verificato scatti a batteria, segnalazione luminosa, riposo e risveglio. Una prova con il ricevitore indisponibile ha verificato che la fotografia resti salvata sulla camera e venga consegnata al ritorno della connessione. Questi risultati riguardano il montaggio e il firmware provati; non misurano l'autonomia della batteria né il comportamento in tutte le condizioni di luce.</p>
+  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Misure, configurazioni e condizioni delle prove.</a></p>
 
   <h2>Lacune di implementazione aperte</h2>
 
   <ul>
     <li>
-      <b>Le prove della fotocamera.</b> La restituzione del foglio ha test automatici. Restano un'attività completa con scrittura fotografata, illuminazioni diverse, interruzioni dell'alimentazione e misure di autonomia. I cicli a batteria riportati sopra riguardano il montaggio del 9 settembre; le revisioni successive di firmware e cablaggio richiedono una propria verifica fisica.
+      <b>Le prove della fotocamera.</b> La restituzione del foglio ha test automatici. Restano un'attività completa con scrittura fotografata, illuminazioni diverse, interruzioni dell'alimentazione e misure di autonomia. Le modifiche a firmware e cablaggio richiedono nuove prove fisiche.
     </li>
     <li>
       <b>La pulsantiera.</b> L'hardware attuale ha un pulsante per schermo. Può avviare una scansione quando la restituzione usa uno scanner, ma non acquisisce ancora risposte a scelta multipla. Non avvia scansioni mentre il momento attende la fotocamera.

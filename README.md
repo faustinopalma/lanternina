@@ -34,7 +34,7 @@ This is durable adaptation from observed activity, not merely a list of material
 
 ## Verification and status
 
-The local model path was exercised on 7 September 2026 with an invented railway activity. The notebook completed in 345.4 seconds, measured by its executor; generation, drawing, handwriting, reading, continuation and the blank-page control took 335.6 seconds inside that run. Two pages were drawn, one was synthetically filled and read, and one continuation reached a close. The actual continuation prompt contains the returned descriptions. [The artifacts](research/runs/2026-09-07-officina-104746-339138/verification.json) and [the workbench](research/officina.ipynb) preserve the evidence. These are software and model-path results, not a physical trial or a quality score.
+The local model path was exercised on 7 September 2026 with an invented railway activity. The notebook completed in 345.4 seconds, measured by its executor; generation, drawing, handwriting, reading, continuation and the blank-page control took 335.6 seconds inside that run. Two pages were drawn, one was synthetically filled and read, and one continuation reached a close. The actual continuation prompt contains the returned descriptions. [The artifacts](research/runs/2026-09-07-officina-104746-339138/verification.json) preserve the evidence; [the Officina directory](officina/) indexes this historical notebook alongside the later iterations. These are software and model-path results, not a physical trial or a quality score.
 
 Earlier physical trials are documented in [ideas/09-a-game-that-ends.md](ideas/09-a-game-that-ends.md). Hardware availability and the deployed code version were not checked in this session, and no deployment was performed.
 

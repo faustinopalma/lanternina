@@ -55,7 +55,7 @@ import { REPO } from "../../i18n/ui";
 
   <figure>
     <a href="/images/camera-prototype-2.webp"><img src="/images/camera-prototype-2.webp" width="1600" height="1200" loading="lazy" alt="The assembled white camera, with its lens on the front and a green shutter button and yellow feedback light on top." /></a>
-    <figcaption>The assembled prototype, photographed with an iPhone on 9 September 2026.</figcaption>
+    <figcaption>The assembled prototype, with its shutter button and feedback light.</figcaption>
   </figure>
 
   <p>A press starts acquisition. The light stays on until the selected frame is ready; saving and delivery continue after it goes out. The firmware writes the JPEG to local flash and reads it back before starting Wi-Fi. It sends the image to the home hub over authenticated HTTPS. Two flashes confirm a matching receipt after the hub has stored it. A failed delivery keeps the photograph and its identifier for a later attempt.</p>
@@ -64,10 +64,10 @@ import { REPO } from "../../i18n/ui";
 
   <figure class="narrow">
     <a href="/images/camera-prototype-1.webp"><img src="/images/camera-prototype-1.webp" width="1200" height="1600" loading="lazy" alt="The open camera enclosure showing the controller board, antenna, wiring, shutter and battery beside it." /></a>
-    <figcaption>The enclosure during assembly on 9 September 2026. This iPhone photograph documents that assembly; it is not a wiring diagram.</figcaption>
+    <figcaption>The open enclosure shows the board, wiring and battery. The photograph documents the prototype, not a wiring diagram.</figcaption>
   </figure>
 
-  <p>Battery-powered shutter, light feedback, sleep/wake cycles and delivery were exercised on 9 September. USB tests also verified that a photograph survives an unavailable receiver and is delivered with the same identifier when it returns. <a href="/en/status/#camera-checks">The implementation page records the measured results and remaining trials.</a></p>
+  <p>Prototype trials verified battery-powered capture, light feedback, sleep, wake and resumed delivery after a receiver interruption. <a href="/en/status/#camera-checks">The implementation page describes the checks and remaining limits.</a></p>
 
   <h2>The parent's panel</h2>
 

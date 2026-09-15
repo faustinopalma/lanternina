@@ -11,12 +11,12 @@ import { REPO } from "../../i18n/ui";
   title="Identity and access"
   description="Parents use Entra External ID, administrators use a workforce app role, and each house authenticates to the API with its own device key."
 >
-  <p class="lede">Parents, invited adolescents, administrators and home hubs reach separate route groups in one API application. Parents and adolescents share Entra External ID authentication but have different application permissions. Administrators use workforce tokens with the <code>Lanternina.Admin</code> role. Each hub presents a key bound to its household.</p>
+  <p class="lede">Family and administrative access use separate route groups and authorization checks. Parents and invited adolescents share Entra External ID authentication but have different application permissions. The administrative router requires a workforce token with the <code>Lanternina.Admin</code> role for every operation. Each hub presents a key bound to its household.</p>
 
   <WhoSignsIn
     title="Who signs in, and what they reach"
-    desc="Four callers reach one application. Parent routes require an active account, portal routes an active invited membership, admin routes a workforce role and device routes a key authorized for the requested household."
-    caption="Route dependencies validate credentials and permissions before endpoint logic. These are authorization boundaries inside one deployment, not four isolated services."
+    desc="Parents and adolescents use the Entra External ID CIAM tenant. Administrators use a separate workforce tenant, administrative audience and Lanternina.Admin role. Hubs use household keys without Entra. Each path reaches only its authorized routes."
+    caption="The CIAM tenant issues family tokens; a separate workforce tenant issues administrative tokens. Routes check issuer, audience and permissions. Arrows show access paths, not network traffic through the providers. The checks still share a process and runtime permissions."
     adolescent={{ title: "An adolescent", sub: ["External ID + invitation", "active family membership"] }}
     adolescentRoutes={{ title: "Portal routes", sub: ["own photographs only", "no parent settings"] }}
     parent={{
@@ -31,9 +31,17 @@ import { REPO } from "../../i18n/ui";
       title: "The house",
       sub: ["a per-household device key", "over TLS — no Entra identity"],
     }}
-    api={{
-      title: "One API",
-      sub: ["validates credentials", "before application logic"],
+    ciam={{
+      title: "CIAM tenant",
+      sub: ["Entra External ID", "family tokens and audience"],
+    }}
+    workforce={{
+      title: "Workforce tenant",
+      sub: ["separate from the CIAM tenant", "admin audience + app role"],
+    }}
+    deviceKey={{
+      title: "Hub key validation",
+      sub: ["bound to the household", "no Entra identity provider"],
     }}
     parentRoutes={{ title: "Parent routes", sub: ["their own household only"] }}
     adminRoutes={{ title: "Admin routes", sub: ["admitting and rejecting accounts"] }}
@@ -84,16 +92,16 @@ import { REPO } from "../../i18n/ui";
   <h2>Local peripherals</h2>
   <p>The hub provisions the camera and displays. Their normal traffic stays on the local network; they do not contain Azure service credentials or the hub's cloud API key. Their firmware and provisioning remain unchanged. Compromise can still expose Wi-Fi settings, local credentials or pending photographs. The camera's upload token can be used to impersonate it to the hub, and a compromised network device can send traffic to reachable services. Absence of Azure credentials limits direct cloud access; it does not eliminate local risk.</p>
 
-  <h2>Hardware-backed enrollment: deferred</h2>
+  <h2>Hardware-backed enrollment: proposal</h2>
   <p>A future hub could register through a short-lived, single-use invitation created by its parent. It would generate a signing key inside a TPM, prove possession and provide verifiable key attestation. The server would bind the device to the invitation's household and issue a client certificate. Subsequent access would use mTLS or a standard key-bound proof-of-possession mechanism, with renewal and parent revocation. A normal copyable bearer token would not provide the same protection.</p>
-  <p>This proposal is not implemented. It was deferred on 15 September 2026 to preserve the working development installation. The current CM5 exposes no TPM to Linux; compatible hardware and attestation support need verification. A non-exportable key reduces cloning risk but does not prevent compromised software from using the TPM to sign. The current API and key scheme remain in service. Camera and display hardening are outside this proposed hub change.</p>
+  <p>This proposal is not implemented: the hub still uses a household-bound key. Compatible hardware and attestation support need verification. A non-exportable key would reduce cloning risk but would not prevent compromised software from using the TPM to sign.</p>
 
   <h2>Invited adolescent access</h2>
   <p>The parent creates an email-bound invitation and shares its code or link. The adolescent signs in with the matching address and accepts the invitation. Registration alone grants no portal access. An active membership permits submitting, listing and deleting that member's photographs, not approving activities or changing household settings. Revocation closes subsequent portal requests. Known adolescent subjects, including revoked memberships, are excluded from the parent gate. Suspension of the inviting parent also closes portal access.</p>
   <p>The portal uses the existing External ID application and audience. Its permissions come from the server-side membership, not from a separate adolescent token audience. First registration and redemption with a real invited account remain a family acceptance check.</p>
 
   <h2>Application boundaries</h2>
-  <p>The route groups share a process, deployment and runtime identity. This keeps deployment and shared data access simple, but a process compromise or resource exhaustion can affect all groups. Moving administration to a separate service would provide an additional boundary only with independently restricted runtime permissions and access controls; another hostname alone would not provide that isolation.</p>
+  <p>The administrative router is registered separately and applies its authorization check to every route under <code>/api/admin</code>. Individual operations also request the verified administrator when they need to record who acted. Family routes retain their own account and household checks. The groups still share a process, deployment and runtime identity, so a process compromise or resource exhaustion can affect both. Service isolation would require a separate administrative service with independently restricted permissions and access controls.</p>
 
   <h2>Activity approval</h2>
 
@@ -118,7 +126,7 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <p>
-    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>The deployment steps, including the manual ones</a> ·
+    <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>Configuration and deployment</a> ·
     <a href={`${REPO}/blob/main/docs/DEVICE-AUTH.md`}>hub credential provisioning and revocation</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
       >the pipeline's federated identity</a

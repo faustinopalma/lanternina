@@ -40,15 +40,14 @@ import { REPO } from "../../i18n/ui";
   <p>The parent approves the initial activity. Generated activities and continuations pass format and safety checks; continuations do not require a second approval. Reading pages requires cloud connectivity. Retained data and deletion options are described under <a href="/en/#memory">memory</a>.</p>
 
   <h2 id="camera-checks">Camera checks</h2>
-  <p>On 9 September 2026, the owner used the shutter and observed light feedback while taking battery-powered photographs. Three inspected cycles reported a confirmed preceding deep sleep, HTTP 201, matching capture and upload identifiers and an empty queue. Their preceding sleeps lasted 118, 135 and 74 seconds, measured by the device RTC at one-second resolution. These records establish those cycles, not battery life.</p>
-  <p>A receiver-offline USB test kept the photograph locally and delivered the same identifier after the receiver restarted. On 10 September, a USB capture with automatic exposure, gain and white balance produced a JPEG at 1600 × 1200 pixels. The selected frame was ready in 831 ms; acquisition and verified storage took 2,307 ms. Delivery returned HTTP 201 and emptied the queue. These timings exclude boot and physical button handling, and one scene does not establish performance across lighting conditions.</p>
-  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Firmware, test conditions and diagnostic fields.</a></p>
+  <p>Prototype trials verified battery-powered capture, light feedback, sleep and wake. A receiver-offline test verified that a photograph stays saved on the camera and is delivered when connectivity returns. These results apply to the tested assembly and firmware; they do not establish battery life or performance across lighting conditions.</p>
+  <p><a href={`${REPO}/blob/main/firmware/camera/README.md`}>Measurements, configurations and test conditions.</a></p>
 
   <h2>Open implementation gaps</h2>
 
   <ul>
     <li>
-      <b>Camera trials.</b> The sheet-return path has automated tests. A complete activity with photographed handwriting, varied lighting, power-interruption tests and battery-life measurements remain open. The battery cycles above concern the 9 September assembly; subsequent firmware and wiring revisions need their own physical acceptance.
+      <b>Camera trials.</b> The sheet-return path has automated tests. A complete activity with photographed handwriting, varied lighting, power-interruption tests and battery-life measurements remain open. Firmware and wiring changes require new physical trials.
     </li>
     <li>
       <b>The button panel.</b> The current hardware has one button per display. It can start a scan when the current return uses a scanner, but cannot yet capture a multiple-choice response. It does not start a scan while the moment waits for a camera.

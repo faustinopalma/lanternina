@@ -69,7 +69,7 @@ export const UI = {
 export const REPO = "https://github.com/faustinopalma/lanternina";
 
 /** The workbench, which GitHub renders with its stored output. */
-export const NOTEBOOK = `${REPO}/blob/main/research/officina.ipynb`;
+export const NOTEBOOK = `${REPO}/tree/main/officina`;
 
 export function pathFor(lang: Lang, slug: string): string {
   return slug ? `/${lang}/${slug}/` : `/${lang}/`;

@@ -81,7 +81,6 @@ BROWSER_METHODS = ("GET", "POST", "DELETE")
 # claim the same path, so the order is a reading convenience and not a rule — but leaving
 # it alone means no route changed behaviour by being moved.
 SECTIONS = (
-    admin,
     proposal_routes,
     picture_routes,
     theme_routes,
@@ -248,6 +247,7 @@ def create_app(
             "status": account.status,
         }
 
+    app.include_router(admin.router)
     for section in SECTIONS:
         app.include_router(section.router)
     return app
