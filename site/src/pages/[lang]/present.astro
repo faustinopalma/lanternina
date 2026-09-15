@@ -1,5 +1,5 @@
 ---
-import { ArrowLeft, ArrowRight, NotebookPen, Maximize, X, Cpu, Cloud, ShieldCheck, PenLine, Undo2, Trash, MousePointer2 } from "@lucide/astro";
+import { ArrowLeft, ArrowRight, NotebookPen, Maximize, X, Cpu, Cloud, ShieldCheck, BookOpen, Scale, PenLine, Undo2, Trash, MousePointer2 } from "@lucide/astro";
 import { presentation } from "../../i18n/presentation";
 import "../../styles/presentation.css";
 
@@ -9,7 +9,8 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang === "it" ? "it" : "en";
 const text = presentation[lang];
-const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technologyLabel, text.endingLabel];
+const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technologyLabel, text.endingLabel, text.principlesLabel];
+const principleIcons = [ShieldCheck, BookOpen, Scale];
 ---
 
 <!doctype html>
@@ -127,6 +128,25 @@ const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technology
         </div>
         <img class="ending-image" src="/images/hero.jpg" width="1800" height="771" alt={text.endingAlt} />
       </section>
+
+      <section class="slide principles" id="slide-6" aria-labelledby="title-6" data-slide>
+        <div class="principles-heading">
+          <p class="eyebrow">{text.principlesLabel}</p>
+          <h2 id="title-6">{text.principlesTitle}</h2>
+        </div>
+        <div class="principles-list">
+          {text.principles.map((principle, index) => {
+            const Icon = principleIcons[index];
+            return <div class="principle">
+              <Icon size={36} aria-hidden="true" />
+              <h3>{principle.name}</h3>
+              <p class="principle-purpose">{principle.purpose}</p>
+              <p class="principle-practice">{principle.practice}</p>
+              <p class="principle-limit">{principle.limit}</p>
+            </div>;
+          })}
+        </div>
+      </section>
     </main>
 
     <footer class="controls">
@@ -134,7 +154,7 @@ const labels = ["Lanternina", text.parentLabel, text.paperLabel, text.technology
       <nav class="slide-links" aria-label={text.presentation}>
         {labels.map((label, index) => <a href={`#${index + 1}`} data-go={index} aria-label={`${text.slide} ${index + 1}: ${label}`} title={label}><span aria-hidden="true">0{index + 1}</span></a>)}
       </nav>
-      <span class="slide-count" aria-live="polite" aria-atomic="true"><span id="current-slide">01</span><span aria-hidden="true"> / </span><span class="sr-only"> / </span>05</span>
+      <span class="slide-count" aria-live="polite" aria-atomic="true"><span id="current-slide">01</span><span aria-hidden="true"> / </span><span class="sr-only"> / </span>{String(labels.length).padStart(2, "0")}</span>
       <button type="button" id="next" class="arrow-button" title={text.next} aria-label={text.next}><ArrowRight size={24} /></button>
     </footer>
 

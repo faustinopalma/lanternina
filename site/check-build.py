@@ -55,11 +55,11 @@ for page in pages:
     parsed.feed(html)
     is_presentation = rel in {"en/present/index.html", "it/present/index.html"}
     if is_presentation:
-        if parsed.slides != 5 or parsed.notes != 5:
-            problems.append(f"{rel}: expected five slides and five speech paragraphs")
+        if parsed.slides != 6 or parsed.notes != 6:
+            problems.append(f"{rel}: expected six slides and six speech paragraphs")
         required = {
             "previous", "next", "toggle-whiteboard", "mouse-draw", "ink-width",
-            "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes",
+            "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes", "slide-6",
         }
         if not required.issubset(parsed.ids):
             problems.append(f"{rel}: missing controls {required - parsed.ids}")

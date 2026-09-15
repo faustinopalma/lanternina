@@ -28,7 +28,7 @@ function updateNotes() {
   const source = document.querySelector<HTMLTemplateElement>(`[data-notes="${current}"]`)!;
   notesContent.replaceChildren(source.content.cloneNode(true));
   notes.querySelector(".notes-position")!.textContent =
-    `${String(current + 1).padStart(2, "0")} / 05`;
+    `${String(current + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
 }
 
 function showSlide(index: number) {

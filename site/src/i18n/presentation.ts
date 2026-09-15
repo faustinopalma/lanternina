@@ -51,12 +51,35 @@ export const presentation = {
     endingLine: "Con le mani. Con le cose. Con qualcuno.",
     status: "Il prototipo funziona in una casa. La qualità delle attività richiede ancora prove con le persone.",
     endingAlt: "Il display e-paper in casa, con un'illustrazione al posto delle istruzioni di un'attività.",
+    principlesLabel: "I principi",
+    principlesTitle: "Il progetto si fonda su tre principi.",
+    principles: [
+      {
+        name: "Sicurezza informatica",
+        purpose: "Proteggere la casa e i dati.",
+        practice: "Accessi autenticati, permessi limitati e separazione fra famiglie.",
+        limit: "La sicurezza richiede verifiche continue.",
+      },
+      {
+        name: "Pedagogia",
+        purpose: "Proporre attività che aiutino a imparare.",
+        practice: "Scelte, ragionamento e autonomia, con il sostegno del genitore.",
+        limit: "L'utilità pedagogica va verificata con le persone.",
+      },
+      {
+        name: "Responsible AI",
+        purpose: "Usare l'AI con responsabilità.",
+        practice: "Equità, inclusione e trasparenza. Controlli sui contenuti e supervisione umana.",
+        limit: "I controlli riducono i rischi; la valutazione continua.",
+      },
+    ],
     speech: [
       "Per molti adolescenti con disabilità cognitive, tornare da scuola significa trovare un pomeriggio difficile da organizzare. Le famiglie ci sono. Ma inventare ogni giorno un'attività adatta, preparare i materiali e accompagnarla richiede tempo ed energie. Lo schermo è sempre disponibile e può occupare quello spazio. Lanternina nasce da qui: è un piccolo sistema domestico che propone qualcosa da fare con le mani, su carta e con gli oggetti della casa. Quello che vedete è il prototipo, con il display e la fotocamera.",
       "Il sistema prepara una proposta a partire dagli interessi, dalla lingua e dalle indicazioni della famiglia. Il genitore la vede per primo. Può leggere quello che succederà, approvare, rifiutare o lavorare sull'idea. Decide anche i giorni, gli orari e i limiti di attività e fogli. Può aggiungere una nota di contesto temporanea, che scade dopo ventotto giorni. Quando arriva il momento scelto, la casa rende disponibile l'attività sul display e sulla carta.",
       "Qui, per esempio, c'è una vecchia ferrovia da ricostruire. Un foglio contiene la mappa e gli indizi; un altro lascia spazio per disegnare un percorso. L'adolescente lavora sul foglio e lo fotografa. Lanternina legge ciò che è stato aggiunto e prepara il seguito. Le annotazioni blu di questo esempio sono simulate da un modello: mostrano il meccanismo, non una prova con una persona. L'attività può continuare attraverso diversi scambi, fino alla sua conclusione.",
       "Tecnicamente, un hub Linux tiene il tempo e coordina la stampante, i display e la fotocamera. Un'API in un container su Azure chiama i modelli attraverso Microsoft Foundry. Il modello di linguaggio prepara l'attività, quello di immagine disegna le pagine e quello di visione legge il materiale restituito. I testi passano controlli di formato e Content Safety. Il genitore approva la proposta iniziale; i seguiti passano i controlli automatici. Questi controlli non garantiscono che l'attività interessi alla persona.",
       "Il punto è il tempo che passa fuori dallo schermo. La carta resta sul tavolo mentre si disegna, si costruisce o si ragiona con qualcuno. L'attività arriva a una fine e il display torna a mostrare un quadro. Non c'è un feed da continuare a scorrere. Oggi il prototipo funziona in una casa; la qualità delle attività va ancora provata con le persone. Lanternina vuole rendere più facile preparare quel pomeriggio, lasciando alla famiglia la scelta di cosa farne.",
+      "Tre principi guidano il lavoro tecnico. La sicurezza informatica deve proteggere la casa e i dati da accessi non autorizzati. La pedagogia chiede attività utili per imparare, da verificare con le persone. Il Responsible AI richiede equità, inclusione, trasparenza e responsabilità, con controlli sui contenuti e supervisione umana.",
     ],
   },
   en: {
@@ -111,12 +134,35 @@ export const presentation = {
     endingLine: "With your hands. With things. With someone.",
     status: "The prototype runs in one home. Activity quality still needs trials with people.",
     endingAlt: "The e-paper display at home, holding an illustration between activities.",
+    principlesLabel: "The principles",
+    principlesTitle: "Three principles guide the project.",
+    principles: [
+      {
+        name: "Cybersecurity",
+        purpose: "Protect the home and its data.",
+        practice: "Authenticated access, limited permissions and separation between households.",
+        limit: "Security requires ongoing testing.",
+      },
+      {
+        name: "Pedagogy",
+        purpose: "Offer activities that help people learn.",
+        practice: "Choice, reasoning and autonomy, with a parent's support.",
+        limit: "Educational value needs to be tested with people.",
+      },
+      {
+        name: "Responsible AI",
+        purpose: "Use AI responsibly.",
+        practice: "Fairness, inclusion and transparency. Content checks and human oversight.",
+        limit: "Checks reduce risks; assessment continues.",
+      },
+    ],
     speech: [
       "For many teenagers with cognitive disabilities, coming home from school means an afternoon that is hard to organise. Families care. But finding a suitable activity, preparing the materials and supporting it takes time and energy, every single day. A screen is always available, and it can fill that space. Lanternina starts here: a small home system that proposes something to do with your hands, on paper and with objects around the house. What you see is the prototype, with its display and camera.",
       "The system prepares a proposal from the family's interests, language and guidance. A parent sees it first. They can read what will happen, approve, refuse or work on the idea. They also choose the days, hours and limits on activities and sheets. They can add a temporary context note, which expires after twenty-eight days. When the chosen time arrives, the house makes the activity available on the display and on paper.",
       "Here, for example, there is an old railway to reconstruct. One sheet has the map and clues; another leaves room to draw a possible route. The teenager works on the sheet and photographs it. Lanternina reads what was added and prepares the next response. A model simulated the blue annotations in this example: they show the mechanism, not a trial with a person. The activity can develop through several exchanges until it reaches its ending.",
       "Technically, a Linux hub keeps time and coordinates the printer, displays and camera. A containerised API on Azure calls models through Microsoft Foundry. A language model prepares the activity, an image model draws the pages and a vision model reads the returned material. Text passes format checks and Content Safety. The parent approves the initial proposal; continuations pass the automatic checks. Those checks cannot guarantee that the person will find the activity interesting.",
       "The point is the time spent away from the screen. The paper stays on the table while you draw, build or think with someone. The activity reaches an ending, and the display returns to showing a picture. There is no feed to keep scrolling. Today, the prototype runs in one home; activity quality still needs trials with people. Lanternina aims to make that afternoon easier to prepare, leaving the family to choose what to do with it.",
+      "Three principles guide the technical work. Cybersecurity must protect the home and its data from unauthorised access. Pedagogy calls for activities that help people learn, tested with the people who use them. Responsible AI requires fairness, inclusion, transparency and accountability, with content checks and human oversight.",
     ],
   },
 };
