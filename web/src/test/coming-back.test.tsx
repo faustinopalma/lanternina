@@ -6,9 +6,9 @@
  * reloading threw them back to the first section, which is a worse fault than the one that
  * made them reload.
  */
-import { screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
@@ -24,6 +24,32 @@ describe("coming back to the panel", () => {
   });
   afterEach(() => {
     window.location.hash = "";
+  });
+
+  it("fits the menu below its actual viewport position after scrolling and resizing", () => {
+    const bounds = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockReturnValue(new DOMRect(0, 140, 208, 500));
+    try {
+      const { unmount } = renderPanel(fakeApi());
+      const menu = screen.getByRole("complementary");
+      expect(menu.style.getPropertyValue("--menu-top")).toBe("140px");
+
+      bounds.mockReturnValue(new DOMRect(0, 24, 208, 500));
+      fireEvent.scroll(window);
+      expect(menu.style.getPropertyValue("--menu-top")).toBe("24px");
+
+      bounds.mockReturnValue(new DOMRect(0, 180, 208, 500));
+      fireEvent.resize(window);
+      expect(menu.style.getPropertyValue("--menu-top")).toBe("180px");
+
+      unmount();
+      bounds.mockClear();
+      fireEvent.scroll(window);
+      fireEvent.resize(window);
+      expect(bounds).not.toHaveBeenCalled();
+    } finally {
+      bounds.mockRestore();
+    }
   });
 
   it("puts the open section in the address bar", async () => {

@@ -1,5 +1,5 @@
 import { Menu, X } from "lucide-react";
-import { useEffect, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 
 import { ApiProvider } from "@/api/client";
 import type { Api } from "@/api/types";
@@ -66,6 +66,7 @@ export function Dashboard({ api }: { api: Api }) {
   const { t } = useWords();
   const [current, setCurrent] = useState(() => opened() || "experiences");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const menuRef = useRef<HTMLElement>(null);
 
   // Written out one by one rather than built from the name: a key that only exists at
   // runtime is a key no test can find missing. The four groups answer four different
@@ -157,6 +158,25 @@ export function Dashboard({ api }: { api: Api }) {
     return () => document.removeEventListener("keydown", close);
   }, [drawerOpen]);
 
+  useEffect(() => {
+    const menu = menuRef.current;
+    if (!menu) return;
+    const fit = () => {
+      const top = Math.max(0, menu.getBoundingClientRect().top);
+      menu.style.setProperty("--menu-top", `${top}px`);
+    };
+    fit();
+    window.addEventListener("scroll", fit, { passive: true });
+    window.addEventListener("resize", fit);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(fit);
+    observer?.observe(document.documentElement);
+    return () => {
+      window.removeEventListener("scroll", fit);
+      window.removeEventListener("resize", fit);
+      observer?.disconnect();
+    };
+  }, []);
+
   return (
     <ApiProvider api={api}>
       {/* Above the sections rather than inside one: the limit stops every one of them, and
@@ -184,11 +204,13 @@ export function Dashboard({ api }: { api: Api }) {
           ) : null}
 
           <aside
+            ref={menuRef}
             className={cn(
               "fixed inset-y-0 left-0 z-20 h-dvh w-[min(19rem,calc(100vw-48px))] overflow-y-auto",
               "border-r border-edge bg-card p-5 shadow-[12px_0_32px_rgb(0_0_0/0.18)]",
               drawerOpen ? "block" : "hidden",
-              "wide:sticky wide:top-6 wide:z-auto wide:block wide:h-auto wide:w-auto wide:overflow-visible",
+              "overscroll-y-contain wide:sticky wide:top-6 wide:z-auto wide:block wide:h-auto wide:w-auto",
+              "wide:max-h-[calc(100dvh-var(--menu-top,1.5rem)-1.5rem)]",
               "wide:border-0 wide:bg-transparent wide:p-0 wide:shadow-none",
             )}
           >
