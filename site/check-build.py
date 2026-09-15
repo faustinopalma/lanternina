@@ -12,6 +12,7 @@ class PresentationCheck(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         self.slides = 0
+        self.slide_order: list[tuple[str | None, str | None]] = []
         self.notes = 0
         self.links: list[str] = []
         self.scripts: list[str | None] = []
@@ -21,6 +22,7 @@ class PresentationCheck(HTMLParser):
         attributes = dict(attrs)
         if tag == "section" and "data-slide" in attributes:
             self.slides += 1
+            self.slide_order.append((attributes.get("id"), attributes.get("class")))
         if tag == "template" and "data-notes" in attributes:
             self.notes += 1
         if tag == "a" and attributes.get("href"):
@@ -57,6 +59,13 @@ for page in pages:
     if is_presentation:
         if parsed.slides != 4 or parsed.notes != 4:
             problems.append(f"{rel}: expected four slides and four speech paragraphs")
+        if parsed.slide_order != [
+            ("slide-1", "slide opening"),
+            ("slide-2", "slide technology"),
+            ("slide-3", "slide paper"),
+            ("slide-4", "slide principles"),
+        ]:
+            problems.append(f"{rel}: expected opening, system, activity, principles")
         required = {
             "previous", "next", "toggle-whiteboard", "mouse-draw", "ink-width",
             "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes", "slide-4",

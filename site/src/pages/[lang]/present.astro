@@ -9,7 +9,7 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang === "it" ? "it" : "en";
 const text = presentation[lang];
-const labels = ["Lanternina", text.paperLabel, text.technologyLabel, text.principlesLabel];
+const labels = ["Lanternina", text.technologyLabel, text.paperLabel, text.principlesLabel];
 const principleIcons = [ShieldCheck, BookOpen, Scale];
 ---
 
@@ -73,24 +73,8 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
         <img class="opening-image" src="/images/hero.jpg" width="1800" height="771" alt={text.openingAlt} fetchpriority="high" />
       </section>
 
-      <section class="slide paper" id="slide-2" aria-labelledby="title-2" data-slide>
-        <div class="paper-copy">
-          <p class="eyebrow">{text.paperLabel}</p>
-          <h2 id="title-2">{text.paperTitle}</h2>
-          <ol class="activity-steps">
-            {text.paperSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
-          </ol>
-        </div>
-        <div class="paper-pair">
-          <figure><img src="/images/valle-lunga-map.webp" width="1024" height="1536" alt={text.mapAlt} /><figcaption>{text.mapCaption}</figcaption></figure>
-          <ArrowRight class="paper-arrow" size={28} aria-hidden="true" />
-          <figure><img src="/images/valle-lunga-written.webp" width="1024" height="1536" alt={text.writtenAlt} /><figcaption>{text.writtenCaption}</figcaption></figure>
-        </div>
-        <p class="provenance">{text.synthetic}</p>
-      </section>
-
-      <section class="slide technology" id="slide-3" aria-labelledby="title-3" data-slide>
-        <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-3">{text.technologyTitle}</h2></div>
+      <section class="slide technology" id="slide-2" aria-labelledby="title-2" data-slide data-ink-page="slide-3">
+        <div class="technology-heading"><p class="eyebrow">{text.technologyLabel}</p><h2 id="title-2">{text.technologyTitle}</h2></div>
         <div class="execution-flow" role="group" aria-label={text.flowDescription}>
           <div class="cloud-system">
             <div class="system-heading"><img src="/images/presentation-foundry.svg" width="40" height="40" alt="Microsoft Foundry" /><h3>{text.cloudTitle}</h3></div>
@@ -145,6 +129,22 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
           <p class="return-path">{text.returnPath}</p>
           <p class="connection-note">{text.connectionNote} {text.safety}</p>
         </div>
+      </section>
+
+      <section class="slide paper" id="slide-3" aria-labelledby="title-3" data-slide data-ink-page="slide-2">
+        <div class="paper-copy">
+          <p class="eyebrow">{text.paperLabel}</p>
+          <h2 id="title-3">{text.paperTitle}</h2>
+          <ol class="activity-steps">
+            {text.paperSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
+          </ol>
+        </div>
+        <div class="paper-pair">
+          <figure><img src="/images/valle-lunga-map.webp" width="1024" height="1536" alt={text.mapAlt} /><figcaption>{text.mapCaption}</figcaption></figure>
+          <ArrowRight class="paper-arrow" size={28} aria-hidden="true" />
+          <figure><img src="/images/valle-lunga-written.webp" width="1024" height="1536" alt={text.writtenAlt} /><figcaption>{text.writtenCaption}</figcaption></figure>
+        </div>
+        <p class="provenance">{text.synthetic}</p>
       </section>
 
       <section class="slide principles" id="slide-4" aria-labelledby="title-4" data-slide>

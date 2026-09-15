@@ -43,7 +43,7 @@ export function createWhiteboard(slides: HTMLElement[]) {
     const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
     if (saved && typeof saved === "object") {
       for (const slide of slides) {
-        const savedPage = saved[slide.id];
+        const savedPage = saved[slide.dataset.inkPage ?? slide.id];
         if (Array.isArray(savedPage) && savedPage.length <= 10000) {
           pages[slide.id] = savedPage.filter(validStroke);
         }
@@ -52,7 +52,10 @@ export function createWhiteboard(slides: HTMLElement[]) {
   } catch {}
 
   function persist() {
-    try { localStorage.setItem(storageKey, JSON.stringify(pages)); } catch {}
+    const saved = Object.fromEntries(slides.map(slide => [
+      slide.dataset.inkPage ?? slide.id, pages[slide.id],
+    ]));
+    try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch {}
   }
 
   function updateTools() {
