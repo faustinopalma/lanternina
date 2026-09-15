@@ -400,6 +400,73 @@ describe("the rhythm", () => {
 describe("the devices", () => {
   beforeEach(() => window.localStorage.clear());
 
+  it.each([
+    { intervals: [6, 10], warning: true },
+    { intervals: [5, 10], warning: false },
+    { intervals: [1, 10], warning: false },
+    { intervals: [undefined, null], warning: true },
+    { intervals: [], warning: false },
+  ])("checks saved display intervals $intervals", async ({ intervals, warning }) => {
+    const original = await fakeApi().devices();
+    const displays = intervals.map((interval, index) => ({
+      ...original.devices[index]!, displayPollMinutes: interval,
+    }));
+    const api = fakeApi({ devices: async () => ({
+      ...original,
+      devices: [...displays, { ...original.devices[2]!, displayPollMinutes: 1 }],
+      forgotten: [{ ...original.devices[0]!, displayPollMinutes: 1 }],
+    }) });
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    await screen.findByText("stampante.local");
+    expect(screen.queryByRole("alert") !== null).toBe(warning);
+    if (warning) expect(screen.getByRole("alert")).toHaveTextContent("5 minuti o meno");
+  });
+
+  it("updates the warning after saving an interval in either direction", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    await screen.findByRole("alert");
+    const otherInterval = screen.getAllByLabelText("Collega ogni")[1]!;
+    await user.clear(otherInterval);
+    await user.type(otherInterval, "12");
+    const interval = screen.getAllByLabelText("Collega ogni")[0]!;
+    await user.clear(interval);
+    await user.type(interval, "5");
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    await user.click(screen.getAllByRole("button", { name: "Salva intervallo" })[0]!);
+    await waitFor(() => expect(screen.queryByRole("alert")).toBeNull());
+    expect(screen.getAllByLabelText("Collega ogni")[1]).toHaveValue(12);
+    const saved = (await screen.findAllByLabelText("Collega ogni"))[0]!;
+    expect(saved).toHaveValue(5);
+    await user.clear(saved);
+    await user.type(saved, "6");
+    await user.click(screen.getAllByRole("button", { name: "Salva intervallo" })[0]!);
+    await screen.findByRole("alert");
+    expect(api.recorded.assignments.map(entry => entry.assignment)).toEqual([
+      { displayPollMinutes: 5 }, { displayPollMinutes: 6 },
+    ]);
+  });
+
+  it("keeps the warning when saving a faster interval fails", async () => {
+    const api = fakeApi({ assignDevice: async () => { throw new Error("offline"); } });
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    await screen.findByRole("alert");
+    const interval = screen.getAllByLabelText("Collega ogni")[0]!;
+    await user.clear(interval);
+    await user.type(interval, "1");
+    await user.click(screen.getAllByRole("button", { name: "Salva intervallo" })[0]!);
+    await waitFor(() => expect(screen.getAllByRole("button", {
+      name: "Salva intervallo",
+    })[0]).toBeEnabled());
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+  });
+
   it("offers one return function on each independently described camera", async () => {
     const original = await fakeApi().devices();
     const cameras = ["CAM-A", "CAM-B"].map(id => ({

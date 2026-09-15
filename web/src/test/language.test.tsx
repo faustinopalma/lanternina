@@ -107,17 +107,18 @@ describe("what a saved setting carries", () => {
     expect(api.recorded.preferences[0]?.note).toBe("mese pieno di scuola");
   });
 
-  it("says the sheets number is a ceiling on the table, not a budget for the whole run", async () => {
+  it("offers five sheets by default across the whole game", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
     renderPanel(api);
 
     await openSettings(user);
 
-    const sheets = await screen.findByLabelText("Quanti fogli al massimo sul tavolo");
-    expect(sheets).toHaveValue("2");
+    const sheets = await screen.findByLabelText("Fogli al massimo per gioco");
+    expect(sheets).toHaveValue("5");
+    expect(within(sheets).getAllByRole("option")).toHaveLength(5);
     expect(screen.getByText(/tetto, non un obiettivo/i)).toBeInTheDocument();
-    expect(screen.getByText(/non quanti ne stampa in tutto/i)).toBeInTheDocument();
+    expect(screen.getByText(/fotografarli non rinnova il limite/i)).toBeInTheDocument();
 
     await user.selectOptions(sheets, "1");
     await user.click(screen.getByRole("button", { name: "Salva" }));

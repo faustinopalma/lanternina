@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 
 import { useApi } from "@/api/client";
@@ -18,7 +18,11 @@ function known(value: string, prefix: string, fallback: MessageKey): MessageKey 
   return hasWord(key) ? key : fallback;
 }
 
-function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
+function Row({ device, nameLimit, onPollSaved }: {
+  device: Device;
+  nameLimit: number;
+  onPollSaved: (minutes: number) => void;
+}) {
   const { t, ago } = useWords();
   const api = useApi();
   const [name, setName] = useState(device.name);
@@ -115,6 +119,7 @@ function Row({ device, nameLimit }: { device: Device; nameLimit: number }) {
             const value = String(updated.displayPollMinutes ?? Number(poll));
             setPoll(value);
             setSavedPoll(value);
+            onPollSaved(Number(value));
           } catch { setProblem("devices.saveFailed"); }
           finally { setSavingPoll(false); }
         }}>
@@ -138,18 +143,31 @@ export function Devices() {
   const { t } = useWords();
   const api = useApi();
   const [state, reload] = useLoad(() => api.devices(), [], { live: true });
+  const [savedIntervals, setSavedIntervals] = useState<Record<string, number>>({});
   const [removing, setRemoving] = useState<string | null>(null);
   const [asked, setAsked] = useState<string | null>(null);
   const [looked, setLooked] = useState(false);
+
+  useEffect(() => {
+    if (state.status === "ready") setSavedIntervals({});
+  }, [state]);
 
   if (state.status === "loading") return <Quiet>{t("devices.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("devices.unreadable")}</Quiet>;
 
   const { devices, forgotten, nameLimit } = state.data;
   if (devices.length === 0 && forgotten.length === 0) return <Quiet>{t("devices.empty")}</Quiet>;
+  const displays = devices.filter(device => device.kind === "display");
+  const allDisplaysSlow = displays.length > 0
+    && displays.every(device => (
+      savedIntervals[device.id] ?? device.displayPollMinutes ?? 10
+    ) > 5);
 
   return (
     <div aria-live="polite">
+      {allDisplaysSlow ? (
+        <p role="alert" className="my-3 text-focus">{t("devices.slowDisplays")}</p>
+      ) : null}
       <Quiet>{t("devices.nameNote", { limit: nameLimit })}</Quiet>
       <Quiet>{t("devices.jobNote")}</Quiet>
       <Quiet>{t("devices.removeNote")}</Quiet>
@@ -174,7 +192,9 @@ export function Devices() {
           className="flex items-start gap-3 border-b border-edge last:border-b-0"
         >
           <div className="min-w-0 flex-auto">
-            <Row device={device} nameLimit={nameLimit} />
+            <Row device={device} nameLimit={nameLimit} onPollSaved={minutes => {
+              setSavedIntervals(previous => ({ ...previous, [device.id]: minutes }));
+            }} />
             {asked === device.id ? (
               <p className="mt-0 mb-3 text-quiet">{t("devices.identify.asked")}</p>
             ) : null}

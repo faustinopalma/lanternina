@@ -462,12 +462,12 @@ export function fakeApi(overrides: Partial<Api> = {}): FakeApi {
     interests: ["gatti", "vele"],
     avoid: ["tempeste"],
     language: "it",
-    sheets: 2,
+    sheets: 5,
     note: "",
     noteUntil: 0,
     noteLastsDays: 28,
     languageChoices: ["it", "en"],
-    sheetsChoices: [1, 2, 3],
+    sheetsChoices: [1, 2, 3, 4, 5],
   };
   /* One line written, so the page shows both halves: what this house allowed and what
    * holds everywhere. The fixed ones are the API's own words, in the model's language. */
