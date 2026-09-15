@@ -178,9 +178,7 @@ _INSTRUCTION: Final = (
 # repair is written against the same shape the first attempt was.
 _REPAIR: Final = SAYS.text("repair")
 
-# How many sheets may be on the table at one time. The parent sets it; `panel/preferences.py`
-# says why two rather than one, and `shared/experience_checks.py` refuses a document above it.
-DEFAULT_SHEETS: Final = 2
+DEFAULT_SHEETS: Final = 5
 
 DEFAULT_WORDS_PER_LINE: Final = 6
 

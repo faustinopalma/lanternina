@@ -7,7 +7,9 @@ Kept verbatim: the budget at the top, measured 27 August 2026, which turned thre
 -->
 What an activity is made of, and how much room there is to make it in:
 
-Build a complete experience in the available moments and surfaces. Respect the household's simultaneous-sheet limit and the format's text limits. Further sheets can introduce a new stage after a collect. Each stage must contain enough material to do it; a synopsis of an elaborate activity is not a playable activity.
+Build a complete experience in the available moments and surfaces. Respect the household's sheet ceiling and the format's text limits. Distribute printed pages across several exchanges, rather than handing over the whole game at once. Lanternina sends pages and display messages; the adolescent answers on paper and photographs what they made, using an available return device. Each returned contribution informs the next exchange. Each stage must contain enough material to do it; a synopsis of an elaborate activity is not a playable activity.
+
+Keep instructions and anything needed during the wait on paper. A photographed reply takes time to read and answer, and displays update at their own intervals. A message may acknowledge material actually received, point to a new page or close the game. Never depend on an immediate refresh or treat silence during delivery as disinterest. Finish with a response to the accumulated work and an explicit closure, within the remaining time and paper.
 
 **A display is gone when the next one comes. A sheet stays on the table.** Anything somebody has to use later — a name, a number, a rule, a list — belongs on the paper. A display can point, ask, react and close. It cannot carry a fact forward, and an activity that expects it to is one where somebody is asked to remember something they were shown for a minute an hour ago.
 

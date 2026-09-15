@@ -184,6 +184,30 @@ def test_nothing_about_a_person_reaches_the_prompt() -> None:
     assert "slowly" not in prompt and "horses" not in prompt
 
 
+def test_the_prompts_request_material_exchanges_and_a_finite_paper_budget() -> None:
+    from agents.experience_agent import SAYS as RUNNER
+    from agents.experience_continuer import _INSTRUCTION as CONTINUER
+    from agents.experience_deviser import the_prompt
+    from agents.idea_editor import SAYS as EDITOR
+
+    devised_prompt = the_prompt(language="Italian", capabilities=frozenset())
+    assert "at most 5 printed sheets for the whole game" in devised_prompt
+    assert "more than one returned contribution" in devised_prompt
+    assert "State this whole-game paper ceiling in the script" in devised_prompt
+    for prompt in (
+        devised_prompt,
+        CONTINUER,
+        RUNNER.text("instruction", acts=""),
+        EDITOR.text("instruction"),
+    ):
+        assert "photograph" in prompt
+        assert "closure" in prompt
+        assert "immediate" in prompt
+    for prompt in (CONTINUER, RUNNER.text("instruction", acts="")):
+        assert "at most five printed sheets" in prompt
+        assert "approved script" in prompt
+
+
 def test_the_budget_is_asked_for_and_is_larger_than_a_continuation() -> None:
     _, router = devised(json.dumps(AN_AFTERNOON))
 

@@ -72,7 +72,8 @@ def test_a_household_that_never_chose_still_has_settings() -> None:
     """The hub has to be able to generate before anyone has opened the panel."""
     answer = client_for().get("/api/preferences", headers=headers()).json()
     assert answer["language"] == "it"
-    assert answer["sheets"] == 2
+    assert answer["sheets"] == 5
+    assert answer["sheetsChoices"] == [1, 2, 3, 4, 5]
     assert answer["note"] == ""
     assert answer["interests"] == [] and answer["avoid"] == []
 
@@ -211,7 +212,7 @@ def test_every_setting_a_parent_can_write_reaches_the_model() -> None:
         "le mappe",
         "i ragni, e nemmeno disegnati",
         "mese pieno di scuola",
-        "at most 3 sheets",
+        "at most 3 printed sheets for the whole game",
     ):
         assert reaching in written, f"{reaching!r} is settable and reaches nothing"
 
@@ -223,8 +224,10 @@ def test_the_number_of_sheets_is_a_ceiling_and_says_so() -> None:
 
     written = the_prompt(language="Italian", capabilities=frozenset(), sheets=2)
 
-    assert "at most 2 sheets" in written
+    assert "at most 2 printed sheets for the whole game" in written
     assert "a ceiling and not a target" in written
+    assert "Returning or photographing a sheet does not restore the paper budget" in written
+    assert "State this whole-game paper ceiling in the script" in written
 
 
 def test_the_settings_travel_as_hints_without_an_identity() -> None:
