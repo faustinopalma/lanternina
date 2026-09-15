@@ -24,6 +24,7 @@ from panel.store import InMemoryAccountStore
 from shared.capabilities import HouseCapability
 from shared.errors import CloudUnavailable, SafetyBlocked
 from shared.experience import Continuation, Experience, ExperienceError
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -55,7 +56,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def answering(monkeypatch: pytest.MonkeyPatch, outcome: Any) -> dict[str, Any]:

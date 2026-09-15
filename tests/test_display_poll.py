@@ -3,12 +3,14 @@ from __future__ import annotations
 import pytest
 
 from devices.display_poll import interval_seconds, save_interval
+from tests.device_auth import bind_household
 from tests.test_rhythm import DEVICE_KEY, client_for, headers
 
 
 def test_parent_choice_reaches_device_report_and_local_cache(tmp_path):
     client = client_for()
     household = client.get("/api/me", headers=headers()).json()["householdId"]
+    bind_household(client, household)
     response = client.post("/api/rhythm", headers=headers(), json={
         "picturesFrom": "07:00", "picturesUntil": "22:00", "cadenceMinutes": 60,
         "displayPollMinutes": 30,

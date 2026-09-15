@@ -38,6 +38,7 @@ from panel.reminders import (
 )
 from panel.store import InMemoryAccountStore
 from shared.errors import CloudUnavailable, SafetyBlocked
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -169,7 +170,7 @@ def test_a_body_carrying_anything_else_is_refused() -> None:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def ask(client: TestClient, household: str) -> dict[str, Any]:

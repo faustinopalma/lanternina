@@ -108,16 +108,16 @@ if (-not $AdminOidcAudience) { $AdminOidcAudience = $liveEnv['LANTERNINA_ADMIN_O
 if (-not $AdminRole) { $AdminRole = $liveEnv['LANTERNINA_ADMIN_ROLE'] }
 if (-not $AdminRole) { $AdminRole = 'Lanternina.Admin' }
 
-# Not carried forward like the rest: a secret is not readable from the running app, so it
-# comes from the same file scripts/deploy.ps1 reads. Passing nothing deletes it.
 $secretsFile = Join-Path $repoRoot 'secrets.local.yaml'
-$deviceKey = ''
-if (Test-Path $secretsFile) {
-    $found = Select-String -Path $secretsFile -Pattern '^\s*device_key\s*:\s*(.+)$' | Select-Object -First 1
-    if ($found) { $deviceKey = $found.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'") }
-}
-if (-not $deviceKey -and -not $WithoutDeviceKey) {
-    throw "No device_key in $secretsFile. Deploying without it removes the home server's only credential. Add it, or pass -WithoutDeviceKey to accept that."
+$deviceKeyHashes = '{}'
+if (-not $WithoutDeviceKey) {
+    $existingBindings = $liveEnv['LANTERNINA_DEVICE_KEY_HASHES']
+    if (-not $existingBindings) { $existingBindings = '{}' }
+    Push-Location $repoRoot
+    try {
+        $deviceKeyHashes = python -m tools.device_bindings $secretsFile --existing $existingBindings
+        if ($LASTEXITCODE -ne 0) { throw 'Device credential binding failed.' }
+    } finally { Pop-Location }
 }
 
 $parameters = @(
@@ -136,8 +136,7 @@ $parameters = @(
     "panelAdminRole=$AdminRole"
 )
 if ($BudgetContactEmail) { $parameters += "budgetContactEmail=$BudgetContactEmail" }
-# Omitted rather than passed empty: empty is exactly the deletion this guards against.
-if ($deviceKey) { $parameters += "deviceKey=$deviceKey" }
+$parameters += "deviceKeyHashes=$deviceKeyHashes"
 
 $argumentList = @(
     'deployment', 'sub', 'create',

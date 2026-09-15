@@ -15,6 +15,7 @@ from panel.config import Settings
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 from panel.themes import InMemoryThemeStore, clean_label
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -41,7 +42,9 @@ def add(client: TestClient, label: str) -> dict[str, object]:
 
 def test_a_theme_the_parent_added_is_offered_to_the_home_server() -> None:
     client = client_for()
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
     add(client, "gatti che dormono")
 
     listed = client.get("/api/themes", headers=headers()).json()["themes"]
@@ -55,7 +58,9 @@ def test_a_theme_the_parent_added_is_offered_to_the_home_server() -> None:
 
 def test_a_removed_theme_stops_being_offered() -> None:
     client = client_for()
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
     theme = add(client, "montagne e nuvole")
 
     removed = client.post(f"/api/themes/{theme['id']}/remove", headers=headers())
@@ -95,11 +100,12 @@ def test_newlines_cannot_be_smuggled_into_the_label() -> None:
 
 def test_another_household_themes_are_not_visible() -> None:
     client = client_for()
+    bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
     add(client, "il sistema solare")
     other = client.get(
         "/api/device/hh_someone_else/themes", headers={"X-Device-Key": DEVICE_KEY}
-    ).json()["themes"]
-    assert other == []
+    )
+    assert other.status_code == 403
 
 
 def test_an_unknown_theme_is_a_404() -> None:

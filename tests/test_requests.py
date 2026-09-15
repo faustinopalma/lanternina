@@ -35,6 +35,7 @@ from panel.requests import (
 )
 from panel.rhythm import MAX_CADENCE_MINUTES
 from panel.store import InMemoryAccountStore
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -60,7 +61,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def archived(archive: InMemoryPictureArchive, household: str, picture_id: str) -> None:

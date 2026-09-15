@@ -16,6 +16,7 @@ from panel.config import Settings
 from panel.pictures import InMemoryPictureArchive, PictureRecord
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -39,7 +40,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def archive(client: TestClient, household: str, picture_id: str = "pic_1") -> None:
@@ -103,6 +104,7 @@ def test_the_newest_picture_comes_first() -> None:
 
 def test_another_household_history_is_not_visible() -> None:
     client = client_for()
+    bind_household(client, "hh_someone_else")
     archive(client, "hh_someone_else")
     assert client.get("/api/pictures", headers=headers()).json()["pictures"] == []
 

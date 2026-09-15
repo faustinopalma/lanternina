@@ -1,0 +1,11 @@
+# Household device authorization
+
+On 15 September 2026, a review of the public identity page found that the stated per-household device key guarantee was not implemented. The API compared every request with one global key and trusted the household in the URL. A local test with synthetic families reproduced cross-household access. No production records were used in that test.
+
+The common device dependency now checks a server-configured family-to-key-digest mapping before route logic. This closes the boundary in one place for all device endpoints, including their scan aliases. The legacy key requires an explicit household; development mode does not open unbound device access. The mapping validates unique families and unique digests. Deployment scripts use the existing protected YAML and transmit only hashes to Azure.
+
+The API remains one application with separate parent, adolescent, administrator and device authorization paths. Splitting services would add deployment and communication work without repairing a missing family check. A separately deployed administration service with a narrower runtime identity remains an independent hardening option. No such separation is claimed by this change.
+
+The operational contract and remaining bearer-key limitations are in [DEVICE-AUTH.md](../docs/DEVICE-AUTH.md). The next documentation step is to update the public identity and flow diagrams, describe the adolescent portal and object-photo paths, correct the asynchronous judge ordering, and distinguish the retention rules of the separate archives.
+
+Local verification on 15 September 2026 passed 1,115 Python tests with two skips in 153.91 seconds. Ruff passed, both deployment scripts parsed, and the Bicep template compiled with zero diagnostics. The live binding was added through a template-only API update before publishing the application change; the existing image and unrelated configuration were carried forward. Final live verification must show HTTP 200 for the hub's own household and HTTP 403 for an unrelated household and an incorrect key, using read-only requests.

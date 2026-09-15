@@ -33,6 +33,7 @@ from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 from shared.domain import Difficulty, LearnerProfile
 from shared.ids import LearnerId
+from tests.device_auth import bind_household
 from tools.home_server import learner_profile
 
 PARENT = "parent@example.test"
@@ -64,7 +65,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def test_a_household_that_never_chose_still_has_settings() -> None:

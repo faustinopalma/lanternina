@@ -38,6 +38,7 @@ from panel.store import InMemoryAccountStore
 from panel.usage import InMemoryUsageStore
 from shared.experience import Experience
 from shared.message import MessageError, Says
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -81,7 +82,7 @@ def as_the_house() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def a_house(tmp_path: Path, household: str = "") -> House:

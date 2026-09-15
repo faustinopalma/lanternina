@@ -17,6 +17,7 @@ separate on purpose — a different directory, a different audience.
 
 from __future__ import annotations
 
+import hashlib
 import secrets
 from typing import Annotated
 
@@ -59,12 +60,16 @@ CurrentAccount = Annotated[Account, Depends(current_account)]
 
 
 def require_device(request: Request) -> str:
-    """Identify the server in the home. Closed unless a key is configured."""
+    """Authorize the key for the household in the route before any data access."""
     settings: Settings = request.app.state.settings
-    if not settings.device_configured:
+    bindings = settings.bound_device_keys
+    if not bindings:
         raise HTTPException(status_code=503, detail="device_not_configured")
     presented = request.headers.get("X-Device-Key", "")
-    if not secrets.compare_digest(presented, settings.device_key):
+    expected = bindings.get(request.path_params.get("household_id", ""))
+    digest = hashlib.sha256(presented.encode()).hexdigest()
+    matched = secrets.compare_digest(digest, expected or "0" * 64)
+    if not presented or expected is None or not matched:
         raise HTTPException(status_code=403, detail="not_authorised")
     return presented
 

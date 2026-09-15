@@ -33,6 +33,7 @@ from panel.usage import (
     clean_limit,
     limit_of,
 )
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -73,7 +74,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def test_an_untouched_fuse_is_the_configured_one() -> None:

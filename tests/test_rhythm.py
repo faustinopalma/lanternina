@@ -29,6 +29,7 @@ from panel.rhythm import (
     inside_band,
 )
 from panel.store import InMemoryAccountStore
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -80,7 +81,9 @@ def test_what_the_parent_chose_is_what_the_hub_is_told() -> None:
     """Thirteen minutes, and a pause that starts at half past. Neither is a round number
     and neither may be rounded into one."""
     client = client_for()
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
 
     written = client.post(
         "/api/rhythm",
@@ -101,7 +104,9 @@ def test_what_the_parent_chose_is_what_the_hub_is_told() -> None:
 
 def test_the_hub_cannot_read_the_rhythm_without_the_device_key() -> None:
     client = client_for()
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
     assert client.get(f"/api/device/{household}/rhythm").status_code == 403
 
 
@@ -151,7 +156,9 @@ def test_a_household_that_never_chose_has_no_day_for_an_afternoon() -> None:
 
 def test_the_days_reach_the_hub_in_week_order_and_without_repeats() -> None:
     client = client_for()
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
 
     client.post(
         "/api/rhythm",

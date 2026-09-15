@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from panel.cosmos_store import _from_thing, _to_thing
 from panel.devices import Thing
+from tests.device_auth import bind_household
 from tests.test_rhythm import DEVICE_KEY, client_for, headers
 
 
 def test_intervals_are_per_display_and_survive_status_and_name_updates():
     client = client_for()
     household = client.get("/api/me", headers=headers()).json()["householdId"]
+    bind_household(client, household)
     report = [{"id": "first", "kind": "display"}, {"id": "second", "kind": "display"},
               {"id": "cam", "kind": "camera"}]
     device_headers = {"X-Device-Key": DEVICE_KEY}

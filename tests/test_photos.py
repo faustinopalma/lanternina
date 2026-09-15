@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 
+from tests.device_auth import bind_household
 from tests.test_photo_store import jpeg
 from tests.test_pictures import DEVICE_KEY, client_for, headers, household_of
 
@@ -61,8 +62,8 @@ def test_range_is_half_open_and_delete_all_is_snapshot_not_future_photos():
 
 def test_invalid_dates_and_cross_household_access_do_not_delete():
     client = client_for()
-    household_of(client)
-    upload(client, "other", "a" * 32, 100)
+    bind_household(client, "other")
+    assert upload(client, "other", "a" * 32, 100).status_code == 200
     for body in (
         {"mode": "range"},
         {"mode": "range", "start": 200, "end": 100},

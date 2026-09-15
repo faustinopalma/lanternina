@@ -25,6 +25,7 @@ from panel.drafts import MAX_SAYING, Draft, InMemoryDraftStore, Said, cleaned
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
 from shared.experience import Experience, ExperienceError
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 THE_AFTERNOON = json.loads(
@@ -205,7 +206,9 @@ def test_a_draft_opened_from_an_afternoon_is_a_copy(monkeypatch: pytest.MonkeyPa
         return Experience.from_dict(THE_AFTERNOON | {"script": "il copione"}), None
 
     monkeypatch.setattr("panel.devising.devise_experience", _devise)
-    household = str(client.get("/api/me", headers=headers()).json()["householdId"])
+    household = bind_household(
+        client, client.get("/api/me", headers=headers()).json()["householdId"]
+    )
     devised = client.post(
         f"/api/device/{household}/experiences",
         json={"capabilities": ["print_a4", "scan_a4", "show_800x480_1bit"]},

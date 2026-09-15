@@ -36,6 +36,7 @@ from panel.usage import (
     month_of,
 )
 from shared.errors import CloudUnavailable, SafetyBlocked
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -63,7 +64,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def a_placed_sentence(store: SentenceStore, household: str) -> str:

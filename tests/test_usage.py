@@ -46,6 +46,7 @@ from panel.usage import (
 from shared.errors import CloudUnavailable, SafetyBlocked
 from shared.routing import ModelUsage
 from shared.vision_contracts import WhatCameBack
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -227,7 +228,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def test_the_cap_refuses_before_the_model_is_called(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -38,6 +38,7 @@ from panel.usage import (
 )
 from shared.experience import Experience
 from shared.experience_checks import Complaint
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -71,7 +72,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def devising(monkeypatch: pytest.MonkeyPatch) -> None:

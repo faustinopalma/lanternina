@@ -22,6 +22,114 @@ from shared.errors import NotAuthenticated
 PARENT = "parent@example.test"
 
 
+def test_device_key_is_bound_to_one_household() -> None:
+    from panel.photos import Photo
+
+    settings = Settings(
+        dev_auth=True, bootstrap_contact="", device_key="synthetic-key-a",
+        device_household="family-a",
+    )
+    app = create_app(settings=settings)
+    app.state.photos.save(
+        "family-b", Photo("b" * 32, "camera", 1, 1, 1, 1, "done", "digest"), b"image",
+    )
+    client = TestClient(app)
+    device = {"X-Device-Key": "synthetic-key-a"}
+    assert client.get("/api/device/family-a/photos/deleted", headers=device).status_code == 200
+    assert client.get("/api/device/family-b/photos/deleted", headers=device).status_code == 403
+    assert client.post(
+        f"/api/device/family-b/photos/{'b' * 32}/delete", headers=device,
+    ).status_code == 403
+    assert app.state.photos.get("family-b", "b" * 32) == b"image"
+
+
+def test_every_device_route_rejects_a_different_household_before_running() -> None:
+    from hashlib import sha256
+
+    client = TestClient(create_app(settings=Settings(
+        dev_auth=False, bootstrap_contact="",
+        device_key_hashes=(("family-a", sha256(b"key-a").hexdigest()),
+                           ("family-b", sha256(b"key-b").hexdigest())),
+    )))
+    checked = 0
+    for path, operations in client.app.openapi()["paths"].items():
+        if not path.startswith("/api/device/"):
+            continue
+        assert "{household_id}" in path
+        import re
+
+        url = re.sub(r"\{[^}]+\}", "probe", path.replace("{household_id}", "family-b"))
+        for method in operations:
+            if method not in {"get", "post", "delete", "put", "patch"}:
+                continue
+            for key in ("key-a", "", "wrong"):
+                response = client.request(method, url, headers={"X-Device-Key": key})
+                assert response.status_code == 403, (method, path, response.text)
+                checked += 1
+    assert checked > 60
+    assert client.get(
+        "/api/device/family-b/photos/deleted", headers={"X-Device-Key": "key-b"},
+    ).status_code == 200
+
+
+def test_device_key_without_household_fails_closed() -> None:
+    client = TestClient(create_app(settings=Settings(
+        dev_auth=True, bootstrap_contact="", device_key="unbound",
+    )))
+    assert client.get(
+        "/api/device/family-a/photos/deleted", headers={"X-Device-Key": "unbound"},
+    ).status_code == 503
+
+
+@pytest.mark.parametrize("raw", [
+    "[]", "null", "not-json", '{"family-a":"bad"}',
+    '{"family-a":42}', '{"family-a":{}}',
+    '{"family-a":"' + "a" * 64 + '","family-a":"' + "b" * 64 + '"}',
+    '{"family-a":"' + "a" * 64 + '","family-b":"' + "a" * 64 + '"}',
+])
+def test_invalid_device_bindings_are_rejected_without_echoing_them(monkeypatch, raw) -> None:
+    monkeypatch.delenv("LANTERNINA_DEVICE_KEY", raising=False)
+    monkeypatch.setenv("LANTERNINA_DEVICE_KEY_HASHES", raw)
+    with pytest.raises(ValueError, match="^invalid device household bindings$"):
+        Settings.from_env()
+
+
+def test_device_key_rotation_and_revocation(monkeypatch) -> None:
+    import hashlib
+    import json
+    from dataclasses import replace
+
+    monkeypatch.delenv("LANTERNINA_DEVICE_KEY", raising=False)
+    monkeypatch.setenv("LANTERNINA_DEVICE_KEY_HASHES", json.dumps({
+        "family-a": hashlib.sha256(b"new-key").hexdigest(),
+    }))
+    app = create_app(settings=Settings.from_env())
+    client = TestClient(app)
+    url = "/api/device/family-a/photos/deleted"
+    assert client.get(url, headers={"X-Device-Key": "old-key"}).status_code == 403
+    assert client.get(url, headers={"X-Device-Key": "new-key"}).status_code == 200
+    app.state.settings = replace(app.state.settings, device_key_hashes=())
+    assert client.get(url, headers={"X-Device-Key": "new-key"}).status_code == 503
+
+
+def test_device_binding_export_never_returns_the_raw_key(tmp_path) -> None:
+    import hashlib
+    import json
+
+    from tools.device_bindings import bindings_from
+
+    path = tmp_path / "config.yaml"
+    key = "a" * 64
+    path.write_text(f"household: family-a\ndevice_key: {key}\n", encoding="utf-8")
+    previous = {"family-b": hashlib.sha256(b"other-key").hexdigest()}
+    bindings = bindings_from(path, json.dumps(previous))
+    assert bindings == {**previous, "family-a": hashlib.sha256(key.encode()).hexdigest()}
+    assert key not in json.dumps(bindings)
+    path.write_text("household: family-a\ndevice_key: short\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="^cannot produce device bindings"):
+        bindings_from(path)
+
+
 def client_for(
     *, dev_auth: bool = True, bootstrap: str = ""
 ) -> tuple[TestClient, InMemoryAccountStore]:

@@ -82,6 +82,12 @@ param aiAccountEndpoint string = ''
 @secure()
 param deviceKey string = ''
 
+@description('Household authorized by the legacy key. Required when using deviceKey.')
+param deviceHousehold string = ''
+
+@description('JSON mapping household IDs to unique SHA-256 key digests.')
+param deviceKeyHashes string = '{}'
+
 // Held as a secret rather than a plain value: it is the only credential the house has.
 var deviceKeySecrets = empty(deviceKey) ? [] : [
   {
@@ -93,6 +99,17 @@ var deviceKeyEnv = empty(deviceKey) ? [] : [
   {
     name: 'LANTERNINA_DEVICE_KEY'
     secretRef: 'device-key'
+  }
+  {
+    name: 'LANTERNINA_DEVICE_HOUSEHOLD'
+    value: deviceHousehold
+  }
+]
+
+var deviceBindingsEnv = [
+  {
+    name: 'LANTERNINA_DEVICE_KEY_HASHES'
+    value: deviceKeyHashes
   }
 ]
 
@@ -276,7 +293,7 @@ resource api 'Microsoft.App/containerApps@2025-01-01' = {
             cpu: json('0.5')
             memory: '1Gi'
           }
-          env: concat(apiEnv, deviceKeyEnv)
+          env: concat(apiEnv, deviceKeyEnv, deviceBindingsEnv)
         }
       ]
       scale: {

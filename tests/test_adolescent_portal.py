@@ -9,6 +9,7 @@ from PIL import Image
 
 from panel.app import create_app
 from panel.config import Settings
+from tests.device_auth import bind_household
 
 
 def portal():
@@ -20,6 +21,7 @@ def portal():
     parent = {"x-dev-subject": "parent", "x-dev-contact": "parent@example.test"}
     teen = {"x-dev-subject": "teen", "x-dev-contact": "teen@example.test"}
     assert client.get("/api/me", headers=parent).status_code == 200
+    bind_household(client, client.get("/api/me", headers=parent).json()["householdId"])
     return app, client, parent, teen
 
 

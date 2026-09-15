@@ -95,6 +95,12 @@ param panelAdminRole string = 'Lanternina.Admin'
 @secure()
 param deviceKey string = ''
 
+@description('Household authorized by the legacy device key. Empty leaves that key disabled.')
+param deviceHousehold string = ''
+
+@description('JSON mapping household IDs to unique SHA-256 key digests. Raw keys remain on the hubs.')
+param deviceKeyHashes string = '{}'
+
 param aiFrontierModelNames array = [
   'gpt-5.6-sol'
   'gpt-5.6-terra'
@@ -232,6 +238,8 @@ module app 'modules/app.bicep' = {
     foundryImageDeployment: ai.outputs.imageDeploymentName
     aiAccountEndpoint: ai.outputs.accountEndpoint
     deviceKey: deviceKey
+    deviceHousehold: deviceHousehold
+    deviceKeyHashes: deviceKeyHashes
     apiImage: apiImage
     apiTargetPort: apiTargetPort
     panelDevAuth: panelDevAuth

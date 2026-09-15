@@ -24,6 +24,7 @@ from panel.devices import (
 )
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.store import InMemoryAccountStore
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -49,7 +50,7 @@ def headers() -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def report(client: TestClient, household: str, *things: dict[str, object]) -> dict[str, Any]:
@@ -318,6 +319,7 @@ def test_a_display_reporting_without_a_kind_is_still_a_display() -> None:
 
 def test_another_household_sees_nothing_of_this_one() -> None:
     client = client_for()
+    bind_household(client, "hh_someone_else")
     report(client, "hh_someone_else", printer())
     assert listed(client) == []
 

@@ -140,6 +140,7 @@ if ($BudgetContactEmail) {
 $appResourceGroup = "rg-lanternina-$EnvironmentName-app"
 $liveApi = az containerapp show --name "ca-lanternina-$EnvironmentName-api" --resource-group $appResourceGroup -o json 2>$null | ConvertFrom-Json
 
+$liveEnv = @{}
 if ($liveApi) {
     Write-Step 'Preserving what the API is already running'
     $liveEnv = @{}
@@ -169,19 +170,18 @@ if ($liveApi) {
     Write-Step 'No API app yet: this is a first deploy'
 }
 
-# The key is the only credential the house holds, and it is not in the repository.
 $secretsFile = Join-Path $repoRoot 'secrets.local.yaml'
-$deviceKey = ''
-if (Test-Path $secretsFile) {
-    $found = Select-String -Path $secretsFile -Pattern '^\s*device_key\s*:\s*(.+)$' | Select-Object -First 1
-    if ($found) { $deviceKey = $found.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'") }
+$deviceKeyHashes = '{}'
+if (-not $WithoutDeviceKey) {
+    $existingBindings = $liveEnv['LANTERNINA_DEVICE_KEY_HASHES']
+    if (-not $existingBindings) { $existingBindings = '{}' }
+    Push-Location $repoRoot
+    try {
+        $deviceKeyHashes = python -m tools.device_bindings $secretsFile --existing $existingBindings
+        if ($LASTEXITCODE -ne 0) { throw 'Device credential binding failed.' }
+    } finally { Pop-Location }
 }
-if (-not $deviceKey -and -not $WithoutDeviceKey) {
-    throw "No device_key in $secretsFile. Deploying without it removes the home server's only credential. Add it, or pass -WithoutDeviceKey to accept that."
-}
-# Inline, because az refuses a JSON parameter file alongside a .bicepparam file. The cost
-# is that the key appears in this process's command line while the deployment runs.
-if ($deviceKey) { $parameters += "deviceKey=$deviceKey" }
+$parameters += "deviceKeyHashes=$deviceKeyHashes"
 
 $command = if ($WhatIf) { 'what-if' } else { 'create' }
 Write-Step "Running az deployment sub $command"

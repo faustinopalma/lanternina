@@ -14,6 +14,7 @@ from panel.config import Settings
 from panel.principal import DEV_CONTACT_HEADER, DEV_SUBJECT_HEADER
 from panel.proposals import InMemoryProposalStore
 from panel.store import InMemoryAccountStore
+from tests.device_auth import bind_household
 
 PARENT = "parent@example.test"
 DEVICE_KEY = "device-key-for-tests"
@@ -45,7 +46,7 @@ def headers(subject: str = "parent-1", contact: str = PARENT) -> dict[str, str]:
 
 
 def household_of(client: TestClient) -> str:
-    return str(client.get("/api/me", headers=headers()).json()["householdId"])
+    return bind_household(client, client.get("/api/me", headers=headers()).json()["householdId"])
 
 
 def submit(client: TestClient, household: str, proposal: dict[str, object]) -> None:
@@ -191,6 +192,7 @@ def test_what_is_left_in_reserve_is_a_count_on_a_route_that_exists() -> None:
 
 def test_another_household_sees_nothing() -> None:
     client = client_for()
+    bind_household(client, "hh_someone_else")
     submit(client, "hh_someone_else", PROPOSAL)
     assert client.get("/api/proposals", headers=headers()).json()["proposals"] == []
 
@@ -203,6 +205,7 @@ def test_device_routes_are_shut_without_a_key() -> None:
 
 def test_device_routes_refuse_a_wrong_key() -> None:
     client = client_for()
+    bind_household(client, "hh_x")
     response = client.get("/api/device/hh_x/proposals", headers={"X-Device-Key": "wrong"})
     assert response.status_code == 403
 
