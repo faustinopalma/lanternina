@@ -1,0 +1,451 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-9fe9dd1e",
+  "title": "L’atlante del Canale Stretto",
+  "overview": "Disegna tre luoghi inventati, li nomina per ciò che vi accade e crea un codice di due segni; negli scambi successivi amplia e modifica la mappa. La stampante produce fino a quattro tavole che insieme formano un atlante. Alla fine restano la mappa, la chiave e un cartiglio conclusivo. Non serve altro oltre a carta e matita. Richiede di restituire tre fogli e attendere tra gli scambi.",
+  "themes": [
+    "mappe inventate",
+    "codici di segni",
+    "nomi funzionali",
+    "percorsi",
+    "atlanti"
+  ],
+  "script": "IL MONDO Il Canale Stretto è un luogo inventato diviso da un corso sinuoso. Tre zone non hanno ancora forma. Due sponde comunicano con un segnalatore capace di mostrare soltanto due segni inventati. La carta, il canale, le sponde e il segnalatore sono elementi di finzione. Le scelte, i segni e la mappa appartengono a chi li traccia. LA VIA D’ENTRATA La stampante fornisce la Carta del Canale Stretto. Si prende la carta e la matita dal tavolo. La prima azione è disegnare nei tre spazi i luoghi descritti dalle funzioni stampate. LA DOMANDA Come può una mappa descrivere un luogo e comunicare attraverso soltanto due segni? L’operazione: disegnare tre luoghi, inventare due segni, usarli sulla carta, scriverne la chiave e indicare qualcosa che il codice non sa dire. Le prove o i materiali: la prima pagina fornisce i tre nomi funzionali, la regola di coerenza, gli spazi della chiave e il canale illustrato. Servono la pagina e una matita. Il risultato: è una costruzione creativa aperta. Un esempio praticabile è una carta con tre recinti collegati, un cerchio che significa attendere, una barra che significa lasciare e il limite «non dice quando». Il primo gesto è completo quando compaiono tre luoghi, due segni usati, due significati e un limite. La ragione per farlo: il codice rende visibile ciò che conserva e ciò che perde; gli scambi trasformano quel limite in nuova geografia. LE TAPPE soglia: sono disponibili matita e messaggio; la carta viene annunciata; finisce quando si attende con la matita sul tavolo. prima-carta: arriva la prima carta; si disegnano luoghi e codice; finisce con luoghi, segni, chiave e limite segnati. rientro: la carta viene restituita intera; Lanternina legge i segni; finisce con una scansione ricevuta o con la chiusura senza segni. seguito generato 1: arriva una seconda carta che ingrandisce un luogo realmente disegnato; il limite scritto diventa un messaggio necessario; finisce con una sequenza dei due segni, una nuova voce della chiave e un percorso. seguito generato 2: dopo il secondo rientro arriva una terza carta; introduce la conseguenza che la sequenza può essere letta dall’altra sponda; finisce con una revisione visibile, una regola scelta e un luogo di passaggio nominato per ciò che vi accade. chiusura generata: dopo il terzo rientro arriva un cartiglio che cita dettagli reali delle tre carte; si aggiunge un titolo definitivo; il display dichiara conclusa la corrispondenza. COSA RESTA NASCOSTO La prima carta non anticipa quale suo luogo verrà ingrandito. Il primo esito con segni usa ask: la pagina viene letta prima di preparare il seguito. La seconda pagina riporta «Dalla tua carta» seguito dal nome o dalla descrizione esatta scelta, e «Il messaggio che mancava» seguito dal limite esatto. Dopo il secondo rientro, il seguito cita la sequenza realmente tracciata. Dopo il terzo, il cartiglio cita almeno un luogo, un segno e la regola finale realmente presenti. Ogni scoperta arriva soltanto dopo il relativo rientro. COSA SI CREA Il limite complessivo è cinque fogli, incluse continuazioni e risposta finale. Il piano ne usa quattro; il quinto resta disponibile soltanto se una tavola deve essere ristampata. Foglio 1, mappa «Carta del Canale Stretto»: canale visto dall’alto, tre spazi funzionali, due voci della chiave e uno spazio per il limite. Si disegnano luoghi e segni. Foglio 2, mappa «Margine di [dettaglio restituito]»: cita il dettaglio senza attribuire a Lanternina ciò che è stato disegnato. Contiene il limite restituito, uno spazio per una sequenza dei due segni, una voce «La sequenza significa» e un riquadro per prolungare il percorso. Si crea un modo di dire ciò che prima mancava. Foglio 3, taccuino «Passaggio di [sequenza restituita]»: mostra due rive semplici e cita la sequenza. Le note dicono che dall’altra riva l’ordine può sembrare diverso. Gli spazi sono «Regola scelta», «Dove il messaggio viene rimesso in ordine» e «Revisione del percorso». Si aggiungono segni senza cancellare i precedenti. Foglio 4, etichetta «Cartiglio del Canale Stretto»: cita un luogo, un segno e la regola finale. Ha un solo spazio, «Titolo definitivo della carta». La nota dice di unirlo alle tre tavole e che l’atlante è completo. DOVE PUÒ CAMBIARE Se il primo foglio torna pieno, il seguito ingrandisce il dettaglio più netto e lascia intatto il resto. Se torna con pochi segni leggibili, il seguito usa soltanto quelli senza colmare i vuoti. Se torna intatto, chiusura-carta conclude sul foglio rimasto disponibile. Se l’interesse termina dopo un seguito, il display invita a tenere insieme le tavole già esistenti e chiude senza richiedere altro. COSA LO ROVINEREBBE Aggiungere simboli già inventati da decifrare. Trasformare la precisione grafica in un requisito. Stampare in anticipo i seguiti generici.",
+  "minutes": 105,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "un canale inventato, nel presente",
+    "role": "cartografo corrispondente",
+    "mechanic": "disegnare luoghi e comporre segni",
+    "progress": "ingrandimento, conseguenza, revisione",
+    "paper": "tavole successive di un atlante",
+    "glass": "leggere dettagli per il seguito",
+    "displays": "annunciare, riconoscere e chiudere",
+    "camera": "nessuna; rientro tramite scansione",
+    "tone": "curioso, preciso, non solenne",
+    "ending": "cartiglio unito alla mappa"
+  },
+  "moments": [
+    {
+      "act": "say",
+      "id": "soglia",
+      "heading": "Tre vuoti nel canale",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Il Canale Stretto ha tre vuoti.",
+            "Tieni la matita sul tavolo."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Il Canale Stretto ha tre vuoti.",
+            "Una carta sta arrivando.",
+            "Tieni la matita sul tavolo."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Il Canale Stretto ha tre vuoti.",
+            "Le sponde hanno solo due segni.",
+            "Una carta sta arrivando.",
+            "Tieni la matita sul tavolo."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "La carta conterrà tre spazi."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Ogni spazio descrive un’azione."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Prendi la carta quando arriva."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Prendi carta e matita.",
+            "Disegna nei tre spazi indicati.",
+            "Crea due segni e la chiave.",
+            "Scrivi un limite del codice."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "matita",
+        "heading": "Un segno resta",
+        "lines": [
+          "Prendi la matita.",
+          "Traccia un segno su carta.",
+          "Il Canale Stretto si chiude qui.",
+          "L’attività è finita."
+        ],
+        "minutes": 3
+      }
+    },
+    {
+      "act": "hand_over",
+      "id": "prima-carta",
+      "heading": "La carta è sul tavolo",
+      "weights": {
+        "short": {
+          "minutes": 9,
+          "lines": [
+            "Prendi la Carta del Canale.",
+            "Disegna i tre luoghi indicati.",
+            "Aggiungi due segni e la chiave.",
+            "Rimanda il foglio ben visibile."
+          ]
+        },
+        "standard": {
+          "minutes": 24,
+          "lines": [
+            "Prendi la Carta del Canale.",
+            "Dai forma ai tre luoghi.",
+            "Usa due segni coerenti.",
+            "Scrivi chiave e limite."
+          ]
+        },
+        "extended": {
+          "minutes": 36,
+          "lines": [
+            "Prendi la Carta del Canale.",
+            "Dai forma ai tre luoghi.",
+            "Aggiungi un percorso facoltativo.",
+            "Scrivi segni, chiave e limite."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 4,
+          "lines": [
+            "I nomi descrivono azioni."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Scegli forme semplici per i segni."
+          ]
+        },
+        {
+          "after_minutes": 13,
+          "lines": [
+            "Ripeti ogni segno sulla carta.",
+            "Scrivi accanto cosa significa."
+          ]
+        },
+        {
+          "after_minutes": 20,
+          "lines": [
+            "Opzione: disegna tre recinti.",
+            "○ significa attendere; usalo lì.",
+            "/ significa lasciare; usalo lì.",
+            "Limite: non dice quando accade."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta del Canale Stretto",
+        "heading": "La carta rimane",
+        "lines": [
+          "Prendi la Carta del Canale Stretto.",
+          "Scrivi un titolo in un margine.",
+          "Conserva la carta sul tavolo.",
+          "L’attività è finita."
+        ],
+        "minutes": 4
+      },
+      "page": {
+        "kind": "map",
+        "title": "Carta del Canale Stretto",
+        "illustration": "A spare invented landscape seen from above: one broad winding channel divides two irregular banks. Three large open areas remain mostly empty for drawing. Two small plain square signal plates stand on opposite banks. A few simple paths stop before reaching the open areas. No buildings, symbols, letters, labels, compass, scale or writing.",
+        "note": [
+          "Disegna i tre luoghi negli spazi.",
+          "Crea due segni e usali sulla carta.",
+          "Un significato conserva sempre lo stesso segno.",
+          "Restituisci luoghi, chiave e limite visibili."
+        ],
+        "spaces": [
+          {
+            "label": "Dove si aspetta senza sedersi",
+            "room": "a_box"
+          },
+          {
+            "label": "Dove si lascia ciò che servirà",
+            "room": "a_box"
+          },
+          {
+            "label": "Dove si osserva senza apparire",
+            "room": "a_box"
+          },
+          {
+            "label": "Segno 1 significa",
+            "room": "a_line"
+          },
+          {
+            "label": "Segno 2 significa",
+            "room": "a_line"
+          },
+          {
+            "label": "Questo codice non può dire",
+            "room": "some_lines"
+          }
+        ]
+      },
+      "instead": [
+        "Su un foglio, traccia tre luoghi.",
+        "Nominali per ciò che vi accade.",
+        "Crea due segni con una chiave.",
+        "Scrivi cosa non possono dire."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "rientro",
+      "heading": "La carta può tornare",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Restituisci la carta intera.",
+            "Lascia visibili tutti i segni."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Restituisci la carta intera.",
+            "Mostra luoghi, segni e chiave.",
+            "Lascia visibile anche il limite."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Restituisci la carta intera.",
+            "Mostra luoghi, segni e chiave.",
+            "Lascia visibile anche il limite.",
+            "Puoi rinforzare i tratti chiari."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "La carta deve apparire intera."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Rendi visibili i segni a matita."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Mostra anche chiave e limite."
+          ]
+        },
+        {
+          "after_minutes": 10,
+          "lines": [
+            "Prendi la carta completa.",
+            "Lascia scoperti tutti i margini.",
+            "Mostra luoghi, chiave e limite.",
+            "Consegna l’immagine leggibile."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta del Canale Stretto",
+        "heading": "Atlante di una tavola",
+        "lines": [
+          "Prendi la Carta del Canale Stretto.",
+          "Posala davanti a te.",
+          "La carta può restare così.",
+          "L’attività è finita."
+        ],
+        "minutes": 2
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "chiusura-carta"
+        }
+      ],
+      "if_no_page": "chiusura-tavolo"
+    },
+    {
+      "act": "close",
+      "id": "chiusura-carta",
+      "heading": "La carta resta aperta",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Tieni la carta sul tavolo.",
+            "Può restare senza altri segni.",
+            "L’attività è finita."
+          ]
+        },
+        "standard": {
+          "minutes": 2,
+          "lines": [
+            "Tieni la carta sul tavolo.",
+            "Il canale resta non definito.",
+            "La corrispondenza termina qui.",
+            "L’attività è finita."
+          ]
+        },
+        "extended": {
+          "minutes": 3,
+          "lines": [
+            "Tieni la carta sul tavolo.",
+            "Puoi piegarla una volta.",
+            "Il canale resta non definito.",
+            "L’attività è finita."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Non occorre aggiungere segni."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "La carta può restare com’è."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Tieni il foglio sul tavolo."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Prendi la carta.",
+            "Conservala senza modificarla.",
+            "La corrispondenza è chiusa.",
+            "L’attività è finita."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta del Canale Stretto",
+        "heading": "Carta conservata",
+        "lines": [
+          "Prendi la Carta del Canale Stretto.",
+          "Conservala senza altri segni.",
+          "La corrispondenza è chiusa.",
+          "L’attività è finita."
+        ],
+        "minutes": 1
+      }
+    },
+    {
+      "act": "close",
+      "id": "chiusura-tavolo",
+      "heading": "Il tavolo si richiude",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Tieni la matita.",
+            "La corrispondenza termina qui.",
+            "L’attività è finita."
+          ]
+        },
+        "standard": {
+          "minutes": 2,
+          "lines": [
+            "Tieni la matita sul tavolo.",
+            "Il Canale Stretto resta immaginato.",
+            "La corrispondenza termina qui.",
+            "L’attività è finita."
+          ]
+        },
+        "extended": {
+          "minutes": 3,
+          "lines": [
+            "Prendi la matita.",
+            "Traccia un segno su carta libera.",
+            "Il canale resta oltre il tavolo.",
+            "L’attività è finita."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Non occorre cercare altro."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "La matita è già disponibile."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Puoi lasciarla sul tavolo."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Prendi la matita.",
+            "Posala sul tavolo.",
+            "La corrispondenza è chiusa.",
+            "L’attività è finita."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "matita",
+        "heading": "Segno concluso",
+        "lines": [
+          "Prendi la matita.",
+          "Posala accanto a un foglio.",
+          "Il Canale Stretto si chiude.",
+          "L’attività è finita."
+        ],
+        "minutes": 1
+      }
+    }
+  ]
+}

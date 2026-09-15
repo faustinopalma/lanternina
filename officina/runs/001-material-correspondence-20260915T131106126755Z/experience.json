@@ -1,0 +1,358 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-e92c6455",
+  "title": "L’atlante dei Nove Margini",
+  "overview": "Collega nove luoghi inventati, etichetta ogni legame e decide quale resta più isolato; le risposte successive trasformano la stessa mappa. La stampante consegna una carta, poi due fogli che sviluppano i dettagli emersi e una tavola finale. Alla fine restano una mappa annotata e la sua etichetta d’atlante. Non serve altro oltre a carta e matita. Le linee incrociate possono rendere la mappa visivamente affollata.",
+  "themes": [
+    "mappe",
+    "luoghi inventati",
+    "relazioni",
+    "confini",
+    "atlanti"
+  ],
+  "script": "THE WORLD. I Nove Margini sono nove luoghi di una città immaginaria: una lanterna spenta, una serra aperta, un ponte cieco, un pozzo sonoro, un archivio umido, una scala tronca, un forno freddo, un cortile obliquo e un osservatorio scoperto. Tutti i luoghi e i loro rapporti sono fittizi. L’oggetto di lavoro è una carta vista dall’alto, sulla quale ogni linea diventa un’affermazione sul rapporto fra due luoghi. THE WAY IN. La stampante consegna la Carta dei Nove Margini. La matita è sul tavolo. Il primo gesto è tracciare sulla carta una linea fra due figure e scrivere due parole sulla linea. Il foglio contiene anche la regola completa e l’istruzione per rimandarlo. THE QUESTION. Quale rete di rapporti può tenere insieme i nove luoghi, e come cambia quando un rapporto rivela un significato diverso? The operation: collegare le nove figure con linee, etichettare ogni linea, individuare il luogo con meno legami, poi modificare la carta quando arriva un fatto nuovo. The evidence or materials: la Carta dei Nove Margini fornisce le nove figure, le nove descrizioni e la regola; la matita traccia linee, parole e cerchi; i fogli successivi citano dettagli letti nei ritorni precedenti. The result: è un compito creativo aperto. Un esempio completo collega ponte e serra con «aria umida», collega serra e archivio con «chiavi scambiate», dà almeno un legame a ogni luogo e cerchia quello con meno linee. Altre reti sono ugualmente complete quando ogni luogo ha almeno una linea e ogni linea porta due parole. The reason to do it: le etichette trasformano una disposizione grafica in una geografia discutibile e modificabile; il fatto aggiunto mostra come una sola informazione possa cambiare la lettura della stessa carta. THE BEATS. map-arrives: sono disponibili la matita e l’arrivo annunciato della carta; si prende la carta dal vassoio; finisce quando carta e matita sono sul tavolo. first-map: è disponibile la Carta dei Nove Margini; si collegano le nove figure e si etichettano le linee; finisce con un luogo cerchiato e una ragione scritta. map-return: è disponibile la carta segnata; viene rimandata con tutte le linee, le etichette e la nota visibili; finisce quando il ritorno è ricevuto. gentle-close: è disponibile la Carta dei Nove Margini non segnata; resta come carta aperta e la corrispondenza si conclude sul display. Nel seguito generato da ask, il secondo scambio stampa La regola emersa, usando alla lettera una relazione del primo ritorno. Il foglio dichiara che quella relazione indica un confine anziché un passaggio, chiede di modificare la carta originale e di copiare la conseguenza sul nuovo foglio, poi lo raccoglie. Il terzo scambio stampa Il luogo oltre il confine, usando il luogo e la conseguenza appena ricevuti; chiede un emblema e una regola locale, poi raccoglie il foglio. Il quarto foglio è l’etichetta finale dell’atlante: cita il nome del luogo, la relazione trasformata e la regola locale, e chiude esplicitamente la corrispondenza. WHAT IS HELD BACK. Il significato alternativo di una relazione è trattenuto fino al seguito creato da map-return, quando la carta segnata è leggibile. Il luogo sviluppato è trattenuto fino al ritorno del secondo foglio. L’etichetta finale è trattenuta fino al ritorno del terzo foglio. Nessuna istruzione necessaria al foglio corrente è trattenuta. WHAT IS MADE. Il limite dell’intero gioco è cinque fogli, compresi seguiti e chiusura. Il piano ne usa quattro. Foglio 1, mappa «Carta dei Nove Margini»: nove luoghi distinti visti dall’alto, descrizioni concise, regola delle linee, spazio per indicare il luogo più isolato. Foglio 2, taccuino «La regola emersa»: cita una relazione realmente scritta, aggiunge il fatto sul confine, chiede la modifica della vecchia carta e una conseguenza copiata. Foglio 3, dossier «Il luogo oltre il confine»: cita il luogo scelto e contiene uno spazio per l’emblema e uno per la regola locale. Foglio 4, etichetta «Atlante dei Nove Margini»: restituisce in forma sintetica i dettagli accumulati e lascia un solo spazio per il segno conclusivo del cartografo. Ogni foglio di lavoro ordina di rimandare ciò che deve risultare visibile. WHERE IT CAN GO DIFFERENTLY. Se il primo foglio torna pieno, il seguito sceglie una relazione leggibile e la usa come confine. Se torna intatto, gentle-close conclude lasciando la carta non tracciata. Se l’interesse si ferma dopo un ritorno successivo, il display nomina il foglio presente, dichiara conclusa la corrispondenza e non stampa altro. WHAT WOULD SPOIL IT. Aggiungere una soluzione segreta alla rete aperta. Stampare in anticipo i fogli che devono dipendere dai ritorni. Lasciare linee senza etichette, riducendo la carta a un intreccio senza affermazioni.",
+  "minutes": 105,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "una città immaginaria, adesso",
+    "role": "cartografo di relazioni",
+    "mechanic": "unire luoghi e nominare legami",
+    "progress": "ogni ritorno altera la carta",
+    "paper": "carta, dossier ed etichetta d’atlante",
+    "glass": "leggere parole da riusare",
+    "displays": "annunciare arrivi e chiusura",
+    "camera": "nessuna fotografia, ritorni scansionati",
+    "tone": "curioso, preciso, non solenne",
+    "ending": "un’etichetta accanto alla mappa"
+  },
+  "moments": [
+    {
+      "act": "say",
+      "id": "map-arrives",
+      "heading": "La carta è incompleta",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Nove luoghi hanno già legami.",
+            "La carta arriva dal vassoio.",
+            "Prendi la matita dal tavolo."
+          ]
+        },
+        "standard": {
+          "minutes": 2,
+          "lines": [
+            "Nove luoghi occupano i margini.",
+            "I rapporti non sono ancora tracciati.",
+            "Prendi carta e matita."
+          ]
+        },
+        "extended": {
+          "minutes": 4,
+          "lines": [
+            "La città esiste già sulla carta.",
+            "Nessuno ha fissato i suoi rapporti.",
+            "Osserva l’arrivo dal vassoio.",
+            "Tieni la matita sul tavolo."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "La matita è il primo oggetto.",
+            "Tienila accanto al vassoio."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "La carta arriverà già illustrata.",
+            "Non occorre disegnare i luoghi."
+          ]
+        },
+        {
+          "after_minutes": 6,
+          "lines": [
+            "Prendi il foglio stampato.",
+            "Mettilo accanto alla matita."
+          ]
+        },
+        {
+          "after_minutes": 9,
+          "lines": [
+            "Usa la matita sul foglio.",
+            "Le istruzioni sono sulla carta."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "la matita",
+        "heading": "Un segno conclusivo",
+        "lines": [
+          "Prendi la matita.",
+          "Traccia un punto su carta.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 2
+      }
+    },
+    {
+      "act": "hand_over",
+      "id": "first-map",
+      "heading": "I Nove Margini",
+      "weights": {
+        "short": {
+          "minutes": 9,
+          "lines": [
+            "Usa la Carta dei Nove Margini.",
+            "Dai una linea a ogni luogo.",
+            "Etichetta tutte le linee.",
+            "Cerchia il luogo meno collegato."
+          ]
+        },
+        "standard": {
+          "minutes": 27,
+          "lines": [
+            "Scegli liberamente i legami.",
+            "Scrivi due parole su ciascuno.",
+            "Raggiungi tutti i nove luoghi.",
+            "Annota perché uno resta isolato."
+          ]
+        },
+        "extended": {
+          "minutes": 43,
+          "lines": [
+            "Costruisci la rete sulla Carta.",
+            "Etichetta ogni linea tracciata.",
+            "Aggiungi un legame inatteso.",
+            "Segna il luogo più isolato."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Una linea è già una scelta.",
+            "Parti da due figure vicine."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Ogni luogo richiede una linea.",
+            "Ogni linea richiede due parole."
+          ]
+        },
+        {
+          "after_minutes": 12,
+          "lines": [
+            "Collega prima tutti i luoghi.",
+            "Poi cerchia quello meno collegato."
+          ]
+        },
+        {
+          "after_minutes": 18,
+          "lines": [
+            "Esempio: ponte e serra.",
+            "Scrivi «aria umida» sulla linea.",
+            "Continua fino a toccarli tutti."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta dei Nove Margini",
+        "heading": "La carta resta tua",
+        "lines": [
+          "Prendi la Carta dei Nove Margini.",
+          "Cerchia una figura qualsiasi.",
+          "Scrivi una parola accanto.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 4
+      },
+      "page": {
+        "kind": "map",
+        "title": "Carta dei Nove Margini",
+        "illustration": "A clean top-down imaginary map with nine widely separated, simple landmarks and ample white space between them: an unlit lantern on a stone base, an open greenhouse, a bridge ending at a wall, a round well, a low archive building, a broken staircase, a cold oven, a slanted courtyard, and a roofless observatory. No paths or connecting lines. Strong black outlines suitable for monochrome printing.",
+        "note": [
+          "Lanterna spenta; serra aperta; ponte cieco; pozzo sonoro;",
+          "archivio umido; scala tronca; forno freddo; cortile obliquo;",
+          "osservatorio scoperto. Unisci le figure: una linea da ciascuna.",
+          "Etichetta ogni linea con due parole; cerchia il più solo; rimanda."
+        ],
+        "spaces": [
+          {
+            "label": "Il luogo meno collegato, perché",
+            "room": "some_lines"
+          }
+        ]
+      },
+      "instead": [
+        "Traccia nove punti su un foglio.",
+        "Dai a ciascuno un luogo.",
+        "Collegali con linee etichettate.",
+        "Cerchia il meno collegato."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "map-return",
+      "heading": "La carta può tornare",
+      "weights": {
+        "short": {
+          "minutes": 2,
+          "lines": [
+            "Rimanda la carta segnata.",
+            "Mostra linee, parole e cerchio."
+          ]
+        },
+        "standard": {
+          "minutes": 5,
+          "lines": [
+            "Controlla la Carta dei Margini.",
+            "Lascia visibili tutte le etichette.",
+            "Rimanda il foglio completo."
+          ]
+        },
+        "extended": {
+          "minutes": 9,
+          "lines": [
+            "Rileggi le parole sulle linee.",
+            "Puoi chiarirne una a matita.",
+            "Rimanda l’intera carta visibile."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Serve vedere l’intera carta.",
+            "Tieni aperto il foglio."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Linee e parole devono apparire.",
+            "Anche il cerchio deve vedersi."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Rimanda la Carta dei Margini.",
+            "Mostra tutta la superficie."
+          ]
+        },
+        {
+          "after_minutes": 12,
+          "lines": [
+            "Usa il dispositivo indicato.",
+            "Inquadra o scansiona l’intero foglio."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta dei Nove Margini",
+        "heading": "La rete rimane",
+        "lines": [
+          "Prendi la Carta dei Nove Margini.",
+          "Tienila aperta sul tavolo.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 2
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "gentle-close"
+        }
+      ],
+      "if_no_page": "gentle-close"
+    },
+    {
+      "act": "close",
+      "id": "gentle-close",
+      "heading": "La carta resta aperta",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "La carta resta senza tracciato.",
+            "Può rimanere così.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "I nove luoghi restano separati.",
+            "La Carta rimane sul tavolo.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "La città conserva nove margini.",
+            "Nessuna linea viene aggiunta.",
+            "Tieni la Carta se vuoi.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Non occorre aggiungere segni.",
+            "La Carta può restare aperta."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Prendi il foglio dal tavolo.",
+            "Puoi conservarlo senza modificarlo."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "La chiusura è già sul display.",
+            "Il foglio rimane tuo."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Tieni la Carta dei Margini.",
+            "Non serve compiere altre azioni."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "Carta dei Nove Margini",
+        "heading": "Nove luoghi separati",
+        "lines": [
+          "Prendi la Carta dei Nove Margini.",
+          "Riponila oppure lasciala aperta.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 2
+      }
+    }
+  ]
+}

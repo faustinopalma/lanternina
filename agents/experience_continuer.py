@@ -53,12 +53,7 @@ from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
 
-# A continuation is several moments, and in format 2 a moment carries three weighings, four
-# rungs of help and a way out on top of what it had. Measured against
-# `experiences/un-pomeriggio-di-nuvole.json` on 23 August 2026: its four moments after the
-# first collect are 4 869 characters of compact JSON, against 1 583 in format 1. This is
-# that, with room for a longer one.
-MAX_CONTINUATION_CHARS: Final = 9000
+MAX_CONTINUATION_CHARS: Final = 20000
 
 SAYS: Final = beside(__file__)
 

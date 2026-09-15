@@ -116,7 +116,9 @@ python -m research.run --iterations 4 --label after-the-sheets-rule
 
 ## The workbench
 
-[officina.ipynb](officina.ipynb) calls `panel.devising.devise_experience`, draws pages, adds synthetic handwriting, reads it with `PageReader` and calls `panel.continuing.continue_experience`. [workbench.py](workbench.py) records successful and failed logical calls and saves synthetic images. It reports conclusion, error and interruption separately; fallback events remain explicit. The handwritten target receives the other available sheets as image references.
+The [Officina directory](../officina/) indexes all workbench notebooks, including the historical run. Each numbered notebook retains its own results and uses a separate timestamped artifact directory.
+
+The notebooks call `panel.devising.devise_experience`, draw pages, add synthetic handwriting, read it with `PageReader` and call `panel.continuing.continue_experience`. [workbench.py](workbench.py) records successful and failed logical calls and saves synthetic images. It reports conclusion, error and interruption separately; fallback events remain explicit. The handwritten target receives the other available sheets as image references.
 
 Run `python -m research.execute_officina` from the repository interpreter. It needs the `bench` extra and cloud dependencies. It saves notebook outputs even on failure. The notebook loads `research/env.ps1`, reloads prompts before constructing agents and creates a new output directory. It calls paid services. Its branch tests remove inherited cloud settings; do the same before running the complete pytest suite.
 

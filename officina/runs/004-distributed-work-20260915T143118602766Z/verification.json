@@ -1,0 +1,23 @@
+{
+  "status": "concluded",
+  "reason": "",
+  "built_from": {
+    "form": "a-module-from-an-office-that-does-not-exist",
+    "move": "say-the-sheet-itself-can-be-wrong"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789482684.3838303,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_c698bc2f",
+      "latency_s": 1.83
+    }
+  },
+  "reading_in_continuation_prompt": true,
+  "continuations": 3,
+  "seconds": 498.611
+}

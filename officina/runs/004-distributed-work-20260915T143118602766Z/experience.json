@@ -1,0 +1,350 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-683680d7",
+  "title": "L’Atlante dei Confini Incompleti",
+  "overview": "Disegna confini, nomina varchi, aggiunge luoghi e prova un percorso su una mappa inventata, restituendo tre pagine. Dalla stampante escono moduli cartografici di un ufficio inesistente. Alla fine conserva un piccolo atlante di tre mappe e la sua etichetta di deposito. Non serve altro oltre a carta e matita. Possibile punto sgradito: un modulo chiede di segnare se quanto scritto è vero o non del tutto.",
+  "themes": [
+    "mappe inventate",
+    "confini",
+    "toponimi",
+    "percorsi",
+    "moduli amministrativi"
+  ],
+  "script": "THE WORLD. Qui e ora arriva un modulo dell’Ufficio dei Confini Incompleti, ente fittizio che registra soltanto varchi e luoghi adiacenti. La prima carta mostra Margine di Orma, un’isola fittizia con tre baie, uno scoglio diviso e molto interno ancora vuoto. I protocolli successivi ingrandiscono un dettaglio aggiunto, ne stabiliscono una regola di accesso e verificano un percorso. THE WAY IN. La stampante fornisce il modulo «Protocollo 17 — Margine di Orma». Si prende il modulo dal tavolo e una matita. La prima azione è tracciare sulla mappa un confine che tocchi la costa in due punti, lasciandovi un’apertura visibile, poi dare un nome all’apertura. Il foglio contiene istruzione, mappa e spazi amministrativi; resta utilizzabile durante l’attesa. THE QUESTION. Costruire una mappa coerente di Margine di Orma e decidere come si attraversa uno dei suoi luoghi. The operation: tracciare, nominare, ingrandire, scegliere una regola concreta e provare un percorso. The evidence or materials: il Protocollo 17 fornisce costa e spazio cartografico; il Protocollo 18 riprende nome, confine e varco restituiti; il Protocollo 19 fornisce tre ingressi visibili, un punto tondo, un punto triangolare e il test completo del percorso; l’etichetta finale riprende il risultato. Servono i fogli stampati e una matita. The result: è un compito creativo aperto. Un esempio valido è un confine curvo tra due baie, con il varco «Taglio Calmo», un luogo vicino formato da due anelli e la regola «si entra passando tra due segni». L’azione è completa quando il percorso è tracciato oppure tutti e tre gli ingressi sono provati e segnati chiusi. The reason to do it: una costa quasi vuota diventa un luogo con nomi, regole e una verifica visibile, conservato come atlante personale. THE BEATS. arrival: sul display compare il confine privo di pratica; termina con matita e modulo individuati. first-sheet: arriva il Protocollo 17; termina con confine, varco, nome e casella di verità segnati. first-return: il Protocollo 17 viene restituito; con segni, ask legge nome e forma per preparare il seguito, senza segni chiude sul modulo intatto. continuazione 1: arriva il Protocollo 18, ingrandimento del varco nominato; termina con un luogo vicino disegnato e una regola scelta. continuazione 2: il Protocollo 18 viene restituito; il seguito conserva nome, luogo e regola sul Protocollo 19. continuazione 3: arriva il Protocollo 19, conseguenza della regola scelta; termina con un percorso oppure con i tre ingressi segnati chiusi. continuazione 4: il Protocollo 19 viene restituito; arriva l’etichetta di deposito che cita il nome e l’esito, poi il display chiude sull’atlante raccolto. WHAT IS HELD BACK. Il nome del secondo foglio e il suo ingrandimento arrivano solo dopo first-return. La regola scelta e il luogo aggiunto determinano il terzo foglio. L’esito del percorso determina la frase dell’etichetta finale. Ask in first-return consegna la pagina segnata all’agente, che scrive le continuazioni usando quei dettagli. Le istruzioni necessarie a ciascuna azione sono sul foglio che la richiede. WHAT IS MADE. Il limite complessivo è cinque fogli A4, inclusi continuazioni e chiusura. Il piano ne usa quattro. Foglio 1, dossier «Protocollo 17 — Margine di Orma»: nota con ordine di tracciare il confine e lasciare il varco; grande costa vista dall’alto; spazi «B — Nome del varco», «C — Vero / non del tutto», «D — Data e sigla». Foglio 2, dossier «Protocollo 18 — Zona del varco»: la nota cita «Dal tuo foglio: [nome]» e distingue «Proposta nuova dell’Ufficio». Mostra un ingrandimento del confine restituito. Chiede di disegnare accanto un luogo e scegliere una sola azione: «entra seguendo una curva», «entra fra due segni», «entra attraversando il vuoto». Foglio 3, mappa «Protocollo 19 — Prova di accesso»: conserva nomi, luogo e regola. Mostra tre ingressi larghi e distinti, un punto tondo e uno triangolare. La nota ordina di tracciare un percorso secondo la regola. Dice: «Il foglio può essere incoerente. Prova tutti e tre gli ingressi; se nessuno arriva, segnali chiusi». Gli spazi sono «Percorso tracciato» e «Tre ingressi chiusi». Foglio 4, label «Deposito del Margine»: cita il nome scelto e dichiara percorso registrato oppure carta risultata incoerente. Non richiede risposta. È l’etichetta da tenere con le tre mappe. WHERE IT CAN GO DIFFERENTLY. Se un foglio torna pieno, il seguito ingrandisce un solo dettaglio ben visibile e lascia gli altri sulla carta originale. Se torna intatto, il display nomina il modulo intatto come copia d’archivio e chiude. Se l’interesse termina dopo il secondo foglio, quello diventa la carta definitiva: si raccolgono i fogli già segnati e il display dichiara chiuso il deposito, senza altra stampa. WHAT WOULD SPOIL IT. Aggiungere una storia segreta invece di lasciare lavorare la mappa. Stampare insieme tutti i protocolli, impedendo alle risposte di modificarli. Trattare l’incoerenza del terzo foglio come errore di chi lo usa invece che come possibile proprietà verificabile della carta.",
+  "minutes": 110,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "un ufficio cartografico fittizio, oggi",
+    "role": "compilatore di confini non registrati",
+    "mechanic": "tracciare, nominare e verificare passaggi",
+    "progress": "ogni restituzione ingrandisce una scelta",
+    "paper": "protocolli che diventano un atlante",
+    "glass": "leggere nomi e segni restituiti",
+    "displays": "annunciare arrivi e chiudere il deposito",
+    "camera": "nessuna fotografia, rientro tramite fogli",
+    "tone": "amministrativo, asciutto e curioso",
+    "ending": "atlante raccolto con etichetta finale"
+  },
+  "moments": [
+    {
+      "act": "say",
+      "id": "arrival",
+      "heading": "Pratica senza confine",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Un confine è rimasto senza pratica.",
+            "La matita è già sul tavolo."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Un confine è rimasto senza pratica.",
+            "Prendi la matita dal tavolo.",
+            "Il primo modulo sta arrivando."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Un confine è rimasto senza pratica.",
+            "Prendi la matita dal tavolo.",
+            "Osserva il foglio quando arriva.",
+            "La costa contiene molto spazio vuoto."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "La pratica riguarda una costa vuota."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "La matita servirà sul modulo."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Prendi la matita dal tavolo."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Tieni la matita accanto al foglio."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "matita",
+        "heading": "Pratica archiviata",
+        "lines": [
+          "Posa la matita sul tavolo.",
+          "La pratica termina qui."
+        ],
+        "minutes": 2
+      }
+    },
+    {
+      "act": "hand_over",
+      "id": "first-sheet",
+      "heading": "Protocollo 17",
+      "weights": {
+        "short": {
+          "minutes": 6,
+          "lines": [
+            "Prendi il modulo di Margine.",
+            "Traccia il confine sulla mappa.",
+            "Lascia un varco e nominalo."
+          ]
+        },
+        "standard": {
+          "minutes": 17,
+          "lines": [
+            "Prendi il modulo di Margine.",
+            "Traccia un confine tra due coste.",
+            "Lascia un’apertura ben visibile.",
+            "Scrivi il nome del varco."
+          ]
+        },
+        "extended": {
+          "minutes": 25,
+          "lines": [
+            "Prendi il modulo di Margine.",
+            "Traccia il confine e il varco.",
+            "Aggiungi un secondo segno vicino.",
+            "Compila le caselle del protocollo."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Il confine può essere irregolare."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Fallo toccare alla costa due volte."
+          ]
+        },
+        {
+          "after_minutes": 12,
+          "lines": [
+            "Interrompi la linea in un punto.",
+            "Scrivi un nome nello spazio B."
+          ]
+        },
+        {
+          "after_minutes": 18,
+          "lines": [
+            "Esempio: linea fra due baie.",
+            "Lascia un taglio chiamato Passo Basso.",
+            "Segna anche la casella C."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "modulo di Margine",
+        "heading": "Carta depositata",
+        "lines": [
+          "Prendi il modulo di Margine.",
+          "Tieni la mappa come carta finita.",
+          "Il deposito termina qui."
+        ],
+        "minutes": 3
+      },
+      "page": {
+        "kind": "dossier",
+        "title": "Protocollo 17 — Margine di Orma",
+        "illustration": "A large overhead map of a fictional irregular island fills most of the sheet. Its simple coastline has three broad inward bays, one long narrow peninsula, a split oval rock offshore, and a wide blank interior intended for drawing. The coast is made of one clear dark outline with no texture. The administrative writing spaces form a restrained file-card margin around the same map surface.",
+        "note": [
+          "Ufficio dei Confini Incompleti. Pratica 17.",
+          "Traccia sulla mappa un confine che tocchi due punti della costa.",
+          "Lascia un’apertura visibile. Scrivine il nome nello spazio B.",
+          "Compila C e D. Poi restituisci il foglio con tutti i segni visibili."
+        ],
+        "spaces": [
+          {
+            "label": "B — Nome del varco",
+            "room": "a_line"
+          },
+          {
+            "label": "C — Vero □ Non del tutto □",
+            "room": "a_line"
+          },
+          {
+            "label": "D — Data e sigla",
+            "room": "a_line"
+          }
+        ]
+      },
+      "instead": [
+        "Disegna su un foglio un’isola.",
+        "Traccia un confine al suo interno.",
+        "Lascia un varco e nominalo.",
+        "Tieni visibili tutti i segni."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "first-return",
+      "heading": "Rientro della pratica",
+      "weights": {
+        "short": {
+          "minutes": 3,
+          "lines": [
+            "Restituisci il modulo di Margine.",
+            "Lascia visibili linea e nome."
+          ]
+        },
+        "standard": {
+          "minutes": 6,
+          "lines": [
+            "Restituisci il modulo di Margine.",
+            "Mostra l’intera costa disegnata.",
+            "Lascia leggibile il nome del varco."
+          ]
+        },
+        "extended": {
+          "minutes": 9,
+          "lines": [
+            "Restituisci il modulo di Margine.",
+            "Mostra mappa, nome e caselle.",
+            "Controlla che nulla copra il varco."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Serve vedere l’intero modulo."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Linea e nome devono essere visibili."
+          ]
+        },
+        {
+          "after_minutes": 6,
+          "lines": [
+            "Restituisci il foglio disteso.",
+            "Mostra anche le caselle compilate."
+          ]
+        },
+        {
+          "after_minutes": 9,
+          "lines": [
+            "Metti in vista tutto il modulo.",
+            "Invia costa, confine, varco e nome."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "modulo di Margine",
+        "heading": "Margine conservato",
+        "lines": [
+          "Riprendi il modulo di Margine.",
+          "Conservalo come mappa completa.",
+          "La corrispondenza termina qui."
+        ],
+        "minutes": 3
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "blank-close"
+        }
+      ],
+      "if_no_page": "blank-close"
+    },
+    {
+      "act": "close",
+      "id": "blank-close",
+      "heading": "Copia d’archivio",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Il modulo intatto resta disponibile.",
+            "La pratica è chiusa."
+          ]
+        },
+        "standard": {
+          "minutes": 2,
+          "lines": [
+            "Il modulo intatto resta sul tavolo.",
+            "Può restare una costa senza confini.",
+            "La pratica è chiusa."
+          ]
+        },
+        "extended": {
+          "minutes": 4,
+          "lines": [
+            "Prendi il modulo intatto.",
+            "Osserva la costa ancora aperta.",
+            "Conservalo oppure lascialo sul tavolo.",
+            "La pratica è chiusa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Non occorre aggiungere alcun segno."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Il modulo può restare intatto."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Prendi il modulo, se lo vuoi."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Conserva il modulo oppure posalo.",
+            "La pratica è già conclusa."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "modulo intatto",
+        "heading": "Archivio chiuso",
+        "lines": [
+          "Prendi il modulo intatto.",
+          "Posalo dove preferisci.",
+          "Il deposito è chiuso."
+        ],
+        "minutes": 2
+      }
+    }
+  ]
+}

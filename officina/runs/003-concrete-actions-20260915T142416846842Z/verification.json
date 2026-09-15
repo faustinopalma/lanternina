@@ -1,0 +1,23 @@
+{
+  "status": "error",
+  "reason": "RefusedByTheChecks: moments[1]: 'Metti in sequenza «strada / percorso» e «cartello / punto da notare».' still carries two options with a slash between them",
+  "built_from": {
+    "form": "invent-the-signs-write-the-key",
+    "move": "named-by-what-happens-there"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789482264.5256033,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_31b561f9",
+      "latency_s": 2.08
+    }
+  },
+  "reading_in_continuation_prompt": false,
+  "continuations": 0,
+  "seconds": 288.771
+}

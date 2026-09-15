@@ -1,0 +1,294 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-1ef4b4fa",
+  "title": "L’atlante dei passaggi improbabili",
+  "overview": "Traccia una strada, disegna tre luoghi, ingrandisce uno di essi e progetta due deviazioni. La stampante consegna tre mappe successive di uno stesso quartiere inventato. Alla fine restano un atlante personale e una mappa corretta. Non serve altro oltre a carta e matita. Può non piacere il tono da archivio catastale.",
+  "themes": [
+    "mappe inventate",
+    "strade e deviazioni",
+    "quartieri immaginari",
+    "corrispondenza cartacea"
+  ],
+  "script": "THE WORLD Un archivio immaginario conserva mappe di luoghi che non esistono. È arrivato un foglio con zone vuote, due varchi e nessuna strada. Il quartiere, l’archivio e i suoi documenti sono fittizi. Le linee aggiunte sulla carta sono costruzioni reali e restano a chi le traccia. THE WAY IN La stampante consegna la mappa «Atlante del quartiere senza nome». Sul tavolo ci sono il foglio catastale e una matita. La prima azione è tracciare sul foglio una strada fra i due varchi, facendola passare per almeno tre zone visibili. THE QUESTION Costruire una mappa coerente di un quartiere inventato e decidere come una strada cambia quando incontra un ostacolo. L’operazione: tracciare, nominare, ingrandire un luogo, confrontare due deviazioni e riportarne una sulla mappa. Le prove o i materiali: il foglio catastale fornisce varchi e zone; le sue legende accolgono nomi e segni; il secondo foglio fornisce lo spazio per l’ingrandimento e l’ostacolo; il terzo raccoglie due deviazioni e un innesto finale. Servono soltanto i fogli stampati e una matita. Il risultato: è un compito aperto. Un esempio valido è una strada curva fra i varchi, con una serra, una vasca e un cortile; nell’ingrandimento un cancello chiuso blocca un accesso; una deviazione gli gira intorno. È completo quando una deviazione scelta compare sulla mappa originale oppure nel riquadro «Innesto finale». La ragione per farlo: una prima geografia viene modificata dalle conseguenze di un dettaglio inventato e rimane come piccolo atlante autonomo. THE BEATS map-arrives — arriva il foglio catastale; si tracciano strada e luoghi; termina con nomi e segni sulla mappa. first-return — la mappa viene restituita; termina quando la scansione mostra i segni oppure il foglio vuoto. blank-close — il foglio vuoto resta disponibile; la corrispondenza termina sul foglio. map-read — dopo ask, il display cita il nome del quartiere e un luogo leggibile; termina indicando il nuovo foglio. enlargement — arriva l’ingrandimento di quel luogo; si disegnano accessi, percorso e ostacolo; termina con l’ostacolo scritto. enlargement-return — l’ingrandimento viene restituito; termina con segni visibili oppure con la chiusura sul foglio vuoto. variants — arriva la carta delle varianti; si copiano l’ostacolo e due deviazioni; termina con una variante cerchiata. final-return — la variante scelta viene riportata sulla prima mappa, o in «Innesto finale»; termina con la restituzione della mappa. map-close — il display nomina quartiere e luogo già letti, indica la mappa in mano e dichiara conclusa la corrispondenza. WHAT IS HELD BACK Il primo ritorno segnato conduce ad ask, l’unico del gioco. Con la scansione davanti, la continuazione conserva il nome del quartiere e un luogo leggibile. Se mancano nomi usa «quartiere senza nome» e «luogo tracciato», senza inventarne. Genera quindi i momenti map-read, enlargement, enlargement-return, variants, final-return e map-close. I ritorni successivi non usano ask: un foglio segnato apre il passo seguente; un foglio vuoto chiude. Il secondo foglio introduce l’ostacolo. Il terzo introduce il confronto fra deviazioni. WHAT IS MADE Il limite dell’intero gioco è cinque fogli, comprese continuazioni e chiusure. Il piano ne usa tre e non stampa una risposta finale. Foglio 1, mappa «Atlante del quartiere senza nome»: il titolo indicato; le quattro istruzioni già definite nel momento map-arrives; gli spazi «Nome del quartiere», «Segno e nome del luogo 1», «Segno e nome del luogo 2», «Segno e nome del luogo 3»; una veduta dall’alto con zone ampie e due varchi opposti. Qui si costruisce la mappa principale. Foglio 2, mappa «Ingrandimento di [luogo]»: note «Questo foglio ingrandisce [luogo], tracciato sulla prima mappa.», «Disegna il suo contorno con tre accessi.», «Collega due accessi e lascia isolato il terzo.», «Scrivi cosa blocca il terzo accesso. Restituisci il foglio.»; spazi «Pianta del luogo» e «Ostacolo del terzo accesso»; illustrazione con un margine cartografico sobrio e centro libero. Qui nasce la conseguenza. Foglio 3, mappa «Varianti per [luogo]»: note «Copia l’ostacolo scritto nell’ingrandimento.», «Disegna due passaggi diversi che lo aggirano.», «Cerchia un passaggio e copialo sulla mappa catastale.», «Se la mappa è piena, copialo in Innesto finale.»; spazi «Ostacolo copiato», «Passaggio A», «Passaggio B», «Innesto finale»; illustrazione con piccoli frammenti di costa e sentieri incompleti, senza testo. Qui si confrontano e si conserva la scelta. WHERE IT CAN GO DIFFERENTLY Se la prima mappa torna molto piena, l’ingrandimento isola un solo luogo e il terzo foglio accoglie la modifica in «Innesto finale». Se un foglio torna intatto, il momento di chiusura nomina quel foglio, dice che può restare così e conclude. Se l’interesse finisce a metà, il way_out del momento presente chiude sulla carta già segnata e la lascia come oggetto completo. WHAT WOULD SPOIL IT Stampare insieme tutti i fogli, togliendo alla risposta il potere di determinare il seguito. Inventare un nome che non compare nella scansione. Trasformare le deviazioni in un percorso giusto da indovinare.",
+  "minutes": 115,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "un archivio immaginario, oggi",
+    "role": "cartografo corrispondente dell’archivio",
+    "mechanic": "tracciare, ingrandire e deviare strade",
+    "progress": "ogni scansione apre una conseguenza",
+    "paper": "tre parti dello stesso atlante",
+    "glass": "leggere nomi e segni restituiti",
+    "displays": "annunci, riscontri e chiusura",
+    "camera": "nessuna foto, rientro tramite scansione",
+    "tone": "preciso, curioso, senza giudizi",
+    "ending": "una deviazione fissata sulla mappa"
+  },
+  "moments": [
+    {
+      "act": "hand_over",
+      "id": "map-arrives",
+      "heading": "Una mappa senza strada",
+      "weights": {
+        "short": {
+          "minutes": 10,
+          "lines": [
+            "Il foglio catastale è arrivato.",
+            "Prendi foglio e matita.",
+            "Traccia strada e tre luoghi.",
+            "Restituisci la mappa segnata."
+          ]
+        },
+        "standard": {
+          "minutes": 30,
+          "lines": [
+            "Mancano strada e quartiere.",
+            "Prendi il foglio catastale.",
+            "Traccia e nomina tre luoghi.",
+            "Restituisci la mappa segnata."
+          ]
+        },
+        "extended": {
+          "minutes": 44,
+          "lines": [
+            "Il foglio catastale è arrivato.",
+            "Traccia strada e tre luoghi.",
+            "Puoi aggiungere un vicolo cieco.",
+            "Restituisci la mappa segnata."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": [
+            "I due varchi chiedono una strada.",
+            "Comincia da quello sinistro."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Attraversa almeno tre zone.",
+            "Metti un luogo sulla strada."
+          ]
+        },
+        {
+          "after_minutes": 11,
+          "lines": [
+            "Unisci i varchi con una linea.",
+            "Aggiungi tre segni e tre nomi."
+          ]
+        },
+        {
+          "after_minutes": 16,
+          "lines": [
+            "Esempio: una strada curva.",
+            "Aggiungi serra, vasca e cortile.",
+            "Copia segni e nomi in legenda.",
+            "Scrivi anche il nome del quartiere."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "foglio catastale",
+        "heading": "La carta rimane",
+        "lines": [
+          "Prendi il foglio catastale.",
+          "Lascia visibili i segni fatti.",
+          "La mappa ora appartiene a te.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 4
+      },
+      "page": {
+        "kind": "map",
+        "title": "Atlante del quartiere senza nome",
+        "illustration": "An overhead fictional district map with several large irregular empty zones, broad open space for drawing, one unmistakable gap in the left border and one unmistakable gap in the right border. Thin restrained cadastral outlines, no roads, no buildings, no lettering.",
+        "note": [
+          "Parti dal varco sinistro e arriva al varco destro.",
+          "Traccia una strada che tocchi almeno tre zone visibili.",
+          "Disegna tre luoghi sulla strada e nominali nella legenda.",
+          "Dai nome al quartiere. Facoltativo: un vicolo cieco. Restituisci."
+        ],
+        "spaces": [
+          {
+            "label": "Nome del quartiere",
+            "room": "a_line"
+          },
+          {
+            "label": "Segno e nome del luogo 1",
+            "room": "a_box"
+          },
+          {
+            "label": "Segno e nome del luogo 2",
+            "room": "a_box"
+          },
+          {
+            "label": "Segno e nome del luogo 3",
+            "room": "a_box"
+          }
+        ]
+      },
+      "instead": [
+        "Usa un foglio come mappa.",
+        "Traccia una strada fra due bordi.",
+        "Aggiungi tre luoghi e nomi.",
+        "Mostra il foglio quando finito."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "first-return",
+      "heading": "Il catasto riceve",
+      "weights": {
+        "short": {
+          "minutes": 2,
+          "lines": [
+            "Tieni pronta la mappa segnata.",
+            "Restituisci il foglio catastale."
+          ]
+        },
+        "standard": {
+          "minutes": 6,
+          "lines": [
+            "La strada può rientrare ora.",
+            "Tieni visibile tutta la mappa.",
+            "Restituisci il foglio catastale."
+          ]
+        },
+        "extended": {
+          "minutes": 10,
+          "lines": [
+            "Osserva un’ultima volta la mappa.",
+            "Puoi rinforzare un segno scelto.",
+            "Restituisci il foglio catastale."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Serve vedere strada e legenda."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Lascia visibili foglio e segni."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Restituisci l’intera mappa segnata."
+          ]
+        },
+        {
+          "after_minutes": 10,
+          "lines": [
+            "Prendi la mappa catastale.",
+            "Rendila interamente visibile.",
+            "Avvia la restituzione indicata."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "mappa catastale",
+        "heading": "Il quartiere resta",
+        "lines": [
+          "Prendi la mappa catastale.",
+          "Conserva strada, luoghi e nomi.",
+          "Il quartiere rimane sulla carta.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 3
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "blank-close"
+        }
+      ],
+      "if_no_page": "blank-close"
+    },
+    {
+      "act": "close",
+      "id": "blank-close",
+      "heading": "Il foglio può restare",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "La mappa resta com’è.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Il foglio non chiede aggiunte.",
+            "Può restare sul tavolo.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Prendi la mappa ancora vuota.",
+            "Puoi conservarla senza cambiarla.",
+            "Il foglio rimane tuo.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Non occorre aggiungere un segno."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Il foglio può restare vuoto."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Prendi la mappa dal tavolo."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Conserva la mappa senza modificarla.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "mappa ancora vuota",
+        "heading": "Carta non tracciata",
+        "lines": [
+          "Prendi la mappa ancora vuota.",
+          "Lasciala esattamente com’è.",
+          "Il foglio rimane tuo.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 2
+      }
+    }
+  ]
+}

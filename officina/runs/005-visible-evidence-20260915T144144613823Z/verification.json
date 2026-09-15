@@ -1,0 +1,23 @@
+{
+  "status": "error",
+  "reason": "CloudUnavailable: content safety unreachable: HttpResponseError: (InvalidRequestBody) The length of given text 10181 exceeds the limit 10000. | Request Id: 34f139d6-a7c3-4175-bd92-aee9e9282fc6, Timestamp: 2026-09-15T14:46:06Z.\nCode: InvalidRequestBody\nMessage: The length of given text 10181 exceeds the limit 10000. | Request Id: 34f139d6-a7c3-4175-bd92-aee9e9282fc6, Timestamp: 2026-09-15T14:46:06Z.",
+  "built_from": {
+    "form": "a-module-from-an-office-that-does-not-exist",
+    "move": "answers-that-become-one-last-task"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789483309.8480175,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_60add41a",
+      "latency_s": 1.95
+    }
+  },
+  "reading_in_continuation_prompt": false,
+  "continuations": 0,
+  "seconds": 258.919
+}

@@ -1,0 +1,303 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-a58062e9",
+  "title": "L’atlante della stanza che cambia funzione",
+  "overview": "Misura una stanza con passi, un libro o un piede, ne disegna la pianta e la trasforma in un luogo inventato. Dalla stampante escono fogli d’atlante personalizzati. Alla fine tiene una mappa completa con scala, percorso, ostacolo e legenda. Non serve altro oltre a carta e matita. Potrebbe non piacere dover misurare la stanza e ridisegnarla quando la prima scala non entra.",
+  "themes": [
+    "mappe",
+    "luoghi inventati",
+    "scale",
+    "trasformazioni",
+    "percorsi"
+  ],
+  "script": "IL MONDO Una stanza reale diventa la matrice geometrica di un luogo inventato. Pareti, aperture e ingombri vengono misurati con un’unità corporea o domestica. Lanternina aggiunge conseguenze alle scelte ricevute. L’atlante, i nomi e le proprietà del luogo sono elementi fittizi; le misure e la prima pianta sono osservazioni reali. LA VIA D’ENTRATA La stampante consegna il foglio di rilievo. Sul display Lanternina segnala che la stanza eccede il foglio. Si prende il foglio dalla stampante e si compilano le due regole di scala prima di tracciare la pianta. LA DOMANDA Come può la geometria di una stanza reale diventare la mappa coerente di un luogo inventato? L’operazione: misurare con una sola unità, scegliere una scala di pagina, disegnare, nominare, trasformare e correggere un percorso. Le prove o i materiali: la stanza scelta; carta e matita; le regole e il riquadro del primo foglio; i dettagli leggibili nei ritorni; le regole nuove stampate sui fogli successivi. Il risultato: è una costruzione aperta. Un esempio possibile usa un passo come unità reale e un dito sulla pagina per ogni passo, trasforma un tavolo nel punto dove si raccolgono le ombre e devia il percorso quando quel punto diventa invalicabile. Il lavoro è completo quando la mappa conserva una scala dichiarata, contiene un luogo nominato per ciò che vi accade e mostra un percorso modificato da una conseguenza. La ragione per farlo: una scala che non entra rende visibile come una mappa viene scelta e rifatta; la trasformazione conserva quella geometria e le assegna un uso nuovo. LE BATTUTE first-map: arriva il rilievo; si scrivono le scale e si traccia una pianta nominata; termina con segni visibili. return-map: il foglio viene restituito; con segni avvia ask, senza segni porta alla chiusura. continuazione due: un nuovo foglio riprende il nome e l’ingombro maggiore; li trasforma e chiede un percorso; termina con il secondo ritorno. continuazione tre: un nuovo foglio cita un elemento del percorso e introduce un blocco concreto; si devia il percorso o si crea un’apertura; termina con il terzo ritorno. chiusura: un ultimo foglio, se il bilancio lo consente, raccoglie nome, regola e dettaglio finale; il display dichiara conclusa la corrispondenza. blank-close: il foglio non segnato resta disponibile e la corrispondenza termina. CIÒ CHE RESTA IN ATTESA Il primo foglio non nasconde istruzioni. Sul ramo ask, Lanternina legge il nome, la scala e un ingombro realmente visibili. La continuazione due usa quei dettagli nei propri campi pagina. Dopo il secondo ritorno, la continuazione tre nomina un segno effettivamente ricevuto e gli assegna una conseguenza nuova, dichiarata sul foglio. Nessuna conseguenza viene richiesta prima di essere stampata. CIÒ CHE VIENE FATTO Il limite complessivo è cinque fogli, comprese continuazioni e chiusura. Il piano ne usa quattro e conserva il quinto come margine, senza obbligo di stamparlo. Foglio uno, «Stanza matrice, primo rilievo»: pagina di taccuino con due regole di scala, un grande spazio per la pianta e un nome funzionale. L’immagine contiene soltanto bordi leggeri e fogli sovrapposti, non una casa immaginata. Foglio due, «Il luogo dove…»: taccuino personalizzato con il nome ricevuto, una copia descritta del maggiore ingombro e un grande spazio. Chiede di conservare il perimetro, trasformare quell’ingombro e tracciare un percorso da un’apertura al dettaglio trasformato. Foglio tre, «Margine di…»: mappa personalizzata che nomina un elemento ricevuto e stampa una sola restrizione, per esempio che quell’elemento non può essere attraversato. Chiede di deviare il percorso; se non esiste passaggio, chiede di disegnare una nuova apertura e raggiungerla. Foglio quattro, «Legenda del luogo»: dossier finale con il nome ricevuto, la regola introdotta e spazi per un simbolo, il suo significato e il dettaglio da conservare. Non richiede un altro ritorno. Se un foglio aggiuntivo è stato necessario, la chiusura resta sul display e sui fogli esistenti. DOVE PUÒ ANDARE DIVERSAMENTE Se il primo foglio torna pieno, il secondo ingrandisce un solo dettaglio invece di riprodurre tutta la pianta. Se un ritorno successivo è molto pieno, il foglio seguente usa il margine o un particolare isolato. Se il primo foglio torna intatto, blank-close conclude sul foglio disponibile. Se l’interesse finisce dopo un ritorno, Lanternina nomina l’ultimo oggetto ricevuto, invita a tenerlo come carta incompleta e chiude sul display. CIÒ CHE LO ROVINEREBBE Stampare in anticipo una stanza plausibile ma estranea alla casa. Trattare la prima scala inadatta come errore da correggere. Aggiungere molti nomi fantastici senza usarli per cambiare la mappa.",
+  "minutes": 105,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "una stanza presente diventa altrove",
+    "role": "coautore di un atlante materiale",
+    "mechanic": "misurare, mappare e deviare",
+    "progress": "ogni ritorno produce una conseguenza",
+    "paper": "fogli successivi dello stesso atlante",
+    "glass": "leggere nomi e segni ricevuti",
+    "displays": "consegnare, riconoscere e chiudere",
+    "camera": "nessuna fotografia, ritorni scannerizzati",
+    "tone": "preciso, curioso e senza giudizio",
+    "ending": "una legenda chiude la mappa"
+  },
+  "moments": [
+    {
+      "act": "hand_over",
+      "id": "first-map",
+      "heading": "La stanza eccede",
+      "weights": {
+        "short": {
+          "minutes": 10,
+          "lines": [
+            "Prendi il foglio di rilievo.",
+            "Scegli una sola unità.",
+            "Traccia pareti, aperture, ingombro.",
+            "Dai un nome funzionale."
+          ]
+        },
+        "standard": {
+          "minutes": 30,
+          "lines": [
+            "La stanza eccede il foglio.",
+            "Compila le due regole.",
+            "Misura e traccia la pianta.",
+            "Nominala per ciò che accade."
+          ]
+        },
+        "extended": {
+          "minutes": 42,
+          "lines": [
+            "La stanza eccede il foglio.",
+            "Compila le due regole.",
+            "Traccia la pianta e due ingombri.",
+            "Nominala per ciò che accade."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 3,
+          "lines": [
+            "La scala può cambiare.",
+            "La stanza non deve cambiare."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Usa passi, libro oppure piede.",
+            "Mantieni sempre la stessa unità."
+          ]
+        },
+        {
+          "after_minutes": 12,
+          "lines": [
+            "Scrivi l’unità reale.",
+            "Scegli il suo segno sulla pagina.",
+            "Poi traccia il perimetro."
+          ]
+        },
+        {
+          "after_minutes": 18,
+          "lines": [
+            "Un esempio possibile:",
+            "unità reale, un passo.",
+            "Pagina, un dito per passo.",
+            "Traccia stanza, porta e tavolo."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "foglio di rilievo",
+        "heading": "Una carta conclusa",
+        "lines": [
+          "Prendi il foglio di rilievo.",
+          "Cerchia un punto della pianta.",
+          "Scrivi «confine provvisorio».",
+          "La corrispondenza finisce qui."
+        ],
+        "minutes": 5
+      },
+      "page": {
+        "kind": "notebook",
+        "title": "Stanza matrice, primo rilievo",
+        "illustration": "A broad empty drawing field enclosed by a thin uneven rectangular border. In one corner, three overlapping blank map leaves. Beside them, two simple footprint shapes and one small closed book seen from above. No room, furniture, measurements, symbols or writing.",
+        "note": [
+          "Misura una stanza nota usando sempre passi, un libro oppure un piede.",
+          "Scegli quanto vale una unità sulla pagina e scrivi entrambe le regole.",
+          "Traccia pareti, aperture e due ingombri; un solo ingombro basta.",
+          "Nomina il luogo per ciò che vi accade; poi mostra questo foglio."
+        ],
+        "spaces": [
+          {
+            "label": "La mia unità costante",
+            "room": "a_line"
+          },
+          {
+            "label": "Sulla pagina, una unità vale",
+            "room": "a_line"
+          },
+          {
+            "label": "Pianta: pareti, aperture, ingombri",
+            "room": "a_box"
+          },
+          {
+            "label": "Il luogo dove",
+            "room": "a_line"
+          }
+        ]
+      },
+      "instead": [
+        "Prendi un foglio dal tavolo.",
+        "Scrivi due regole di scala.",
+        "Disegna e nomina la stanza.",
+        "Tieni il foglio con te."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "return-map",
+      "heading": "La carta può tornare",
+      "weights": {
+        "short": {
+          "minutes": 2,
+          "lines": [
+            "Guarda il foglio di rilievo.",
+            "Lascia visibili scale e pianta.",
+            "Mostralo con il dispositivo indicato."
+          ]
+        },
+        "standard": {
+          "minutes": 6,
+          "lines": [
+            "La stanza ora ha un nome.",
+            "Controlla che resti leggibile.",
+            "Mostra tutto il foglio di rilievo.",
+            "La risposta può richiedere tempo."
+          ]
+        },
+        "extended": {
+          "minutes": 9,
+          "lines": [
+            "La stanza ora ha un nome.",
+            "Ripassa un segno troppo pallido.",
+            "Lascia visibili scale e pianta.",
+            "Mostra tutto il foglio."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Il bordo intero serve a Lanternina."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Devono vedersi le due scale.",
+            "Deve vedersi anche il nome."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Metti il foglio ben disteso.",
+            "Mostra tutta la superficie segnata."
+          ]
+        },
+        {
+          "after_minutes": 10,
+          "lines": [
+            "Lascia visibili scala, pianta, nome.",
+            "Mostra il foglio intero.",
+            "Attendi il messaggio successivo."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "foglio di rilievo",
+        "heading": "Il rilievo resta",
+        "lines": [
+          "Prendi il foglio di rilievo.",
+          "Segna una piccola soglia.",
+          "Scrivi «qui cambia funzione».",
+          "La corrispondenza finisce qui."
+        ],
+        "minutes": 4
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "blank-close"
+        }
+      ],
+      "if_no_page": "blank-close"
+    },
+    {
+      "act": "close",
+      "id": "blank-close",
+      "heading": "Il foglio resta aperto",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Tieni il foglio di rilievo.",
+            "La corrispondenza finisce qui."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Il foglio di rilievo resta tuo.",
+            "Può rimanere senza segni.",
+            "La corrispondenza finisce qui."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Prendi il foglio di rilievo.",
+            "Traccia un punto sul margine.",
+            "Il resto può restare vuoto.",
+            "La corrispondenza finisce qui."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Il foglio può restare com’è."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Non occorre completare la pianta."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Tieni il foglio sul tavolo.",
+            "Nessun altro segno è richiesto."
+          ]
+        },
+        {
+          "after_minutes": 8,
+          "lines": [
+            "Prendi il foglio di rilievo.",
+            "Traccia un punto, se vuoi.",
+            "Poi conservalo così com’è."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "foglio di rilievo",
+        "heading": "Una soglia minima",
+        "lines": [
+          "Prendi il foglio di rilievo.",
+          "Traccia un punto sul margine.",
+          "Il foglio resta tuo.",
+          "La corrispondenza finisce qui."
+        ],
+        "minutes": 2
+      }
+    }
+  ]
+}

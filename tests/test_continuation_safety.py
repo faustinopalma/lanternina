@@ -19,11 +19,18 @@ from typing import Any
 import afternoons as a
 import pytest
 
-from orchestrator.safety import screen_continuation, screen_experience, words_for_a_person
-from shared.errors import SafetyBlocked
+from orchestrator.safety import (
+    AzureContentSafetyGate,
+    ContentSafetyConfig,
+    screen_continuation,
+    screen_experience,
+    words_for_a_person,
+)
+from shared.errors import CloudUnavailable, SafetyBlocked
 from shared.experience import ExperienceError
 from shared.safety import (
     ContentKind,
+    SafetyCategory,
     SafetyVerdict,
     ScreenedPayload,
     ScreeningRecord,
@@ -122,6 +129,64 @@ def test_a_screened_continuation_comes_back_sealed() -> None:
 def test_a_refusal_stops_the_whole_continuation() -> None:
     with pytest.raises(SafetyBlocked, match="severity 4"):
         asyncio.run(screen_continuation(Screener(refuse=True), a_continuation()))
+
+
+@pytest.mark.parametrize("length", [10000, 10001, 20000])
+def test_long_text_is_screened_in_full_and_sealed_unchanged(length: int) -> None:
+    seen: list[str] = []
+    body = ("A\U0001f4cdB\u00e0" * 5000)[:length]
+
+    async def analyze(text: str) -> dict[SafetyCategory, int]:
+        assert len(text) <= 10000
+        seen.append(text)
+        return {SafetyCategory.VIOLENCE: 0}
+
+    gate = AzureContentSafetyGate(
+        ContentSafetyConfig("test"),
+        Sealer(SealPurpose.CONTENT_SAFETY, b"k" * 32, "test"),
+        analyzer=analyze,
+    )
+    payload = asyncio.run(gate.screen(ContentKind.EXERCISE_JSON, body))
+
+    assert payload.body == body
+    assert seen[0] + "".join(part[512:] for part in seen[1:]) == body
+    assert len(seen) == (1 if length == 10000 else 2 if length == 10001 else 3)
+    assert payload.record.verdict is SafetyVerdict.ALLOW
+
+
+@pytest.mark.parametrize("marker_at", [9997, 15000])
+def test_a_refusal_at_a_chunk_boundary_or_in_the_tail_blocks_everything(marker_at: int) -> None:
+    body = "a" * marker_at + "FLAGGED" + "b" * 1000
+
+    async def analyze(text: str) -> dict[SafetyCategory, int]:
+        return {SafetyCategory.VIOLENCE: 4 if "FLAGGED" in text else 0}
+
+    gate = AzureContentSafetyGate(
+        ContentSafetyConfig("test"),
+        Sealer(SealPurpose.CONTENT_SAFETY, b"k" * 32, "test"),
+        analyzer=analyze,
+    )
+    with pytest.raises(SafetyBlocked, match="severity 4"):
+        asyncio.run(gate.screen(ContentKind.EXERCISE_JSON, body))
+
+
+def test_an_unavailable_later_chunk_cannot_produce_a_sealed_payload() -> None:
+    calls = 0
+
+    async def analyze(text: str) -> dict[SafetyCategory, int]:
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise CloudUnavailable("second request failed")
+        return {SafetyCategory.VIOLENCE: 0}
+
+    gate = AzureContentSafetyGate(
+        ContentSafetyConfig("test"),
+        Sealer(SealPurpose.CONTENT_SAFETY, b"k" * 32, "test"),
+        analyzer=analyze,
+    )
+    with pytest.raises(CloudUnavailable, match="second request failed"):
+        asyncio.run(gate.screen(ContentKind.EXERCISE_JSON, "a" * 10181))
 
 
 def test_a_continuation_with_nothing_to_read_cannot_be_built_at_all() -> None:

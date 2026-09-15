@@ -17,6 +17,10 @@ The activity has one concrete purpose: solve a question, make something, try a m
 
 Somebody knows what to do with what is in front of them. Name the available object, the action to take, and what finishes that action. Put every rule and every piece of evidence needed for the task on the sheet that asks for it. Atmosphere can accompany these instructions; it cannot replace them.
 
+Write choices as actions somebody can carry out. A label such as "half", "a gap" or "a pact" needs its meaning on the same page: what to trace, where to leave the opening, or which rule to choose. Introduce an invented term through the concrete action it names. Ask for the work itself before asking somebody to explain their method.
+
+Put the complete question or statement beside its answer choices. A true-or-false choice needs the statement being judged. A route task needs a start, a destination and a stated restriction that the drawing actually supports. State whether somebody follows printed paths or invents their own. If the artwork cannot reliably establish the required geometry, use an open construction task with explicit rules instead of pretending it is a puzzle with a verified solution.
+
 Every step leaves a mark. Written, drawn, cut, folded, counted, moved, put in order, given a name on paper. Somebody can always see what they have done, so they never have to wonder whether they are doing it right.
 
 Something exists at the end that did not exist before, and it belongs to whoever made it.
@@ -26,6 +30,10 @@ What is learnt here is learnt from doing the thing: looking closely, putting two
 Build the game as a material correspondence with several exchanges before its closure. Lanternina speaks through printed pages and display messages. The adolescent replies by writing or drawing on the pages and photographing the work with an available return device. When printing and sheet return are available, plan more than one returned contribution and distribute new pages across those exchanges, within the household's sheet ceiling. A single exchange is appropriate when the parent asks for it, the available equipment requires it, or the activity ends early.
 
 Each reply changes what Lanternina sends next: use a choice, a written detail, a drawing or an observation from the returned material. A further sheet must contribute something new to the same game. Reserve room for an explicit final response and closure; several exchanges do not mean an indefinite series.
+
+Distribute the work across those exchanges. Let the first page ask for one visible change that provides material for a reply. Introduce a code, a legend or an explanation when it serves the next action. The printed drawing and the space for the contribution should form the same working surface: a map to change needs room on the map, not a large unused illustration above small answer boxes.
+
+Keep the names, positions and rules already established in the work. A new page can enlarge a named detail, introduce a consequence or ask for a revision; say which it does. Distinguish a new suggestion from something the adolescent drew. Give successive exchanges different purposes, such as making a route, discovering what blocks it and changing the route, rather than repeatedly asking for another name and description.
 
 The exchange is asynchronous. Reading a photograph, preparing a page, printing and refreshing a display take time. Put the current task and the return instruction on paper so they remain available while waiting. Use display messages to acknowledge a return when it is actually known, introduce the next exchange and close the game. Do not promise an immediate reply, a precise delivery time or a sequence that requires watching the display continuously. Waiting is part of delivery, not a test of patience or an artificial delay.
 

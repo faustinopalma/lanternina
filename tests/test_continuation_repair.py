@@ -123,3 +123,33 @@ def test_a_second_refusal_is_the_end_of_it() -> None:
     same answer, and somebody is standing at the scanner."""
     with pytest.raises(ExperienceError, match="45 characters"):
         continue_with(a_continuation(TOO_LONG), a_continuation(TOO_LONG))
+
+
+def test_a_multi_exchange_answer_reaches_the_parser_without_being_cut() -> None:
+    from types import SimpleNamespace
+
+    moments = [
+        a.say(moment_id=f"step-{index}", weights=a.weights(lines=(FITS,) * 4))
+        for index in range(11)
+    ]
+    moments.append(a.close(weights=a.weights(lines=(FITS,) * 4)))
+    answer = json.dumps({"moments": moments}, ensure_ascii=False)
+    assert 9000 < len(answer) < 20000
+    requests = []
+
+    async def generate(request: ModelRequest) -> Any:
+        requests.append(request)
+        return SimpleNamespace(body=answer[: request.max_output_chars])
+
+    router = SimpleNamespace(generate_for_user=generate)
+    received = asyncio.run(
+        ExperienceContinuer().continue_from(
+            a_context(router),
+            experience=THE_AFTERNOON,
+            after="che-torna",
+            came="marks",
+            reading={},
+        )
+    )
+    assert len(received.moments) == 12
+    assert len(requests) == 1

@@ -1,0 +1,380 @@
+{
+  "format_version": 2,
+  "experience_id": "aftn-e4850ec2",
+  "title": "Atlante di un confine trovato",
+  "overview": "Traccia il contorno di un piccolo oggetto, lo trasforma in territorio e ne disegna accessi e luoghi. Escono tre carte successive e un cartellino finale, insieme formano un atlante. Alla fine restano le carte annotate e il cartellino. Serve un oggetto piccolo e piatto, come una moneta o una chiave. Richiede di restituire tre fogli tramite il dispositivo indicato.",
+  "themes": [
+    "mappe inventate",
+    "confini",
+    "vincoli grafici",
+    "toponimi",
+    "corrispondenza"
+  ],
+  "script": "THE WORLD La Cartoteca dei Confini Trovati raccoglie luoghi nati dal contorno di oggetti comuni. Una deviazione prodotta da un vincolo diventa poi una caratteristica geografica. La Cartoteca e i luoghi sono immaginari. L’oggetto, il suo contorno e tutti i segni osservati sono reali. THE WAY IN La stampante consegna la mappa «Il confine senza luogo». Si prende un piccolo oggetto piatto, come una moneta o una chiave, e lo si posa nel riquadro. La prima azione è cerchiare uno dei quattro vincoli stampati. THE QUESTION Costruire una carta coerente di un luogo inventato, facendo nascere la sua geografia da un contorno vincolato. The operation: scegliere un vincolo, tracciare, nominare, trasformare una deviazione in accesso e sviluppare il territorio oltre quell’accesso. The evidence or materials: il piccolo oggetto viene dalla stanza; il foglio 1 fornisce quattro vincoli, patto, riquadro e spazi; i fogli 2 e 3 riprendono i segni restituiti; il foglio 4 conserva la risposta finale. The result: è un compito creativo aperto. Un esempio possibile è tracciare due impronte sovrapposte, chiamare il luogo «Porto Doppio», trattare l’incrocio come una strettoia e disegnare oltre di essa due piazze collegate. Il lavoro è completo quando confine, accesso e parte interna hanno nomi e segni visibili. The reason to do it: un limite casuale cambia funzione e diventa una geografia personale da conservare. THE BEATS consegna iniziale: è disponibile la prima mappa; si sceglie il vincolo, si traccia e si nomina; finisce con confine e deviazione segnati. prima restituzione: la mappa viene restituita; con segni conduce ad ask, senza segni conduce alla chiusura gentile. seconda consegna dopo ask: arriva una carta costruita usando il nome e la deviazione letti; finisce con un accesso disegnato e nominato. seconda restituzione: se il disegno è visibile arriva la carta interna; se manca, la corrispondenza si chiude sul materiale già fatto. terza consegna: la carta interna chiede di proseguire dall’accesso disegnato; finisce con un percorso e due luoghi nominati. terza restituzione: se i segni sono visibili arriva il cartellino finale; se mancano, le carte già fatte restano la conclusione. chiusura: il cartellino nomina l’insieme e il display dichiara conclusa la corrispondenza. WHAT IS HELD BACK Il nome letto e la deviazione osservata sono trattenuti fino alla seconda consegna generata da ask. La seconda carta rivela che la deviazione è diventata una soglia. La terza consegna rivela il territorio oltre la soglia. Il cartellino finale riprende il nome e la deviazione già noti dalla prima restituzione. WHAT IS MADE Il limite complessivo è cinque fogli. Il piano ne usa quattro. Foglio 1, mappa «Il confine senza luogo»: quattro vincoli nella nota; spazi «Patto: Quando traccio, allora...», «Nome provvisorio», «Confine del luogo», «Dove il vincolo ha deviato la linea», «Dettaglio facoltativo»; mare rado e isolotti ai bordi. Foglio 2, mappa «Le soglie di [nome letto]»: la nota cita la deviazione letta e ordina di trasformarla in accesso; spazi «Accesso dalla deviazione», «Nome dell’accesso», «Cosa compare oltre»; costa incompleta e area interna libera. Foglio 3, mappa «Oltre l’accesso»: la nota ordina di riprendere l’accesso della carta precedente, tracciare un percorso e aggiungere due luoghi; spazi «Percorso dall’accesso», «Primo luogo», «Secondo luogo», «Una svolta inattesa»; terreno vuoto con tre forme naturali distanti. Foglio 4, label «Carta di [nome letto]»: la nota dice che il confine, la deviazione e l’accesso appartengono ora alla stessa carta; nessuno spazio da compilare; una piccola sagoma astratta richiama il contorno ricevuto. È la risposta stampata finale. WHERE IT CAN GO DIFFERENTLY Se un foglio torna pieno, il seguito sceglie un dettaglio leggibile e gli lascia spazio. Se torna intatto, il display chiude e lascia quel foglio come carta non occupata. Se l’interesse finisce a metà, la via d’uscita fa cerchiare un punto già presente e dichiara conclusa la corrispondenza. WHAT WOULD SPOIL IT Aggiungere una soluzione segreta alla mappa. Chiedere precisione nel ricalco. Stampare subito tutte le carte invece di usare ciò che torna.",
+  "minutes": 125,
+  "requires": [
+    "print_a4",
+    "scan_a4",
+    "show_800x480_1bit"
+  ],
+  "drawn": {
+    "frame": "una cartoteca immaginaria, oggi",
+    "role": "cartografo corrispondente",
+    "mechanic": "tracciare, deviare e nominare",
+    "progress": "ogni carta amplia la precedente",
+    "paper": "carte successive di un atlante",
+    "glass": "leggere nome, deviazione e segni",
+    "displays": "annunciare consegne e chiusura",
+    "camera": "nessuna, il ritorno usa scansione",
+    "tone": "preciso, curioso e sobrio",
+    "ending": "un cartellino accanto alle carte"
+  },
+  "moments": [
+    {
+      "act": "hand_over",
+      "id": "first-map",
+      "heading": "Un confine senza luogo",
+      "weights": {
+        "short": {
+          "minutes": 7,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Cerchia un vincolo e traccia.",
+            "Scrivi nome e deviazione.",
+            "Poi restituisci il foglio."
+          ]
+        },
+        "standard": {
+          "minutes": 21,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Scrivi il patto, poi traccia.",
+            "Nomina luogo e deviazione.",
+            "Restituisci la mappa completa."
+          ]
+        },
+        "extended": {
+          "minutes": 32,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Segui il patto e traccia.",
+            "Nomina luogo e deviazione.",
+            "Aggiungi un dettaglio, poi restituisci."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Il bordo nasce da un’impronta.",
+            "Il vincolo cambia quell’impronta."
+          ]
+        },
+        {
+          "after_minutes": 5,
+          "lines": [
+            "Cerchia prima un solo vincolo.",
+            "L’oggetto resta dentro il riquadro."
+          ]
+        },
+        {
+          "after_minutes": 9,
+          "lines": [
+            "Posa l’oggetto nel riquadro.",
+            "Traccia seguendo il vincolo scelto.",
+            "Scrivi un nome e una deviazione."
+          ]
+        },
+        {
+          "after_minutes": 14,
+          "lines": [
+            "Puoi cerchiare «due impronte».",
+            "Tracciale appena sovrapposte.",
+            "Chiamalo Porto Doppio.",
+            "Segna l’incrocio come deviazione."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "mappa del confine",
+        "heading": "La carta resta qui",
+        "lines": [
+          "Prendi la mappa del confine.",
+          "Scrivi un nome nello spazio.",
+          "La mappa resta tua.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 4
+      },
+      "page": {
+        "kind": "map",
+        "title": "Il confine senza luogo",
+        "illustration": "A top-down imaginary sea chart with a large clear central area, a few simple wave marks, two small rounded islets near opposite edges, and several isolated rocks. The central area remains open for tracing a handheld object.",
+        "note": [
+          "Prendi un oggetto piatto e posalo nel riquadro.",
+          "Cerchia: metà; otto tratti; due impronte; un varco.",
+          "Scrivi il patto, poi traccia e nomina il confine.",
+          "Segna la deviazione; poi restituisci questa mappa."
+        ],
+        "spaces": [
+          {
+            "label": "Patto: Quando traccio, allora...",
+            "room": "a_line"
+          },
+          {
+            "label": "Nome provvisorio",
+            "room": "a_line"
+          },
+          {
+            "label": "Confine del luogo",
+            "room": "a_box"
+          },
+          {
+            "label": "Dove il vincolo ha deviato la linea",
+            "room": "some_lines"
+          },
+          {
+            "label": "Dettaglio facoltativo",
+            "room": "a_line"
+          }
+        ]
+      },
+      "instead": [
+        "Tieni la matita sul tavolo.",
+        "Immagina un contorno non tracciato.",
+        "Può restare senza territorio.",
+        "La corrispondenza è conclusa."
+      ]
+    },
+    {
+      "act": "collect",
+      "id": "return-border",
+      "heading": "La Cartoteca riceve",
+      "weights": {
+        "short": {
+          "minutes": 2,
+          "lines": [
+            "Rendi visibile la mappa del confine.",
+            "Devono vedersi nome e bordo."
+          ]
+        },
+        "standard": {
+          "minutes": 6,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Controlla nome, bordo e nota.",
+            "Rendili visibili nella restituzione."
+          ]
+        },
+        "extended": {
+          "minutes": 9,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Aggiungi un dettaglio facoltativo.",
+            "Rendi visibili tutti i segni."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 2,
+          "lines": [
+            "La Cartoteca cerca il bordo.",
+            "Anche un contorno aperto va bene."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Nome e linea devono essere visibili.",
+            "La deviazione può essere approssimata."
+          ]
+        },
+        {
+          "after_minutes": 7,
+          "lines": [
+            "Prendi l’intera mappa del confine.",
+            "Mostra foglio, nome e bordo.",
+            "Usa il dispositivo indicato."
+          ]
+        },
+        {
+          "after_minutes": 10,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Rendi visibili foglio, nome e bordo.",
+            "Inviala con il dispositivo indicato.",
+            "Attendi lasciando la carta sul tavolo."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "mappa del confine",
+        "heading": "Un punto conclusivo",
+        "lines": [
+          "Prendi la mappa del confine.",
+          "Cerchia un punto del bordo.",
+          "La carta resta tua.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 3
+      },
+      "outcomes": [
+        {
+          "when": "marks",
+          "then": "ask"
+        },
+        {
+          "when": "blank",
+          "then": "blank-map-end"
+        }
+      ],
+      "if_no_page": "no-page-end"
+    },
+    {
+      "act": "close",
+      "id": "blank-map-end",
+      "heading": "Carta non occupata",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Riprendi la mappa del confine.",
+            "La carta può restare bianca."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Riprendi la mappa del confine.",
+            "Puoi segnare un solo punto.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Riprendi la mappa del confine.",
+            "Osserva lo spazio rimasto libero.",
+            "Segna un punto, se vuoi.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "Il bianco appartiene alla carta."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Nessun confine deve comparire."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Puoi lasciare la mappa com’è.",
+            "Riprendila dal dispositivo indicato."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Prendi la mappa del confine.",
+            "Lasciala bianca oppure segna un punto.",
+            "Tienila con le tue carte.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "mappa del confine",
+        "heading": "La mappa rimane",
+        "lines": [
+          "Prendi la mappa del confine.",
+          "Lasciala bianca oppure segna un punto.",
+          "La carta resta tua.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 2
+      }
+    },
+    {
+      "act": "close",
+      "id": "no-page-end",
+      "heading": "Confine non tracciato",
+      "weights": {
+        "short": {
+          "minutes": 1,
+          "lines": [
+            "Prendi la matita dal tavolo.",
+            "Il confine resta non tracciato."
+          ]
+        },
+        "standard": {
+          "minutes": 3,
+          "lines": [
+            "Prendi la matita dal tavolo.",
+            "Posala accanto al posto vuoto.",
+            "La corrispondenza è conclusa."
+          ]
+        },
+        "extended": {
+          "minutes": 5,
+          "lines": [
+            "Prendi la matita dal tavolo.",
+            "Immagina un bordo senza carta.",
+            "Posa di nuovo la matita.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      },
+      "help": [
+        {
+          "after_minutes": 1,
+          "lines": [
+            "La matita è già sul tavolo."
+          ]
+        },
+        {
+          "after_minutes": 2,
+          "lines": [
+            "Il posto vuoto può restare vuoto."
+          ]
+        },
+        {
+          "after_minutes": 3,
+          "lines": [
+            "Prendi la matita e poi posala.",
+            "Non occorre tracciare nulla."
+          ]
+        },
+        {
+          "after_minutes": 4,
+          "lines": [
+            "Prendi la matita dal tavolo.",
+            "Posala accanto al posto vuoto.",
+            "Il confine resta non tracciato.",
+            "La corrispondenza è conclusa."
+          ]
+        }
+      ],
+      "way_out": {
+        "in_hand": "matita",
+        "heading": "Il posto vuoto",
+        "lines": [
+          "Prendi la matita dal tavolo.",
+          "Posala accanto al posto vuoto.",
+          "Il confine resta non tracciato.",
+          "La corrispondenza è conclusa."
+        ],
+        "minutes": 1
+      }
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
 import pytest
@@ -108,6 +109,15 @@ async def test_recorder_keeps_failed_calls_and_closes_idempotently(tmp_path):
     recorder.close()
     assert recorder.calls[0]["status"] == "error"
     assert recorder.calls[0]["seconds"] >= 0
+
+
+@pytest.mark.asyncio
+async def test_recorder_retains_text_payloads_instead_of_their_length(tmp_path):
+    recorder = Recorder(tmp_path / "calls", synthetic=True, echo=False)
+    answer = SimpleNamespace(body='{"moments": [], "note": "già scritto"}')
+    await recorder.call("continuation", "synthetic", AsyncMock(return_value=answer))
+    recorder.close()
+    assert recorder.calls[0]["came"] == answer.body
 
 
 def test_root_search_terminates_outside_repository(tmp_path):

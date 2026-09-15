@@ -59,7 +59,7 @@ class Recorder:
             record["came"] = getattr(result, "text", None)
             if record["came"] is None:
                 body = result if isinstance(result, bytes) else getattr(result, "body", b"")
-                record["came"] = f"<{len(body)} bytes>"
+                record["came"] = body if isinstance(body, str) else f"<{len(body)} bytes>"
             record["status"] = "ok"
             return result
         except BaseException as exc:

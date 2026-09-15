@@ -1,0 +1,23 @@
+{
+  "status": "concluded",
+  "reason": "",
+  "built_from": {
+    "form": "plan-of-a-place-you-know",
+    "move": "named-by-what-happens-there"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789483741.2407825,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_1cd8cc11",
+      "latency_s": 1.89
+    }
+  },
+  "reading_in_continuation_prompt": true,
+  "continuations": 1,
+  "seconds": 361.797
+}

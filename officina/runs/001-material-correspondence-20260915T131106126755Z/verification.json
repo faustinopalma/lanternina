@@ -1,0 +1,23 @@
+{
+  "status": "concluded",
+  "reason": "",
+  "built_from": {
+    "form": "label-every-line-you-draw",
+    "move": "one-fact-that-changes-what-was-already-read"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789477873.0059588,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_6856eb3d",
+      "latency_s": 2.17
+    }
+  },
+  "reading_in_continuation_prompt": true,
+  "continuations": 3,
+  "seconds": 643.734
+}

@@ -1,0 +1,23 @@
+{
+  "status": "error",
+  "reason": "ExperienceError: the answer is not JSON: Expecting ',' delimiter: line 1 column 8924 (char 8923)",
+  "built_from": {
+    "form": "a-module-from-an-office-that-does-not-exist",
+    "move": "choose-the-thing-then-choose-the-narrowing"
+  },
+  "blank_reading": {
+    "written": false,
+    "same_sheet": true,
+    "describes": [],
+    "read_at": 1789481662.8240535,
+    "degraded": false,
+    "metadata": {
+      "read_by": "page_reader",
+      "request_id": "rq_c4a75212",
+      "latency_s": 2.26
+    }
+  },
+  "reading_in_continuation_prompt": false,
+  "continuations": 0,
+  "seconds": 316.597
+}

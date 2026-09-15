@@ -40,6 +40,8 @@ from shared.seal import Sealer, SealPurpose
 
 POLICY_VERSION: Final = "1"
 SCREENER_NAME: Final = "azure-content-safety"
+MAX_TEXT_CHARS: Final = 10000
+TEXT_OVERLAP_CHARS: Final = 512
 
 # The four categories the service returns, mapped onto our vocabulary.
 _AZURE_CATEGORIES: Final = {
@@ -166,6 +168,18 @@ class AzureContentSafetyGate:
         self._analyze: SeverityAnalyzer = analyzer or backend
         self._analyze_image: ImageAnalyzer = image_analyzer or backend.image
 
+    async def _text_severities(self, body: str) -> dict[SafetyCategory, int]:
+        severities: dict[SafetyCategory, int] = {}
+        start = 0
+        while True:
+            end = min(start + MAX_TEXT_CHARS, len(body))
+            current = await self._analyze(body[start:end])
+            for category, severity in current.items():
+                severities[category] = max(severities.get(category, 0), severity)
+            if end == len(body):
+                return severities
+            start = end - TEXT_OVERLAP_CHARS
+
     async def screen(
         self, kind: ContentKind, body: str, *, context: str = ""
     ) -> ScreenedPayload:
@@ -173,7 +187,7 @@ class AzureContentSafetyGate:
         severities = (
             await self._analyze_image(body)
             if kind is ContentKind.IMAGE_PNG
-            else await self._analyze(body)
+            else await self._text_severities(body)
         )
         worst = max(severities.values(), default=0)
         blocked = worst >= self._config.block_at_severity
