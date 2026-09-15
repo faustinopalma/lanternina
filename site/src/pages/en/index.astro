@@ -23,6 +23,9 @@ import { REPO } from "../../i18n/ui";
 
   <h2>How an activity goes</h2>
 
+  <p>The game develops through several exchanges until it closes. Lanternina speaks through printed pages and display messages. The adolescent replies by writing or drawing on the sheets and photographing what they made. The returned material shapes the next response, which can bring another sheet.</p>
+  <p>The pace is a material correspondence. A reply takes time while the photograph is read, a page is prepared and a display refreshes. Instructions remain on paper during the wait. Prompts request a default ceiling of 5 sheets for the whole game, distributed across its exchanges and including any printed closing response. The parent can choose a lower ceiling; the game need not use every sheet.</p>
+
   <ol class="steps">
     <li>
       <b>The parent steers the proposal.</b> They write interests, subjects to avoid, language and current circumstances. They can prepare a brief and set the available hours.
@@ -43,7 +46,7 @@ import { REPO } from "../../i18n/ui";
       <b>The camera or scanner returns the completed page.</b> A vision model receives the photograph or scan and the original page image. It compares them and returns a reading of the marks that were added.
     </li>
     <li>
-      <b>The hub selects the next moment from the reading.</b> It follows the corresponding transition in the activity graph and prepares the next display or page. At its first timer check within thirty minutes of the end time set by the parent, it starts the current moment's path to the ending.
+      <b>The hub selects the next moment from the reading.</b> It follows the corresponding transition in the activity graph and prepares the next message or page. Further replies on paper and photographs continue the game until its ending. At its first timer check within thirty minutes of the end time set by the parent, it starts the current moment's path to the ending.
     </li>
   </ol>
 
@@ -79,6 +82,7 @@ import { REPO } from "../../i18n/ui";
 
   <h3>Devices in the house</h3>
   <p>The panel lists registered displays and cameras, and discovered printers and scanners. The parent names devices, assigns jobs and sees which need attention. Cameras and scanners offer one return function, "shows Lanternina". Several compatible devices can hold it; the hub selects one for each return. Displays can hold several display jobs.</p>
+  <p>The parent sets each display's connection interval. If all intervals exceed 5 minutes, the panel warns that at least one display assigned to activity instructions should connect every 5 minutes or less, so replies do not take too long. A shorter interval reduces the wait for an update and requires more battery-powered wakeups. The interval does not guarantee the total response time, which also includes processing and printing.</p>
 
   <figure>
     <a href="/images/panel-devices-en.webp"><img src="/images/panel-devices-en.webp" width="1200" height="900" loading="lazy" alt="The panel's Devices page with editable names, display status and checkboxes for assigning jobs." /></a>
