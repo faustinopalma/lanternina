@@ -11,16 +11,14 @@ import { REPO } from "../../i18n/ui";
   title="Identity and access"
   description="Parents use Entra External ID, administrators use a workforce app role, and each house authenticates to the API with its own device key."
 >
-  <p class="lede">
-    The API accepts three credential types. Parents present Entra External ID tokens, administrators
-    present workforce tokens with the <code>Lanternina.Admin</code> app role, and each house presents
-    a device key over TLS. Each credential reaches a separate route group.
-  </p>
+  <p class="lede">Parents, invited adolescents, administrators and home hubs reach separate route groups in one API application. Parents and adolescents share Entra External ID authentication but have different application permissions. Administrators use workforce tokens with the <code>Lanternina.Admin</code> role. Each hub presents a key bound to its household.</p>
 
   <WhoSignsIn
     title="Who signs in, and what they reach"
-    desc="Three callers reach one API and three route groups. An Entra External ID token resolves a parent's household. A workforce token with the Lanternina.Admin app role authorizes account administration. A per-household device key authorizes work polling, approved-item retrieval and returned readings."
-    caption="The API selects an authentication path from the route group and validates the credential before application logic runs."
+    desc="Four callers reach one application. Parent routes require an active account, portal routes an active invited membership, admin routes a workforce role and device routes a key authorized for the requested household."
+    caption="Route dependencies validate credentials and permissions before endpoint logic. These are authorization boundaries inside one deployment, not four isolated services."
+    adolescent={{ title: "An adolescent", sub: ["External ID + invitation", "active family membership"] }}
+    adolescentRoutes={{ title: "Portal routes", sub: ["own photographs only", "no parent settings"] }}
     parent={{
       title: "A parent",
       sub: ["Entra External ID (CIAM)", "self-service registration"],
@@ -62,11 +60,8 @@ import { REPO } from "../../i18n/ui";
 
   <h2>Household isolation</h2>
 
-  <p>
-    Every stored row is partitioned by household id. Each device key maps to one household, and each
-    parent route resolves the household from the validated token. Adding a house requires a
-    provisioning run and uses the existing schema.
-  </p>
+  <p>Parent routes resolve the household through the account associated with the validated subject. Portal routes resolve it through the invited membership and limit photograph access to that member's submissions. Device routes compare the key with the digest configured for the household in the URL; changing that URL cannot authorize another family.</p>
+  <p>Household records in Cosmos DB use family partitioning, and image archives use household paths. Invitations and memberships currently share one private Blob document with conditional writes and application-level access checks. That register is not physically partitioned by family. Adding a home requires provisioning a distinct key and its server-side household binding.</p>
 
   <p>The code enforces household boundaries, but the system has only run in one home. Provisioning and operation across multiple households remain untested.</p>
 
@@ -75,7 +70,7 @@ import { REPO } from "../../i18n/ui";
   <p>
     The hub presents its device key in the <code>X-Device-Key</code> header over TLS. The API holds
     the Azure credential and performs model calls for page reading, reminder interpretation and
-    activity continuation. Device routes return 503 until a device key is configured.
+    activity continuation. Device routes return 503 until household key bindings are configured.
   </p>
 
   <p>
@@ -83,6 +78,15 @@ import { REPO } from "../../i18n/ui";
     be replayed against the Azure subscription. This boundary makes cloud connectivity a requirement
     for page reading.
   </p>
+
+  <p>The API stores SHA-256 digests of random hub keys. Unknown households, missing keys and incorrect keys receive HTTP 403. Rotation replaces the digest; revocation removes the binding. A stolen key remains usable within its authorized household until revocation takes effect. This bearer-key scheme does not provide device attestation or mutual TLS.</p>
+
+  <h2>Invited adolescent access</h2>
+  <p>The parent creates an email-bound invitation and shares its code or link. The adolescent signs in with the matching address and accepts the invitation. Registration alone grants no portal access. An active membership permits submitting, listing and deleting that member's photographs, not approving activities or changing household settings. Revocation closes subsequent portal requests. Known adolescent subjects, including revoked memberships, are excluded from the parent gate. Suspension of the inviting parent also closes portal access.</p>
+  <p>The portal uses the existing External ID application and audience. Its permissions come from the server-side membership, not from a separate adolescent token audience. First registration and redemption with a real invited account remain a family acceptance check.</p>
+
+  <h2>Application boundaries</h2>
+  <p>The route groups share a process, deployment and runtime identity. This keeps deployment and shared data access simple, but a process compromise or resource exhaustion can affect all groups. Moving administration to a separate service would provide an additional boundary only with independently restricted runtime permissions and access controls; another hostname alone would not provide that isolation.</p>
 
   <h2>Activity approval</h2>
 
@@ -108,6 +112,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>The deployment steps, including the manual ones</a> ·
+    <a href={`${REPO}/blob/main/docs/DEVICE-AUTH.md`}>hub credential provisioning and revocation</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
       >the pipeline's federated identity</a
     > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>what leaves the device</a>

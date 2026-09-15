@@ -13,7 +13,7 @@ import Base from "../../layouts/Base.astro";
   title="Execution and data flows"
   description="How devices communicate, how the hub runs an activity, and how returned sheets inform the next step."
 >
-  <p class="lede">The hub coordinates devices and activity timing. The cloud API handles model calls. Returned sheets provide input for the next step.</p>
+  <p class="lede">The hub coordinates devices and activity timing. The cloud API handles model calls. Returned sheets and photographs of visible work provide input for the next step.</p>
 
   <h2>Who asks whom</h2>
 
@@ -26,20 +26,20 @@ import Base from "../../layouts/Base.astro";
     desc="The hub connects local devices to the cloud API. The API calls models on Microsoft Foundry through the model router and screens generated text with Content Safety. The hub retrieves parent decisions in response to its requests."
     caption="The hub initiates cloud requests. The API stores the parent's decision and returns it when the hub next polls."
     house="The house"
-    cloud="Azure, EU region"
-    parent={{ title: "A parent, in a browser", sub: ["approves, and sets the hours"] }}
-    writes="approves"
+    cloud="Cloud services"
+    parent={{ title: "Family browsers", sub: ["parent decisions · portal photographs"] }}
+    writes="HTTPS"
     displays={{ title: "e-paper displays", sub: ["battery · Wi-Fi"] }}
     button={{ title: "a button", sub: ["answered in the reply"] }}
     hub={{
       title: "Hub",
       sub: ["mini-PC on the home network", "out of sight · fixed power supply"],
     }}
-    paper={{ title: "printer · scanner", sub: ["one A4 sheet at a time"] }}
+    paper={{ title: "printer · scanner · camera", sub: ["pages and photographs"] }}
     shows="via Wi-Fi"
     press="a press"
     sheet="via local network"
-    api={{ title: "panel + API", sub: ["stores decisions for the next poll"] }}
+    api={{ title: "cloud API", sub: ["pending decisions and photographs"] }}
     router={{ title: "model router", sub: ["the only module allowed a model SDK"] }}
     gate={{ title: "Content Safety", sub: ["checks generated text"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["language · vision · image"] }}
@@ -53,7 +53,7 @@ import Base from "../../layouts/Base.astro";
 
   <h2>The life of an activity</h2>
 
-  <p>An activity is a graph of steps called moments. Each moment provides three duration options, four levels of help and a path to the ending. The hub selects transitions as time and responses change. A planned <code>ask</code> requests a continuation from the cloud API, using the reading of a returned sheet.</p>
+  <p>An activity is a graph of steps called moments, with duration options, help and paths to the ending. The hub follows its transitions as time and returns change. A planned <code>ask</code> requests a continuation from the cloud API using the reading of returned material; other transitions continue through the existing plan.</p>
 
   <AfternoonLife
     title="The life of an activity"
@@ -66,7 +66,7 @@ import Base from "../../layouts/Base.astro";
     }}
     checks={{
       title: "Format, checks and safety",
-      sub: ["a separate model reviews the activity"],
+      sub: ["blocking checks before storage"],
     }}
     waits={{ title: "The API awaits approval", sub: ["the parent reads the activity"] }}
     begins={{ title: "The hub starts the activity", sub: ["if enough scheduled time remains"] }}
@@ -76,7 +76,7 @@ import Base from "../../layouts/Base.astro";
     ask={{
       title: "ask",
       sub: [
-        "the hub sends the sheet reading",
+        "the hub sends the material reading",
         "the API checks the continuation",
         "without a second parent approval",
       ],
@@ -95,6 +95,8 @@ import Base from "../../layouts/Base.astro";
   </p>
 
   <h2>The paper round trip</h2>
+
+  <p>The parent assigns the return function to cameras and scanners. At each collection moment the hub chooses one compatible assigned device, names it on the display and keeps that choice until the return ends. Paper can use either kind; constructions and objects require a camera. A scanner press does not acquire a page while the moment is waiting for a photograph.</p>
 
   <p>
     The paper contains only the page a person reads and writes on. The vision call compares the
@@ -124,11 +126,7 @@ import Base from "../../layouts/Base.astro";
 
   <h2>The model-call path</h2>
 
-  <p>
-    The normal path selects a method, devises the activity, rereads it and screens its text. Format
-    repair and validation repair add calls only after a refusal. Each call has its own prompt, input
-    contract and output contract, so a failed result can be traced to the request that produced it.
-  </p>
+  <p>The generation path selects a method, devises the activity, repairs refused format or structure when permitted, and screens the resulting text with Content Safety. The API then stores the activity for parent approval. A separate model rereads it in a background task after the response. That diagnostic judgement can fail or be skipped at the usage limit without removing the stored activity; it is not a blocking approval gate.</p>
 
   <figure class="graph">
     <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
@@ -140,14 +138,15 @@ import Base from "../../layouts/Base.astro";
       />
     </div>
     <figcaption id="calls-t">
-      Method selection, devising, rereading and safety screening form the normal path. The repair
-      boxes run only when format parsing or structural validation refuses an answer.
+      This diagram covers generation and its conditional repairs, ending with text screening. The diagnostic background judge and the calls made while an activity runs are separate.
     </figcaption>
   </figure>
 
-  <p>
-    <a href={NOTEBOOK}>research/officina.ipynb</a> records each request and response at the router.
-    The checked-in outputs show the complete call sequence without running the notebook or supplying
-    credentials.
-  </p>
+  <p>During execution, image generation draws a page, vision reads returned material and a planned <code>ask</code> generates a checked continuation. A scanner comparison also schedules a separate observation for profile calibration; photographic reads skip that observation. These calls are not all repeated at every moment.</p>
+
+  <h2>Objects and portal photographs</h2>
+  <p>An object or construction can be returned without a printed page. The vision model receives one photograph and describes the relevant visible material, rather than comparing it with an original. An uncertain reading leaves the activity waiting.</p>
+  <p>An invited adolescent can upload a photograph through the portal. The API stores it; the hub retrieves pending photographs on its synchronization cycle, normally every 60 seconds plus network and processing time. A compatible waiting camera moment can receive it through the same reading path. Otherwise the hub archives it or shows it on a display explicitly assigned to photographs. The portal's completed state means the hub finished processing; it does not promise a model response. A disconnected hub leaves it pending.</p>
+
+  <p><a href={NOTEBOOK}>research/officina.ipynb</a> records requests and responses for a local research run. Its saved outputs are an example with synthetic material, not a trace of every production execution.</p>
 </Base>

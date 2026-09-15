@@ -11,16 +11,14 @@ import { REPO } from "../../i18n/ui";
   title="Identità e accessi"
   description="I genitori usano Entra External ID, gli amministratori un app role workforce e ogni casa si autentica all'API con la propria device key."
 >
-  <p class="lede">
-    L'API accetta tre tipi di credenziale. I genitori presentano token Entra External ID, gli
-    amministratori token workforce con l'app role <code>Lanternina.Admin</code> e ogni casa presenta
-    una device key su TLS. Ogni credenziale raggiunge un gruppo di rotte separato.
-  </p>
+  <p class="lede">Genitori, adolescenti invitati, amministratori e hub raggiungono gruppi di rotte distinti nella stessa API. Genitori e adolescenti condividono l'autenticazione Entra External ID, ma hanno permessi applicativi diversi. Gli amministratori usano token workforce con il ruolo <code>Lanternina.Admin</code>. Ogni hub presenta una chiave associata alla propria famiglia.</p>
 
   <WhoSignsIn
     title="Chi entra, e cosa raggiunge"
-    desc="Tre chiamanti raggiungono una sola API e tre gruppi di rotte. Un token Entra External ID risolve il nucleo del genitore. Un token workforce con l'app role Lanternina.Admin autorizza l'amministrazione degli account. Una device key per nucleo autorizza la richiesta di lavoro, il ritiro degli approvati e la restituzione delle letture."
-    caption="L'API sceglie il percorso di autenticazione dal gruppo di rotte e verifica la credenziale prima della logica applicativa."
+    desc="Quattro chiamanti raggiungono la stessa applicazione. Le rotte del genitore richiedono un account attivo, quelle del portale un'adesione attiva, quelle amministrative un ruolo workforce e quelle dell'hub una chiave autorizzata per la famiglia richiesta."
+    caption="Le dipendenze delle rotte verificano credenziali e permessi prima della logica applicativa. Sono confini di autorizzazione nello stesso deploy, non quattro servizi isolati."
+    adolescent={{ title: "Un adolescente", sub: ["External ID + invito", "adesione familiare attiva"] }}
+    adolescentRoutes={{ title: "Rotte del portale", sub: ["solo le proprie fotografie", "nessuna impostazione"] }}
     parent={{
       title: "Un genitore",
       sub: ["Entra External ID (CIAM)", "registrazione autonoma"],
@@ -63,11 +61,8 @@ import { REPO } from "../../i18n/ui";
 
   <h2>Isolamento dei nuclei familiari</h2>
 
-  <p>
-    Ogni riga salvata è partizionata per id del nucleo. Ogni device key corrisponde a un nucleo e ogni
-    rotta del genitore ricava il nucleo dal token verificato. Aggiungere una casa richiede un
-    provisioning e usa lo schema esistente.
-  </p>
+  <p>Le rotte del genitore ricavano la famiglia dall'account associato al subject verificato. Le rotte del portale la ricavano dall'adesione e limitano le fotografie a quelle inviate da quel membro. Le rotte dell'hub confrontano la chiave con l'impronta configurata per la famiglia nell'URL: cambiare quell'URL non autorizza un'altra famiglia.</p>
+  <p>I dati familiari in Cosmos DB usano il partizionamento per nucleo; gli archivi delle immagini usano percorsi familiari. Inviti e adesioni condividono invece un documento Blob privato, con scritture condizionali e controlli applicativi degli accessi. Quel registro non è fisicamente partizionato per famiglia. Una casa nuova richiede una chiave distinta e la sua associazione al nucleo sul server.</p>
 
   <p>Il codice impone la separazione tra nuclei familiari, ma il sistema ha funzionato in una sola casa. Il provisioning e l'uso con più nuclei restano da provare.</p>
 
@@ -77,7 +72,7 @@ import { REPO } from "../../i18n/ui";
     L'hub presenta la device key nell'intestazione <code>X-Device-Key</code> su TLS. L'API conserva la
     credenziale Azure ed esegue le chiamate ai modelli per leggere una pagina, interpretare un
     promemoria e continuare un'attività. Le rotte del dispositivo rispondono 503 finché non viene
-    configurata una device key.
+    configurata un'associazione tra chiave e famiglia.
   </p>
 
   <p>
@@ -85,6 +80,15 @@ import { REPO } from "../../i18n/ui";
     riutilizzabile contro la sottoscrizione Azure. Questo confine rende necessaria la connessione al
     cloud per leggere una pagina.
   </p>
+
+  <p>L'API conserva impronte SHA-256 di chiavi casuali degli hub. Famiglie sconosciute, chiavi assenti e chiavi errate ricevono HTTP 403. La rotazione sostituisce l'impronta; la revoca rimuove l'associazione. Una chiave sottratta resta utilizzabile nel proprio nucleo finché la revoca non diventa effettiva. Questo schema non fornisce attestazione del dispositivo o mutual TLS.</p>
+
+  <h2>Accesso dell'adolescente invitato</h2>
+  <p>Il genitore crea un invito legato all'email e condivide il codice o il link. L'adolescente accede con l'indirizzo corrispondente e accetta l'invito. La sola registrazione non apre il portale. Un'adesione attiva permette di inviare, vedere e cancellare le proprie fotografie, ma non di approvare attività o cambiare le impostazioni familiari. La revoca chiude le richieste successive. Il gate del genitore esclude i subject già registrati come adolescenti, anche dopo la revoca. La sospensione del genitore che ha invitato chiude anche l'accesso al portale.</p>
+  <p>Il portale usa la stessa applicazione External ID e la stessa audience dei genitori. I permessi dipendono dall'adesione verificata sul server. La prima registrazione e il riscatto con un account reale invitato restano una verifica da fare in famiglia.</p>
+
+  <h2>Confini dell'applicazione</h2>
+  <p>I gruppi di rotte condividono processo, deploy e identità runtime. Questo semplifica pubblicazione e accesso ai dati condivisi, ma una compromissione del processo o l'esaurimento delle risorse può coinvolgere tutti i gruppi. Un servizio amministrativo separato aggiungerebbe un confine soltanto con permessi runtime e controlli di accesso indipendenti; un altro hostname da solo non lo fornirebbe.</p>
 
   <h2>Approvazione delle attività</h2>
 
@@ -111,6 +115,7 @@ import { REPO } from "../../i18n/ui";
 
   <p>
     <a href={`${REPO}/blob/main/docs/DEPLOY.md`}>I passi di deploy, compresi quelli manuali</a> ·
+    <a href={`${REPO}/blob/main/docs/DEVICE-AUTH.md`}>provisioning e revoca delle chiavi degli hub</a> ·
     <a href={`${REPO}/blob/main/docs/WORKLOAD-IDENTITY.md`}
       >l'identità federata della pipeline</a
     > · <a href={`${REPO}/blob/main/docs/THREAT-MODEL.md`}>cosa esce dal dispositivo</a>

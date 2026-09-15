@@ -13,7 +13,7 @@ import Base from "../../layouts/Base.astro";
   title="Esecuzione e flussi di dati"
   description="Come comunicano i dispositivi, come l'hub esegue un'attività e come i fogli restituiti contribuiscono al passo successivo."
 >
-  <p class="lede">L'hub coordina i dispositivi e i tempi delle attività. L'API cloud gestisce le chiamate ai modelli. I fogli restituiti forniscono il materiale per il passo successivo.</p>
+  <p class="lede">L'hub coordina i dispositivi e i tempi delle attività. L'API cloud gestisce le chiamate ai modelli. I fogli restituiti e le fotografie del lavoro visibile forniscono il materiale per il passo successivo.</p>
 
   <h2>Chi chiede a chi</h2>
 
@@ -26,20 +26,20 @@ import Base from "../../layouts/Base.astro";
     desc="L'hub collega i dispositivi locali all'API cloud. L'API chiama i modelli su Microsoft Foundry attraverso il router dei modelli e controlla il testo generato con Content Safety. L'hub riceve le decisioni del genitore nelle risposte alle proprie richieste."
     caption="L'hub avvia le richieste al cloud. L'API conserva la decisione del genitore e la restituisce alla richiesta successiva dell'hub."
     house="La casa"
-    cloud="Azure, regione UE"
-    parent={{ title: "Un genitore, dal browser", sub: ["approva e fissa le ore"] }}
-    writes="approva"
+    cloud="Servizi cloud"
+    parent={{ title: "I browser della famiglia", sub: ["decisioni del genitore · fotografie"] }}
+    writes="HTTPS"
     displays={{ title: "schermi e-paper", sub: ["batteria · Wi-Fi"] }}
     button={{ title: "un pulsante", sub: ["risposta nella replica"] }}
     hub={{
       title: "Hub",
       sub: ["mini-PC sulla rete di casa", "fuori vista · alimentazione fissa"],
     }}
-    paper={{ title: "stampante · scanner", sub: ["un foglio A4 per volta"] }}
+    paper={{ title: "stampante · scanner · fotocamera", sub: ["pagine e fotografie"] }}
     shows="via Wi-Fi"
     press="una pressione"
     sheet="via rete locale"
-    api={{ title: "pannello + API", sub: ["conserva le decisioni per la richiesta successiva"] }}
+    api={{ title: "API cloud", sub: ["decisioni e fotografie in attesa"] }}
     router={{ title: "router dei modelli", sub: ["l'unico modulo con un SDK di modelli"] }}
     gate={{ title: "Content Safety", sub: ["controlla il testo generato"] }}
     foundry={{ title: "Microsoft Foundry", sub: ["linguaggio · visione · immagini"] }}
@@ -53,7 +53,7 @@ import Base from "../../layouts/Base.astro";
 
   <h2>La vita di un'attività</h2>
 
-  <p>Un'attività è un grafo di fasi chiamate momenti. Ogni momento prevede tre opzioni di durata, quattro livelli di aiuto e un percorso verso la conclusione. L'hub sceglie le transizioni in base al tempo e alle risposte. Un'azione <code>ask</code> prevista nell'attività richiede un seguito all'API cloud, usando la lettura di un foglio restituito.</p>
+  <p>Un'attività è un grafo di fasi chiamate momenti, con opzioni di durata, aiuti e percorsi verso la conclusione. L'hub segue le transizioni in base al tempo e al materiale restituito. Un'azione <code>ask</code> prevista nell'attività richiede un seguito all'API cloud usando la lettura del materiale; le altre transizioni proseguono nel piano esistente.</p>
 
   <AfternoonLife
     title="La vita di un'attività"
@@ -66,7 +66,7 @@ import Base from "../../layouts/Base.astro";
     }}
     checks={{
       title: "Formato, controlli e sicurezza",
-      sub: ["un altro modello esamina l'attività"],
+      sub: ["controlli bloccanti prima del salvataggio"],
     }}
     waits={{ title: "L'API attende l'approvazione", sub: ["il genitore legge l'attività"] }}
     begins={{ title: "L'hub avvia l'attività", sub: ["se resta abbastanza tempo disponibile"] }}
@@ -76,7 +76,7 @@ import Base from "../../layouts/Base.astro";
     ask={{
       title: "ask",
       sub: [
-        "l'hub invia la lettura del foglio",
+        "l'hub invia la lettura del materiale",
         "l'API verifica il seguito",
         "senza seconda approvazione",
       ],
@@ -95,6 +95,8 @@ import Base from "../../layouts/Base.astro";
   </p>
 
   <h2>Il giro della carta</h2>
+
+  <p>Il genitore assegna la funzione di restituzione a fotocamere e scanner. A ogni raccolta l'hub sceglie un dispositivo compatibile tra quelli assegnati, lo nomina sul display e conserva la scelta fino al termine della restituzione. La carta può usare entrambi i tipi; costruzioni e oggetti richiedono la fotocamera. Una pressione sul pulsante dello scanner non acquisisce un foglio mentre il momento attende una fotografia.</p>
 
   <p>
     La carta contiene soltanto la pagina che una persona legge e compila. La chiamata di visione
@@ -125,12 +127,7 @@ import Base from "../../layouts/Base.astro";
 
   <h2>Il percorso delle chiamate ai modelli</h2>
 
-  <p>
-    Il percorso normale sceglie un metodo, genera l'attività, la rilegge e ne esamina il testo. La
-    riparazione del formato e quella della verifica aggiungono chiamate soltanto dopo un rifiuto.
-    Ogni chiamata ha il proprio prompt, contratto di ingresso e contratto di uscita, quindi un esito
-    fallito si può ricondurre alla richiesta che lo ha prodotto.
-  </p>
+  <p>Il percorso di generazione sceglie un metodo, genera l'attività, ripara gli errori di formato o struttura quando previsto e passa il testo risultante a Content Safety. L'API salva poi l'attività per l'approvazione del genitore. Un modello separato la rilegge in background dopo la risposta. Questo giudizio diagnostico può fallire o essere saltato al limite di consumo senza rimuovere l'attività salvata; non è un controllo bloccante per l'approvazione.</p>
 
   <figure class="graph">
     <div class="graph-frame" tabindex="0" role="group" aria-labelledby="calls-t">
@@ -142,15 +139,15 @@ import Base from "../../layouts/Base.astro";
       />
     </div>
     <figcaption id="calls-t">
-      La scelta del metodo, la generazione, la rilettura e il filtro di sicurezza formano il percorso
-      normale. I riquadri di riparazione vengono eseguiti soltanto dopo un rifiuto del formato o
-      della verifica strutturale.
+      Il diagramma mostra generazione e riparazioni condizionali, fino al filtro del testo. Il giudice diagnostico in background e le chiamate durante l'attività sono separati.
     </figcaption>
   </figure>
 
-  <p>
-    <a href={NOTEBOOK}>research/officina.ipynb</a> registra ogni richiesta e risposta nel router. Gli
-    esiti salvati nel repository mostrano la sequenza completa senza eseguire il quaderno o fornire
-    credenziali.
-  </p>
+  <p>Durante l'esecuzione, la generazione di immagini disegna una pagina, la visione legge il materiale restituito e un'azione <code>ask</code> genera un seguito verificato. Il confronto da scanner avvia anche un'osservazione separata per calibrare il profilo; le letture fotografiche saltano quella chiamata. Queste operazioni non si ripetono tutte a ogni momento.</p>
+
+  <h2>Oggetti e fotografie del portale</h2>
+  <p>Un oggetto o una costruzione può essere restituito senza una pagina stampata. Il modello di visione riceve una fotografia e descrive il materiale visibile pertinente, invece di confrontarlo con un originale. Una lettura incerta lascia l'attività in attesa.</p>
+  <p>L'adolescente invitato può inviare una fotografia dal portale. L'API la conserva; l'hub ritira le fotografie in attesa durante la sincronizzazione, normalmente ogni 60 secondi più i tempi di rete ed elaborazione. Un momento compatibile in attesa della camera può riceverla attraverso lo stesso percorso di lettura. Altrimenti l'hub la archivia o la mostra su un display assegnato esplicitamente alle fotografie. Lo stato completato del portale indica che l'hub ha concluso l'elaborazione, non promette una risposta del modello. Se l'hub è disconnesso, la fotografia resta in attesa.</p>
+
+  <p><a href={NOTEBOOK}>research/officina.ipynb</a> registra richieste e risposte di una corsa locale di ricerca. Gli output salvati sono un esempio con materiale sintetico, non il tracciato di ogni esecuzione in produzione.</p>
 </Base>

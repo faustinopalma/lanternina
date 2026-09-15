@@ -56,7 +56,8 @@ import { REPO } from "../../i18n/ui";
   </figure>
 
   <p>A press starts acquisition. The light stays on until the selected frame is ready; saving and delivery continue after it goes out. The firmware writes the JPEG to local flash and reads it back before starting Wi-Fi. It sends the image to the home hub over authenticated HTTPS. Two flashes confirm a matching receipt after the hub has stored it. A failed delivery keeps the photograph and its identifier for a later attempt.</p>
-  <p>The reader receives the photograph and the exact original page kept for printing. It compares them despite changes in perspective and lighting, transcribes legible additions and reports uncertainty. An uncertain reading or an ambiguous association with an activity leaves the activity waiting. The scanner remains available for the same return. The family can view, download and delete the photographs in the parent's panel.</p>
+  <p>For a printed sheet, the reader receives the photograph and the original page kept for printing. It compares them despite changes in perspective and lighting, transcribes legible additions and reports uncertainty. An uncertain reading or ambiguous activity association leaves the activity waiting. The hub chooses one compatible camera or scanner from the parent's assignments and keeps that choice for the return. The family can view, download and delete photographs in the parent's panel.</p>
+  <p>A construction or arrangement can instead be photographed without a printed original. The model describes relevant visible material. An invited adolescent can also send photographs through <a href="https://app.lanternina.com/portal">the portal</a>; the cloud stores them until the hub retrieves them. Only a photograph associated with a compatible waiting moment enters the activity's reading path.</p>
 
   <figure class="narrow">
     <a href="/images/camera-prototype-1.webp"><img src="/images/camera-prototype-1.webp" width="1200" height="1600" loading="lazy" alt="The open camera enclosure showing the controller board, antenna, wiring, shutter and battery beside it." /></a>
@@ -77,7 +78,7 @@ import { REPO } from "../../i18n/ui";
   <p>Settings cover days and hours, how many activities may begin, interests, subjects to avoid and language. The parent can add a temporary note and set bounds on how a continuation may change. During an activity, they can bring its end time forward or ask it to start closing. The activity log collects what the system generated and showed.</p>
 
   <h3>Devices in the house</h3>
-  <p>The panel lists registered displays and discovered printers and scanners. The parent names them, assigns jobs and sees which need attention. Several devices can hold the same job, and one device can hold several jobs.</p>
+  <p>The panel lists registered displays and cameras, and discovered printers and scanners. The parent names devices, assigns jobs and sees which need attention. Cameras and scanners offer one return function, "shows Lanternina". Several compatible devices can hold it; the hub selects one for each return. Displays can hold several display jobs.</p>
 
   <figure>
     <a href="/images/panel-devices-en.webp"><img src="/images/panel-devices-en.webp" width="1200" height="900" loading="lazy" alt="The panel's Devices page with editable names, display status and checkboxes for assigning jobs." /></a>
@@ -126,8 +127,9 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <h2 id="memory">Memory</h2>
-  <p>The system stores configuration, generated activities, endings, reported durations and reading-derived summaries. A separate call observes pages to calibrate load and writing; recent observations are used to compute the profile that steers prompts. The panel does not expose that profile as a score. The parent can clear activity memory and observations. A complete plain-language memory view is not built.</p>
-  <p>For development, an administrator can also enable retention of complete readings for 14 days. Each retained reading expires 14 days after writing. Observations used by the profile are stored separately.</p>
+  <p>The system stores configuration, generated activities, endings, reported durations and reading-derived summaries. A separate call observes scanner page comparisons to calibrate load and writing; photographic reads skip that call. Recent observations help compute the profile that steers prompts. The panel does not expose that profile as a score. The parent can clear activity memory and observations. A complete plain-language memory view is not built.</p>
+  <p>During development, photographs, returned material, readings and diagnostics may be retained for the authenticated family. The photo archive, generated pages, activity trail and profile observations have separate storage and deletion paths. Original scanner pixels can be archived locally when the scan database is configured; a complete scan-gallery workflow is not built.</p>
+  <p>An administrator can additionally enable a temporary archive of complete readings for 14 days. Its entries expire 14 days after writing. This is not a 14-day deletion rule for all photographs, traces, summaries or observations. Deleting a photograph does not automatically delete every interpretation derived from it. Retention policy will be reviewed after development.</p>
 
   <h2>The stack</h2>
 
@@ -170,7 +172,7 @@ import { REPO } from "../../i18n/ui";
       The review gate makes the profile available only to the models that write and run an activity.
       User-facing displays, printed sheets and panel pages receive reviewed activity content.
     </li>
-    <li>The vision path processes returned sheets. Its schema carries marks or blank, rather than faces, identity, emotion, attention or biometric data.</li>
+    <li>The vision path compares returned sheets or describes photographed objects. It requests visible material and uncertainty, not identity, emotion or attention assessment. Photographs can nevertheless contain people or private information; a prompt does not guarantee that a model will omit every unsupported inference.</li>
   </ul>
 
   <p>

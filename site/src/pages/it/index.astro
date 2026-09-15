@@ -56,7 +56,8 @@ import { REPO } from "../../i18n/ui";
   </figure>
 
   <p>Una pressione avvia l'acquisizione. La spia resta accesa fino a quando il fotogramma scelto è pronto; salvataggio e invio continuano dopo lo spegnimento. Il firmware scrive il JPEG nella memoria flash locale e lo rilegge prima di avviare il Wi-Fi. Invia l'immagine al server domestico tramite HTTPS autenticato. Due lampeggi confermano una ricevuta corrispondente dopo il salvataggio sul server. Un invio fallito conserva la fotografia e il suo identificatore per un tentativo successivo.</p>
-  <p>Il lettore riceve la fotografia e la stessa pagina originale conservata per la stampa. Le confronta tenendo conto delle differenze di prospettiva e illuminazione, trascrive le aggiunte leggibili e segnala le incertezze. Una lettura incerta o un'associazione ambigua con un'attività lascia l'attività in attesa. Lo scanner resta disponibile per la stessa restituzione. La famiglia può vedere, scaricare e cancellare le fotografie nel pannello del genitore.</p>
+  <p>Per un foglio stampato, il lettore riceve la fotografia e la pagina originale conservata per la stampa. Le confronta tenendo conto delle differenze di prospettiva e illuminazione, trascrive le aggiunte leggibili e segnala le incertezze. Una lettura incerta o un'associazione ambigua lascia l'attività in attesa. L'hub sceglie una fotocamera o uno scanner compatibile fra quelli assegnati dal genitore e conserva quella scelta per la restituzione. La famiglia può vedere, scaricare e cancellare le fotografie nel pannello del genitore.</p>
+  <p>Una costruzione o una disposizione di oggetti può invece essere fotografata senza un originale stampato. Il modello descrive il materiale visibile pertinente. Un adolescente invitato può anche inviare fotografie dal <a href="https://app.lanternina.com/portal">portale</a>; il cloud le conserva fino al prelievo dell'hub. Solo una fotografia associata a un momento compatibile in attesa entra nel percorso di lettura dell'attività.</p>
 
   <figure class="narrow">
     <a href="/images/camera-prototype-1.webp"><img src="/images/camera-prototype-1.webp" width="1200" height="1600" loading="lazy" alt="Il contenitore aperto della fotocamera, con scheda, antenna, cablaggio, pulsante e batteria accanto." /></a>
@@ -77,7 +78,7 @@ import { REPO } from "../../i18n/ui";
   <p>Nelle impostazioni sceglie giorni e ore, quante attività possono cominciare, interessi, argomenti da evitare e lingua. Può aggiungere una nota temporanea e stabilire i limiti entro cui il seguito può cambiare. Durante un'attività può anticiparne la fine o chiedere di avviare la chiusura. Il registro raccoglie ciò che il sistema ha generato e mostrato.</p>
 
   <h3>I dispositivi della casa</h3>
-  <p>Il pannello elenca gli schermi registrati e le stampanti e gli scanner rilevati. Il genitore dà loro un nome, assegna i compiti e vede quali richiedono attenzione. Lo stesso compito può essere assegnato a più dispositivi e un dispositivo può avere più compiti.</p>
+  <p>Il pannello elenca schermi e fotocamere registrati, stampanti e scanner rilevati. Il genitore dà un nome ai dispositivi, assegna i compiti e vede quali richiedono attenzione. Fotocamere e scanner offrono una sola funzione di restituzione, "mostra a Lanternina". Più dispositivi compatibili possono averla; l'hub ne sceglie uno per ogni restituzione. Gli schermi possono avere più compiti di visualizzazione.</p>
 
   <figure>
     <a href="/images/panel-devices-it.webp"><img src="/images/panel-devices-it.webp" width="1200" height="900" loading="lazy" alt="La pagina Dispositivi del pannello, con nomi modificabili, stato degli schermi e caselle per assegnare i compiti." /></a>
@@ -126,8 +127,9 @@ import { REPO } from "../../i18n/ui";
   </p>
 
   <h2 id="la-memoria">La memoria</h2>
-  <p>Il sistema conserva configurazione, attività prodotte, esiti, durate riportate e sintesi delle letture. Una chiamata separata osserva le pagine per calibrare carico e quantità di scrittura; il profilo viene ricalcolato dalle osservazioni recenti e orienta i prompt. Il pannello non espone il profilo come punteggio. Il genitore può cancellare memoria delle attività e osservazioni. Manca una vista completa della memoria in linguaggio corrente.</p>
-  <p>Per lo sviluppo, un amministratore può attivare anche la conservazione delle letture complete per 14 giorni. Ogni lettura conservata scade 14 giorni dopo la scrittura. Le osservazioni usate dal profilo sono conservate separatamente.</p>
+  <p>Il sistema conserva configurazione, attività prodotte, esiti, durate riportate e sintesi delle letture. Una chiamata separata osserva i confronti dei fogli da scanner per calibrare carico e quantità di scrittura; le letture fotografiche saltano quella chiamata. Le osservazioni recenti contribuiscono al profilo che orienta i prompt. Il pannello non espone il profilo come punteggio. Il genitore può cancellare memoria delle attività e osservazioni. Manca una vista completa della memoria in linguaggio corrente.</p>
+  <p>Durante lo sviluppo, fotografie, materiale restituito, letture e diagnostica possono essere conservati per la famiglia autenticata. Archivio fotografico, pagine generate, registro delle attività e osservazioni hanno percorsi di conservazione e cancellazione distinti. I pixel originali dello scanner possono essere archiviati localmente quando è configurato il database delle scansioni; una galleria completa delle scansioni non è costruita.</p>
+  <p>Un amministratore può inoltre abilitare un archivio temporaneo delle letture complete per 14 giorni. Le sue righe scadono 14 giorni dopo la scrittura. Non è una regola di cancellazione a 14 giorni per tutte le fotografie, le tracce, le sintesi o le osservazioni. Cancellare una fotografia non cancella automaticamente ogni interpretazione derivata. La politica di conservazione verrà rivista dopo lo sviluppo.</p>
 
   <h2>Lo stack</h2>
 
@@ -173,8 +175,7 @@ import { REPO } from "../../i18n/ui";
       esaminati.
     </li>
     <li>
-      Il percorso di visione elabora i fogli restituiti. Il suo schema contiene segni o bianca,
-      invece di volti, identità, emozioni, attenzione o dati biometrici.
+      Il percorso di visione confronta fogli restituiti o descrive oggetti fotografati. Richiede materiale visibile e incertezza, non valutazioni di identità, emozione o attenzione. Le fotografie possono comunque contenere persone o informazioni private; un prompt non garantisce che il modello ometta ogni inferenza non fondata.
     </li>
   </ul>
 

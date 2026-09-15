@@ -32,7 +32,8 @@ import { REPO } from "../../i18n/ui";
     </li>
     <li>Each display has its own connection interval in Devices. It receives changes at its next connection; low-battery protection can extend the interval.</li>
     <li>The handheld camera saves photographs before starting Wi-Fi. Authenticated originals can be viewed, downloaded and deleted by the family. Offline delivery was tested on the installed camera; retries preserve the capture identifier.</li>
-    <li>The camera returns a photograph of the completed sheet. The reader compares it with the original printed page; uncertain or late returns do not advance the activity. The scanner remains available.</li>
+    <li>The hub chooses an assigned compatible camera or scanner for each return and retains that choice. Photographed sheets are compared with their originals; objects and constructions need no original. Uncertain or late photographs do not advance the activity.</li>
+    <li>The parent can create and revoke email-bound portal invitations. An invited adolescent can submit, inspect and delete their own photographs. The hub retrieves pending uploads; receipt alone does not mean a model has interpreted them.</li>
   </ul>
 
   <h2>Checks</h2>
@@ -50,17 +51,17 @@ import { REPO } from "../../i18n/ui";
       <b>Camera trials.</b> The sheet-return path has automated tests. A complete activity with photographed handwriting, varied lighting, power-interruption tests and battery-life measurements remain open. The battery cycles above concern the 9 September assembly; subsequent firmware and wiring revisions need their own physical acceptance.
     </li>
     <li>
-      <b>The button panel.</b> The current hardware has one button per display. It starts a scan of the returned sheet but cannot yet capture a multiple-choice response.
+      <b>The button panel.</b> The current hardware has one button per display. It can start a scan when the current return uses a scanner, but cannot yet capture a multiple-choice response. It does not start a scan while the moment waits for a camera.
     </li>
     <li>
-      <b>Memory visibility.</b> A complete view is missing. The system stores profile observations and activity summaries. Administrator development permission lasts 14 days; each permitted reading expires 14 days after its own write.
+      <b>Memory visibility.</b> A complete view and scan gallery are missing. The optional temporary reading archive has a 14-day lifetime; photo archives, activity traces and profile observations follow separate retention and deletion paths.
     </li>
     <li>
       <b>Activity quality.</b> Building, drawing and investigating can have open outcomes. Checks do not establish comprehension or interest; automatic judges retain false positives. A trial with a person is still needed.
     </li>
     <li><b>Print failure and timing.</b> A failed print shows a message already written in the activity, but the alternative path without a sheet is not executed. Consecutive steps that collect no response advance without waiting for their declared durations.</li>
     <li>
-      <b>Other homes.</b> A complete installation has been tried in only one home.
+      <b>Other homes.</b> A complete installation has been tried in only one home. Household-bound hub credentials and cross-family refusals have automated tests; provisioning multiple physical homes remains untested. Real invited-account registration and redemption also remain to be exercised.
     </li>
   </ul>
 
