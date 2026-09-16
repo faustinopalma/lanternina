@@ -2,6 +2,12 @@
 
 Lanternina uses generative AI to propose activities for an adolescent, produce printed pages and interpret returned material. This preliminary assessment considers the effects on the adolescent, the parent and other people whose information may appear in that material. It draws on Microsoft's responsible AI guidance and the implementation documented on 11 September 2026.
 
+## Interest in the service of learning
+
+Lanternina aims to help refine cognitive skills through activities that offer something to learn. The experiences should be engaging, but their appeal serves learning: it is not an end in itself and must not be used to create another dependency.
+
+The activities should require a balanced level of effort, enough to exercise observation, reasoning and decision-making, with difficulty and support suited to the participant. The adolescent should be able to test their own ideas and stop freely. Enjoyment and time spent do not establish a benefit: the contribution to cognitive skills remains to be assessed in actual use.
+
 ## Activities and participation
 
 Generated instructions can ask someone to handle tools or materials. Their physical safety depends on the action, the available equipment and the conditions in the home. Parental approval and content screening address parts of this risk, with different scopes.
