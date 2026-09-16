@@ -5,6 +5,59 @@ import pytest
 from tests.test_pictures import DEVICE_KEY, client_for, headers, household_of
 
 
+def test_battery_update_settings_survive_reports_names_and_disable():
+    client = client_for()
+    household = household_of(client)
+    endpoint = f"/api/device/{household}/devices"
+    device_headers = {"X-Device-Key": DEVICE_KEY}
+    report = [{"id": "WAVE", "kind": "camera", "name": "Waveshare",
+               "model": "Waveshare ESP32-S3-CAM-OV5640"}]
+    client.post(endpoint, headers=device_headers, json=report)
+    row = client.get("/api/devices", headers=headers()).json()["devices"][0]
+    assert row["batteryStatusSupported"] is True
+    assert row["batteryStatusEnabled"] is False
+    assert row["batteryStatusMinutes"] == 60
+    assert client.post("/api/devices/WAVE", headers=headers(), json={
+        "batteryStatusEnabled": True, "batteryStatusMinutes": 15,
+    }).status_code == 200
+    client.post("/api/devices/WAVE", headers=headers(), json={"name": "Camera verde"})
+    row = client.post(endpoint, headers=device_headers, json=report).json()["things"][0]
+    assert row["batteryStatusEnabled"] is True
+    assert row["batteryStatusMinutes"] == 15
+    assert row["name"] == "Camera verde"
+    row = client.post("/api/devices/WAVE", headers=headers(),
+                      json={"batteryStatusEnabled": False}).json()
+    assert row["batteryStatusEnabled"] is False
+    assert row["batteryStatusMinutes"] == 15
+    from panel.cosmos_store import _from_thing, _to_thing
+
+    thing = client.app.state.inventory.list(household)[0]
+    assert _to_thing(_from_thing(thing)) == thing
+    legacy = _from_thing(thing)
+    del legacy["batteryStatusEnabled"], legacy["batteryStatusMinutes"]
+    assert _to_thing(legacy).battery_status_enabled is False
+    assert _to_thing(legacy).battery_status_minutes == 60
+
+
+@pytest.mark.parametrize("value", [0, 1441, -1, 1.5, True, "15"])
+def test_battery_update_interval_rejects_invalid_values(value):
+    client = client_for()
+    response = client.post("/api/devices/WAVE", headers=headers(),
+                           json={"batteryStatusMinutes": value})
+    assert response.status_code == 422
+
+
+def test_battery_updates_reject_unsupported_camera_and_other_household():
+    client = client_for()
+    household = household_of(client)
+    client.post(f"/api/device/{household}/devices", headers={"X-Device-Key": DEVICE_KEY},
+                json=[{"id": "XIAO", "kind": "camera", "model": "XIAO ESP32S3 Sense"}])
+    assert client.post("/api/devices/XIAO", headers=headers(),
+                       json={"batteryStatusEnabled": True}).status_code == 400
+    assert client.post("/api/devices/NOT-IN-HOUSEHOLD", headers=headers(),
+                       json={"batteryStatusEnabled": True}).status_code == 404
+
+
 def test_camera_is_listed_with_unknown_battery_and_its_real_timestamp():
     client = client_for()
     household = household_of(client)

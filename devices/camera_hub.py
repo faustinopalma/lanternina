@@ -24,6 +24,16 @@ from devices.run_experience import camera_target, carry_on
 from devices.trmnl_byos import photo_for
 
 
+def camera_model(values: dict[str, Any]) -> tuple[str, str]:
+    board = values.get("board")
+    firmware = str(values.get("firmware", ""))
+    if board == "waveshare-ov5640" or (board is None and firmware.startswith("waveshare-")):
+        return "Waveshare", "Waveshare ESP32-S3-CAM-OV5640"
+    if board == "xiao-esp32s3-sense" or (board is None and firmware.startswith("camera-")):
+        return "XIAO", "XIAO ESP32S3 Sense"
+    return "Camera", "ESP32 camera"
+
+
 def captured_at(headers: Any, now: float) -> float | None:
     age = headers.get("X-Capture-Age")
     absolute = headers.get("X-Captured-At")
@@ -52,6 +62,37 @@ class CameraHub:
         self.changed = threading.Event()
         self.sync_changed = threading.Event()
         self.processing = threading.Lock()
+
+    def save_battery_settings(self, answer: dict[str, Any]) -> None:
+        things = answer.get("things")
+        if not isinstance(things, list):
+            return
+        settings = {}
+        for thing in things:
+            if not isinstance(thing, dict) or thing.get("kind") != "camera":
+                continue
+            enabled = thing.get("batteryStatusEnabled")
+            minutes = thing.get("batteryStatusMinutes")
+            if type(enabled) is not bool or type(minutes) is not int or not 1 <= minutes <= 1440:
+                return
+            settings[str(thing["id"])] = {
+                "batteryStatusEnabled": enabled, "batteryStatusMinutes": minutes,
+            }
+        path = self.shared.with_name("camera-battery-settings.json")
+        replace(path, json.dumps(settings).encode())
+
+    def battery_settings(self, camera: str) -> dict[str, Any]:
+        try:
+            values = json.loads(self.shared.with_name("camera-battery-settings.json").read_text())
+            settings = values.get(camera, {
+                "batteryStatusEnabled": False, "batteryStatusMinutes": 60,
+            })
+            enabled, minutes = settings["batteryStatusEnabled"], settings["batteryStatusMinutes"]
+            if type(enabled) is bool and type(minutes) is int and 1 <= minutes <= 1440:
+                return {"batteryStatusEnabled": enabled, "batteryStatusMinutes": minutes}
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            pass
+        return {}
 
     def process_one(self) -> bool:
         with self.processing:
@@ -178,12 +219,13 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                     if voltage is None
                     else ("critical" if voltage < 3.6 else "low" if voltage < 3.7 else "ok")
                 )
+                name, model = camera_model(values)
                 hub.store.record_camera(
                     {
                         "id": camera,
                         "kind": "camera",
-                        "name": "XIAO " + camera.replace(":", "")[-6:],
-                        "model": "XIAO ESP32S3 Sense",
+                        "name": name + " " + camera.replace(":", "")[-6:],
+                        "model": model,
                         "lastSeen": time.time(),
                         "level": level,
                         "voltage": voltage,
@@ -197,7 +239,8 @@ def make_handler(hub: CameraHub) -> type[BaseHTTPRequestHandler]:
                 self.respond(400, b"{}")
                 return
             hub.sync_changed.set()
-            self.respond(200, b'{"received":true}')
+            response = {"received": True, **hub.battery_settings(camera)}
+            self.respond(200, json.dumps(response).encode())
 
         def setup(self) -> None:
             self.request.settimeout(20)

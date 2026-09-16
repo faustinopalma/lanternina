@@ -27,6 +27,8 @@ def test_hub_sync_shows_photo_and_propagates_parent_deletion(tmp_path):
         {
             "id": "cam",
             "kind": "camera",
+            "model": "Waveshare ESP32-S3-CAM-OV5640",
+            "name": "Waveshare cam",
             "lastSeen": 100,
             "diagnostics": {"phase": "sleep_planned", "previousSleepConfirmed": False},
         }
@@ -40,6 +42,13 @@ def test_hub_sync_shows_photo_and_propagates_parent_deletion(tmp_path):
         return response.json()
 
     assert synchronize(hub, ask) == 1
+    assert client.post("/api/devices/cam", headers=headers(), json={
+        "batteryStatusEnabled": True, "batteryStatusMinutes": 12,
+    }).status_code == 200
+    synchronize(hub, ask)
+    assert hub.battery_settings("cam") == {
+        "batteryStatusEnabled": True, "batteryStatusMinutes": 12,
+    }
     page = client.get("/api/photos", headers=headers()).json()
     assert page["photos"][0]["id"] == PHOTO
     assert page["hub"]["pending"] == 0

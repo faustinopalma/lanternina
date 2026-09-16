@@ -11,9 +11,71 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from devices.camera_hub import CameraHub, captured_at, make_handler, render_photo
+from devices.camera_hub import CameraHub, camera_model, captured_at, make_handler, render_photo
 from devices.house import House
 from tests.test_photo_store import PHOTO, jpeg
+
+
+@pytest.mark.parametrize("values,expected", [
+    ({"board": "waveshare-ov5640"}, ("Waveshare", "Waveshare ESP32-S3-CAM-OV5640")),
+    ({"firmware": "waveshare-2026-09-16-lcd1-2"},
+     ("Waveshare", "Waveshare ESP32-S3-CAM-OV5640")),
+    ({"firmware": "camera-2026-09-14-d5-d8"}, ("XIAO", "XIAO ESP32S3 Sense")),
+    ({"board": "unrecognized", "firmware": "camera-other"}, ("Camera", "ESP32 camera")),
+    ({}, ("Camera", "ESP32 camera")),
+])
+def test_camera_model_distinguishes_board_and_legacy_firmware(values, expected):
+    assert camera_model(values) == expected
+
+
+def test_battery_settings_are_cached_by_identity_and_invalid_updates_preserve_them(tmp_path):
+    hub = CameraHub({"database": str(tmp_path / "photos.db")},
+                    House(sheets_dir=tmp_path), tmp_path / "screen.bmp")
+    assert hub.battery_settings("WAVE") == {}
+    answer = {"things": [{"id": "WAVE", "kind": "camera",
+                           "batteryStatusEnabled": True, "batteryStatusMinutes": 15}]}
+    hub.save_battery_settings(answer)
+    assert hub.battery_settings("WAVE") == {
+        "batteryStatusEnabled": True, "batteryStatusMinutes": 15,
+    }
+    assert hub.battery_settings("OTHER")["batteryStatusEnabled"] is False
+    answer["things"][0]["batteryStatusMinutes"] = 0
+    hub.save_battery_settings(answer)
+    assert hub.battery_settings("WAVE")["batteryStatusMinutes"] == 15
+    hub.save_battery_settings({})
+    assert hub.battery_settings("WAVE")["batteryStatusEnabled"] is True
+    hub.save_battery_settings({"things": []})
+    assert hub.battery_settings("WAVE")["batteryStatusEnabled"] is False
+
+
+def test_camera_status_reports_model_voltage_and_authenticated_battery_settings(tmp_path):
+    hub = CameraHub({"database": str(tmp_path / "photos.db"), "cameras": {"WAVE": "token"}},
+                    House(sheets_dir=tmp_path), tmp_path / "screen.bmp")
+    hub.save_battery_settings({"things": [{"id": "WAVE", "kind": "camera",
+        "batteryStatusEnabled": True, "batteryStatusMinutes": 7}]})
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(hub))
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    values = {"board": "waveshare-ov5640", "voltage": 4.11, "rssi": -40, "usb": False}
+    request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/status",
+        json.dumps(values).encode(), {"X-Camera-Id": "WAVE", "Authorization": "Bearer token"})
+    try:
+        with urllib.request.urlopen(request) as response:
+            assert json.load(response) == {"received": True, "batteryStatusEnabled": True,
+                                          "batteryStatusMinutes": 7}
+        row = hub.store.cameras()[0]
+        assert row["name"] == "Waveshare WAVE"
+        assert row["model"] == "Waveshare ESP32-S3-CAM-OV5640"
+        assert row["voltage"] == 4.11
+        assert row["level"] == "ok"
+        request.remove_header("Authorization")
+        with pytest.raises(urllib.error.HTTPError) as denied:
+            urllib.request.urlopen(request)
+        assert denied.value.code == 401
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join()
 
 
 def test_photo_frame_contains_the_whole_portrait() -> None:

@@ -400,6 +400,9 @@ export interface Guidelines {
  *  measurement, which is the half somebody can check. */
 export interface Device {
   displayPollMinutes?: number | null;
+  batteryStatusSupported?: boolean;
+  batteryStatusEnabled?: boolean;
+  batteryStatusMinutes?: number;
   id: string;
   kind: string;
   label: string;
@@ -428,6 +431,8 @@ export interface Inventory {
  *  printer and telling it to print are two moments. */
 export interface NewAssignment {
   displayPollMinutes?: number;
+  batteryStatusEnabled?: boolean;
+  batteryStatusMinutes?: number;
   jobs?: string[];
   name?: string;
 }

@@ -1,5 +1,7 @@
 # The camera
 
+The [Waveshare ESP32-S3-CAM-OV5640 note](waveshare-ov5640.md) documents the second camera purchased on 16 September 2026. Its independent firmware has completed two USB diagnostic captures, nominal battery reporting, BOOT restart and battery-only BOOT and timer wake tests. It will be evaluated alongside the XIAO described here; external controls and current consumption still require physical tests.
+
 Lanternina's camera uses a Seeed Studio XIAO ESP32S3 and Sense expansion board. The person holding it frames an object and presses a button. The device takes a photograph and signals the outcome with an LED. The design calls for delivery to lanternina hub over the home Wi-Fi network.
 
 The installed firmware assigns the shutter to D1/GPIO2 and the external LED to D4/GPIO5. The owner reported both wiring changes on 9 September 2026. Flash verification and authenticated status passed; D1 reads HIGH and D4 is an output at LOW while idle. D3 and the former LED pin D2 are unused inputs without internal pulls. The [firmware operations guide](../../firmware/camera/README.md) records the checks; button, visible LED and battery-wake acceptance remain physical tests.

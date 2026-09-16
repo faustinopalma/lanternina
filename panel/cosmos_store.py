@@ -1446,6 +1446,8 @@ class CosmosInventoryStore:
         jobs: Sequence[str] | None = None,
         name: str | None = None,
         display_poll_minutes: int | None = None,
+        battery_status_enabled: bool | None = None,
+        battery_status_minutes: int | None = None,
     ) -> Thing:
         rows = {row.id: row for row in self.list(household_id)}
         current = rows[thing_id]
@@ -1455,6 +1457,10 @@ class CosmosInventoryStore:
             name=current.name if name is None else name,
             display_poll_minutes=(current.display_poll_minutes if display_poll_minutes is None
                                   else display_poll_minutes),
+            battery_status_enabled=(current.battery_status_enabled
+                                    if battery_status_enabled is None else battery_status_enabled),
+            battery_status_minutes=(current.battery_status_minutes
+                                    if battery_status_minutes is None else battery_status_minutes),
             name_refused=current.name_refused if name is None else False,
         )
         self._container.upsert_item(_from_thing(updated))
@@ -1513,6 +1519,8 @@ def _from_thing(thing: Thing) -> dict[str, Any]:
         "firstSeen": thing.first_seen,
         "forgottenAt": thing.forgotten_at,
         "displayPollMinutes": thing.display_poll_minutes,
+        "batteryStatusEnabled": thing.battery_status_enabled,
+        "batteryStatusMinutes": thing.battery_status_minutes,
     }
 
 
@@ -1533,6 +1541,8 @@ def _to_thing(document: dict[str, Any]) -> Thing:
         first_seen=float(document.get("firstSeen") or 0.0),
         forgotten_at=float(document.get("forgottenAt") or 0.0),
         display_poll_minutes=document.get("displayPollMinutes"),
+        battery_status_enabled=document.get("batteryStatusEnabled") is True,
+        battery_status_minutes=document.get("batteryStatusMinutes", 60),
     )
 
 

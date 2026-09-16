@@ -15,12 +15,13 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
     prefix = f"{house.panel.rstrip('/')}/api/device/{house.household}/photos"
     cameras = hub.store.cameras()
     if cameras:
-        ask(
+        answer = ask(
             f"{house.panel.rstrip('/')}/api/device/{house.household}/devices",
             cameras,
             key=house.device_key,
             timeout=30,
         )
+        hub.save_battery_settings(answer)
 
     def call(path: str, body: dict[str, Any]) -> dict[str, Any]:
         return ask(prefix + path, body, key=house.device_key, timeout=30)

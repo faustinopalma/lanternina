@@ -513,6 +513,56 @@ describe("the devices", () => {
     expect(screen.getAllByLabelText("Nome di questo dispositivo")).toHaveLength(2);
   });
 
+  it("saves and disables battery updates only for supported cameras", async () => {
+    const original = await fakeApi().devices();
+    const wave = { ...original.devices[0]!, id: "WAVE", kind: "camera", label: "Waveshare",
+      batteryStatusSupported: true, batteryStatusEnabled: false, batteryStatusMinutes: 60 };
+    const xiao = { ...wave, id: "XIAO", label: "XIAO", batteryStatusSupported: false };
+    const api = fakeApi({ devices: async () => ({ ...original, devices: [wave, xiao] }),
+      assignDevice: async (_id, assignment) => ({ ...wave, ...assignment }) });
+    const assign = vi.spyOn(api, "assignDevice");
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    const toggle = await screen.findByRole("switch", { name: "Aggiornamento batteria" });
+    expect(screen.getAllByRole("switch")).toHaveLength(1);
+    const interval = screen.getByLabelText("Ogni");
+    expect(toggle).not.toBeChecked();
+    expect(interval).toBeDisabled();
+    await user.click(toggle);
+    await user.clear(interval);
+    await user.type(interval, "15");
+    const save = screen.getByRole("button", { name: "Salva aggiornamento batteria" });
+    await user.click(save);
+    await waitFor(() => expect(save).toBeDisabled());
+    expect(assign).toHaveBeenLastCalledWith("WAVE", {
+      batteryStatusEnabled: true, batteryStatusMinutes: 15,
+    });
+    await user.clear(interval);
+    await user.click(toggle);
+    await user.click(save);
+    expect(assign).toHaveBeenLastCalledWith("WAVE", {
+      batteryStatusEnabled: false, batteryStatusMinutes: 15,
+    });
+    expect(interval).toHaveValue(15);
+  });
+
+  it("keeps failed battery settings unsaved and retryable", async () => {
+    const original = await fakeApi().devices();
+    const wave = { ...original.devices[0]!, id: "WAVE", kind: "camera",
+      batteryStatusSupported: true, batteryStatusEnabled: false, batteryStatusMinutes: 60 };
+    const api = fakeApi({ devices: async () => ({ ...original, devices: [wave] }),
+      assignDevice: async () => { throw new Error("offline"); } });
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Dispositivi");
+    await user.click(await screen.findByRole("switch", { name: "Aggiornamento batteria" }));
+    const save = screen.getByRole("button", { name: "Salva aggiornamento batteria" });
+    await user.click(save);
+    expect(await screen.findByText("Non sono riuscito a salvare. Riprova più tardi.")).toBeVisible();
+    expect(save).toBeEnabled();
+  });
+
   it("says the charge in words, never as a percentage", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());

@@ -30,6 +30,10 @@ function Row({ device, nameLimit, onPollSaved }: {
   const [poll, setPoll] = useState(String(device.displayPollMinutes ?? 10));
   const [savedPoll, setSavedPoll] = useState(poll);
   const [savingPoll, setSavingPoll] = useState(false);
+  const [batteryEnabled, setBatteryEnabled] = useState(device.batteryStatusEnabled ?? false);
+  const [batteryMinutes, setBatteryMinutes] = useState(String(device.batteryStatusMinutes ?? 60));
+  const [savedBattery, setSavedBattery] = useState({ enabled: batteryEnabled, minutes: batteryMinutes });
+  const [savingBattery, setSavingBattery] = useState(false);
   const [problem, setProblem] = useState<MessageKey | null>(null);
 
   /* Saving persists a choice and returns. Nothing is printed and nothing is scanned: the
@@ -133,6 +137,44 @@ function Row({ device, nameLimit, onPollSaved }: {
           <Save className="size-4" />
         </Button>
       </form> : null}
+      {device.kind === "camera" && device.batteryStatusSupported ? (
+        <form className="flex flex-wrap items-center gap-2" aria-label={t("devices.batteryUpdates")}
+          onSubmit={async event => {
+            event.preventDefault();
+            const requestedMinutes = Number(batteryEnabled ? batteryMinutes : savedBattery.minutes);
+            setSavingBattery(true);
+            setProblem(null);
+            try {
+              const updated = await api.assignDevice(device.id, {
+                batteryStatusEnabled: batteryEnabled, batteryStatusMinutes: requestedMinutes,
+              });
+              const enabled = updated.batteryStatusEnabled ?? batteryEnabled;
+              const minutes = String(updated.batteryStatusMinutes ?? requestedMinutes);
+              setBatteryEnabled(enabled);
+              setBatteryMinutes(minutes);
+              setSavedBattery({ enabled, minutes });
+            } catch { setProblem("devices.saveFailed"); }
+            finally { setSavingBattery(false); }
+          }}>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" role="switch" className="size-4 accent-focus"
+              checked={batteryEnabled} disabled={savingBattery}
+              onChange={event => setBatteryEnabled(event.target.checked)} />
+            {t("devices.batteryUpdates")}
+          </label>
+          <label htmlFor={`battery-${device.id}`}>{t("devices.batteryEvery")}</label>
+          <Input id={`battery-${device.id}`} type="number" min={1} max={1440} step={1} required
+            className="w-26" value={batteryMinutes} disabled={savingBattery || !batteryEnabled}
+            onChange={event => setBatteryMinutes(event.target.value)} />
+          <span className="text-quiet">{t("rhythm.minutes")}</span>
+          <Button type="submit" size="small" title={t("devices.saveBatteryUpdates")}
+            aria-label={t("devices.saveBatteryUpdates")}
+            disabled={savingBattery || (batteryEnabled === savedBattery.enabled
+              && batteryMinutes === savedBattery.minutes)}>
+            <Save className="size-4" />
+          </Button>
+        </form>
+      ) : null}
       {problem === null ? <></> : <Quiet>{t(problem)}</Quiet>}      {device.nameRefused ? <Quiet>{t("devices.nameRefused")}</Quiet> : <></>}
       {device.silent && device.kind !== "camera" ? <span className="text-[0.92rem] text-focus">{t("devices.check")}</span> : <></>}
     </div>

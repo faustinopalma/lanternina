@@ -67,6 +67,8 @@ class NewAssignment(BaseModel):
     jobs: list[str] | None = None
     name: str | None = None
     displayPollMinutes: int | None = Field(default=None, strict=True, ge=1, le=1440)
+    batteryStatusEnabled: bool | None = Field(default=None, strict=True)
+    batteryStatusMinutes: int | None = Field(default=None, strict=True, ge=1, le=1440)
 
 
 def with_display_interval(row: dict[str, Any], request: Request, household: str) -> dict[str, Any]:
@@ -183,6 +185,10 @@ def assign_device(
         raise HTTPException(status_code=404, detail="unknown_device")
     if new.displayPollMinutes is not None and known.kind != KIND_DISPLAY:
         raise HTTPException(status_code=400, detail="only displays have a polling interval")
+    if (
+        new.batteryStatusEnabled is not None or new.batteryStatusMinutes is not None
+    ) and not known.battery_status_supported:
+        raise HTTPException(status_code=400, detail="battery updates unsupported on this device")
     try:
         jobs = None if new.jobs is None else clean_jobs(known.kind, new.jobs)
         name = None if new.name is None else clean_name(new.name)
@@ -190,6 +196,8 @@ def assign_device(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     updated = inventory.assign(
         household, thing_id, jobs=jobs, name=name, display_poll_minutes=new.displayPollMinutes,
+        battery_status_enabled=new.batteryStatusEnabled,
+        battery_status_minutes=new.batteryStatusMinutes,
     )
     return with_display_interval(updated.to_public(), request, household)
 

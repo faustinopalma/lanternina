@@ -116,6 +116,7 @@ profiles/
 *.sqlite
 *.sqlite3
 *.csv
+!firmware/camera-waveshare/partitions.csv
 *.parquet
 
 # Backups pulled off the device, and archives generally — a CM5 backup is a

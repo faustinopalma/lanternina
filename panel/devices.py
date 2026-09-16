@@ -145,6 +145,12 @@ class Thing:
     # carries neither. So a mistaken press silently unassigned a display.
     forgotten_at: float = 0.0
     display_poll_minutes: int | None = None
+    battery_status_enabled: bool = False
+    battery_status_minutes: int = 60
+
+    @property
+    def battery_status_supported(self) -> bool:
+        return self.kind == KIND_CAMERA and self.model == "Waveshare ESP32-S3-CAM-OV5640"
 
     def silent_for(self, now: float | None = None) -> float:
         return max(0.0, (now or time.time()) - self.last_seen)
@@ -164,6 +170,9 @@ class Thing:
             "lastSeen": self.last_seen,
             "forgottenAt": self.forgotten_at,
             "displayPollMinutes": self.display_poll_minutes,
+            "batteryStatusSupported": self.battery_status_supported,
+            "batteryStatusEnabled": self.battery_status_enabled,
+            "batteryStatusMinutes": self.battery_status_minutes,
             "silentSeconds": silent,
             # The panel is where a fault is allowed to appear. Nothing in the house says it.
             "silent": silent > SILENT_AFTER_SECONDS,
@@ -182,6 +191,8 @@ class InventoryStore(Protocol):
         jobs: Sequence[str] | None = None,
         name: str | None = None,
         display_poll_minutes: int | None = None,
+        battery_status_enabled: bool | None = None,
+        battery_status_minutes: int | None = None,
     ) -> Thing: ...
 
     def list(self, household_id: str) -> list[Thing]: ...
@@ -230,6 +241,8 @@ class InMemoryInventoryStore:
         jobs: Sequence[str] | None = None,
         name: str | None = None,
         display_poll_minutes: int | None = None,
+        battery_status_enabled: bool | None = None,
+        battery_status_minutes: int | None = None,
     ) -> Thing:
         with self._lock:
             current = self._rows[(household_id, thing_id)]
@@ -239,6 +252,14 @@ class InMemoryInventoryStore:
                 name=current.name if name is None else name,
                 display_poll_minutes=(current.display_poll_minutes if display_poll_minutes is None
                                       else display_poll_minutes),
+                battery_status_enabled=(
+                    current.battery_status_enabled
+                    if battery_status_enabled is None else battery_status_enabled
+                ),
+                battery_status_minutes=(
+                    current.battery_status_minutes
+                    if battery_status_minutes is None else battery_status_minutes
+                ),
                 # A new name is a new attempt: the house has not judged it yet.
                 name_refused=current.name_refused if name is None else False,
             )
