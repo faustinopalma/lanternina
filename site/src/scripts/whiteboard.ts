@@ -7,7 +7,9 @@ const namespace = "http://www.w3.org/2000/svg";
 const palette: InkColor[] = ["accent", "link", "success", "warning", "text"];
 
 export function createWhiteboard(slides: HTMLElement[]) {
-  const storageKey = `lanternina-presentation-ink-v2:${document.documentElement.lang}`;
+  const previousStorageKey = `lanternina-presentation-ink-v2:${document.documentElement.lang}`;
+  const storageKey = document.body.dataset.inkStorage
+    ? `${document.body.dataset.inkStorage}:${document.documentElement.lang}` : previousStorageKey;
   const pages: Record<string, Stroke[]> = Object.fromEntries(slides.map(slide => [slide.id, []]));
   const undoHistory: Record<string, Stroke[][]> = Object.fromEntries(slides.map(slide => [slide.id, []]));
   const overlays = new Map<HTMLElement, SVGSVGElement>();
@@ -40,7 +42,8 @@ export function createWhiteboard(slides: HTMLElement[]) {
   }
 
   try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+    const saved = JSON.parse(localStorage.getItem(storageKey)
+      ?? localStorage.getItem(previousStorageKey) ?? "null");
     if (saved && typeof saved === "object") {
       for (const slide of slides) {
         const savedPage = saved[slide.dataset.inkPage ?? slide.id];

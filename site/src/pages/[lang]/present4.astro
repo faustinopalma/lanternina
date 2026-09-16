@@ -9,8 +9,7 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang === "it" ? "it" : "en";
 const text = presentation[lang];
-const labels = ["Lanternina", text.technologyLabel, text.principlesLabel];
-const speech = [text.speech[0], text.speech[1], text.speech[3]];
+const labels = ["Lanternina", text.technologyLabel, text.paperLabel, text.principlesLabel];
 const principleIcons = [ShieldCheck, BookOpen, Scale];
 ---
 
@@ -23,21 +22,21 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
     <meta name="robots" content="noindex, nofollow" />
     <title>{text.title}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="canonical" href={`https://lanternina.com/${lang}/present/`} />
-    <link rel="alternate" hreflang="en" href="https://lanternina.com/en/present/" />
-    <link rel="alternate" hreflang="it" href="https://lanternina.com/it/present/" />
-    <link rel="alternate" hreflang="x-default" href="https://lanternina.com/en/present/" />
+    <link rel="canonical" href={`https://lanternina.com/${lang}/present4/`} />
+    <link rel="alternate" hreflang="en" href="https://lanternina.com/en/present4/" />
+    <link rel="alternate" hreflang="it" href="https://lanternina.com/it/present4/" />
+    <link rel="alternate" hreflang="x-default" href="https://lanternina.com/en/present4/" />
     <script>
       import "../../scripts/presentation";
     </script>
   </head>
-  <body data-ink-storage="lanternina-presentation-ink-present3">
+  <body>
     <header class="topbar">
       <span class="wordmark">Lanternina<span class="brand-dot" aria-hidden="true">.</span></span>
       <div class="tools">
         <nav class="languages" aria-label={lang === "it" ? "Lingua" : "Language"}>
-          <a href="/it/present/" lang="it" hreflang="it" aria-label="Italiano" aria-current={lang === "it" ? "page" : undefined} data-language>IT</a>
-          <a href="/en/present/" lang="en" hreflang="en" aria-label="English" aria-current={lang === "en" ? "page" : undefined} data-language>EN</a>
+          <a href="/it/present4/" lang="it" hreflang="it" aria-label="Italiano" aria-current={lang === "it" ? "page" : undefined} data-language>IT</a>
+          <a href="/en/present4/" lang="en" hreflang="en" aria-label="English" aria-current={lang === "en" ? "page" : undefined} data-language>EN</a>
         </nav>
         <button type="button" class="icon-button" id="toggle-whiteboard" title={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-label={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-expanded="false" aria-controls="whiteboard-tools"><PenLine size={20} /></button>
         <div id="whiteboard-tools" class="whiteboard-tools" role="group" aria-label={lang === "it" ? "Annotazioni" : "Annotations"} hidden>
@@ -131,10 +130,26 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
         </div>
       </section>
 
-      <section class="slide principles" id="slide-3" aria-labelledby="title-3" data-slide data-ink-page="slide-4">
+      <section class="slide paper" id="slide-3" aria-labelledby="title-3" data-slide data-ink-page="slide-2">
+        <div class="paper-copy">
+          <p class="eyebrow">{text.paperLabel}</p>
+          <h2 id="title-3">{text.paperTitle}</h2>
+          <ol class="activity-steps">
+            {text.paperSteps.map(([heading, detail], index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{heading}</h3><p>{detail}</p></div></li>)}
+          </ol>
+        </div>
+        <div class="paper-pair">
+          <figure><img src="/images/valle-lunga-map.webp" width="1024" height="1536" alt={text.mapAlt} /><figcaption>{text.mapCaption}</figcaption></figure>
+          <ArrowRight class="paper-arrow" size={28} aria-hidden="true" />
+          <figure><img src="/images/valle-lunga-written.webp" width="1024" height="1536" alt={text.writtenAlt} /><figcaption>{text.writtenCaption}</figcaption></figure>
+        </div>
+        <p class="provenance">{text.synthetic}</p>
+      </section>
+
+      <section class="slide principles" id="slide-4" aria-labelledby="title-4" data-slide>
         <div class="principles-heading">
           <p class="eyebrow">{text.principlesLabel}</p>
-          <h2 id="title-3">{text.principlesTitle}</h2>
+          <h2 id="title-4">{text.principlesTitle}</h2>
         </div>
         <div class="principles-list">
           {text.principles.map((principle, index) => {
@@ -172,6 +187,6 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
         <button type="button" id="confirm-clear"><Trash size={18} aria-hidden="true" />{lang === "it" ? "Cancella" : "Clear"}</button>
       </div>
     </dialog>
-    {speech.map((paragraph, index) => <template data-notes={index}><p>{paragraph}</p></template>)}
+    {text.speech.map((paragraph, index) => <template data-notes={index}><p>{paragraph}</p></template>)}
   </body>
 </html>

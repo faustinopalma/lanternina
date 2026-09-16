@@ -14,6 +14,8 @@ class PresentationCheck(HTMLParser):
         self.slides = 0
         self.slide_order: list[tuple[str | None, str | None]] = []
         self.notes = 0
+        self.note_indices: list[str | None] = []
+        self.slide_links: list[str | None] = []
         self.links: list[str] = []
         self.scripts: list[str | None] = []
         self.ids: set[str] = set()
@@ -25,6 +27,9 @@ class PresentationCheck(HTMLParser):
             self.slide_order.append((attributes.get("id"), attributes.get("class")))
         if tag == "template" and "data-notes" in attributes:
             self.notes += 1
+            self.note_indices.append(attributes["data-notes"])
+        if tag == "a" and "data-go" in attributes:
+            self.slide_links.append(attributes.get("href"))
         if tag == "a" and attributes.get("href"):
             self.links.append(attributes["href"])
         if tag == "script":
@@ -34,6 +39,10 @@ class PresentationCheck(HTMLParser):
 
 DIST = pathlib.Path("site/dist")
 SITE = "https://lanternina.com"
+PRESENTATIONS = {
+    "present": ["opening", "technology", "principles"],
+    "present4": ["opening", "technology", "paper", "principles"],
+}
 
 pages = sorted(p for p in DIST.rglob("*.html"))
 problems: list[str] = []
@@ -55,20 +64,28 @@ for page in pages:
 
     parsed = PresentationCheck()
     parsed.feed(html)
-    is_presentation = rel in {"en/present/index.html", "it/present/index.html"}
-    if is_presentation:
-        if parsed.slides != 4 or parsed.notes != 4:
-            problems.append(f"{rel}: expected four slides and four speech paragraphs")
-        if parsed.slide_order != [
-            ("slide-1", "slide opening"),
-            ("slide-2", "slide technology"),
-            ("slide-3", "slide paper"),
-            ("slide-4", "slide principles"),
-        ]:
-            problems.append(f"{rel}: expected opening, system, activity, principles")
+    presentation_name = page.parent.name
+    if presentation_name in PRESENTATIONS:
+        kinds = PRESENTATIONS[presentation_name]
+        count = len(kinds)
+        if parsed.slides != count or parsed.notes != count:
+            problems.append(f"{rel}: expected {count} slides and {count} speech paragraphs")
+        expected_order = [
+            (f"slide-{index}", f"slide {kind}") for index, kind in enumerate(kinds, start=1)
+        ]
+        if parsed.slide_order != expected_order:
+            problems.append(f"{rel}: expected slide order {kinds}")
+        if parsed.note_indices != [str(index) for index in range(count)]:
+            problems.append(f"{rel}: speech indices must follow slide positions")
+        if parsed.slide_links != [f"#{index}" for index in range(1, count + 1)]:
+            problems.append(f"{rel}: navigation must link to each slide in order")
+        if any(not href.startswith(f"/{language}/{presentation_name}/")
+               for language in ("en", "it")
+               for href in parsed.links if href.startswith(f"/{language}/")):
+            problems.append(f"{rel}: language links must keep the presentation version")
         required = {
             "previous", "next", "toggle-whiteboard", "mouse-draw", "ink-width",
-            "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes", "slide-4",
+            "ink-undo", "ink-clear", "clear-ink-dialog", "speaker-notes",
         }
         if not required.issubset(parsed.ids):
             problems.append(f"{rel}: missing controls {required - parsed.ids}")
@@ -77,7 +94,7 @@ for page in pages:
             problems.append(f"{rel}: presentation scripts must obey the self-only CSP")
         if 'name="robots" content="noindex, nofollow"' not in html:
             problems.append(f"{rel}: presentation must opt out of indexing")
-    elif any("/present/" in href for href in parsed.links):
+    elif any(f"/{name}/" in href for name in PRESENTATIONS for href in parsed.links):
         problems.append(f"{rel}: public site links to the unlisted presentation")
     elif "toggle-whiteboard" in parsed.ids:
         problems.append(f"{rel}: whiteboard leaked into the main site")
@@ -139,10 +156,11 @@ if en != it:
     problems.append(f"trees differ: only in en {en - it}, only in it {it - en}")
 
 for language in ("en", "it"):
-    if not (DIST / language / "present" / "index.html").exists():
-        problems.append(f"missing {language} presentation")
+    for name in PRESENTATIONS:
+        if not (DIST / language / name / "index.html").exists():
+            problems.append(f"missing {language}/{name} presentation")
 for sitemap in DIST.glob("sitemap*.xml"):
-    if "/present/" in sitemap.read_text(encoding="utf-8"):
+    if any(f"/{name}/" in sitemap.read_text(encoding="utf-8") for name in PRESENTATIONS):
         problems.append(f"{sitemap.name}: unlisted presentation is in the sitemap")
 
 print(f"\nen tree: {sorted(en)}")
