@@ -39,26 +39,25 @@ const principleIcons = [ShieldCheck, BookOpen, Scale];
           <a href="/en/present/" lang="en" hreflang="en" aria-label="English" aria-current={lang === "en" ? "page" : undefined} data-language>EN</a>
         </nav>
         <button type="button" class="icon-button" id="toggle-whiteboard" title={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-label={lang === "it" ? "Strumenti penna" : "Pen tools"} aria-expanded="false" aria-controls="whiteboard-tools"><PenLine size={20} /></button>
+        <div id="whiteboard-tools" class="whiteboard-tools" role="group" aria-label={lang === "it" ? "Annotazioni" : "Annotations"} hidden>
+          <div class="ink-colors" role="group" aria-label={lang === "it" ? "Colore" : "Colour"}>
+            {[
+              ["accent", lang === "it" ? "Rosso" : "Red"],
+              ["link", lang === "it" ? "Blu" : "Blue"],
+              ["success", lang === "it" ? "Verde" : "Green"],
+              ["warning", lang === "it" ? "Ambra" : "Amber"],
+              ["text", lang === "it" ? "Inchiostro" : "Ink"],
+            ].map(([color, label], index) => <button type="button" class={`ink-swatch ink-${color}`} data-ink-color={color} title={label} aria-label={label} aria-pressed={index === 0}><span></span></button>)}
+          </div>
+          <label class="mouse-mode" title={lang === "it" ? "Disegna anche con il mouse" : "Draw with the mouse too"}><MousePointer2 size={18} aria-hidden="true" /><input id="mouse-draw" type="checkbox" /><span>{lang === "it" ? "Mouse disegna" : "Mouse draws"}</span></label>
+          <label class="ink-width"><span>{lang === "it" ? "Spessore" : "Width"}</span><input id="ink-width" type="range" min="1" max="14" value="3" /><output id="ink-width-value" for="ink-width">3</output></label>
+          <button type="button" class="icon-button" id="ink-undo" title={lang === "it" ? "Annulla tratto" : "Undo stroke"} aria-label={lang === "it" ? "Annulla tratto" : "Undo stroke"}><Undo2 size={20} /></button>
+          <button type="button" class="icon-button" id="ink-clear" title={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"} aria-label={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"}><Trash size={20} /></button>
+        </div>
         <button type="button" class="icon-button" id="open-notes" title={text.notes} aria-label={text.notes} aria-haspopup="dialog"><NotebookPen size={20} /></button>
         <button type="button" class="icon-button" id="fullscreen" title={text.fullscreen} aria-label={text.fullscreen} data-enter={text.fullscreen} data-exit={text.exitFullscreen}><Maximize size={20} /></button>
       </div>
     </header>
-
-    <div id="whiteboard-tools" class="whiteboard-tools" role="group" aria-label={lang === "it" ? "Annotazioni" : "Annotations"} hidden>
-      <label class="mouse-mode" title={lang === "it" ? "Disegna anche con il mouse" : "Draw with the mouse too"}><MousePointer2 size={18} aria-hidden="true" /><input id="mouse-draw" type="checkbox" /><span>{lang === "it" ? "Mouse disegna" : "Mouse draws"}</span></label>
-      <div class="ink-colors" role="group" aria-label={lang === "it" ? "Colore" : "Colour"}>
-        {[
-          ["accent", lang === "it" ? "Rosso" : "Red"],
-          ["link", lang === "it" ? "Blu" : "Blue"],
-          ["success", lang === "it" ? "Verde" : "Green"],
-          ["warning", lang === "it" ? "Ambra" : "Amber"],
-          ["text", lang === "it" ? "Inchiostro" : "Ink"],
-        ].map(([color, label], index) => <button type="button" class={`ink-swatch ink-${color}`} data-ink-color={color} title={label} aria-label={label} aria-pressed={index === 0}><span></span></button>)}
-      </div>
-      <label class="ink-width"><span>{lang === "it" ? "Spessore" : "Width"}</span><input id="ink-width" type="range" min="1" max="14" value="3" /><output id="ink-width-value" for="ink-width">3</output></label>
-      <button type="button" class="icon-button" id="ink-undo" title={lang === "it" ? "Annulla tratto" : "Undo stroke"} aria-label={lang === "it" ? "Annulla tratto" : "Undo stroke"}><Undo2 size={20} /></button>
-      <button type="button" class="icon-button" id="ink-clear" title={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"} aria-label={lang === "it" ? "Cancella annotazioni della slide" : "Clear this slide's annotations"}><Trash size={20} /></button>
-    </div>
 
     <main class="deck" aria-label={text.presentation}>
       <section class="slide opening" id="slide-1" aria-labelledby="title-1" data-slide>
