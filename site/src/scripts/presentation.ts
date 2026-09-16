@@ -16,7 +16,6 @@ const notes = document.querySelector<HTMLDialogElement>("#speaker-notes")!;
 const notesContent = document.querySelector<HTMLElement>("#notes-content")!;
 const fullscreen = document.querySelector<HTMLButtonElement>("#fullscreen")!;
 let current = 0;
-let touchStart: { x: number; y: number } | null = null;
 const whiteboard = createWhiteboard(slides);
 
 function readHash() {
@@ -81,24 +80,6 @@ document.addEventListener("keydown", (event) => {
     goTo(target);
   }
 });
-
-const deck = document.querySelector<HTMLElement>(".deck")!;
-deck.addEventListener("touchstart", (event) => {
-  touchStart = null;
-  if (event.touches.length !== 1) return;
-  if (event.target instanceof Element && event.target.closest("a, button")) return;
-  touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
-}, { passive: true });
-deck.addEventListener("touchend", (event) => {
-  if (!touchStart) return;
-  const horizontal = event.changedTouches[0].clientX - touchStart.x;
-  const vertical = event.changedTouches[0].clientY - touchStart.y;
-  touchStart = null;
-  if (Math.abs(horizontal) >= 70 && Math.abs(horizontal) > Math.abs(vertical) * 1.5) {
-    goTo(current + (horizontal < 0 ? 1 : -1));
-  }
-}, { passive: true });
-deck.addEventListener("touchcancel", () => { touchStart = null; });
 
 document.querySelector("#open-notes")!.addEventListener("click", () => notes.showModal());
 document.querySelector("#close-notes")!.addEventListener("click", () => notes.close());

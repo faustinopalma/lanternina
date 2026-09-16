@@ -15,7 +15,7 @@ touch. This is the reference implementation to copy into other projects.
 - Undo / clear; **ink persisted to `localStorage`** (survives reload).
 - Works from `file://` (localStorage may be blocked there — engine still works in-memory).
 
-## The one bug that matters (and the fix)
+## Pointer capture and panning
 
 Naive overlays capture all pointer events, which breaks mouse scrolling/clicking; or, if
 the overlay is always transparent, the pen strokes get eaten by the page's scroll/pan and
@@ -34,10 +34,15 @@ the pen "jumps after a few millimetres".
 - Draw handlers on the overlay use `setPointerCapture(e.pointerId)` and the overlay CSS has
   `touch-action:none`.
 
-This combination (arm-on-proximity + `setPointerCapture` + `touch-action:none` on the
-overlay and, while the pen is near, on `<html>`) is what makes pen drawing rock-solid.
-A previous window-level-capture + `stopImmediatePropagation` approach was unreliable and
-was abandoned.
+This combination arms the overlay before contact and prevents native pen panning. It does not disable application-level navigation handlers. A previous window-level-capture + `stopImmediatePropagation` approach was unreliable and was abandoned.
+
+## Navigation on annotated pages
+
+An annotated presentation changes pages through explicit previous/next buttons, an index, or keyboard commands. The drawing surface does not change pages on swipe, drag, pointer release, click, or wheel. Touch remains available for scrolling within the current page. This keeps handwriting and incidental palm contact from being interpreted as a page-change command, at the cost of swipe navigation.
+
+Remove competing navigation handlers when integrating this engine, including handlers attached to the overlay's ancestors, `document`, and `window`. `setPointerCapture` routes pointer events; `touch-action:none` controls native browser gestures; `preventDefault()` cancels default actions. None of these disables a separate JavaScript touch or click handler. A guard that only checks whether a stroke is currently active also misses touch events arriving after `pointerup`.
+
+Keep navigation controls outside the drawing surface. Keyboard navigation must respect open dialogs, editable fields, and events already consumed by another control. Track each drawing or erasing gesture by `pointerId`, so a second contact cannot move or finish the first stroke.
 
 ## Eraser detection
 
@@ -94,6 +99,7 @@ set `#ink{top:<barHeight>px}` and size it to the content below.)
   const COLORS=[{c:"#b11f4b"},{c:"#0078d4"},{c:"#16a34a"},{c:"#f59e0b"},{c:"#242424"}];
   let color=COLORS[0].c, width=3, mouseDraw=false;
   let cur=null, drawing=false;
+  let activePointerId=null;
   let strokes=[];                          // {color,width,pts:[{x,y}],el}
 
   function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(strokes.map(s=>({c:s.color,w:s.width,p:s.pts})))); }catch(e){} }
@@ -124,6 +130,7 @@ set `#ink{top:<barHeight>px}` and size it to the content below.)
   // ---- ARM-ON-PROXIMITY: the core of the reliable behaviour ----
   const root=document.documentElement;
   function armOverlay(e){
+    if(drawing) return;
     const t=e.pointerType;
     if(t==="pen"||t==="eraser"){ ink.style.pointerEvents="auto"; root.style.touchAction="none"; }
     else if(t==="mouse"){ ink.style.pointerEvents = mouseDraw ? "auto" : "none"; root.style.touchAction=""; }
@@ -134,28 +141,37 @@ set `#ink{top:<barHeight>px}` and size it to the content below.)
 
   function isEraserTip(e){ return e.pointerType==="eraser" || (e.pointerType==="pen" && (((e.buttons||0)&32) || e.button===5)); }
   function onDown(e){
-    if(e.pointerType==="touch") return;
+    if(drawing||e.pointerType==="touch") return;
     if(e.pointerType==="mouse" && !mouseDraw) return;
     e.preventDefault();
     try{ ink.setPointerCapture(e.pointerId); }catch(_){}
+    activePointerId=e.pointerId;
     drawing=true; const p=pt(e);
     if(isEraserTip(e)){ cur={mode:"eraser"}; eraseAt(p.x,p.y); return; }
     const pr=(e.pressure&&e.pressure>0)?e.pressure:0.5; const w=Math.max(1, width*(0.55+0.9*pr));
     const s={color:color,width:+w.toFixed(2),pts:[p],el:null}; strokes.push(s); makeEl(s); cur={mode:"pen",stroke:s};
   }
   function onMove(e){
-    if(!drawing||!cur) return; e.preventDefault(); const p=pt(e);
+    if(!drawing||!cur||e.pointerId!==activePointerId) return; e.preventDefault(); const p=pt(e);
     if(cur.mode==="eraser"){ eraseAt(p.x,p.y); return; }
     const s=cur.stroke, last=s.pts[s.pts.length-1];
     if(Math.hypot(p.x-last.x,p.y-last.y)<1.2) return;          // min-distance de-noise
     s.pts.push(p); s.el.setAttribute("d",pathD(s.pts));
   }
-  function onUp(){ if(!drawing) return; drawing=false; persist(); cur=null; }
+  function onUp(event){
+    if(!drawing||(event&&event.pointerId!==activePointerId)) return;
+    const pointerId=activePointerId;
+    drawing=false; activePointerId=null; cur=null;
+    if(ink.hasPointerCapture(pointerId)) ink.releasePointerCapture(pointerId);
+    persist();
+  }
   ink.addEventListener("pointerdown",onDown);
   ink.addEventListener("pointermove",onMove);
   ink.addEventListener("pointerup",onUp);
   ink.addEventListener("pointercancel",onUp);
+  ink.addEventListener("lostpointercapture",onUp);
   window.addEventListener("pointerup",onUp);
+  window.addEventListener("blur",()=>onUp());
 
   // ---- toolbar wiring ----
   const mdBtn=document.getElementById("mousedraw");
@@ -191,7 +207,7 @@ For a single-file SPA with several "views" (only one visible at a time) — as i
 3. **Offset the overlay** below a fixed toolbar: `#ink{top:64px}` and size to the active
    view's `offsetHeight`.
 
-Everything else (arm-on-proximity, `isEraserTip`, draw handlers, eraser math) is identical.
+The navigation rules above also apply to every view. Keep arm-on-proximity, `isEraserTip`, draw handlers, and eraser math, and track the active pointer independently of incidental touch contacts.
 
 ## Per-run storage keys
 
@@ -217,3 +233,11 @@ ink.dispatchEvent(new PointerEvent('pointerup',{pointerId:1,pointerType:'pen'}))
 Key assertions: pen path count increments, `getComputedStyle(ink).pointerEvents` is
 `auto` for pen and `none` for mouse (toggle off), eraser reduces the count to 0, and the
 `STORE_KEY` entry exists.
+
+For a presentation, test the integrated page as well as the isolated engine:
+
+- Start on an interior slide so both previous and next navigation are possible. Draw long horizontal strokes in both directions and assert that the slide index and URL hash remain unchanged while ink is added.
+- During a pen stroke, send a second touch contact, move it horizontally, and release it. End another touch contact after the pen's `pointerup`. Assert that neither sequence changes the slide or prematurely ends the pen stroke. Pointer-only tests do not exercise `touchstart` and `touchend` listeners.
+- Repeat with the eraser and optional mouse drawing. Check that drawing, erasing, wheel scrolling, and clicks on the content never change slides.
+- Activate the previous/next buttons, index links, and keyboard commands separately. Assert that each requested transition still works and that returning to a slide restores its ink.
+- Repeat in both languages at desktop and mobile sizes. Synthetic events verify application routing; a physical pen-and-palm trial is still needed to verify device and driver behaviour.
