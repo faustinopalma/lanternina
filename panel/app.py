@@ -59,10 +59,12 @@ from .routes import proposals as proposal_routes
 from .routes import reminders as reminder_routes
 from .routes import requests as request_routes
 from .routes import rhythm as rhythm_routes
+from .routes import steering as steering_routes
 from .routes import themes as theme_routes
 from .routes import trail as trail_routes
 from .routes import usage as usage_routes
 from .routes import verdicts as verdict_routes
+from .steering import InMemorySteeringStore, SteeringStore
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
@@ -87,6 +89,7 @@ SECTIONS = (
     reminder_routes,
     rhythm_routes,
     preference_routes,
+    steering_routes,
     device_routes,
     painting,
     usage_routes,
@@ -126,6 +129,7 @@ def create_app(
     what_happened: WhatHappenedStore | None = None,
     noticed: NoticedStore | None = None,
     drafts: DraftStore | None = None,
+    steering: SteeringStore | None = None,
 ) -> FastAPI:
     app = FastAPI(title="Lanternina", docs_url=None, redoc_url=None)
     # Before anything else builds: a store that cannot reach Cosmos says so through a
@@ -178,6 +182,7 @@ def create_app(
     app.state.preferences = (
         preferences if preferences is not None else _preferences_store(app.state.settings)
     )
+    app.state.steering = steering if steering is not None else _steering_store(app.state.settings)
     app.state.reminders = (
         reminders if reminders is not None else _reminders_store(app.state.settings)
     )
@@ -420,6 +425,14 @@ def _guideline_store(settings: Settings) -> GuidelineStore:
     from .cosmos_store import CosmosGuidelineStore
 
     return CosmosGuidelineStore(settings.cosmos_endpoint, settings.cosmos_database)
+
+
+def _steering_store(settings: Settings) -> SteeringStore:
+    if not settings.cosmos_configured:
+        return InMemorySteeringStore()
+    from .cosmos_store import CosmosSteeringStore
+
+    return CosmosSteeringStore(settings.cosmos_endpoint, settings.cosmos_database)
 
 
 app = create_app()

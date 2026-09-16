@@ -27,6 +27,7 @@ from shared.accounts import Account, AccountStatus
 from shared.ids import AccountId, new_account_id, new_household_id
 from shared.message import Message, Says
 from shared.profile import Noticed
+from shared.steering import Steering
 
 from .devices import DeviceStatus, Thing, order_of
 from .drafts import OPEN as DRAFT_OPEN
@@ -49,6 +50,7 @@ from .rhythm import (
     DEFAULT_SCRIPTS_WANTED,
     Rhythm,
 )
+from .steering import Feedback, Guidance, SteeringConflict
 from .themes import Theme
 from .trail import Made, Trail, lapsed
 from .usage import Limit, UsageEvent, UsageSummary, summarise
@@ -62,6 +64,7 @@ INVENTORY_CONTAINER = "sources"
 RHYTHM_CONTAINER = "sources"
 PREFERENCES_CONTAINER = "sources"
 GUIDELINES_CONTAINER = "sources"
+STEERING_CONTAINER = "sources"
 KEEPING_CONTAINER = "sources"
 WHAT_HAPPENED_CONTAINER = "sources"
 REMINDERS_CONTAINER = "sources"
@@ -1085,6 +1088,72 @@ def _to_guidelines(document: dict[str, Any]) -> Guidelines:
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )
+
+
+class CosmosSteeringStore:
+    def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
+        self._container = (
+            _client(endpoint, credential)
+            .get_database_client(database)
+            .get_container_client(STEERING_CONTAINER)
+        )
+
+    def _read(self, household_id: str) -> dict[str, Any] | None:
+        from azure.cosmos.exceptions import CosmosResourceNotFoundError
+
+        try:
+            return self._container.read_item(
+                item=f"steering-{household_id}", partition_key=household_id
+            )
+        except CosmosResourceNotFoundError:
+            return None
+
+    def get(self, household_id: str, language: str = "it") -> Guidance:
+        row = self._read(household_id)
+        if row is None:
+            return Guidance(household_id, Steering.initial(language))
+
+        def feedback(entries: list[dict[str, Any]]) -> tuple[Feedback, ...]:
+            return tuple(Feedback(
+                entry["id"], entry["experienceId"], entry["title"],
+                tuple(entry["reasons"]), entry["comment"],
+            ) for entry in entries)
+
+        return Guidance(
+            household_id, Steering(row["instructions"], row["adaptive"]), row["revision"],
+            feedback(row.get("pending", [])), feedback(row.get("history", [])),
+            row.get("feedbackCount", 0),
+        )
+
+    def save(self, value: Guidance, expected_revision: int) -> Guidance:
+        from azure.core import MatchConditions
+        from azure.cosmos.exceptions import CosmosHttpResponseError
+
+        current = self._read(value.household_id)
+        if (current["revision"] if current else 0) != expected_revision:
+            raise SteeringConflict("guidance_changed")
+        saved = replace(value, revision=expected_revision + 1)
+        body = {
+            "id": f"steering-{value.household_id}", "familyId": value.household_id,
+            "type": "steering", "revision": saved.revision,
+            "instructions": saved.steering.instructions, "adaptive": saved.steering.adaptive,
+            "pending": [entry.to_dict() for entry in saved.pending],
+            "history": [entry.to_dict() for entry in saved.history],
+            "feedbackCount": saved.feedback_count,
+        }
+        try:
+            if current is None:
+                self._container.create_item(body=body)
+            else:
+                self._container.replace_item(
+                    item=current["id"], body=body, etag=current["_etag"],
+                    match_condition=MatchConditions.IfNotModified,
+                )
+        except CosmosHttpResponseError as exc:
+            if exc.status_code in {409, 412}:
+                raise SteeringConflict("guidance_changed") from exc
+            raise
+        return saved
 
 
 class CosmosKeepingStore:

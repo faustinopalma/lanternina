@@ -71,6 +71,7 @@ from ..what_happened import (
     the_ground,
 )
 from . import Decision
+from .steering import schedule_synthesis
 from .trail import filed, opened
 
 router = APIRouter()
@@ -84,6 +85,38 @@ class SeveralDecisions(BaseModel):
     ids: list[str]
     state: str
     note: str = ""
+    reasons: list[str] = Field(default_factory=list)
+
+
+class ActivityDecision(Decision):
+    model_config = ConfigDict(extra="forbid")
+    reasons: list[str] = Field(default_factory=list)
+
+
+def _validate_feedback(state: str, reasons: list[str], note: str) -> None:
+    from ..steering import clean_feedback
+
+    if reasons and state != ApprovalState.REJECTED.value:
+        raise HTTPException(status_code=400, detail="feedback_requires_rejection")
+    if state == ApprovalState.REJECTED.value:
+        try:
+            clean_feedback("validation", "", "", reasons, note)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+def _keep_feedback(row: OfferedExperience, reasons: list[str], request: Request,
+                   afterwards: BackgroundTasks) -> None:
+    from ..steering import SteeringConflict
+    from ..steering_summary import record_feedback
+
+    if row.state != ApprovalState.REJECTED.value or not (reasons or row.note.strip()):
+        return
+    try:
+        record_feedback(request, row.household_id, row, reasons, row.note)
+    except (SteeringConflict, ValueError) as exc:
+        raise HTTPException(status_code=409, detail="rejected_feedback_not_saved") from exc
+    schedule_synthesis(afterwards, request, row.household_id)
 
 
 class WhatCameBack(BaseModel):
@@ -850,7 +883,8 @@ def list_afternoons(account: CurrentAccount, request: Request, state: str = "pen
 
 @router.post("/api/experiences/decisions")
 def decide_several(
-    decisions: SeveralDecisions, account: CurrentAccount, request: Request
+    decisions: SeveralDecisions, account: CurrentAccount, request: Request,
+    afterwards: BackgroundTasks,
 ) -> Any:
     """One sitting, several afternoons.
 
@@ -863,6 +897,7 @@ def decide_several(
         raise HTTPException(status_code=400, detail="unsupported_state")
     if not decisions.ids:
         raise HTTPException(status_code=400, detail="no_experiences")
+    _validate_feedback(decisions.state, decisions.reasons, decisions.note)
     store: ExperienceStore = request.app.state.experiences
     household_id = str(account.household_id)
     decided: list[dict[str, Any]] = []
@@ -878,6 +913,7 @@ def decide_several(
         except KeyError:
             decided.append({"id": experience_id, "state": "unknown"})
             continue
+        _keep_feedback(row, decisions.reasons, request, afterwards)
         decided.append(row.to_public())
     rhythm: RhythmStore = request.app.state.rhythm
     days = len(rhythm.get(household_id).afternoon_days)
@@ -889,7 +925,8 @@ def decide_several(
 
 @router.post("/api/experiences/{experience_id}/decision")
 def decide_afternoon(
-    experience_id: str, decision: Decision, account: CurrentAccount, request: Request
+    experience_id: str, decision: ActivityDecision, account: CurrentAccount, request: Request,
+    afterwards: BackgroundTasks,
 ) -> Any:
     """Record what the parent decided about an afternoon. It starts nothing.
 
@@ -900,6 +937,7 @@ def decide_afternoon(
     """
     if decision.state not in {s.value for s in DECIDABLE}:
         raise HTTPException(status_code=400, detail="unsupported_state")
+    _validate_feedback(decision.state, decision.reasons, decision.note)
     store: ExperienceStore = request.app.state.experiences
     if decision.state == ApprovalState.WITHDRAWN.value:
         current = store.get(str(account.household_id), experience_id)
@@ -917,4 +955,5 @@ def decide_afternoon(
         )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="unknown_experience") from exc
+    _keep_feedback(row, decision.reasons, request, afterwards)
     return row.to_public()
