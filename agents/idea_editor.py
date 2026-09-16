@@ -37,6 +37,7 @@ from shared.ids import new_request_id
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
+from shared.steering import Steering, for_prompt
 
 SAYS: Final = beside(__file__)
 
@@ -96,6 +97,7 @@ def the_prompt(
     script: str,
     said: Sequence[Any],
     asking: str,
+    steering: Steering | None = None,
 ) -> str:
     """The whole thing the model is sent, standing instruction and draft both.
 
@@ -105,6 +107,7 @@ def the_prompt(
     """
     return (
         f"{_INSTRUCTION}\n"
+        + for_prompt(steering, language)
         + SAYS.text(
             "draft",
             language=language,
@@ -138,6 +141,7 @@ class IdeaEditor:
         script: str,
         said: Sequence[Any],
         asking: str,
+        steering: Steering | None = None,
     ) -> str:
         """The answer as it came back, before anything tries to read it."""
         payload = await ctx.router.analyze(
@@ -151,6 +155,7 @@ class IdeaEditor:
                     script=script,
                     said=said,
                     asking=asking,
+                    steering=steering,
                 ),
                 request_id=new_request_id(),
                 kind=ContentKind.TEXT,

@@ -86,6 +86,14 @@ describe("an answer that is not the shape the panel needs", () => {
     vi.stubGlobal("fetch", answering({ detail: "Not Found" }, 404));
     await expect(httpApi("t").preferences()).rejects.toThrow();
   });
+
+  it("refuses incomplete guidance on both read and save", async () => {
+    vi.stubGlobal("fetch", answering({ instructions: "", adaptive: "", revision: 0 }));
+    const api = httpApi("t");
+    await expect(api.steering()).rejects.toThrow(/pendingCount.*instructionsLimit/);
+    await expect(api.saveSteering({ revision: 0, instructions: "" }))
+      .rejects.toThrow(/pendingCount.*instructionsLimit/);
+  });
 });
 
 describe("what /api/me says", () => {

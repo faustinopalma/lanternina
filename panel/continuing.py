@@ -28,6 +28,7 @@ from shared.experience_checks import check
 from shared.ids import LearnerId
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
+from shared.steering import Steering
 
 from .devising import RefusedByTheChecks
 from .guidelines import FIXED
@@ -60,6 +61,7 @@ async def continue_experience(
     now: float,
     household_bounds: str = "",
     pitch: str = "",
+    steering: Steering | None = None,
 ) -> tuple[Continuation, ModelUsage | None]:
     """The rest of the afternoon, screened, and what the call consumed.
 
@@ -111,6 +113,7 @@ async def continue_experience(
             bounds=FIXED,
             household_bounds=household_bounds,
             pitch=pitch,
+            steering=steering,
         )
         # The same checks the whole afternoon passed, on the half nobody approved, and
         # given the half that already happened: a continuation begins in the middle, so a

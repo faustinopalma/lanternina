@@ -1,13 +1,14 @@
 import { useState } from "react";
 
 import { useApi } from "@/api/client";
-import type { Backlog, Decision, Moment, OfferedExperience, OfferedList } from "@/api/types";
+import type { ActivityFeedback as Feedback, Backlog, Decision, Moment, OfferedExperience, OfferedList } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
 import { useWords } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 import { WorkOn } from "@/sections/Drafts";
+import { ActivityFeedback } from "@/sections/ActivityFeedback";
 
 /* An afternoon a model devised, shown to the one person who decides whether it may happen
  * in this house.
@@ -235,11 +236,12 @@ function Card({
   const [open, setOpen] = useState(false);
   const [deciding, setDeciding] = useState(false);
   const [failed, setFailed] = useState(false);
-  async function decide(state: Decision) {
+  const [refusing, setRefusing] = useState(false);
+  async function decide(state: Decision, feedback?: Feedback) {
     setDeciding(true);
     setFailed(false);
     try {
-      await api.decideExperience(offered.id, state);
+      await api.decideExperience(offered.id, state, feedback);
       onDecided(state);
     } catch {
       setFailed(true);
@@ -339,7 +341,7 @@ function Card({
             >
               {t("action.approve")}
             </Button>
-            <Button size="small" disabled={deciding} onClick={() => decide("rejected")}>
+            <Button size="small" disabled={deciding} onClick={() => setRefusing(true)}>
               {t("action.refuse")}
             </Button>
             {/* Neither approve nor refuse: take it away and work on it. What opens is a
@@ -352,6 +354,9 @@ function Card({
           </>
         )}
       </div>
+      {refusing ? <ActivityFeedback busy={deciding}
+        onSubmit={(feedback) => void decide("rejected", feedback)}
+        onCancel={() => setRefusing(false)} /> : null}
       {failed ? <Quiet className="mt-2.5">{t("experiences.decideFailed")}</Quiet> : null}
     </article>
   );
@@ -421,6 +426,8 @@ export function Experiences() {
   // each card, because the whole point is that they go up together.
   const [picked, setPicked] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
+  const [refusing, setRefusing] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [stock, setStock] = useState<{ backlog: Backlog; before: OfferedList } | null>(null);
   // A draft the parent opened from one of these. Shown in place: sending them to another
   // section and asking them to find it there is two steps for something they just asked for.
@@ -435,15 +442,18 @@ export function Experiences() {
   const answer = state.data;
   const backlog = stock?.before === answer ? stock.backlog : answer.backlog;
 
-  async function sit(decision: "approved" | "rejected") {
+  async function sit(decision: "approved" | "rejected", feedback?: Feedback) {
     const ids = picked;
     setSending(true);
+    setFailed(false);
     try {
-      setStock({ backlog: await api.decideSeveral(ids, decision), before: answer });
+      setStock({ backlog: await api.decideSeveral(ids, decision, feedback), before: answer });
       setDecided((seen) => [...seen, ...ids]);
       setPicked([]);
+      setRefusing(false);
       if (decision === "approved") setApprovals((n) => n + 1);
     } catch {
+      setFailed(true);
       // Nothing is removed from the list, so what failed is still there to try again.
     }
     setSending(false);
@@ -475,9 +485,9 @@ export function Experiences() {
             />
           ))}
           {picked.length > 0 ? (
-            <div className="sticky bottom-3 mt-3.5 flex max-w-[42rem] flex-wrap items-center gap-2.5 rounded-control border border-edge bg-paper p-3">
+            <div className={`${refusing ? "" : "sticky bottom-3"} mt-3.5 flex max-w-[42rem] flex-wrap items-center gap-2.5 rounded-control border border-edge bg-paper p-3`}>
               <Quiet>{t("experiences.picked", { count: picked.length })}</Quiet>
-              <span className="ml-auto flex gap-2">
+              <span className="ml-auto flex max-w-full flex-wrap gap-2">
                 <Button
                   variant="primary"
                   size="small"
@@ -486,10 +496,14 @@ export function Experiences() {
                 >
                   {t("action.approveThese")}
                 </Button>
-                <Button size="small" disabled={sending} onClick={() => void sit("rejected")}>
+                <Button size="small" disabled={sending} onClick={() => setRefusing(true)}>
                   {t("action.refuseThese")}
                 </Button>
               </span>
+              {refusing ? <ActivityFeedback busy={sending}
+                onSubmit={(feedback) => void sit("rejected", feedback)}
+                onCancel={() => setRefusing(false)} /> : null}
+              {failed ? <Quiet>{t("experiences.decideFailed")}</Quiet> : null}
             </div>
           ) : null}
         </>

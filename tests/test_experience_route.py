@@ -404,9 +404,7 @@ def test_a_browser_cannot_say_an_afternoon_began(monkeypatch: pytest.MonkeyPatch
     household = household_of(client)
     offered = ask_for_one(client, household).json()["id"]
 
-    refused = client.post(
-        f"/api/device/{household}/experiences/{offered}/begun", headers=headers()
-    )
+    refused = client.post(f"/api/device/{household}/experiences/{offered}/begun", headers=headers())
 
     assert refused.status_code == 403
 
@@ -442,7 +440,7 @@ def test_only_what_the_afternoons_were_is_handed_to_the_model(
         # Where this house sits, from `shared/profile.py`: how much an afternoon holds, how
         # much a sheet asks for, how long it runs. A property of the material every time,
         # and it replaced two settings a parent used to be asked to grade.
-        "pitch",
+        "steering",
         # How much paper this house will spend on one afternoon. About the printer and the
         # attention of whoever reads it, and about nobody.
         "sheets",
@@ -493,7 +491,10 @@ def test_a_house_with_no_history_is_pitched_at_nothing_and_invents_freely(
 
     ask_for_one(client, household_of(client))
 
-    assert asked["pitch"] == ""
+    from shared.steering import Steering
+
+    assert "pitch" not in asked
+    assert asked["steering"] == Steering.initial("it")
     written = the_prompt(language="Italian", capabilities=frozenset(), pitch="")
     assert "How this afternoon should be pitched" not in written
 
@@ -511,10 +512,10 @@ def test_the_pitch_reaches_the_prompt_as_a_property_of_the_material() -> None:
     pitch = "\n".join(PITCHES[axis][Band.HIGH] for axis in Axis)
     written = the_prompt(language="Italian", capabilities=frozenset(), pitch=pitch)
 
-    assert PITCHES[Axis.LOAD][Band.HIGH] in written
-    assert PITCHES[Axis.INK][Band.HIGH] in written
-    assert PITCHES[Axis.SPAN][Band.HIGH] in written
-    assert "It is not a description of anybody" in written
+    assert PITCHES[Axis.LOAD][Band.HIGH] not in written
+    assert PITCHES[Axis.INK][Band.HIGH] not in written
+    assert PITCHES[Axis.SPAN][Band.HIGH] not in written
+    assert "PARENT-VISIBLE ACTIVITY GUIDANCE" in written
     for named in ("low", "middle", "high", "band"):
         assert f'"{named}"' not in written
 

@@ -67,9 +67,11 @@ def a_pitch() -> str:
 
 def every_prompt() -> list[Prompt]:
     from agents import (
+        experience_agent,
         experience_continuer,
         experience_deviser,
         experience_judge,
+        idea_editor,
         page_judge,
         page_maker,
         page_reader,
@@ -78,9 +80,12 @@ def every_prompt() -> list[Prompt]:
     )
     from panel import painting
     from panel.guidelines import FIXED
+    from panel.steering import Guidance
+    from panel.steering_summary import summary_prompt
     from shared.capabilities import HouseCapability
     from shared.manner import Manner
     from shared.page import Page, PageKind, Room, Space
+    from shared.steering import Steering
 
     manner = Manner(**_MANNER_FIELDS)
     house = frozenset(
@@ -111,10 +116,10 @@ def every_prompt() -> list[Prompt]:
                 interests=("le nuvole", "i treni"),
                 avoid=("i ragni",),
                 already=("Il quaderno del vento",),
-                pitch=a_pitch(),
+                steering=Steering.initial("it"),
             ),
             "the language, what the house can do, two interests, one thing to avoid, "
-            "one title already offered, and a house with enough behind it to be pitched",
+            "one title already offered, and the parent-visible neutral guidance defaults",
             fingerprint=experience_deviser.PROMPT_FINGERPRINT,
         ),
         Prompt(
@@ -136,10 +141,45 @@ def every_prompt() -> list[Prompt]:
                 },
                 bounds=FIXED,
                 household_bounds="In questa casa si può uscire in giardino.",
-                pitch=a_pitch(),
+                steering=Steering.initial("it"),
             ),
             "an afternoon of one moment, a page that came back with one cell written and "
             "one left blank, and a line a parent might have typed",
+        ),
+        Prompt(
+            "activity-runner",
+            "agents/experience_agent.py :: the_prompt()",
+            experience_agent.the_prompt(
+                script="A short invented activity.",
+                themes=[],
+                plan={},
+                tools=house,
+                happened=[],
+                minutes_left=20,
+                steering=Steering.initial("it"),
+            ),
+            "an invented script, time and equipment, and the neutral guidance defaults",
+        ),
+        Prompt(
+            "idea-editor",
+            "agents/idea_editor.py :: the_prompt()",
+            idea_editor.the_prompt(
+                language="Italian",
+                title="",
+                overview="",
+                themes=[],
+                script="",
+                said=[],
+                asking="Proponi un gioco con due indizi.",
+                steering=Steering.initial("it"),
+            ),
+            "an invented parent request and the neutral guidance defaults",
+        ),
+        Prompt(
+            "steering-summary",
+            "panel/steering_summary.py :: summary_prompt()",
+            summary_prompt(Guidance("synthetic", Steering.initial("it")), "it"),
+            "neutral defaults and no feedback",
         ),
         Prompt(
             "page-maker",

@@ -16,6 +16,9 @@ import type {
   OfferedExperience,
   PicturePage,
   Preferences,
+  Steering,
+  SteeringEdit,
+  ActivityFeedback,
   Proposal,
   Reminder,
   Rhythm,
@@ -63,6 +66,8 @@ export interface Recorded {
   decisions: { id: string; state: Decision }[];
   rhythm: NewRhythm[];
   preferences: NewPreferences[];
+  steering: SteeringEdit[];
+  feedback: { id: string; feedback: ActivityFeedback }[];
   guidelines: string[][];
   themesAdded: string[];
   themesRemoved: string[];
@@ -395,6 +400,8 @@ export function fakeApi(
     decisions: [],
     rhythm: [],
     preferences: [],
+    steering: [],
+    feedback: [],
     guidelines: [],
     themesAdded: [],
     themesRemoved: [],
@@ -540,6 +547,16 @@ export function fakeApi(
     languageChoices: ["it", "en"],
     sheetsChoices: [1, 2, 3, 4, 5],
   };
+  let steering: Steering = {
+    instructions: "Proponi attività con un obiettivo chiaro.",
+    adaptive: "Non ci sono ancora indicazioni dai feedback.",
+    defaultInstructions: "Proponi attività con un obiettivo chiaro.",
+    defaultAdaptive: "Non ci sono ancora indicazioni dai feedback.",
+    revision: 0, pendingCount: 0, feedbackCount: 0,
+    instructionsLimit: 6000, adaptiveLimit: 3000, commentLimit: 2000,
+    reasons: ["too_difficult", "too_easy", "too_abstract", "too_closed", "too_open",
+      "unclear", "too_much_reading", "too_much_writing", "too_much_help", "not_interesting"],
+  };
   /* One line written, so the page shows both halves: what this house allowed and what
    * holds everywhere. The fixed ones are the API's own words, in the model's language. */
   let guidelines: Guidelines = {
@@ -557,6 +574,22 @@ export function fakeApi(
   };
 
   const base: Api = {
+    steering: async () => steering,
+    saveSteering: async (change) => {
+      if (change.revision !== steering.revision) throw new Error("guidance_changed");
+      recorded.steering.push(change);
+      steering = { ...steering,
+        instructions: change.instructions ?? steering.instructions,
+        adaptive: change.adaptive ?? steering.adaptive,
+        revision: steering.revision + 1,
+      };
+      if (change.action === "reset_adaptive") steering = { ...steering,
+        adaptive: steering.defaultAdaptive, pendingCount: 0, feedbackCount: 0 };
+      if (change.action === "restore_instructions") steering = { ...steering,
+        instructions: steering.defaultInstructions };
+      return steering;
+    },
+    synthesizeSteering: async () => undefined,
     familyAccess: async () => ({ members: [], invitations: [] }),
     inviteAdolescent: async () => { throw new Error("Invitations unavailable in preview"); },
     revokeAdolescent: async () => { throw new Error("No adolescent in preview"); },
@@ -749,11 +782,13 @@ export function fakeApi(
         },
       };
     },
-    decideExperience: async (id, state) => {
+    decideExperience: async (id, state, feedback) => {
+      if (feedback) recorded.feedback.push({ id, feedback });
       recorded.experienceDecisions.push({ id, state });
       afternoons = afternoons.map((row) => (row.id === id ? { ...row, state } : row));
     },
-    decideSeveral: async (ids, state) => {
+    decideSeveral: async (ids, state, feedback) => {
+      if (feedback) for (const id of ids) recorded.feedback.push({ id, feedback });
       for (const id of ids) recorded.experienceDecisions.push({ id, state });
       afternoons = afternoons.map((row) => (ids.includes(row.id) ? { ...row, state } : row));
       const ready = afternoons.filter((row) => row.state === "approved" && !row.begunAt);

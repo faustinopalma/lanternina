@@ -11,6 +11,8 @@ import {
   type Api,
   type Backlog,
   type Decision,
+  type ActivityFeedback,
+  type Steering,
   type Device,
   type Draft,
   type DraftCard,
@@ -77,6 +79,12 @@ const PREFERENCES_FIELDS = [
 ] as const;
 
 const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;
+
+const STEERING_FIELDS = [
+  "instructions", "adaptive", "revision", "pendingCount", "feedbackCount",
+  "defaultInstructions", "defaultAdaptive", "instructionsLimit", "adaptiveLimit",
+  "reasons", "commentLimit",
+] as const;
 
 export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
   async function call(path: string, options: RequestInit = {}): Promise<Response> {
@@ -221,6 +229,17 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
     preferences: () => json<Preferences>("/api/preferences", {}, PREFERENCES_FIELDS),
     savePreferences: (preferences: NewPreferences) =>
       json<Preferences>("/api/preferences", write(preferences), PREFERENCES_FIELDS),
+    steering: () => json<Steering>("/api/steering", {}, STEERING_FIELDS),
+    async saveSteering(change) {
+      const response = await call("/api/steering", write(change));
+      if (response.status === 409) throw new ApiError("guidance_changed");
+      if (!response.ok) throw new ApiError("/api/steering", response.status === 400);
+      return shaped<Steering>(await response.json(), STEERING_FIELDS,
+        "/api/steering");
+    },
+    async synthesizeSteering() {
+      await json("/api/steering/synthesize", write({}));
+    },
 
     guidelines: () => json<Guidelines>("/api/guidelines", {}, GUIDELINES_FIELDS),
 
@@ -288,16 +307,16 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
 
     // The whole effect of approving an afternoon: a row changes state. Nothing is
     // devised, nothing is printed, and the house finds it when it next asks.
-    async decideExperience(id: string, state: Decision): Promise<void> {
-      await json(`/api/experiences/${id}/decision`, write({ state, note: "" }));
+    async decideExperience(id: string, state: Decision, feedback?: ActivityFeedback): Promise<void> {
+      await json(`/api/experiences/${id}/decision`, write({ state, note: "", ...feedback }));
     },
 
     // A sitting, not a sequence: one request for the handful the parent just decided
     // about, so half of it cannot succeed while the page is closing.
-    async decideSeveral(ids: string[], state: Decision): Promise<Backlog> {
+    async decideSeveral(ids: string[], state: Decision, feedback?: ActivityFeedback): Promise<Backlog> {
       const answer = await json<{ backlog: Backlog }>(
         "/api/experiences/decisions",
-        write({ ids, state, note: "" }),
+        write({ ids, state, note: "", ...feedback }),
         ["backlog"],
       );
       return answer.backlog;

@@ -1,5 +1,5 @@
 judge  —  agents/experience_judge.py :: _INSTRUCTION
-7622 characters, 66 lines
+7611 characters, 66 lines
 invented for this rendering: one moment of an invented afternoon; a real call carries the whole of it, with the title, the overview, the themes, the script and the ten dimensions taken out
 ==============================================================================
 You are reading an activity that a machine wrote, before anybody runs it in a house. Somebody is about to change the instructions that produced it, and what you write is what they will change them against.
@@ -37,11 +37,11 @@ Leave the question and the answer empty, and look for the one fault that belongs
 **These four apply to both kinds. Report only the ones that are there.**
 
 - **`no_way_in`** — the reader cannot tell what available object to use or what to do with it. A printed sheet and a clear first action can be enough, with or without a fictional world. A fictional discovery does not make an object exist in the real house.
-- **`a_beat_with_no_mark`** — a moment asks for something that leaves nothing behind. Written, drawn, cut, folded, counted, moved, put in order, given a name on paper: one of those has to happen. If the whole of a moment is *notice which one lasts longer*, nobody can tell whether they did it. Name every moment where this is true.
+- **`a_beat_with_no_mark`** — a moment needs an observable result to proceed, but supplies no way to communicate it through available equipment. Do not require written marks for every activity: a choice, object photograph or another supported response may suffice.
 - **`something_not_in_a_house`** — an action depends on an object that the activity neither supplies nor asks someone to obtain before using it. Ordinary additional supplies can be named explicitly. A backstory about a box or a mark does not place it in the room. Name the unsupported dependency; do not assume a household inventory you have not been given.
 
   The house's own equipment is not an object of this kind and never counts: the printer, the glass of the scanner and the display are what this system is made of, and `requires` on the document says which of them this activity uses. *Metti il foglio sul vetro* is the system working, not a thing somebody has to own.
-- **`does_not_end_on_the_object`** — the last moment sums the activity up, praises it, or looks forward, instead of being about the thing now in the person's hands.
+- **`does_not_end_on_the_object`** — the final moment claims an outcome that was not established or leaves the activity without an explicit closure. A factual summary or explanation is allowed; grading the person is not.
 
 **How to write a finding.** Say what is wrong and where, in one or two sentences, in the words the document uses. Quote the line you are objecting to. Never say what should have been written instead — somebody is about to rewrite the instructions, and a suggested replacement is the one thing that would tell them what to write rather than what is wrong.
 

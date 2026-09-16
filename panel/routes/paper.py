@@ -75,9 +75,7 @@ class PagesToCompare(BaseModel):
 
 
 @router.post("/api/device/{household_id}/page")
-async def draw_a_page(
-    household_id: str, wanted: PageToDraw, _: DeviceKey, request: Request
-) -> Any:
+async def draw_a_page(household_id: str, wanted: PageToDraw, _: DeviceKey, request: Request) -> Any:
     """Draw the whole page and hand it back as a PNG.
 
     A refusal is not an error the house has to explain. The moment it belongs to carries an
@@ -192,8 +190,12 @@ async def read_a_page(
 
     from ..paper import read_the_page
 
-    blank = None if pages.photograph and not pages.blankBase64 else PageImage(
-        png=base64.b64decode(pages.blankBase64), width=pages.width, height=pages.height
+    blank = (
+        None
+        if pages.photograph and not pages.blankBase64
+        else PageImage(
+            png=base64.b64decode(pages.blankBase64), width=pages.width, height=pages.height
+        )
     )
     came_back = PageImage(
         png=base64.b64decode(pages.cameBackBase64), width=pages.width, height=pages.height
@@ -202,7 +204,10 @@ async def read_a_page(
     outcome = FAILED
     try:
         came, spent = await read_the_page(
-            blank, came_back, about=pages.about, now=time.time(),
+            blank,
+            came_back,
+            about=pages.about,
+            now=time.time(),
             **({"photograph": True} if pages.photograph else {}),
         )
         outcome = SERVED
@@ -210,8 +215,6 @@ async def read_a_page(
         raise HTTPException(status_code=503, detail=f"unavailable: {exc}") from exc
     finally:
         _count(counter, household_id, KIND_READ, outcome, spent)
-    if blank is not None and not pages.photograph:
-        _place_it(afterwards, request, household_id, blank, came_back, pages.about)
     return came.to_dict()
 
 
@@ -276,16 +279,12 @@ async def _placed_and_filed(
         _count(counter, household_id, KIND_PLACE, outcome, spent)
 
 
-def _count(
-    counter: UsageStore, household_id: str, kind: str, outcome: str, spent: Any
-) -> None:
+def _count(counter: UsageStore, household_id: str, kind: str, outcome: str, spent: Any) -> None:
     """Write down what a call consumed. Never raises: the call was already made and paid
     for, so failing here would spend the money and deliver nothing."""
     from shared.ids import new_id
 
     try:
-        counter.record(
-            event_from(household_id, kind, outcome, spent, event_id=str(new_id("use")))
-        )
+        counter.record(event_from(household_id, kind, outcome, spent, event_id=str(new_id("use"))))
     except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a page
         logging.getLogger(__name__).warning("usage not recorded: %s", exc)

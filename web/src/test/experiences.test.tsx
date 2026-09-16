@@ -87,6 +87,7 @@ describe("an afternoon offered to the parent", () => {
 
     await screen.findByText("Sei passaggi di una trasformazione");
     await user.click(screen.getByRole("button", { name: "Rifiuta" }));
+    await user.click(screen.getByRole("button", { name: "Conferma lo scarto" }));
 
     await waitFor(() => expect(api.recorded.experienceDecisions).toHaveLength(1));
     expect(api.recorded.experienceDecisions[0]).toEqual({ id: "aftn-1", state: "rejected" });

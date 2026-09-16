@@ -38,6 +38,7 @@ from shared.ids import new_request_id
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
+from shared.steering import Steering, for_prompt
 
 SAYS: Final = beside(__file__)
 
@@ -104,16 +105,24 @@ def the_prompt(
     tools: frozenset[HouseCapability],
     happened: Sequence[Mapping[str, Any]],
     minutes_left: int,
+    steering: Steering | None = None,
+    household_bounds: str = "",
 ) -> str:
     """The whole thing the model is sent, standing instruction and afternoon both."""
-    return f"{_INSTRUCTION}\n" + SAYS.text(
-        "household",
-        script=script or "(none written; follow the plan)",
-        themes=json.dumps(list(themes), ensure_ascii=False),
-        plan=json.dumps(plan, ensure_ascii=False),
-        tools=", ".join(sorted(str(one) for one in tools)),
-        what_happened=a_memory(happened),
-        minutes_left=minutes_left,
+    return (
+        f"{_INSTRUCTION}\n"
+        + for_prompt(steering)
+        + SAYS.text(
+            "household",
+            script=script or "(none written; follow the plan)",
+            themes=json.dumps(list(themes), ensure_ascii=False),
+            plan=json.dumps(plan, ensure_ascii=False),
+            tools=", ".join(sorted(str(one) for one in tools)),
+            what_happened=a_memory(happened),
+            minutes_left=minutes_left,
+        )
+        + "\nHousehold constraints: "
+        + json.dumps(household_bounds, ensure_ascii=False)
     )
 
 
@@ -132,6 +141,8 @@ class ExperienceAgent:
         tools: frozenset[HouseCapability],
         happened: Sequence[Mapping[str, Any]],
         minutes_left: int,
+        steering: Steering | None = None,
+        household_bounds: str = "",
     ) -> Move:
         """One move, screened on the way out. Raises what the router raises.
 
@@ -149,6 +160,8 @@ class ExperienceAgent:
                     tools=tools,
                     happened=happened,
                     minutes_left=minutes_left,
+                    steering=steering,
+                    household_bounds=household_bounds,
                 ),
                 request_id=new_request_id(),
                 max_output_chars=MAX_MOVE_CHARS,

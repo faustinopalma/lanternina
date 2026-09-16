@@ -26,15 +26,10 @@ from shared.ids import new_proposal_id, new_request_id
 from shared.proposal import Proposal, ProposalKind
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind, ScreenedPayload
+from shared.steering import Steering, for_prompt
 
 # Content settings, glossed for the model. These describe the shape of the material asked
 # for — never an estimate of what somebody can do.
-_DIFFICULTY_GLOSS = {
-    Difficulty.GENTLE: "passi molto brevi, una sola idea per volta, frasi semplici",
-    Difficulty.STEADY: "due o tre passaggi collegati, frasi brevi",
-    Difficulty.STRETCH: "qualche passaggio in piu, purche ogni passo resti chiaro da solo",
-}
-
 _KIND_GLOSS = {
     ActivityKind.PRINTED_EXERCISE: "un foglio da stampare, da fare con una matita",
     ActivityKind.INTERACTIVE_GAME: "una attivita breve da fare con due pulsanti",
@@ -131,6 +126,7 @@ class HouseholdContentAgent:
         kind: ActivityKind,
         difficulty: Difficulty,
         topic_hint: str,
+        steering: Steering | None = None,
     ) -> str:
         interests = ", ".join(hints.get("interests") or []) or "nessun tema indicato"
         topic = topic_hint or interests
@@ -143,7 +139,7 @@ class HouseholdContentAgent:
         return (
             f"Prepara {_KIND_GLOSS[kind]} su questo tema: {topic}.\n"
             f"Lingua: {hints.get('language', 'it')}. "
-            f"Forma richiesta: {_DIFFICULTY_GLOSS[difficulty]}.\n"
+            f"{for_prompt(steering, str(hints.get('language', 'it')))}\n"
             f"Da 3 a 5 esercizi. {choices}\n"
             "Le scelte sono parole o brevi gruppi di parole: senza simboli, senza caselle, "
             "senza lettere o numeri iniziali. Le caselle le disegna il foglio.\n"

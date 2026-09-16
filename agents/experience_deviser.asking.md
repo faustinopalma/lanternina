@@ -13,5 +13,5 @@ What is asked for now is one `ask`, on the outcome for a page that came back wit
   got as far as taking a branch has already found the cloud there. What is left is one more
   call to pay for and one more chance of a refusal.
 -->
-Use ask once, on the outcome for a page that came back with marks on it. That is the branch with something on the paper to write from, and the rest of the activity is then written while the page is in front of somebody rather than now.
-The outcome for a page that came back blank always names a moment you wrote: there is nothing on it to read, and the activity ends there.
+Use ask at most once, when the activity and the parent's guidance call for a continuation based on returned work. Put it on the outcome for a page that came back with marks on it. An activity may use no ask and require no returned page.
+The outcome for a page that came back blank names a moment you wrote. Follow the task's completion conditions; a blank page alone does not establish that somebody wants to stop.

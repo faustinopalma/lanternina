@@ -46,8 +46,6 @@ from ..preferences import LANGUAGE_NAMES, PreferencesStore
 from ..profiles import (
     NoticedStore,
     a_sheet_that_never_came_back,
-    how_long_it_was_meant_to_take,
-    the_profile,
 )
 from ..rhythm import RhythmStore
 from ..trail import (
@@ -105,8 +103,9 @@ def _validate_feedback(state: str, reasons: list[str], note: str) -> None:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-def _keep_feedback(row: OfferedExperience, reasons: list[str], request: Request,
-                   afterwards: BackgroundTasks) -> None:
+def _keep_feedback(
+    row: OfferedExperience, reasons: list[str], request: Request, afterwards: BackgroundTasks
+) -> None:
     from ..steering import SteeringConflict
     from ..steering_summary import record_feedback
 
@@ -132,26 +131,6 @@ class WhatCameBack(BaseModel):
     # was written for. Absent means the generation happens and goes unrecorded, which is what
     # a house that predates the trail does.
     runId: str = ""
-
-
-def _pitch_for(request: Request, household_id: str) -> str:
-    """Where this house sits, as sentences about an afternoon. Empty when too little is known.
-
-    Worked out at the moment a prompt is built and kept nowhere. The rows are the record and
-    the state is arithmetic over them, so there is one place a wrong pitch can come from
-    rather than a stored answer and a way of recomputing it that can disagree.
-    """
-    seen: NoticedStore = request.app.state.noticed
-    memory: WhatHappenedStore = request.app.state.what_happened
-    store: ExperienceStore = request.app.state.experiences
-    return the_profile(
-        seen.list(household_id),
-        memory.list(household_id),
-        {
-            row.id: how_long_it_was_meant_to_take(row.experience)
-            for row in store.list(household_id)
-        },
-    ).as_material()
 
 
 @router.post("/api/device/{household_id}/experience")
@@ -193,7 +172,9 @@ async def continue_afternoon(
             reading=what.reading,
             now=time.time(),
             household_bounds=said.get(household_id).as_material(),
-            pitch=_pitch_for(request, household_id),
+            steering=request.app.state.steering.get(
+                household_id, request.app.state.preferences.get(household_id).language
+            ).steering,
         )
         outcome = SERVED
     except SafetyBlocked as exc:
@@ -210,9 +191,7 @@ async def continue_afternoon(
         # Which check, and not only that one refused. The house is the only caller and it
         # holds a device key; the neighbour below has always answered this way, and an
         # afternoon that stops with no recoverable reason makes the next run undiagnosable.
-        raise HTTPException(
-            status_code=422, detail=f"refused_by_the_checks: {exc}"
-        ) from exc
+        raise HTTPException(status_code=422, detail=f"refused_by_the_checks: {exc}") from exc
     except ExperienceError as exc:
         went_wrong = f"what came back was not a continuation: {exc}"
         logging.getLogger(__name__).warning("not a continuation: %s", exc)
@@ -257,9 +236,7 @@ class WhereItIs(BaseModel):
 
 
 @router.post("/api/device/{household_id}/next-move")
-async def next_move(
-    household_id: str, where: WhereItIs, _: DeviceKey, request: Request
-) -> Any:
+async def next_move(household_id: str, where: WhereItIs, _: DeviceKey, request: Request) -> Any:
     """One move, decided from the strategy the parent approved and what has happened.
 
     Refused the same way a continuation is, and for the same reason: the house has a written
@@ -286,6 +263,10 @@ async def next_move(
             afternoon=afternoon,
             happened=where.happened,
             minutes_left=where.minutesLeft,
+            steering=request.app.state.steering.get(
+                household_id, request.app.state.preferences.get(household_id).language
+            ).steering,
+            household_bounds=request.app.state.guidelines.get(household_id).as_material(),
         )
         outcome = SERVED
     except SafetyBlocked as exc:
@@ -347,9 +328,7 @@ def _printed(page: Any) -> str:
     return "\n".join([one for one in lines if one] + [f"({drawn.illustration})"])
 
 
-def _kept_while_being_worked_on(
-    request: Request, household_id: str, what: WhatCameBack
-) -> None:
+def _kept_while_being_worked_on(request: Request, household_id: str, what: WhatCameBack) -> None:
     """The other half, and only where `panel/keeping.py` says a household is being built on.
 
     Here rather than anywhere else because here is the one place the reading already crosses
@@ -445,17 +424,13 @@ def _asked(what: WhatCameBack) -> Experience:
     return experience
 
 
-def _count(
-    counter: UsageStore, household_id: str, kind: str, outcome: str, spent: Any
-) -> None:
+def _count(counter: UsageStore, household_id: str, kind: str, outcome: str, spent: Any) -> None:
     """Write down what a call consumed. Never raises: the call was already made and paid
     for, so failing here would spend the money and deliver nothing."""
     from shared.ids import new_id
 
     try:
-        counter.record(
-            event_from(household_id, kind, outcome, spent, event_id=str(new_id("use")))
-        )
+        counter.record(event_from(household_id, kind, outcome, spent, event_id=str(new_id("use"))))
     except Exception as exc:  # noqa: BLE001 - bookkeeping must not eat a continuation
         logging.getLogger(__name__).warning("usage not recorded: %s", exc)
 
@@ -516,7 +491,7 @@ async def devise_afternoon(
     memory: WhatHappenedStore = request.app.state.what_happened
     ran = memory.list(household_id)
     going = how_it_has_gone(ran)
-    pitch = _pitch_for(request, household_id)
+    steering = request.app.state.steering.get(household_id, settings_of_the_house.language).steering
 
     from ..devising import RefusedByTheChecks, devise_experience
 
@@ -530,10 +505,7 @@ async def devise_afternoon(
             ),
             interests=settings_of_the_house.interests,
             avoid=settings_of_the_house.avoid,
-            # Worked out from what came back off the glass, not chosen by the parent: a
-            # setting asking them to grade what somebody can take left the panel on
-            # 4 September 2026. It goes to the prompt and never onto the document.
-            pitch=pitch,
+            steering=steering,
             sheets=settings_of_the_house.sheets,
             # Empty once it has lapsed, and by then the store has deleted it.
             note=settings_of_the_house.standing(time.time()),
@@ -541,7 +513,7 @@ async def devise_afternoon(
             recent=recent,
             happened=as_material(ran),
             counts=json.dumps(going.to_dict(), ensure_ascii=False),
-            direction=going.direction(),
+            direction="",
             ground=json.dumps(ground.to_dict(), ensure_ascii=False) if ground.anything() else "",
             now=time.time(),
         )
@@ -553,9 +525,7 @@ async def devise_afternoon(
     except RefusedByTheChecks as exc:
         outcome = REFUSED
         logging.getLogger(__name__).info("afternoon refused by the checks: %s", exc)
-        raise HTTPException(
-            status_code=422, detail=f"refused_by_the_checks: {exc}"
-        ) from exc
+        raise HTTPException(status_code=422, detail=f"refused_by_the_checks: {exc}") from exc
     except ExperienceError as exc:
         logging.getLogger(__name__).warning("not an experience: %s", exc)
         raise HTTPException(status_code=502, detail=f"not_an_experience: {exc}") from exc
@@ -655,9 +625,7 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     store: ExperienceStore = request.app.state.experiences
     rhythm: RhythmStore = request.app.state.rhythm
     runnable = [
-        row
-        for row in store.list(household_id, ApprovalState.APPROVED.value)
-        if not row.begun_at
+        row for row in store.list(household_id, ApprovalState.APPROVED.value) if not row.begun_at
     ]
     return {
         "experiences": [row.to_device() for row in runnable],
@@ -713,9 +681,7 @@ def afternoon_begun(
         run_id,
         kind=THE_PLAN,
         at=now,
-        body=json.dumps(
-            offered.experience.get("moments") or [], ensure_ascii=False, indent=2
-        ),
+        body=json.dumps(offered.experience.get("moments") or [], ensure_ascii=False, indent=2),
     )
     # And what one reader made of that plan when it was written, kept on the offered
     # afternoon until now. Filed here rather than at devising because the run has an id
@@ -752,9 +718,7 @@ class ItDid(BaseModel):
 
 
 @router.post("/api/device/{household_id}/trail/{run_id}")
-def it_did(
-    household_id: str, run_id: str, what: ItDid, _: DeviceKey, request: Request
-) -> Any:
+def it_did(household_id: str, run_id: str, what: ItDid, _: DeviceKey, request: Request) -> Any:
     """File what the house performed. Nothing here has a field a reading would fit in.
 
     The panel records what it generated; this records what reached the room. They are
@@ -883,7 +847,9 @@ def list_afternoons(account: CurrentAccount, request: Request, state: str = "pen
 
 @router.post("/api/experiences/decisions")
 def decide_several(
-    decisions: SeveralDecisions, account: CurrentAccount, request: Request,
+    decisions: SeveralDecisions,
+    account: CurrentAccount,
+    request: Request,
     afterwards: BackgroundTasks,
 ) -> Any:
     """One sitting, several afternoons.
@@ -925,7 +891,10 @@ def decide_several(
 
 @router.post("/api/experiences/{experience_id}/decision")
 def decide_afternoon(
-    experience_id: str, decision: ActivityDecision, account: CurrentAccount, request: Request,
+    experience_id: str,
+    decision: ActivityDecision,
+    account: CurrentAccount,
+    request: Request,
     afterwards: BackgroundTasks,
 ) -> Any:
     """Record what the parent decided about an afternoon. It starts nothing.

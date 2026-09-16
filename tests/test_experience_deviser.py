@@ -192,7 +192,7 @@ def test_the_prompts_request_material_exchanges_and_a_finite_paper_budget() -> N
 
     devised_prompt = the_prompt(language="Italian", capabilities=frozenset())
     assert "at most 5 printed sheets for the whole game" in devised_prompt
-    assert "more than one returned contribution" in devised_prompt
+    assert "as many exchanges as the activity and the parent's guidance require" in devised_prompt
     assert "State this whole-game paper ceiling in the script" in devised_prompt
     for prompt in (
         devised_prompt,
@@ -247,10 +247,10 @@ def test_both_prompts_say_what_makes_an_afternoon_worth_doing() -> None:
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
     for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
-        assert "begins in the middle of something" in prompt, who
+        assert "parent" in prompt, who
         assert "Something is found out, made or named" in prompt, who
-        assert "It ends on the object" in prompt, who
-        assert "never a teacher" in prompt, who
+        assert "last moment closes the activity using only known results" in prompt, who
+        assert "voice and amount of explanation requested by the parent" in prompt, who
 
 
 def test_being_worth_doing_is_never_asked_for_as_being_hard_to_stop() -> None:
@@ -292,20 +292,14 @@ def test_the_deviser_states_the_limits_only_it_has() -> None:
 
 
 def test_the_deviser_is_told_where_to_leave_a_branch_unwritten() -> None:
-    """Both afternoons devised on 21 August 2026 used no `ask`, because the prompt listed
-    the syntax and never said when it was the right thing. A model that can see the whole
-    afternoon writes the whole afternoon, and the branch that makes an experience devised
-    rather than precomputed goes unused.
-
-    The instruction names the branch as well as the word: `marks` is where there is
-    something on the paper to write from, and `blank` is where the afternoon ends.
-    """
+    """Continuation is optional; its cost bound and available evidence remain explicit."""
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
-    assert "Use ask once" in DEVISER
-    marks = DEVISER.find("Use ask once")
-    assert "marks" in DEVISER[marks : marks + 200]
-    blank = DEVISER.find("came back blank always names a moment")
+    assert "Use ask at most once" in DEVISER
+    marks = DEVISER.find("Use ask at most once")
+    assert "marks" in DEVISER[marks : marks + 300]
+    assert "An activity may use no ask and require no returned page" in DEVISER
+    blank = DEVISER.find("came back blank names a moment")
     assert blank > marks, "the deviser never says which branch stays written"
 
 
@@ -330,16 +324,8 @@ def test_the_prompt_names_the_six_things_a_model_reaches_for() -> None:
     """
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
-    for reached_for in (
-        "pirate treasure hunt",
-        "escape room",
-        "question-and-answer quiz",
-        "murder mystery",
-        "apocalypse",
-        "computer that has gone mad",
-    ):
-        assert reached_for in DEVISER
-    assert "your first idea rather than your best one" in DEVISER
+    assert "genre and structure from the parent's guidance" in DEVISER
+    assert "not a genre merely because it is familiar" in DEVISER
     assert "Do not write any of these" not in DEVISER
 
 
@@ -350,12 +336,10 @@ def test_the_six_properties_of_the_text_are_in_both_prompts() -> None:
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
     for line in (
-        "One instruction at a time",
-        "two surfaces",
-        "Nothing asks for speed",
-        "approximate answer",
-        "never school-like",
-        "does not contain its own reasons",
+        "Write precise instructions",
+        "Follow the parent-visible guidance for wording",
+        "without grading the person",
+        "Do not print the household configuration",
     ):
         for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
             assert line in prompt, f"{who} never says {line!r}"

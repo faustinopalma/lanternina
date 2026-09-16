@@ -39,6 +39,7 @@ from shared.ids import LearnerId
 from shared.methods import CATALOGUE, Method, by_id, draw, index, load, runnable
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
+from shared.steering import Steering
 
 # How many times a refused afternoon is handed back to be repaired. One.
 REPAIRS: int = 1
@@ -62,6 +63,7 @@ async def _what_to_build_out_of(
     already: tuple[str, ...],
     pitch: str,
     log: logging.Logger,
+    steering: Steering | None = None,
 ) -> tuple[Method | None, Method | None]:
     """One form and one move out of `methods/`, asked for by the model and drawn if it cannot.
 
@@ -82,6 +84,7 @@ async def _what_to_build_out_of(
             avoid=avoid,
             already=already,
             pitch=pitch,
+            steering=steering,
         )
         asked = by_id(here, [wants_form, wants_move])
         form = next((one for one in asked if not one.is_a_move), None)
@@ -112,6 +115,7 @@ async def devise_experience(
     ground: str = "",
     brief: str = "",
     pitch: str = "",
+    steering: Steering | None = None,
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = WORDS_PER_LINE,
@@ -174,6 +178,7 @@ async def devise_experience(
         already=already,
         pitch=pitch,
         log=log,
+        steering=steering,
     )
     if built_from is not None and form is not None and move is not None:
         built_from["form"] = form.method_id
@@ -193,6 +198,7 @@ async def devise_experience(
             ground=ground,
             brief=brief,
             pitch=pitch,
+            steering=steering,
             note=note,
             sheets=sheets,
             words_per_line=words_per_line,

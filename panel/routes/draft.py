@@ -197,6 +197,7 @@ async def say(draft_id: str, what: Saying, account: CurrentAccount, request: Req
             script=draft.script,
             said=draft.carrying(),
             asking=words,
+            steering=request.app.state.steering.get(household, chosen.language).steering,
             now=time.time(),
         )
         outcome = SERVED
@@ -270,6 +271,7 @@ async def approve(
             avoid=chosen.avoid,
             sheets=chosen.sheets,
             note=chosen.standing(time.time()),
+            steering=request.app.state.steering.get(household, chosen.language).steering,
             now=time.time(),
         )
         outcome = SERVED

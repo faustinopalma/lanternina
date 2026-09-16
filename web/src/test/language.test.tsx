@@ -14,7 +14,7 @@ import italian from "@/i18n/it.json";
 
 async function openSettings(user: ReturnType<typeof userEvent.setup>) {
   const menu = screen.getByRole("navigation");
-  await user.click(within(menu).getByRole("button", { name: "Da dove partire" }));
+  await user.click(within(menu).getByRole("button", { name: "Indicazioni per le attività" }));
 }
 
 describe("the language of the page", () => {

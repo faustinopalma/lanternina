@@ -356,6 +356,32 @@ export interface Preferences extends NewPreferences {
   sheetsChoices: number[];
 }
 
+export interface Steering {
+  instructions: string;
+  adaptive: string;
+  revision: number;
+  pendingCount: number;
+  feedbackCount: number;
+  defaultInstructions: string;
+  defaultAdaptive: string;
+  instructionsLimit: number;
+  adaptiveLimit: number;
+  reasons: string[];
+  commentLimit: number;
+}
+
+export interface SteeringEdit {
+  revision: number;
+  instructions?: string;
+  adaptive?: string;
+  action?: "save" | "reset_adaptive" | "restore_instructions";
+}
+
+export interface ActivityFeedback {
+  reasons: string[];
+  note: string;
+}
+
 /** How far the house may improvise when an afternoon did not go the way it was planned.
  *  `lines` are the parent's and can be changed here; `fixed` are ours, sent so that what
  *  they are adding to is legible, and refused if they come back. */
@@ -507,6 +533,9 @@ export interface Api {
   saveRhythm(rhythm: NewRhythm): Promise<Rhythm>;
   preferences(): Promise<Preferences>;
   savePreferences(preferences: NewPreferences): Promise<Preferences>;
+  steering(): Promise<Steering>;
+  saveSteering(change: SteeringEdit): Promise<Steering>;
+  synthesizeSteering(): Promise<void>;
   guidelines(): Promise<Guidelines>;
   saveGuidelines(lines: string[]): Promise<Guidelines>;
   devices(): Promise<Inventory>;
@@ -522,8 +551,8 @@ export interface Api {
   beginNow(): Promise<HouseRequest>;
   standingRequest(): Promise<HouseRequest | null>;
   experiences(state: string): Promise<OfferedList>;
-  decideExperience(id: string, state: Decision): Promise<void>;
-  decideSeveral(ids: string[], state: Decision): Promise<Backlog>;
+  decideExperience(id: string, state: Decision, feedback?: ActivityFeedback): Promise<void>;
+  decideSeveral(ids: string[], state: Decision, feedback?: ActivityFeedback): Promise<Backlog>;
   say(said: NewSaid): Promise<Said>;
   messages(): Promise<Said[]>;
   trails(): Promise<Trail[]>;

@@ -8,6 +8,8 @@ import { Label, Select, Textarea } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 import { useUnsaved } from "@/lib/useUnsaved";
+import { Steering } from "@/sections/Steering";
+import { Guidelines } from "@/sections/Guidelines";
 
 /* One entry per line, which is how the parent reads them back. The server flattens what is
  * left of a line break, so a pasted paragraph cannot become a second instruction. */
@@ -184,5 +186,13 @@ export function Preferences() {
 
   if (state.status === "loading") return <Quiet>{t("preferences.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("preferences.unreadable")}</Quiet>;
-  return <Form settings={state.data} />;
+  return <>
+    <Steering />
+    <h2 className="mt-5 font-semibold">{t("steering.context")}</h2>
+    <Form settings={state.data} />
+    <details className="mt-5 max-w-[42rem] border-t border-edge pt-4">
+      <summary className="cursor-pointer font-medium">{t("steering.constraints")}</summary>
+      <Guidelines />
+    </details>
+  </>;
 }

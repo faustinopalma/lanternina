@@ -5,4 +5,4 @@ Turned from a ban into a starting point on 3 September 2026, at the parent's req
 
 The six names are kept verbatim because `tests/test_experience_deviser.py` looks for them, and because naming them is what makes the instruction land.
 -->
-Six things arrive first when nothing pushes elsewhere: a pirate treasure hunt, an escape room with a countdown, a question-and-answer quiz, a murder mystery, an apocalypse, and a computer that has gone mad. If one of them is your idea, it is your first idea rather than your best one. Take what you actually wanted from it — the buried thing, the closed room, the wanting to know, the wrongness — and build that instead.
+Choose the activity's genre and structure from the parent's guidance and available material. A quiz, investigation, construction, creative task or practical exercise can be appropriate. Refuse unsupported claims, missing instructions, unavailable equipment and unsafe actions, not a genre merely because it is familiar.

@@ -27,6 +27,7 @@ from shared.domain import LearnerId
 from shared.experience import Experience
 from shared.routing import ModelUsage
 from shared.seal import Sealer, SealPurpose
+from shared.steering import Steering
 
 
 async def rewrite_the_idea(
@@ -39,6 +40,7 @@ async def rewrite_the_idea(
     said: Sequence[Any],
     asking: str,
     now: float = 0.0,
+    steering: Steering | None = None,
 ) -> tuple[Idea, ModelUsage | None]:
     """The idea as the parent's message leaves it, and what the call consumed."""
     from orchestrator.router import FoundryConfig, FoundryRouter
@@ -64,6 +66,7 @@ async def rewrite_the_idea(
             script=script,
             said=said,
             asking=asking,
+            steering=steering,
         )
     finally:
         await gate.aclose()
@@ -80,6 +83,7 @@ async def afternoon_from(
     note: str,
     sheets: int,
     now: float,
+    steering: Steering | None = None,
 ) -> tuple[Experience, ModelUsage | None]:
     """Turn a parent's finished idea into an afternoon a house can run.
 
@@ -104,5 +108,6 @@ async def afternoon_from(
         note=note,
         sheets=sheets,
         already=(),
+        steering=steering,
         now=now,
     )

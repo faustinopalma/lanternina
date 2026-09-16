@@ -200,3 +200,65 @@ def test_reset_during_synthesis_does_not_reintroduce_feedback(monkeypatch) -> No
     client.post("/api/steering/synthesize", headers=headers())
     assert store.get(household).steering == Steering.initial()
     assert not store.get(household).pending
+
+
+def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch() -> None:
+    from agents.experience_agent import the_prompt as next_prompt
+    from agents.experience_continuer import the_prompt as continue_prompt
+    from agents.experience_deviser import the_prompt as devise_prompt
+
+    steering = Steering("Use a verifiable question with two constraints.", "Allow algebra.")
+    prompts = [
+        devise_prompt(
+            language="en",
+            capabilities=frozenset(),
+            steering=steering,
+            pitch="HIDDEN_CALIBRATION",
+            counts="HIDDEN_COUNTS",
+            direction="HIDDEN_DIRECTION",
+        ),
+        continue_prompt(
+            experience={},
+            after="read",
+            came="marks",
+            reading={},
+            steering=steering,
+            pitch="HIDDEN_CALIBRATION",
+        ),
+        next_prompt(
+            script="",
+            themes=[],
+            plan={},
+            tools=frozenset(),
+            happened=[],
+            minutes_left=20,
+            steering=steering,
+        ),
+    ]
+    for prompt in prompts:
+        assert steering.instructions in prompt and steering.adaptive in prompt
+        assert "HIDDEN_" not in prompt
+        assert "takes precedence" in prompt
+
+
+def test_neutral_defaults_and_static_activity_prompts() -> None:
+    from agents.experience_continuer import _INSTRUCTION as continuation
+    from agents.experience_deviser import _INSTRUCTION as planning
+
+    for language in ("it", "en"):
+        value = Steering.initial(language)
+        for text in (value.instructions, value.adaptive):
+            assert text.strip()
+            assert "disabil" not in text.lower() and "diagnos" not in text.lower()
+    for text in (planning, continuation):
+        for removed in (
+            "mostly on their own",
+            "Nothing asks for speed",
+            "something learnt at school",
+            "never school-like",
+            "one thing at a time",
+            "moderate intellectual",
+            "How this activity should be pitched",
+            "material correspondence with several",
+        ):
+            assert removed not in text

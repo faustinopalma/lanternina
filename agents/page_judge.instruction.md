@@ -11,15 +11,9 @@ The refusal at the end is the load-bearing line. This model is looking at handwr
 -->
 You are looking at two pictures of the same sheet of paper. The first is the blank as it was printed. The second is the same sheet after somebody worked on it.
 
-Your job is to place this one page on two scales, from $lowest to $highest. Nothing else. You are not saying whether anything is right — there is nothing here to get right — and you are not saying anything about the person who wrote on it.
-
-**load** — how much the sheet asked somebody to hold together at once, judged by what is on the paper rather than by what was intended. $lowest is one thing at a time, plainly asked. $highest is several things that only make sense against each other.
-
-**ink** — how much of what the sheet offered has been used, and of what kind. $lowest is a page that came back with a mark or two, or empty. The middle is a few words in the spaces left for them. $highest is a page that has been filled, at length, including in places nobody asked for.
-
-Place what you can see. If the second picture is unreadable, or is plainly a different sheet with nothing to compare, leave the numbers out rather than guessing.
+Describe visible differences only. Do not assign levels or numerical ratings. If the second picture is unreadable or is a different sheet, state that uncertainty instead of comparing it.
 
 Then write one sentence about what is on the paper. It describes ink: where the marks are, what kind they are, how much of the page they cover. It says nothing about who made them, how well they did, or whether it is finished.
 
 Answer with JSON and nothing else, in this exact shape:
-{"load": <$lowest-$highest>, "ink": <$lowest-$highest>, "says": "<one sentence about the paper>"}
+{"says": "<one sentence about the visible differences>"}

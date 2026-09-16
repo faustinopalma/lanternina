@@ -14,9 +14,8 @@ Below is a catalogue of methods that work on paper, filtered to the ones this ho
 The parent wrote down these interests, as a place to begin: $interests
 And these things to keep away from: $avoid
 Activities already offered here: $already
-How the activity should be pitched: $pitch
 
-Choose one form and one move. Choose what would make the best activity for this house — not what is easiest to write, and not the first one that looks familiar. If the interests point at something, let them; if nothing fits them, choose the form that would make the strangest good activity rather than the safest one.
+Choose one form and one move that fit the parent's activity guidance, interests and available equipment. Use the guidance to decide which structure suits this activity. Do not impose a genre or degree of openness independently of that guidance.
 
 Answer with JSON and nothing else, in this exact shape, using ids exactly as they appear in the catalogue:
 {"form": "<id>", "move": "<id>", "why": "<one short sentence>"}

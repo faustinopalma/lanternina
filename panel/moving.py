@@ -21,6 +21,7 @@ from shared.agents import AgentContext
 from shared.domain import LearnerId
 from shared.experience import Experience
 from shared.seal import Sealer, SealPurpose
+from shared.steering import Steering
 
 
 async def decide_a_move(
@@ -29,6 +30,8 @@ async def decide_a_move(
     happened: Sequence[Mapping[str, Any]],
     minutes_left: int,
     now: float = 0.0,
+    steering: Steering | None = None,
+    household_bounds: str = "",
 ) -> tuple[Move, Any]:
     """The next move, and what the call consumed. Raises what the agent raises."""
     from orchestrator.router import FoundryConfig, FoundryRouter
@@ -56,6 +59,8 @@ async def decide_a_move(
             tools=afternoon.requires,
             happened=happened,
             minutes_left=minutes_left,
+            steering=steering,
+            household_bounds=household_bounds,
         )
     finally:
         await gate.aclose()

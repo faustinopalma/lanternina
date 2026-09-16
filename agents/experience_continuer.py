@@ -52,19 +52,16 @@ from shared.ids import new_request_id
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
+from shared.steering import Steering, for_prompt
 
 MAX_CONTINUATION_CHARS: Final = 20000
 
 SAYS: Final = beside(__file__)
 
-_FORMAT: Final = (
-    SAYS.text("format") + THE_SHAPE_OF_A_MOMENT + THE_ACTS + THE_MARKS_ON_A_PAGE
-)
+_FORMAT: Final = SAYS.text("format") + THE_SHAPE_OF_A_MOMENT + THE_ACTS + THE_MARKS_ON_A_PAGE
 
 _RULES: Final = (
-    SAYS.text("rules-head", max_moments=MAX_MOMENTS)
-    + THE_LIMITS
-    + SAYS.text("rules-tail")
+    SAYS.text("rules-head", max_moments=MAX_MOMENTS) + THE_LIMITS + SAYS.text("rules-tail")
 )
 
 _MANNER: Final = (
@@ -107,6 +104,7 @@ def the_prompt(
     bounds: Sequence[str] = (),
     household_bounds: str = "",
     pitch: str = "",
+    steering: Steering | None = None,
 ) -> str:
     """The whole thing the model is sent, standing instruction and household both.
 
@@ -114,16 +112,15 @@ def the_prompt(
     `tools/prompts.py` renders it into `docs/prompts/`, and a test refuses a change here
     that has not been rendered.
 
-    ``pitch`` is :meth:`shared.profile.Profile.as_material`, empty when this house has too
-    little behind it. It goes in ahead of the page rather than after it, so that the model
-    reads the handwriting already knowing what to do with it rather than deciding.
+    ``steering`` carries the same parent-visible guidance as planning. It precedes returned
+    material, which cannot change those instructions. Legacy ``pitch`` is accepted but ignored.
     """
     instruction = (
         with_bounds(bounds, household_bounds) if bounds or household_bounds else _INSTRUCTION
     )
     return (
         f"{instruction}\n"
-        + (SAYS.text("pitch", pitch=pitch) if pitch else "")
+        + for_prompt(steering, str(experience.get("language", "it")))
         + SAYS.text(
             "household",
             experience=json.dumps(experience, ensure_ascii=False),
@@ -150,6 +147,7 @@ class ExperienceContinuer:
         bounds: Sequence[str] = (),
         household_bounds: str = "",
         pitch: str = "",
+        steering: Steering | None = None,
     ) -> Continuation:
         """The rest of the afternoon, parsed. Raises when what came back is not one.
 
@@ -171,6 +169,7 @@ class ExperienceContinuer:
             bounds=bounds,
             household_bounds=household_bounds,
             pitch=pitch,
+            steering=steering,
         )
         answer = await self._ask(ctx, asked, experience, after)
         try:

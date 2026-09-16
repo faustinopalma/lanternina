@@ -125,14 +125,10 @@ def test_the_span_is_read_off_the_clock_and_never_off_a_page() -> None:
     barely = [Ran(planned_minutes=120, minutes=25, carried_through=False)] * 3
     assert read_from(runs=barely).where[Axis.SPAN] is Band.LOW
 
-    most_of_it_then_the_clock = [
-        Ran(planned_minutes=120, minutes=80, carried_through=False)
-    ] * 3
+    most_of_it_then_the_clock = [Ran(planned_minutes=120, minutes=80, carried_through=False)] * 3
     assert read_from(runs=most_of_it_then_the_clock).where[Axis.SPAN] is Band.MIDDLE
 
-    most_of_it_and_its_own_ending = [
-        Ran(planned_minutes=120, minutes=80, carried_through=True)
-    ] * 3
+    most_of_it_and_its_own_ending = [Ran(planned_minutes=120, minutes=80, carried_through=True)] * 3
     assert read_from(runs=most_of_it_and_its_own_ending).where[Axis.SPAN] is Band.HIGH
 
     unknown = [Ran(planned_minutes=0, minutes=90, carried_through=True)] * 3
@@ -184,11 +180,12 @@ def test_the_pitch_reaches_two_prompts_and_no_route_a_parent_can_call() -> None:
         for path in routes.rglob("*.py")
         if "_pitch_for" in path.read_text(encoding="utf-8")
     }
-    assert reading_it == {"experience.py"}
+    assert reading_it == set()
 
     # And in that file it is used twice: devising an afternoon, and continuing one.
     written = (routes / "experience.py").read_text(encoding="utf-8")
-    assert written.count("_pitch_for(request, household_id)") == 2
+    assert "_pitch_for(request, household_id)" not in written
+    assert "request.app.state.steering.get(" in written
 
 
 def test_the_model_that_places_a_page_is_shown_nothing_that_could_confirm_a_state() -> None:
@@ -211,10 +208,10 @@ def test_the_model_that_places_a_page_is_shown_nothing_that_could_confirm_a_stat
         "last time",
         "previous",
         "band",
-        "level",
     ):
         assert absent not in said, f"the page judge is told about {absent!r}"
     assert "span" not in said, "no page shows how long anybody sat"
+    assert "Do not assign levels or numerical ratings" in _INSTRUCTION
 
 
 # ── The gate ────────────────────────────────────────────────────────────────────────

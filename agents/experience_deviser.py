@@ -32,16 +32,9 @@ because an afternoon written by hand can still declare it and be checked against
 
 What a devised afternoon is given about the household is the equipment, the language, what
 the parent already wrote in their settings as interests and as things to avoid, the
-dimensions the last few afternoons here were drawn along, and where this house sits on the
-three axes of :mod:`shared.profile`.
-
-**The pitch arrives as sentences about the afternoon, never as a description of anybody.**
-That is not politeness; it is what makes the review gate's job possible. A prompt saying
-*this person holds two things at once* would produce an afternoon that occasionally says so.
-What goes in is the register `SHAPES` was written in when a parent chose between three of
-them by hand, and the block is left out altogether when the profile knows nothing — a house
-with no history gets a deviser inventing freely, which is what it did for the whole of
-August.
+dimensions the last few afternoons here were drawn along, and the two parent-visible
+guidance texts. Stable instructions take precedence over the editable feedback synthesis.
+These texts choose prerequisites, support and task structure within the output contracts.
 
 **And how far an afternoon travels from the last ones is no longer a setting.** It was three
 choices in the panel until 4 September 2026 and it is now always as far as the format
@@ -91,10 +84,10 @@ from shared.experience_prompt import (
 )
 from shared.ids import new_request_id
 from shared.methods import Method
-from shared.profile import PITCHES
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
 from shared.safety import ContentKind
+from shared.steering import Steering, for_prompt
 
 # A whole afternoon in format 2 is several times the document format 1 carried: every
 # moment gained three weighings, four rungs of help and a way out.
@@ -131,6 +124,7 @@ def _choice_in(text: str) -> tuple[str, str, str]:
         str(said.get("why") or "").strip(),
     )
 
+
 SAYS: Final = beside(__file__)
 
 # The order is the argument: what shape the answer has, then what a moment is, then what
@@ -165,14 +159,7 @@ _MANNER: Final = (
     + SAYS.text("manner-tail")
 )
 
-_INSTRUCTION: Final = (
-    SAYS.text("task")
-    + _FORMAT
-    + THE_TEN_DIMENSIONS
-    + _RULES
-    + _ASKING
-    + _MANNER
-)
+_INSTRUCTION: Final = SAYS.text("task") + _FORMAT + THE_TEN_DIMENSIONS + _RULES + _ASKING + _MANNER
 
 # What is said when the format refuses an answer. The format and the rules follow it, so a
 # repair is written against the same shape the first attempt was.
@@ -197,6 +184,7 @@ def the_prompt(
     ground: str = "",
     brief: str = "",
     pitch: str = "",
+    steering: Steering | None = None,
     note: str = "",
     sheets: int = DEFAULT_SHEETS,
     words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -210,18 +198,12 @@ def the_prompt(
     that has not been rendered. What a parent typed in the panel arrives quoted as JSON,
     which is what keeps it material rather than instruction.
 
-    ``pitch`` is :meth:`shared.profile.Profile.as_material` — one sentence per axis this
-    house has enough evidence for, written as a property of the afternoon. It replaced a
-    setting a parent chose between three steps of, on 4 September 2026, because asking a
-    parent to grade what somebody can take is asking them for a verdict. Empty is ordinary
-    and means the block is left out. Neither it nor anything it is computed from reaches the
-    document: `tests/test_experience.py` refuses a field named `difficulty` on an afternoon,
-    and `shared/blocklist.py` refuses a sentence that tells the reader it was fitted to them.
+    ``steering`` carries the parent-visible instructions and feedback guidance. Its neutral
+    defaults apply when omitted. Legacy ``pitch``, ``counts`` and ``direction`` arguments
+    remain accepted for older callers but do not enter the prompt.
 
-    Three arguments come out of `panel/what_happened.py` and they are three different jobs.
-    ``happened`` is the last few afternoons as rows — the evidence. ``counts`` and
-    ``direction`` are how much to ask for. ``ground`` is what this house has already been
-    over, in three bands by how recently, which is what keeps the next one off it.
+    ``happened`` supplies recent activity events. ``ground`` names material already covered
+    in three recency bands. Neither is authority to infer a person's ability.
 
     ``note`` is what the parent wrote about this house at this moment, and it is the only
     part of the household's settings with a lifetime. It arrives quoted, as material, and
@@ -257,13 +239,8 @@ def the_prompt(
             sheets=sheets,
             words_per_line=words_per_line,
         )
-        + (SAYS.text("pitch", pitch=pitch) if pitch else "")
+        + for_prompt(steering, language)
         + (SAYS.text("what-happened", happened=happened) if happened else "")
-        + (
-            SAYS.text("how-it-has-gone", counts=counts, direction=direction)
-            if counts and direction
-            else ""
-        )
         + (SAYS.text("ground-covered", ground=ground) if ground else "")
         + (SAYS.text("brief", brief=brief) if brief else _not_again(recent))
     )
@@ -283,6 +260,7 @@ class ExperienceDeviser:
         avoid: tuple[str, ...] = (),
         already: tuple[str, ...] = (),
         pitch: str = "",
+        steering: Steering | None = None,
     ) -> tuple[str, str, str]:
         """Which form and which move to build out of, chosen from a catalogue of names.
 
@@ -301,8 +279,8 @@ class ExperienceDeviser:
                     interests=json.dumps(list(interests), ensure_ascii=False),
                     avoid=json.dumps(list(avoid), ensure_ascii=False),
                     already=json.dumps(list(already), ensure_ascii=False),
-                    pitch=pitch or "nothing is known about this house yet",
-                ),
+                )
+                + for_prompt(steering),
                 request_id=new_request_id(),
                 max_output_chars=MAX_CHOICE_CHARS,
                 purpose="choosing what to build an afternoon out of",
@@ -327,6 +305,7 @@ class ExperienceDeviser:
         ground: str = "",
         brief: str = "",
         pitch: str = "",
+        steering: Steering | None = None,
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -349,6 +328,7 @@ class ExperienceDeviser:
                 ground=ground,
                 brief=brief,
                 pitch=pitch,
+                steering=steering,
                 note=note,
                 sheets=sheets,
                 words_per_line=words_per_line,
@@ -373,6 +353,7 @@ class ExperienceDeviser:
         ground: str = "",
         brief: str = "",
         pitch: str = "",
+        steering: Steering | None = None,
         note: str = "",
         sheets: int = DEFAULT_SHEETS,
         words_per_line: int = DEFAULT_WORDS_PER_LINE,
@@ -412,6 +393,7 @@ class ExperienceDeviser:
                     ground=ground,
                     brief=brief,
                     pitch=pitch,
+                    steering=steering,
                     note=note,
                     sheets=sheets,
                     words_per_line=words_per_line,
@@ -584,9 +566,7 @@ def experience_in(text: str, *, experience_id: str = "") -> Experience:
 _WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
     "choosing",
     "method",
-    "pitch",
     "what-happened",
-    "how-it-has-gone",
     "ground-covered",
     "brief",
     "not-again",
@@ -596,10 +576,8 @@ _WHEN_THERE_IS_SOMETHING_TO_SAY: Final = (
 def what_is_not_about_a_house() -> str:
     """Everything this agent can send a model that does not come from one household.
 
-    Every block, with the numbers the format fills them with, and every sentence the profile
-    can put in the pitch. The sentences are in here rather than left out because which of
-    them a house is sent is about the house, but the nine of them are ours: editing one
-    changes the afternoons and has to move the fingerprint.
+    This includes every static block, the format limits and the neutral guidance defaults
+    in both supported languages. Editing any of them changes the fingerprint.
 
     What is left out is what a house puts in: its language, its equipment, its interests,
     its titles, and the parent's note.
@@ -608,7 +586,8 @@ def what_is_not_about_a_house() -> str:
         [
             the_prompt(language="", capabilities=frozenset()),
             _REPAIR,
-            *sorted(says for axis in PITCHES.values() for says in axis.values()),
+            for_prompt(Steering.initial("it")),
+            for_prompt(Steering.initial("en")),
             *(SAYS.text(name) for name in _WHEN_THERE_IS_SOMETHING_TO_SAY),
         ]
     )
@@ -626,6 +605,6 @@ def what_is_not_about_a_house() -> str:
 # instead of the instruction would also have been useless: `already`, `happened` and
 # `ground` differ on every call, so every afternoon would have carried its own value and
 # no two could be counted together.
-PROMPT_FINGERPRINT: Final = hashlib.sha256(
-    what_is_not_about_a_house().encode("utf-8")
-).hexdigest()[:12]
+PROMPT_FINGERPRINT: Final = hashlib.sha256(what_is_not_about_a_house().encode("utf-8")).hexdigest()[
+    :12
+]

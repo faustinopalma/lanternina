@@ -42,3 +42,9 @@ class Steering:
             {"parentInstructions": self.instructions, "feedbackGuidance": self.adaptive},
             ensure_ascii=False,
         )
+
+
+def for_prompt(steering: Steering | None = None, language: str = "it") -> str:
+    chosen = "en" if language.lower() in {"en", "english"} else "it"
+    value = steering if steering is not None else Steering.initial(chosen)
+    return SAYS.text("context", guidance=value.as_material())
