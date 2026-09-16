@@ -20,6 +20,12 @@ Current production routes no longer render the historical profile pitch or infer
 
 Planning no longer requires a returned page or a model-written continuation. An activity can complete without either. The existing limit of one deferred continuation remains a bound on model calls. A blank page alone does not mean that the participant wants to stop. These changes allow more activity forms; the existing page and runner contracts still limit how an activity can be represented and delivered.
 
+## Operational defaults
+
+The owner found that the first stable default read as guidance for the parent rather than a usable model prompt. The Italian and English defaults now instruct the model to design and conduct the activity. They specify a meaningful goal, a starting action, complete task material, declared prerequisites, checked solutions, criteria for open work, evidence-based feedback, relevant help and closure. They leave genre, knowledge requirements and response form open to the task and explicit parent choices. They do not require a story, a photographed return or a continuation.
+
+Putting these decisions in the visible default gives the parent an editable starting prompt; it also makes that field longer to inspect. The static context continues to establish precedence and preserve safety, equipment, household bounds and approved scope. A default update does not overwrite saved household instructions. Restoring the stable default explicitly adopts the new text while preserving the feedback synthesis. These are prompt-design decisions, not measured improvements in model output.
+
 ## Parent interface
 
 The configuration section is called Activity guidance, or Indicazioni per le attività. It contains the two editable texts, default restoration, adaptive reset and the existing household context and bounds. Saving sends only deliberately changed fields. A revision conflict leaves the parent's draft intact. Refresh preserves edited fields and updates untouched fields; the parent can inspect the newly saved version before retrying. Reset and default restoration require confirmation and are disabled while unsaved changes exist.
@@ -33,3 +39,13 @@ The full offline Python regression passed 1,146 tests with two skips in 145.24 s
 The frontend regression passed 166 tests in 30.12 seconds. A subsequent API response-shape check passed with the guidance editor tests, 14 tests in 4.27 seconds. The production TypeScript and Vite build passed. Vite still warns that the shared JavaScript chunk exceeds its 500 kB warning threshold.
 
 Local Edge checks used the dev-only synthetic preview at 1440 by 1000 pixels and 390 by 844 pixels. They exercised editing, saving, refreshing, adaptive reset, navigation, opposite rejection reasons, and single and bulk rejection. Screenshot inspection found a mobile overflow in the bulk-decision buttons. Allowing those buttons to wrap removed it; the repeated browser check passed with no JavaScript errors or horizontal page overflow. These checks do not verify a real authenticated household session, live synthesis quality, image generation or physical delivery.
+
+## Varied references
+
+Four additional authored references in `officina/authored-examples/` pair explicit stable instructions with invented adaptive guidance. They cover a minimum-cost calculation, a unique ordering problem, the limits of a causal inference from numerical data, and an 80-120-word scene with a local revision. The first two have finite answer checks. The third separates exact arithmetic from an underdetermined cause. The fourth gives writing a clear goal while preserving several valid outcomes. Each uses one printed brief and permits completion without returning a photograph; the example continuations apply only when feedback is requested.
+
+The checker now validates 14 references and 26 page/prompt pairs. It also checks the new examples' minimum cost, unique order, means and word count. It caught a mistaken 87-word claim in the authored scene; the measured count is 88. The original ten examples retain their declared assumptions and are not injected into production prompts. None of these references establishes how a live model or participant will respond.
+
+## Publication
+
+Commit `500cebf` published persistence and synthesis. Commit `9b89a26` published the agent and portal integration. Its GitHub Actions runs completed successfully on 16 September 2026: Python ran 1,148 tests in 35.52 seconds and Ruff passed; the panel ran 167 tests in 19.12 seconds and completed its production build and Static Web Apps deployment. The API workflow confirmed the image tag `9b89a26` and an HTTP 200 health response. Deployment does not establish that a real household has exercised the new controls or that live synthesis has the intended quality.

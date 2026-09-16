@@ -78,6 +78,15 @@ def test_parent_routes_preserve_text_and_reject_stale_edits() -> None:
     ).json()
     assert reset["instructions"] == "Use two constraints."
     assert reset["adaptive"] == initial["defaultAdaptive"]
+    assert client.get("/api/steering", headers=headers()).json()["instructions"] == (
+        "Use two constraints."
+    )
+    restored = client.post(
+        "/api/steering", headers=headers(), json={"revision": 2, "action": "restore_instructions"}
+    )
+    assert restored.status_code == 200
+    assert restored.json()["instructions"] == Steering.initial().instructions
+    assert restored.json()["adaptive"] == reset["adaptive"]
     assert client.get("/api/steering").status_code in {401, 403, 503}
 
 
@@ -244,9 +253,12 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
 def test_neutral_defaults_and_static_activity_prompts() -> None:
     from agents.experience_continuer import _INSTRUCTION as continuation
     from agents.experience_deviser import _INSTRUCTION as planning
+    from shared.steering import MAX_GUIDANCE_CHARS, MAX_SUMMARY_CHARS, clean_text
 
     for language in ("it", "en"):
         value = Steering.initial(language)
+        assert clean_text(value.instructions, MAX_GUIDANCE_CHARS) == value.instructions
+        assert clean_text(value.adaptive, MAX_SUMMARY_CHARS) == value.adaptive
         for text in (value.instructions, value.adaptive):
             assert text.strip()
             assert "disabil" not in text.lower() and "diagnos" not in text.lower()
