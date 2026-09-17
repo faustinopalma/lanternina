@@ -549,6 +549,10 @@ export function fakeApi(
   };
   let steering: Steering = {
     instructions: "Proponi attività con un obiettivo chiaro.",
+    conduct: "Lascia il tempo di ragionare e offri aiuto su richiesta.",
+    review: "Verifica i passaggi e spiega eventuali errori.",
+    defaultConduct: "Lascia il tempo di ragionare e offri aiuto su richiesta.",
+    defaultReview: "Verifica i passaggi e spiega eventuali errori.",
     adaptive: "Non ci sono ancora indicazioni dai feedback.",
     defaultInstructions: "Proponi attività con un obiettivo chiaro.",
     defaultAdaptive: "Non ci sono ancora indicazioni dai feedback.",
@@ -562,11 +566,9 @@ export function fakeApi(
   let guidelines: Guidelines = {
     lines: ["non deve uscire di casa"],
     fixed: [
-      "Never say anything about the person: not how well anything was done, not how much effort it took, not what any of it suggests about them.",
-      "Never announce, explain or apologise for a change of course. It arrives as part of what is happening.",
-      "An ending stays reachable from wherever the activity has got to, and an ending reached early is the same ending.",
-      "Use only what this house has. Never invent equipment, materials or a place.",
-      "Nothing can be failed and nothing has to be finished.",
+      "Preserve safety, household isolation and the scope approved by the parent.",
+      "Use available tools and declared materials; distinguish observations from assumptions.",
+      "Keep closure reachable and honor a stop request without requiring further work.",
     ],
     updatedAt: NOW - 4000,
     lineLimit: 160,
@@ -580,6 +582,8 @@ export function fakeApi(
       recorded.steering.push(change);
       steering = { ...steering,
         instructions: change.instructions ?? steering.instructions,
+        conduct: change.conduct ?? steering.conduct,
+        review: change.review ?? steering.review,
         adaptive: change.adaptive ?? steering.adaptive,
         revision: steering.revision + 1,
       };
@@ -587,6 +591,10 @@ export function fakeApi(
         adaptive: steering.defaultAdaptive, pendingCount: 0, feedbackCount: 0 };
       if (change.action === "restore_instructions") steering = { ...steering,
         instructions: steering.defaultInstructions };
+      if (change.action === "restore_conduct") steering = { ...steering,
+        conduct: steering.defaultConduct };
+      if (change.action === "restore_review") steering = { ...steering,
+        review: steering.defaultReview };
       return steering;
     },
     synthesizeSteering: async () => undefined,

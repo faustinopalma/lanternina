@@ -194,7 +194,7 @@ _COMPILED: Final[tuple[tuple[re.Pattern[str], Why], ...]] = tuple(
 )
 
 
-def blocked_in(text: str) -> tuple[Blocked, ...]:
+def blocked_in(text: str, *, configuration_only: bool = False) -> tuple[Blocked, ...]:
     """Everything here that is a remark about the reader. Empty means it may be said.
 
     All of them rather than the first, because at devise time the answer is handed to a
@@ -203,6 +203,13 @@ def blocked_in(text: str) -> tuple[Blocked, ...]:
     folded = fold(text)
     seen: dict[str, Blocked] = {}
     for pattern, why in _COMPILED:
+        if configuration_only and not (
+            why is Why.MACHINERY
+            and any(
+                word in pattern.pattern for word in ("padre|madre", "mamma|papa", "your parent")
+            )
+        ):
+            continue
         for match in pattern.finditer(folded):
             found = match.group(0).strip()
             seen.setdefault(found, Blocked(phrase=found, why=why))

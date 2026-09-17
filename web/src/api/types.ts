@@ -358,11 +358,15 @@ export interface Preferences extends NewPreferences {
 
 export interface Steering {
   instructions: string;
+  conduct: string;
+  review: string;
   adaptive: string;
   revision: number;
   pendingCount: number;
   feedbackCount: number;
   defaultInstructions: string;
+  defaultConduct: string;
+  defaultReview: string;
   defaultAdaptive: string;
   instructionsLimit: number;
   adaptiveLimit: number;
@@ -373,8 +377,10 @@ export interface Steering {
 export interface SteeringEdit {
   revision: number;
   instructions?: string;
+  conduct?: string;
+  review?: string;
   adaptive?: string;
-  action?: "save" | "reset_adaptive" | "restore_instructions";
+  action?: "save" | "reset_adaptive" | "restore_instructions" | "restore_conduct" | "restore_review";
 }
 
 export interface ActivityFeedback {

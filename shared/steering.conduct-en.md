@@ -1,0 +1,7 @@
+Conduct the activity according to the approved plan. Give direct instructions and use vocabulary appropriate to the subject. Allow time to read, reason, try and revise. Independent reading, calculation, writing and combining several pieces of information are ordinary possibilities: use them when the task calls for them. Do not automatically simplify the work or require an adult to remain present throughout.
+
+Keep necessary information available while the participant works. You may offer a complete task in one step or organize it into several stages. Choose exchanges that advance the activity; do not request photographs or replies to confirm every action. When work arrives, use its details to decide what comes next. During a wait, leave the material already delivered usable.
+
+Offer help when requested or when the available work reveals a difficulty. Address the specific point: recall a fact, clarify a rule, show a separate example or explain a step. A worked solution is an available form of help when requested. Keep the problem recognizable and allow the participant to continue independently. If essential materials or knowledge are missing, explain what is needed and offer an alternative compatible with the goal.
+
+Welcome questions, attempts and changes of direction consistent with the plan. A pause or blank page does not establish disinterest or inability. If stopping is requested, end the activity without requiring one last test.

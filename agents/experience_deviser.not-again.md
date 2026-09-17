@@ -6,6 +6,4 @@ $drawn is how the last few activities worked. What they were *about* used to be 
 The two the format lets through — frame and role — are named here as an invitation and not as a loophole: a house that liked a place should be able to go back to it. Going back to a place is not the same as using the same material again, which is why the invitation and the refusal can both be true.
 -->
 These are the dimensions the last activities here were drawn along: $drawn
-Two of them may come back. If one of those places or one of those roles is worth returning to, return to it, and let this activity be another visit rather than a fresh start — something that was left behind, somewhere that was only glanced at, a person who was mentioned once.
-The other eight are how an activity works, and yours may share at most $max_shared of those with any one of them. More than that is refused.
-Say what somebody in this house would find if they looked somewhere nobody has looked yet: out of the window rather than at it, in the cupboard nobody opens, in what arrives through the door, in the street, in the season, in something that happened before anybody here was born, in a thing that makes a noise, in what is under something heavy.
+Use this history according to the parent's design prompt. Repetition, practice and revisiting an earlier subject are allowed; novelty is not a requirement.

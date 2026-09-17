@@ -17,8 +17,12 @@ class EditSteering(BaseModel):
     model_config = ConfigDict(extra="forbid")
     revision: int = Field(ge=0)
     instructions: str | None = None
+    conduct: str | None = None
+    review: str | None = None
     adaptive: str | None = None
-    action: Literal["save", "reset_adaptive", "restore_instructions"] = "save"
+    action: Literal[
+        "save", "reset_adaptive", "restore_instructions", "restore_conduct", "restore_review"
+    ] = "save"
 
 
 @router.get("/api/steering")
@@ -41,17 +45,20 @@ def write_steering(new: EditSteering, account: CurrentAccount, request: Request)
     try:
         if new.action == "reset_adaptive":
             chosen = current.reset_adaptive(language)
-        elif new.action == "restore_instructions":
+        elif new.action.startswith("restore_"):
+            field = new.action.removeprefix("restore_")
             chosen = replace(
                 current,
                 steering=replace(
-                    current.steering, instructions=Steering.initial(language).instructions
+                    current.steering, **{field: getattr(Steering.initial(language), field)}
                 ),
             )
         else:
             chosen = current.edited(
                 current.steering.instructions if new.instructions is None else new.instructions,
                 current.steering.adaptive if new.adaptive is None else new.adaptive,
+                conduct=new.conduct,
+                review=new.review,
             )
         return store.save(chosen, new.revision).to_public(language)
     except SteeringConflict as exc:

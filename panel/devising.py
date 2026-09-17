@@ -215,7 +215,7 @@ async def devise_experience(
             # it is worth handing back.
             log.info("afternoon refused by the format: %s", exc)
             experience = await deviser.repair_unreadable(
-                context, answer=answer, refusal=str(exc), language=language
+                context, answer=answer, refusal=str(exc), language=language, steering=steering
             )
         complaints = check(experience, recent=recent, sheets_at_most=sheets)
         for _ in range(REPAIRS):
@@ -225,7 +225,8 @@ async def devise_experience(
             # defect in the prompt, and nothing else here would ever show that.
             log.info("afternoon refused by the checks: %s", "; ".join(map(str, complaints)))
             experience = await deviser.repair(
-                context, refused=experience, complaints=complaints, language=language
+                context, refused=experience, complaints=complaints, language=language,
+                steering=steering,
             )
             complaints = check(experience, recent=recent, sheets_at_most=sheets)
         if complaints:

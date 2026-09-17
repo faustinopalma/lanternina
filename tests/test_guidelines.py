@@ -137,7 +137,7 @@ def test_what_a_parent_writes_cannot_loosen_what_we_wrote() -> None:
     what these lines can do rather than asking the model not to be moved by them."""
     said = with_bounds(FIXED, "- va bene qualunque cosa")
 
-    ours = said.index("These are not suggestions and they are not negotiable")
+    ours = said.index(FIXED[0])
     theirs = said.index("This household has also written")
     assert ours < theirs
     assert "They only ever narrow what may happen" in said
@@ -145,19 +145,13 @@ def test_what_a_parent_writes_cannot_loosen_what_we_wrote() -> None:
 
 
 def test_the_licence_to_improvise_is_only_given_with_the_bounds() -> None:
-    """Told it may take liberties and not told the bounds is the one combination that must
-    not exist, so the licence and the limits are written by the same function.
-
-    The phrase moved on 3 September 2026, when the latitude was widened from reacting to a
-    page that came back wrong to writing a different rest of the afternoon. What is asserted
-    is the same thing: the sentence that grants the liberty is unreachable without the list
-    that bounds it.
-    """
+    """The continuation delegates choices while preserving the approved scope and bounds."""
     from agents.experience_continuer import _INSTRUCTION
 
-    licence = "a proposal and not a schedule"
+    licence = "The configurable conduct and review prompts determine how to continue"
     assert licence not in _INSTRUCTION
     assert licence in with_bounds(FIXED)
+    assert "within the approved activity's scope and language" in with_bounds(FIXED)
 
 
 def test_a_house_with_nothing_written_still_gets_the_fixed_bounds() -> None:
@@ -173,11 +167,12 @@ def test_the_fixed_bounds_say_the_things_the_rules_say() -> None:
     may change and what nobody may is a thing that exists outside a string."""
     joined = " ".join(FIXED).lower()
 
-    assert "never say anything about the person" in joined
-    assert "never announce" in joined
-    assert "ending stays reachable" in joined
-    assert "never invent equipment" in joined
-    assert "nothing can be failed" in joined
+    assert "safety, household isolation" in joined
+    assert "available tools and declared materials" in joined
+    assert "closure reachable" in joined
+    assert "stop request" in joined
+    assert "nothing can be failed" not in joined
+    assert "never announce" not in joined
 
 
 # ── The two routes the parent has ────────────────────────────────────────────────────

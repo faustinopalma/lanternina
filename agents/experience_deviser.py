@@ -72,15 +72,10 @@ from shared.experience import (
 )
 from shared.experience_checks import Complaint
 from shared.experience_prompt import (
-    HOW_THE_TEXT_READS,
-    ONLY_WHAT_YOU_CAN_ANSWER,
-    THE_ACTS,
+    ACTIVITY_CONTRACT,
+    ACTIVITY_PROTOCOL,
     THE_LIMITS,
-    THE_MARKS_ON_A_PAGE,
-    THE_SHAPE_OF_A_MOMENT,
     THE_TEN_DIMENSIONS,
-    WHAT_MAKES_IT_WORTH_DOING,
-    WHAT_TO_REFUSE_BY_DEFAULT,
 )
 from shared.ids import new_request_id
 from shared.methods import Method
@@ -137,9 +132,7 @@ _FORMAT: Final = (
         max_theme=MAX_THEME,
         MAX_SCRIPT=MAX_SCRIPT,
     )
-    + THE_SHAPE_OF_A_MOMENT
-    + THE_ACTS
-    + THE_MARKS_ON_A_PAGE
+    + ACTIVITY_CONTRACT
 )
 
 _RULES: Final = (
@@ -150,16 +143,7 @@ _RULES: Final = (
 
 _ASKING: Final = SAYS.text("asking")
 
-_MANNER: Final = (
-    SAYS.text("manner-head")
-    + HOW_THE_TEXT_READS
-    + WHAT_TO_REFUSE_BY_DEFAULT
-    + ONLY_WHAT_YOU_CAN_ANSWER
-    + WHAT_MAKES_IT_WORTH_DOING
-    + SAYS.text("manner-tail")
-)
-
-_INSTRUCTION: Final = SAYS.text("task") + _FORMAT + THE_TEN_DIMENSIONS + _RULES + _ASKING + _MANNER
+_INSTRUCTION: Final = _FORMAT + THE_TEN_DIMENSIONS + _RULES + _ASKING + ACTIVITY_PROTOCOL
 
 # What is said when the format refuses an answer. The format and the rules follow it, so a
 # repair is written against the same shape the first attempt was.
@@ -415,6 +399,7 @@ class ExperienceDeviser:
         refused: Experience,
         complaints: Sequence[Complaint],
         language: str,
+        steering: Steering | None = None,
     ) -> Experience:
         """The same afternoon with the refused fields written again.
 
@@ -435,10 +420,12 @@ class ExperienceDeviser:
             complaints=complaints,
             language=language,
             experience_id=refused.experience_id,
+            steering=steering,
         )
 
     async def repair_unreadable(
-        self, ctx: AgentContext, *, answer: str, refusal: str, language: str
+        self, ctx: AgentContext, *, answer: str, refusal: str, language: str,
+        steering: Steering | None = None,
     ) -> Experience:
         """The same answer, for an afternoon the format would not read at all.
 
@@ -454,6 +441,7 @@ class ExperienceDeviser:
             complaints=(Complaint(where="the document", says=refusal),),
             language=language,
             experience_id="",
+            steering=steering,
         )
 
     async def _again(
@@ -464,6 +452,7 @@ class ExperienceDeviser:
         complaints: Sequence[Complaint],
         language: str,
         experience_id: str,
+        steering: Steering | None = None,
     ) -> Experience:
         payload = await ctx.router.analyze(
             ModelRequest(
@@ -471,7 +460,8 @@ class ExperienceDeviser:
                 prompt=(
                     _REPAIR + f"{_FORMAT}{_RULES}"
                     f"Write every word of it in {language}.\n"
-                    f"What was refused, field by field:\n"
+                    + for_prompt(steering, language)
+                    + "What was refused, field by field:\n"
                     + "".join(f"  {complaint}\n" for complaint in complaints)
                     + f"The afternoon: {answer}\n"
                 ),

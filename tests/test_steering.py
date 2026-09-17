@@ -15,6 +15,8 @@ def test_guidance_round_trip_and_household_isolation() -> None:
     assert saved.revision == 1
     assert json.loads(saved.steering.as_material()) == {
         "parentInstructions": "Use equations.",
+        "conductInstructions": original.steering.conduct,
+        "reviewInstructions": original.steering.review,
         "feedbackGuidance": "Give a defined goal.",
     }
     assert store.get("two").steering == Steering.initial()
@@ -110,11 +112,12 @@ def test_cosmos_guidance_uses_partition_and_conditional_replace() -> None:
             self.row = {**body, "_etag": "one"}
 
         def replace_item(self, *, item, body, etag, match_condition):
-            assert etag == "one" and match_condition == MatchConditions.IfNotModified
+            assert etag == self.row["_etag"]
+            assert match_condition == MatchConditions.IfNotModified
             assert item == body["id"] and body["type"] == "steering"
             if self.collide:
                 raise CosmosHttpResponseError(status_code=412)
-            self.row = {**body, "_etag": "two"}
+            self.row = {**body, "_etag": str(body["revision"])}
 
     store = CosmosSteeringStore.__new__(CosmosSteeringStore)
     container = Container()
@@ -128,6 +131,40 @@ def test_cosmos_guidance_uses_partition_and_conditional_replace() -> None:
     container.collide = False
     store.save(current.reset_adaptive("en"), 1)
     assert store.get("family").steering.adaptive == Steering.initial("en").adaptive
+    assert store.get("family").steering.conduct == current.steering.conduct
+    container.row.pop("conduct")
+    container.row.pop("review")
+    migrated = store.get("family", "en")
+    assert migrated.steering.instructions == "Stable"
+    assert migrated.steering.conduct == Steering.initial("en").conduct
+    assert migrated.steering.review == Steering.initial("en").review
+    saved = store.save(migrated.edited("Stable", "Adaptive", conduct=""), 2)
+    assert store.get("family", "en").steering.conduct == ""
+    assert saved.steering.review == migrated.steering.review
+
+
+def test_each_prompt_can_be_edited_and_restored_without_changing_the_others() -> None:
+    from tests.test_preferences import client_for, headers
+
+    client = client_for()
+    initial = client.get("/api/steering", headers=headers()).json()
+    revision = 0
+    for field in ("instructions", "conduct", "review"):
+        result = client.post(
+            "/api/steering", headers=headers(), json={"revision": revision, field: "My text"}
+        )
+        assert result.status_code == 200
+        revision += 1
+        assert result.json()[field] == "My text"
+        for other in {"instructions", "conduct", "review", "adaptive"} - {field}:
+            assert result.json()[other] == initial[other]
+        result = client.post(
+            "/api/steering", headers=headers(),
+            json={"revision": revision, "action": f"restore_{field}"},
+        )
+        assert result.status_code == 200
+        revision += 1
+        assert result.json()[field] == initial[field]
 
 
 def test_rejection_feedback_reaches_summary_and_preserves_parent_text(monkeypatch) -> None:
@@ -216,7 +253,10 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
     from agents.experience_continuer import the_prompt as continue_prompt
     from agents.experience_deviser import the_prompt as devise_prompt
 
-    steering = Steering("Use a verifiable question with two constraints.", "Allow algebra.")
+    steering = Steering(
+        "Use a verifiable question with two constraints.", "Allow algebra.",
+        conduct="Offer help only when requested.", review="Explain the first incorrect step.",
+    )
     prompts = [
         devise_prompt(
             language="en",
@@ -246,6 +286,7 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
     ]
     for prompt in prompts:
         assert steering.instructions in prompt and steering.adaptive in prompt
+        assert steering.conduct in prompt and steering.review in prompt
         assert "HIDDEN_" not in prompt
         assert "takes precedence" in prompt
 
@@ -259,7 +300,7 @@ def test_neutral_defaults_and_static_activity_prompts() -> None:
         value = Steering.initial(language)
         assert clean_text(value.instructions, MAX_GUIDANCE_CHARS) == value.instructions
         assert clean_text(value.adaptive, MAX_SUMMARY_CHARS) == value.adaptive
-        for text in (value.instructions, value.adaptive):
+        for text in (value.instructions, value.conduct, value.review, value.adaptive):
             assert text.strip()
             assert "disabil" not in text.lower() and "diagnos" not in text.lower()
     for text in (planning, continuation):
@@ -274,3 +315,18 @@ def test_neutral_defaults_and_static_activity_prompts() -> None:
             "material correspondence with several",
         ):
             assert removed not in text
+
+
+def test_fixed_cores_remain_small_and_do_not_override_configurable_choices() -> None:
+    from agents.experience_agent import _INSTRUCTION as runner
+    from agents.experience_continuer import _INSTRUCTION as continuation
+    from agents.experience_deviser import _INSTRUCTION as planning
+
+    for text, ceiling in ((planning, 10000), (continuation, 7500), (runner, 3500)):
+        assert len(text) < ceiling
+        for retired in (
+            "Nothing can be failed", "nothing is corrected", "no diagram",
+            "Never take the option that comes to you first", "THE WORLD",
+            "about 6 words", "one thing at a time",
+        ):
+            assert retired not in text

@@ -81,7 +81,8 @@ const PREFERENCES_FIELDS = [
 const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;
 
 const STEERING_FIELDS = [
-  "instructions", "adaptive", "revision", "pendingCount", "feedbackCount",
+  "instructions", "conduct", "review", "adaptive", "revision", "pendingCount", "feedbackCount",
+  "defaultConduct", "defaultReview",
   "defaultInstructions", "defaultAdaptive", "instructionsLimit", "adaptiveLimit",
   "reasons", "commentLimit",
 ] as const;

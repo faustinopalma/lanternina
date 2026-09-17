@@ -138,3 +138,13 @@ WHAT_MAKES_IT_WORTH_DOING: Final = SAYS.text("what-makes-it-worth-doing")
 _DRAWN_SHAPE: Final = ", ".join(f'"{name}": "<a short phrase>"' for name in DIMENSIONS)
 
 THE_TEN_DIMENSIONS: Final = SAYS.text("the-ten-dimensions", drawn_shape=_DRAWN_SHAPE)
+
+ACTIVITY_PROTOCOL: Final = SAYS.text("protocol")
+ACTIVITY_CONTRACT: Final = SAYS.text(
+    "contract",
+    max_heading=MAX_HEADING, min_weight_minutes=MIN_WEIGHT_MINUTES,
+    max_weight_minutes=MAX_WEIGHT_MINUTES, help_levels=HELP_LEVELS,
+    max_help_after=MAX_HELP_AFTER, max_in_hand=MAX_IN_HAND,
+    max_way_out_minutes=MAX_WAY_OUT_MINUTES, max_lines=MAX_LINES, max_line=MAX_LINE,
+    acts=THE_ACTS,
+) + THE_MARKS_ON_A_PAGE

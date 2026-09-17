@@ -185,25 +185,23 @@ def test_nothing_about_a_person_reaches_the_prompt() -> None:
 
 
 def test_the_prompts_request_material_exchanges_and_a_finite_paper_budget() -> None:
-    from agents.experience_agent import SAYS as RUNNER
+    from agents.experience_agent import _INSTRUCTION as RUNNER
     from agents.experience_continuer import _INSTRUCTION as CONTINUER
     from agents.experience_deviser import the_prompt
-    from agents.idea_editor import SAYS as EDITOR
 
     devised_prompt = the_prompt(language="Italian", capabilities=frozenset())
     assert "at most 5 printed sheets for the whole game" in devised_prompt
-    assert "as many exchanges as the activity and the parent's guidance require" in devised_prompt
+    assert "conductInstructions governs interaction and help" in devised_prompt
     assert "State this whole-game paper ceiling in the script" in devised_prompt
     for prompt in (
         devised_prompt,
         CONTINUER,
-        RUNNER.text("instruction", acts=""),
-        EDITOR.text("instruction"),
+        RUNNER,
     ):
         assert "photograph" in prompt
         assert "closure" in prompt
         assert "immediate" in prompt
-    for prompt in (CONTINUER, RUNNER.text("instruction", acts="")):
+    for prompt in (CONTINUER, RUNNER):
         assert "at most five printed sheets" in prompt
         assert "approved script" in prompt
 
@@ -239,18 +237,17 @@ def test_every_limit_that_refuses_a_document_is_stated_in_both_prompts() -> None
             assert str(limit) in prompt, f"{who} never tells the model {name} is {limit}"
 
 
-def test_both_prompts_say_what_makes_an_afternoon_worth_doing() -> None:
-    """Added 24 August 2026, from the parent. Until then the prompt was almost entirely
-    prohibitions, and a model told only what it may not write writes the safest thing it can
-    think of — a worksheet with a story on top."""
-    from agents.experience_continuer import _INSTRUCTION as CONTINUER
-    from agents.experience_deviser import _INSTRUCTION as DEVISER
+def test_both_prompts_delegate_editorial_choices_to_visible_guidance() -> None:
+    from agents.experience_continuer import the_prompt as continuation
+    from agents.experience_deviser import the_prompt as planning
 
-    for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
-        assert "parent" in prompt, who
-        assert "Something is found out, made or named" in prompt, who
-        assert "last moment closes the activity using only known results" in prompt, who
-        assert "voice and amount of explanation requested by the parent" in prompt, who
+    for prompt in (
+        planning(language="en", capabilities=frozenset()),
+        continuation(experience={}, after="read", came="marks", reading={}),
+    ):
+        assert "govern educational and editorial choices" in prompt
+        assert "conductInstructions" in prompt and "reviewInstructions" in prompt
+        assert "Something is found out, made or named" not in prompt
 
 
 def test_being_worth_doing_is_never_asked_for_as_being_hard_to_stop() -> None:
@@ -324,8 +321,7 @@ def test_the_prompt_names_the_six_things_a_model_reaches_for() -> None:
     """
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
-    assert "genre and structure from the parent's guidance" in DEVISER
-    assert "not a genre merely because it is familiar" in DEVISER
+    assert "not a genre merely because it is familiar" not in DEVISER
     assert "Do not write any of these" not in DEVISER
 
 
@@ -335,12 +331,7 @@ def test_the_six_properties_of_the_text_are_in_both_prompts() -> None:
     from agents.experience_continuer import _INSTRUCTION as CONTINUER
     from agents.experience_deviser import _INSTRUCTION as DEVISER
 
-    for line in (
-        "Write precise instructions",
-        "Follow the parent-visible guidance for wording",
-        "without grading the person",
-        "Do not print the household configuration",
-    ):
+    for line in ("EXECUTION PROTOCOL", "MOMENT CONTRACT", "PAGE CONTRACT"):
         for who, prompt in (("the deviser", DEVISER), ("the continuer", CONTINUER)):
             assert line in prompt, f"{who} never says {line!r}"
 
@@ -353,9 +344,9 @@ def test_the_recent_combinations_arrive_as_something_the_next_one_may_not_be() -
     prompt = router.asked.prompt  # type: ignore[union-attr]
 
     assert "un tetto di agosto" in prompt
-    assert f"at most {experience.MAX_SHARED_DIMENSIONS} of those" in prompt
-    # The world may come back, and the prompt has to say so or a model avoids everything.
-    assert "Two of them may come back" in prompt
+    assert "Repetition, practice and revisiting an earlier subject are allowed" in prompt
+    assert "More than that is refused" not in prompt
+    assert "novelty is not a requirement" in prompt
 
 
 def test_a_house_with_no_history_is_not_asked_to_avoid_nothing() -> None:

@@ -7,10 +7,4 @@ What may not move is listed rather than implied, and it is short: the world, the
 
 The two lists that follow this block are separated in the prompt for the same reason they are separated in the store: one of them can be edited from a browser and the other cannot.
 -->
-You are writing the rest of this activity, and you have something nobody had when the plan was written: the page itself, and what is on it. That is the best evidence anybody will get, so use it.
-
-The moments that were planned after this one are a proposal and not a schedule. You may write a different rest: other moments, another thing printed, another thing asked, another ending. If what came back shows the activity has gone somewhere better than where it was heading, go there. If it shows somebody has already found what they were going to be led to, do not walk them through it again — take it as done and go on to what follows from it. If it shows they are not interested in what was set up, let that part be over and put something else in front of them.
-
-Three things stay as they are. The world the activity is set in, because somebody is inside it and it cannot change under them. The language. And the bounds below.
-
-These are not suggestions and they are not negotiable:
+Use returned work as evidence within the approved activity's scope and language. The configurable conduct and review prompts determine how to continue. Respect these execution and household bounds:

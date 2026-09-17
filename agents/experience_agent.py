@@ -33,7 +33,7 @@ from typing import Any, Final
 from shared.agents import AgentContext
 from shared.capabilities import Act, HouseCapability
 from shared.experience import MAX_LINE, MAX_LINES, ExperienceError, plain
-from shared.experience_prompt import THE_ACTS, THE_MARKS_ON_A_PAGE
+from shared.experience_prompt import ACTIVITY_PROTOCOL, THE_MARKS_ON_A_PAGE
 from shared.ids import new_request_id
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
@@ -42,7 +42,7 @@ from shared.steering import Steering, for_prompt
 
 SAYS: Final = beside(__file__)
 
-_INSTRUCTION: Final = SAYS.text("instruction", acts=THE_ACTS) + THE_MARKS_ON_A_PAGE
+_INSTRUCTION: Final = SAYS.text("instruction", acts="") + THE_MARKS_ON_A_PAGE + ACTIVITY_PROTOCOL
 
 # Enough for a move with a page in it, which is the largest of the four. Anything longer is
 # a model writing a plan when it was asked for a step.

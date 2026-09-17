@@ -28,6 +28,8 @@ def summary_prompt(value: Guidance, language: str) -> str:
             {
                 "language": language,
                 "parentInstructions": value.steering.instructions,
+                "conductInstructions": value.steering.conduct,
+                "reviewInstructions": value.steering.review,
                 "currentSummary": value.steering.adaptive,
                 "newFeedback": [entry.to_dict() for entry in value.pending],
                 "reasonMeanings": REASONS,

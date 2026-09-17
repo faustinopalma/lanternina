@@ -32,14 +32,26 @@ def clean_text(value: object, limit: int) -> str:
 class Steering:
     instructions: str
     adaptive: str
+    conduct: str = ""
+    review: str = ""
 
     @classmethod
     def initial(cls, language: str = "it") -> Steering:
-        return cls(*defaults(language))
+        chosen = language if language in {"it", "en"} else "it"
+        return cls(
+            *defaults(chosen),
+            conduct=SAYS.text(f"conduct-{chosen}").strip(),
+            review=SAYS.text(f"review-{chosen}").strip(),
+        )
 
     def as_material(self) -> str:
         return json.dumps(
-            {"parentInstructions": self.instructions, "feedbackGuidance": self.adaptive},
+            {
+                "parentInstructions": self.instructions,
+                "conductInstructions": self.conduct,
+                "reviewInstructions": self.review,
+                "feedbackGuidance": self.adaptive,
+            },
             ensure_ascii=False,
         )
 

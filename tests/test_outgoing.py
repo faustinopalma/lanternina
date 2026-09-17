@@ -23,24 +23,25 @@ def test_an_ordinary_line_goes_out_as_it_was_written() -> None:
     assert said.refusals == {}
 
 
-def test_praise_is_replaced_by_the_text_the_plan_already_carried() -> None:
+def test_private_configuration_is_replaced_by_the_written_fallback() -> None:
     """The fallback is why the written texts are mandatory in the first place."""
     said = Outgoing()
 
-    out = said.line("uno", "Bravo, hai finito.", written="Il foglio resta lì.")
+    out = said.line("uno", "Tuo padre ha scelto il compito.", written="Il foglio resta lì.")
 
     assert out == "Il foglio resta lì."
     assert said.refusals["uno"] == 1
 
 
-def test_a_line_that_names_the_machinery_does_not_go_out() -> None:
-    """`ideas/09 §8`: nothing generated may carry a trace of the parent's channel."""
+def test_explanations_and_corrective_feedback_can_go_out() -> None:
     said = Outgoing()
 
     out = said.line("due", "Ho accorciato il pomeriggio.", written="Ne resta uno.")
 
-    assert out == "Ne resta uno."
-    assert "accorciato" in said.reasons[0].why
+    assert out == "Ho accorciato il pomeriggio."
+    for text in ("Questa risposta è sbagliata.", "Riprova.", "Il tuo punteggio è 4."):
+        assert said.line("due", text, written="Ne resta uno.") == text
+    assert not said.reasons
 
 
 def test_a_line_too_long_for_the_screen_does_not_go_out() -> None:
@@ -66,7 +67,9 @@ def test_a_screenful_is_refused_as_one_thing() -> None:
     said = Outgoing()
     written = ("Il foglio resta lì.",)
 
-    out = said.lines("uno", ("Guarda il cielo.", "Bravo."), written=written)
+    out = said.lines(
+        "uno", ("Guarda il cielo.", "Tuo padre ha scelto il compito."), written=written
+    )
 
     assert out == written
     assert "line 2" in said.reasons[0].why
@@ -83,8 +86,8 @@ def test_the_tally_names_the_slots_that_were_refused_most() -> None:
     """A slot refused often is a defect in the devising prompt, not a case to handle."""
     said = Outgoing()
     for _ in range(3):
-        said.line("il-finale", "Bravo.", written="Va bene.")
-    said.line("l-inizio", "Bravo.", written="Va bene.")
+        said.line("il-finale", "Tuo padre ha scelto il compito.", written="Va bene.")
+    said.line("l-inizio", "Tuo padre ha scelto il compito.", written="Va bene.")
 
     assert said.tally().startswith("texts refused, by slot: il-finale 3")
 
@@ -97,5 +100,5 @@ def test_a_run_with_nothing_refused_says_nothing() -> None:
 def test_the_reason_is_the_first_one_that_applies_and_costs_least() -> None:
     assert why_not("", limit=MAX_LINE) == "it says nothing"
     assert "the limit is" in why_not("a" * 200, limit=MAX_LINE)
-    assert "bravo" in why_not("Bravo.", limit=MAX_LINE)
+    assert "padre" in why_not("Tuo padre ha scelto il compito.", limit=MAX_LINE)
     assert why_not("Guarda il cielo.", limit=MAX_LINE) == ""

@@ -117,11 +117,10 @@ def check(
     complaints: list[Complaint] = []
     complaints.extend(the_way_out_starts_from_something(plan.moments, already_said))
     complaints.extend(the_ending_is_written_down(plan.moments))
-    complaints.extend(nothing_from_the_block_list(plan))
+    complaints.extend(nothing_from_the_block_list(plan, configuration_only=True))
     complaints.extend(no_placeholder_is_left(plan))
     if isinstance(plan, Experience):
         complaints.extend(the_short_version_fits(plan))
-        complaints.extend(not_the_same_afternoon_again(plan.drawn, recent))
         complaints.extend(no_more_paper_than_the_house_wants(plan, sheets_at_most))
     return tuple(complaints)
 
@@ -241,7 +240,9 @@ def the_ending_is_written_down(moments: Sequence[Moment]) -> tuple[Complaint, ..
     )
 
 
-def nothing_from_the_block_list(plan: Experience | Continuation) -> tuple[Complaint, ...]:
+def nothing_from_the_block_list(
+    plan: Experience | Continuation, *, configuration_only: bool = False
+) -> tuple[Complaint, ...]:
     """Nothing here is a remark about the person reading it, or about the machine.
 
     Praise, blame, hurry, a score and the machinery, each caught by the person in the
@@ -255,13 +256,13 @@ def nothing_from_the_block_list(plan: Experience | Continuation) -> tuple[Compla
     complaints: list[Complaint] = []
     if isinstance(plan, Experience):
         for field, text in (("title", plan.title), ("overview", plan.overview)):
-            found = blocked_in(text)
+            found = blocked_in(text, configuration_only=configuration_only)
             if found:
                 complaints.append(
                     Complaint(where=field, says=f"it says {_joined(found)}")
                 )
     for index, moment in enumerate(plan.moments):
-        found = blocked_in("\n".join(moment.words))
+        found = blocked_in("\n".join(moment.words), configuration_only=configuration_only)
         if found:
             complaints.append(
                 Complaint(

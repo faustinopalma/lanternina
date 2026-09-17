@@ -9,21 +9,29 @@ import { Label, Textarea } from "@/components/ui/field";
 import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
+const PROMPTS = [
+  { field: "instructions", label: "steering.design" },
+  { field: "conduct", label: "steering.conduct" },
+  { field: "review", label: "steering.review" },
+] as const;
+const FIELDS = ["instructions", "conduct", "review", "adaptive"] as const;
+type Texts = Pick<Guidance, typeof FIELDS[number]>;
+
 function Editor({ initial }: { initial: Guidance }) {
   const api = useApi();
   const { t } = useWords();
   const [kept, setKept] = useState(initial);
-  const [instructions, setInstructions] = useState(initial.instructions);
-  const [adaptive, setAdaptive] = useState(initial.adaptive);
+  const [texts, setTexts] = useState<Texts>(initial);
+  const [selected, setSelected] = useState(0);
+  const active = PROMPTS[selected]!;
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<MessageKey | null>(null);
   const [confirm, setConfirm] = useState<SteeringEdit["action"] | null>(null);
-  const changed = instructions !== kept.instructions || adaptive !== kept.adaptive;
+  const changed = FIELDS.some((field) => texts[field] !== kept[field]);
 
   function accept(value: Guidance) {
     setKept(value);
-    setInstructions(value.instructions);
-    setAdaptive(value.adaptive);
+    setTexts(value);
     setConfirm(null);
   }
 
@@ -33,8 +41,9 @@ function Editor({ initial }: { initial: Guidance }) {
     try {
       const change: SteeringEdit = { revision: kept.revision, action };
       if (action === "save") {
-        if (instructions !== kept.instructions) change.instructions = instructions;
-        if (adaptive !== kept.adaptive) change.adaptive = adaptive;
+        for (const field of FIELDS) {
+          if (texts[field] !== kept[field]) change[field] = texts[field];
+        }
       }
       accept(await api.saveSteering(change));
       setStatus("steering.saved");
@@ -53,8 +62,13 @@ function Editor({ initial }: { initial: Guidance }) {
       if (retry) await api.synthesizeSteering();
       const value = await api.steering();
       if (changed) {
-        if (instructions === kept.instructions) setInstructions(value.instructions);
-        if (adaptive === kept.adaptive) setAdaptive(value.adaptive);
+        setTexts((current) => {
+          const refreshed = { ...current };
+          for (const field of FIELDS) {
+            if (current[field] === kept[field]) refreshed[field] = value[field];
+          }
+          return refreshed;
+        });
         setKept(value);
         setStatus("steering.reviewChanges");
       } else {
@@ -71,20 +85,45 @@ function Editor({ initial }: { initial: Guidance }) {
     <section className="max-w-[42rem] border-b border-edge pb-5">
       <form onSubmit={(event) => { event.preventDefault(); void save(); }}
         className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="steering-instructions">{t("steering.instructions")}</Label>
-          <Quiet className="m-0">{t("steering.instructionsNote")}</Quiet>
-          <Textarea id="steering-instructions" rows={8} value={instructions}
+        <Quiet className="m-0">{t("steering.instructionsNote")}</Quiet>
+        <div role="tablist" aria-label={t("steering.instructions")}
+          className="grid grid-cols-3 border-b border-edge">
+          {PROMPTS.map((prompt, index) => <button key={prompt.field} type="button"
+            role="tab" id={`prompt-tab-${prompt.field}`} aria-selected={selected === index}
+            aria-controls="prompt-editor" tabIndex={selected === index ? 0 : -1}
+            className={`min-w-0 border-b-2 px-2 py-2 text-sm ${selected === index
+              ? "border-accent text-ink" : "border-transparent text-quiet"}`}
+            onClick={() => { setSelected(index); setConfirm(null); }}
+            onKeyDown={(event) => {
+              let next = index;
+              if (event.key === "ArrowRight") next = (index + 1) % PROMPTS.length;
+              else if (event.key === "ArrowLeft") next = (index + PROMPTS.length - 1) % PROMPTS.length;
+              else if (event.key === "Home") next = 0;
+              else if (event.key === "End") next = PROMPTS.length - 1;
+              else return;
+              event.preventDefault();
+              setSelected(next);
+              setConfirm(null);
+              document.getElementById(`prompt-tab-${PROMPTS[next]!.field}`)?.focus();
+            }}>{t(prompt.label)}</button>)}
+        </div>
+        <div id="prompt-editor" role="tabpanel" aria-labelledby={`prompt-tab-${active.field}`}
+          className="flex flex-col gap-2">
+          <Label htmlFor="steering-instructions">{t(active.label)}</Label>
+          <Textarea id="steering-instructions" rows={12} value={texts[active.field]}
             maxLength={kept.instructionsLimit} disabled={busy}
-            placeholder={t("steering.example")}
-            onChange={(event) => setInstructions(event.target.value)} />
+            onChange={(event) => setTexts({ ...texts, [active.field]: event.target.value })} />
+          <Button type="button" size="small" disabled={busy || changed}
+            className="self-start" onClick={() => setConfirm(`restore_${active.field}`)}>
+            <RotateCcw size={16} />{t("steering.restore")}
+          </Button>
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="steering-adaptive">{t("steering.adaptive")}</Label>
           <Quiet className="m-0">{t("steering.adaptiveNote")}</Quiet>
-          <Textarea id="steering-adaptive" rows={5} value={adaptive}
+          <Textarea id="steering-adaptive" rows={5} value={texts.adaptive}
             maxLength={kept.adaptiveLimit} disabled={busy}
-            onChange={(event) => setAdaptive(event.target.value)} />
+            onChange={(event) => setTexts({ ...texts, adaptive: event.target.value })} />
           <Quiet className="m-0">{t("steering.feedbackCount", { count: kept.feedbackCount })}</Quiet>
           {kept.pendingCount > 0 ? <div className="flex flex-wrap items-center gap-2">
             <Quiet>{t("steering.pending", { count: kept.pendingCount })}</Quiet>
@@ -103,15 +142,14 @@ function Editor({ initial }: { initial: Guidance }) {
         <Quiet aria-live="polite" className="m-0">{status ? t(status) : ""}</Quiet>
         {status === "steering.reviewChanges" ? <details>
           <summary className="cursor-pointer">{t("steering.savedVersion")}</summary>
-          <p className="mt-2 whitespace-pre-wrap break-words">{kept.instructions}</p>
-          <p className="mt-2 whitespace-pre-wrap break-words">{kept.adaptive}</p>
+          {FIELDS.map((field) => <div key={field} className="mt-2">
+            <h3>{t(field === "adaptive" ? "steering.adaptive"
+              : PROMPTS.find((prompt) => prompt.field === field)!.label)}</h3>
+            <p className="whitespace-pre-wrap break-words">{kept[field]}</p>
+          </div>)}
         </details> : null}
       </form>
       <div className="mt-4 flex flex-wrap gap-2">
-        <Button size="small" disabled={busy || changed}
-          onClick={() => setConfirm("restore_instructions")}>
-          <RotateCcw size={16} />{t("steering.restore")}
-        </Button>
         <Button size="small" disabled={busy || changed}
           onClick={() => setConfirm("reset_adaptive")}>
           <Trash2 size={16} />{t("steering.reset")}

@@ -40,13 +40,9 @@ from shared.experience import (
     ExperienceError,
 )
 from shared.experience_prompt import (
-    HOW_THE_TEXT_READS,
-    ONLY_WHAT_YOU_CAN_ANSWER,
-    THE_ACTS,
+    ACTIVITY_CONTRACT,
+    ACTIVITY_PROTOCOL,
     THE_LIMITS,
-    THE_MARKS_ON_A_PAGE,
-    THE_SHAPE_OF_A_MOMENT,
-    WHAT_MAKES_IT_WORTH_DOING,
 )
 from shared.ids import new_request_id
 from shared.prompts import beside
@@ -58,21 +54,13 @@ MAX_CONTINUATION_CHARS: Final = 20000
 
 SAYS: Final = beside(__file__)
 
-_FORMAT: Final = SAYS.text("format") + THE_SHAPE_OF_A_MOMENT + THE_ACTS + THE_MARKS_ON_A_PAGE
+_FORMAT: Final = SAYS.text("format") + ACTIVITY_CONTRACT
 
 _RULES: Final = (
     SAYS.text("rules-head", max_moments=MAX_MOMENTS) + THE_LIMITS + SAYS.text("rules-tail")
 )
 
-_MANNER: Final = (
-    SAYS.text("manner-head")
-    + HOW_THE_TEXT_READS
-    + ONLY_WHAT_YOU_CAN_ANSWER
-    + WHAT_MAKES_IT_WORTH_DOING
-    + SAYS.text("manner-tail")
-)
-
-_INSTRUCTION: Final = _FORMAT + _RULES + _MANNER
+_INSTRUCTION: Final = _FORMAT + _RULES + ACTIVITY_PROTOCOL
 
 # What the plan assumed and what happened are not always the same thing. The bounds it
 # improvises within are `panel/guidelines.py`; the words are in the files beside this one.
@@ -180,7 +168,8 @@ class ExperienceContinuer:
             )
         except ExperienceError as refusal:
             return await self.repair_unreadable(
-                ctx, answer=answer, refusal=str(refusal), experience=experience, after=after
+                ctx, answer=answer, refusal=str(refusal), experience=experience, after=after,
+                original_prompt=asked,
             )
 
     async def repair_unreadable(
@@ -191,6 +180,7 @@ class ExperienceContinuer:
         refusal: str,
         experience: dict[str, Any],
         after: str,
+        original_prompt: str = "",
     ) -> Continuation:
         """The same answer, for a continuation the format would not read at all.
 
@@ -209,7 +199,7 @@ class ExperienceContinuer:
         again = await self._ask(
             ctx,
             SAYS.text("repair", refusal=refusal)
-            + f"{_FORMAT}{_RULES}"
+            + (original_prompt or f"{_FORMAT}{_RULES}")
             + f"What was refused: {answer}\n",
             experience,
             after,

@@ -27,6 +27,7 @@ from shared.agents import AgentContext
 from shared.experience import ExperienceError
 from shared.ids import LearnerId
 from shared.routing import ModelRequest
+from shared.steering import Steering
 
 THE_AFTERNOON: dict[str, Any] = a.an_afternoon()
 
@@ -76,6 +77,9 @@ def continue_with(*replies: str) -> tuple[Any, Any]:
             after="che-torna",
             came="marks",
             reading={},
+            steering=Steering(
+                "DESIGN_CHOICE", "FEEDBACK_CHOICE", "CONDUCT_CHOICE", "REVIEW_CHOICE"
+            ),
         )
     )
     return carrying_on, asked
@@ -107,6 +111,8 @@ def test_the_second_ask_names_the_rule_and_the_offending_number() -> None:
     assert "45 characters" in asked[1]
     assert "at most 44" in asked[1]
     assert "rewording the rest is not a repair" in asked[1]
+    for marker in ("DESIGN_CHOICE", "FEEDBACK_CHOICE", "CONDUCT_CHOICE", "REVIEW_CHOICE"):
+        assert marker in asked[0] and marker in asked[1]
 
 
 def test_the_second_ask_carries_what_was_refused_so_the_rest_survives() -> None:

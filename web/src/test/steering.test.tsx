@@ -13,7 +13,7 @@ it("shows both texts and saves only the field deliberately edited", async () => 
   const api = fakeApi();
   const user = userEvent.setup();
   renderPanel(api, <Steering />);
-  const field = await screen.findByLabelText("Le tue indicazioni");
+  const field = await screen.findByLabelText("Progettazione", { selector: "textarea" });
   expect(screen.getByLabelText("Indicazioni dai feedback")).not.toHaveValue("");
   await user.clear(field);
   await user.paste("Usa problemi con un risultato verificabile.");
@@ -28,12 +28,12 @@ it("confirms resets and keeps the stable instructions", async () => {
   const api = fakeApi();
   const user = userEvent.setup();
   renderPanel(api, <Steering />);
-  await screen.findByLabelText("Le tue indicazioni");
+  await screen.findByLabelText("Progettazione", { selector: "textarea" });
   await user.click(screen.getByRole("button", { name: "Azzera sintesi e feedback" }));
   expect(api.recorded.steering).toEqual([]);
   await user.click(screen.getByRole("button", { name: "Conferma" }));
   await waitFor(() => expect(api.recorded.steering[0]?.action).toBe("reset_adaptive"));
-  expect(screen.getByLabelText("Le tue indicazioni")).toHaveValue(
+  expect(screen.getByLabelText("Progettazione", { selector: "textarea" })).toHaveValue(
     "Proponi attività con un obiettivo chiaro.");
 });
 
@@ -46,13 +46,13 @@ it("preserves an edited draft and refreshes the untouched summary after a confli
     .mockImplementation(async (change) => ({ ...current, ...change, revision: 2 }));
   const user = userEvent.setup();
   renderPanel(api, <Steering />);
-  await user.type(await screen.findByLabelText("Le tue indicazioni"), " Usa due indizi.");
+  await user.type(await screen.findByLabelText("Progettazione", { selector: "textarea" }), " Usa due indizi.");
   await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
   expect(await screen.findByText(/Le indicazioni salvate sono cambiate/)).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Aggiorna" }));
   await waitFor(() => expect(screen.getByLabelText("Indicazioni dai feedback"))
     .toHaveValue(current.adaptive));
-  expect(screen.getByLabelText("Le tue indicazioni")).toHaveValue(
+  expect(screen.getByLabelText("Progettazione", { selector: "textarea" })).toHaveValue(
     original.instructions + " Usa due indizi.");
   await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
   expect(api.saveSteering).toHaveBeenLastCalledWith({ revision: 1, action: "save",
@@ -74,4 +74,29 @@ it("records selected rejection reasons and the free comment", async () => {
     id: "aftn-1", feedback: { reasons: ["too_easy", "too_open"],
       note: "Confrontare due indizi va bene." },
   }]));
+});
+
+it("keeps edits across tabs and restores only the selected prompt", async () => {
+  const api = fakeApi();
+  const initial = await api.steering();
+  const user = userEvent.setup();
+  renderPanel(api, <Steering />);
+  await screen.findByLabelText("Progettazione", { selector: "textarea" });
+  await user.click(screen.getByRole("tab", { name: "Conduzione e aiuto" }));
+  await user.clear(screen.getByLabelText("Conduzione e aiuto", { selector: "textarea" }));
+  await user.paste("Aiuto solo su richiesta.");
+  await user.click(screen.getByRole("tab", { name: "Verifica e conclusione" }));
+  await user.clear(screen.getByLabelText("Verifica e conclusione", { selector: "textarea" }));
+  await user.paste("Spiega il primo errore.");
+  await user.click(screen.getByRole("tab", { name: "Conduzione e aiuto" }));
+  expect(screen.getByLabelText("Conduzione e aiuto", { selector: "textarea" }))
+    .toHaveValue("Aiuto solo su richiesta.");
+  await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
+  expect(api.recorded.steering[0]).toEqual({ revision: 0, action: "save",
+    conduct: "Aiuto solo su richiesta.", review: "Spiega il primo errore." });
+  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt" }));
+  await user.click(screen.getByRole("button", { name: "Conferma" }));
+  await waitFor(() => expect(api.recorded.steering[1]?.action).toBe("restore_conduct"));
+  expect(await api.steering()).toMatchObject({ instructions: initial.instructions,
+    conduct: initial.conduct, review: "Spiega il primo errore.", adaptive: initial.adaptive });
 });

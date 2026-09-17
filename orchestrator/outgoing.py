@@ -57,7 +57,7 @@ def why_not(text: str, *, limit: int) -> str:
         return "it says nothing"
     if len(text) > limit:
         return f"it is {len(text)} characters and the limit is {limit}"
-    found: tuple[Blocked, ...] = blocked_in(text)
+    found: tuple[Blocked, ...] = blocked_in(text, configuration_only=True)
     if found:
         return "it says " + ", ".join(str(entry) for entry in found)
     return ""

@@ -70,12 +70,22 @@ class Guidance:
     history: tuple[Feedback, ...] = ()
     feedback_count: int = 0
 
-    def edited(self, instructions: str, adaptive: str) -> Guidance:
+    def edited(
+        self, instructions: str, adaptive: str, *, conduct: str | None = None,
+        review: str | None = None,
+    ) -> Guidance:
         return replace(
             self,
-            steering=Steering(
-                clean_text(instructions, MAX_GUIDANCE_CHARS),
-                clean_text(adaptive, MAX_SUMMARY_CHARS),
+            steering=replace(
+                self.steering,
+                instructions=clean_text(instructions, MAX_GUIDANCE_CHARS),
+                adaptive=clean_text(adaptive, MAX_SUMMARY_CHARS),
+                conduct=self.steering.conduct if conduct is None else clean_text(
+                    conduct, MAX_GUIDANCE_CHARS
+                ),
+                review=self.steering.review if review is None else clean_text(
+                    review, MAX_GUIDANCE_CHARS
+                ),
             ),
         )
 
@@ -112,11 +122,15 @@ class Guidance:
         initial = Steering.initial(language)
         return {
             "instructions": self.steering.instructions,
+            "conduct": self.steering.conduct,
+            "review": self.steering.review,
             "adaptive": self.steering.adaptive,
             "revision": self.revision,
             "pendingCount": len(self.pending),
             "feedbackCount": self.feedback_count,
             "defaultInstructions": initial.instructions,
+            "defaultConduct": initial.conduct,
+            "defaultReview": initial.review,
             "defaultAdaptive": initial.adaptive,
             "instructionsLimit": MAX_GUIDANCE_CHARS,
             "adaptiveLimit": MAX_SUMMARY_CHARS,

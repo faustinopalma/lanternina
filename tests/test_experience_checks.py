@@ -137,6 +137,13 @@ def test_an_afternoon_that_is_right_has_nothing_wrong_with_it() -> None:
     assert check(an_experience()) == ()
 
 
+def test_runtime_checks_allow_correction_and_repeated_practice() -> None:
+    moments = a.moments()
+    moments[0]["weights"] = a.weights(lines=("Questa risposta è sbagliata.", "Riprova."))
+    plan = an_experience(moments=moments)
+    assert check(plan, recent=(plan.drawn,)) == ()
+
+
 # ── The way out starts from something already in hand ────────────────────────────────
 
 
@@ -484,7 +491,7 @@ def test_a_dimension_left_blank_is_refused() -> None:
 def test_the_half_nobody_approved_passes_the_same_checks() -> None:
     """The parent read an overview and not this, so this is where the checks earn most."""
     moments = [a.say(moment_id="ancora", heading="Ancora una cosa"), a.close()]
-    moments[0]["weights"] = a.weights(lines=("Ottimo lavoro, il foglio è finito.",))
+    moments[0]["weights"] = a.weights(lines=("Tuo padre ha scelto il compito.",))
 
     complaints = check(Continuation.from_dict(a.a_continuation(moments=moments)))
 

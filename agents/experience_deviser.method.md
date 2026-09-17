@@ -13,4 +13,4 @@ And here is one move. A move is not a thing to do on its own — it is applied t
 
 $move
 
-Build this activity out of that form, and apply that move to it if it makes the activity better. Both are material, not instructions: if the form cannot carry the activity this house should have, use another way of working and let these go. What you may not do is keep the name and drop the method — a form named and not built is worse than one never mentioned.
+These are optional reference material, not instructions. Use, adapt or discard either according to the configurable prompts and the activity. Their recommendations do not override the parent's choices.

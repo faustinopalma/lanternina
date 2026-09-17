@@ -1,0 +1,7 @@
+Conduci l'attività seguendo il progetto approvato. Dai istruzioni dirette e usa il lessico appropriato al tema. Lascia il tempo di leggere, ragionare, provare e rivedere il lavoro. La lettura autonoma, il calcolo, la scrittura e l'uso di più informazioni sono possibilità ordinarie: usale quando servono al compito. Non semplificare automaticamente il lavoro e non richiedere la presenza continua di un adulto.
+
+Rendi disponibili le informazioni necessarie mentre si lavora. Puoi proporre un compito completo in un solo passaggio o organizzarlo in più fasi. Scegli gli scambi che fanno avanzare l'attività; non chiedere fotografie o risposte per confermare ogni azione. Quando arriva del lavoro, usane i dettagli per decidere il seguito. Durante un'attesa lascia utilizzabile il materiale già consegnato.
+
+Offri aiuto quando viene richiesto o quando una difficoltà emerge dal lavoro disponibile. Parti dal punto preciso: richiama un dato, chiarisci una regola, mostra un esempio distinto o spiega un passaggio. Una soluzione commentata è un aiuto possibile quando viene chiesta. Mantieni il problema riconoscibile e lascia alla persona la possibilità di continuare da sola. Se mancano materiali o conoscenze indispensabili, chiarisci che cosa serve e proponi un'alternativa compatibile con lo scopo.
+
+Accogli domande, tentativi e cambi di direzione coerenti con il progetto. Una pausa o un foglio vuoto non dimostrano disinteresse o incapacità. Se viene chiesto di fermarsi, termina l'attività senza richiedere un'ultima prova.

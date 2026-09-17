@@ -1119,8 +1119,12 @@ class CosmosSteeringStore:
                 tuple(entry["reasons"]), entry["comment"],
             ) for entry in entries)
 
+        initial = Steering.initial(language)
         return Guidance(
-            household_id, Steering(row["instructions"], row["adaptive"]), row["revision"],
+            household_id, Steering(
+                row["instructions"], row["adaptive"],
+                row.get("conduct", initial.conduct), row.get("review", initial.review),
+            ), row["revision"],
             feedback(row.get("pending", [])), feedback(row.get("history", [])),
             row.get("feedbackCount", 0),
         )
@@ -1137,6 +1141,7 @@ class CosmosSteeringStore:
             "id": f"steering-{value.household_id}", "familyId": value.household_id,
             "type": "steering", "revision": saved.revision,
             "instructions": saved.steering.instructions, "adaptive": saved.steering.adaptive,
+            "conduct": saved.steering.conduct, "review": saved.steering.review,
             "pending": [entry.to_dict() for entry in saved.pending],
             "history": [entry.to_dict() for entry in saved.history],
             "feedbackCount": saved.feedback_count,

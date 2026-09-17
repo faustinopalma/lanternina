@@ -1,40 +1,9 @@
-"""The limits an improvising afternoon has to stay inside, written by the parent.
+"""Household execution bounds, separate from configurable activity prompts.
 
-`ideas/09` gives the execution layer a plan and `ideas/10` gives it a page. Neither says what
-it may do when what actually happened is not what the plan assumed — a page that came back
-blank, a printer with no paper, an afternoon that has plainly gone somewhere else. Following
-the plan regardless is wrong, and stopping is worse: an afternoon that ends because reality
-deviated is an afternoon that failed somebody for being alive.
-
-So it improvises, and these are the bounds. The parent's own sentences about what must not
-happen in this house, kept as they wrote them and handed to the model as material rather
-than as instructions.
-
-**Two kinds of bound, and only one of them is the parent's.** :data:`FIXED` is ours and cannot
-be edited from anywhere: nothing says anything about the person, nothing announces a change,
-an ending stays reachable, no equipment is invented that the house does not have. Those are
-the working rules and a parent loosening them would not be configuring a system, they would be
-removing its reason to exist. What the parent owns is the rest — the house-specific limits we
-could not know: that nobody goes outside, that there are no scissors within reach, that
-nothing may make a noise after nine.
-
-**They only ever narrow, and that changed on 28 August 2026.** These used to be permissions —
-"going out into the garden is fine" — and a permission widens what an afternoon may do, which
-is why the prompt had to carry a sentence telling the model not to let one loosen the fixed
-bounds. A page that can only narrow cannot loosen anything, so the guarantee stops depending
-on a sentence a model has to honour. The parent asked for the change; this is the reason it
-is the right one.
-
-**The default is empty, deliberately.** A house that has said nothing gets the fixed bounds and
-nothing narrower. Suggested lines belong in the panel, where a parent can read one and decide,
-not in a store that would be putting words in their mouth.
-
-**Untrusted, like everything a parent types.** These reach a prompt as quoted material and the
-prompt says not to follow instructions written inside them. That is the working rules' line
-about free text.
-
-Writing one is inert: a row is stored and nothing else happens. The next afternoon that needs
-to improvise finds them, because it asked.
+The fixed bounds preserve safety, isolation, approved scope, available equipment and the
+ability to stop. The parent adds household-specific limits. Educational and editorial
+choices belong to the three prompts in :mod:`shared.steering`, not to these bounds.
+Saving updates a stored row; it does not contact a device or start an activity.
 """
 
 from __future__ import annotations
@@ -56,14 +25,9 @@ _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
 # Ours, and not editable from anywhere. Stated here rather than only inside a prompt so that
 # the difference between what a parent may change and what nobody may is a thing in the code.
 FIXED: Final = (
-    "Never say anything about the person: not how well anything was done, not how much "
-    "effort it took, not what any of it suggests about them.",
-    "Never announce, explain or apologise for a change of course. It arrives as part of "
-    "what is happening.",
-    "An ending stays reachable from wherever the afternoon has got to, and an ending "
-    "reached early is the same ending.",
-    "Use only what this house has. Never invent equipment, materials or a place.",
-    "Nothing can be failed and nothing has to be finished.",
+    "Preserve safety, household isolation and the scope approved by the parent.",
+    "Use available tools and declared materials; distinguish observations from assumptions.",
+    "Keep closure reachable and honor a stop request without requiring further work.",
 )
 
 
