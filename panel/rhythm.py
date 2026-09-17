@@ -128,6 +128,7 @@ class Rhythm:
     updated_at: float = 0.0
     updated_by: str = ""
     display_poll_minutes: int = 10
+    max_open_activities: int = 1
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -149,6 +150,7 @@ class Rhythm:
             "afternoonsADay": self.afternoons_a_day,
             "minAfternoonsADay": MIN_AFTERNOONS_A_DAY,
             "maxAfternoonsADay": MAX_AFTERNOONS_A_DAY,
+            "maxOpenActivities": self.max_open_activities,
         }
 
 
@@ -221,8 +223,12 @@ def clean_rhythm(
     afternoons_a_day: Any = None,
     updated_by: str = "",
     display_poll_minutes: Any = 10,
+    max_open_activities: Any = 1,
 ) -> Rhythm:
     """Normalise what the parent chose. Raises ValueError if it cannot be honoured."""
+    if (isinstance(max_open_activities, bool) or not isinstance(max_open_activities, int)
+            or not 1 <= max_open_activities <= 10):
+        raise ValueError("open activities must be a whole number from 1 to 10")
     if (isinstance(display_poll_minutes, bool) or not isinstance(display_poll_minutes, int)
             or not 1 <= display_poll_minutes <= 1440):
         raise ValueError("display connection interval must be 1 to 1440 whole minutes")
@@ -275,6 +281,7 @@ def clean_rhythm(
         time_zone=zone_of(time_zone),
         scripts_wanted=int(wanted),
         afternoons_a_day=int(a_day),
+        max_open_activities=max_open_activities,
         updated_at=time.time(),
         updated_by=updated_by,
     )

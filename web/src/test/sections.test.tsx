@@ -196,6 +196,24 @@ describe("the gallery", () => {
 describe("the rhythm", () => {
   beforeEach(() => window.localStorage.clear());
 
+  it("saves the configurable open-activity limit and rejects values outside its bounds", async () => {
+    const api = fakeApi();
+    const user = userEvent.setup();
+    renderPanel(api);
+    await open(user, "Ritmo");
+    const limit = await screen.findByLabelText("Massimo di attività aperte");
+    expect(limit).toHaveValue(1);
+    await user.clear(limit);
+    await user.type(limit, "11");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+    expect(limit).toBeInvalid();
+    expect(api.recorded.rhythm).toHaveLength(0);
+    await user.clear(limit);
+    await user.type(limit, "3");
+    await user.click(screen.getByRole("button", { name: "Salva" }));
+    await waitFor(() => expect(api.recorded.rhythm[0]?.maxOpenActivities).toBe(3));
+  });
+
   it("keeps display polling out of the rhythm form", async () => {
     const api = fakeApi();
     const user = userEvent.setup();
@@ -292,6 +310,7 @@ describe("the rhythm", () => {
       timeZone: "Europe/Rome",
       scriptsWanted: 10,
       afternoonsADay: 2,
+      maxOpenActivities: 1,
     });
     expect(await screen.findByText(/La casa lo applica al prossimo giro/)).toBeInTheDocument();
   });

@@ -154,14 +154,38 @@ class PhotoStore:
                 (photo_id,),
             )
 
-    def claim(self) -> dict[str, Any] | None:
+    def assign(self, photo_id: str, target: dict[str, Any]) -> bool:
+        with self.connect() as database:
+            database.execute("BEGIN IMMEDIATE")
+            row = database.execute(
+                "SELECT target, state FROM photos WHERE id=? AND jpeg IS NOT NULL", (photo_id,),
+            ).fetchone()
+            if row is None:
+                return False
+            original = json.loads(row["target"])
+            if original == target:
+                return True
+            if row["state"] != "awaiting_assignment" or not isinstance(original, dict):
+                return False
+            if target not in original.get("candidates", []):
+                return False
+            database.execute(
+                "UPDATE photos SET target=?, state='pending', detail='' WHERE id=?",
+                (json.dumps(target), photo_id),
+            )
+            database.execute("DELETE FROM photo_sync WHERE id=?", (photo_id,))
+            return True
+
+    def claim(self, *, activities_allowed: bool = True) -> dict[str, Any] | None:
         with self.connect() as database:
             database.execute("BEGIN IMMEDIATE")
             row = database.execute(
                 "SELECT * FROM photos AS candidate WHERE state='pending' AND NOT EXISTS ("
                 "SELECT 1 FROM photos AS blocked WHERE blocked.target=candidate.target "
                 "AND blocked.target!='null' AND blocked.state IN ('processing','failed')) "
-                "ORDER BY received LIMIT 1"
+                "AND (? OR candidate.target='null' "
+                "OR json_type(candidate.target, '$.candidates')='array') "
+                "ORDER BY received LIMIT 1", (activities_allowed,),
             ).fetchone()
             if not row:
                 return None

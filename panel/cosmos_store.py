@@ -391,17 +391,27 @@ class CosmosMessageStore:
         )
 
     def add(self, pending: PendingMessage) -> PendingMessage:
-        self._container.create_item(
-            {
+        from azure.cosmos import exceptions
+
+        from panel.messages import MessageConflict
+
+        document = {
                 "id": pending.id,
                 "familyId": pending.household_id,
                 "type": "message",
                 "says": str(pending.said.says),
                 "minutes": pending.said.minutes,
+                "runId": pending.said.run_id,
+                "photoId": pending.said.photo_id,
+                "momentId": pending.said.moment_id,
+                "waitingSince": pending.said.waiting_since,
                 "writtenAt": pending.said.written_at,
                 "writtenBy": pending.written_by,
-            }
-        )
+        }
+        try:
+            self._container.create_item(document)
+        except exceptions.CosmosResourceExistsError as exc:
+            raise MessageConflict(pending.id) from exc
         return pending
 
     def pending(self, household_id: str) -> list[PendingMessage]:
@@ -438,6 +448,10 @@ def _to_message(document: dict[str, Any]) -> PendingMessage:
             says=Says(str(document.get("says") or "")),
             written_at=float(document.get("writtenAt") or 0.0),
             minutes=int(document.get("minutes") or 0),
+            run_id=str(document.get("runId") or ""),
+            photo_id=str(document.get("photoId") or ""),
+            moment_id=str(document.get("momentId") or ""),
+            waiting_since=float(document.get("waitingSince") or 0),
         ),
         written_by=str(document.get("writtenBy") or ""),
     )
@@ -943,6 +957,7 @@ class CosmosRhythmStore:
                 "timeZone": rhythm.time_zone,
                 "scriptsWanted": rhythm.scripts_wanted,
                 "afternoonsADay": rhythm.afternoons_a_day,
+                "maxOpenActivities": rhythm.max_open_activities,
                 "updatedAt": rhythm.updated_at,
                 "updatedBy": rhythm.updated_by,
             }
@@ -981,6 +996,7 @@ def _to_rhythm(document: dict[str, Any]) -> Rhythm:
         # choice in both: no idea kept waiting, no activity begun.
         scripts_wanted=_whole(document.get("scriptsWanted"), DEFAULT_SCRIPTS_WANTED),
         afternoons_a_day=_whole(document.get("afternoonsADay"), DEFAULT_AFTERNOONS_A_DAY),
+        max_open_activities=_whole(document.get("maxOpenActivities"), 1),
         updated_at=float(document.get("updatedAt") or 0.0),
         updated_by=str(document.get("updatedBy") or ""),
     )

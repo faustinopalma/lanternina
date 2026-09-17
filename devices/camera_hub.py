@@ -20,7 +20,12 @@ from PIL import Image, ImageOps
 from devices.epaper import _encode
 from devices.house import House, printer_in, replace, scanner_in, screen_in
 from devices.photo_store import MAX_PHOTO_BYTES, PHOTO_ID, PhotoStore
-from devices.run_experience import camera_target, carry_on
+from devices.run_experience import (
+    activity_time_allowed,
+    camera_target,
+    carry_on,
+    note_photo_received,
+)
 from devices.trmnl_byos import photo_for
 
 
@@ -96,11 +101,23 @@ class CameraHub:
 
     def process_one(self) -> bool:
         with self.processing:
-            row = self.store.claim()
+            for pending in self.store.listing():
+                if pending["state"] != "pending":
+                    continue
+                received = self.store.get(pending["id"])
+                target = json.loads(received["target"])
+                if target and "run" in target:
+                    note_photo_received(self.house, target, received["received"])
+            row = self.store.claim(
+                activities_allowed=activity_time_allowed(self.house, time.time()),
+            )
             if row is None:
                 return False
             try:
                 target = json.loads(row["target"])
+                if target and "candidates" in target:
+                    self.store.finish(row["id"], "awaiting_assignment", "choose the activity")
+                    return True
                 if target:
                     result = carry_on(self.house, photograph=row["jpeg"], target=target)
                 else:

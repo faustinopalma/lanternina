@@ -205,6 +205,10 @@ def test_a_run_whose_hour_has_come_reaches_its_ending_rather_than_being_deleted(
 
     assert waiting_runs(house.sheets_dir) == ["aft_old"]
 
+    from devices.run_experience import hear
+    from shared.message import Message, Says
+
+    hear(house, [Message(Says.CLOSE_NOW, WHEN)], WHEN)
     # First pass: the way out of wherever it got to, and the run is still there.
     assert conclude_what_is_over(house, WHEN, send=False) == []
     assert said == [experience.moment("come-e-tornato").way_out.heading]
@@ -312,6 +316,16 @@ def test_it_begins_the_approved_afternoon_and_tells_the_panel_it_did(
     assert calls["begun"] == ["aftn-1"]
     assert len(waiting_runs(house.sheets_dir)) == 1
     assert house.screen.exists()
+
+
+@pytest.mark.parametrize("limit,expected", [(1, 0), (2, 1)])
+def test_open_limit_is_independent_of_daily_starts(monkeypatch, house, limit, expected):
+    calls = a_panel(monkeypatch, offered=[offered_row()], rhythm=a_rhythm(maxOpenActivities=limit))
+    a_run(house, "aft_yesterday", WHEN - 86400)
+    assert a_turn(monkeypatch, house, WHEN) == 0
+    assert len(calls["begun"]) == expected
+    assert "aft_yesterday" in waiting_runs(house.sheets_dir)
+    assert len(waiting_runs(house.sheets_dir)) == expected + 1
 
 
 def test_the_queue_is_filled_on_a_day_nobody_chose(

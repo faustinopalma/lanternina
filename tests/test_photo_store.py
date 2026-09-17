@@ -11,6 +11,21 @@ from devices.photo_store import PhotoStore
 PHOTO = "a" * 32
 
 
+def test_ambiguous_photo_requires_one_of_its_original_targets(tmp_path):
+    store = PhotoStore(tmp_path / "photos.db")
+    first = {"run": "aft_first", "moment": "page", "since": 100}
+    second = {"run": "aft_second", "moment": "page", "since": 101}
+    store.accept(PHOTO, "camera", jpeg(), captured=102, target={"candidates": [first, second]})
+    assert store.claim(activities_allowed=False)["id"] == PHOTO
+    store.finish(PHOTO, "awaiting_assignment", "choose")
+    assert not store.assign(PHOTO, {**first, "since": 103})
+    assert store.assign(PHOTO, second)
+    assert store.claim(activities_allowed=False) is None
+    assert store.claim()["id"] == PHOTO
+    assert store.assign(PHOTO, second)
+    assert not store.assign(PHOTO, first)
+
+
 def jpeg(colour: str = "red") -> bytes:
     output = io.BytesIO()
     Image.new("RGB", (64, 48), colour).save(output, "JPEG")

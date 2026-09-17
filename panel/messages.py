@@ -20,10 +20,9 @@ and it would stop being true of the first message that is not an assignment.
 through the previous one is still there afterwards, because the house says which one it
 heard rather than saying "that lot".
 
-**An hour, and then it is gone.** A message still waiting after an hour was written to a
-house that was not listening. What that buys is that a message cannot reach an afternoon
-it was not written about. What it costs is that a message written while the house is off
-is lost, and the parent sees it disappear rather than being told it did not arrive.
+Legacy deadline commands expire after one hour. Targeted termination and photo assignment
+remain pending until the hub acknowledges them. Their exact targets prevent delivery to
+an unrelated later activity when the hub has been offline.
 """
 
 from __future__ import annotations
@@ -60,6 +59,8 @@ class PendingMessage:
     written_by: str = ""
 
     def stale(self, now: float) -> bool:
+        if self.said.says in {Says.TERMINATE, Says.ASSIGN_PHOTO}:
+            return False
         return now - self.said.written_at >= MESSAGE_LIFETIME_SECONDS
 
     def to_public(self) -> dict[str, Any]:
@@ -75,6 +76,10 @@ class MessageStore(Protocol):
     def heard(self, household_id: str, message_id: str) -> bool: ...
 
 
+class MessageConflict(ValueError):
+    """A command with this identifier has already been queued."""
+
+
 @dataclass
 class InMemoryMessageStore:
     _rows: dict[tuple[str, str], PendingMessage] = field(default_factory=dict)
@@ -82,6 +87,8 @@ class InMemoryMessageStore:
 
     def add(self, pending: PendingMessage) -> PendingMessage:
         with self._lock:
+            if (pending.household_id, pending.id) in self._rows:
+                raise MessageConflict(pending.id)
             self._rows[(pending.household_id, pending.id)] = pending
             return pending
 
@@ -110,6 +117,7 @@ def clean_message(
     at: str = "",
     written_by: str = "",
     now: float | None = None,
+    run_id: str = "",
 ) -> PendingMessage:
     """Normalise what the parent chose. Raises MessageError on anything not on the list.
 
@@ -123,6 +131,7 @@ def clean_message(
             "says": str(says),
             "writtenAt": float(now if now is not None else time.time()),
             "minutes": at_the_clock(at) if str(says) == Says.END_BY else 0,
+            "runId": run_id,
         }
     )
     return PendingMessage(

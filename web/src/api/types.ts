@@ -50,6 +50,12 @@ export interface PicturePage {
   pageSizes: number[];
 }
 
+export interface ActivityTarget {
+  run: string;
+  moment: string;
+  since: number;
+}
+
 export interface Photograph {
   id: string;
   camera: string;
@@ -58,7 +64,9 @@ export interface Photograph {
   date: number;
   width: number;
   height: number;
-  state: "pending" | "processing" | "done" | "failed";
+  state: "pending" | "processing" | "done" | "failed" | "awaiting_assignment";
+  target?: ActivityTarget | { candidates: ActivityTarget[] } | null;
+  detail?: string;
 }
 
 export interface PhotoPage {
@@ -238,13 +246,15 @@ export interface Made {
  * in. That is the trade: no veto on each generated piece, every piece readable after. */
 export interface CurrentRun {
   runId: string;
+  experienceId?: string;
   title: string;
   beganAt: number;
   endsAt: number;
   momentId: string;
   heading: string;
-  phase: "waiting" | "ending" | "unreadable";
+  phase: "waiting" | "received" | "ending" | "unreadable";
   waitingSince: number;
+  receivedAt?: number;
 }
 
 export interface CurrentTrail {
@@ -335,9 +345,11 @@ export interface Rhythm {
   afternoonsADay: number;
   minAfternoonsADay: number;
   maxAfternoonsADay: number;
+  maxOpenActivities?: number;
 }
 
 export interface NewRhythm {
+  maxOpenActivities?: number;
   displayPollMinutes?: number;
   picturesFrom: string;
   picturesUntil: string;
@@ -504,11 +516,14 @@ export interface HouseRequest {
 export interface NewSaid {
   says: string;
   at?: string;
+  runId?: string;
 }
 
 /** One said thing the house has not yet come for. `minutes` is past midnight, which is
  *  what the house reads; the panel sends and shows the hour the parent chose. */
 export interface Said {
+  runId?: string;
+  photoId?: string;
   id: string;
   says: string;
   writtenAt: number;
@@ -547,6 +562,7 @@ export interface Api {
   inviteAdolescent(email: string): Promise<InvitationCode>;
   revokeAdolescent(id: string): Promise<void>;
   photoContent(id: string): Promise<Blob>;
+  assignPhoto(id: string, runId: string): Promise<{ queued: boolean }>;
   previewPhotoDeletion(selection: PhotoSelection): Promise<{ ids: string[] }>;
   deletePhotos(selection: PhotoSelection, ids: string[]): Promise<{ deleted: string[]; failed: string[] }>;
   themes(): Promise<Theme[]>;

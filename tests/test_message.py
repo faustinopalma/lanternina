@@ -65,9 +65,21 @@ def said(house: House) -> list[dict[str, Any]]:
 # ── The list is closed ───────────────────────────────────────────────────────────────
 
 
-def test_there_are_two_things_a_parent_may_say() -> None:
-    """A third is a decision, and the shortness is the design rather than an omission."""
-    assert {str(s) for s in Says} == {"end_by", "close_now"}
+def test_the_parent_can_set_a_deadline_or_terminate_a_specific_run() -> None:
+    assert {str(s) for s in Says} == {"end_by", "close_now", "terminate", "assign_photo"}
+
+
+def test_termination_removes_only_the_addressed_run(house: House) -> None:
+    from devices.run_experience import waiting_runs
+
+    begin(house, an_experience(), run_id="aft_first", now=WHEN, send=False)
+    begin(house, an_experience(), run_id="aft_second", now=WHEN, send=False, max_open=2)
+    command = Message(Says.TERMINATE, WHEN, run_id="aft_first")
+    assert Message.from_dict(command.to_dict()) == command
+    changed = hear(house, [command], WHEN + 3 * 86400)
+    assert changed == ["aft_first terminated by the parent"]
+    assert waiting_runs(house.sheets_dir) == ["aft_second"]
+    assert hear(house, [command], WHEN + 4 * 86400) == []
 
 
 def test_a_sentence_cannot_be_said_at_all() -> None:
@@ -123,10 +135,19 @@ def test_close_now_brings_the_ending_to_this_instant(house: House) -> None:
     assert waiting(house).ending_starts_at <= WHEN
 
 
+def test_explicit_deadline_equal_to_nominal_duration_is_still_saved(house):
+    begin(house, an_experience(), now=WHEN, send=False)
+    nominal = waiting(house).over_at
+    clock = time.localtime(nominal)
+    hear(house, [Message(Says.END_BY, WHEN, minutes=clock.tm_hour * 60 + clock.tm_min)], WHEN)
+    assert waiting(house).explicit_end_at == nominal
+
+
 def test_an_afternoon_already_on_its_way_out_does_not_hear_it(house: House) -> None:
     """The way out is in somebody's hands; moving the hour under it cuts or strands it."""
     experience = an_experience()
     begin(house, experience, now=WHEN, send=False)
+    hear(house, [Message(says=Says.CLOSE_NOW, written_at=WHEN)], WHEN)
     conclude_what_is_over(house, WHEN + (experience.minutes - 20) * MINUTE, send=False)
     assert waiting(house).leaving_at
     was = waiting(house).over_at

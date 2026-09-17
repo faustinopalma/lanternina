@@ -146,6 +146,62 @@ def test_a_sentence_cannot_be_sent_at_all(client: TestClient) -> None:
     assert "not something a parent may say" in answer.json()["detail"]
 
 
+def test_termination_is_scoped_and_remains_pending_while_hub_is_offline(client, store):
+    from panel.trail import CurrentTrail
+
+    household = household_of(client)
+    client.app.state.trail.report_current(CurrentTrail(household, 100, ({"runId": "mine"},)))
+    client.app.state.trail.report_current(CurrentTrail("other", 100, ({"runId": "foreign"},)))
+    assert client.post("/api/message", headers=headers(), json={
+        "says": "terminate", "runId": "foreign",
+    }).status_code == 404
+    assert client.post("/api/message", json={
+        "says": "terminate", "runId": "mine",
+    }).status_code != 200
+    assert store.pending(household) == []
+    response = client.post("/api/message", headers=headers(), json={
+        "says": "terminate", "runId": "mine",
+    })
+    assert response.status_code == 200
+    pending = store.pending(household)[0]
+    assert not pending.stale(time.time() + 7 * 86400)
+    assert store.pending("other") == []
+
+
+def test_cosmos_message_round_trip_and_duplicate_assignment():
+    from azure.cosmos.exceptions import CosmosResourceExistsError
+
+    from panel.cosmos_store import CosmosMessageStore
+    from panel.messages import MessageConflict, PendingMessage
+    from shared.message import Message
+
+    class Container:
+        def __init__(self):
+            self.rows = {}
+
+        def create_item(self, document):
+            key = (document["familyId"], document["id"])
+            if key in self.rows:
+                raise CosmosResourceExistsError(status_code=409)
+            self.rows[key] = document
+
+        def query_items(self, *, query, parameters, partition_key):
+            assert parameters == [{"name": "@family", "value": partition_key}]
+            return [row for (family, _), row in self.rows.items() if family == partition_key]
+
+    store = CosmosMessageStore.__new__(CosmosMessageStore)
+    store._container = Container()
+    command = PendingMessage("assign_photo", "mine", Message(
+        Says.ASSIGN_PHOTO, 100, run_id="aft_one", photo_id="a" * 32,
+        moment_id="page", waiting_since=50,
+    ))
+    store.add(command)
+    assert store.pending("mine") == [command]
+    assert store.pending("other") == []
+    with pytest.raises(MessageConflict):
+        store.add(command)
+
+
 def test_a_note_beside_a_message_is_refused_by_the_body(client: TestClient) -> None:
     """Refused on both sides of the API, so the field cannot be added to one of them."""
     answer = client.post(

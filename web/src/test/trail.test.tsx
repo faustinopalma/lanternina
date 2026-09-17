@@ -17,12 +17,84 @@ describe("what the system wrote", () => {
     momentId: "clouds", heading: "Il passo attuale", phase: "waiting" as const, waitingSince: 120,
   };
 
+  it("terminates only the selected activity after confirmation", async () => {
+    const user = userEvent.setup();
+    const api = fakeApi({ currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [currentRun] }) });
+    const say = vi.spyOn(api, "say");
+    renderPanel(api, <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: "Termina attività" }));
+    expect(say).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Annulla" }));
+    expect(say).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Termina attività" }));
+    await user.click(screen.getByRole("button", { name: "Conferma terminazione" }));
+    expect(say).toHaveBeenCalledWith({ says: "terminate", runId: "aft_1" });
+    expect(await screen.findByText("Terminazione richiesta. In attesa dell'hub.")).toBeVisible();
+    expect(screen.getByText(currentRun.heading)).toBeVisible();
+  });
+
+  it("does not report a received photo as an unanswered wait", async () => {
+    renderPanel(fakeApi({ currentTrail: async () => ({ updatedAt: Date.now() / 1000,
+      runs: [{ ...currentRun, phase: "received", receivedAt: 140 }],
+    }) }), <TheTrail />);
+    expect(await screen.findByText("Foto ricevuta; questo passo è ancora aperto")).toBeVisible();
+    expect(screen.queryByText("In attesa di una risposta, non ancora ricevuta")).not.toBeInTheDocument();
+  });
+
+  it("keeps a queued termination visible after reload while the hub is offline", async () => {
+    renderPanel(fakeApi({ currentTrail: async () => ({ updatedAt: 100, runs: [currentRun] }),
+      messages: async () => [{ id: "say_one", says: "terminate", runId: "aft_1", writtenAt: 101, minutes: 0 }],
+    }), <TheTrail />);
+    expect(await screen.findByText("Terminazione richiesta. In attesa dell'hub.")).toBeVisible();
+    expect(screen.queryByRole("button", { name: "Termina attività" })).not.toBeInTheDocument();
+  });
+
+  it.each([false, true])("keeps technical documents apart and closed (current: %s)", async (current) => {
+    const user = userEvent.setup();
+    const whole = await fakeApi().trail("aft_1");
+    const prototype = whole.made![0]!;
+    renderPanel(fakeApi({
+      currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: current ? [currentRun] : [] }),
+      trail: async () => ({ ...whole, made: [
+        ...whole.made!,
+        { ...prototype, id: "plan", kind: "plan", body: '[{"act":"collect"}]', why: "" },
+        { ...prototype, id: "judged", kind: "judged", body: '{"findings":[]}', why: "" },
+      ] }),
+    }), <TheTrail />);
+    if (!current) await user.click(await screen.findByRole("button", { name: "Apri" }));
+    const summary = await screen.findByText("Piano e valutazioni del modello");
+    expect(summary.closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByText('[{"act":"collect"}]')).not.toBeVisible();
+    expect(screen.getByText('{"findings":[]}')).not.toBeVisible();
+    expect(screen.getByText(/Ultima pagina stampata:/)).toBeVisible();
+    expect(screen.getByText("Guarda fuori e dimmi che forma ha.")).toBeVisible();
+    await user.click(summary);
+    expect(screen.getByText('[{"act":"collect"}]')).toBeVisible();
+    expect(screen.getByText('{"findings":[]}')).toBeVisible();
+    expect(screen.getByText(/Non attestano azioni svolte/)).toBeVisible();
+    expect(screen.getAllByText(/Archiviato nel registro:/)).toHaveLength(2);
+  });
+
+  it("does not call a drawn page printed or a historical run still waiting", async () => {
+    const user = userEvent.setup();
+    const whole = await fakeApi().trail("aft_1");
+    renderPanel(fakeApi({ trail: async () => ({
+      ...whole, made: whole.made!.filter((one) => one.kind === "drawn"),
+    }) }), <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: "Apri" }));
+    await screen.findByText(/Foglio disegnato/);
+    expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
+    expect(screen.queryByText("In attesa di una risposta, non ancora ricevuta")).not.toBeInTheDocument();
+  });
+
   it("opens the current activity and its steps without a click, then follows its ending", async () => {
     let runs = [currentRun];
     const api = fakeApi({ currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs }) });
     renderPanel(api, <TheTrail />);
     expect(await screen.findByText("Il passo attuale")).toBeInTheDocument();
     expect(await screen.findByText("Guarda fuori e dimmi che forma ha.")).toBeInTheDocument();
+    expect(screen.getByText("In attesa di una risposta, non ancora ricevuta")).toBeVisible();
+    expect(screen.getByText(/Ultima pagina stampata:/)).toBeVisible();
     expect(screen.getAllByText("Un pomeriggio di nuvole")).toHaveLength(1);
     expect(screen.queryByRole("button", { name: /Cancella dal registro:/ })).not.toBeInTheDocument();
     runs = [];

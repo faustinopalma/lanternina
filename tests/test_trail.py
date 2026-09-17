@@ -325,7 +325,7 @@ def test_current_activity_is_explicit_scoped_and_survives_history_deletion() -> 
     assert response.status_code == 200
     current = client.get("/api/trail-current", headers=headers()).json()
     assert current["updatedAt"] > 0
-    assert current["runs"] == [run]
+    assert current["runs"] == [{**run, "receivedAt": 0, "experienceId": ""}]
     assert client.app.state.trail.current("other").runs == ()
     assert client.post(route, json={"runs": []}).status_code != 200
     client.delete("/api/trail", headers=headers())

@@ -2,9 +2,8 @@
 
 Four routes and the shape is `panel/routes/requests.py`'s, because the rule is the same
 one: the parent writes a row, and the house finds it when it next asks. What is different
-is only what may be written. A reminder or a theme is words; this is a choice from a list
-of two, with an hour attached when the hour is what moved, and `shared/message.py` says at
-length why there is nowhere here to put a sentence.
+is only what may be written. This route accepts deadline and termination commands from
+`shared/message.py`; photograph assignments use the route that validates their candidates.
 
 Nothing here reaches a house, and nothing here reads a message aloud. The house applies it
 in `devices/run_experience.hear`, which draws nothing: an afternoon whose end hour moved
@@ -27,7 +26,7 @@ router = APIRouter()
 
 
 class WhatIsSaid(BaseModel):
-    """One of the two things a parent may say, and the hour when an hour is what moved.
+    """A deadline or termination command, optionally addressed to a reported open run.
 
     ``extra="forbid"`` is doing work rather than tidying: a body that carries a note is
     refused here as well as in `shared/message.py`, so the field cannot be added by
@@ -38,6 +37,7 @@ class WhatIsSaid(BaseModel):
 
     says: str
     at: str = ""
+    runId: str = ""
 
 
 @router.post("/api/message")
@@ -45,15 +45,23 @@ def say_something(what: WhatIsSaid, account: CurrentAccount, request: Request) -
     """Say it. One row is written and that is the whole effect.
 
     No model is called, nothing is queued, and no display is touched. The afternoon in the
-    house changes when the house next looks, which is within a minute of now.
+    house changes when the house next looks; an offline hub can delay delivery.
     """
     store: MessageStore = request.app.state.messages
+    if what.says == "assign_photo":
+        raise HTTPException(status_code=400, detail="use_photo_assignment")
+    if what.runId and not any(
+        run["runId"] == what.runId
+        for run in request.app.state.trail.current(str(account.household_id)).runs
+    ):
+        raise HTTPException(status_code=404, detail="unknown_open_activity")
     try:
         pending = clean_message(
             str(account.household_id),
             says=what.says,
             at=what.at,
             written_by=str(account.id),
+            run_id=what.runId,
         )
     except MessageError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -73,7 +81,8 @@ def read_own_messages(account: CurrentAccount, request: Request) -> Any:
 def device_messages(household_id: str, _: DeviceKey, request: Request) -> Any:
     """What the parent said, oldest first. The house decides what to do with it."""
     store: MessageStore = request.app.state.messages
-    return {"messages": [row.to_public() for row in store.pending(household_id)]}
+    return {"messages": [row.to_public() for row in store.pending(household_id)
+                         if str(row.said.says) != "assign_photo"]}
 
 
 @router.post("/api/device/{household_id}/messages/{message_id}/heard")

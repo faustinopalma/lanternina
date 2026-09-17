@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react";
+import { Square, Trash2 } from "lucide-react";
 
 import { useApi } from "@/api/client";
 import type { CurrentRun, Made, Trail } from "@/api/types";
@@ -68,12 +68,12 @@ function Drawn({ pictureId }: { pictureId: string }) {
  * halves: the text that was sent, and what came back — words on a display, or a sheet
  * offered to the printer. So both halves are labelled, always, and nothing else competes
  * with them. */
-function Step({ made }: { made: Made }) {
+function Step({ made, technical = false }: { made: Made; technical?: boolean }) {
   const { t, dateTime } = useWords();
   /* Written out rather than built from `made.kind`: a key that only exists at runtime is a
      key no test can find missing. A kind we have no word for is shown as it arrived. */
   const kind =
-    made.kind === "plan"
+    made.kind === "terminated" ? t("trail.terminated") : made.kind === "plan"
       ? t("trail.kind.plan")
       : made.kind === "say"
         ? t("trail.kind.say")
@@ -99,7 +99,7 @@ function Step({ made }: { made: Made }) {
   return (
     <li className="border-l-2 border-edge pl-3">
       <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-        {dateTime(made.at)} · {kind}
+        {technical ? t("trail.filedAt", { at: dateTime(made.at) }) : dateTime(made.at)} · {kind}
       </p>
       {made.heading ? <p className="font-semibold">{made.heading}</p> : null}
 
@@ -115,10 +115,11 @@ function Step({ made }: { made: Made }) {
       {outcome || made.pictureId ? (
         <div className="mt-2">
           <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.came_out")}
+            {t(technical ? "trail.modelDocument" : "trail.came_out")}
           </p>
           {outcome ? (
-            <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{outcome}</p>
+            technical ? <pre className="mt-1 max-w-full font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{outcome}</pre>
+              : <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{outcome}</p>
           ) : null}
           {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
         </div>
@@ -140,45 +141,46 @@ function Step({ made }: { made: Made }) {
  * being on the table. Two pages sat in a queue for eighty-two minutes and the trail showed
  * an afternoon that had gone as written. */
 
-function Whole({ runId, current = false }: { runId: string; current?: boolean }) {
+function Whole({ runId }: { runId: string }) {
   const api = useApi();
-  const { t } = useWords();
+  const { t, dateTime } = useWords();
   const [state] = useLoad(() => api.trail(runId), [runId], { live: true });
 
   if (state.status === "loading") return <Quiet className="mt-2.5">{t("trail.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet className="mt-2.5">{t("trail.unreadable")}</Quiet>;
   const trail = state.data;
   const made = trail.made ?? [];
+  const technicalKinds = new Set(["plan", "judged", "continuation"]);
+  const events = made.filter((one) => !technicalKinds.has(one.kind));
+  const documents = made.filter((one) => technicalKinds.has(one.kind));
+  const printed = events.filter((one) => one.kind === "hand_over").at(-1);
 
   return (
     <div className="mt-3">
-      {trail.script ? (
-        <details className="mb-3">
-          <summary className="cursor-pointer text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.script")}
-          </summary>
-          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
-        </details>
-      ) : null}
+      {printed ? <p className="mb-3">{t("trail.printedAt", { at: dateTime(printed.at) })}</p> : null}
       <p className="text-[0.82rem] tracking-wider text-quiet uppercase">{t("trail.made")}</p>
-      {made.length === 0 ? (
+      {events.length === 0 ? (
         <Quiet className="mt-1">{t("trail.madeNothing")}</Quiet>
       ) : (
         <ol className="mt-2 flex list-none flex-col gap-3.5 p-0">
-          {made.map((one) => (
-            current && ["plan", "judged", "continuation"].includes(one.kind) ? (
-              <li key={one.id}>
-                <details>
-                  <summary className="cursor-pointer text-quiet">
-                    {one.kind === "plan" ? t("trail.kind.plan") : one.kind === "judged" ? t("trail.kind.judged") : t("trail.kind.continuation")}
-                  </summary>
-                  <ol className="mt-2 list-none"><Step made={one} /></ol>
-                </details>
-              </li>
-            ) : <Step key={one.id} made={one} />
-          ))}
+          {events.map((one) => <Step key={one.id} made={one} />)}
         </ol>
       )}
+      {trail.script || documents.length > 0 ? (
+        <details className="mt-5 border-t border-edge pt-3">
+          <summary className="cursor-pointer text-quiet">{t("trail.technical")}</summary>
+          <Quiet className="mt-2">{t("trail.technicalNote")}</Quiet>
+          {trail.script ? (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-quiet">{t("trail.script")}</summary>
+              <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
+            </details>
+          ) : null}
+          <ol className="mt-3 flex list-none flex-col gap-3.5 p-0">
+            {documents.map((one) => <Step key={one.id} made={one} technical />)}
+          </ol>
+        </details>
+      ) : null}
     </div>
   );
 }
@@ -235,18 +237,41 @@ function Card({ trail, onDeleted }: { trail: Trail; onDeleted: () => void }) {
   );
 }
 
-function Running({ run, fresh }: { run: CurrentRun; fresh: boolean }) {
+function Running({ run, fresh, terminationPending }: { run: CurrentRun; fresh: boolean; terminationPending: boolean }) {
   const { t, dateTime } = useWords();
+  const api = useApi();
+  const [termination, setTermination] = useState<"idle" | "confirm" | "busy" | "sent" | "failed">("idle");
+  async function terminate() {
+    setTermination("busy");
+    try {
+      await api.say({ says: "terminate", runId: run.runId });
+      setTermination("sent");
+    } catch {
+      setTermination("failed");
+    }
+  }
   return (
     <article className="mt-3 border-b border-edge pb-5">
       <h3 className="text-[1.05rem] font-semibold">{run.title}</h3>
       <p className="mt-2 font-semibold">
-        {run.phase === "waiting" ? t("trail.waiting") : run.phase === "ending" ? t("trail.ending") : t("trail.runUnreadable")}
+        {run.phase === "waiting" ? t("trail.waiting") : run.phase === "received" ? t("trail.received") : run.phase === "ending" ? t("trail.ending") : t("trail.runUnreadable")}
       </p>
       {run.heading ? <p>{run.heading}</p> : null}
       {run.waitingSince > 0 ? <Quiet>{t("trail.waitingSince", { at: dateTime(run.waitingSince) })}</Quiet> : null}
+      {run.receivedAt ? <Quiet>{t("trail.receivedAt", { at: dateTime(run.receivedAt) })}</Quiet> : null}
       {run.endsAt > 0 ? <Quiet>{t("trail.endsAt", { at: dateTime(run.endsAt) })}</Quiet> : null}
-      {fresh ? <Whole runId={run.runId} current /> : null}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {termination === "confirm" ? <>
+          <p>{t("trail.terminateQuestion")}</p>
+          <Button onClick={() => void terminate()}>{t("trail.terminateConfirm")}</Button>
+          <Button variant="ghost" onClick={() => setTermination("idle")}>{t("trail.cancel")}</Button>
+        </> : termination === "sent" || terminationPending ? <Quiet role="status">{t("trail.terminateSent")}</Quiet> : <>
+          <Button variant="ghost" disabled={termination === "busy"}
+            onClick={() => setTermination("confirm")}><Square size={14} />{t("trail.terminate")}</Button>
+          {termination === "failed" ? <p role="alert">{t("trail.terminateFailed")}</p> : null}
+        </>}
+      </div>
+      {fresh ? <Whole runId={run.runId} /> : null}
     </article>
   );
 }
@@ -256,6 +281,7 @@ export function TheTrail() {
   const { t, dateTime } = useWords();
   const [state, again] = useLoad(() => api.trails(), [], { live: true });
   const [current] = useLoad(() => api.currentTrail(), [], { live: true });
+  const [messages] = useLoad(() => api.messages(), [], { live: true });
   const [now, setNow] = useState(() => Date.now() / 1000);
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now() / 1000), 15_000);
@@ -302,7 +328,9 @@ export function TheTrail() {
             <Quiet>{t("trail.updatedAt", { at: dateTime(snapshot.updatedAt) })}</Quiet>
             {!fresh ? <p role="status">{t("trail.statusStale")}</p> : null}
             {fresh && snapshot.runs.length === 0 ? <p>{t("trail.idle")}</p> : null}
-            {snapshot.runs.map((run) => <Running key={`${run.runId}:${deletionVersion}`} run={run} fresh={fresh} />)}
+            {snapshot.runs.map((run) => <Running key={`${run.runId}:${deletionVersion}`} run={run} fresh={fresh}
+              terminationPending={messages.status === "ready" && messages.data.some(message =>
+                message.says === "terminate" && message.runId === run.runId)} />)}
           </>
         ) : null}
       </section>

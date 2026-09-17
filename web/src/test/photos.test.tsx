@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -16,6 +16,25 @@ const data: PhotoPage = {
 };
 
 describe("family photographs", () => {
+  it("requires an explicit choice among frozen photo candidates", async () => {
+    const user = userEvent.setup();
+    const assignPhoto = vi.fn(async () => ({ queued: true }));
+    const run = { runId: "aft_1", title: "Prima attività", beganAt: 1, endsAt: 0,
+      momentId: "page", heading: "Primo foglio", phase: "waiting" as const, waitingSince: 100 };
+    renderPanel(fakeApi({ assignPhoto,
+      currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [run, { ...run, runId: "aft_other" }] }),
+      photos: async () => ({ ...data, photos: [{ ...data.photos[0]!, state: "awaiting_assignment",
+        target: { candidates: [{ run: "aft_1", moment: "page", since: 100 },
+          { run: "aft_old", moment: "page", since: 50 }] } }] }),
+    }), <Photos />);
+    const select = await screen.findByLabelText("Attività");
+    expect(screen.getByRole("button", { name: "Associa foto" })).toBeDisabled();
+    expect(within(select).getAllByRole("option")).toHaveLength(2);
+    await user.selectOptions(select, "aft_1");
+    await user.click(screen.getByRole("button", { name: "Associa foto" }));
+    expect(assignPhoto).toHaveBeenCalledWith(photoId, "aft_1");
+    expect(await screen.findByText("Associazione richiesta. In attesa dell'hub.")).toBeVisible();
+  });
   beforeEach(() => {
     HTMLDialogElement.prototype.showModal = function () { this.open = true; };
     HTMLDialogElement.prototype.close = function () { this.open = false; };

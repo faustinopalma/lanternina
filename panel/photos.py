@@ -19,6 +19,8 @@ class Photo:
     state: str
     digest: str
     deleted: bool = False
+    target: dict[str, Any] | None = None
+    detail: str = ""
 
     @property
     def date(self) -> float:
@@ -64,7 +66,8 @@ class MemoryPhotoArchive:
                     raise ValueError("conflicting photograph")
                 if preserve_state:
                     return old[0]
-                record = replace(old[0], state=record.state) if not old[0].deleted else old[0]
+                record = replace(old[0], state=record.state, target=record.target,
+                                 detail=record.detail) if not old[0].deleted else old[0]
             self.rows[key] = record, b"" if record.deleted else image
             return record
 
@@ -162,9 +165,12 @@ class BlobPhotoArchive:
             old = from_metadata(properties.metadata)
             if old.digest != record.digest or old.camera != record.camera:
                 raise ValueError("conflicting photograph")
-            if preserve_state or old.deleted or old.state == record.state:
+            if preserve_state or old.deleted or (
+                old.state == record.state and old.target == record.target
+                and old.detail == record.detail
+            ):
                 return old
-            updated = replace(old, state=record.state)
+            updated = replace(old, state=record.state, target=record.target, detail=record.detail)
             try:
                 blob.set_blob_metadata(
                     metadata(updated),

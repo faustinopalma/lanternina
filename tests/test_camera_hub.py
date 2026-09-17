@@ -84,6 +84,26 @@ def test_photo_frame_contains_the_whole_portrait() -> None:
     assert image.mode == "1"
 
 
+def test_received_photo_waits_outside_hours_and_runs_once_when_allowed(tmp_path, monkeypatch):
+    hub = CameraHub({"database": str(tmp_path / "photos.db")},
+                    House(sheets_dir=tmp_path), tmp_path / "screen.bmp")
+    target = {"run": "aft_one", "moment": "page", "since": 100}
+    hub.store.accept(PHOTO, "cam", jpeg(), captured=110, target=target)
+    allowed = False
+    calls = []
+    monkeypatch.setattr("devices.camera_hub.activity_time_allowed", lambda *_: allowed)
+    monkeypatch.setattr("devices.camera_hub.carry_on", lambda *args, **kwargs: calls.append(kwargs)
+                        or "waiting for a page at next")
+    assert not hub.process_one()
+    assert hub.store.get(PHOTO)["state"] == "pending"
+    assert calls == []
+    allowed = True
+    assert hub.process_one()
+    assert len(calls) == 1
+    assert calls[0]["target"] == target
+    assert not hub.process_one()
+
+
 @pytest.mark.parametrize("jobs,displayed", [(["picture"], False), (["photo"], True), ([], False)])
 def test_photographs_only_reach_explicitly_assigned_displays(
     tmp_path, monkeypatch, jobs, displayed,

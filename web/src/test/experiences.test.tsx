@@ -136,16 +136,19 @@ describe("an afternoon offered to the parent", () => {
  * control is not: there is no box to type a sentence in, and neither button stops
  * anything. Both write a row and leave the house to come for it. */
 describe("an afternoon the house has begun", () => {
-  /* Ten minutes ago, so its own length has not run out. That is what the panel has instead
-   * of asking the house whether it is still going: the afternoon's nominal length is an
-   * upper bound on when it can still be running. */
   const begun = {
     ...SAMPLE_AFTERNOON,
     state: "approved",
     begunAt: Date.now() / 1000 - 600,
   };
+  const currentTrail = async () => ({ updatedAt: Date.now() / 1000, runs: [{
+    runId: "aft_live", experienceId: begun.id, title: begun.title,
+    beganAt: begun.begunAt, endsAt: 0, momentId: "return", heading: "Return",
+    phase: "waiting" as const, waitingSince: begun.begunAt,
+  }] });
   const running = () =>
     fakeApi({
+      currentTrail,
       experiences: async (state) => ({
         experiences: state === "approved" ? [begun] : [],
         backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
@@ -174,11 +177,11 @@ describe("an afternoon the house has begun", () => {
     await user.type(await screen.findByLabelText("Finisce entro"), "17:30");
     await user.click(screen.getByRole("button", { name: "Sposta l'ora" }));
 
-    await waitFor(() => expect(api.recorded.said).toEqual([{ says: "end_by", at: "17:30" }]));
+    await waitFor(() => expect(api.recorded.said).toEqual([{ says: "end_by", at: "17:30", runId: "aft_live" }]));
     expect(api.recorded.experienceDecisions).toEqual([]);
     expect(
       await screen.findByText(
-        "Scritto. La casa lo trova alla prossima richiesta, entro un minuto.",
+        "Richiesta registrata. In attesa dell'hub.",
       ),
     ).toBeInTheDocument();
   });
@@ -201,11 +204,12 @@ describe("an afternoon the house has begun", () => {
 
     await user.click(await screen.findByRole("button", { name: "Falla finire adesso" }));
 
-    await waitFor(() => expect(api.recorded.said).toEqual([{ says: "close_now" }]));
+    await waitFor(() => expect(api.recorded.said).toEqual([{ says: "close_now", runId: "aft_live" }]));
   });
 
   it("says so and keeps the hour when it does not get through", async () => {
     const api = fakeApi({
+      currentTrail,
       experiences: async (state) => ({
       experiences: state === "approved" ? [begun] : [],
       backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
@@ -233,16 +237,15 @@ describe("an afternoon the house has begun", () => {
     ).toBeInTheDocument();
   });
 
-  it("drops one whose own length has run out from both lists", async () => {
-    /* The panel cannot ask the house whether it is still going, so the afternoon's nominal
-       length is the upper bound it uses. What it wrote is on the trail either way. */
+  it("keeps an open activity visible after its nominal duration", async () => {
     const over = {
       ...SAMPLE_AFTERNOON,
       state: "approved",
-      begunAt: Date.now() / 1000 - (SAMPLE_AFTERNOON.minutes + 10) * 60,
+      begunAt: Date.now() / 1000 - 2 * 86400,
     };
     renderPanel(
       fakeApi({
+        currentTrail,
         experiences: async (state) => ({
           experiences: state === "approved" ? [over] : [],
           backlog: { approved: 0, minutes: 0, perWeek: 2, days: 0 },
@@ -254,6 +257,7 @@ describe("an afternoon the house has begun", () => {
     expect(
       await screen.findByText("Nessuna approvata. Finché non ce n'è, la casa non ha niente da cominciare."),
     ).toBeInTheDocument();
-    expect(screen.queryByText("In corso adesso")).not.toBeInTheDocument();
+    expect(await screen.findByText("In corso adesso")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Falla finire adesso" })).toBeInTheDocument();
   });
 });

@@ -76,6 +76,14 @@ def test_an_ending_nobody_agreed_on_is_dropped() -> None:
     ).ending == ""
 
 
+def test_days_awaiting_a_return_do_not_become_work_duration_in_a_prompt() -> None:
+    run = an_afternoon(minutes=2880, ending=STOPPED, answered=())
+
+    assert run.to_public()["minutes"] == 2880
+    assert "minutes" not in run.for_the_prompt()
+    assert run.for_the_prompt()["sheets"] == []
+
+
 def test_a_reading_is_one_line_and_bounded() -> None:
     assert clean_reading("due  righe\nscritte") == "due righe scritte"
     assert len(clean_reading("x" * 900)) == 400

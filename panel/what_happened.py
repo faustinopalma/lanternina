@@ -84,7 +84,7 @@ class Answered:
 
 @dataclass(frozen=True, slots=True)
 class Afternoon:
-    """One afternoon that ran, as facts about the afternoon."""
+    """One run; minutes measures elapsed wall time, including time awaiting a return."""
 
     household_id: str
     run_id: str
@@ -113,12 +113,11 @@ class Afternoon:
         }
 
     def for_the_prompt(self) -> dict[str, Any]:
-        """The same afternoon with the run ids dropped: they name nothing a model can use."""
+        """Return facts without identifiers or elapsed waiting time as participation evidence."""
         return {
             "title": self.title,
             "themes": list(self.themes),
             "howLong": self.weight,
-            "minutes": self.minutes,
             "ending": self.ending,
             "sheets": [
                 {"came": one.came, "onIt": one.reading} for one in self.answered

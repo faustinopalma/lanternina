@@ -614,6 +614,7 @@ export function fakeApi(
     pictures: async (page, perPage) => ({ ...SAMPLE_PICTURES, page, perPage }),
     photos: async () => ({ photos: [], page: 1, pages: 1, total: 0, lastReceivedAt: null }),
     photoContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),
+    assignPhoto: async () => ({ queued: true }),
     previewPhotoDeletion: async () => ({ ids: [] }),
     deletePhotos: async () => ({ deleted: [], failed: [] }),
     pictureContent: async () => new Blob([TINY_BITMAP], { type: "image/bmp" }),
@@ -815,6 +816,7 @@ export function fakeApi(
         id: `say_${recorded.said.length}`,
         says: what.says,
         writtenAt: NOW,
+        runId: what.runId,
         minutes: what.says === "end_by" ? Number(hours) * 60 + Number(minutes) : 0,
       };
       waiting = [...waiting, one];

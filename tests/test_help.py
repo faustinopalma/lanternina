@@ -71,6 +71,22 @@ def test_nothing_is_offered_before_the_first_rung_is_due(house: House) -> None:
     assert len(said(house)) == before, "nothing went on the display"
 
 
+def test_no_help_outside_hours_or_on_the_following_day(house: House) -> None:
+    import time
+
+    from devices.run_experience import _write
+
+    start = time.mktime((2026, 9, 17, 15, 0, 0, 0, 0, -1))
+    begin(house, an_experience(), now=start, send=False)
+    _write(house.sheets_dir / "activity-rhythm.json", {
+        "afternoonDays": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+        "afternoonFrom": "15:00", "afternoonUntil": "19:00", "timeZone": "",
+    })
+    assert offer_help(house, start + 5 * 3600, send=False) == []
+    assert offer_help(house, start + 86400 + 600, send=False) == []
+    assert waiting(house).helped == 0
+
+
 def test_the_first_rung_arrives_when_its_minutes_have_passed(house: House) -> None:
     _, moment = at_a_moment(house)
 
@@ -166,6 +182,9 @@ def test_no_rung_says_that_time_has_passed(house: House) -> None:
 def test_an_afternoon_on_its_way_to_the_ending_is_not_offered_help(house: House) -> None:
     """It is finishing, not stuck. A nudge on top of a goodbye is the seam showing."""
     experience, moment = at_a_moment(house)
+    from shared.message import Message, Says
+
+    run_experience.hear(house, [Message(Says.CLOSE_NOW, 0)], 0)
     conclude_what_is_over(house, (experience.minutes - 20) * MINUTE, send=False)
     assert waiting(house).leaving_at
 
@@ -237,6 +256,9 @@ def test_the_ladder_is_gone_when_the_afternoon_is(house: House) -> None:
     experience, _ = at_a_moment(house)
     offer_help(house, 3 * MINUTE, send=False)
 
+    from shared.message import Message, Says
+
+    run_experience.hear(house, [Message(Says.CLOSE_NOW, 0)], 0)
     conclude_what_is_over(house, (experience.minutes - 20) * MINUTE, send=False)
     conclude_what_is_over(house, experience.minutes * MINUTE, send=False)
 

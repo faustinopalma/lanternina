@@ -77,6 +77,22 @@ def test_a_household_that_never_chose_still_has_a_rhythm() -> None:
     assert answer["cadenceMinutes"] == 60
 
 
+def test_open_activity_limit_is_preserved_and_bounded() -> None:
+    client = client_for()
+    body = {"picturesFrom": "07:00", "picturesUntil": "22:00", "cadenceMinutes": 60}
+    assert client.get("/api/rhythm", headers=headers()).json()["maxOpenActivities"] == 1
+    result = client.post("/api/rhythm", headers=headers(), json={
+        **body, "maxOpenActivities": 3,
+    })
+    assert result.status_code == 200
+    assert result.json()["maxOpenActivities"] == 3
+    assert client.post("/api/rhythm", headers=headers(), json=body).json()["maxOpenActivities"] == 3
+    for invalid in (0, -1, 11):
+        assert client.post("/api/rhythm", headers=headers(), json={
+            **body, "maxOpenActivities": invalid,
+        }).status_code == 400
+
+
 def test_what_the_parent_chose_is_what_the_hub_is_told() -> None:
     """Thirteen minutes, and a pause that starts at half past. Neither is a round number
     and neither may be rounded into one."""

@@ -1,8 +1,8 @@
-import { ArrowLeft, ArrowRight, Download, RefreshCw, Trash2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Download, Link2, RefreshCw, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useApi } from "@/api/client";
-import type { Photograph, PhotoSelection } from "@/api/types";
+import type { CurrentRun, Photograph, PhotoSelection } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/field";
@@ -18,13 +18,26 @@ export function dateSelection(start: string, end: string): PhotoSelection | null
   return { mode: "range", start: first.getTime() / 1000, end: after.getTime() / 1000 };
 }
 
-function PhotoTile({ photo, remove, disabled }: {
-  photo: Photograph; remove: () => void; disabled: boolean;
+function PhotoTile({ photo, remove, disabled, runs, assignmentPending }: {
+  photo: Photograph; remove: () => void; disabled: boolean; runs: CurrentRun[]; assignmentPending: boolean;
 }) {
   const api = useApi();
   const { t, dateTime } = useWords();
   const [url, setUrl] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  const [chosen, setChosen] = useState("");
+  const [assignment, setAssignment] = useState<"idle" | "busy" | "sent" | "failed">("idle");
+  const candidates = photo.target && "candidates" in photo.target ? photo.target.candidates : [];
+  const selected = photo.target && "run" in photo.target ? photo.target : null;
+  const eligible = runs.filter(run => candidates.some(target => target.run === run.runId
+    && target.moment === run.momentId && target.since === run.waitingSince));
+  async function assign() {
+    setAssignment("busy");
+    try {
+      await api.assignPhoto(photo.id, chosen);
+      setAssignment("sent");
+    } catch { setAssignment("failed"); }
+  }
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     let current = true;
@@ -36,6 +49,7 @@ function PhotoTile({ photo, remove, disabled }: {
   }, [api, photo.id]);
   const states: Record<Photograph["state"], MessageKey> = {
     pending: "photos.pending", processing: "photos.processing", done: "photos.done", failed: "photos.error",
+    awaiting_assignment: "photos.awaitingAssignment",
   };
   return <figure className="m-0 min-w-0 overflow-hidden rounded-control border border-edge bg-paper">
     <button className="block aspect-[4/3] w-full cursor-zoom-in bg-white" disabled={!url}
@@ -47,6 +61,27 @@ function PhotoTile({ photo, remove, disabled }: {
       {photo.capturedAt === null ? <Quiet>{t("photos.dateUnknown")}</Quiet> : null}
       <Quiet>{photo.width} × {photo.height} px · {photo.camera}</Quiet>
       <Quiet>{t(states[photo.state])}</Quiet>
+      {selected ? <p>{t("photos.assignedActivity", {
+        title: runs.find(run => run.runId === selected.run)?.title ?? selected.run,
+      })}</p> : null}
+      {photo.detail ? <details className="pt-1">
+        <summary className="cursor-pointer text-quiet">{t("photos.processingDetail")}</summary>
+        <p className="mt-1 whitespace-pre-wrap [overflow-wrap:anywhere]">{photo.detail}</p>
+      </details> : null}
+      {photo.state === "awaiting_assignment" ? <div className="space-y-2 pt-2">
+        {assignment === "sent" || assignmentPending ? <p role="status">{t("photos.assignmentSent")}</p> : eligible.length ? <>
+          <Label htmlFor={`activity-${photo.id}`}>{t("photos.activity")}</Label>
+          <select id={`activity-${photo.id}`} className="block w-full min-w-0 border border-edge bg-paper p-2"
+            value={chosen} disabled={disabled || assignment === "busy"}
+            onChange={event => setChosen(event.target.value)}>
+            <option value="">{t("photos.chooseActivity")}</option>
+            {eligible.map(run => <option key={run.runId} value={run.runId}>{run.title} · {run.heading}</option>)}
+          </select>
+          <Button size="small" disabled={disabled || assignment === "busy" || !eligible.some(run => run.runId === chosen)}
+            onClick={() => void assign()}><Link2 size={16} />{t("photos.assign")}</Button>
+          {assignment === "failed" ? <p role="alert">{t("photos.assignmentFailed")}</p> : null}
+        </> : <Quiet>{t("photos.noActivity")}</Quiet>}
+      </div> : null}
       {failed ? <Quiet>{t("photos.failed")}</Quiet> : null}
       <div className="flex justify-end gap-2 pt-2">
         {url ? <a href={url} download={`${photo.id}.jpg`} aria-label={t("photos.download")}
@@ -70,6 +105,10 @@ export function Photos() {
   const { t, dateTime } = useWords();
   const [page, setPage] = useState(1);
   const [state, reload] = useLoad(() => api.photos(page), [api, page], { live: true });
+  const [current] = useLoad(() => api.currentTrail(), [], { live: true });
+  const [messages] = useLoad(() => api.messages(), [], { live: true });
+  const runs = current.status === "ready" && Date.now() / 1000 - current.data.updatedAt <= 180
+    ? current.data.runs.filter(run => run.phase === "waiting" || run.phase === "received") : [];
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [busy, setBusy] = useState(false);
@@ -150,6 +189,8 @@ export function Photos() {
       {!state.data.total ? <Quiet>{t("photos.empty")}</Quiet> : null}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {state.data.photos.map(photo => <PhotoTile key={photo.id} photo={photo} disabled={disabled}
+          runs={runs} assignmentPending={messages.status === "ready" && messages.data.some(message =>
+            message.says === "assign_photo" && message.photoId === photo.id)}
           remove={() => void preview({ mode: "single", id: photo.id })} />)}
       </div>
       <div className="flex items-center justify-end gap-3">

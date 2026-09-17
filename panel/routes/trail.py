@@ -38,13 +38,15 @@ class CurrentRun(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     runId: str = Field(min_length=1, max_length=200)
+    experienceId: str = Field(default="", max_length=200)
     title: str = Field(max_length=500)
     beganAt: float = Field(ge=0, allow_inf_nan=False)
     endsAt: float = Field(ge=0, allow_inf_nan=False)
     momentId: str = Field(max_length=200)
     heading: str = Field(max_length=500)
-    phase: Literal["waiting", "ending", "unreadable"]
+    phase: Literal["waiting", "received", "ending", "unreadable"]
     waitingSince: float = Field(ge=0, allow_inf_nan=False)
+    receivedAt: float = Field(default=0, ge=0, allow_inf_nan=False)
 
 
 class CurrentRuns(BaseModel):

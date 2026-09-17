@@ -57,7 +57,7 @@ WHAT_CAME_BACK = "came"
 # filing a `plan` or a `continuation` would be claiming to have written one.
 DONE = frozenset({str(one) for one in Act})
 # A house may also say what stopped it, which is not a claim to have written anything.
-HOUSE_MAY_FILE = DONE | {WENT_WRONG}
+HOUSE_MAY_FILE = DONE | {WENT_WRONG, "terminated"}
 
 # How much of one generated thing is kept. A move is capped at 3000 characters upstream and a
 # script at 6000; this is the backstop for a caller that is neither, and it truncates rather

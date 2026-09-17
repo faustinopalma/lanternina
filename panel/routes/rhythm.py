@@ -38,6 +38,7 @@ class NewRhythm(BaseModel):
     # that has not been rebuilt cannot quietly reset the ceiling to the default.
     afternoonsADay: int | None = None
     displayPollMinutes: int | None = None
+    maxOpenActivities: int | None = None
 
 
 @router.get("/api/rhythm")
@@ -71,6 +72,8 @@ def write_rhythm(new: NewRhythm, account: CurrentAccount, request: Request) -> A
                 kept.afternoons_a_day if new.afternoonsADay is None else new.afternoonsADay
             ),
             updated_by=str(account.id),
+            max_open_activities=(kept.max_open_activities if new.maxOpenActivities is None
+                                 else new.maxOpenActivities),
             display_poll_minutes=(kept.display_poll_minutes if new.displayPollMinutes is None
                                   else new.displayPollMinutes),
         )

@@ -58,6 +58,7 @@ from devices.scan_sheet import find_scanner, scan_page
 from orchestrator.outgoing import Outgoing
 from shared.capabilities import (
     ENDED_CLOSED,
+    ENDED_STOPPED,
     ENDED_WAY_OUT,
     ENDED_WENT_WRONG,
     NEVER_CAME_BACK,
@@ -158,6 +159,8 @@ class Afternoon:
     # hour derived from `started_at` cannot be moved without lying about when it began.
     over_at: float = 0.0
     return_device: dict[str, str] = field(default_factory=dict)
+    explicit_end_at: float = 0.0
+    received_at: float = 0.0
 
     @property
     def moments(self) -> tuple[Moment, ...]:
@@ -165,8 +168,10 @@ class Afternoon:
 
     @property
     def ending_starts_at(self) -> float:
-        """When the ending begins whatever has happened. Arithmetic, not a decision."""
-        return self.over_at - ENDING_STARTS_AT_MINUTES * 60.0
+        """Only a parent-requested deadline starts an early ending."""
+        if not self.explicit_end_at:
+            return float("inf")
+        return self.explicit_end_at - ENDING_STARTS_AT_MINUTES * 60.0
 
     def closing_due_at(self) -> float:
         """When the close follows a way out that is already in play.
@@ -199,6 +204,8 @@ class Afternoon:
             "helped": self.helped,
             "over_at": self.over_at,
             "return_device": dict(self.return_device),
+            "explicit_end_at": self.explicit_end_at,
+            "received_at": self.received_at,
         }
 
     @staticmethod
@@ -223,6 +230,8 @@ class Afternoon:
             helped=int(values.get("helped", 0)),
             over_at=float(values.get("over_at", began + experience.minutes * 60.0)),
             return_device=dict(values.get("return_device", {})),
+            explicit_end_at=float(values.get("explicit_end_at", 0.0)),
+            received_at=float(values.get("received_at", 0.0)),
         )
 
 
@@ -258,7 +267,7 @@ def _write(path: Path, values: dict[str, Any]) -> None:
 
 
 def _forget(sheets_dir: Path, run: Afternoon, sheets: list[str]) -> None:
-    """An afternoon that ended leaves nothing behind, not even that it happened."""
+    """Remove live state after closure; the family's archived record remains."""
     from devices.print_page import blank_path
 
     _run_file(sheets_dir, run.run_id).unlink(missing_ok=True)
@@ -268,12 +277,7 @@ def _forget(sheets_dir: Path, run: Afternoon, sheets: list[str]) -> None:
 
 
 def waiting_runs(sheets_dir: Path) -> list[str]:
-    """Every afternoon this house has begun and not finished.
-
-    One at a time is the rule the caller applies, and it is a rule about the house rather
-    than about a person: two sheets on the table from two different afternoons is a house
-    that has stopped making sense, not a person doing too much.
-    """
+    """Every activity begun and not yet concluded or terminated by the parent."""
     return sorted(path.stem for path in sorted(_runs(sheets_dir).glob("*.json")))
 
 
@@ -296,10 +300,12 @@ def current_runs(sheets_dir: Path) -> list[dict[str, Any]]:
             heading = moment_id
         current.append({
             "runId": run.run_id, "title": run.experience.title,
-            "beganAt": run.started_at, "endsAt": run.over_at,
+            "experienceId": str(run.experience.experience_id),
+            "beganAt": run.started_at, "endsAt": run.explicit_end_at,
             "momentId": moment_id, "heading": heading,
-            "phase": "ending" if run.leaving_at else "waiting",
+            "phase": "ending" if run.leaving_at else "received" if run.received_at else "waiting",
             "waitingSince": run.left_at if run.leaving_at else run.waited_since,
+            "receivedAt": run.received_at,
         })
     return current
 
@@ -329,32 +335,16 @@ def _read_run(path: Path) -> Afternoon | None:
 
 @exclusive
 def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> list[str]:
-    """Bring every afternoon whose hour has come to its ending, and then forget it.
+    """Follow an explicitly requested deadline, or finish an ending already under way.
 
-    This replaced ``forget_what_is_over`` on 23 August 2026, and the two are not variants
-    of each other. The old one deleted a run whose hours had passed and said nothing to
-    anybody — measured doing exactly that on the house, to `aft_5ec79e85`, at 14:02 on 21
-    August. Deleting an afternoon is the one thing a system like this may not do: an
-    afternoon that stops without ending is the failure the rules call impossible.
-
-    Two steps, one per run of the house's timer, because a way out is something somebody
-    does rather than something a display finishes saying.
-
-    1. At thirty minutes before the end hour, the way out of wherever the afternoon got to
-       goes on the display. Nothing announces it, nothing apologises for it, and nothing
-       says the afternoon was shortened.
-    2. When that way out's own minutes are up — or the end hour arrives, whichever is
-       first — the ending goes on the display and the run is deleted.
-
-    A run whose file cannot be read is deleted without an ending, because there is no
-    document left to reach one through. That is the only path here that still forgets.
+    A nominal duration never expires a waiting activity. The existing 30-minute allowance
+    applies only to a parent's end-by command. Unreadable state remains open for explicit
+    termination instead of disappearing from the parent's view.
     """
     ended: list[str] = []
     for path in sorted(_runs(house.sheets_dir).glob("*.json")):
         run = _read_run(path)
         if run is None:
-            path.unlink(missing_ok=True)
-            ended.append(path.stem)
             continue
         if run.leaving_at:
             if now < run.closing_due_at():
@@ -373,7 +363,7 @@ def conclude_what_is_over(house: House, now: float, *, send: bool = True) -> lis
             ended.append(run.run_id)
             continue
         _write(_run_file(house.sheets_dir, run.run_id), leaving.to_dict())
-    if ended:
+    if ended and not waiting_runs(house.sheets_dir):
         # Whatever the afternoon last put on a display now has an ending of its own.
         # Without this the sheet layer outranks the picture for as long as the display is
         # on the wall, which on the house was measured at two days.
@@ -400,37 +390,43 @@ def _forget_orphan_pages(sheets_dir: Path) -> None:
 
 @exclusive
 def hear(house: House, said: Sequence[Message], now: float) -> list[str]:
-    """Apply what a parent said to every afternoon under way. Returns what changed.
+    """Apply targeted termination and deadline commands under the activity lock.
 
-    `ideas/09 §8`. Two things move an end hour and nothing else moves anything: the list in
-    :class:`~shared.message.Says` is short because everything on it has to be applicable at
-    a seam, and these two are applicable anywhere because they change a number the ending
-    already reads.
-
-    **Applied at once, and felt at the end of the moment.** `§8` says a message is applied at
-    the end of the current moment and never in the middle of an instruction. That holds here
-    without any waiting, because moving the end hour changes nothing a person can see: what
-    it changes is when :func:`conclude_what_is_over` next decides the ending is due, and that
-    is checked at moment boundaries and by the clock. Nothing is redrawn, nothing is
-    interrupted, and there is nothing to notice.
-
-    **Nothing says a message arrived.** No acknowledgement on the display, no change of tone,
-    no apology. `§8` is explicit that a text revealing the channel exists is the one thing
-    this must not produce, and the way to be sure is that this function draws nothing at all.
-
-    A message about an afternoon that has already begun its ending is ignored: the way out is
-    in somebody's hands, and moving the hour under it would either cut it short or leave it
-    hanging. That is the one place where "at a seam" bites.
+    Termination removes only the named live run and records the parent's action. Deadline
+    commands without a run identifier retain their legacy household-wide meaning. Replaying
+    a targeted command after its run has gone cannot affect another activity.
     """
     changed: list[str] = []
     for path in sorted(_runs(house.sheets_dir).glob("*.json")):
         run = _read_run(path)
-        if run is None or run.leaving_at:
+        if run is None:
+            if any(message.says is Says.TERMINATE and message.run_id == path.stem
+                   for message in said):
+                if house.panel:
+                    _tell_the_panel(house, path.stem, {"kind": "terminated"})
+                path.unlink(missing_ok=True)
+                _forget_orphan_pages(house.sheets_dir)
+                changed.append(f"{path.stem} terminated by the parent")
+                if not waiting_runs(house.sheets_dir):
+                    the_sheet_layer_is_done(house, now)
+            continue
+        addressed = [message for message in said
+                     if not message.run_id or message.run_id == run.run_id]
+        if any(message.says is Says.TERMINATE for message in addressed):
+            if house.panel:
+                _tell_the_panel(house, run.run_id, {"kind": "terminated"})
+                _how_it_went(house, run, ENDED_STOPPED, minutes=(now - run.started_at) / 60.0)
+            _forget(house.sheets_dir, run, [])
+            changed.append(f"{run.run_id} terminated by the parent")
+            if not waiting_runs(house.sheets_dir):
+                the_sheet_layer_is_done(house, now)
+            continue
+        if run.leaving_at:
             continue
         moved = run
-        for message in said:
+        for message in addressed:
             moved = _apply(moved, message, now)
-        if moved.over_at == run.over_at:
+        if moved == run:
             continue
         _write(_run_file(house.sheets_dir, run.run_id), moved.to_dict())
         changed.append(f"{run.run_id} is now over at {_clock(moved.over_at)}")
@@ -465,22 +461,7 @@ def _clock(instant: float) -> str:
 
 
 def _over_at(run: Afternoon, when: float) -> Afternoon:
-    return Afternoon(
-        run_id=run.run_id,
-        experience=run.experience,
-        started_at=run.started_at,
-        waiting_at=run.waiting_at,
-        segment=run.segment,
-        weight=run.weight,
-        printed=run.printed,
-        answered=run.answered,
-        leaving_at=run.leaving_at,
-        left_at=run.left_at,
-        waited_since=run.waited_since,
-        helped=run.helped,
-        over_at=when,
-        return_device=run.return_device,
-    )
+    return replace(run, over_at=when, explicit_end_at=when)
 
 
 # ── Help ─────────────────────────────────────────────────────────────────────────────
@@ -488,53 +469,43 @@ def _over_at(run: Afternoon, when: float) -> Afternoon:
 
 @exclusive
 def offer_help(house: House, now: float, *, send: bool = True) -> list[str]:
-    """Put the next rung of the ladder on the display, for every afternoon whose is due.
+    """Offer one due reminder for the most recently entered waiting step.
 
-    `ideas/09 §4`. Four rungs, written into every moment, checked before the document was
-    saved, read by the parent — and until now nothing could reach them. A third of what a
-    model writes was going nowhere.
-
-    ``after_minutes`` is counted from arriving at the moment and not from the rung before,
-    which is why the format refuses a ladder that does not go up: 3, 6, 10, 15 means a nudge
-    at three minutes and the answer at fifteen, not at thirty-four.
-
-    **Two lines this deliberately does not cross.**
-
-    *After the last rung, nothing.* `ideas/09 §4` says the moment is over and the afternoon
-    moves on. Here the only moment an afternoon can be waiting at is a ``collect``, so moving
-    on would mean ending the afternoon because nobody had come back — an action triggered by
-    silence, which is the shape the working rules forbid. The ending stays where it is: the
-    clock at T-30, which is about the hour and not about the person. So there is no fifth
-    rung and no ending here.
-
-    *Nothing says that time passed.* The rung is the same text somebody would have been given
-    for asking, which is `§4`'s own rule, and it can only be that if it never mentions
-    waiting. Nothing here adds a word to it.
-
-    Asking for help is not built. When it is, it calls this with the rung it wants, and the
-    text is the same text — the decision left open in `§17` is which surface the asking lands
-    on, not what it says.
+    Reminders stay within activity hours and the step's arrival day in the household's
+    timezone. Receiving a photo stops them. The saved counter prevents replay; absence
+    of a response never closes the activity.
     """
     given: list[str] = []
-    for path in sorted(_runs(house.sheets_dir).glob("*.json")):
-        run = _read_run(path)
-        if run is None or run.leaving_at:
-            # An afternoon on its way to the ending is not stuck; it is finishing.
-            continue
-        helped = _next_rung(run, now)
-        if helped is None:
-            continue
-        rung, at = helped
-        out = Outgoing()
-        lines = list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines, written=rung.lines))
-        if run.return_device:
-            hands.say(house, at.heading, [*lines, *_return_lines(run)], fit=True)
-        else:
-            hands.say(house, at.heading, lines)
-        _say_the_tally(out)
-        _write(_run_file(house.sheets_dir, run.run_id), _one_rung_on(run).to_dict())
-        given.append(f"{run.run_id} {at.id} rung {run.helped + 1}")
-        del send  # a rung is words on a display; nothing is printed and nothing is sent
+    if not activity_time_allowed(house, now):
+        return given
+    runs = [run for path in _runs(house.sheets_dir).glob("*.json")
+            if (run := _read_run(path)) is not None and not run.leaving_at]
+    foreground = max(runs, key=lambda run: run.waited_since, default=None)
+    if foreground is None or foreground.received_at:
+        return given
+    from devices.afternoon import wall_clock
+
+    try:
+        rhythm = json.loads((house.sheets_dir / "activity-rhythm.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        rhythm = {}
+    zone = str(rhythm.get("timeZone") or "")
+    if wall_clock(now, zone)[:3] != wall_clock(foreground.waited_since, zone)[:3]:
+        return given
+    run = foreground
+    helped = _next_rung(run, now)
+    if helped is None:
+        return given
+    rung, at = helped
+    out = Outgoing()
+    lines = list(out.lines(f"{at.id}.help{run.helped + 1}", rung.lines, written=rung.lines))
+    if run.return_device:
+        hands.say(house, at.heading, [*lines, *_return_lines(run)], fit=True)
+    else:
+        hands.say(house, at.heading, lines)
+    _say_the_tally(out)
+    _write(_run_file(house.sheets_dir, run.run_id), _one_rung_on(run).to_dict())
+    given.append(f"{run.run_id} {at.id} rung {run.helped + 1}")
     return given
 
 
@@ -568,6 +539,8 @@ def _one_rung_on(run: Afternoon) -> Afternoon:
         helped=run.helped + 1,
         over_at=run.over_at,
         return_device=run.return_device,
+        explicit_end_at=run.explicit_end_at,
+        received_at=run.received_at,
     )
 
 
@@ -598,6 +571,8 @@ def _take_the_way_out(house: House, run: Afternoon, now: float) -> Afternoon | N
         helped=run.helped,
         over_at=run.over_at,
         return_device=run.return_device,
+        explicit_end_at=run.explicit_end_at,
+        received_at=run.received_at,
     )
 
 
@@ -611,7 +586,8 @@ def _close_it(house: House, run: Afternoon, *, send: bool = True) -> None:
     ending = _the_ending(run.moments)
     if ending is None:
         return
-    _do(house, ending, run.weight, send=send)
+    done = _do(house, ending, run.weight, send=send, run_id=run.run_id)
+    _it_did(house, run.run_id, ending, run.weight, done)
 
 
 def _the_ending(moments: tuple[Moment, ...]) -> Close | None:
@@ -792,7 +768,8 @@ def _play(
     sheet it put on the table on the way, and the weight it ran at.
     """
     moments = run.moments
-    weight = _weight_for(moments, start, run.over_at - now)
+    available = run.over_at - now if run.explicit_end_at else run.experience.minutes * 60.0
+    weight = _weight_for(moments, start, available)
     printed: list[str] = []
     for moment in moments[start:]:
         if isinstance(moment, Collect):
@@ -836,6 +813,7 @@ def _pause(
         waited_since=now,
         over_at=run.over_at,
         return_device=selected or {},
+        explicit_end_at=run.explicit_end_at,
     )
     _write(_run_file(house.sheets_dir, run.run_id), waiting.to_dict())
     for sheet_id in printed:
@@ -871,6 +849,7 @@ def begin(
     run_id: str | None = None,
     now: float | None = None,
     send: bool = True,
+    max_open: int = 1,
 ) -> str | None:
     """Play an afternoon up to its first page. Returns the run id, if it is waiting for one.
 
@@ -878,6 +857,8 @@ def begin(
     caller may name the run, so that it can tell the panel under which name to keep the
     record before this returns.
     """
+    if not 1 <= max_open <= 10 or len(waiting_runs(house.sheets_dir)) >= max_open:
+        raise CannotRun("the open-activity limit is reached")
     if not experience.runnable_in(house.capabilities):
         raise CannotRun(f"this house cannot run {experience.title}")
     moment = time.time() if now is None else now
@@ -1033,16 +1014,48 @@ def camera_target(
     candidates = [
         run for run in runs if run is not None and not run.leaving_at
         and run.waited_since <= captured < run.ending_starts_at
+        and (not run.return_device or (
+            run.return_device.get("kind") == "camera"
+            and (not camera or run.return_device.get("id", "").upper() == camera.upper())
+        ))
     ]
-    if len(candidates) != 1:
-        return None
-    run = candidates[0]
-    if run.return_device and (
-        run.return_device.get("kind") != "camera"
-        or (camera and run.return_device.get("id", "").upper() != camera.upper())
-    ):
-        return None
-    return {"run": run.run_id, "moment": run.waiting_at, "since": run.waited_since}
+    targets = [{"run": run.run_id, "moment": run.waiting_at, "since": run.waited_since}
+               for run in candidates]
+    if len(targets) > 1:
+        return {"candidates": targets}
+    return targets[0] if targets else None
+
+
+def target_is_waiting(sheets_dir: Path, target: dict[str, Any]) -> bool:
+    if set(target) != {"run", "moment", "since"}:
+        return False
+    for run_id in waiting_runs(sheets_dir):
+        if run_id != target["run"]:
+            continue
+        run = _read_run(_run_file(sheets_dir, run_id))
+        return bool(run and not run.leaving_at and run.waiting_at == target["moment"]
+                    and run.waited_since == target["since"])
+    return False
+
+
+@exclusive
+def note_photo_received(house: House, target: dict[str, Any], received: float) -> None:
+    if not target_is_waiting(house.sheets_dir, target):
+        return
+    path = _run_file(house.sheets_dir, target["run"])
+    run = _read_run(path)
+    if run is not None and not run.received_at:
+        _write(path, replace(run, received_at=received).to_dict())
+
+
+def activity_time_allowed(house: House, now: float) -> bool:
+    from devices.afternoon import its_moment, wall_clock
+
+    try:
+        rhythm = json.loads((house.sheets_dir / "activity-rhythm.json").read_text(encoding="utf-8"))
+        return its_moment(rhythm, wall_clock(now, str(rhythm.get("timeZone") or "")))
+    except (OSError, ValueError, KeyError, TypeError):
+        return not house.panel or house.pretend is not None
 
 
 @exclusive
@@ -1057,7 +1070,7 @@ def carry_on(
     """
     moment = time.time() if now is None else now
     if photograph is not None:
-        if target is None or camera_target(house.sheets_dir, float(target["since"])) != target:
+        if target is None or not target_is_waiting(house.sheets_dir, target):
             return "photograph archived; its moment is no longer waiting"
         run = _read_run(_run_file(house.sheets_dir, str(target["run"])))
         if run is None or moment >= run.ending_starts_at:
@@ -1082,11 +1095,15 @@ def carry_on(
             panel=house.panel, household=house.household, key=house.device_key,
         )
     else:
+        if not activity_time_allowed(house, moment):
+            return "the scanner is waiting for activity hours"
         active = [
             run for name in waiting_runs(house.sheets_dir)
             if (run := _read_run(_run_file(house.sheets_dir, name))) is not None
             and not run.leaving_at
         ]
+        if len(active) > 1:
+            return "several activities are open; use a photograph and choose its activity"
         selected_run = active[0] if len(active) == 1 else None
         if selected_run is not None and selected_run.return_device:
             selected = selected_run.return_device
@@ -1126,6 +1143,8 @@ def carry_on(
     came = came_back(reading)
     if came is None:
         return "the page was not clear enough to say what came back"
+    if house.panel:
+        _tell_the_panel(house, run.run_id, {"kind": "collect", "heading": at.heading})
     then = _then(at, came)
     # One line per sheet that reached the glass. What is in ``printed`` and not here is a
     # sheet handed over and never brought back, which is what `panel/profiles.py` reads as
@@ -1144,6 +1163,7 @@ def carry_on(
             printed=run.printed,
             answered=run.answered,
             over_at=run.over_at,
+            explicit_end_at=run.explicit_end_at,
         )
         start = 0
     else:

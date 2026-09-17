@@ -156,7 +156,7 @@ function WayOutOf({ moment }: { moment: Moment }) {
  * Pressing writes a row. Nothing is sent, nothing is woken, and the house applies it on
  * the look it already makes every ten minutes. Nothing appears on any display when it
  * does — an afternoon whose hour moved looks like an afternoon that is ending. */
-function Saying({ when }: { when: number }) {
+function Saying({ when, runId }: { when: number; runId: string }) {
   const { t, dateTime } = useWords();
   const api = useApi();
   const [at, setAt] = useState("");
@@ -169,7 +169,7 @@ function Saying({ when }: { when: number }) {
     setSaying(true);
     setFailed(false);
     try {
-      await api.say(said);
+      await api.say({ ...said, runId });
       setAgain((n) => n + 1);
     } catch {
       setFailed(true);
@@ -177,7 +177,8 @@ function Saying({ when }: { when: number }) {
     setSaying(false);
   }
 
-  const pending = waiting.status === "ready" && waiting.data.length > 0;
+  const pending = waiting.status === "ready" && waiting.data.some(message =>
+    message.runId === runId && message.says !== "assign_photo");
 
   return (
     <div className="w-full">
@@ -189,9 +190,9 @@ function Saying({ when }: { when: number }) {
           void say({ says: "end_by", at });
         }}
       >
-        <Label htmlFor="end-by">{t("experiences.endBy")}</Label>
+        <Label htmlFor={`end-by-${runId}`}>{t("experiences.endBy")}</Label>
         <Input
-          id="end-by"
+          id={`end-by-${runId}`}
           type="time"
           required
           className="w-34"
@@ -220,12 +221,14 @@ function Saying({ when }: { when: number }) {
 
 function Card({
   offered,
+  runId,
   picked,
   onPick,
   onDecided,
   onWorkOn,
 }: {
   offered: OfferedExperience;
+  runId?: string;
   picked?: boolean;
   onPick?: (on: boolean) => void;
   onDecided: (state: Decision) => void;
@@ -325,7 +328,7 @@ function Card({
           offered.begunAt > 0 ? (
             /* An afternoon the house has begun cannot be withdrawn, stopped or watched
                from here. What it can be given is an hour. */
-            <Saying when={offered.begunAt} />
+            runId ? <Saying when={offered.begunAt} runId={runId} /> : null
           ) : (
             <Button size="small" disabled={deciding} onClick={() => decide("withdrawn")}>
               {t("action.withdraw")}
@@ -376,17 +379,19 @@ function Approved({ again }: { again: number }) {
   const { t } = useWords();
   const api = useApi();
   const [state] = useLoad(() => api.experiences("approved"), [again], { live: true });
+  const [current] = useLoad(() => api.currentTrail(), [], { live: true });
   const [withdrawn, setWithdrawn] = useState<string[]>([]);
 
   if (state.status !== "ready") return null;
   const left = state.data.experiences.filter((offered) => !withdrawn.includes(offered.id));
   const waiting = left.filter((offered) => offered.begunAt === 0);
-  /* Begun and its minutes not yet spent. The panel cannot ask the house whether it is
-     still going, so the afternoon's own length is what stands in for that. */
   const now = Date.now() / 1000;
-  const running = left.filter(
-    (offered) => offered.begunAt > 0 && offered.begunAt + offered.minutes * 60 > now,
-  );
+  const snapshot = current.status === "ready" ? current.data : undefined;
+  const fresh = !!snapshot?.updatedAt && now - snapshot.updatedAt <= 180;
+  const running = (snapshot?.runs ?? []).flatMap(run => {
+    const offered = left.find(item => item.id === run.experienceId && item.begunAt > 0);
+    return offered ? [{ offered, run }] : [];
+  });
 
   return (
     <>
@@ -406,9 +411,10 @@ function Approved({ again }: { again: number }) {
       </section>
       {running.length > 0 ? (
         <section className="mt-7 border-t border-edge pt-5">
-          <h2 className="mb-2 text-[1.05rem] font-semibold">{t("experiences.running")}</h2>
-          {running.map((offered) => (
-            <Card key={offered.id} offered={offered} onDecided={() => undefined} />
+          <h2 className="mb-2 text-[1.05rem] font-semibold">{t(fresh ? "experiences.running" : "trail.lastKnown")}</h2>
+          {!fresh ? <Quiet>{t("trail.statusStale")}</Quiet> : null}
+          {running.map(({ offered, run }) => (
+            <Card key={run.runId} offered={offered} runId={run.runId} onDecided={() => undefined} />
           ))}
         </section>
       ) : null}

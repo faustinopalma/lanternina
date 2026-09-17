@@ -65,6 +65,7 @@ const RHYTHM_FIELDS = [
   "afternoonsADay",
   "minAfternoonsADay",
   "maxAfternoonsADay",
+  "maxOpenActivities",
 ] as const;
 
 const PREFERENCES_FIELDS = [
@@ -192,6 +193,7 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
       return response.blob();
     },
     previewPhotoDeletion: (selection) => json("/api/photos/delete-preview", write(selection), ["ids"]),
+    assignPhoto: (id, runId) => json(`/api/photos/${encodeURIComponent(id)}/activity`, write({ runId }), ["queued"]),
     deletePhotos: (selection, ids) => json("/api/photos/delete", write({ ...selection, ids }), ["deleted", "failed"]),
 
     async pageContent(id: string): Promise<Blob> {

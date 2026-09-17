@@ -12,7 +12,7 @@ from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, HTTPException, Request, Response
 from PIL import Image
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from panel.gate import CurrentAccount, DeviceKey
 from panel.photos import Photo, PhotoArchive
@@ -30,13 +30,29 @@ PhotoId = Annotated[str, Field(pattern=r"^[0-9a-f]{32}$")]
 Timestamp = Annotated[float, Field(ge=0, allow_inf_nan=False)]
 
 
+class ReturnTarget(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run: str = Field(min_length=1, max_length=200)
+    moment: str = Field(min_length=1, max_length=200)
+    since: Timestamp
+
+
+class AmbiguousTargets(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    candidates: list[ReturnTarget] = Field(min_length=2, max_length=10)
+
+
 class UploadedPhoto(BaseModel):
     id: PhotoId
     camera: str = Field(min_length=1, max_length=64)
     capturedAt: Timestamp | None = None
     receivedAt: Timestamp
-    state: Literal["pending", "processing", "done", "failed"] = "pending"
+    state: Literal["pending", "processing", "done", "failed", "awaiting_assignment"] = "pending"
     imageBase64: str = Field(max_length=16_000_000)
+    target: ReturnTarget | AmbiguousTargets | None = None
+    detail: str = Field(default="", max_length=300)
 
 
 class DeleteSelection(BaseModel):
@@ -157,6 +173,8 @@ def upload(household_id: str, body: UploadedPhoto, _: DeviceKey, request: Reques
                 height,
                 body.state,
                 hashlib.sha256(image).hexdigest(),
+                target=body.target.model_dump() if body.target else None,
+                detail=body.detail,
             ),
             image,
         )
@@ -231,3 +249,54 @@ for photo_route in router.routes:
         photo_route.path.replace("/photos", "/scans"), photo_route.endpoint,
         methods=list(photo_route.methods), name="scan_" + photo_route.name,
     )
+
+
+class ActivityChoice(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    runId: str = Field(min_length=1, max_length=200)
+
+
+@router.post("/api/photos/{photo_id}/activity")
+def assign_activity(
+    photo_id: PhotoId, choice: ActivityChoice, account: CurrentAccount, request: Request,
+) -> dict:
+    from panel.messages import MessageConflict, PendingMessage
+    from shared.message import Message, Says
+
+    household = str(account.household_id)
+    photo = next((row for row in request.app.state.photos.list(household)
+                  if row.id == photo_id and not row.deleted), None)
+    if photo is None:
+        raise HTTPException(404, "unknown_photo")
+    run = next((row for row in request.app.state.trail.current(household).runs
+                if row["runId"] == choice.runId and row["phase"] in {"waiting", "received"}), None)
+    if run is None:
+        raise HTTPException(409, "activity_not_waiting")
+    target = {"run": run["runId"], "moment": run["momentId"], "since": run["waitingSince"]}
+    if (photo.state != "awaiting_assignment"
+            or target not in (photo.target or {}).get("candidates", [])):
+        raise HTTPException(409, "photo_not_waiting_for_this_activity")
+    messages = request.app.state.messages
+    for pending in messages.pending(household):
+        if pending.said.says is Says.ASSIGN_PHOTO and pending.said.photo_id == photo_id:
+            if pending.said.run_id != choice.runId:
+                raise HTTPException(409, "assignment_already_pending")
+            return {"queued": True}
+    try:
+        messages.add(PendingMessage(
+            id=f"assign_{photo_id}", household_id=household, written_by=str(account.id),
+            said=Message(Says.ASSIGN_PHOTO, time.time(), run_id=choice.runId,
+                         photo_id=photo_id, moment_id=target["moment"],
+                         waiting_since=target["since"]),
+        ))
+    except MessageConflict as exc:
+        raise HTTPException(409, "assignment_already_pending") from exc
+    return {"queued": True}
+
+
+@router.post("/api/device/{household_id}/photo-assignments/pull")
+def photo_assignments(household_id: str, _: DeviceKey, request: Request) -> dict:
+    pending = request.app.state.messages.pending(household_id)
+    return {"assignments": [row.to_public() for row in pending
+                            if str(row.said.says) == "assign_photo"]}

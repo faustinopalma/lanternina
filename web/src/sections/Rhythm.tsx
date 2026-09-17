@@ -163,6 +163,7 @@ function Form({ spacing }: { spacing: Spacing }) {
   const [timeZone, setTimeZone] = useState(spacing.timeZone);
   const [wanted, setWanted] = useState(String(spacing.scriptsWanted));
   const [aDay, setADay] = useState(String(spacing.afternoonsADay));
+  const [openLimit, setOpenLimit] = useState(String(spacing.maxOpenActivities ?? 1));
   const [status, setStatus] = useState<MessageKey | null>(
     spacing.picturesFrom === spacing.picturesUntil ? "rhythm.picturesAllDay" : null,
   );
@@ -194,6 +195,7 @@ function Form({ spacing }: { spacing: Spacing }) {
     timeZone,
     wanted,
     aDay,
+    openLimit,
   });
 
   /* Saving persists a choice and returns. The house reads it on its next run and decides
@@ -211,6 +213,7 @@ function Form({ spacing }: { spacing: Spacing }) {
         timeZone,
         scriptsWanted: Number(wanted),
         afternoonsADay: Number(aDay),
+        maxOpenActivities: Number(openLimit),
       });
       saved();
       setStatus("rhythm.saved");
@@ -392,6 +395,13 @@ function Form({ spacing }: { spacing: Spacing }) {
             />
           </span>
           <Quiet>{t("rhythm.aDayNote")}</Quiet>
+          <span className="flex flex-wrap items-center gap-2">
+            <Label htmlFor="open-activities">{t("rhythm.openLimit")}</Label>
+            <Input id="open-activities" type="number" required className="w-24"
+              min={1} max={10} step={1} value={openLimit}
+              onChange={(event) => setOpenLimit(event.target.value)} />
+          </span>
+          <Quiet>{t("rhythm.openLimitNote")}</Quiet>
           <span className="flex items-center gap-2">
             <Label htmlFor="scripts-wanted">{t("rhythm.wanted")}</Label>
             <Input

@@ -206,22 +206,16 @@ def read_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
         "afternoonUntil": str(answer.get("afternoonUntil") or DEFAULT_AFTERNOON_UNTIL),
         # Not `or`: a parent who chose none means none, and that is not the same as absent.
         "afternoonsADay": DEFAULT_AFTERNOONS_A_DAY if a_day is None else int(a_day),
+        "maxOpenActivities": int(answer.get("maxOpenActivities", 1)),
         "timeZone": str(answer.get("timeZone") or ""),
     }
 
 
 def the_rhythm(panel: str, household: str, key: str) -> dict[str, Any]:
-    """The rhythm, read fresh on every run, or no day at all.
+    """Read the current rhythm on each main timer invocation, or return no allowed days.
 
-    There was a copy on disk here until 21 August 2026, kept for six hours so that the
-    panel's API could scale to zero between afternoons. It was wrong twice over. A parent
-    who turned afternoons on watched nothing happen and had nothing to tell them why —
-    measured that same evening, the days were saved at 15:21 and the house was still
-    deciding on a rhythm read at 14:02. And it bought nothing: the afternoon itself is
-    pulled from the panel, so a house that cannot reach it has nothing to begin however
-    fresh its idea of the days.
-
-    What it costs is one small request per run of the timer, so 144 a day rather than 4.
+    The caller saves this result for the photograph and reminder workers. This copy avoids
+    network calls in those workers; it never replaces this fresh read before starting work.
     """
     try:
         return read_rhythm(panel, household, key)
@@ -529,6 +523,11 @@ def main(argv: list[str] | None = None) -> int:
 
     report_current(house)
 
+    rhythm = the_rhythm(panel, household, key)
+    from devices.run_experience import _write
+
+    _write(sheets_dir / "activity-rhythm.json", rhythm)
+
     # Above the hour and above whether a room is busy, and both for the same reason:
     # writing a script puts nothing in the room. It fills the list the parent decides from,
     # and a parent may open the panel at eight in the morning or while an afternoon is
@@ -543,11 +542,10 @@ def main(argv: list[str] | None = None) -> int:
     top_up(panel, household, key, house, waiting=waiting, wanted=wanted)
 
     still_going = waiting_runs(sheets_dir)
-    if still_going:
-        print(f"an afternoon is already under way: {', '.join(still_going)}")
+    if len(still_going) >= int(rhythm.get("maxOpenActivities", 1)):
+        print(f"the open-activity limit is reached: {', '.join(still_going)}")
         return 0
 
-    rhythm = the_rhythm(panel, household, key)
     zone = str(rhythm.get("timeZone") or "")
     there = wall_clock(now, zone)
 
@@ -613,7 +611,8 @@ def main(argv: list[str] | None = None) -> int:
     # record under before the first moment has finished playing.
     run_name = new_id("aft")
     try:
-        run_id = begin(house, experience, run_id=run_name, now=now, send=not args.no_paper)
+        run_id = begin(house, experience, run_id=run_name, now=now, send=not args.no_paper,
+                   max_open=int(rhythm.get("maxOpenActivities", 1)))
     except (CannotRun, ExperienceError, OSError) as exc:
         print(f"{experience.title} did not begin ({exc})")
         return 1

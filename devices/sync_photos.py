@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import json
 from typing import Any
 
 from devices.ask_panel import _ask
@@ -58,6 +59,19 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
         ):
             hub.changed.set()
     completed = 0
+    assignments = ask(
+        f"{house.panel.rstrip('/')}/api/device/{house.household}/photo-assignments/pull",
+        {}, key=house.device_key, timeout=30,
+    )
+    applied = []
+    for command in assignments["assignments"]:
+        if hub.store.get(command["photoId"]) is None:
+            continue
+        target = {"run": command["runId"], "moment": command["momentId"],
+                  "since": command["waitingSince"]}
+        hub.store.assign(command["photoId"], target)
+        applied.append(command)
+        hub.changed.set()
     for pending in hub.store.unsynced()[:50]:
         row = hub.store.get(pending["id"])
         if row is None:
@@ -75,6 +89,8 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
                     "receivedAt": row["received"],
                     "capturedAt": row["captured"],
                     "state": row["state"],
+                    "target": json.loads(row["target"]),
+                    "detail": row["detail"],
                     "imageBase64": base64.b64encode(row["jpeg"]).decode(),
                 },
             )
@@ -87,6 +103,12 @@ def synchronize(hub: Any, ask: Any = _ask) -> int:
                 raise ValueError("photograph was not stored")
         hub.store.synced(row["id"], row["state"])
         completed += 1
+    unsynced_ids = {row["id"] for row in hub.store.unsynced()}
+    for command in applied:
+        if command["photoId"] in unsynced_ids:
+            continue
+        ask(f"{house.panel.rstrip('/')}/api/device/{house.household}/messages/{command['id']}/heard",
+            {}, key=house.device_key, timeout=30)
     if completed:
         for photo_id in report()["ids"]:
             hub.delete(photo_id)
