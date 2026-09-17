@@ -47,6 +47,14 @@ function Drawn({ pictureId }: { pictureId: string }) {
   );
 }
 
+const interactionKinds = new Set(["say", "hand_over", "collect", "close", "fault", "came", "terminated"]);
+
+function technicalBody(made: Made): string {
+  if (made.kind === "came") return made.body;
+  if (interactionKinds.has(made.kind) || made.kind === "drawn") return "";
+  return [made.body, made.paper].filter((text) => text.trim()).join("\n\n");
+}
+
 function Step({ made, technical = false }: { made: Made; technical?: boolean }) {
   const { t, dateTime } = useWords();
   /* Written out rather than built from `made.kind`: a key that only exists at runtime is a
@@ -73,45 +81,41 @@ function Step({ made, technical = false }: { made: Made; technical?: boolean }) 
                       : made.kind === "drawn"
                         ? t("trail.kind.drawn")
                         : made.kind;
-  const outcome = made.paper || made.body;
+  const outcome = technicalBody(made);
 
   return (
     <li className="min-w-0 border-l-2 border-edge pl-3 [overflow-wrap:anywhere]">
       <p className="text-[0.82rem] text-quiet">
         {technical ? t("trail.filedAt", { at: dateTime(made.at) }) : dateTime(made.at)}
       </p>
-      <p className="font-medium">{kind}</p>
+      <p className="font-medium">{technical ? t("trail.aboutStep", { kind }) : kind}</p>
       {made.heading ? <p className="mt-1 text-[0.9rem] text-quiet">{made.heading}</p> : null}
 
-      {technical && (outcome || made.pictureId) ? (
+      {technical && outcome.trim() ? (
         <div className="mt-2">
           <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.modelDocument")}
+            {t(made.kind === "came" ? "trail.reading" : "trail.modelDocument")}
           </p>
-          {outcome ? <pre className="mt-1 max-w-full font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{outcome}</pre> : null}
-          {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
+          <pre className="mt-1 max-w-full font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{outcome}</pre>
         </div>
       ) : null}
 
-      {!technical && made.body ? (
-        made.kind === "came" || made.kind === "fault" ? <details className="mt-2">
-          <summary className="cursor-pointer text-quiet">{t(made.kind === "came" ? "trail.reading" : "trail.failureDetail")}</summary>
-          <pre className="mt-1 font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{made.body}</pre>
-        </details> : <blockquote className="mt-2 whitespace-pre-wrap">{made.body}</blockquote>
+      {!technical && made.kind !== "came" && made.body.trim() ? (
+        made.kind === "fault" ? <p className="mt-2 whitespace-pre-wrap">{made.body}</p>
+          : <blockquote className="mt-2 whitespace-pre-wrap">{made.body}</blockquote>
       ) : null}
-      {!technical && made.paper ? <div className="mt-3">
+      {!technical && made.paper.trim() ? <div className="mt-3">
         <p className="text-[0.82rem] text-quiet">{t("trail.onPaper")}</p>
         <p className="mt-1 whitespace-pre-wrap">{made.paper}</p>
       </div> : null}
-      {made.asked || made.why || made.until ? <details className="mt-2">
-        <summary className="cursor-pointer text-quiet">{t("trail.stepDetails")}</summary>
-        {made.asked ? <div className="mt-2">
+      {technical ? <>
+        {made.asked.trim() ? <div className="mt-2">
           <p className="text-[0.82rem] text-quiet">{t("trail.went_in")}</p>
           <pre className="mt-1 font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{made.asked}</pre>
         </div> : null}
-        {made.why ? <Quiet className="mt-2">{t("trail.why", { why: made.why })}</Quiet> : null}
-        {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
-      </details> : null}
+        {made.why.trim() ? <Quiet className="mt-2">{t("trail.why", { why: made.why })}</Quiet> : null}
+        {made.until > 0 ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
+      </> : null}
     </li>
   );
 }
@@ -135,9 +139,12 @@ function Whole({ runId }: { runId: string }) {
   if (state.status === "failed") return <Quiet className="mt-2.5">{t("trail.unreadable")}</Quiet>;
   const trail = state.data;
   const made = trail.made ?? [];
-  const interactionKinds = new Set(["say", "hand_over", "collect", "close", "fault", "came", "terminated"]);
   const events = made.filter((one) => interactionKinds.has(one.kind));
-  const documents = made.filter((one) => !interactionKinds.has(one.kind));
+  const sheets = made.filter((one) => one.pictureId.trim()
+    || (one.kind === "drawn" && (one.paper.trim() || one.body.trim())));
+  const documents = made.filter((one) => technicalBody(one).trim()
+    || one.asked.trim() || one.why.trim() || one.until > 0);
+  const script = trail.script?.trim();
   const printed = events.filter((one) => one.kind === "hand_over").at(-1);
 
   return (
@@ -151,19 +158,32 @@ function Whole({ runId }: { runId: string }) {
           {events.map((one) => <Step key={one.id} made={one} />)}
         </ol>
       )}
-      {trail.script || documents.length > 0 ? (
+      {sheets.length > 0 ? <section className="mt-5 border-t border-edge pt-3" aria-label={t("trail.preparedSheets")}>
+        <h4 className="font-medium">{t("trail.preparedSheets")}</h4>
+        <div className="mt-3 flex flex-col gap-4">
+          {sheets.map((one) => <figure key={one.id} className="min-w-0 [overflow-wrap:anywhere]">
+            <figcaption>
+              {one.heading ? <p className="font-medium">{one.heading}</p> : null}
+              <p className="text-[0.82rem] text-quiet">{t("trail.preparedAt", { at: dateTime(one.at) })}</p>
+            </figcaption>
+            {one.pictureId.trim() ? <Drawn pictureId={one.pictureId} />
+              : <p className="mt-2 whitespace-pre-wrap">{one.paper || one.body}</p>}
+          </figure>)}
+        </div>
+      </section> : null}
+      {script || documents.length > 0 ? (
         <details className="mt-5 border-t border-edge pt-3">
           <summary className="cursor-pointer text-quiet">{t("trail.technical")}</summary>
           <Quiet className="mt-2">{t("trail.technicalNote")}</Quiet>
-          {trail.script ? (
-            <details className="mt-3">
-              <summary className="cursor-pointer text-quiet">{t("trail.script")}</summary>
+          {script ? (
+            <div className="mt-3">
+              <p className="font-medium">{t("trail.script")}</p>
               <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{trail.script}</p>
-            </details>
+            </div>
           ) : null}
-          <ol className="mt-3 flex list-none flex-col gap-3.5 p-0">
+          {documents.length > 0 ? <ol className="mt-3 flex list-none flex-col gap-3.5 p-0">
             {documents.map((one) => <Step key={one.id} made={one} technical />)}
-          </ol>
+          </ol> : null}
         </details>
       ) : null}
     </div>

@@ -72,7 +72,9 @@ describe("what the system wrote", () => {
     expect(screen.getByText('[{"act":"collect"}]')).toBeVisible();
     expect(screen.getByText('{"findings":[]}')).toBeVisible();
     expect(screen.getByText(/Non attestano azioni svolte/)).toBeVisible();
-    expect(screen.getAllByText(/Archiviato nel registro:/)).toHaveLength(3);
+    expect(screen.getAllByText(/Archiviato nel registro:/)).toHaveLength(5);
+    expect(summary.closest("details")!.querySelector("details")).toBeNull();
+    expect(summary.closest("details")!.querySelector("img")).toBeNull();
   });
 
   it("does not call a drawn page printed or a historical run still waiting", async () => {
@@ -83,7 +85,9 @@ describe("what the system wrote", () => {
     }) }), <TheTrail />);
     await user.click(await screen.findByRole("button", { name: "Apri" }));
     expect(await screen.findByText("Non ci sono ancora interazioni registrate.")).toBeVisible();
-    expect(screen.getByText(/Foglio disegnato/)).not.toBeVisible();
+    const sheets = screen.getByRole("region", { name: "Fogli preparati" });
+    expect(await within(sheets).findByRole("img")).toBeVisible();
+    expect(sheets.closest("details")).toBeNull();
     expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
     expect(screen.queryByText("In attesa di una risposta, non ancora ricevuta")).not.toBeInTheDocument();
   });
@@ -112,10 +116,11 @@ describe("what the system wrote", () => {
       currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [currentRun] }),
       trail: async () => ({ ...whole, made: [{ ...whole.made![0]!, heading: title }] }),
     }), <TheTrail />);
-    await screen.findByText("Primo passo");
+    const timeline = within(await screen.findByRole("list", { name: "Durante l'attività" }));
+    expect(timeline.getByText("Primo passo")).toBeVisible();
     title = "Passo successivo";
     fireEvent.focus(window);
-    await waitFor(() => expect(screen.getByText("Passo successivo")).toBeInTheDocument());
+    await waitFor(() => expect(timeline.getByText("Passo successivo")).toBeVisible());
   });
 
   it("clears displayed steps after bulk deletion without stopping the current status", async () => {
@@ -208,13 +213,14 @@ describe("what the system wrote", () => {
 
     expect(await screen.findByText(/THE WORLD/)).not.toBeVisible();
     expect(screen.getByText("Guarda fuori e dimmi che forma ha.")).toBeVisible();
-    expect(screen.getByText(/Lanternina ha mostrato sul display/)).toBeVisible();
-    expect(screen.getByText(/Lanternina ha stampato un foglio/)).toBeVisible();
+    expect(screen.getByText("Lanternina ha mostrato sul display")).toBeVisible();
+    expect(screen.getByText("Lanternina ha stampato un foglio")).toBeVisible();
     expect(screen.getByText("Prendi il foglio dal tavolo.")).toBeVisible();
     expect(screen.getByText(/Guarda il cielo e disegna quello che vedi/)).toBeVisible();
     expect(screen.queryByText("Che cosa ne e uscito")).not.toBeInTheDocument();
     expect(screen.getByText("Nota tecnica di Lanternina: il foglio era tornato vuoto")).not.toBeVisible();
-    await user.click(screen.getAllByText("Dettagli tecnici del passaggio")[0]!);
+    expect(screen.queryByText("Dettagli tecnici del passaggio")).not.toBeInTheDocument();
+    await user.click(screen.getByText("Dettagli tecnici: piano, prompt e valutazioni"));
     expect(screen.getByText("Nota tecnica di Lanternina: il foglio era tornato vuoto")).toBeVisible();
   });
 
@@ -224,7 +230,7 @@ describe("what the system wrote", () => {
 
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
-    await screen.findByText(/Lanternina ha mostrato sul display/);
+    await screen.findByText("Lanternina ha mostrato sul display");
 
     const steps = within(screen.getByRole("list", { name: "Durante l'attività" }))
       .getAllByRole("listitem").map((one) => one.textContent ?? "");
@@ -286,10 +292,11 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/Lanternina ha letto il materiale restituito/)).toBeVisible();
+    expect(await screen.findByText("Lanternina ha letto il materiale restituito")).toBeVisible();
     expect(screen.getByText("un cavallo nel terzo riquadro")).not.toBeVisible();
     expect(screen.getByText(/si cancella da sola/)).not.toBeVisible();
-    await user.click(screen.getByText("Lettura automatica di Lanternina"));
+    await user.click(screen.getByText("Dettagli tecnici: piano, prompt e valutazioni"));
+    expect(screen.getByText("Lettura automatica di Lanternina")).toBeVisible();
     expect(screen.getByText("un cavallo nel terzo riquadro")).toBeVisible();
     expect(screen.queryByText("Lanternina ha ricevuto una risposta")).not.toBeInTheDocument();
   });
@@ -327,9 +334,8 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/Lanternina ha incontrato un problema/)).toBeVisible();
+    expect(await screen.findByText("Lanternina ha incontrato un problema")).toBeVisible();
     expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
-    await user.click(screen.getByText("Dettaglio del problema"));
     expect(screen.getByText(/did not take the page/)).toBeVisible();
   });
 
@@ -353,10 +359,27 @@ describe("what the system wrote", () => {
     expect(screen.queryByText("Che cosa e stato chiesto")).not.toBeInTheDocument();
     await user.click(screen.getByText("Dettagli tecnici: piano, prompt e valutazioni"));
     const prompt = screen.getByText("Prompt inviato al modello");
-    const details = prompt.closest("details")!;
-    await user.click(details.querySelector("summary")!);
     expect(prompt).toBeVisible();
     expect(screen.getByText(/Letter this large/)).toBeVisible();
+  });
+
+  it("does not offer empty technical details or hide a picture-only sheet", async () => {
+    const user = userEvent.setup();
+    const whole = await fakeApi().trail("aft_1");
+    const prototype = whole.made![0]!;
+    renderPanel(fakeApi({ trail: async () => ({ ...whole, script: " \n ", made: [
+      { ...prototype, why: " \n ", asked: " \t " },
+      { ...prototype, id: "empty-plan", kind: "plan", body: " \n ", why: "", heading: "Empty plan" },
+      { ...prototype, id: "empty-unknown", kind: "unknown", body: "", why: "", heading: "Empty diagnostic" },
+      { ...prototype, id: "picture-only", kind: "drawn", body: "", why: "", pictureId: "pic_7" },
+    ] }) }), <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: "Apri" }));
+    expect(await screen.findByText("Guarda fuori e dimmi che forma ha.")).toBeVisible();
+    expect(await screen.findByRole("img")).toBeVisible();
+    expect(screen.queryByText("Dettagli tecnici: piano, prompt e valutazioni")).not.toBeInTheDocument();
+    expect(screen.queryByText("Empty plan")).not.toBeInTheDocument();
+    expect(screen.queryByText("Empty diagnostic")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
   });
 
   it("empties the record, and asks twice before it does", async () => {
