@@ -9,6 +9,20 @@ const control =
   "font-sans text-base text-ink";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
+  if (props.type === "time") {
+    return (
+      <input
+        data-slot="input"
+        className={cn(control, "tabular-nums", className)}
+        {...props}
+        type="text"
+        inputMode="text"
+        placeholder="HH:MM"
+        pattern="(?:[01][0-9]|2[0-3]):[0-5][0-9]"
+        maxLength={5}
+      />
+    );
+  }
   return <input data-slot="input" className={cn(control, className)} {...props} />;
 }
 

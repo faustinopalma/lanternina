@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 import { useApi } from "@/api/client";
-import type { Made, Trail } from "@/api/types";
+import type { CurrentRun, Made, Trail } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Quiet } from "@/components/ui/card";
 import { useWords } from "@/i18n";
@@ -41,7 +42,7 @@ function Drawn({ pictureId }: { pictureId: string }) {
     <img
       src={url}
       alt={t("trail.sheetAlt")}
-      className="mt-2 max-w-[22rem] rounded-control border border-edge bg-white"
+      className="mt-2 w-full max-w-[22rem] rounded-control border border-edge bg-white"
     />
   );
 }
@@ -53,15 +54,6 @@ function Drawn({ pictureId }: { pictureId: string }) {
  * moment where a parent could stand between a generated page and the room without stopping
  * the afternoon to do it. This page is the other half of that trade: no veto on each piece,
  * and every piece readable afterwards, in full, beside the script it came from.
- *
- * **Only one half is here, and that is the design.** Nothing on this page says what the
- * adolescent did — not the pages that came back, not what was on them, not how long anything
- * took, not whether it was finished. None of it is stored, so none of it can be shown. What
- * is watched here is the machine.
- *
- * The exception is written where it is made: a household an administrator has turned on
- * while this is being built keeps the other half too, and those entries say on the page how
- * long they last. Nothing here can turn that on.
  *
  * A card carries a title and a date and nothing else, because that is what recognising an
  * afternoon needs. The script arrives when one is opened.
@@ -148,7 +140,7 @@ function Step({ made }: { made: Made }) {
  * being on the table. Two pages sat in a queue for eighty-two minutes and the trail showed
  * an afternoon that had gone as written. */
 
-function Whole({ runId }: { runId: string }) {
+function Whole({ runId, current = false }: { runId: string; current?: boolean }) {
   const api = useApi();
   const { t } = useWords();
   const [state] = useLoad(() => api.trail(runId), [runId], { live: true });
@@ -174,7 +166,16 @@ function Whole({ runId }: { runId: string }) {
       ) : (
         <ol className="mt-2 flex list-none flex-col gap-3.5 p-0">
           {made.map((one) => (
-            <Step key={one.id} made={one} />
+            current && ["plan", "judged", "continuation"].includes(one.kind) ? (
+              <li key={one.id}>
+                <details>
+                  <summary className="cursor-pointer text-quiet">
+                    {one.kind === "plan" ? t("trail.kind.plan") : one.kind === "judged" ? t("trail.kind.judged") : t("trail.kind.continuation")}
+                  </summary>
+                  <ol className="mt-2 list-none"><Step made={one} /></ol>
+                </details>
+              </li>
+            ) : <Step key={one.id} made={one} />
           ))}
         </ol>
       )}
@@ -182,32 +183,94 @@ function Whole({ runId }: { runId: string }) {
   );
 }
 
-function Card({ trail }: { trail: Trail }) {
+function Card({ trail, onDeleted }: { trail: Trail; onDeleted: () => void }) {
   const { t, dateTime } = useWords();
+  const api = useApi();
   const [open, setOpen] = useState(false);
+  const [sure, setSure] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  async function remove() {
+    setBusy(true);
+    setFailed(false);
+    try {
+      await api.forgetRun(trail.runId);
+      onDeleted();
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <article className="mt-3.5 max-w-[42rem] rounded-control border border-edge bg-paper p-[18px] pb-4">
       <h3 className="text-[1.05rem] font-semibold">{trail.title}</h3>
       <Quiet className="mb-2">{dateTime(trail.beganAt)}</Quiet>
       <p className="mb-2">{trail.overview}</p>
-      <Button size="small" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}>
-        {t(open ? "trail.hide" : "trail.read")}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button size="small" variant="ghost" aria-expanded={open} onClick={() => setOpen(!open)}>
+          {t(open ? "trail.hide" : "trail.read")}
+        </Button>
+        <Button size="small" variant="ghost" disabled={busy}
+          title={t("trail.deleteOne", { title: trail.title })}
+          aria-label={t("trail.deleteOne", { title: trail.title })}
+          onClick={() => setSure(true)}>
+          <Trash2 size={18} aria-hidden="true" />
+        </Button>
+      </div>
+      {sure ? (
+        <div className="mt-3" role="group" aria-label={t("trail.deleteConfirm", { title: trail.title })}>
+          <p>{t("trail.deleteConfirm", { title: trail.title })}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Button size="small" disabled={busy} onClick={remove}>{t("trail.deleteYes")}</Button>
+            <Button size="small" variant="ghost" disabled={busy} onClick={() => setSure(false)}>{t("trail.cancel")}</Button>
+          </div>
+        </div>
+      ) : null}
+      {failed ? <Quiet role="alert">{t("trail.deleteFailed")}</Quiet> : null}
       {open ? <Whole runId={trail.runId} /> : null}
+    </article>
+  );
+}
+
+function Running({ run, fresh }: { run: CurrentRun; fresh: boolean }) {
+  const { t, dateTime } = useWords();
+  return (
+    <article className="mt-3 border-b border-edge pb-5">
+      <h3 className="text-[1.05rem] font-semibold">{run.title}</h3>
+      <p className="mt-2 font-semibold">
+        {run.phase === "waiting" ? t("trail.waiting") : run.phase === "ending" ? t("trail.ending") : t("trail.runUnreadable")}
+      </p>
+      {run.heading ? <p>{run.heading}</p> : null}
+      {run.waitingSince > 0 ? <Quiet>{t("trail.waitingSince", { at: dateTime(run.waitingSince) })}</Quiet> : null}
+      {run.endsAt > 0 ? <Quiet>{t("trail.endsAt", { at: dateTime(run.endsAt) })}</Quiet> : null}
+      {fresh ? <Whole runId={run.runId} current /> : null}
     </article>
   );
 }
 
 export function TheTrail() {
   const api = useApi();
-  const { t } = useWords();
+  const { t, dateTime } = useWords();
   const [state, again] = useLoad(() => api.trails(), [], { live: true });
+  const [current] = useLoad(() => api.currentTrail(), [], { live: true });
+  const [now, setNow] = useState(() => Date.now() / 1000);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now() / 1000), 15_000);
+    return () => window.clearInterval(timer);
+  }, []);
+  const snapshot = current.status === "ready" ? current.data : undefined;
+  const fresh = !!snapshot?.updatedAt && now - snapshot.updatedAt <= 180;
+  const currentIds = new Set(fresh ? snapshot?.runs.map((run) => run.runId) : []);
   /* Two presses, not a dialog. The first turns the button into what it will actually do,
      which is the sentence a parent needs before the second — and it is the parent's own
      record, so nothing here asks anybody's permission, only their attention. */
   const [sure, setSure] = useState(false);
   const [gone, setGone] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [deletionVersion, setDeletionVersion] = useState(0);
 
   async function throwItAway() {
     if (!sure) {
@@ -215,30 +278,49 @@ export function TheTrail() {
       return;
     }
     setSure(false);
+    setBusy(true);
     try {
       const { forgotten } = await api.forgetTrail();
       setGone(forgotten);
+      setDeletionVersion((version) => version + 1);
       again();
     } catch {
       setGone(-1);
+    } finally {
+      setBusy(false);
     }
   }
 
   return (
-    <div>
+    <div className="max-w-[42rem] min-w-0 [overflow-wrap:anywhere]">
+      <section aria-label={t("trail.current")} className="mb-6">
+        <h2 className="text-[1.1rem] font-semibold">{t(fresh ? "trail.current" : "trail.lastKnown")}</h2>
+        {current.status === "loading" ? <Quiet>{t("trail.loading")}</Quiet> : null}
+        {current.status === "failed" || snapshot?.updatedAt === 0 ? <Quiet>{t("trail.statusUnavailable")}</Quiet> : null}
+        {snapshot && snapshot.updatedAt > 0 ? (
+          <>
+            <Quiet>{t("trail.updatedAt", { at: dateTime(snapshot.updatedAt) })}</Quiet>
+            {!fresh ? <p role="status">{t("trail.statusStale")}</p> : null}
+            {fresh && snapshot.runs.length === 0 ? <p>{t("trail.idle")}</p> : null}
+            {snapshot.runs.map((run) => <Running key={`${run.runId}:${deletionVersion}`} run={run} fresh={fresh} />)}
+          </>
+        ) : null}
+      </section>
+      <h2 className="text-[1.1rem] font-semibold">{t("trail.history")}</h2>
       {state.status === "loading" ? <Quiet>{t("trail.loading")}</Quiet> : null}
       {state.status === "failed" ? <Quiet>{t("trail.unreadable")}</Quiet> : null}
       {state.status === "ready" && state.data.length === 0 ? (
         <Quiet>{t("trail.empty")}</Quiet>
       ) : null}
       {state.status === "ready"
-        ? state.data.map((trail) => <Card key={trail.runId} trail={trail} />)
+        ? state.data.filter((trail) => !currentIds.has(trail.runId)).map((trail) => <Card key={trail.runId} trail={trail} onDeleted={again} />)
         : null}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <Button type="button" size="small" variant="ghost" onClick={throwItAway}>
+        <Button type="button" size="small" variant="ghost" disabled={busy} onClick={throwItAway}>
           {t(sure ? "trail.forgetSure" : "trail.forget")}
         </Button>
+        {sure ? <Button size="small" variant="ghost" onClick={() => setSure(false)}>{t("trail.cancel")}</Button> : null}
         <Quiet aria-live="polite">
           {gone === null
             ? t("trail.forgetNote")

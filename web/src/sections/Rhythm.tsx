@@ -140,6 +140,7 @@ function ThereNow({ zone, locale }: { zone: string; locale: string }) {
     timeZone: zone,
     weekday: "long",
     hour: "2-digit",
+    hourCycle: "h23",
     minute: "2-digit",
     second: "2-digit",
     timeZoneName: "short",

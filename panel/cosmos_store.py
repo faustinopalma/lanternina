@@ -52,7 +52,7 @@ from .rhythm import (
 )
 from .steering import Feedback, Guidance, SteeringConflict
 from .themes import Theme
-from .trail import Made, Trail, lapsed
+from .trail import CurrentTrail, Made, Trail, lapsed
 from .usage import Limit, UsageEvent, UsageSummary, summarise
 from .what_happened import Afternoon, Answered
 
@@ -553,19 +553,31 @@ def _to_offered(document: dict[str, Any]) -> OfferedExperience:
 
 
 class CosmosTrailStore:
-    """Conforms to :class:`~panel.trail.TrailStore`.
-
-    Two document types in one container, both partitioned on the household: the trail, which
-    is written once when an afternoon begins, and each thing made, which is appended and never
-    read back by anything but the parent's page. Nothing here is ever updated after it is
-    written, which is what makes it a record rather than a state.
-    """
+    """Activity records and one current hub snapshot, partitioned on the household."""
 
     def __init__(self, endpoint: str, database: str, credential: Any | None = None) -> None:
         self._container = (
             _client(endpoint, credential)
             .get_database_client(database)
             .get_container_client(TRAILS_CONTAINER)
+        )
+
+    def report_current(self, current: CurrentTrail) -> None:
+        self._container.upsert_item({
+            "id": "current", "familyId": current.household_id, "type": "progress",
+            **current.to_public(),
+        })
+
+    def current(self, household_id: str) -> CurrentTrail:
+        from azure.cosmos import exceptions
+
+        try:
+            document = self._container.read_item(item="current", partition_key=household_id)
+        except exceptions.CosmosResourceNotFoundError:
+            return CurrentTrail(household_id)
+        return CurrentTrail(
+            household_id, float(document.get("updatedAt") or 0),
+            tuple(document.get("runs") or []),
         )
 
     def began(self, trail: Trail) -> Trail:
@@ -664,29 +676,44 @@ class CosmosTrailStore:
         return kept
 
     def forget_everything(self, household_id: str) -> int:
-        """Delete every afternoon and everything filed under it, for one household.
+        """Delete this household's trail records from their dedicated container."""
+        return self._forget(household_id)
 
-        **The two types are named, and leaving them out destroyed a household's settings.**
-        Fourteen stores share this container and all of them partition on the household, so
-        a query that selected on `familyId` alone matched the themes, the rhythm, the
-        preferences, the guidelines, the reminders, the devices and the whole queue of
-        devised afternoons. Written, shipped and pressed on 5 September 2026.
+    def forget(self, household_id: str, run_id: str) -> int:
+        if not run_id:
+            raise ValueError("run is required")
+        return self._forget(household_id, run_id)
 
-        Deletion and not a flag. A record kept and hidden is still a record, which is the
-        same reasoning `_still_kept` applies to a lapsed row — and the point of this is that
-        what was thrown away is gone rather than merely out of sight.
-        """
+    def _forget(self, household_id: str, run_id: str | None = None) -> int:
         from azure.cosmos import exceptions
 
-        rows = self._container.query_items(
-            query=(
-                "SELECT c.id FROM c WHERE c.familyId = @family AND c.type IN ('trail', 'made')"
-            ),
-            parameters=[{"name": "@family", "value": household_id}],
-            partition_key=household_id,
+        if not household_id:
+            raise ValueError("household is required")
+        if self._container.id != TRAILS_CONTAINER:
+            raise ValueError("refusing deletion outside the trail container")
+        query = (
+            "SELECT c.id, c.familyId, c.type, c.runId FROM c"
+            " WHERE c.familyId = @family AND c.type IN ('trail', 'made')"
         )
+        parameters = [{"name": "@family", "value": household_id}]
+        if run_id is not None:
+            query += " AND c.runId = @run"
+            parameters.append({"name": "@run", "value": run_id})
+        rows = list(self._container.query_items(
+            query=query,
+            parameters=parameters,
+            partition_key=household_id,
+        ))
+        if any(
+            not row.get("id")
+            or row.get("familyId") != household_id
+            or row.get("type") not in {"trail", "made"}
+            or (run_id is not None and row.get("runId") != run_id)
+            for row in rows
+        ):
+            raise ValueError("refusing deletion outside the requested trail scope")
         gone = 0
-        for row in list(rows):
+        for row in rows:
             try:
                 self._container.delete_item(item=row["id"], partition_key=household_id)
             except exceptions.CosmosResourceNotFoundError:

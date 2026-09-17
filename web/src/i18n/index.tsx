@@ -136,6 +136,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
           ? new Intl.DateTimeFormat(language, {
               dateStyle: "medium",
               timeStyle: "short",
+              hourCycle: "h23",
             }).format(new Date(seconds * 1000))
           : "",
       weekday: (day) => {

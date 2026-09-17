@@ -166,28 +166,190 @@ def test_the_infrastructure_makes_the_container_the_code_asks_for() -> None:
 class _OneContainer:
     """Enough of a Cosmos container to show what a query does and does not match.
 
-    It honours a ``c.type IN (...)`` restriction and ignores everything else, which is the
-    only part of the dialect this needs. A query without that clause matches every document
-    for the household — which is exactly what the real container did.
+    It honours the household partition, type allowlist and optional run predicate. A query
+    without the type restriction matches every document for the household.
     """
 
     def __init__(self, documents: list[dict[str, str]]) -> None:
+        from panel.cosmos_store import TRAILS_CONTAINER
+
+        self.id = TRAILS_CONTAINER
         self.documents = documents
 
-    def query_items(self, query: str, parameters: list[dict[str, str]], **_: object):
+    def query_items(
+        self, query: str, parameters: list[dict[str, str]], *, partition_key: str
+    ):
         family = next(one["value"] for one in parameters if one["name"] == "@family")
+        assert partition_key == family
+        run = next((one["value"] for one in parameters if one["name"] == "@run"), None)
         wanted: set[str] | None = None
         if "c.type IN" in query:
             inside = query.split("c.type IN", 1)[1].split("(", 1)[1].split(")", 1)[0]
             wanted = {one.strip().strip("'\"") for one in inside.split(",")}
         return [
-            {"id": one["id"]}
+            dict(one)
             for one in self.documents
             if one["familyId"] == family and (wanted is None or one["type"] in wanted)
+            and ("c.runId = @run" not in query or one.get("runId") == run)
         ]
 
     def delete_item(self, item: str, partition_key: str) -> None:
-        self.documents = [one for one in self.documents if one["id"] != item]
+        self.documents = [
+            one for one in self.documents
+            if (one["id"], one["familyId"]) != (item, partition_key)
+        ]
+
+
+def test_deleting_one_run_keeps_other_runs_settings_and_households() -> None:
+    from panel.cosmos_store import CosmosTrailStore
+
+    documents = [
+        {"id": "trail_aft_1", "familyId": "hh_1", "type": "trail", "runId": "aft_1"},
+        {"id": "made_1", "familyId": "hh_1", "type": "made", "runId": "aft_1"},
+        {"id": "trail_aft_2", "familyId": "hh_1", "type": "trail", "runId": "aft_2"},
+        {"id": "made_2", "familyId": "hh_1", "type": "made", "runId": "aft_2"},
+        {"id": "rhythm", "familyId": "hh_1", "type": "rhythm", "runId": "aft_1"},
+        {"id": "trail_aft_1", "familyId": "hh_2", "type": "trail", "runId": "aft_1"},
+    ]
+    store = object.__new__(CosmosTrailStore)
+    store._container = _OneContainer(list(documents))
+    assert store.forget("hh_1", "aft_1") == 2
+    assert store._container.documents == documents[2:]
+    assert store.forget("hh_1", "aft_1") == 0
+    assert store.forget("hh_1", "aft_1' OR true") == 0
+
+
+@pytest.mark.parametrize("single", [False, True])
+@pytest.mark.parametrize("foreign", [
+    {"id": "prefs", "familyId": "hh_1", "type": "preferences", "runId": "aft_1"},
+    {"id": "other", "familyId": "hh_2", "type": "trail", "runId": "aft_1"},
+])
+def test_deletion_rejects_an_unsafe_query_result_before_any_write(
+    monkeypatch: pytest.MonkeyPatch, single: bool, foreign: dict[str, str]
+) -> None:
+    from panel.cosmos_store import CosmosTrailStore
+
+    documents = [
+        {"id": "trail_aft_1", "familyId": "hh_1", "type": "trail", "runId": "aft_1"},
+        foreign,
+    ]
+    container = _OneContainer(list(documents))
+    monkeypatch.setattr(container, "query_items", lambda **_: list(documents))
+    store = object.__new__(CosmosTrailStore)
+    store._container = container
+    with pytest.raises(ValueError, match="refusing deletion"):
+        store.forget("hh_1", "aft_1") if single else store.forget_everything("hh_1")
+    assert container.documents == documents
+
+
+def test_bulk_delete_refuses_a_shared_container_before_querying(monkeypatch) -> None:
+    from panel.cosmos_store import CosmosTrailStore
+
+    store = object.__new__(CosmosTrailStore)
+    store._container = _OneContainer([])
+    store._container.id = "sources"
+    monkeypatch.setattr(store._container, "query_items", lambda **_: pytest.fail("queried"))
+    with pytest.raises(ValueError, match="outside the trail container"):
+        store.forget_everything("hh_1")
+
+
+def test_api_bulk_delete_uses_real_cosmos_store_and_preserves_all_other_documents(
+    monkeypatch,
+) -> None:
+    from copy import deepcopy
+    from types import SimpleNamespace
+
+    from panel import cosmos_store
+
+    client = client_for()
+    household = household_of(client)
+    records = [
+        {"id": "trail_aft_1", "familyId": household, "type": "trail", "runId": "aft_1"},
+        {"id": "made_1", "familyId": household, "type": "made", "runId": "aft_1"},
+        {"id": "trail_aft_2", "familyId": household, "type": "trail", "runId": "aft_2"},
+        {"id": "orphan", "familyId": household, "type": "made", "runId": "deleted_run"},
+    ]
+    protected = [
+        {"id": "trail_aft_1", "familyId": "other", "type": "trail", "runId": "aft_1"},
+        {"id": "made_1", "familyId": "other", "type": "made", "runId": "aft_1"},
+        {"id": "current", "familyId": household, "type": "progress"},
+        {"id": "unexpected", "familyId": household, "type": "future-type"},
+    ]
+    sources = [
+        {"id": kind, "familyId": household, "type": kind, "value": "unchanged"}
+        for kind in (
+            "theme", "rhythm", "preferences", "guidelines", "reminder", "device",
+            "experience", "request", "message", "keeping", "account",
+        )
+    ]
+    before_sources = deepcopy(sources)
+    container = _OneContainer(deepcopy(records + protected))
+    source_container = _OneContainer(deepcopy(sources))
+    source_container.id = "sources"
+    containers = {"trail": container, "sources": source_container}
+    requested = []
+
+    def get_container(name):
+        requested.append(name)
+        return containers[name]
+
+    database = SimpleNamespace(get_container_client=get_container)
+    monkeypatch.setattr(cosmos_store, "_client", lambda *_: SimpleNamespace(
+        get_database_client=lambda _: database,
+    ))
+    client.app.state.trail = cosmos_store.CosmosTrailStore("https://test.invalid", "test")
+    response = client.delete("/api/trail", headers=headers())
+    assert response.status_code == 200
+    assert response.json() == {"forgotten": len(records)}
+    assert requested == [cosmos_store.TRAILS_CONTAINER]
+    assert container.documents == protected
+    assert source_container.documents == before_sources
+    assert client.get("/api/me", headers=headers()).json()["householdId"] == household
+    assert client.delete("/api/trail", headers=headers()).json() == {"forgotten": 0}
+
+
+def test_current_activity_is_explicit_scoped_and_survives_history_deletion() -> None:
+    client = client_for()
+    household = household_of(client)
+    assert client.get("/api/trail-current", headers=headers()).json() == {
+        "updatedAt": 0, "runs": [],
+    }
+    run = {
+        "runId": "aft_1", "title": "Clouds", "beganAt": 100, "endsAt": 300,
+        "momentId": "look", "heading": "Look outside", "phase": "waiting",
+        "waitingSince": 120,
+    }
+    route = f"/api/device/{household}/trail-current"
+    device_headers = {"X-Device-Key": DEVICE_KEY}
+    response = client.post(route, headers=device_headers, json={"runs": [run]})
+    assert response.status_code == 200
+    current = client.get("/api/trail-current", headers=headers()).json()
+    assert current["updatedAt"] > 0
+    assert current["runs"] == [run]
+    assert client.app.state.trail.current("other").runs == ()
+    assert client.post(route, json={"runs": []}).status_code != 200
+    client.delete("/api/trail", headers=headers())
+    assert client.get("/api/trail-current", headers=headers()).json() == current
+    assert client.post(route, headers=device_headers, json={"runs": []}).status_code == 200
+    assert client.get("/api/trail-current", headers=headers()).json()["runs"] == []
+
+
+def test_parent_can_delete_one_run_without_changing_other_records() -> None:
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.trail
+    for family, run in [(household, "aft_1"), (household, "aft_2"), ("other", "aft_1")]:
+        store.began(Trail(run, family, "e1", "Title", "", 100))
+        store.wrote(Made("made_" + run, family, run, 110, "say", body="Kept"))
+    response = client.delete("/api/trail/aft_1", headers=headers())
+    assert response.status_code == 200
+    assert response.json() == {"forgotten": 2}
+    assert store.get(household, "aft_1") is None
+    assert store.get(household, "aft_2") is not None
+    assert store.get("other", "aft_1") is not None
+    assert client.get("/api/me", headers=headers()).json()["householdId"] == household
+    assert client.delete("/api/trail/aft_2").status_code in {401, 503}
+    assert store.get(household, "aft_2") is not None
 
 
 def test_emptying_the_record_leaves_every_other_setting_alone() -> None:

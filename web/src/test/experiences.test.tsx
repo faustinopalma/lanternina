@@ -154,14 +154,14 @@ describe("an afternoon the house has begun", () => {
 
   beforeEach(() => window.localStorage.clear());
 
-  it("offers an hour and nothing to write in", async () => {
+  it("offers one validated 24-hour field", async () => {
     renderPanel(running(), <Experiences />);
 
-    expect(await screen.findByLabelText("Finisce entro")).toHaveAttribute("type", "time");
+    const hour = await screen.findByLabelText("Finisce entro");
+    expect(hour).toHaveAttribute("placeholder", "HH:MM");
     expect(screen.getByRole("button", { name: "Sposta l'ora" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Falla finire adesso" })).toBeInTheDocument();
-    // `shared/message.py`: the defence against free text is having nowhere to put it.
-    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("textbox")).toEqual([hour]);
     // Nor is there a way to take it back once the house has it.
     expect(screen.queryByRole("button", { name: "Non più" })).not.toBeInTheDocument();
   });
@@ -181,6 +181,17 @@ describe("an afternoon the house has begun", () => {
         "Scritto. La casa lo trova alla prossima richiesta, entro un minuto.",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("refuses an invalid hour before sending a message", async () => {
+    const api = running();
+    const user = userEvent.setup();
+    renderPanel(api, <Experiences />);
+    const hour = await screen.findByLabelText("Finisce entro");
+    await user.type(hour, "25:10");
+    await user.click(screen.getByRole("button", { name: "Sposta l'ora" }));
+    expect(hour).toBeInvalid();
+    expect(api.recorded.said).toEqual([]);
   });
 
   it("brings the ending forward with one press and no hour", async () => {

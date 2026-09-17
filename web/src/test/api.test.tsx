@@ -25,6 +25,20 @@ function answering(body: unknown, status = 200) {
 
 afterEach(() => vi.unstubAllGlobals());
 
+it("binds single and bulk record deletion to distinct authenticated routes", async () => {
+  const fetcher = answering({ forgotten: 2 });
+  vi.stubGlobal("fetch", fetcher);
+  const api = httpApi("parent-token");
+  await expect(api.forgetRun("aft ?#other")).resolves.toEqual({ forgotten: 2 });
+  await expect(api.forgetTrail()).resolves.toEqual({ forgotten: 2 });
+  expect(fetcher.mock.calls.map(([url, init]) => ({
+    path: new URL(url).pathname, method: init.method, bearer: init.headers.Authorization,
+  }))).toEqual([
+    { path: "/api/trail/aft%20%3F%23other", method: "DELETE", bearer: "Bearer parent-token" },
+    { path: "/api/trail", method: "DELETE", bearer: "Bearer parent-token" },
+  ]);
+});
+
 it("gets a current bearer for every request instead of keeping the first one", async () => {
   const fetcher = answering({ proposals: [] });
   vi.stubGlobal("fetch", fetcher);

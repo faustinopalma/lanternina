@@ -67,6 +67,17 @@ def a_rhythm(**changes: Any) -> dict[str, Any]:
 # ── When the house may begin one at all ──────────────────────────────────────────────
 
 
+def test_timer_reports_current_state_before_queue_work_even_outside_activity_hours(
+    monkeypatch: pytest.MonkeyPatch, house: House
+) -> None:
+    a_panel(monkeypatch, offered=[], rhythm=a_rhythm(afternoonDays=[]))
+    reports = []
+    monkeypatch.setattr(clock, "report_current", lambda current: reports.append(current))
+    assert a_turn(monkeypatch, house, WHEN) == 0
+    assert len(reports) == 1
+    assert reports[0].sheets_dir == house.sheets_dir
+
+
 def test_a_house_told_nothing_begins_nothing() -> None:
     """The default is no day. A feature that arrives switched on has decided something the
     parent has not."""

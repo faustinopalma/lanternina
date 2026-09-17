@@ -2,18 +2,122 @@
  *
  * Two things are held here. A card carries nothing but a title, a date and the idea — the
  * script arrives when the parent opens one, and until then the page has not paid for it.
- * And what is shown is the system's half only: there is no path from this page to what the
- * adolescent did, because there is no such thing stored.
  */
-import { screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { fakeApi } from "@/test/fakeApi";
 import { TheTrail } from "@/sections/Trail";
 import { renderPanel } from "@/test/render";
 
 describe("what the system wrote", () => {
+  const currentRun = {
+    runId: "aft_1", title: "Un pomeriggio di nuvole", beganAt: 100, endsAt: 2000,
+    momentId: "clouds", heading: "Il passo attuale", phase: "waiting" as const, waitingSince: 120,
+  };
+
+  it("opens the current activity and its steps without a click, then follows its ending", async () => {
+    let runs = [currentRun];
+    const api = fakeApi({ currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs }) });
+    renderPanel(api, <TheTrail />);
+    expect(await screen.findByText("Il passo attuale")).toBeInTheDocument();
+    expect(await screen.findByText("Guarda fuori e dimmi che forma ha.")).toBeInTheDocument();
+    expect(screen.getAllByText("Un pomeriggio di nuvole")).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: /Cancella dal registro:/ })).not.toBeInTheDocument();
+    runs = [];
+    fireEvent.focus(window);
+    expect(await screen.findByText("Nessuna attività in corso.")).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Cancella dal registro:/ })).toBeInTheDocument();
+  });
+
+  it("refreshes steps of the running activity on focus", async () => {
+    const base = fakeApi();
+    const whole = await base.trail("aft_1");
+    let title = "Primo passo";
+    renderPanel(fakeApi({
+      currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [currentRun] }),
+      trail: async () => ({ ...whole, made: [{ ...whole.made![0]!, heading: title }] }),
+    }), <TheTrail />);
+    await screen.findByText("Primo passo");
+    title = "Passo successivo";
+    fireEvent.focus(window);
+    await waitFor(() => expect(screen.getByText("Passo successivo")).toBeInTheDocument());
+  });
+
+  it("clears displayed steps after bulk deletion without stopping the current status", async () => {
+    const user = userEvent.setup();
+    const base = fakeApi();
+    renderPanel(fakeApi({
+      currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [currentRun] }),
+      trail: base.trail, trails: base.trails, forgetTrail: base.forgetTrail,
+    }), <TheTrail />);
+    await screen.findByText("Guarda fuori e dimmi che forma ha.");
+    await user.click(screen.getByRole("button", { name: "Svuota il registro" }));
+    await user.click(screen.getByRole("button", { name: "Premi ancora per cancellare il registro" }));
+    await waitFor(() => expect(screen.queryByText("Guarda fuori e dimmi che forma ha.")).not.toBeInTheDocument());
+    expect(screen.getByText("Il passo attuale")).toBeInTheDocument();
+  });
+
+  it("labels an old snapshot and keeps its record deletable", async () => {
+    renderPanel(fakeApi({ currentTrail: async () => ({ updatedAt: 100, runs: [currentRun] }) }), <TheTrail />);
+    expect(await screen.findByText(/non aggiorna lo stato/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Ultimo stato noto" })).toBeInTheDocument();
+    expect(screen.queryByText("Nessuna attività in corso.")).not.toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /Cancella dal registro:/ })).toBeInTheDocument();
+  });
+
+  it("does not call a missing snapshot idle", async () => {
+    renderPanel(fakeApi({ currentTrail: async () => ({ updatedAt: 0, runs: [] }) }), <TheTrail />);
+    expect(await screen.findByRole("button", { name: /Cancella dal registro:/ })).toBeInTheDocument();
+    expect(screen.queryByText("Nessuna attività in corso.")).not.toBeInTheDocument();
+  });
+
+  it("keeps the other history cards unchanged after a single deletion", async () => {
+    const user = userEvent.setup();
+    const [first] = await fakeApi().trails();
+    const second = { ...first!, runId: "aft_2", title: "Seconda attività" };
+    let records = [first!, second];
+    const remove = vi.fn(async (runId: string) => {
+      records = records.filter((run) => run.runId !== runId);
+      return { forgotten: 1 };
+    });
+    renderPanel(fakeApi({ trails: async () => records, forgetRun: remove }), <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: /Cancella dal registro: Un pomeriggio/ }));
+    await user.click(screen.getByRole("button", { name: "Cancella questa attività" }));
+    await waitFor(() => expect(screen.queryByText("Un pomeriggio di nuvole")).not.toBeInTheDocument());
+    expect(screen.getByText("Seconda attività")).toBeInTheDocument();
+    expect(records).toEqual([second]);
+    expect(remove).toHaveBeenCalledExactlyOnceWith("aft_1");
+  });
+
+  it("deletes just the selected run after confirmation, and can cancel", async () => {
+    const user = userEvent.setup();
+    const base = fakeApi();
+    const remove = vi.fn(base.forgetRun);
+    const clear = vi.fn(base.forgetTrail);
+    renderPanel(fakeApi({ trails: base.trails, forgetRun: remove, forgetTrail: clear }), <TheTrail />);
+    const button = await screen.findByRole("button", { name: /Cancella dal registro:/ });
+    await user.click(button);
+    expect(remove).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Annulla" }));
+    expect(remove).not.toHaveBeenCalled();
+    await user.click(button);
+    await user.click(screen.getByRole("button", { name: "Cancella questa attività" }));
+    expect(await screen.findByText("Nessuna attività ancora.")).toBeInTheDocument();
+    expect(remove).toHaveBeenCalledExactlyOnceWith("aft_1");
+    expect(clear).not.toHaveBeenCalled();
+  });
+
+  it("keeps the run visible if deletion fails", async () => {
+    const user = userEvent.setup();
+    renderPanel(fakeApi({ forgetRun: async () => { throw new Error("offline"); } }), <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: /Cancella dal registro:/ }));
+    await user.click(screen.getByRole("button", { name: "Cancella questa attività" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("non è stata cancellata");
+    expect(screen.getByText("Un pomeriggio di nuvole")).toBeInTheDocument();
+  });
+
   it("shows a card per afternoon, without its script", async () => {
     renderPanel(fakeApi(), <TheTrail />);
 

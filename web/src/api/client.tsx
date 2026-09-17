@@ -34,6 +34,7 @@ import {
   type NewSaid,
   type Theme,
   type Trail,
+  type CurrentTrail,
   type TypedText,
   type UsageAnswer,
 } from "./types";
@@ -353,8 +354,13 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
         "made",
       ]),
 
+    currentTrail: () => json<CurrentTrail>("/api/trail-current", {}, ["updatedAt", "runs"]),
+
     forgetTrail: () =>
       json<{ forgotten: number }>("/api/trail", { method: "DELETE" }, ["forgotten"]),
+
+    forgetRun: (runId: string) =>
+      json<{ forgotten: number }>(`/api/trail/${encodeURIComponent(runId)}`, { method: "DELETE" }, ["forgotten"]),
 
     // An idea the parent is working on. Starting one and typing into one are inert writes
     // like every other; `sayToDraft` is the one call in this file that spends money, and

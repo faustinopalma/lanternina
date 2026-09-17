@@ -236,6 +236,22 @@ export interface Made {
  *
  * There is nothing here about the person it ran for, and there is no field one would fit
  * in. That is the trade: no veto on each generated piece, every piece readable after. */
+export interface CurrentRun {
+  runId: string;
+  title: string;
+  beganAt: number;
+  endsAt: number;
+  momentId: string;
+  heading: string;
+  phase: "waiting" | "ending" | "unreadable";
+  waitingSince: number;
+}
+
+export interface CurrentTrail {
+  updatedAt: number;
+  runs: CurrentRun[];
+}
+
 export interface Trail {
   runId: string;
   experienceId: string;
@@ -567,9 +583,11 @@ export interface Api {
   say(said: NewSaid): Promise<Said>;
   messages(): Promise<Said[]>;
   trails(): Promise<Trail[]>;
+  currentTrail(): Promise<CurrentTrail>;
   trail(runId: string): Promise<Trail>;
   /** Empty the record for this household. Deletes, and cannot be undone. */
   forgetTrail(): Promise<{ forgotten: number }>;
+  forgetRun(runId: string): Promise<{ forgotten: number }>;
   /** A sheet drawn for the printer. Its own archive: a page is not a picture. */
   pageContent(id: string): Promise<Blob>;
   drafts(): Promise<DraftCard[]>;

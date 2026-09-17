@@ -155,8 +155,22 @@ def lapsed(record: Made, now: float) -> bool:
     return bool(record.until) and record.until <= now
 
 
+@dataclass(frozen=True, slots=True)
+class CurrentTrail:
+    household_id: str
+    updated_at: float = 0.0
+    runs: tuple[dict[str, Any], ...] = ()
+
+    def to_public(self) -> dict[str, Any]:
+        return {"updatedAt": self.updated_at, "runs": list(self.runs)}
+
+
 @runtime_checkable
 class TrailStore(Protocol):
+    def report_current(self, current: CurrentTrail) -> None: ...
+
+    def current(self, household_id: str) -> CurrentTrail: ...
+
     def began(self, trail: Trail) -> Trail: ...
 
     def wrote(self, record: Made) -> Made: ...
@@ -164,6 +178,8 @@ class TrailStore(Protocol):
     def list(self, household_id: str) -> list[Trail]: ...
 
     def get(self, household_id: str, run_id: str) -> Trail | None: ...
+
+    def forget(self, household_id: str, run_id: str) -> int: ...
 
     def forget_everything(self, household_id: str) -> int: ...
 
@@ -174,7 +190,16 @@ class InMemoryTrailStore:
 
     _trails: dict[tuple[str, str], Trail] = field(default_factory=dict)
     _made: dict[tuple[str, str], list[Made]] = field(default_factory=dict)
+    _current: dict[str, CurrentTrail] = field(default_factory=dict)
     _lock: threading.Lock = field(default_factory=threading.Lock)
+
+    def report_current(self, current: CurrentTrail) -> None:
+        with self._lock:
+            self._current[current.household_id] = current
+
+    def current(self, household_id: str) -> CurrentTrail:
+        with self._lock:
+            return self._current.get(household_id, CurrentTrail(household_id))
 
     def began(self, trail: Trail) -> Trail:
         with self._lock:
@@ -225,11 +250,21 @@ class InMemoryTrailStore:
                 made=tuple(made),
             )
 
-    def forget_everything(self, household_id: str) -> int:
+    def forget(self, household_id: str, run_id: str) -> int:
+        if not household_id or not run_id:
+            raise ValueError("household and run are required")
         with self._lock:
-            keys = [one for one in self._trails if one[0] == household_id]
-            gone = len(keys)
+            key = (household_id, run_id)
+            gone = int(self._trails.pop(key, None) is not None)
+            return gone + len(self._made.pop(key, []))
+
+    def forget_everything(self, household_id: str) -> int:
+        if not household_id:
+            raise ValueError("household is required")
+        with self._lock:
+            keys = {one for one in self._trails | self._made if one[0] == household_id}
+            gone = 0
             for key in keys:
-                del self._trails[key]
+                gone += int(self._trails.pop(key, None) is not None)
                 gone += len(self._made.pop(key, []))
             return gone

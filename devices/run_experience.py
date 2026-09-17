@@ -277,6 +277,49 @@ def waiting_runs(sheets_dir: Path) -> list[str]:
     return sorted(path.stem for path in sorted(_runs(sheets_dir).glob("*.json")))
 
 
+def current_runs(sheets_dir: Path) -> list[dict[str, Any]]:
+    current: list[dict[str, Any]] = []
+    for run_id in waiting_runs(sheets_dir):
+        path = _run_file(sheets_dir, run_id)
+        run = _read_run(path)
+        if run is None:
+            if path.exists():
+                current.append({
+                    "runId": run_id, "title": run_id, "beganAt": 0, "endsAt": 0,
+                    "momentId": "", "heading": "", "phase": "unreadable", "waitingSince": 0,
+                })
+            continue
+        moment_id = run.leaving_at or run.waiting_at
+        try:
+            heading = run.moment(moment_id).heading
+        except CannotRun:
+            heading = moment_id
+        current.append({
+            "runId": run.run_id, "title": run.experience.title,
+            "beganAt": run.started_at, "endsAt": run.over_at,
+            "momentId": moment_id, "heading": heading,
+            "phase": "ending" if run.leaving_at else "waiting",
+            "waitingSince": run.left_at if run.leaving_at else run.waited_since,
+        })
+    return current
+
+
+def report_current(house: House) -> None:
+    if not house.panel:
+        return
+    try:
+        request = urllib.request.Request(
+            f"{house.panel.rstrip('/')}/api/device/{house.household}/trail-current",
+            data=json.dumps({"runs": current_runs(house.sheets_dir)}).encode(),
+            headers={"X-Device-Key": house.device_key, "Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=FILE_TIMEOUT_SECONDS):
+            pass
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        print(f"the current activity was not reported ({exc})")
+
+
 def _read_run(path: Path) -> Afternoon | None:
     try:
         return Afternoon.from_dict(json.loads(path.read_text(encoding="utf-8")))

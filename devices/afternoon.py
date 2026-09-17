@@ -69,6 +69,7 @@ from devices.run_experience import (
     conclude_what_is_over,
     hear,
     offer_help,
+    report_current,
     waiting_runs,
 )
 from shared.clock import date_there, wall_clock
@@ -526,6 +527,8 @@ def main(argv: list[str] | None = None) -> int:
     for run_id in conclude_what_is_over(house, now, send=not args.no_paper):
         print(f"{run_id} reached its ending and is over")
 
+    report_current(house)
+
     # Above the hour and above whether a room is busy, and both for the same reason:
     # writing a script puts nothing in the room. It fills the list the parent decides from,
     # and a parent may open the panel at eight in the morning or while an afternoon is
@@ -618,6 +621,7 @@ def main(argv: list[str] | None = None) -> int:
     # network failure here must not make it invisible to tomorrow's ceiling.
     note_one_began(stamp, now, zone)
     say_it_began(panel, household, key, offered_id, run_name)
+    report_current(house)
     if asked:
         the_request_is_done(panel, household, key, asked)
     print(f"{experience.title}: {run_id or 'closed without asking for paper'}")

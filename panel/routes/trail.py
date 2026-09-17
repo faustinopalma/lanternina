@@ -20,16 +20,54 @@ titles; the script and everything under it arrive only when a parent opens one.
 from __future__ import annotations
 
 import logging
-from typing import Any
+import time
+from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, ConfigDict, Field
 
 from shared.ids import new_id
 
-from ..gate import CurrentAccount
-from ..trail import Made, Trail, TrailStore, clipped
+from ..gate import CurrentAccount, DeviceKey
+from ..trail import CurrentTrail, Made, Trail, TrailStore, clipped
 
 router = APIRouter()
+
+
+class CurrentRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    runId: str = Field(min_length=1, max_length=200)
+    title: str = Field(max_length=500)
+    beganAt: float = Field(ge=0, allow_inf_nan=False)
+    endsAt: float = Field(ge=0, allow_inf_nan=False)
+    momentId: str = Field(max_length=200)
+    heading: str = Field(max_length=500)
+    phase: Literal["waiting", "ending", "unreadable"]
+    waitingSince: float = Field(ge=0, allow_inf_nan=False)
+
+
+class CurrentRuns(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    runs: list[CurrentRun] = Field(max_length=10)
+
+
+@router.post("/api/device/{household_id}/trail-current")
+def report_current(
+    household_id: str, current: CurrentRuns, _: DeviceKey, request: Request
+) -> Any:
+    store: TrailStore = request.app.state.trail
+    store.report_current(CurrentTrail(
+        household_id, time.time(), tuple(run.model_dump() for run in current.runs)
+    ))
+    return {"recorded": True}
+
+
+@router.get("/api/trail-current")
+def current_activity(account: CurrentAccount, request: Request) -> Any:
+    store: TrailStore = request.app.state.trail
+    return store.current(str(account.household_id)).to_public()
 
 
 @router.get("/api/trail")
@@ -51,17 +89,16 @@ def one_afternoon(run_id: str, account: CurrentAccount, request: Request) -> Any
 
 @router.delete("/api/trail")
 def throw_it_away(account: CurrentAccount, request: Request) -> Any:
-    """Empty the record for this household. Deletes, and cannot be undone.
-
-    The parent's own, so the parent's to throw away: this is the half of the trade they were
-    given in exchange for having no veto on each piece, and a record somebody is not allowed
-    to end is a different thing from a record they were offered.
-
-    It takes no argument on purpose. A route that could delete one afternoon would be a way
-    to make a record say an afternoon never happened, and that is worse than no record.
-    """
+    """Delete this household's activity record, leaving its settings and approvals intact."""
     store: TrailStore = request.app.state.trail
     return {"forgotten": store.forget_everything(str(account.household_id))}
+
+
+@router.delete("/api/trail/{run_id}")
+def throw_one_away(run_id: str, account: CurrentAccount, request: Request) -> Any:
+    """Delete one run and its entries for the authenticated household."""
+    store: TrailStore = request.app.state.trail
+    return {"forgotten": store.forget(str(account.household_id), run_id)}
 
 
 def opened(

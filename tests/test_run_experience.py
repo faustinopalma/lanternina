@@ -90,6 +90,56 @@ def pointers(house: House) -> list[Path]:
     return sorted((house.sheets_dir / "afternoons" / "pages").glob("*.json"))
 
 
+def test_current_snapshot_follows_waiting_ending_and_removed_runs(house: House) -> None:
+    from dataclasses import replace
+
+    experience = an_experience()
+    moment = next(one for one in experience.moments if str(one.act) == "collect")
+    run = Afternoon("aft_live", experience, 100, moment.id, waited_since=120, over_at=2000)
+    path = house.sheets_dir / "afternoons" / "aft_live.json"
+    run_experience._write(path, run.to_dict())
+    current = run_experience.current_runs(house.sheets_dir)
+    assert current == [{
+        "runId": "aft_live", "title": experience.title, "beganAt": 100,
+        "endsAt": 2000, "momentId": moment.id, "heading": moment.heading,
+        "phase": "waiting", "waitingSince": 120,
+    }]
+    run_experience._write(path, replace(run, leaving_at=moment.id, left_at=400).to_dict())
+    assert run_experience.current_runs(house.sheets_dir)[0]["phase"] == "ending"
+    assert run_experience.current_runs(house.sheets_dir)[0]["waitingSince"] == 400
+    path.unlink()
+    assert run_experience.current_runs(house.sheets_dir) == []
+    path.write_text("broken", encoding="utf-8")
+    assert run_experience.current_runs(house.sheets_dir)[0]["phase"] == "unreadable"
+
+
+def test_current_report_sends_empty_state_and_tolerates_an_unreachable_panel(
+    house: House, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import urllib.error
+    from contextlib import nullcontext
+
+    sent = []
+
+    def post(request, timeout):
+        sent.append(request)
+        assert timeout == run_experience.FILE_TIMEOUT_SECONDS
+        return nullcontext()
+
+    monkeypatch.setattr(run_experience.urllib.request, "urlopen", post)
+    run_experience.report_current(house)
+    assert len(sent) == 1
+    assert sent[0].full_url == "https://panel.example/api/device/hh_1/trail-current"
+    assert json.loads(sent[0].data) == {"runs": []}
+    assert sent[0].get_header("X-device-key") == "k"
+
+    def offline(*args, **kwargs):
+        raise urllib.error.URLError("offline")
+
+    monkeypatch.setattr(run_experience.urllib.request, "urlopen", offline)
+    run_experience.report_current(house)
+
+
 def test_camera_advances_the_activity_without_touching_the_scanner(
     house: House, monkeypatch: pytest.MonkeyPatch
 ) -> None:

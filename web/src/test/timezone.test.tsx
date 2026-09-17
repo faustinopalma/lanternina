@@ -14,16 +14,46 @@
  * Nothing here asserts a particular offset inside the page. Rome is UTC+2 today and UTC+1
  * in January, so a test that pinned the number would pass until the clocks changed.
  */
-import { screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { cityOf, offsetNow, placesIn } from "@/sections/Rhythm";
+import { Input } from "@/components/ui/field";
+import { LanguageProvider, useWords } from "@/i18n";
 import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
 
 const JULY = new Date("2026-07-15T12:00:00Z");
 const JANUARY = new Date("2026-01-15T12:00:00Z");
+
+describe("24-hour times", () => {
+  it.each(["it", "en"])("formats midnight and afternoon in %s without AM/PM", (language) => {
+    window.localStorage.setItem("lanternina.language", language);
+    function Times() {
+      const { dateTime } = useWords();
+      return <output>{[0, 15].map((hour) => dateTime(new Date(2026, 8, 17, hour, 7).getTime() / 1000)).join(" | ")}</output>;
+    }
+    render(<LanguageProvider><Times /></LanguageProvider>);
+    expect(screen.getByRole("status")).toHaveTextContent("00:07");
+    expect(screen.getByRole("status")).toHaveTextContent("15:07");
+    expect(screen.getByRole("status")).not.toHaveTextContent(/AM|PM/);
+  });
+
+  it("accepts only HH:MM values independently of the browser's time picker", () => {
+    render(<Input type="time" aria-label="Time" defaultValue="07:00" required />);
+    const input = screen.getByRole("textbox", { name: "Time" });
+    expect(input).toHaveValue("07:00");
+    for (const value of ["00:00", "15:00", "23:59"]) {
+      fireEvent.change(input, { target: { value } });
+      expect(input).toBeValid();
+    }
+    for (const value of ["24:00", "7:00", "12:60", "07:00 AM", ""]) {
+      fireEvent.change(input, { target: { value } });
+      expect(input).toBeInvalid();
+    }
+  });
+});
 
 async function openRhythm(user: ReturnType<typeof userEvent.setup>) {
   await user.click(

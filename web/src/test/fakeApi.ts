@@ -823,6 +823,7 @@ export function fakeApi(
     messages: async () => waiting,
 
     trails: async () => trails.map(({ script: _script, made: _made, ...card }) => card),
+    currentTrail: async () => ({ updatedAt: Date.now() / 1000, runs: [] }),
     trail: async (runId) => {
       const found = trails.find((row) => row.runId === runId);
       if (!found) throw new Error("unknown run");
@@ -833,6 +834,12 @@ export function fakeApi(
       const gone = trails.length;
       trails.length = 0;
       return { forgotten: gone };
+    },
+    forgetRun: async (runId) => {
+      const index = trails.findIndex((row) => row.runId === runId);
+      if (index < 0) return { forgotten: 0 };
+      trails.splice(index, 1);
+      return { forgotten: 1 };
     },
 
     drafts: async () =>
