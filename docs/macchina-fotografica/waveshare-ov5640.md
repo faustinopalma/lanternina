@@ -50,9 +50,11 @@ The CH32V003F4U6 runs Waveshare's I/O-expander protocol at I2C address `0x24`. I
 | CHG_DET | EXIO7 | Treat this as an input; establish its polarity on the board |
 | BAT_ADC | Expander ADC | Read through the vendor protocol and calibrate voltage conversion |
 | BOOT | GPIO0 | A brief press restarts or wakes Lanternina; holding it during power-on enters the ROM downloader |
-| PWR_KEY | GPIO15 and power circuit | It participates in power control; do not assume it is a free shutter input |
+| PWR_KEY | GPIO15 and power circuit | Lanternina reads it as an input-only shutter; preserve the hardware latch |
 
 Some Arduino expander comments describe unrelated SD or CAN functions, and its initializer marks all eight lines as outputs. The schematic and the more selective ESP-IDF initialization are the reference for electrical direction and signal ownership. Do not carry those comments or the blanket direction setting into a board abstraction without checking each signal.
+
+Since 17 September, onboard PWR also requests one photograph in Lanternina, while awake or from deep sleep. The GPIO remains an input, the power latch stays enabled and holding the button does not repeat photographs. A held USB press and brief battery-only presses were physically verified. BOOT remains the status-only wake. GPIO15/PWR_KEY is not exposed on the LCD FPC: connector contact 15 is `TP_INT`. An external shutter can use the independently supported GPIO1 on contact 5; it does not need to share GPIO15.
 
 ## Development configuration
 
@@ -101,6 +103,8 @@ Waveshare specifies one 3.7 V lithium cell on the GH1.25 battery connector and r
 The owner connected one YUNIQUE GREEN-CLEAN-POWER 103665 battery, advertised as 1S, 3.7 V, 3000 mAh with protection, from [Amazon ASIN B0GSZRFYBD](https://www.amazon.it/dp/B0GSZRFYBD). This exceeds Waveshare's capacity recommendation. Capacity alone does not increase the charger's programmed current. The schematic shows R44 = 160 kohms at ETA6098 ISET; the datasheet describes CC/CV charging to 4.2 V, with 1.2 A specified at 150 kohms. The actual current at 160 kohms has not been measured. The listing's claim `1C approximately 1.5 A` is inconsistent with 3000 mAh, for which 1C is 3 A by calculation, and does not establish an allowed charging current. Confirm the cell's charging specification, polarity and thermal behavior; do not treat the seller's generic ESP32 compatibility statement as that evidence. Keep early charging supervised and disconnect power if there is swelling, odor or abnormal heating.
 
 An ESP32 deep-sleep call does not establish low board current. Camera, codecs, amplifier, LED, regulator and CH32V003 can remain powered. The Waveshare FAQ warns that OV5640 warms during continuous capture and recommends stopping capture or entering standby while idle. Measure complete-board current on battery, including peripheral shutdown and wake behavior; no autonomy estimate is established here.
+
+The owner observed a small LED remaining lit on battery. The schematic's LED2 anode has two paths: 3.3 V through R24 (3 kohms) and `PWR_LED` through R25 (3 kohms), with the cathode grounded. The firmware already drives `PWR_LED` LOW; that does not remove the fixed supply path. This is distinct from LED3 driven by the charger's status output. No resistor, LED or power-latch modification has been made. The new firmware explicitly places ES7210 in its documented stopped state and verifies register readback. ES8311 and amplifier settings remain unchanged. The reduction in board current, if any, still needs measurement; neither a lit LED nor a register value quantifies autonomy.
 
 Before the first write, identify the new board by its own USB identity and MAC, confirm ESP32-S3 and the detected flash size, and preserve a complete original flash backup with a checksum outside public Git. A confirmed 16 MiB device requires 16,777,216 backup bytes. The existing `deploy/flash-camera.py` flow validates an 8 MiB XIAO and is not a Waveshare flashing procedure. Do not bypass its guard or reuse a credential-bearing XIAO binary.
 

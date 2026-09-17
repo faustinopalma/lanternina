@@ -21,11 +21,13 @@
 
 static constexpr gpio_num_t BUTTON = GPIO_NUM_1;
 static constexpr gpio_num_t BOOT_BUTTON = GPIO_NUM_0;
+static constexpr gpio_num_t POWER_BUTTON = GPIO_NUM_15;
 static constexpr int LED = 2;
 static constexpr uint8_t EXPANDER = 0x24;
 static uint8_t boardOutputs = (1 << 5) | (1 << 3);
 static bool boardReady = false;
-static const char *FIRMWARE = "waveshare-2026-09-16-battery-timer";
+static bool audioAdcStandby = false;
+static const char *FIRMWARE = "waveshare-2026-09-17-pwr-audio-sleep";
 static int batterySchedule = -60;
 static constexpr uint32_t NETWORK_MS = 20000;
 static constexpr size_t MAX_JPEG = 750000;
@@ -61,11 +63,46 @@ RTC_DATA_ATTR static uint32_t sleepingBoot = 0;
 RTC_DATA_ATTR static time_t sleepingAt = 0;
 RTC_DATA_ATTR static uint32_t wakeCount = 0;
 
-static bool boardWrite(uint8_t address, uint8_t value) {
-    Wire.beginTransmission(EXPANDER);
+static bool writeRegister(uint8_t device, uint8_t address, uint8_t value) {
+    Wire.beginTransmission(device);
     Wire.write(address);
     Wire.write(value);
     return Wire.endTransmission() == 0;
+}
+
+static bool boardWrite(uint8_t address, uint8_t value) {
+    return writeRegister(EXPANDER, address, value);
+}
+
+static bool readRegister(uint8_t device, uint8_t address, uint8_t &value) {
+    Wire.beginTransmission(device);
+    Wire.write(address);
+    if (Wire.endTransmission(false) != 0) return false;
+    if (Wire.requestFrom(device, (uint8_t)1) != 1) return false;
+    value = Wire.read();
+    return true;
+}
+
+static bool stopAudioAdc() {
+    const uint8_t registers[][3] = {
+        {0x47, 0xff, 0x3f}, {0x48, 0xff, 0x1f}, {0x49, 0xff, 0x3f},
+        {0x4a, 0xff, 0x1f}, {0x4b, 0xff, 0xff}, {0x4c, 0xff, 0xff},
+        {0x40, 0xc0, 0xc0}, {0x01, 0x7f, 0x7f}, {0x06, 0x07, 0x07},
+    };
+    bool success = true;
+    for (const auto &entry : registers) {
+        bool written = writeRegister(0x40, entry[0], entry[1]);
+        success = written && success;
+    }
+    for (const auto &entry : registers) {
+        uint8_t value = 0;
+        bool verified = readRegister(0x40, entry[0], value) && value == entry[2];
+        Serial.printf("audio_adc register=0x%02x value=0x%02x verified=%d\n",
+                      entry[0], value, verified);
+        if (!verified) Serial.printf("audio_adc_standby_failed register=0x%02x\n", entry[0]);
+        success = verified && success;
+    }
+    return success;
 }
 
 static bool batteryRead(uint16_t &value) {
@@ -138,6 +175,18 @@ static void reportBoard() {
         bool batteryValid = batteryVoltage(voltage, batteryRaw);
         Serial.printf("battery_read=%d battery_raw=%u battery_voltage=%.3f scale=nominal\n",
                       batteryValid, batteryRaw, batteryValid ? voltage : -1);
+        if (boardReady) {
+            const uint8_t registers[][2] = {
+                {0x18, 0x0d}, {0x18, 0x12}, {0x40, 0x01}, {0x40, 0x06},
+                {0x40, 0x40}, {0x40, 0x47}, {0x40, 0x4b}, {0x40, 0x4c},
+            };
+            for (const auto &entry : registers) {
+                uint8_t value = 0;
+                bool valid = readRegister(entry[0], entry[1], value);
+                Serial.printf("audio_power device=0x%02x register=0x%02x read=%d value=0x%02x\n",
+                              entry[0], entry[1], valid, value);
+            }
+        }
     }
     Serial.printf("board=waveshare-ov5640 firmware=%s expander=%d outputs=0x%02x "
                   "button_gpio=%d led_gpio=%d boot_gpio=0 boot_released=%d\n",
@@ -146,12 +195,17 @@ static void reportBoard() {
     Serial.printf("battery_updates=%d battery_interval_minutes=%d wake=%s\n",
                   batterySchedule > 0, abs(batterySchedule),
                   esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_TIMER ? "timer" : "manual");
+    Serial.printf("pwr_gpio=%d pwr_released=%d input_only=1\n",
+                  (int)POWER_BUTTON, digitalRead(POWER_BUTTON) == HIGH);
+    Serial.printf("audio_adc_standby=%d\n", audioAdcStandby);
 }
 
 static const char *wakeCause() {
     switch (esp_sleep_get_wakeup_cause()) {
         case ESP_SLEEP_WAKEUP_EXT0: return "button";
-        case ESP_SLEEP_WAKEUP_EXT1: return "boot_button";
+        case ESP_SLEEP_WAKEUP_EXT1:
+            return esp_sleep_get_ext1_wakeup_status() & (1ULL << BOOT_BUTTON)
+                ? "boot_button" : "power_button";
         case ESP_SLEEP_WAKEUP_TIMER: return "timer";
         case ESP_SLEEP_WAKEUP_UNDEFINED: return "not_deep_sleep";
         default: return "other";
@@ -530,7 +584,8 @@ static void work(void *argument) {
         workMs = millis() - workBegan;
         reportStatus("operation_complete");
     }
-    if (millis() - lastUsb >= 2000 && digitalRead(BUTTON) == HIGH) {
+    if (millis() - lastUsb >= 2000 && digitalRead(BUTTON) == HIGH &&
+        digitalRead(POWER_BUTTON) == HIGH) {
         reportStatus("sleep_planned");
         sleepReportAttempted = true;
     }
@@ -563,6 +618,8 @@ static void startWork(bool takePhoto, bool sleepOnly = false, bool batteryOnly =
 void setup() {
     rtc_gpio_deinit(BOOT_BUTTON);
     pinMode(BOOT_BUTTON, INPUT_PULLUP);
+    rtc_gpio_deinit(POWER_BUTTON);
+    pinMode(POWER_BUTTON, INPUT_PULLUP);
     rtc_gpio_deinit(BUTTON);
     pinMode(BUTTON, INPUT_PULLUP);
     pinMode(LED, OUTPUT);
@@ -587,6 +644,7 @@ void setup() {
     boardReady = Wire.begin(8, 7, 100000);
     Wire.setTimeOut(100);
     boardReady = boardReady && boardWrite(0x03, boardOutputs) && boardWrite(0x02, 0x7f);
+    audioAdcStandby = boardReady && stopAudioAdc();
     reportBoard();
     bootTag = esp_random();
     previousSleepConfirmed = esp_reset_reason() == ESP_RST_DEEPSLEEP && sleepMarker == 0xCA6E2026;
@@ -618,8 +676,9 @@ void setup() {
         trigger = "wake_button";
         startWork(true);
     } else if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT1) {
-        trigger = "wake_boot";
-        startWork(false);
+        bool bootPressed = esp_sleep_get_ext1_wakeup_status() & (1ULL << BOOT_BUTTON);
+        trigger = bootPressed ? "wake_boot" : "wake_power_button";
+        startWork(!bootPressed);
     } else if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_TIMER) {
         trigger = "battery_timer";
         startWork(false, false, true);
@@ -681,14 +740,15 @@ void loop() {
         Serial.flush();
         esp_restart();
     }
-    bool pressed = digitalRead(BUTTON);
+    bool powerReleased = digitalRead(POWER_BUTTON) == HIGH;
+    bool pressed = digitalRead(BUTTON) == HIGH && powerReleased;
     if (pressed != previous) { previous = pressed; changed = now; }
     if (now - changed >= 30 && stable != pressed) {
         stable = pressed;
         if (stable == HIGH) armed = true;
         else {
             if (armed && !busy && !feedback && !activeFeedback && !usbTestMode) {
-                trigger = "button";
+                trigger = powerReleased ? "button" : "power_button";
                 startWork(true);
             }
             armed = false;
@@ -757,8 +817,10 @@ void loop() {
             rtc_gpio_pulldown_dis(BUTTON);
             rtc_gpio_pullup_en(BOOT_BUTTON);
             rtc_gpio_pulldown_dis(BOOT_BUTTON);
+            rtc_gpio_pullup_en(POWER_BUTTON);
+            rtc_gpio_pulldown_dis(POWER_BUTTON);
             if (esp_sleep_enable_ext0_wakeup(BUTTON, 0) != ESP_OK ||
-                esp_sleep_enable_ext1_wakeup(1ULL << BOOT_BUTTON,
+                esp_sleep_enable_ext1_wakeup((1ULL << BOOT_BUTTON) | (1ULL << POWER_BUTTON),
                                              ESP_EXT1_WAKEUP_ANY_LOW) != ESP_OK) {
                 Serial.println("sleep_error=wake_configuration");
                 delay(1000);
