@@ -101,3 +101,20 @@ Installed revision `waveshare-2026-09-17-pwr-audio-sleep` passed build, upload h
 The owner's approximately two-second PWR press on USB produced one 117,402-byte JPEG, ID `d6021b6c002e198f77bf0dc4293fd301`. A battery-only press after 19 seconds of confirmed deep sleep produced one 66,633-byte JPEG, ID `3c14f1e503c73019dd2acef59d77c5e0`. Both decoded at 1600 x 1200 and matched stored digests, received HTTP 201 and left zero queued images. An additional 58,138-byte photograph, ID `242d4b206a493f1ebfa078a75d057d79`, initially failed the expected-count check; the event history showed another PWR wake, and the owner confirmed a separate intentional press. BOOT then woke as `boot_button` without capture or sensor initialization. The three intentional photographs increased the hub total from 143 to 146. The owner photographed a glass with protective film still on the lens; these are control and delivery checks, not an optical comparison.
 
 The last battery-only `sleep_planned` report was received at 07:31:52.267252 CEST on 17 September, with nominal voltage 4.063306332 V, boot `1121a721` and periodic updates disabled. It follows USB charging, flashing and three captures and therefore starts a separate observation. The earlier overnight decline must not be compared directly as evidence of an improvement. The next battery reading can test a new voltage trend; measuring full-board sleep current or a discharge through the operating cutoff is still required to quantify autonomy. The external GPIO1 button and LED remain unwired and physically untested.
+
+### Follow-up at 09:05, 17 September 2026
+
+The owner requested a battery check after another physical photograph. The latest authenticated `sleep_planned` report was received at 09:05:34.363908 CEST and read at 09:07:24 CEST, approximately 110 seconds later. Firmware remained `waveshare-2026-09-17-pwr-audio-sleep`; USB was absent and periodic updates remained disabled with 60 minutes remembered. No remote camera command was sent for this check.
+
+| Measurement | Value |
+| --- | --- |
+| Reference at 07:31:52.267252 CEST | 4.063306332 V nominal |
+| Follow-up at 09:05:34.363908 CEST | 4.037903309 V nominal |
+| Elapsed time between hub receipts | 5,622.096656 seconds, or 1 hour 33 minutes 42 seconds |
+| Voltage decrease | 25.403023 mV |
+| Mean voltage decrease | 16.26633 mV/hour |
+| Intervening activity | One PWR wake and photograph; no other wake in the retained history |
+
+Boot `30c2add0` names `1121a721` as its previous boot, confirms the deep-sleep marker and increments the wake counter from 3 to 4. The photograph, ID `b015f6d2a69ac64e4d531a86987b332d`, contains 73,234 bytes at reported dimensions 1600 x 1200. Capture took 2,677 ms and upload 1,565 ms; HTTP 201 was accepted, the queue returned to zero and the hub record is `done`. The reported RTC sleep duration was 5,689 seconds; use the hub interval above rather than the uncalibrated RTC for trend calculations.
+
+The observed slope is steeper than the earlier overnight 8.9 mV/hour, but the intervals are not a controlled before/after comparison. The new reference followed USB charging, and the later measurement follows a capture and upload whereas the reference followed a status-only BOOT wake. Cell relaxation, temperature and load effects have not been separated from discharge. This short interval establishes neither a standby-current reduction nor a regression, and it does not give a reliable remaining runtime. Keep USB disconnected and use a later status-only BOOT wake for another comparison; record further photographs as part of the workload.
