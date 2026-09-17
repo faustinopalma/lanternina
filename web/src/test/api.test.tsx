@@ -109,6 +109,22 @@ describe("what /api/me says", () => {
   });
 });
 
+describe("feedback synthesis completion", () => {
+  it("requires completion rather than an accepted background job", async () => {
+    vi.stubGlobal("fetch", answering({ queued: true }));
+    await expect(httpApi("t").synthesizeSteering()).rejects.toThrow(/completed/);
+    vi.stubGlobal("fetch", answering({ completed: true }));
+    await expect(httpApi("t").synthesizeSteering()).resolves.toBeUndefined();
+  });
+
+  it.each([
+    [503, "synthesis_failed"], [429, "synthesis_limit"], [409, "guidance_changed"],
+  ])("reports HTTP %s as %s", async (status, message) => {
+    vi.stubGlobal("fetch", answering({ detail: message }, status));
+    await expect(httpApi("t").synthesizeSteering()).rejects.toThrow(message);
+  });
+});
+
 describe("a section that throws", () => {
   function Broken(): never {
     throw new Error("boom");

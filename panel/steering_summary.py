@@ -6,12 +6,11 @@ import hashlib
 import json
 import logging
 import os
-from typing import Any
+from typing import Any, Literal
 
 from shared.ids import new_id, new_request_id
 from shared.prompts import beside
 from shared.routing import Capability, ModelRequest
-from shared.safety import ContentKind
 from shared.steering import MAX_SUMMARY_CHARS, clean_text
 
 from .steering import REASONS, Guidance, SteeringConflict, SteeringStore
@@ -48,9 +47,12 @@ async def summarize(value: Guidance, language: str) -> tuple[str, Any]:
             capability=Capability.PLANNING,
             prompt=summary_prompt(value, language),
             request_id=new_request_id(),
-            kind=ContentKind.TEXT,
+            max_output_chars=MAX_SUMMARY_CHARS + 1,
+            purpose="synthesizing parent activity feedback",
         )
     )
+    if response.truncated:
+        raise ValueError("truncated guidance summary")
     text = clean_text(response.text, MAX_SUMMARY_CHARS)
     if not text:
         raise ValueError("empty guidance summary")
@@ -65,12 +67,14 @@ async def synthesize_pending(
     limits: Any,
     configured: float,
     household_id: str,
-) -> None:
+) -> Literal["complete", "failed", "limited", "conflict"]:
     for _attempt in range(3):
         language = preferences.get(household_id).language
         current = store.get(household_id, language)
-        if not current.pending or at_the_limit(usage, limits, household_id, configured):
-            return
+        if not current.pending:
+            return "complete"
+        if at_the_limit(usage, limits, household_id, configured):
+            return "limited"
         spent = None
         outcome = FAILED
         try:
@@ -80,10 +84,10 @@ async def synthesize_pending(
                 store.save(current.summarized(text), current.revision)
             except SteeringConflict:
                 continue
-            return
+            return "complete"
         except Exception as exc:  # noqa: BLE001
             logging.getLogger(__name__).warning("guidance synthesis failed: %s", type(exc).__name__)
-            return
+            return "failed"
         finally:
             try:
                 usage.record(
@@ -91,6 +95,7 @@ async def synthesize_pending(
                 )
             except Exception as exc:  # noqa: BLE001
                 logging.getLogger(__name__).warning("guidance usage failed: %s", type(exc).__name__)
+    return "conflict"
 
 
 def record_feedback(

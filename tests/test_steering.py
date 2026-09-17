@@ -224,9 +224,103 @@ def test_failed_summary_keeps_feedback_for_retry(monkeypatch) -> None:
         raise RuntimeError("model unavailable")
 
     monkeypatch.setattr(steering_summary, "summarize", fail)
-    assert client.post("/api/steering/synthesize", headers=headers()).status_code == 200
+    response = client.post("/api/steering/synthesize", headers=headers())
+    assert response.status_code == 503
+    assert response.json()["detail"] == "synthesis_failed"
     assert store.get(household).pending
     assert store.get(household).steering == initial.steering
+
+
+@pytest.mark.parametrize("truncated", [False, True])
+def test_summary_builds_a_real_model_request_with_its_own_budget(monkeypatch, truncated) -> None:
+    import asyncio
+    from types import SimpleNamespace
+
+    from orchestrator import router
+    from panel.steering_summary import summarize
+    from shared.routing import ModelRequest
+    from shared.steering import MAX_SUMMARY_CHARS
+
+    requests = []
+    summary = "Use a defined goal and several clues. " * 20
+
+    class Backend:
+        last_usage = None
+
+        async def analyze(self, request):
+            assert isinstance(request, ModelRequest)
+            requests.append(request)
+            return SimpleNamespace(text=summary, truncated=truncated)
+
+    monkeypatch.setattr(router.FoundryConfig, "from_env", lambda _env: object())
+    monkeypatch.setattr(router, "FoundryRouter", lambda _config: Backend())
+    current = InMemorySteeringStore().get("synthetic", "en")
+    if truncated:
+        with pytest.raises(ValueError, match="truncated"):
+            asyncio.run(summarize(current, "en"))
+    else:
+        text, _ = asyncio.run(summarize(current, "en"))
+        assert text == summary.strip()
+    assert requests[0].max_output_chars >= MAX_SUMMARY_CHARS
+    assert "conductInstructions" in requests[0].prompt
+
+
+def test_retry_reports_success_only_after_saved_feedback_is_summarized(monkeypatch) -> None:
+    from types import SimpleNamespace
+
+    from orchestrator import router
+    from tests.test_preferences import client_for, headers, household_of
+
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.steering
+    current = store.get(household)
+    for index in range(2):
+        current = current.receive(clean_feedback(str(index), "task", "Title", ["too_open"], ""))
+    store.save(current, 0)
+
+    class Backend:
+        last_usage = None
+
+        async def analyze(self, request):
+            assert '"reasonMeanings"' in request.prompt
+            assert store.get(household).pending
+            return SimpleNamespace(text="Give each task a verifiable goal.", truncated=False)
+
+    monkeypatch.setattr(router.FoundryConfig, "from_env", lambda _env: object())
+    monkeypatch.setattr(router, "FoundryRouter", lambda _config: Backend())
+    response = client.post("/api/steering/synthesize", headers=headers())
+    assert response.status_code == 200
+    assert response.json() == {"completed": True}
+    saved = client.get("/api/steering", headers=headers()).json()
+    assert saved["pendingCount"] == 0 and saved["feedbackCount"] == 2
+    assert saved["adaptive"] == "Give each task a verifiable goal."
+    assert store.get(household).steering.instructions == current.steering.instructions
+    assert len(store.get(household).history) == 2
+
+
+@pytest.mark.parametrize("failure, code", [("limited", 429), ("conflict", 409)])
+def test_retry_reports_a_limit_or_repeated_write_conflict(monkeypatch, failure, code) -> None:
+    from panel import steering_summary
+    from tests.test_preferences import client_for, headers, household_of
+
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.steering
+    store.save(store.get(household).receive(clean_feedback("a", "x", "Title", [], "")), 0)
+
+    async def summarize(*args):
+        return "A summary", None
+
+    def conflict(*args):
+        raise SteeringConflict("guidance_changed")
+
+    monkeypatch.setattr(steering_summary, "summarize", summarize)
+    monkeypatch.setattr(steering_summary, "at_the_limit", lambda *args: failure == "limited")
+    if failure == "conflict":
+        monkeypatch.setattr(store, "save", conflict)
+    assert client.post("/api/steering/synthesize", headers=headers()).status_code == code
+    assert len(store.get(household).pending) == 1
 
 
 def test_reset_during_synthesis_does_not_reintroduce_feedback(monkeypatch) -> None:

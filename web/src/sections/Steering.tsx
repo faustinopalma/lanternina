@@ -57,7 +57,7 @@ function Editor({ initial }: { initial: Guidance }) {
 
   async function refresh(retry = false) {
     setBusy(true);
-    setStatus(null);
+    setStatus(retry ? "steering.synthesizing" : null);
     try {
       if (retry) await api.synthesizeSteering();
       const value = await api.steering();
@@ -73,9 +73,16 @@ function Editor({ initial }: { initial: Guidance }) {
         setStatus("steering.reviewChanges");
       } else {
         accept(value);
+        setStatus(retry && value.pendingCount === 0 ? "steering.synthesized" : null);
       }
-    } catch {
-      setStatus("steering.failed");
+    } catch (error) {
+      if (retry) {
+        const message = error instanceof Error ? error.message : "";
+        setStatus(message.includes("synthesis_limit") ? "steering.synthesisLimit"
+          : message.includes("guidance_changed") ? "steering.conflict" : "steering.synthesisFailed");
+      } else {
+        setStatus("steering.failed");
+      }
     } finally {
       setBusy(false);
     }

@@ -9,6 +9,44 @@ import { renderPanel } from "@/test/render";
 
 beforeEach(() => window.localStorage.clear());
 
+it("waits for synthesis to finish before reading and showing the new summary", async () => {
+  const api = fakeApi();
+  const initial = { ...await api.steering(), pendingCount: 2, feedbackCount: 2 };
+  const completed = { ...initial, pendingCount: 0, revision: 1, adaptive: "Usa obiettivi precisi." };
+  let finish!: () => void;
+  api.steering = vi.fn().mockResolvedValueOnce(initial).mockResolvedValue(completed);
+  api.synthesizeSteering = vi.fn(() => new Promise<void>((resolve) => { finish = resolve; }));
+  const user = userEvent.setup();
+  renderPanel(api, <Steering />);
+  await user.click(await screen.findByRole("button", { name: "Riprova la sintesi" }));
+  expect(screen.getByText("Sintesi in corso.")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Riprova la sintesi" })).toBeDisabled();
+  expect(api.steering).toHaveBeenCalledTimes(1);
+  expect(screen.getByLabelText("Indicazioni dai feedback")).toHaveValue(initial.adaptive);
+  finish();
+  expect(await screen.findByText("Sintesi aggiornata.")).toBeInTheDocument();
+  expect(screen.getByLabelText("Indicazioni dai feedback")).toHaveValue(completed.adaptive);
+  expect(screen.queryByRole("button", { name: "Riprova la sintesi" })).not.toBeInTheDocument();
+});
+
+it.each([
+  ["synthesis_failed", "La sintesi non è riuscita"],
+  ["synthesis_limit", "Il limite mensile delle chiamate è raggiunto"],
+])("preserves pending feedback and reports %s", async (error, message) => {
+  const api = fakeApi();
+  const initial = { ...await api.steering(), pendingCount: 2, feedbackCount: 2 };
+  api.steering = vi.fn().mockResolvedValue(initial);
+  api.synthesizeSteering = vi.fn().mockRejectedValue(new Error(error));
+  const user = userEvent.setup();
+  renderPanel(api, <Steering />);
+  await user.click(await screen.findByRole("button", { name: "Riprova la sintesi" }));
+  expect(await screen.findByText(new RegExp(message))).toBeInTheDocument();
+  expect(screen.getByLabelText("Indicazioni dai feedback")).toHaveValue(initial.adaptive);
+  expect(screen.getByText("Feedback da sintetizzare: 2")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Riprova la sintesi" })).toBeEnabled();
+  expect(api.steering).toHaveBeenCalledTimes(1);
+});
+
 it("shows both texts and saves only the field deliberately edited", async () => {
   const api = fakeApi();
   const user = userEvent.setup();

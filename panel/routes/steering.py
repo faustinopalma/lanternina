@@ -68,9 +68,24 @@ def write_steering(new: EditSteering, account: CurrentAccount, request: Request)
 
 
 @router.post("/api/steering/synthesize")
-def retry_synthesis(account: CurrentAccount, request: Request, afterwards: BackgroundTasks) -> Any:
-    schedule_synthesis(afterwards, request, str(account.household_id))
-    return {"queued": True}
+async def retry_synthesis(account: CurrentAccount, request: Request) -> Any:
+    from ..steering_summary import synthesize_pending
+
+    outcome = await synthesize_pending(
+        store=request.app.state.steering,
+        preferences=request.app.state.preferences,
+        usage=request.app.state.usage,
+        limits=request.app.state.limit,
+        configured=request.app.state.settings.monthly_limit,
+        household_id=str(account.household_id),
+    )
+    if outcome == "failed":
+        raise HTTPException(status_code=503, detail="synthesis_failed")
+    if outcome == "limited":
+        raise HTTPException(status_code=429, detail="synthesis_limit")
+    if outcome == "conflict":
+        raise HTTPException(status_code=409, detail="guidance_changed")
+    return {"completed": True}
 
 
 def schedule_synthesis(afterwards: BackgroundTasks, request: Request, household: str) -> None:

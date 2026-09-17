@@ -239,7 +239,13 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
         "/api/steering");
     },
     async synthesizeSteering() {
-      await json("/api/steering/synthesize", write({}));
+      const response = await call("/api/steering/synthesize", write({}));
+      if (response.status === 429) throw new ApiError("synthesis_limit");
+      if (response.status === 409) throw new ApiError("guidance_changed");
+      if (!response.ok) throw new ApiError("synthesis_failed");
+      const result = shaped<{ completed: boolean }>(await response.json(), ["completed"],
+        "/api/steering/synthesize");
+      if (result.completed !== true) throw new ApiError("synthesis_failed");
     },
 
     guidelines: () => json<Guidelines>("/api/guidelines", {}, GUIDELINES_FIELDS),
