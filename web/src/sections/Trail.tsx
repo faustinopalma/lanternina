@@ -47,27 +47,6 @@ function Drawn({ pictureId }: { pictureId: string }) {
   );
 }
 
-/* What the system wrote, afternoon by afternoon.
- *
- * The parent approved an idea. Everything after that was written as the afternoon went, by
- * an agent working from the script, and none of it was approved by anybody — there is no
- * moment where a parent could stand between a generated page and the room without stopping
- * the afternoon to do it. This page is the other half of that trade: no veto on each piece,
- * and every piece readable afterwards, in full, beside the script it came from.
- *
- * A card carries a title and a date and nothing else, because that is what recognising an
- * afternoon needs. The script arrives when one is opened.
- */
-
-/* One step of the trace: when, what it was, what went in, what came out.
- *
- * The shape is the design. This page was a list of records in the house's own vocabulary
- * with the reasoning and the paper attached in whatever order the fields happened to be in,
- * and beneath it a second section of readings. What a parent actually needs is a trace of
- * what the model did, in the order it did it, and every step of that has the same two
- * halves: the text that was sent, and what came back — words on a display, or a sheet
- * offered to the printer. So both halves are labelled, always, and nothing else competes
- * with them. */
 function Step({ made, technical = false }: { made: Made; technical?: boolean }) {
   const { t, dateTime } = useWords();
   /* Written out rather than built from `made.kind`: a key that only exists at runtime is a
@@ -97,36 +76,42 @@ function Step({ made, technical = false }: { made: Made; technical?: boolean }) 
   const outcome = made.paper || made.body;
 
   return (
-    <li className="border-l-2 border-edge pl-3">
-      <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-        {technical ? t("trail.filedAt", { at: dateTime(made.at) }) : dateTime(made.at)} · {kind}
+    <li className="min-w-0 border-l-2 border-edge pl-3 [overflow-wrap:anywhere]">
+      <p className="text-[0.82rem] text-quiet">
+        {technical ? t("trail.filedAt", { at: dateTime(made.at) }) : dateTime(made.at)}
       </p>
-      {made.heading ? <p className="font-semibold">{made.heading}</p> : null}
+      <p className="font-medium">{kind}</p>
+      {made.heading ? <p className="mt-1 text-[0.9rem] text-quiet">{made.heading}</p> : null}
 
-      {made.asked ? (
-        <details className="mt-2">
-          <summary className="cursor-pointer text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t("trail.went_in")}
-          </summary>
-          <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{made.asked}</p>
-        </details>
-      ) : null}
-
-      {outcome || made.pictureId ? (
+      {technical && (outcome || made.pictureId) ? (
         <div className="mt-2">
           <p className="text-[0.82rem] tracking-wider text-quiet uppercase">
-            {t(technical ? "trail.modelDocument" : "trail.came_out")}
+            {t("trail.modelDocument")}
           </p>
-          {outcome ? (
-            technical ? <pre className="mt-1 max-w-full font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{outcome}</pre>
-              : <p className="mt-1 text-[0.9rem] whitespace-pre-wrap">{outcome}</p>
-          ) : null}
+          {outcome ? <pre className="mt-1 max-w-full font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{outcome}</pre> : null}
           {made.pictureId ? <Drawn pictureId={made.pictureId} /> : null}
         </div>
       ) : null}
 
-      {made.why ? <Quiet className="mt-1">{t("trail.why", { why: made.why })}</Quiet> : null}
-      {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
+      {!technical && made.body ? (
+        made.kind === "came" || made.kind === "fault" ? <details className="mt-2">
+          <summary className="cursor-pointer text-quiet">{t(made.kind === "came" ? "trail.reading" : "trail.failureDetail")}</summary>
+          <pre className="mt-1 font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{made.body}</pre>
+        </details> : <blockquote className="mt-2 whitespace-pre-wrap">{made.body}</blockquote>
+      ) : null}
+      {!technical && made.paper ? <div className="mt-3">
+        <p className="text-[0.82rem] text-quiet">{t("trail.onPaper")}</p>
+        <p className="mt-1 whitespace-pre-wrap">{made.paper}</p>
+      </div> : null}
+      {made.asked || made.why || made.until ? <details className="mt-2">
+        <summary className="cursor-pointer text-quiet">{t("trail.stepDetails")}</summary>
+        {made.asked ? <div className="mt-2">
+          <p className="text-[0.82rem] text-quiet">{t("trail.went_in")}</p>
+          <pre className="mt-1 font-mono text-[0.82rem] whitespace-pre-wrap [overflow-wrap:anywhere]">{made.asked}</pre>
+        </div> : null}
+        {made.why ? <Quiet className="mt-2">{t("trail.why", { why: made.why })}</Quiet> : null}
+        {made.until ? <Quiet className="mt-1">{t("trail.until")}</Quiet> : null}
+      </details> : null}
     </li>
   );
 }
@@ -150,9 +135,9 @@ function Whole({ runId }: { runId: string }) {
   if (state.status === "failed") return <Quiet className="mt-2.5">{t("trail.unreadable")}</Quiet>;
   const trail = state.data;
   const made = trail.made ?? [];
-  const technicalKinds = new Set(["plan", "judged", "continuation"]);
-  const events = made.filter((one) => !technicalKinds.has(one.kind));
-  const documents = made.filter((one) => technicalKinds.has(one.kind));
+  const interactionKinds = new Set(["say", "hand_over", "collect", "close", "fault", "came", "terminated"]);
+  const events = made.filter((one) => interactionKinds.has(one.kind));
+  const documents = made.filter((one) => !interactionKinds.has(one.kind));
   const printed = events.filter((one) => one.kind === "hand_over").at(-1);
 
   return (
@@ -162,7 +147,7 @@ function Whole({ runId }: { runId: string }) {
       {events.length === 0 ? (
         <Quiet className="mt-1">{t("trail.madeNothing")}</Quiet>
       ) : (
-        <ol className="mt-2 flex list-none flex-col gap-3.5 p-0">
+        <ol aria-label={t("trail.made")} className="mt-2 flex list-none flex-col gap-3.5 p-0">
           {events.map((one) => <Step key={one.id} made={one} />)}
         </ol>
       )}

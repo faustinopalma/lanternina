@@ -3,7 +3,7 @@
  * Two things are held here. A card carries nothing but a title, a date and the idea — the
  * script arrives when the parent opens one, and until then the page has not paid for it.
  */
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -62,7 +62,7 @@ describe("what the system wrote", () => {
       ] }),
     }), <TheTrail />);
     if (!current) await user.click(await screen.findByRole("button", { name: "Apri" }));
-    const summary = await screen.findByText("Piano e valutazioni del modello");
+    const summary = await screen.findByText("Dettagli tecnici: piano, prompt e valutazioni");
     expect(summary.closest("details")).not.toHaveAttribute("open");
     expect(screen.getByText('[{"act":"collect"}]')).not.toBeVisible();
     expect(screen.getByText('{"findings":[]}')).not.toBeVisible();
@@ -72,7 +72,7 @@ describe("what the system wrote", () => {
     expect(screen.getByText('[{"act":"collect"}]')).toBeVisible();
     expect(screen.getByText('{"findings":[]}')).toBeVisible();
     expect(screen.getByText(/Non attestano azioni svolte/)).toBeVisible();
-    expect(screen.getAllByText(/Archiviato nel registro:/)).toHaveLength(2);
+    expect(screen.getAllByText(/Archiviato nel registro:/)).toHaveLength(3);
   });
 
   it("does not call a drawn page printed or a historical run still waiting", async () => {
@@ -82,7 +82,8 @@ describe("what the system wrote", () => {
       ...whole, made: whole.made!.filter((one) => one.kind === "drawn"),
     }) }), <TheTrail />);
     await user.click(await screen.findByRole("button", { name: "Apri" }));
-    await screen.findByText(/Foglio disegnato/);
+    expect(await screen.findByText("Non ci sono ancora interazioni registrate.")).toBeVisible();
+    expect(screen.getByText(/Foglio disegnato/)).not.toBeVisible();
     expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
     expect(screen.queryByText("In attesa di una risposta, non ancora ricevuta")).not.toBeInTheDocument();
   });
@@ -198,43 +199,42 @@ describe("what the system wrote", () => {
     expect(screen.queryByText(/THE WORLD/)).not.toBeInTheDocument();
   });
 
-  it("traces what the model did, in order, with what went in and what came out", async () => {
+  it("shows what Lanternina delivered and keeps internal reasoning closed", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi(), <TheTrail />);
 
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/THE WORLD/)).toBeInTheDocument();
-    expect(screen.getByText("Guarda fuori e dimmi che forma ha.")).toBeInTheDocument();
-    // The kind sits on the same line as the time, because a step of a trace is a moment
-    // first and a category second.
-    expect(screen.getByText(/Detto su un display/)).toBeInTheDocument();
-    expect(screen.getByText(/Foglio stampato/)).toBeInTheDocument();
-    // Both halves are labelled on every step, which is the whole shape of the page.
-    expect(screen.getAllByText("Che cosa ne e uscito").length).toBeGreaterThan(0);
-    // The reasoning reached nobody in the room. It reaches the parent afterwards.
-    expect(screen.getByText("Perché: il foglio era tornato vuoto")).toBeInTheDocument();
+    expect(await screen.findByText(/THE WORLD/)).not.toBeVisible();
+    expect(screen.getByText("Guarda fuori e dimmi che forma ha.")).toBeVisible();
+    expect(screen.getByText(/Lanternina ha mostrato sul display/)).toBeVisible();
+    expect(screen.getByText(/Lanternina ha stampato un foglio/)).toBeVisible();
+    expect(screen.getByText("Prendi il foglio dal tavolo.")).toBeVisible();
+    expect(screen.getByText(/Guarda il cielo e disegna quello che vedi/)).toBeVisible();
+    expect(screen.queryByText("Che cosa ne e uscito")).not.toBeInTheDocument();
+    expect(screen.getByText("Nota tecnica di Lanternina: il foglio era tornato vuoto")).not.toBeVisible();
+    await user.click(screen.getAllByText("Dettagli tecnici del passaggio")[0]!);
+    expect(screen.getByText("Nota tecnica di Lanternina: il foglio era tornato vuoto")).toBeVisible();
   });
 
   it("keeps the steps in the order they happened", async () => {
-    /* It is a trace, so the order is the content. Reading it by timestamp rather than by
-       kind is what makes it possible to see what the model did after what. */
     const user = userEvent.setup();
     renderPanel(fakeApi(), <TheTrail />);
 
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
-    await screen.findByText(/Detto su un display/);
+    await screen.findByText(/Lanternina ha mostrato sul display/);
 
-    const steps = screen.getAllByRole("listitem").map((one) => one.textContent ?? "");
-    const said = steps.findIndex((one) => one.includes("Detto su un display"));
-    const drawn = steps.findIndex((one) => one.includes("Foglio disegnato"));
-    const printed = steps.findIndex((one) => one.includes("Foglio stampato"));
+    const steps = within(screen.getByRole("list", { name: "Durante l'attività" }))
+      .getAllByRole("listitem").map((one) => one.textContent ?? "");
+    const said = steps.findIndex((one) => one.includes("Lanternina ha mostrato sul display"));
+    const printed = steps.findIndex((one) => one.includes("Lanternina ha stampato un foglio"));
 
     expect(said).toBeGreaterThanOrEqual(0);
-    expect(drawn).toBeGreaterThan(said);
-    expect(printed).toBeGreaterThan(drawn);
+    expect(printed).toBeGreaterThan(said);
+    expect(steps).toHaveLength(2);
+    expect(steps.some(one => one.includes("Foglio disegnato"))).toBe(false);
   });
 
   it("says so plainly when nothing has run", async () => {
@@ -256,7 +256,7 @@ describe("what the system wrote", () => {
     expect(screen.queryByText(/^\{/)).not.toBeInTheDocument();
   });
 
-  it("says of a line kept while building that it deletes itself", async () => {
+  it("distinguishes Lanternina's reading from the adolescent's response", async () => {
     const user = userEvent.setup();
     const api = fakeApi();
     const whole = await api.trail("aft_1");
@@ -286,8 +286,12 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/Quello che è tornato dal vetro/)).toBeInTheDocument();
-    expect(screen.getByText(/si cancella da sola/)).toBeInTheDocument();
+    expect(await screen.findByText(/Lanternina ha letto il materiale restituito/)).toBeVisible();
+    expect(screen.getByText("un cavallo nel terzo riquadro")).not.toBeVisible();
+    expect(screen.getByText(/si cancella da sola/)).not.toBeVisible();
+    await user.click(screen.getByText("Lettura automatica di Lanternina"));
+    expect(screen.getByText("un cavallo nel terzo riquadro")).toBeVisible();
+    expect(screen.queryByText("Lanternina ha ricevuto una risposta")).not.toBeInTheDocument();
   });
 
   it("puts a sheet that never arrived in the trace, with its reason", async () => {
@@ -323,9 +327,10 @@ describe("what the system wrote", () => {
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/Qui non ha funzionato/)).toBeInTheDocument();
-    // And the reason, so the parent knows it is a printer to switch on and not ours to fix.
-    expect(screen.getByText(/did not take the page/)).toBeInTheDocument();
+    expect(await screen.findByText(/Lanternina ha incontrato un problema/)).toBeVisible();
+    expect(screen.queryByText(/Ultima pagina stampata:/)).not.toBeInTheDocument();
+    await user.click(screen.getByText("Dettaglio del problema"));
+    expect(screen.getByText(/did not take the page/)).toBeVisible();
   });
 
   it("has no readings section of its own any more", async () => {
@@ -337,20 +342,21 @@ describe("what the system wrote", () => {
     expect(screen.queryByText("Riletture")).not.toBeInTheDocument();
   });
 
-  it("shows what the model was asked for, beside what it produced", async () => {
-    /* A page that came out wrong cannot be judged without it: the question is whether it
-       was drawn badly or asked for badly, and only one of those is the model's fault. */
+  it("names the model as the prompt recipient inside the technical drill-down", async () => {
     const user = userEvent.setup();
     renderPanel(fakeApi(), <TheTrail />);
 
     await screen.findByText("Un pomeriggio di nuvole");
     await user.click(screen.getByRole("button", { name: "Apri" }));
 
-    expect(await screen.findByText(/Foglio disegnato/)).toBeInTheDocument();
-    expect(screen.getByText("Che cosa e stato chiesto")).toBeInTheDocument();
-    // A phrase only the request carries: the page's own words appear in both, and matching
-    // one of those would pass whether or not the request was ever shown.
-    expect(screen.getByText(/Letter this large/)).toBeInTheDocument();
+    expect(await screen.findByText(/Letter this large/)).not.toBeVisible();
+    expect(screen.queryByText("Che cosa e stato chiesto")).not.toBeInTheDocument();
+    await user.click(screen.getByText("Dettagli tecnici: piano, prompt e valutazioni"));
+    const prompt = screen.getByText("Prompt inviato al modello");
+    const details = prompt.closest("details")!;
+    await user.click(details.querySelector("summary")!);
+    expect(prompt).toBeVisible();
+    expect(screen.getByText(/Letter this large/)).toBeVisible();
   });
 
   it("empties the record, and asks twice before it does", async () => {
