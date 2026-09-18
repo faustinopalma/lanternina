@@ -17,12 +17,13 @@ import json
 import time
 import urllib.error
 import urllib.request
+from typing import Any
 
 import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from shared.vision_contracts import WhatCameBack
+from shared.vision_contracts import PhotoMatch, WhatCameBack
 
 # Drawing a whole page took 18.8 to 24.1 s against the real deployment on 24 August 2026, and
 # a reading 4.4 to 5.5 s. Long enough that a slow answer is still an answer, short enough that
@@ -150,6 +151,20 @@ def read_page(
         # An answer that cannot be read is not a reading. Salvaging part of one produces a
         # sentence about a page nobody looked at.
         raise PanelUnreachable(f"the panel answered something unreadable: {exc}") from exc
+
+
+def match_photo(
+    photograph: bytes, candidates: list[dict[str, Any]], *,
+    panel: str, household: str, key: str,
+) -> PhotoMatch:
+    if not (panel and household and key):
+        raise PanelUnreachable("no panel is configured")
+    answer = _ask(
+        f"{panel.rstrip('/')}/api/device/{household}/match-photo",
+        {"imageBase64": base64.b64encode(photograph).decode(), "candidates": candidates},
+        key=key, timeout=READ_TIMEOUT_SECONDS,
+    )
+    return PhotoMatch.from_dict(answer, candidates=len(candidates))
 
 
 def _png(image: NDArray[np.uint8]) -> str:

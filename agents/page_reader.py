@@ -41,6 +41,7 @@ from shared.routing import Capability, ModelRequest, PageImage
 from shared.vision_contracts import (
     MAX_DESCRIPTION_CHARS,
     MAX_DESCRIPTIONS,
+    PhotoMatch,
     WhatCameBack,
 )
 
@@ -65,10 +66,31 @@ _PHOTOGRAPHED_SHEET: Final = beside(__file__).text(
 _MAX_OUTPUT: Final = 300 + MAX_DESCRIPTIONS * (MAX_DESCRIPTION_CHARS + 10) * 2
 
 
+def matching_prompt(candidates: list[dict[str, Any]]) -> str:
+    return (beside(__file__).text("match") + "\nCandidate steps (zero-based):\n"
+            + json.dumps(candidates, ensure_ascii=False))
+
+
 class PageReader:
     """Reads a page against its blank. Knows nothing about what the page was asking."""
 
     name = "page_reader"
+
+    async def match(
+        self, ctx: AgentContext, *, photograph: PageImage,
+        candidates: list[dict[str, Any]],
+    ) -> PhotoMatch:
+        if not 1 <= len(candidates) <= 10:
+            raise ValueError("offer between one and ten current activity steps")
+        answer = await ctx.router.analyze(ModelRequest(
+            capability=Capability.VISION_READ,
+            prompt=matching_prompt(candidates),
+            request_id=new_request_id(), images=(photograph,), max_output_chars=2000,
+            purpose="matching a photograph to an open activity and its orientation",
+        ))
+        return PhotoMatch.from_dict(
+            {} if answer.truncated else _said_in(answer.text), candidates=len(candidates),
+        )
 
     async def read(
         self,

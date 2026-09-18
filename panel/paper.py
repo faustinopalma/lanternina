@@ -20,7 +20,7 @@ from shared.page import Page
 from shared.profile import Noticed
 from shared.routing import ModelUsage, PageImage
 from shared.seal import Sealer, SealPurpose
-from shared.vision_contracts import WhatCameBack
+from shared.vision_contracts import PhotoMatch, WhatCameBack
 
 if TYPE_CHECKING:
     from orchestrator.router import FoundryRouter
@@ -81,6 +81,19 @@ async def read_the_page(
     finally:
         await gate.aclose()
     return came, router.last_usage
+
+
+async def match_the_photo(
+    photograph: PageImage, candidates: list[dict[str, Any]], *, now: float,
+) -> tuple[PhotoMatch, ModelUsage | None]:
+    from agents.page_reader import PageReader
+
+    router, context, gate = _cloud(now)
+    try:
+        matched = await PageReader().match(context, photograph=photograph, candidates=candidates)
+    finally:
+        await gate.aclose()
+    return matched, router.last_usage
 
 
 async def place_the_page(

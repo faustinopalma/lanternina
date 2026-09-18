@@ -29,6 +29,14 @@ function PhotoTile({ photo, remove, disabled, runs, assignmentPending }: {
   const [assignment, setAssignment] = useState<"idle" | "busy" | "sent" | "failed">("idle");
   const candidates = photo.target && "candidates" in photo.target ? photo.target.candidates : [];
   const selected = photo.target && "run" in photo.target ? photo.target : null;
+  const outcomeLabels: Record<string, MessageKey> = {
+    photo_match_none: "photos.noActivityMatch",
+    photo_match_uncertain: "photos.uncertainMatch",
+    photo_match_stale: "photos.staleMatch",
+    photo_match_blocked: "photos.blockedMatch",
+    photo_match_deferred: "photos.deferredMatch",
+  };
+  const outcome = photo.detail ? outcomeLabels[photo.detail] : undefined;
   const eligible = runs.filter(run => candidates.some(target => target.run === run.runId
     && target.moment === run.momentId && target.since === run.waitingSince));
   async function assign() {
@@ -60,11 +68,11 @@ function PhotoTile({ photo, remove, disabled, runs, assignmentPending }: {
       <time>{dateTime(photo.date)}</time>
       {photo.capturedAt === null ? <Quiet>{t("photos.dateUnknown")}</Quiet> : null}
       <Quiet>{photo.width} × {photo.height} px · {photo.camera}</Quiet>
-      <Quiet>{t(states[photo.state])}</Quiet>
-      {selected ? <p>{t("photos.assignedActivity", {
+      <Quiet>{t(outcome ?? states[photo.state])}</Quiet>
+      {selected ? <p>{t(photo.state === "done" ? "photos.assignedActivity" : "photos.candidateActivity", {
         title: runs.find(run => run.runId === selected.run)?.title ?? selected.run,
       })}</p> : null}
-      {photo.detail ? <details className="pt-1">
+      {photo.detail && !outcome ? <details className="pt-1">
         <summary className="cursor-pointer text-quiet">{t("photos.processingDetail")}</summary>
         <p className="mt-1 whitespace-pre-wrap [overflow-wrap:anywhere]">{photo.detail}</p>
       </details> : null}
@@ -157,7 +165,12 @@ export function Photos() {
           </> : <Quiet>{t("photos.noHub")}</Quiet>}
         </> : <Quiet>{t(state.status === "loading" ? "photos.loading" : "photos.failed")}</Quiet>}
       </div>
-      <Button disabled={disabled} aria-label={t("photos.refresh")} title={t("photos.refresh")} onClick={reload}><RefreshCw className="size-5" /></Button>
+      <div className="flex flex-wrap items-center gap-3">
+        <a href="#trail" className="inline-flex items-center gap-2 text-sm underline underline-offset-4">
+          {t("trail.current")}<ArrowRight className="size-4" aria-hidden="true" />
+        </a>
+        <Button disabled={disabled} aria-label={t("photos.refresh")} title={t("photos.refresh")} onClick={reload}><RefreshCw className="size-5" /></Button>
+      </div>
     </div>
     <div className="flex flex-wrap items-end gap-3 border-y border-edge py-4">
       <div><Label htmlFor="photos-start">{t("photos.start")}</Label><Input id="photos-start" type="date" value={start} disabled={disabled} onChange={event => setStart(event.target.value)} /></div>

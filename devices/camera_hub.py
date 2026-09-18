@@ -17,6 +17,7 @@ from typing import Any
 
 from PIL import Image, ImageOps
 
+from devices.ask_panel import match_photo
 from devices.epaper import _encode
 from devices.house import House, printer_in, replace, scanner_in, screen_in
 from devices.photo_store import MAX_PHOTO_BYTES, PHOTO_ID, PhotoStore
@@ -25,6 +26,8 @@ from devices.run_experience import (
     camera_target,
     carry_on,
     note_photo_received,
+    photo_candidates,
+    target_is_waiting,
 )
 from devices.trmnl_byos import photo_for
 
@@ -56,6 +59,14 @@ def render_photo(jpeg: bytes) -> bytes:
         canvas = Image.new("L", (800, 480), 255)
         canvas.paste(photo, ((800 - photo.width) // 2, (480 - photo.height) // 2))
         return _encode(canvas.convert("1"), "BMP")
+
+
+def orient_photo(jpeg: bytes, rotation: int) -> bytes:
+    with Image.open(io.BytesIO(jpeg)) as image:
+        upright = ImageOps.exif_transpose(image).convert("RGB").rotate(-rotation, expand=True)
+        output = io.BytesIO()
+        upright.save(output, "JPEG", quality=95)
+        return output.getvalue()
 
 
 class CameraHub:
@@ -101,13 +112,6 @@ class CameraHub:
 
     def process_one(self) -> bool:
         with self.processing:
-            for pending in self.store.listing():
-                if pending["state"] != "pending":
-                    continue
-                received = self.store.get(pending["id"])
-                target = json.loads(received["target"])
-                if target and "run" in target:
-                    note_photo_received(self.house, target, received["received"])
             row = self.store.claim(
                 activities_allowed=activity_time_allowed(self.house, time.time()),
             )
@@ -115,43 +119,63 @@ class CameraHub:
                 return False
             try:
                 target = json.loads(row["target"])
-                if target and "candidates" in target:
-                    self.store.finish(row["id"], "awaiting_assignment", "choose the activity")
-                    return True
                 if target:
-                    result = carry_on(self.house, photograph=row["jpeg"], target=target)
+                    targets, descriptions = photo_candidates(self.house, target)
+                    if not targets:
+                        self.store.bind_match(row["id"], None)
+                        self.store.finish(row["id"], "done", "photo_match_stale")
+                        return True
+                    matched = match_photo(row["jpeg"], descriptions, panel=self.house.panel,
+                                          household=self.house.household, key=self.house.device_key)
+                    if matched.uncertain:
+                        self.store.bind_match(row["id"], None)
+                        self.store.finish(row["id"], "done", "photo_match_uncertain")
+                        return True
+                    if matched.candidate is None:
+                        self.store.bind_match(row["id"], None)
+                        self.display_photo(row["id"], orient_photo(row["jpeg"], matched.rotation))
+                        self.store.finish(row["id"], "done", "photo_match_none")
+                        return True
+                    selected = targets[matched.candidate]
+                    if not target_is_waiting(self.house.sheets_dir, selected):
+                        self.store.bind_match(row["id"], None)
+                        self.store.finish(row["id"], "done", "photo_match_stale")
+                        return True
+                    if not activity_time_allowed(self.house, time.time()):
+                        self.store.finish(row["id"], "pending", "photo_match_deferred")
+                        return False
+                    if not self.store.bind_match(row["id"], selected):
+                        self.store.finish(row["id"], "failed", "photo_match_blocked")
+                        return True
+                    note_photo_received(self.house, selected, row["received"])
+                    result = carry_on(self.house, photograph=orient_photo(
+                        row["jpeg"], matched.rotation), target=selected)
                 else:
-                    from devices.inventory import holders, load_jobs
-
-                    jobs = Path(
-                        os.environ.get("LANTERNINA_JOBS_FILE", "")
-                        or self.shared.with_name("jobs.json")
-                    )
-                    displays = [
-                        str(device["label"])
-                        for device in holders(load_jobs(jobs), "photo")
-                        if device.get("label")
-                    ]
-                    if displays:
-                        label = min(
-                            displays,
-                            key=lambda value: (
-                                photo_for(self.shared, value).stat().st_mtime
-                                if photo_for(self.shared, value).exists()
-                                else 0
-                            ),
-                        )
-                        path = photo_for(self.shared, label)
-                        replace(path, render_photo(row["jpeg"]))
-                        replace(path.with_suffix(".json"), json.dumps({"id": row["id"]}).encode())
-                        result = f"photograph displayed on {label}"
-                    else:
-                        result = "photograph archived; no photo display assigned"
+                    result = self.display_photo(row["id"], row["jpeg"])
                 self.store.finish(row["id"], "done", result)
             except Exception as exc:
                 self.store.finish(row["id"], "failed", type(exc).__name__)
                 print(f"camera processing failed: {type(exc).__name__}", flush=True)
             return True
+
+    def display_photo(self, photo_id: str, jpeg: bytes) -> str:
+        from devices.inventory import holders, load_jobs
+
+        jobs = Path(
+            os.environ.get("LANTERNINA_JOBS_FILE", "") or self.shared.with_name("jobs.json")
+        )
+        displays = [str(device["label"]) for device in holders(load_jobs(jobs), "photo")
+                    if device.get("label")]
+        if not displays:
+            return "photograph archived; no photo display assigned"
+        label = min(displays, key=lambda value: (
+            photo_for(self.shared, value).stat().st_mtime
+            if photo_for(self.shared, value).exists() else 0
+        ))
+        path = photo_for(self.shared, label)
+        replace(path, render_photo(jpeg))
+        replace(path.with_suffix(".json"), json.dumps({"id": photo_id}).encode())
+        return f"photograph displayed on {label}"
 
     def worker(self) -> None:
         while True:

@@ -202,6 +202,17 @@ def every_prompt() -> list[Prompt]:
             "an invented construction activity; one photograph goes with it",
         ),
         Prompt(
+            "photograph-match",
+            "agents/page_reader.py :: matching_prompt()",
+            page_reader.matching_prompt([
+                {"title": "Clouds", "overview": "Look at the sky",
+                 "expected": "Draw the clouds on the printed page"},
+                {"title": "Bridge", "overview": "Build with cardboard",
+                 "expected": "Photograph the construction"},
+            ]),
+            "two invented waiting activities; one photograph goes with them",
+        ),
+        Prompt(
             "page-judge",
             "agents/page_judge.py :: _INSTRUCTION",
             page_judge._INSTRUCTION

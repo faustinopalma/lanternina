@@ -16,7 +16,8 @@ def test_ambiguous_photo_requires_one_of_its_original_targets(tmp_path):
     first = {"run": "aft_first", "moment": "page", "since": 100}
     second = {"run": "aft_second", "moment": "page", "since": 101}
     store.accept(PHOTO, "camera", jpeg(), captured=102, target={"candidates": [first, second]})
-    assert store.claim(activities_allowed=False)["id"] == PHOTO
+    assert store.claim(activities_allowed=False) is None
+    assert store.claim()["id"] == PHOTO
     store.finish(PHOTO, "awaiting_assignment", "choose")
     assert not store.assign(PHOTO, {**first, "since": 103})
     assert store.assign(PHOTO, second)
@@ -108,3 +109,47 @@ def test_another_queued_photo_cannot_replay_an_interrupted_moment(tmp_path, reso
     assert restarted.claim() is None
     assert restarted.get("b" * 32)["state"] == "done"
     assert restarted.get("b" * 32)["target"] == "null"
+
+
+@pytest.mark.parametrize("resolve", ["archive_reviewed", "delete"])
+def test_resolving_a_bound_failure_archives_overlapping_candidate_sets(tmp_path, resolve):
+    store = PhotoStore(tmp_path / "photos.db")
+    first = {"run": "one", "moment": "build", "since": 10}
+    second = {"run": "two", "moment": "draw", "since": 11}
+    store.accept(PHOTO, "camera", jpeg(), captured=12, target={"candidates": [first, second]})
+    store.claim()
+    store.synced(PHOTO, "processing")
+    assert store.bind_match(PHOTO, first)
+    assert store.unsynced() == [{"id": PHOTO, "state": "processing"}]
+    store.finish(PHOTO, "failed", "interrupted")
+    store.accept("b" * 32, "camera", jpeg(), captured=13,
+                 target={"candidates": [second, first]})
+    store.claim()
+    assert not store.bind_match("b" * 32, first)
+    store.finish("b" * 32, "failed", "photo_match_blocked")
+    store.accept("c" * 32, "camera", jpeg(), captured=14, target={"candidates": [first]})
+    getattr(store, resolve)(PHOTO)
+    assert store.get("b" * 32)["state"] == "done"
+    assert store.get("c" * 32)["state"] == "done"
+    assert store.claim() is None
+
+
+def test_binding_never_invents_a_target_or_restores_a_deleted_photo(tmp_path):
+    store = PhotoStore(tmp_path / "photos.db")
+    first = {"run": "one", "moment": "build", "since": 10}
+    store.accept(PHOTO, "camera", jpeg(), captured=12, target=first)
+    assert not store.bind_match(PHOTO, first)
+    store.claim()
+    assert not store.bind_match(PHOTO, {**first, "since": 20})
+    store.delete(PHOTO)
+    assert not store.bind_match(PHOTO, first)
+
+
+def test_reviewing_a_blocked_photo_reports_success(tmp_path):
+    store = PhotoStore(tmp_path / "photos.db")
+    target = {"run": "one", "moment": "build", "since": 10}
+    store.accept(PHOTO, "camera", jpeg(), captured=12, target={"candidates": [target]})
+    store.claim()
+    store.finish(PHOTO, "failed", "photo_match_blocked")
+    assert store.archive_reviewed(PHOTO)
+    assert store.get(PHOTO)["state"] == "done"

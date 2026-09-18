@@ -12,11 +12,13 @@ one could.
 from __future__ import annotations
 
 import base64
+import io
 import logging
 import time
 from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from PIL import Image, ImageOps
 from pydantic import BaseModel, ConfigDict, Field
 
 from shared.errors import CloudUnavailable, NoCapacityError, SafetyBlocked
@@ -72,6 +74,55 @@ class PagesToCompare(BaseModel):
     width: int = 0
     height: int = 0
     about: str = ""
+
+
+class PhotoCandidate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(max_length=1000)
+    overview: str = Field(default="", max_length=6000)
+    expected: str = Field(max_length=16000)
+
+
+class PhotoToMatch(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    imageBase64: str = Field(max_length=1_000_000)
+    candidates: list[PhotoCandidate] = Field(min_length=1, max_length=10)
+
+
+@router.post("/api/device/{household_id}/match-photo")
+async def match_a_photo(
+    household_id: str, photo: PhotoToMatch, _: DeviceKey, request: Request,
+) -> Any:
+    settings: Settings = request.app.state.settings
+    counter: UsageStore = request.app.state.usage
+    if at_the_limit(counter, request.app.state.limit, household_id, settings.monthly_limit):
+        raise HTTPException(status_code=429, detail="monthly_cap_reached")
+    try:
+        with Image.open(io.BytesIO(base64.b64decode(photo.imageBase64, validate=True))) as image:
+            if image.format != "JPEG" or image.width * image.height > 12_000_000:
+                raise ValueError("expected a JPEG of at most 12 megapixels")
+            image = ImageOps.exif_transpose(image).convert("RGB")
+            encoded = io.BytesIO()
+            image.save(encoded, "PNG")
+            frame = PageImage(png=encoded.getvalue(), width=image.width, height=image.height)
+    except (OSError, ValueError, Image.DecompressionBombError) as exc:
+        raise HTTPException(status_code=400, detail="invalid_photograph") from exc
+    from ..paper import match_the_photo
+
+    spent: Any = None
+    outcome = FAILED
+    try:
+        matched, spent = await match_the_photo(
+            frame, [candidate.model_dump() for candidate in photo.candidates], now=time.time(),
+        )
+        outcome = SERVED
+    except (NoCapacityError, CloudUnavailable, SafetyBlocked, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="photo_match_unavailable") from exc
+    finally:
+        _count(counter, household_id, KIND_READ, outcome, spent)
+    return matched.to_dict()
 
 
 @router.post("/api/device/{household_id}/page")

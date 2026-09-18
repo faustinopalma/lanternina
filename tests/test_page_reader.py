@@ -216,3 +216,42 @@ def test_uncertain_photograph_cannot_advance_the_activity(blank):
         ))
         assert reading.degraded
         assert came_back(reading) is None
+
+
+@pytest.mark.parametrize("selection,rotation", [(0, 90), (1, 180), (None, 0)])
+def test_photo_match_selects_only_an_offered_activity_and_reports_rotation(selection, rotation):
+    router = StubRouter(replies=[json.dumps({
+        "candidate": selection, "rotation": rotation, "uncertain": False,
+    })])
+    context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
+    candidates = [{"title": "Clouds", "expected": "Draw the sky"},
+                  {"title": "Bridge", "expected": "Build a cardboard bridge"}]
+    result = asyncio.run(PageReader().match(context, photograph=WRITTEN_ON,
+                                           candidates=candidates))
+    assert result.candidate == selection
+    assert result.rotation == rotation
+    assert not result.uncertain
+    request = router.seen[0]
+    assert request.capability is Capability.VISION_READ
+    assert request.images == (WRITTEN_ON,)
+    assert "cardboard bridge" in request.prompt
+    assert "clockwise" in request.prompt
+    assert request.max_output_chars >= 1000
+
+
+@pytest.mark.parametrize("reply", [
+    '{"candidate": 2, "rotation": 0, "uncertain": false}',
+    '{"candidate": true, "rotation": 0, "uncertain": false}',
+    '{"candidate": 0, "rotation": 45, "uncertain": false}',
+    '{"candidate": 0, "rotation": 0}',
+    '{"candidate": 0, "rotation": 0, "uncertain": true}',
+    '{"candidate": 0, "rotation": 0, "uncertain": false, "padding":"' + 'x' * 5000 + '"}',
+    'not JSON',
+])
+def test_photo_match_never_selects_an_activity_from_an_unusable_answer(reply):
+    router = StubRouter(replies=[reply])
+    context = AgentContext(router=router, learner_id=LearnerId(""), learner_hints={}, now=1000)
+    result = asyncio.run(PageReader().match(context, photograph=WRITTEN_ON,
+                                           candidates=[{"title": "Clouds"}]))
+    assert result.uncertain
+    assert result.candidate is None

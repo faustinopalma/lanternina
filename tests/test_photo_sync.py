@@ -97,7 +97,8 @@ def test_parent_selects_a_frozen_target_and_hub_receives_it(tmp_path):
     first = {"run": "aft_first", "moment": "page", "since": 100}
     second = {"run": "aft_second", "moment": "page", "since": 101}
     hub.store.accept(PHOTO, "cam", jpeg(), captured=102, target={"candidates": [first, second]})
-    hub.process_one()
+    hub.store.claim()
+    hub.store.finish(PHOTO, "awaiting_assignment", "legacy photo awaiting parent assignment")
     client.app.state.trail.report_current(CurrentTrail(household, time.time(), ({
         "runId": "aft_second", "momentId": "page", "waitingSince": 101, "phase": "waiting",
     },)))

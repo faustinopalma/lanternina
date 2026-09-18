@@ -142,13 +142,7 @@ class PhotoStore:
     def delete(self, photo_id: str) -> None:
         with self.connect() as database:
             database.execute("BEGIN IMMEDIATE")
-            database.execute(
-                "UPDATE photos SET state='done', target='null', "
-                "detail='archived with deleted interrupted moment; effects not replayed' "
-                "WHERE state='pending' AND target!='null' AND target IN ("
-                "SELECT target FROM photos WHERE id=? AND state IN ('processing','failed'))",
-                (photo_id,),
-            )
+            self._archive_related(database, photo_id)
             database.execute(
                 "UPDATE photos SET jpeg=NULL, target='null', state='deleted', detail='' WHERE id=?",
                 (photo_id,),
@@ -176,6 +170,32 @@ class PhotoStore:
             database.execute("DELETE FROM photo_sync WHERE id=?", (photo_id,))
             return True
 
+    def bind_match(self, photo_id: str, target: dict[str, Any] | None) -> bool:
+        with self.connect() as database:
+            database.execute("BEGIN IMMEDIATE")
+            row = database.execute(
+                "SELECT target FROM photos WHERE id=? AND state='processing' "
+                "AND jpeg IS NOT NULL", (photo_id,),
+            ).fetchone()
+            if row is None:
+                return False
+            original = json.loads(row["target"])
+            if target is not None:
+                if not original or target not in original.get("candidates", [original]):
+                    return False
+                blocked = database.execute(
+                    "SELECT target FROM photos WHERE id!=? AND target!='null' "
+                    "AND state IN ('processing','failed')", (photo_id,),
+                ).fetchall()
+                for other in blocked:
+                    candidates = json.loads(other["target"])
+                    if target in candidates.get("candidates", [candidates]):
+                        return False
+            database.execute("UPDATE photos SET target=? WHERE id=?",
+                             (json.dumps(target), photo_id))
+            database.execute("DELETE FROM photo_sync WHERE id=?", (photo_id,))
+            return True
+
     def claim(self, *, activities_allowed: bool = True) -> dict[str, Any] | None:
         with self.connect() as database:
             database.execute("BEGIN IMMEDIATE")
@@ -183,8 +203,7 @@ class PhotoStore:
                 "SELECT * FROM photos AS candidate WHERE state='pending' AND NOT EXISTS ("
                 "SELECT 1 FROM photos AS blocked WHERE blocked.target=candidate.target "
                 "AND blocked.target!='null' AND blocked.state IN ('processing','failed')) "
-                "AND (? OR candidate.target='null' "
-                "OR json_type(candidate.target, '$.candidates')='array') "
+                "AND (? OR candidate.target='null') "
                 "ORDER BY received LIMIT 1", (activities_allowed,),
             ).fetchone()
             if not row:
@@ -201,12 +220,7 @@ class PhotoStore:
             ).fetchone()
             if row is None:
                 return False
-            if row["target"] != "null":
-                database.execute(
-                    "UPDATE photos SET state='done', target='null', "
-                    "detail='archived with interrupted moment; effects not replayed' "
-                    "WHERE target=? AND state='pending'", (row["target"],),
-                )
+            self._archive_related(database, photo_id)
             result = database.execute(
                 "UPDATE photos SET state='done', target='null', "
                 "detail='archived after explicit review; effects not replayed' "
@@ -214,6 +228,31 @@ class PhotoStore:
                 (photo_id,),
             )
         return result.rowcount == 1
+
+    @staticmethod
+    def _archive_related(database: sqlite3.Connection, photo_id: str) -> None:
+        interrupted = database.execute(
+            "SELECT target FROM photos WHERE id=? AND state IN ('processing','failed')",
+            (photo_id,),
+        ).fetchone()
+        if interrupted is None or interrupted["target"] == "null":
+            return
+        original = json.loads(interrupted["target"])
+        targets = original.get("candidates", [original])
+        queued = database.execute(
+            "SELECT id, target FROM photos WHERE id!=? AND target!='null' AND "
+            "(state='pending' OR (state='failed' AND detail='photo_match_blocked'))",
+            (photo_id,),
+        ).fetchall()
+        for row in queued:
+            candidate = json.loads(row["target"])
+            if any(target in targets for target in candidate.get("candidates", [candidate])):
+                database.execute(
+                    "UPDATE photos SET state='done', target='null', "
+                    "detail='archived with interrupted moment; effects not replayed' WHERE id=?",
+                    (row["id"],),
+                )
+                database.execute("DELETE FROM photo_sync WHERE id=?", (row["id"],))
 
     def finish(self, photo_id: str, state: str, detail: str) -> None:
         with self.connect() as database:

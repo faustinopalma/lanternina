@@ -76,6 +76,7 @@ from shared.experience import (
     HandOver,
     Help,
     Moment,
+    Say,
     Weight,
     longest_at,
     moment_from_dict,
@@ -1014,16 +1015,47 @@ def camera_target(
     candidates = [
         run for run in runs if run is not None and not run.leaving_at
         and run.waited_since <= captured < run.ending_starts_at
-        and (not run.return_device or (
-            run.return_device.get("kind") == "camera"
-            and (not camera or run.return_device.get("id", "").upper() == camera.upper())
-        ))
     ]
     targets = [{"run": run.run_id, "moment": run.waiting_at, "since": run.waited_since}
                for run in candidates]
     if len(targets) > 1:
         return {"candidates": targets}
     return targets[0] if targets else None
+
+
+@exclusive
+def photo_candidates(
+    house: House, target: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    offered = target.get("candidates", [target])
+    targets: list[dict[str, Any]] = []
+    descriptions: list[dict[str, str]] = []
+    for candidate in offered:
+        if not target_is_waiting(house.sheets_dir, candidate):
+            continue
+        run = _read_run(_run_file(house.sheets_dir, candidate["run"]))
+        if run is None or time.time() >= run.ending_starts_at:
+            continue
+        position = _index_of(run, run.waiting_at)
+        at = run.moments[position]
+        if not isinstance(at, Collect):
+            continue
+        pages = [moment for moment in run.moments[:position] if isinstance(moment, HandOver)]
+        expected: dict[str, Any] = {
+            "step": at.heading, "request": list(at.at(run.weight).lines),
+            "recently_delivered": [list(moment.at(run.weight).lines)
+                                   for moment in run.moments[max(0, position - 3):position]
+                                   if isinstance(moment, (Say, HandOver))],
+        }
+        if pages:
+            expected["page"] = pages[-1].page.to_dict()
+            expected["given"] = list(pages[-1].at(run.weight).lines)
+        targets.append(candidate)
+        descriptions.append({
+            "title": run.experience.title[:1000], "overview": run.experience.overview[:6000],
+            "expected": json.dumps(expected, ensure_ascii=False)[:16000],
+        })
+    return targets, descriptions
 
 
 def target_is_waiting(sheets_dir: Path, target: dict[str, Any]) -> bool:

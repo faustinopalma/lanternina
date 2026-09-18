@@ -101,6 +101,28 @@ MAX_DESCRIPTION_CHARS: Final = 120
 
 
 @dataclass(frozen=True, slots=True)
+class PhotoMatch:
+    candidate: int | None = None
+    rotation: int = 0
+    uncertain: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"candidate": self.candidate, "rotation": self.rotation,
+                "uncertain": self.uncertain}
+
+    @staticmethod
+    def from_dict(values: Mapping[str, Any], *, candidates: int) -> PhotoMatch:
+        selection = values.get("candidate")
+        rotation = values.get("rotation")
+        if ("candidate" not in values or values.get("uncertain") is not False
+                or type(rotation) is not int or rotation not in (0, 90, 180, 270)
+                or (selection is not None and (
+                    type(selection) is not int or not 0 <= selection < candidates))):
+            return PhotoMatch()
+        return PhotoMatch(candidate=selection, rotation=rotation, uncertain=False)
+
+
+@dataclass(frozen=True, slots=True)
 class WhatCameBack:
     """What is on a page that was not on the blank it was printed from.
 

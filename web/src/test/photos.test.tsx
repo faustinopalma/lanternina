@@ -16,6 +16,30 @@ const data: PhotoPage = {
 };
 
 describe("family photographs", () => {
+  it.each([
+    ["photo_match_none", "Nessuna attività riconosciuta"],
+    ["photo_match_uncertain", "Associazione incerta"],
+    ["photo_match_stale", "Il passo atteso è cambiato"],
+    ["photo_match_deferred", "La foto attende l'orario"],
+  ])("shows %s without requiring technical details", async (detail, wording) => {
+    renderPanel(fakeApi({ photos: async () => ({ ...data,
+      photos: [{ ...data.photos[0]!, detail }],
+    }) }), <Photos />);
+    expect(await screen.findByText(new RegExp(wording))).toBeVisible();
+    expect(screen.queryByText("Esito tecnico dell'elaborazione")).toBeNull();
+    expect(screen.queryByLabelText("Attività")).toBeNull();
+    expect(screen.getByRole("link", { name: "Attività in corso" })).toHaveAttribute("href", "#trail");
+  });
+
+  it("does not call a unique pending candidate an assigned activity", async () => {
+    renderPanel(fakeApi({ photos: async () => ({ ...data,
+      photos: [{ ...data.photos[0]!, state: "pending",
+        target: { run: "aft_one", moment: "page", since: 100 } }],
+    }) }), <Photos />);
+    expect(await screen.findByText("Attività da verificare: aft_one")).toBeVisible();
+    expect(screen.queryByText(/Attività associata:/)).toBeNull();
+  });
+
   it("requires an explicit choice among frozen photo candidates", async () => {
     const user = userEvent.setup();
     const assignPhoto = vi.fn(async () => ({ queued: true }));

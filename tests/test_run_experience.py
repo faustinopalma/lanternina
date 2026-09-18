@@ -211,6 +211,45 @@ def test_explicit_photo_target_advances_only_that_activity(house, monkeypatch):
     assert len(seen) == 1
 
 
+def test_hub_vision_selects_one_real_run_and_rejects_its_second_queued_photo(house, monkeypatch):
+    from devices.camera_hub import CameraHub
+    from shared.vision_contracts import PhotoMatch
+    from tests.test_photo_store import PHOTO, jpeg
+
+    monkeypatch.setattr(run_experience, "_tell_the_panel", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(run_experience, "report_current", lambda *_args, **_kwargs: None)
+    begin(house, an_experience(), run_id="aft_first", now=100, send=False)
+    begin(house, an_experience(), run_id="aft_second", now=101, send=False, max_open=2)
+    frozen = run_experience.camera_target(house.sheets_dir, 102)
+    targets, descriptions = run_experience.photo_candidates(house, frozen)
+    selected = next(index for index, target in enumerate(targets) if target["run"] == "aft_second")
+    first_path = run_experience._run_file(house.sheets_dir, "aft_first")
+    unchanged = first_path.read_bytes()
+    hub = CameraHub({"database": str(house.sheets_dir / "photos.db")}, house, house.screen)
+    hub.store.accept(PHOTO, "camera", jpeg(), captured=102, target=frozen)
+    hub.store.accept("b" * 32, "camera", jpeg(), captured=103, target=targets[selected])
+    matched, read = [], []
+
+    def match(*args, **kwargs):
+        matched.append(args)
+        return PhotoMatch(selected, 90, False)
+
+    monkeypatch.setattr("devices.camera_hub.match_photo", match)
+    monkeypatch.setattr("devices.camera_hub.carry_on", lambda *args, **kwargs:
+                        carry_on(*args, now=104, send=False, **kwargs))
+    monkeypatch.setattr(run_experience, "read_page", lambda blank, image, **kwargs:
+                        read.append(image.shape) or _reading(marks=False))
+    monkeypatch.setattr(run_experience, "_read", lambda *_: pytest.fail("scanner"))
+    assert hub.process_one()
+    assert first_path.read_bytes() == unchanged
+    assert run_experience.waiting_runs(house.sheets_dir) == ["aft_first"]
+    assert hub.process_one()
+    assert hub.store.get("b" * 32)["detail"] == "photo_match_stale"
+    assert not hub.process_one()
+    assert len(matched) == 1
+    assert read == [(64, 48, 3)]
+
+
 def test_scanner_does_not_read_outside_activity_hours(house, monkeypatch):
     run_experience._write(house.sheets_dir / "activity-rhythm.json", {
         "afternoonDays": [], "afternoonFrom": "15:00", "afternoonUntil": "19:00",
@@ -279,7 +318,7 @@ def test_return_choice_is_named_saved_and_kept_through_help(house, monkeypatch):
     assert "fotografa" in shown[-1][-2]
     previous = run.moments[run_experience._index_of(run, run.waiting_at) - 1]
     assert shown[-1][:-2] == list(previous.at(run.weight).lines)
-    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-A") is None
+    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-A") is not None
     assert run_experience.camera_target(house.sheets_dir, 101, "CAM-B") is not None
     assert run_experience._one_rung_on(run).return_device == run.return_device
     assert run_experience._over_at(run, 2000).return_device == run.return_device
@@ -300,7 +339,12 @@ def test_selected_scanner_is_the_one_read(house, monkeypatch):
     ])
     monkeypatch.setattr("devices.inventory.random.choice", lambda candidates: candidates[-1])
     begin(house, an_experience(), now=100, send=False)
-    assert run_experience.camera_target(house.sheets_dir, 101, "CAM-A") is None
+    target = run_experience.camera_target(house.sheets_dir, 101, "CAM-A")
+    assert target is not None
+    targets, descriptions = run_experience.photo_candidates(house, target)
+    assert targets == [target]
+    assert descriptions[0]["title"] == an_experience().title
+    assert "page" in json.loads(descriptions[0]["expected"])
     seen = []
     monkeypatch.setattr(run_experience, "_read", lambda selected: (
         seen.append(selected.scanner) or str(last_sheet(house)), _reading(marks=False)

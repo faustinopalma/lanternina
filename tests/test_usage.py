@@ -408,6 +408,83 @@ def test_the_cap_refuses_a_reading_before_the_model_is_called(
     assert send_page(client, household).status_code == 429
 
 
+def test_photo_matching_transport_is_authenticated_metered_and_exif_corrected(monkeypatch):
+    import io
+
+    from PIL import Image
+
+    from devices.ask_panel import match_photo
+    from shared.vision_contracts import PhotoMatch
+
+    store = InMemoryUsageStore()
+    client = client_for(store)
+    household = household_of(client)
+    output = io.BytesIO()
+    image = Image.new("RGB", (64, 48), "red")
+    exif = image.getexif()
+    exif[274] = 6
+    image.save(output, "JPEG", exif=exif)
+    seen = []
+
+    async def matches(frame, candidates, **kwargs):
+        seen.append((frame, candidates))
+        return PhotoMatch(0, 90, False), READING_REPORTED
+
+    def ask(url, body, **kwargs):
+        response = client.post(url.removeprefix("https://panel"), json=body,
+                               headers={"X-Device-Key": kwargs["key"]})
+        assert response.status_code == 200, response.text
+        return response.json()
+
+    monkeypatch.setattr("panel.paper.match_the_photo", matches)
+    monkeypatch.setattr("devices.ask_panel._ask", ask)
+    candidates = [{"title": "Clouds", "expected": "Draw the sky"}]
+    result = match_photo(output.getvalue(), candidates, panel="https://panel",
+                         household=household, key=DEVICE_KEY)
+    assert result == PhotoMatch(0, 90, False)
+    assert (seen[0][0].width, seen[0][0].height) == (48, 64)
+    assert seen[0][1][0]["expected"] == "Draw the sky"
+    assert store.summary(household, month_of(time.time())).by_kind[KIND_READ].calls == 1
+    body = {"imageBase64": base64.b64encode(output.getvalue()).decode(),
+            "candidates": candidates}
+    path = f"/api/device/{household}/match-photo"
+    assert client.post(path, json=body).status_code != 200
+    assert client.post(path, json=body, headers={"X-Device-Key": "wrong"}).status_code != 200
+    assert client.post("/api/device/other/match-photo", json=body,
+                       headers={"X-Device-Key": DEVICE_KEY}).status_code != 200
+    assert len(seen) == 1
+
+
+@pytest.mark.parametrize("invalid", [
+    {"imageBase64": "not base64"}, {"candidates": []},
+    {"candidates": [{"title": "Sky", "expected": "x" * 16001}]},
+])
+def test_bad_photo_matching_requests_never_call_a_model(monkeypatch, invalid):
+    from tests.test_photo_store import jpeg
+
+    client = client_for(InMemoryUsageStore())
+    household = household_of(client)
+    monkeypatch.setattr("panel.paper.match_the_photo", lambda *_args, **_kw: pytest.fail("model"))
+    body = {"imageBase64": base64.b64encode(jpeg()).decode(),
+            "candidates": [{"title": "Clouds", "expected": "Sky"}], **invalid}
+    assert client.post(f"/api/device/{household}/match-photo", json=body,
+                       headers={"X-Device-Key": DEVICE_KEY}).status_code in (400, 422)
+
+
+def test_photo_matching_obeys_the_household_cap(monkeypatch):
+    from tests.test_photo_store import jpeg
+
+    store = InMemoryUsageStore()
+    client = client_for(store, cap=1)
+    household = household_of(client)
+    store.record(an_event("use-1", household_id=household))
+    monkeypatch.setattr("panel.paper.match_the_photo", lambda *_args, **_kw: pytest.fail("model"))
+    assert client.post(f"/api/device/{household}/match-photo", json={
+        "imageBase64": base64.b64encode(jpeg()).decode(),
+        "candidates": [{"title": "Clouds", "expected": "Sky"}],
+    }, headers={"X-Device-Key": DEVICE_KEY}).status_code == 429
+
+
 # ── Reading the parent's sentences ───────────────────────────────────────────────────
 
 
