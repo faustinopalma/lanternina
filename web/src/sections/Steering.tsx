@@ -10,12 +10,13 @@ import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
 const PROMPTS = [
-  { field: "topics", label: "steering.topics" },
+  { field: "topics", label: "preferences.interests" },
+  { field: "avoid", label: "preferences.avoid" },
   { field: "instructions", label: "steering.design" },
   { field: "conduct", label: "steering.conduct" },
   { field: "review", label: "steering.review" },
 ] as const;
-const FIELDS = ["instructions", "conduct", "review", "topics", "adaptive"] as const;
+const FIELDS = ["instructions", "conduct", "review", "topics", "avoid", "adaptive"] as const;
 type Texts = Pick<Guidance, typeof FIELDS[number]>;
 
 function Editor({ initial, language }: { initial: Guidance; language: string }) {
@@ -23,8 +24,6 @@ function Editor({ initial, language }: { initial: Guidance; language: string }) 
   const { t } = useWords();
   const [kept, setKept] = useState(initial);
   const [texts, setTexts] = useState<Texts>(initial);
-  const [selected, setSelected] = useState(1);
-  const active = PROMPTS[selected]!;
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<MessageKey | null>(null);
   const [confirm, setConfirm] = useState<SteeringEdit["action"] | null>(null);
@@ -93,39 +92,30 @@ function Editor({ initial, language }: { initial: Guidance; language: string }) 
     <section className="max-w-[42rem] border-b border-edge pb-5">
       <form onSubmit={(event) => { event.preventDefault(); void save(); }}
         className="flex flex-col gap-4">
-        <Quiet className="m-0">{t("steering.instructionsNote")}</Quiet>
-        <div role="tablist" aria-label={t("steering.instructions")}
-          className="grid grid-cols-2 sm:grid-cols-4 border-b border-edge">
-          {PROMPTS.map((prompt, index) => <button key={prompt.field} type="button"
-            role="tab" id={`prompt-tab-${prompt.field}`} aria-selected={selected === index}
-            aria-controls="prompt-editor" tabIndex={selected === index ? 0 : -1}
-            className={`min-w-0 border-b-2 px-2 py-2 text-sm ${selected === index
-              ? "border-accent text-ink" : "border-transparent text-quiet"}`}
-            onClick={() => { setSelected(index); setConfirm(null); }}
-            onKeyDown={(event) => {
-              let next = index;
-              if (event.key === "ArrowRight") next = (index + 1) % PROMPTS.length;
-              else if (event.key === "ArrowLeft") next = (index + PROMPTS.length - 1) % PROMPTS.length;
-              else if (event.key === "Home") next = 0;
-              else if (event.key === "End") next = PROMPTS.length - 1;
-              else return;
-              event.preventDefault();
-              setSelected(next);
-              setConfirm(null);
-              document.getElementById(`prompt-tab-${PROMPTS[next]!.field}`)?.focus();
-            }}>{t(prompt.label)}</button>)}
-        </div>
-        <div id="prompt-editor" role="tabpanel" aria-labelledby={`prompt-tab-${active.field}`}
-          className="flex flex-col gap-2">
-          <Label htmlFor="steering-instructions">{t(active.label)}</Label>
-          <Textarea id="steering-instructions" rows={12} value={texts[active.field]}
-            maxLength={kept.instructionsLimit} disabled={busy}
-            onChange={(event) => setTexts({ ...texts, [active.field]: event.target.value })} />
-          <Button type="button" size="small" disabled={busy || changed}
-            className="self-start" onClick={() => setConfirm(`restore_${active.field}`)}>
-            <RotateCcw size={16} />{t("steering.restore")}
-          </Button>
-        </div>
+        {PROMPTS.map((prompt) => <div key={prompt.field} className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor={`steering-${prompt.field}`}>{t(prompt.label)}</Label>
+            <Button type="button" size="small" disabled={busy || changed}
+              aria-label={`${t("steering.restore")}: ${t(prompt.label)}`}
+              title={`${t("steering.restore")}: ${t(prompt.label)}`}
+              onClick={() => setConfirm(`restore_${prompt.field}`)}>
+              <RotateCcw size={16} />
+            </Button>
+          </div>
+          <Textarea id={`steering-${prompt.field}`} rows={prompt.field === "avoid" ? 3 : 8}
+            value={texts[prompt.field]} maxLength={kept.instructionsLimit} disabled={busy}
+            onChange={(event) => setTexts({ ...texts, [prompt.field]: event.target.value })} />
+          {confirm === `restore_${prompt.field}` ? <div role="group"
+            aria-label={t("steering.confirm")} className="border-l-2 border-edge pl-3">
+            <p>{t("steering.restoreNote")}</p>
+            <div className="mt-2 flex gap-2">
+              <Button type="button" size="small" disabled={busy}
+                onClick={() => void save(confirm)}>{t("steering.confirm")}</Button>
+              <Button type="button" size="small" disabled={busy}
+                onClick={() => setConfirm(null)}>{t("steering.cancel")}</Button>
+            </div>
+          </div> : null}
+        </div>)}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="steering-adaptive">{t("steering.adaptive")}</Label>
           <Quiet className="m-0">{t("steering.adaptiveNote")}</Quiet>
@@ -163,7 +153,7 @@ function Editor({ initial, language }: { initial: Guidance; language: string }) 
           <Trash2 size={16} />{t("steering.reset")}
         </Button>
       </div>
-      {confirm ? <div className="mt-3 border-l-2 border-edge pl-3" role="group"
+      {confirm === "reset_adaptive" ? <div className="mt-3 border-l-2 border-edge pl-3" role="group"
         aria-label={t("steering.confirm")}>
         <p>{t(confirm === "reset_adaptive" ? "steering.resetNote" : "steering.restoreNote")}</p>
         <div className="mt-2 flex gap-2">

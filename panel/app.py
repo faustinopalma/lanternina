@@ -64,7 +64,7 @@ from .routes import themes as theme_routes
 from .routes import trail as trail_routes
 from .routes import usage as usage_routes
 from .routes import verdicts as verdict_routes
-from .steering import InMemorySteeringStore, SteeringStore
+from .steering import ConsolidatedSteeringStore, InMemorySteeringStore, SteeringStore
 from .store import InMemoryAccountStore
 from .themes import InMemoryThemeStore, ThemeStore
 from .tokens import TokenVerifier
@@ -182,7 +182,10 @@ def create_app(
     app.state.preferences = (
         preferences if preferences is not None else _preferences_store(app.state.settings)
     )
-    app.state.steering = steering if steering is not None else _steering_store(app.state.settings)
+    app.state.steering = ConsolidatedSteeringStore(
+        steering if steering is not None else _steering_store(app.state.settings),
+        app.state.preferences,
+    )
     app.state.reminders = (
         reminders if reminders is not None else _reminders_store(app.state.settings)
     )

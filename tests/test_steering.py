@@ -20,6 +20,30 @@ def test_saved_guidance_is_independent_for_each_language() -> None:
     assert store.get("family", "en") == saved_en
 
 
+def test_legacy_topics_are_imported_once_and_clearing_does_not_revive_them() -> None:
+    from panel.preferences import InMemoryPreferencesStore, Preferences
+    from panel.steering import ConsolidatedSteeringStore
+
+    preferences = InMemoryPreferencesStore()
+    preferences.set(Preferences("family", interests=("Mappe",), avoid=("Tempeste",)))
+    storage = InMemorySteeringStore()
+    current = storage.get("family", "it")
+    storage.save(current.edited(current.steering.instructions, "Feedback", topics="Luce"), 0)
+    store = ConsolidatedSteeringStore(storage, preferences)
+    english = store.get("family", "en")
+    assert english.steering == Steering.initial("en")
+    italian = store.get("family", "it")
+    assert italian.steering.topics == "Luce\n\nMappe"
+    assert italian.steering.avoid == "Tempeste"
+    assert italian.topics_consolidated
+    assert store.get("family", "it") == italian
+    cleared = store.save(
+        italian.edited("Design", "Feedback", topics="", avoid=""), italian.revision
+    )
+    assert store.get("family", "it") == cleared
+    assert store.get("other", "it").steering == Steering.initial("it")
+
+
 def test_api_language_selects_independent_prompts_and_resets() -> None:
     from tests.test_preferences import client_for, headers
 
@@ -43,6 +67,31 @@ def test_api_language_selects_independent_prompts_and_resets() -> None:
     saved_it = client.get("/api/steering?language=it", headers=headers()).json()
     assert saved_it["topics"] == "" and saved_it["revision"] == 1
     assert client.get("/api/steering?language=fr", headers=headers()).status_code == 422
+
+
+def test_context_save_and_content_language_switch_do_not_revive_legacy_topics() -> None:
+    from panel.preferences import Preferences
+    from tests.test_preferences import client_for, headers, household_of
+
+    client = client_for()
+    household = household_of(client)
+    client.app.state.preferences.set(Preferences(
+        household, interests=("Mappe",), avoid=("Tempeste",),
+    ))
+    response = client.post("/api/preferences", headers=headers(), json={"language": "en"})
+    assert response.status_code == 200
+    english = client.get("/api/steering?language=en", headers=headers()).json()
+    assert english["topics"] == Steering.initial("en").topics
+    assert english["avoid"] == Steering.initial("en").avoid
+    italian = client.get("/api/steering?language=it", headers=headers()).json()
+    assert italian["topics"] == "Mappe" and italian["avoid"] == "Tempeste"
+    response = client.post("/api/steering?language=it", headers=headers(), json={
+        "revision": italian["revision"], "topics": "", "avoid": "",
+    })
+    assert response.status_code == 200
+    client.post("/api/preferences", headers=headers(), json={"language": "it", "note": "Oggi"})
+    italian = client.get("/api/steering?language=it", headers=headers()).json()
+    assert italian["topics"] == "" and italian["avoid"] == ""
 
 
 def test_cosmos_preserves_legacy_italian_and_stores_english_separately() -> None:
@@ -77,6 +126,7 @@ def test_cosmos_preserves_legacy_italian_and_stores_english_separately() -> None
     store.save(english.edited("English only", "English feedback", topics=""), 0)
     assert store.get("family", "it") == italian
     assert store.get("family", "en").steering.topics == ""
+    assert store.get("family", "en").steering.avoid == Steering.initial("en").avoid
 
 
 def test_synthesis_uses_the_selected_language_not_the_household_preference(monkeypatch) -> None:
@@ -120,6 +170,7 @@ def test_guidance_round_trip_and_household_isolation() -> None:
         "conductInstructions": original.steering.conduct,
         "reviewInstructions": original.steering.review,
         "startingTopics": original.steering.topics,
+        "avoidedTopics": original.steering.avoid,
         "feedbackGuidance": "Give a defined goal.",
     }
     assert store.get("two").steering == Steering.initial()
@@ -226,8 +277,9 @@ def test_cosmos_guidance_uses_partition_and_conditional_replace() -> None:
     container = Container()
     store._container = container
     current = store.get("family", "en")
-    current = store.save(current.edited("Stable", "Adaptive"), 0)
+    current = store.save(current.edited("Stable", "Adaptive", avoid="Avoid storms"), 0)
     assert store.get("family", "en").steering.instructions == "Stable"
+    assert store.get("family", "en").steering.avoid == "Avoid storms"
     container.collide = True
     with pytest.raises(SteeringConflict):
         store.save(current.edited("Lost", "Lost"), 1)
@@ -252,14 +304,14 @@ def test_each_prompt_can_be_edited_and_restored_without_changing_the_others() ->
     client = client_for()
     initial = client.get("/api/steering", headers=headers()).json()
     revision = 0
-    for field in ("instructions", "conduct", "review", "topics"):
+    for field in ("instructions", "conduct", "review", "topics", "avoid"):
         result = client.post(
             "/api/steering", headers=headers(), json={"revision": revision, field: "My text"}
         )
         assert result.status_code == 200
         revision += 1
         assert result.json()[field] == "My text"
-        for other in {"instructions", "conduct", "review", "topics", "adaptive"} - {field}:
+        for other in {"instructions", "conduct", "review", "topics", "avoid", "adaptive"} - {field}:
             assert result.json()[other] == initial[other]
         result = client.post(
             "/api/steering", headers=headers(),
@@ -358,6 +410,8 @@ def test_summary_builds_a_real_model_request_with_its_own_budget(monkeypatch, tr
     monkeypatch.setattr(router.FoundryConfig, "from_env", lambda _env: object())
     monkeypatch.setattr(router, "FoundryRouter", lambda _config: Backend())
     current = InMemorySteeringStore().get("synthetic", "en")
+    current = current.edited("Design marker", "Feedback marker", topics="Topics marker",
+                             avoid="Avoid marker", conduct="Conduct marker", review="Review marker")
     if truncated:
         with pytest.raises(ValueError, match="truncated"):
             asyncio.run(summarize(current, "en"))
@@ -366,6 +420,9 @@ def test_summary_builds_a_real_model_request_with_its_own_budget(monkeypatch, tr
         assert text == summary.strip()
     assert requests[0].max_output_chars >= MAX_SUMMARY_CHARS
     assert "conductInstructions" in requests[0].prompt
+    for text in (current.steering.instructions, current.steering.adaptive, current.steering.topics,
+                 current.steering.avoid, current.steering.conduct, current.steering.review):
+        assert text in requests[0].prompt
 
 
 def test_retry_reports_success_only_after_saved_feedback_is_summarized(monkeypatch) -> None:
@@ -445,7 +502,7 @@ def test_reset_during_synthesis_does_not_reintroduce_feedback(monkeypatch) -> No
     assert not store.get(household).pending
 
 
-def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch() -> None:
+def test_all_activity_agents_receive_all_parent_texts_and_ignore_legacy_pitch() -> None:
     from agents.experience_agent import the_prompt as next_prompt
     from agents.experience_continuer import the_prompt as continue_prompt
     from agents.experience_deviser import the_prompt as devise_prompt
@@ -454,6 +511,7 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
         "Use a verifiable question with two constraints.", "Allow algebra.",
         conduct="Offer help only when requested.", review="Explain the first incorrect step.",
         topics="Tides and navigation.",
+        avoid="Avoid storms.",
     )
     prompts = [
         devise_prompt(
@@ -486,8 +544,94 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
         assert steering.instructions in prompt and steering.adaptive in prompt
         assert steering.conduct in prompt and steering.review in prompt
         assert steering.topics in prompt and "startingTopics" in prompt
+        assert steering.avoid in prompt and "avoidedTopics" in prompt
         assert "HIDDEN_" not in prompt
         assert "takes precedence" in prompt
+
+
+@pytest.mark.parametrize("language", ["it", "en"])
+def test_saved_fields_reach_actual_agent_requests(language) -> None:
+    import asyncio
+    from types import SimpleNamespace
+
+    from agents.experience_agent import ExperienceAgent
+    from agents.experience_continuer import ExperienceContinuer
+    from agents.experience_continuer import the_prompt as continuation_prompt
+    from agents.experience_deviser import ExperienceDeviser
+    from agents.idea_editor import IdeaEditor
+    from shared.experience import Experience
+    from tests.test_experience_route import THE_AFTERNOON
+    from tests.test_preferences import client_for, headers, household_of
+
+    client = client_for()
+    household = household_of(client)
+    fields = ("topics", "avoid", "instructions", "conduct", "review", "adaptive")
+    for locale in ("it", "en"):
+        texts = {field: f"{locale}-{field}-saved-marker" for field in fields}
+        result = client.post(f"/api/steering?language={locale}", headers=headers(),
+                             json={"revision": 0, **texts})
+        assert result.status_code == 200
+    steering = client.app.state.steering.get(household, language).steering
+
+    class CapturedRequest(Exception):
+        pass
+
+    requests = []
+
+    class Router:
+        async def analyze(self, request):
+            requests.append(request)
+            raise CapturedRequest
+
+        generate_for_user = analyze
+
+    context = SimpleNamespace(router=Router())
+    deviser = ExperienceDeviser()
+    continuer = ExperienceContinuer()
+    calls = [
+        lambda: deviser.choose(context, catalogue="", steering=steering),
+        lambda: deviser.ask(context, capabilities=frozenset(), language=language,
+                            steering=steering),
+        lambda: deviser.repair_unreadable(context, answer="{}", refusal="Invalid",
+                                         language=language, steering=steering),
+        lambda: deviser.repair(context, refused=Experience.from_dict(THE_AFTERNOON),
+                              complaints=(), language=language, steering=steering),
+        lambda: continuer.continue_from(context, experience={}, after="read", came="marks",
+                                        reading={}, steering=steering),
+        lambda: continuer.repair_unreadable(context, answer="{}", refusal="Invalid", experience={},
+            after="read", original_prompt=continuation_prompt(experience={}, after="read",
+                came="marks", reading={}, steering=steering)),
+        lambda: ExperienceAgent().next_move(context, script="", themes=[], plan={},
+            tools=frozenset(), happened=[], minutes_left=20, steering=steering),
+        lambda: IdeaEditor().ask(context, language=language, title="", overview="", themes=[],
+                                 script="", said=[], asking="An idea", steering=steering),
+    ]
+    for call in calls:
+        with pytest.raises(CapturedRequest):
+            asyncio.run(call())
+    assert len(requests) == len(calls)
+    assert requests[-1].max_output_chars == 12000
+    for request in requests:
+        for field in fields:
+            assert f"{language}-{field}-saved-marker" in request.prompt
+            other = "en" if language == "it" else "it"
+            assert f"{other}-{field}-saved-marker" not in request.prompt
+
+
+def test_idea_editor_refuses_a_truncated_response() -> None:
+    import asyncio
+    from types import SimpleNamespace
+
+    from agents.idea_editor import IdeaEditor
+    from shared.experience import ExperienceError
+
+    class Router:
+        async def analyze(self, request):
+            return SimpleNamespace(text="{}", truncated=True)
+
+    with pytest.raises(ExperienceError, match="truncated"):
+        asyncio.run(IdeaEditor().ask(SimpleNamespace(router=Router()), language="en", title="",
+            overview="", themes=[], script="", said=[], asking="An idea"))
 
 
 def test_neutral_defaults_and_static_activity_prompts() -> None:

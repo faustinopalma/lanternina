@@ -322,7 +322,7 @@
   "preferences.note.lasts": "It stands for {days} days, then it is deleted. Saving it again renews it.",
   "preferences.note.until": "It stands until {day}, then it is deleted.",
   "preferences.interests": "Subjects to start from",
-  "preferences.avoid": "To avoid",
+  "preferences.avoid": "Topics to avoid",
   "preferences.oneEach": "one per line, with the reason if it matters",
   "preferences.language": "Content language",
   "preferences.italian": "Italian",

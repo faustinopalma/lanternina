@@ -370,14 +370,16 @@ export interface NewRhythm {
  *  parent to say in three steps how much somebody can take, which is a verdict; the second
  *  asked a question nobody can answer before seeing an afternoon. */
 export interface NewPreferences {
-  interests: string[];
-  avoid: string[];
+  interests?: string[];
+  avoid?: string[];
   language: string;
   sheets: number;
   note: string;
 }
 
 export interface Preferences extends NewPreferences {
+  interests: string[];
+  avoid: string[];
   noteUntil: number;
   noteLastsDays: number;
   languageChoices: string[];
@@ -389,6 +391,7 @@ export interface Steering {
   conduct: string;
   review: string;
   topics: string;
+  avoid: string;
   adaptive: string;
   revision: number;
   pendingCount: number;
@@ -397,6 +400,7 @@ export interface Steering {
   defaultConduct: string;
   defaultReview: string;
   defaultTopics: string;
+  defaultAvoid: string;
   defaultAdaptive: string;
   instructionsLimit: number;
   adaptiveLimit: number;
@@ -410,8 +414,9 @@ export interface SteeringEdit {
   conduct?: string;
   review?: string;
   topics?: string;
+  avoid?: string;
   adaptive?: string;
-  action?: "save" | "reset_adaptive" | "restore_instructions" | "restore_conduct" | "restore_review" | "restore_topics";
+  action?: "save" | "reset_adaptive" | "restore_instructions" | "restore_conduct" | "restore_review" | "restore_topics" | "restore_avoid";
 }
 
 export interface ActivityFeedback {

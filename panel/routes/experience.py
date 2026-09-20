@@ -523,8 +523,8 @@ async def _devise_afternoon(
             language=LANGUAGE_NAMES.get(
                 settings_of_the_house.language, settings_of_the_house.language
             ),
-            interests=settings_of_the_house.interests,
-            avoid=settings_of_the_house.avoid,
+            interests=(),
+            avoid=(),
             steering=steering,
             sheets=settings_of_the_house.sheets,
             # Empty once it has lapsed, and by then the store has deleted it.

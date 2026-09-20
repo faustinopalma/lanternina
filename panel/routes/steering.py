@@ -20,10 +20,11 @@ class EditSteering(BaseModel):
     conduct: str | None = None
     review: str | None = None
     topics: str | None = None
+    avoid: str | None = None
     adaptive: str | None = None
     action: Literal[
         "save", "reset_adaptive", "restore_instructions", "restore_conduct", "restore_review",
-        "restore_topics",
+        "restore_topics", "restore_avoid",
     ] = "save"
 
 
@@ -67,6 +68,7 @@ def write_steering(
                 conduct=new.conduct,
                 review=new.review,
                 topics=new.topics,
+                avoid=new.avoid,
             )
         return store.save(chosen, new.revision).to_public(language)
     except SteeringConflict as exc:

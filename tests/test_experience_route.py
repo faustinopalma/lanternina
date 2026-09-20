@@ -666,8 +666,10 @@ def test_what_the_parent_wrote_in_their_settings_is_what_is_devised_from(
     ask_for_one(client, household)
 
     assert asked["language"] == "English", "the code is a pronoun in an English sentence"
-    assert asked["interests"] == ("le nuvole",)
-    assert asked["avoid"] == ("i ragni",)
+    assert asked["interests"] == ()
+    assert asked["avoid"] == ()
+    assert asked["steering"].topics == "le nuvole"
+    assert asked["steering"].avoid == "i ragni"
 
 
 def test_a_house_with_no_history_is_pitched_at_nothing_and_invents_freely(

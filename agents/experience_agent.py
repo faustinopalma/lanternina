@@ -166,7 +166,7 @@ class ExperienceAgent:
                 request_id=new_request_id(),
                 max_output_chars=MAX_MOVE_CHARS,
                 purpose="the next move of an afternoon",
-                content_kind=ContentKind.EXPERIENCE,
+                content_kind=ContentKind.EXERCISE_JSON,
             )
         )
         return move_in(payload.body)

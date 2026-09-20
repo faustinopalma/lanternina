@@ -3,36 +3,59 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 
 import { Steering } from "@/sections/Steering";
+import { Preferences } from "@/sections/Preferences";
 import { Experiences } from "@/sections/Experiences";
 import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
 
 beforeEach(() => window.localStorage.clear());
 
+it("shows one ordered editor for each prompt without duplicate household fields", async () => {
+  const api = fakeApi();
+  const user = userEvent.setup();
+  renderPanel(api, <Preferences />);
+  await screen.findByLabelText("Temi da cui partire");
+  const fields = screen.getAllByRole("textbox");
+  expect(fields.slice(0, 6).map((field) => field.id)).toEqual([
+    "steering-topics", "steering-avoid", "steering-instructions", "steering-conduct",
+    "steering-review", "steering-adaptive",
+  ]);
+  expect(screen.queryByRole("tab")).not.toBeInTheDocument();
+  expect(screen.getAllByLabelText("Temi da cui partire")).toHaveLength(1);
+  expect(screen.getAllByLabelText("Temi da evitare")).toHaveLength(1);
+  expect(fields[0]).toHaveValue((await api.steering()).topics);
+  await user.clear(screen.getByLabelText("Temi da evitare"));
+  await user.paste("Tempeste.");
+  await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
+  await waitFor(() => expect(api.recorded.steering[0]).toMatchObject({ avoid: "Tempeste." }));
+  await user.selectOptions(screen.getByLabelText("Lingua"), "en");
+  expect(await screen.findByLabelText("Subjects to start from")).toHaveValue(
+    "Light, sound, maps and inventions.");
+  expect(screen.getByLabelText("Topics to avoid")).toHaveValue("No additional topic exclusions.");
+  expect((await api.steering("it")).avoid).toBe("Tempeste.");
+});
+
 it("saves and restores topics independently when the interface language changes", async () => {
   const api = fakeApi();
   const user = userEvent.setup();
   renderPanel(api, <Steering />);
-  await user.click(await screen.findByRole("tab", { name: "Temi di partenza" }));
-  await user.clear(screen.getByLabelText("Temi di partenza", { selector: "textarea" }));
+  await user.clear(await screen.findByLabelText("Temi da cui partire"));
   await user.paste("Mare e navigazione.");
   await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
   await waitFor(() => expect(api.recorded.steering).toHaveLength(1));
   await user.selectOptions(screen.getByRole("combobox"), "en");
   expect(await screen.findByLabelText("Design", { selector: "textarea" }))
     .toHaveValue("Propose activities with a clear goal.");
-  await user.click(screen.getByRole("tab", { name: "Starting topics" }));
-  expect(screen.getByLabelText("Starting topics", { selector: "textarea" }))
+  expect(screen.getByLabelText("Subjects to start from"))
     .toHaveValue("Light, sound, maps and inventions.");
-  await user.clear(screen.getByLabelText("Starting topics", { selector: "textarea" }));
+  await user.clear(screen.getByLabelText("Subjects to start from"));
   await user.paste("Tides and navigation.");
   await user.click(screen.getByRole("button", { name: "Save guidance" }));
   await waitFor(() => expect(api.recorded.steering).toHaveLength(2));
   await user.selectOptions(screen.getByRole("combobox"), "it");
-  await user.click(await screen.findByRole("tab", { name: "Temi di partenza" }));
-  expect(screen.getByLabelText("Temi di partenza", { selector: "textarea" }))
+  expect(await screen.findByLabelText("Temi da cui partire"))
     .toHaveValue("Mare e navigazione.");
-  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt" }));
+  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt: Temi da cui partire" }));
   await user.click(screen.getByRole("button", { name: "Conferma" }));
   await waitFor(() => expect(api.recorded.steering).toHaveLength(3));
   expect((await api.steering("en")).topics).toBe("Tides and navigation.");
@@ -162,25 +185,22 @@ it("records selected rejection reasons and the free comment", async () => {
   }]));
 });
 
-it("keeps edits across tabs and restores only the selected prompt", async () => {
+it("keeps edits across consecutive fields and restores only the selected prompt", async () => {
   const api = fakeApi();
   const initial = await api.steering();
   const user = userEvent.setup();
   renderPanel(api, <Steering />);
   await screen.findByLabelText("Progettazione", { selector: "textarea" });
-  await user.click(screen.getByRole("tab", { name: "Conduzione e aiuto" }));
   await user.clear(screen.getByLabelText("Conduzione e aiuto", { selector: "textarea" }));
   await user.paste("Aiuto solo su richiesta.");
-  await user.click(screen.getByRole("tab", { name: "Verifica e conclusione" }));
   await user.clear(screen.getByLabelText("Verifica e conclusione", { selector: "textarea" }));
   await user.paste("Spiega il primo errore.");
-  await user.click(screen.getByRole("tab", { name: "Conduzione e aiuto" }));
   expect(screen.getByLabelText("Conduzione e aiuto", { selector: "textarea" }))
     .toHaveValue("Aiuto solo su richiesta.");
   await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
   expect(api.recorded.steering[0]).toEqual({ revision: 0, action: "save",
     conduct: "Aiuto solo su richiesta.", review: "Spiega il primo errore." });
-  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt" }));
+  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt: Conduzione e aiuto" }));
   await user.click(screen.getByRole("button", { name: "Conferma" }));
   await waitFor(() => expect(api.recorded.steering[1]?.action).toBe("restore_conduct"));
   expect(await api.steering()).toMatchObject({ instructions: initial.instructions,

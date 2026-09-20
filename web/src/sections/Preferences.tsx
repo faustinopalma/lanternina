@@ -11,18 +11,7 @@ import { useUnsaved } from "@/lib/useUnsaved";
 import { Steering } from "@/sections/Steering";
 import { Guidelines } from "@/sections/Guidelines";
 
-/* One entry per line, which is how the parent reads them back. The server flattens what is
- * left of a line break, so a pasted paragraph cannot become a second instruction. */
-const asLines = (entries: string[]) => entries.join("\n");
-const fromLines = (text: string) =>
-  text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-
 interface Draft {
-  interests: string;
-  avoid: string;
   language: string;
   sheets: number;
   note: string;
@@ -42,8 +31,6 @@ function Form({ settings }: { settings: Settings }) {
   const api = useApi();
   const [status, setStatus] = useState<MessageKey | null>(null);
   const [draft, setDraft] = useState<Draft>(() => ({
-    interests: asLines(settings.interests),
-    avoid: asLines(settings.avoid),
     language: settings.language,
     sheets: settings.sheets,
     note: settings.note,
@@ -67,8 +54,6 @@ function Form({ settings }: { settings: Settings }) {
     event.preventDefault();
     try {
       await api.savePreferences({
-        interests: fromLines(draft.interests),
-        avoid: fromLines(draft.avoid),
         language: draft.language,
         sheets: draft.sheets,
         note: draft.note.trim(),
@@ -84,29 +69,8 @@ function Form({ settings }: { settings: Settings }) {
     <>
       <form
         onSubmit={save}
-        className="my-3.5 flex max-w-[42rem] flex-col gap-4 rounded-control border border-edge bg-paper p-4"
+        className="my-3.5 flex max-w-[42rem] flex-col gap-4"
       >
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="pref-interests">{t("preferences.interests")}</Label>
-          <Textarea
-            id="pref-interests"
-            rows={4}
-            placeholder={t("preferences.oneEach")}
-            value={draft.interests}
-            onChange={(event) => edit({ interests: event.target.value })}
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="pref-avoid">{t("preferences.avoid")}</Label>
-          <Textarea
-            id="pref-avoid"
-            rows={4}
-            placeholder={t("preferences.oneEach")}
-            value={draft.avoid}
-            onChange={(event) => edit({ avoid: event.target.value })}
-          />
-        </div>
-
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <span className="flex items-center gap-2">
             <Label htmlFor="pref-language">{t("preferences.language")}</Label>

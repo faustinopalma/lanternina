@@ -158,9 +158,13 @@ class IdeaEditor:
                     steering=steering,
                 ),
                 request_id=new_request_id(),
-                kind=ContentKind.TEXT,
+                content_kind=ContentKind.EXERCISE_JSON,
+                max_output_chars=12000,
+                purpose="editing an activity idea",
             )
         )
+        if payload.truncated:
+            raise ExperienceError("truncated activity idea")
         return str(payload.text or "")
 
 

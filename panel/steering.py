@@ -8,6 +8,8 @@ from typing import Any, Protocol
 
 from shared.steering import MAX_GUIDANCE_CHARS, MAX_SUMMARY_CHARS, Steering, clean_text
 
+from .preferences import PreferencesStore
+
 MAX_COMMENT_CHARS = 2000
 MAX_PENDING = 50
 REASONS = {
@@ -70,10 +72,11 @@ class Guidance:
     history: tuple[Feedback, ...] = ()
     feedback_count: int = 0
     language: str = "it"
+    topics_consolidated: bool = False
 
     def edited(
         self, instructions: str, adaptive: str, *, conduct: str | None = None,
-        review: str | None = None, topics: str | None = None,
+        review: str | None = None, topics: str | None = None, avoid: str | None = None,
     ) -> Guidance:
         return replace(
             self,
@@ -89,6 +92,9 @@ class Guidance:
                 ),
                 topics=self.steering.topics if topics is None else clean_text(
                     topics, MAX_GUIDANCE_CHARS
+                ),
+                avoid=self.steering.avoid if avoid is None else clean_text(
+                    avoid, MAX_GUIDANCE_CHARS
                 ),
             ),
         )
@@ -129,6 +135,7 @@ class Guidance:
             "conduct": self.steering.conduct,
             "review": self.steering.review,
             "topics": self.steering.topics,
+            "avoid": self.steering.avoid,
             "adaptive": self.steering.adaptive,
             "revision": self.revision,
             "pendingCount": len(self.pending),
@@ -137,6 +144,7 @@ class Guidance:
             "defaultConduct": initial.conduct,
             "defaultReview": initial.review,
             "defaultTopics": initial.topics,
+            "defaultAvoid": initial.avoid,
             "defaultAdaptive": initial.adaptive,
             "instructionsLimit": MAX_GUIDANCE_CHARS,
             "adaptiveLimit": MAX_SUMMARY_CHARS,
@@ -149,6 +157,39 @@ class SteeringStore(Protocol):
     def get(self, household_id: str, language: str = "it") -> Guidance: ...
 
     def save(self, value: Guidance, expected_revision: int) -> Guidance: ...
+
+
+@dataclass
+class ConsolidatedSteeringStore:
+    store: SteeringStore
+    preferences: PreferencesStore
+
+    def get(self, household_id: str, language: str = "it") -> Guidance:
+        for _attempt in range(3):
+            current = self.store.get(household_id, language)
+            if current.topics_consolidated:
+                return current
+            legacy = self.preferences.get(household_id)
+            if legacy.language != language or not (legacy.interests or legacy.avoid):
+                return current
+            initial = Steering.initial(language)
+            changes = {}
+            for name, entries in (("topics", legacy.interests), ("avoid", legacy.avoid)):
+                if entries:
+                    text = getattr(current.steering, name)
+                    inherited = "\n".join(entries)
+                    changes[name] = inherited if text == getattr(initial, name) else "\n\n".join(
+                        part for part in (text, inherited) if part
+                    )
+            migrated = replace(current, steering=replace(current.steering, **changes))
+            try:
+                return self.save(migrated, current.revision)
+            except SteeringConflict:
+                continue
+        raise SteeringConflict("guidance_changed")
+
+    def save(self, value: Guidance, expected_revision: int) -> Guidance:
+        return self.store.save(replace(value, topics_consolidated=True), expected_revision)
 
 
 @dataclass

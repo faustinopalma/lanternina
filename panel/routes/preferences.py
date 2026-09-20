@@ -14,10 +14,11 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 from ..gate import CurrentAccount, DeviceKey
 from ..preferences import DEFAULT_SHEETS, PreferencesStore, clean_preferences
+from ..steering import SteeringConflict
 
 router = APIRouter()
 
@@ -31,8 +32,8 @@ class NewPreferences(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    interests: list[str] = Field(default_factory=list)
-    avoid: list[str] = Field(default_factory=list)
+    interests: list[str] | None = None
+    avoid: list[str] | None = None
     language: str
     # How many sheets one afternoon may put on the table. A ceiling, not a target.
     sheets: int = DEFAULT_SHEETS
@@ -53,15 +54,32 @@ def write_preferences(new: NewPreferences, account: CurrentAccount, request: Req
     on its next run, and nothing here starts a generation."""
     store: PreferencesStore = request.app.state.preferences
     try:
+        household = str(account.household_id)
+        current = store.get(household)
         chosen = clean_preferences(
-            str(account.household_id),
-            interests=new.interests,
-            avoid=new.avoid,
+            household,
+            interests=list(current.interests) if new.interests is None else new.interests,
+            avoid=list(current.avoid) if new.avoid is None else new.avoid,
             language=new.language,
             sheets=new.sheets,
             note=new.note,
             updated_by=str(account.id),
         )
+        guidance_store = request.app.state.steering
+        guidance_store.get(household, current.language)
+        if current.language != new.language:
+            target = guidance_store.get(household, new.language)
+            if not target.topics_consolidated:
+                guidance_store.save(target, target.revision)
+        if new.interests is not None or new.avoid is not None:
+            guidance = guidance_store.get(household, new.language)
+            guidance_store.save(guidance.edited(
+                guidance.steering.instructions, guidance.steering.adaptive,
+                topics=None if new.interests is None else "\n".join(chosen.interests),
+                avoid=None if new.avoid is None else "\n".join(chosen.avoid),
+            ), guidance.revision)
+    except SteeringConflict as exc:
+        raise HTTPException(status_code=409, detail="guidance_changed") from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return store.set(chosen).to_public()

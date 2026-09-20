@@ -1232,9 +1232,11 @@ class CosmosSteeringStore:
                 row["instructions"], row["adaptive"],
                 row.get("conduct", initial.conduct), row.get("review", initial.review),
                 row.get("topics", initial.topics),
+                row.get("avoid", initial.avoid),
             ), row["revision"],
             feedback(row.get("pending", [])), feedback(row.get("history", [])),
             row.get("feedbackCount", 0), language=language,
+            topics_consolidated=bool(row.get("topicsConsolidated", False)),
         )
 
     def save(self, value: Guidance, expected_revision: int) -> Guidance:
@@ -1248,10 +1250,12 @@ class CosmosSteeringStore:
         body = {
             "id": self._id(value.household_id, value.language), "familyId": value.household_id,
             "language": value.language,
+            "topicsConsolidated": saved.topics_consolidated,
             "type": "steering", "revision": saved.revision,
             "instructions": saved.steering.instructions, "adaptive": saved.steering.adaptive,
             "conduct": saved.steering.conduct, "review": saved.steering.review,
             "topics": saved.steering.topics,
+            "avoid": saved.steering.avoid,
             "pending": [entry.to_dict() for entry in saved.pending],
             "history": [entry.to_dict() for entry in saved.history],
             "feedbackCount": saved.feedback_count,

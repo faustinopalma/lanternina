@@ -550,6 +550,8 @@ export function fakeApi(
   const italianSteering: Steering = {
     topics: "Luce, suoni, mappe e invenzioni.",
     defaultTopics: "Luce, suoni, mappe e invenzioni.",
+    avoid: "Nessuna esclusione aggiuntiva di temi.",
+    defaultAvoid: "Nessuna esclusione aggiuntiva di temi.",
     instructions: "Proponi attività con un obiettivo chiaro.",
     conduct: "Lascia il tempo di ragionare e offri aiuto su richiesta.",
     review: "Verifica i passaggi e spiega eventuali errori.",
@@ -574,6 +576,8 @@ export function fakeApi(
     defaultAdaptive: "There is no feedback guidance yet.",
     topics: "Light, sound, maps and inventions.",
     defaultTopics: "Light, sound, maps and inventions.",
+    avoid: "No additional topic exclusions.",
+    defaultAvoid: "No additional topic exclusions.",
   };
   const guidance: Record<string, Steering> = { it: italianSteering, en: englishSteering };
   /* One line written, so the page shows both halves: what this house allowed and what
@@ -601,6 +605,7 @@ export function fakeApi(
         conduct: change.conduct ?? steering.conduct,
         review: change.review ?? steering.review,
         topics: change.topics ?? steering.topics,
+        avoid: change.avoid ?? steering.avoid,
         adaptive: change.adaptive ?? steering.adaptive,
         revision: steering.revision + 1,
       };
@@ -614,6 +619,8 @@ export function fakeApi(
         review: steering.defaultReview };
       if (change.action === "restore_topics") steering = { ...steering,
         topics: steering.defaultTopics };
+      if (change.action === "restore_avoid") steering = { ...steering,
+        avoid: steering.defaultAvoid };
       guidance[language] = steering;
       return steering;
     },

@@ -71,8 +71,6 @@ describe("what a saved setting carries", () => {
 
     await waitFor(() => expect(api.recorded.preferences).toHaveLength(1));
     expect(Object.keys(api.recorded.preferences[0]!).sort()).toEqual([
-      "avoid",
-      "interests",
       "language",
       "note",
       "sheets",
