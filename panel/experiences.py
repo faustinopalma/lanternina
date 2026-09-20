@@ -23,6 +23,7 @@ import threading
 import time
 from dataclasses import dataclass, field, replace
 from typing import Any, Protocol, runtime_checkable
+from uuid import uuid4
 
 from shared.approval import ApprovalState
 
@@ -31,6 +32,11 @@ from shared.approval import ApprovalState
 # not reached by it, because nothing here can reach into a house.
 DECIDABLE = (ApprovalState.APPROVED, ApprovalState.REJECTED, ApprovalState.WITHDRAWN)
 WITHDRAWABLE_FROM = (ApprovalState.APPROVED.value,)
+GENERATION_LEASE_SECONDS = 900
+
+
+class GenerationConflict(ValueError):
+    pass
 
 
 @dataclass(frozen=True, slots=True)
@@ -153,6 +159,12 @@ def backlog_of(rows: list[OfferedExperience], *, days_a_week: int) -> Backlog:
 
 @runtime_checkable
 class ExperienceStore(Protocol):
+    def reserve_generation(self, household_id: str) -> str | None: ...
+
+    def release_generation(self, household_id: str, token: str) -> None: ...
+
+    def finish_generation(self, record: OfferedExperience, token: str) -> OfferedExperience: ...
+
     def offer(self, record: OfferedExperience) -> OfferedExperience: ...
 
     def list(self, household_id: str, state: str | None = None) -> list[OfferedExperience]: ...
@@ -170,12 +182,44 @@ class ExperienceStore(Protocol):
     ) -> OfferedExperience | None: ...
 
 
+def ready_count(store: ExperienceStore, household_id: str) -> int:
+    return sum(
+        not row.begun_at and row.state in {"pending", "approved"}
+        for row in store.list(household_id)
+    )
+
+
 @dataclass
 class InMemoryExperienceStore:
     """Enough to run the API and the tests. Obviously not a database."""
 
     _rows: dict[tuple[str, str], OfferedExperience] = field(default_factory=dict)
     _lock: threading.Lock = field(default_factory=threading.Lock)
+    _generations: dict[str, tuple[str, float]] = field(default_factory=dict)
+
+    def reserve_generation(self, household_id: str) -> str | None:
+        with self._lock:
+            current = self._generations.get(household_id)
+            if current and current[1] > time.time():
+                return None
+            token = uuid4().hex
+            self._generations[household_id] = (token, time.time() + GENERATION_LEASE_SECONDS)
+            return token
+
+    def release_generation(self, household_id: str, token: str) -> None:
+        with self._lock:
+            current = self._generations.get(household_id)
+            if current and current[0] == token:
+                del self._generations[household_id]
+
+    def finish_generation(self, record: OfferedExperience, token: str) -> OfferedExperience:
+        with self._lock:
+            current = self._generations.get(record.household_id)
+            if not current or current[0] != token:
+                raise GenerationConflict("generation_changed")
+            saved = self._rows.setdefault((record.household_id, record.id), record)
+            del self._generations[record.household_id]
+            return saved
 
     def offer(self, record: OfferedExperience) -> OfferedExperience:
         with self._lock:

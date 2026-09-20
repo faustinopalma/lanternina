@@ -388,6 +388,7 @@ export interface Steering {
   instructions: string;
   conduct: string;
   review: string;
+  topics: string;
   adaptive: string;
   revision: number;
   pendingCount: number;
@@ -395,6 +396,7 @@ export interface Steering {
   defaultInstructions: string;
   defaultConduct: string;
   defaultReview: string;
+  defaultTopics: string;
   defaultAdaptive: string;
   instructionsLimit: number;
   adaptiveLimit: number;
@@ -407,8 +409,9 @@ export interface SteeringEdit {
   instructions?: string;
   conduct?: string;
   review?: string;
+  topics?: string;
   adaptive?: string;
-  action?: "save" | "reset_adaptive" | "restore_instructions" | "restore_conduct" | "restore_review";
+  action?: "save" | "reset_adaptive" | "restore_instructions" | "restore_conduct" | "restore_review" | "restore_topics";
 }
 
 export interface ActivityFeedback {
@@ -576,9 +579,9 @@ export interface Api {
   saveRhythm(rhythm: NewRhythm): Promise<Rhythm>;
   preferences(): Promise<Preferences>;
   savePreferences(preferences: NewPreferences): Promise<Preferences>;
-  steering(): Promise<Steering>;
-  saveSteering(change: SteeringEdit): Promise<Steering>;
-  synthesizeSteering(): Promise<void>;
+  steering(language?: string): Promise<Steering>;
+  saveSteering(change: SteeringEdit, language?: string): Promise<Steering>;
+  synthesizeSteering(language?: string): Promise<void>;
   guidelines(): Promise<Guidelines>;
   saveGuidelines(lines: string[]): Promise<Guidelines>;
   devices(): Promise<Inventory>;

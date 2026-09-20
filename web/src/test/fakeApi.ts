@@ -547,7 +547,9 @@ export function fakeApi(
     languageChoices: ["it", "en"],
     sheetsChoices: [1, 2, 3, 4, 5],
   };
-  let steering: Steering = {
+  const italianSteering: Steering = {
+    topics: "Luce, suoni, mappe e invenzioni.",
+    defaultTopics: "Luce, suoni, mappe e invenzioni.",
     instructions: "Proponi attività con un obiettivo chiaro.",
     conduct: "Lascia il tempo di ragionare e offri aiuto su richiesta.",
     review: "Verifica i passaggi e spiega eventuali errori.",
@@ -561,6 +563,19 @@ export function fakeApi(
     reasons: ["too_difficult", "too_easy", "too_abstract", "too_closed", "too_open",
       "unclear", "too_much_reading", "too_much_writing", "too_much_help", "not_interesting"],
   };
+  const englishSteering: Steering = { ...italianSteering,
+    instructions: "Propose activities with a clear goal.",
+    defaultInstructions: "Propose activities with a clear goal.",
+    conduct: "Allow time to think and offer help on request.",
+    defaultConduct: "Allow time to think and offer help on request.",
+    review: "Check the steps and explain any errors.",
+    defaultReview: "Check the steps and explain any errors.",
+    adaptive: "There is no feedback guidance yet.",
+    defaultAdaptive: "There is no feedback guidance yet.",
+    topics: "Light, sound, maps and inventions.",
+    defaultTopics: "Light, sound, maps and inventions.",
+  };
+  const guidance: Record<string, Steering> = { it: italianSteering, en: englishSteering };
   /* One line written, so the page shows both halves: what this house allowed and what
    * holds everywhere. The fixed ones are the API's own words, in the model's language. */
   let guidelines: Guidelines = {
@@ -576,14 +591,16 @@ export function fakeApi(
   };
 
   const base: Api = {
-    steering: async () => steering,
-    saveSteering: async (change) => {
+    steering: async (language = "it") => guidance[language]!,
+    saveSteering: async (change, language = "it") => {
+      let steering = guidance[language]!;
       if (change.revision !== steering.revision) throw new Error("guidance_changed");
       recorded.steering.push(change);
       steering = { ...steering,
         instructions: change.instructions ?? steering.instructions,
         conduct: change.conduct ?? steering.conduct,
         review: change.review ?? steering.review,
+        topics: change.topics ?? steering.topics,
         adaptive: change.adaptive ?? steering.adaptive,
         revision: steering.revision + 1,
       };
@@ -595,6 +612,9 @@ export function fakeApi(
         conduct: steering.defaultConduct };
       if (change.action === "restore_review") steering = { ...steering,
         review: steering.defaultReview };
+      if (change.action === "restore_topics") steering = { ...steering,
+        topics: steering.defaultTopics };
+      guidance[language] = steering;
       return steering;
     },
     synthesizeSteering: async () => undefined,

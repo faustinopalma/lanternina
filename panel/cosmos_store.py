@@ -32,7 +32,7 @@ from shared.steering import Steering
 from .devices import DeviceStatus, Thing, order_of
 from .drafts import OPEN as DRAFT_OPEN
 from .drafts import Draft, Said
-from .experiences import OfferedExperience
+from .experiences import GENERATION_LEASE_SECONDS, GenerationConflict, OfferedExperience
 from .guidelines import Guidelines
 from .keeping import Keeping
 from .messages import PendingMessage
@@ -466,6 +466,66 @@ class CosmosExperienceStore:
             .get_database_client(database)
             .get_container_client(EXPERIENCES_CONTAINER)
         )
+
+    def reserve_generation(self, household_id: str) -> str | None:
+        from azure.core import MatchConditions
+        from azure.cosmos import exceptions
+
+        body = {
+            "id": "idea-generation", "familyId": household_id, "type": "generation",
+            "expiresAt": time.time() + GENERATION_LEASE_SECONDS,
+        }
+        try:
+            try:
+                current = self._container.read_item(
+                    item=body["id"], partition_key=household_id,
+                )
+            except exceptions.CosmosResourceNotFoundError:
+                current = None
+            if current is None:
+                saved = self._container.create_item(body=body)
+            elif current["expiresAt"] > time.time():
+                return None
+            else:
+                saved = self._container.replace_item(
+                    item=body["id"], body=body, etag=current["_etag"],
+                    match_condition=MatchConditions.IfNotModified,
+                )
+            return saved["_etag"]
+        except exceptions.CosmosHttpResponseError as exc:
+            if exc.status_code in {409, 412}:
+                return None
+            raise
+
+    def release_generation(self, household_id: str, token: str) -> None:
+        from azure.core import MatchConditions
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.delete_item(
+                item="idea-generation", partition_key=household_id, etag=token,
+                match_condition=MatchConditions.IfNotModified,
+            )
+        except exceptions.CosmosHttpResponseError as exc:
+            if exc.status_code not in {404, 412}:
+                raise
+
+    def finish_generation(self, record: OfferedExperience, token: str) -> OfferedExperience:
+        from azure.cosmos import exceptions
+
+        try:
+            self._container.execute_item_batch(
+                batch_operations=[
+                    ("delete", ("idea-generation",), {"if_match_etag": token}),
+                    ("create", (_from_offered(record),)),
+                ],
+                partition_key=record.household_id,
+            )
+        except exceptions.CosmosBatchOperationError as exc:
+            if exc.status_code in {404, 409, 412}:
+                raise GenerationConflict("generation_changed") from exc
+            raise
+        return record
 
     def offer(self, record: OfferedExperience) -> OfferedExperience:
         from azure.cosmos import exceptions
@@ -1141,20 +1201,24 @@ class CosmosSteeringStore:
             .get_container_client(STEERING_CONTAINER)
         )
 
-    def _read(self, household_id: str) -> dict[str, Any] | None:
+    @staticmethod
+    def _id(household_id: str, language: str) -> str:
+        return f"steering-{household_id}" + ("" if language == "it" else f"-{language}")
+
+    def _read(self, household_id: str, language: str) -> dict[str, Any] | None:
         from azure.cosmos.exceptions import CosmosResourceNotFoundError
 
         try:
             return self._container.read_item(
-                item=f"steering-{household_id}", partition_key=household_id
+                item=self._id(household_id, language), partition_key=household_id
             )
         except CosmosResourceNotFoundError:
             return None
 
     def get(self, household_id: str, language: str = "it") -> Guidance:
-        row = self._read(household_id)
+        row = self._read(household_id, language)
         if row is None:
-            return Guidance(household_id, Steering.initial(language))
+            return Guidance(household_id, Steering.initial(language), language=language)
 
         def feedback(entries: list[dict[str, Any]]) -> tuple[Feedback, ...]:
             return tuple(Feedback(
@@ -1167,24 +1231,27 @@ class CosmosSteeringStore:
             household_id, Steering(
                 row["instructions"], row["adaptive"],
                 row.get("conduct", initial.conduct), row.get("review", initial.review),
+                row.get("topics", initial.topics),
             ), row["revision"],
             feedback(row.get("pending", [])), feedback(row.get("history", [])),
-            row.get("feedbackCount", 0),
+            row.get("feedbackCount", 0), language=language,
         )
 
     def save(self, value: Guidance, expected_revision: int) -> Guidance:
         from azure.core import MatchConditions
         from azure.cosmos.exceptions import CosmosHttpResponseError
 
-        current = self._read(value.household_id)
+        current = self._read(value.household_id, value.language)
         if (current["revision"] if current else 0) != expected_revision:
             raise SteeringConflict("guidance_changed")
         saved = replace(value, revision=expected_revision + 1)
         body = {
-            "id": f"steering-{value.household_id}", "familyId": value.household_id,
+            "id": self._id(value.household_id, value.language), "familyId": value.household_id,
+            "language": value.language,
             "type": "steering", "revision": saved.revision,
             "instructions": saved.steering.instructions, "adaptive": saved.steering.adaptive,
             "conduct": saved.steering.conduct, "review": saved.steering.review,
+            "topics": saved.steering.topics,
             "pending": [entry.to_dict() for entry in saved.pending],
             "history": [entry.to_dict() for entry in saved.history],
             "feedbackCount": saved.feedback_count,

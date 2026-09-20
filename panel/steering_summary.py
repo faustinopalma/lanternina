@@ -29,6 +29,7 @@ def summary_prompt(value: Guidance, language: str) -> str:
                 "parentInstructions": value.steering.instructions,
                 "conductInstructions": value.steering.conduct,
                 "reviewInstructions": value.steering.review,
+                "startingTopics": value.steering.topics,
                 "currentSummary": value.steering.adaptive,
                 "newFeedback": [entry.to_dict() for entry in value.pending],
                 "reasonMeanings": REASONS,
@@ -67,9 +68,10 @@ async def synthesize_pending(
     limits: Any,
     configured: float,
     household_id: str,
+    language: str | None = None,
 ) -> Literal["complete", "failed", "limited", "conflict"]:
+    language = language or preferences.get(household_id).language
     for _attempt in range(3):
-        language = preferences.get(household_id).language
         current = store.get(household_id, language)
         if not current.pending:
             return "complete"

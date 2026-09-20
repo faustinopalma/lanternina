@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 
@@ -8,6 +8,54 @@ import { fakeApi } from "@/test/fakeApi";
 import { renderPanel } from "@/test/render";
 
 beforeEach(() => window.localStorage.clear());
+
+it("saves and restores topics independently when the interface language changes", async () => {
+  const api = fakeApi();
+  const user = userEvent.setup();
+  renderPanel(api, <Steering />);
+  await user.click(await screen.findByRole("tab", { name: "Temi di partenza" }));
+  await user.clear(screen.getByLabelText("Temi di partenza", { selector: "textarea" }));
+  await user.paste("Mare e navigazione.");
+  await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
+  await waitFor(() => expect(api.recorded.steering).toHaveLength(1));
+  await user.selectOptions(screen.getByRole("combobox"), "en");
+  expect(await screen.findByLabelText("Design", { selector: "textarea" }))
+    .toHaveValue("Propose activities with a clear goal.");
+  await user.click(screen.getByRole("tab", { name: "Starting topics" }));
+  expect(screen.getByLabelText("Starting topics", { selector: "textarea" }))
+    .toHaveValue("Light, sound, maps and inventions.");
+  await user.clear(screen.getByLabelText("Starting topics", { selector: "textarea" }));
+  await user.paste("Tides and navigation.");
+  await user.click(screen.getByRole("button", { name: "Save guidance" }));
+  await waitFor(() => expect(api.recorded.steering).toHaveLength(2));
+  await user.selectOptions(screen.getByRole("combobox"), "it");
+  await user.click(await screen.findByRole("tab", { name: "Temi di partenza" }));
+  expect(screen.getByLabelText("Temi di partenza", { selector: "textarea" }))
+    .toHaveValue("Mare e navigazione.");
+  await user.click(screen.getByRole("button", { name: "Ripristina questo prompt" }));
+  await user.click(screen.getByRole("button", { name: "Conferma" }));
+  await waitFor(() => expect(api.recorded.steering).toHaveLength(3));
+  expect((await api.steering("en")).topics).toBe("Tides and navigation.");
+  expect((await api.steering("it")).topics).toBe("Luce, suoni, mappe e invenzioni.");
+});
+
+it("ignores a late response for the previous language", async () => {
+  const api = fakeApi();
+  const italian = await api.steering("it");
+  const english = await api.steering("en");
+  let finish!: (value: typeof italian) => void;
+  api.steering = vi.fn((language) => language === "it"
+    ? new Promise<typeof italian>((resolve) => { finish = resolve; }) : Promise.resolve(english));
+  const user = userEvent.setup();
+  renderPanel(api, <Steering />);
+  await waitFor(() => expect(api.steering).toHaveBeenCalledWith("it"));
+  await user.selectOptions(screen.getByRole("combobox"), "en");
+  expect(await screen.findByLabelText("Design", { selector: "textarea" }))
+    .toHaveValue(english.instructions);
+  await act(async () => { finish(italian); });
+  expect(screen.getByLabelText("Design", { selector: "textarea" }))
+    .toHaveValue(english.instructions);
+});
 
 it("waits for synthesis to finish before reading and showing the new summary", async () => {
   const api = fakeApi();
@@ -94,7 +142,7 @@ it("preserves an edited draft and refreshes the untouched summary after a confli
     original.instructions + " Usa due indizi.");
   await user.click(screen.getByRole("button", { name: "Salva indicazioni" }));
   expect(api.saveSteering).toHaveBeenLastCalledWith({ revision: 1, action: "save",
-    instructions: original.instructions + " Usa due indizi." });
+    instructions: original.instructions + " Usa due indizi." }, "it");
 });
 
 it("records selected rejection reasons and the free comment", async () => {

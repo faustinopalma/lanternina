@@ -236,6 +236,204 @@ def what_the_house_may_run(client: TestClient, household: str) -> Any:
     return response.json()["experiences"]
 
 
+@pytest.mark.parametrize("wanted, states", [
+    (0, []), (3, ["pending", "pending", "pending"]),
+    (3, ["pending", "approved", "approved"]),
+])
+def test_generation_stops_at_the_ready_idea_limit(monkeypatch, wanted, states) -> None:
+    from dataclasses import replace
+
+    from panel.experiences import OfferedExperience
+
+    client = client_for()
+    household = household_of(client)
+    rhythm = client.app.state.rhythm
+    rhythm.set(replace(rhythm.get(household), scripts_wanted=wanted))
+    for index, state in enumerate(states):
+        client.app.state.experiences.offer(OfferedExperience(
+            id=f"idea-{index}", household_id=household, experience=THE_AFTERNOON,
+            created_at=index, state=state,
+        ))
+    asked = devising(monkeypatch, THE_AFTERNOON)
+    response = ask_for_one(client, household)
+    assert response.status_code == 409
+    assert response.json()["detail"] == "ideas_full"
+    assert not asked
+
+
+def test_simultaneous_requests_generate_only_one_idea(monkeypatch) -> None:
+    import asyncio
+    from concurrent.futures import ThreadPoolExecutor
+    from dataclasses import replace
+    from threading import Event
+
+    client = client_for()
+    household = household_of(client)
+    rhythm = client.app.state.rhythm
+    rhythm.set(replace(rhythm.get(household), scripts_wanted=1))
+    entered, finish = Event(), Event()
+    calls = []
+
+    async def slow(**given):
+        calls.append(given)
+        entered.set()
+        assert await asyncio.to_thread(finish.wait, 10)
+        return Experience.from_dict(THE_AFTERNOON), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", slow)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(ask_for_one, client, household)
+        try:
+            assert entered.wait(10)
+            second = ask_for_one(client, household)
+            assert second.status_code == 409
+            assert second.json()["detail"] == "generation_in_progress"
+        finally:
+            finish.set()
+        assert first.result(timeout=10).status_code == 200
+    assert len(calls) == 1
+    assert len(client.app.state.experiences.list(household)) == 1
+    assert ask_for_one(client, household).json()["detail"] == "ideas_full"
+
+
+def test_failed_generation_releases_the_reservation(monkeypatch) -> None:
+    client = client_for()
+    household = household_of(client)
+    devising(monkeypatch, ValueError("model unavailable"))
+    assert ask_for_one(client, household).status_code == 503
+    devising(monkeypatch, THE_AFTERNOON)
+    assert ask_for_one(client, household).status_code == 200
+
+
+def test_limit_reduction_during_generation_prevents_the_offer(monkeypatch) -> None:
+    from dataclasses import replace
+
+    client = client_for()
+    household = household_of(client)
+
+    async def reduce_limit(**given):
+        rhythm = client.app.state.rhythm
+        rhythm.set(replace(rhythm.get(household), scripts_wanted=0))
+        return Experience.from_dict(THE_AFTERNOON), None
+
+    monkeypatch.setattr("panel.devising.devise_experience", reduce_limit)
+    assert ask_for_one(client, household).json()["detail"] == "ideas_full"
+    assert not client.app.state.experiences.list(household)
+
+
+def test_ready_count_excludes_begun_and_rejected_ideas() -> None:
+    from panel.experiences import OfferedExperience, ready_count
+
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.experiences
+    for index, (state, begun) in enumerate([
+        ("pending", 0), ("approved", 0), ("approved", 10),
+        ("rejected", 0), ("withdrawn", 0),
+    ]):
+        store.offer(OfferedExperience(
+            str(index), household, THE_AFTERNOON, index, state=state, begun_at=begun,
+        ))
+    store.offer(OfferedExperience("other", "another-family", THE_AFTERNOON, 1))
+    assert ready_count(store, household) == 2
+    response = client.get(
+        f"/api/device/{household}/experiences", headers={"X-Device-Key": DEVICE_KEY},
+    ).json()
+    assert response["waiting"] == 2
+    assert len(response["experiences"]) == 1
+
+
+def test_expired_generation_cannot_publish_or_release_its_successor(monkeypatch) -> None:
+    from panel import experiences
+
+    now = 1000.0
+    monkeypatch.setattr(experiences.time, "time", lambda: now)
+    store = experiences.InMemoryExperienceStore()
+    old = store.reserve_generation("family")
+    assert old and store.reserve_generation("family") is None
+    assert store.reserve_generation("other-family")
+    now += experiences.GENERATION_LEASE_SECONDS + 1
+    current = store.reserve_generation("family")
+    assert current and current != old
+    store.release_generation("family", old)
+    assert store.reserve_generation("family") is None
+    row = experiences.OfferedExperience("idea", "family", THE_AFTERNOON, now)
+    with pytest.raises(experiences.GenerationConflict):
+        store.finish_generation(row, old)
+    assert not store.list("family")
+    assert store.finish_generation(row, current) == row
+    assert store.reserve_generation("family")
+
+
+def test_cosmos_generation_is_fenced_and_committed_atomically(monkeypatch) -> None:
+    from azure.core import MatchConditions
+    from azure.cosmos import exceptions
+
+    from panel import cosmos_store, experiences
+
+    class Container:
+        def __init__(self):
+            self.rows = {}
+            self.version = 0
+
+        def read_item(self, *, item, partition_key):
+            try:
+                return dict(self.rows[partition_key, item])
+            except KeyError:
+                raise exceptions.CosmosResourceNotFoundError(status_code=404) from None
+
+        def create_item(self, *, body):
+            key = (body["familyId"], body["id"])
+            if key in self.rows:
+                raise exceptions.CosmosResourceExistsError(status_code=409)
+            self.version += 1
+            self.rows[key] = {**body, "_etag": str(self.version)}
+            return dict(self.rows[key])
+
+        def replace_item(self, *, item, body, etag, match_condition):
+            assert match_condition == MatchConditions.IfNotModified
+            self.delete_item(item=item, partition_key=body["familyId"],
+                             etag=etag, match_condition=match_condition)
+            return self.create_item(body=body)
+
+        def delete_item(self, *, item, partition_key, etag, match_condition):
+            assert match_condition == MatchConditions.IfNotModified
+            row = self.read_item(item=item, partition_key=partition_key)
+            if row["_etag"] != etag:
+                raise exceptions.CosmosHttpResponseError(status_code=412)
+            del self.rows[partition_key, item]
+
+        def execute_item_batch(self, *, batch_operations, partition_key):
+            remove, create = batch_operations
+            assert remove[0] == "delete" and create[0] == "create"
+            assert create[1][0]["familyId"] == partition_key
+            row = self.read_item(item=remove[1][0], partition_key=partition_key)
+            if row["_etag"] != remove[2]["if_match_etag"]:
+                raise exceptions.CosmosBatchOperationError(status_code=412, headers={})
+            self.create_item(body=create[1][0])
+            del self.rows[partition_key, remove[1][0]]
+
+    now = 1000.0
+    monkeypatch.setattr(cosmos_store.time, "time", lambda: now)
+    store = cosmos_store.CosmosExperienceStore.__new__(cosmos_store.CosmosExperienceStore)
+    store._container = Container()
+    old = store.reserve_generation("family")
+    assert old and store.reserve_generation("family") is None
+    assert store.reserve_generation("other-family")
+    now += experiences.GENERATION_LEASE_SECONDS + 1
+    current = store.reserve_generation("family")
+    assert current and current != old
+    store.release_generation("family", old)
+    row = experiences.OfferedExperience("idea", "family", THE_AFTERNOON, now)
+    with pytest.raises(experiences.GenerationConflict):
+        store.finish_generation(row, old)
+    assert ("family", "idea") not in store._container.rows
+    assert store.finish_generation(row, current) == row
+    store.release_generation("family", current)
+    assert store.get("family", "idea") == row
+    assert store.reserve_generation("family")
+
+
 def test_a_devised_afternoon_waits_for_the_parent_rather_than_going_home(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

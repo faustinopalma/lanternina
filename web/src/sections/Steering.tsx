@@ -10,19 +10,20 @@ import { useWords, type MessageKey } from "@/i18n";
 import { useLoad } from "@/lib/useLoad";
 
 const PROMPTS = [
+  { field: "topics", label: "steering.topics" },
   { field: "instructions", label: "steering.design" },
   { field: "conduct", label: "steering.conduct" },
   { field: "review", label: "steering.review" },
 ] as const;
-const FIELDS = ["instructions", "conduct", "review", "adaptive"] as const;
+const FIELDS = ["instructions", "conduct", "review", "topics", "adaptive"] as const;
 type Texts = Pick<Guidance, typeof FIELDS[number]>;
 
-function Editor({ initial }: { initial: Guidance }) {
+function Editor({ initial, language }: { initial: Guidance; language: string }) {
   const api = useApi();
   const { t } = useWords();
   const [kept, setKept] = useState(initial);
   const [texts, setTexts] = useState<Texts>(initial);
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(1);
   const active = PROMPTS[selected]!;
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<MessageKey | null>(null);
@@ -45,7 +46,7 @@ function Editor({ initial }: { initial: Guidance }) {
           if (texts[field] !== kept[field]) change[field] = texts[field];
         }
       }
-      accept(await api.saveSteering(change));
+      accept(await api.saveSteering(change, language));
       setStatus("steering.saved");
     } catch (error) {
       setStatus(error instanceof Error && error.message.includes("guidance_changed")
@@ -59,8 +60,8 @@ function Editor({ initial }: { initial: Guidance }) {
     setBusy(true);
     setStatus(retry ? "steering.synthesizing" : null);
     try {
-      if (retry) await api.synthesizeSteering();
-      const value = await api.steering();
+      if (retry) await api.synthesizeSteering(language);
+      const value = await api.steering(language);
       if (changed) {
         setTexts((current) => {
           const refreshed = { ...current };
@@ -94,7 +95,7 @@ function Editor({ initial }: { initial: Guidance }) {
         className="flex flex-col gap-4">
         <Quiet className="m-0">{t("steering.instructionsNote")}</Quiet>
         <div role="tablist" aria-label={t("steering.instructions")}
-          className="grid grid-cols-3 border-b border-edge">
+          className="grid grid-cols-2 sm:grid-cols-4 border-b border-edge">
           {PROMPTS.map((prompt, index) => <button key={prompt.field} type="button"
             role="tab" id={`prompt-tab-${prompt.field}`} aria-selected={selected === index}
             aria-controls="prompt-editor" tabIndex={selected === index ? 0 : -1}
@@ -178,11 +179,16 @@ function Editor({ initial }: { initial: Guidance }) {
   );
 }
 
-export function Steering() {
+function LanguageSteering({ language }: { language: string }) {
   const api = useApi();
   const { t } = useWords();
-  const [state] = useLoad(() => api.steering());
+  const [state] = useLoad(() => api.steering(language));
   if (state.status === "loading") return <Quiet>{t("preferences.loading")}</Quiet>;
   if (state.status === "failed") return <Quiet>{t("steering.failed")}</Quiet>;
-  return <Editor initial={state.data} />;
+  return <Editor initial={state.data} language={language} />;
+}
+
+export function Steering() {
+  const { language } = useWords();
+  return <LanguageSteering key={language} language={language} />;
 }

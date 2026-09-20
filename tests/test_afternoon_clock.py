@@ -582,6 +582,14 @@ def test_a_full_queue_is_not_topped_up(
     assert calls["devised"] == 0
 
 
+@pytest.mark.parametrize("wanted", [0, 3])
+def test_house_reads_the_actual_target_including_zero(monkeypatch, wanted) -> None:
+    monkeypatch.setattr(clock, "_get", lambda *args: {"waiting": 2, "wanted": wanted})
+    assert clock.what_the_house_may_run("https://panel.invalid", "family", "key") == (
+        [], 2, wanted,
+    )
+
+
 def test_a_parent_who_wants_none_waiting_is_written_none(
     monkeypatch: pytest.MonkeyPatch, house: House
 ) -> None:

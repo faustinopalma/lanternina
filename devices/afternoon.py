@@ -290,7 +290,7 @@ def the_request_is_done(panel: str, household: str, key: str, request_id: str) -
 def what_the_house_may_run(
     panel: str, household: str, key: str
 ) -> tuple[list[Any], int, int]:
-    """The approved afternoons, how many are with the parent, and how many they want.
+    """The approved afternoons, the unstarted idea count, and the target stock.
 
     The third is the panel's setting rather than the hub's constant: how full the list a
     parent decides from should be is a decision about them, and it is made where they are.
@@ -302,7 +302,7 @@ def what_the_house_may_run(
     return (
         list(answer.get("experiences") or []),
         int(answer.get("waiting") or 0),
-        int(answer.get("wanted") or WANTED),
+        int(answer.get("wanted", WANTED)),
     )
 
 
@@ -451,14 +451,13 @@ def top_up(
 ) -> None:
     """Ask for one more script when the parent has fewer than they want. Never raises.
 
-    One per run of the timer, and the timer is every minute, so a parent who approves four
-    has four more within the quarter hour. Not the whole shortfall at once: devising is a
+    One per run of the timer, and the timer is every minute. Not the whole shortfall at
+    once: devising is a
     model writing a script and a dozen moments, and four of those in one second is a bill
     nobody agreed to and four afternoons drawn without seeing each other.
 
-    It counts what is *waiting to be decided*, not what is approved. Those are different
-    questions — how much the house has to run, and how much the parent has to read — and
-    `panel/experiences.Backlog` answers the first.
+    The server counts pending and approved ideas that have not begun and enforces the
+    target again when a request arrives. Approving an idea does not free a slot.
     """
     if wanted <= 0 or waiting >= wanted:
         return

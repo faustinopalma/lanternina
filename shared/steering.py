@@ -34,6 +34,7 @@ class Steering:
     adaptive: str
     conduct: str = ""
     review: str = ""
+    topics: str = ""
 
     @classmethod
     def initial(cls, language: str = "it") -> Steering:
@@ -42,6 +43,7 @@ class Steering:
             *defaults(chosen),
             conduct=SAYS.text(f"conduct-{chosen}").strip(),
             review=SAYS.text(f"review-{chosen}").strip(),
+            topics=SAYS.text(f"topics-{chosen}").strip(),
         )
 
     def as_material(self) -> str:
@@ -50,6 +52,7 @@ class Steering:
                 "parentInstructions": self.instructions,
                 "conductInstructions": self.conduct,
                 "reviewInstructions": self.review,
+                "startingTopics": self.topics,
                 "feedbackGuidance": self.adaptive,
             },
             ensure_ascii=False,

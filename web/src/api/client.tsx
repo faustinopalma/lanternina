@@ -83,6 +83,7 @@ const PREFERENCES_FIELDS = [
 const GUIDELINES_FIELDS = ["lines", "fixed", "lineLimit", "maxLines"] as const;
 
 const STEERING_FIELDS = [
+  "topics", "defaultTopics",
   "instructions", "conduct", "review", "adaptive", "revision", "pendingCount", "feedbackCount",
   "defaultConduct", "defaultReview",
   "defaultInstructions", "defaultAdaptive", "instructionsLimit", "adaptiveLimit",
@@ -233,16 +234,17 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
     preferences: () => json<Preferences>("/api/preferences", {}, PREFERENCES_FIELDS),
     savePreferences: (preferences: NewPreferences) =>
       json<Preferences>("/api/preferences", write(preferences), PREFERENCES_FIELDS),
-    steering: () => json<Steering>("/api/steering", {}, STEERING_FIELDS),
-    async saveSteering(change) {
-      const response = await call("/api/steering", write(change));
+    steering: (language = "it") => json<Steering>(
+      `/api/steering?language=${encodeURIComponent(language)}`, {}, STEERING_FIELDS),
+    async saveSteering(change, language = "it") {
+      const response = await call(`/api/steering?language=${encodeURIComponent(language)}`, write(change));
       if (response.status === 409) throw new ApiError("guidance_changed");
       if (!response.ok) throw new ApiError("/api/steering", response.status === 400);
       return shaped<Steering>(await response.json(), STEERING_FIELDS,
         "/api/steering");
     },
-    async synthesizeSteering() {
-      const response = await call("/api/steering/synthesize", write({}));
+    async synthesizeSteering(language = "it") {
+      const response = await call(`/api/steering/synthesize?language=${encodeURIComponent(language)}`, write({}));
       if (response.status === 429) throw new ApiError("synthesis_limit");
       if (response.status === 409) throw new ApiError("guidance_changed");
       if (!response.ok) throw new ApiError("synthesis_failed");

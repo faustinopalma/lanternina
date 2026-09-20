@@ -19,27 +19,34 @@ class EditSteering(BaseModel):
     instructions: str | None = None
     conduct: str | None = None
     review: str | None = None
+    topics: str | None = None
     adaptive: str | None = None
     action: Literal[
-        "save", "reset_adaptive", "restore_instructions", "restore_conduct", "restore_review"
+        "save", "reset_adaptive", "restore_instructions", "restore_conduct", "restore_review",
+        "restore_topics",
     ] = "save"
 
 
 @router.get("/api/steering")
-def read_steering(account: CurrentAccount, request: Request) -> Any:
+def read_steering(
+    account: CurrentAccount, request: Request, language: Literal["it", "en"] | None = None,
+) -> Any:
     household = str(account.household_id)
-    language = request.app.state.preferences.get(household).language
+    language = language or request.app.state.preferences.get(household).language
     return request.app.state.steering.get(household, language).to_public(language)
 
 
 @router.post("/api/steering")
-def write_steering(new: EditSteering, account: CurrentAccount, request: Request) -> Any:
+def write_steering(
+    new: EditSteering, account: CurrentAccount, request: Request,
+    language: Literal["it", "en"] | None = None,
+) -> Any:
     from dataclasses import replace
 
     from shared.steering import Steering
 
     household = str(account.household_id)
-    language = request.app.state.preferences.get(household).language
+    language = language or request.app.state.preferences.get(household).language
     store: SteeringStore = request.app.state.steering
     current = store.get(household, language)
     try:
@@ -59,6 +66,7 @@ def write_steering(new: EditSteering, account: CurrentAccount, request: Request)
                 current.steering.adaptive if new.adaptive is None else new.adaptive,
                 conduct=new.conduct,
                 review=new.review,
+                topics=new.topics,
             )
         return store.save(chosen, new.revision).to_public(language)
     except SteeringConflict as exc:
@@ -68,7 +76,9 @@ def write_steering(new: EditSteering, account: CurrentAccount, request: Request)
 
 
 @router.post("/api/steering/synthesize")
-async def retry_synthesis(account: CurrentAccount, request: Request) -> Any:
+async def retry_synthesis(
+    account: CurrentAccount, request: Request, language: Literal["it", "en"] | None = None,
+) -> Any:
     from ..steering_summary import synthesize_pending
 
     outcome = await synthesize_pending(
@@ -78,6 +88,7 @@ async def retry_synthesis(account: CurrentAccount, request: Request) -> Any:
         limits=request.app.state.limit,
         configured=request.app.state.settings.monthly_limit,
         household_id=str(account.household_id),
+        language=language,
     )
     if outcome == "failed":
         raise HTTPException(status_code=503, detail="synthesis_failed")
@@ -99,4 +110,5 @@ def schedule_synthesis(afterwards: BackgroundTasks, request: Request, household:
         limits=request.app.state.limit,
         configured=request.app.state.settings.monthly_limit,
         household_id=household,
+        language=request.app.state.preferences.get(household).language,
     )

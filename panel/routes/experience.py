@@ -454,6 +454,25 @@ async def devise_afternoon(
     request: Request,
     afterwards: BackgroundTasks,
 ) -> Any:
+    from ..experiences import GenerationConflict
+
+    store: ExperienceStore = request.app.state.experiences
+    _check_idea_room(request, household_id)
+    token = store.reserve_generation(household_id)
+    if token is None:
+        raise HTTPException(status_code=409, detail="generation_in_progress")
+    try:
+        return await _devise_afternoon(household_id, has, request, afterwards, token)
+    except GenerationConflict as exc:
+        raise HTTPException(status_code=409, detail="generation_changed") from exc
+    finally:
+        store.release_generation(household_id, token)
+
+
+async def _devise_afternoon(
+    household_id: str, has: WhatTheHouseHas, request: Request,
+    afterwards: BackgroundTasks, token: str,
+) -> Any:
     """Devise one afternoon for this house and leave it waiting for the parent.
 
     The house is told what was written, and not that it may run it: what comes back here
@@ -480,6 +499,7 @@ async def devise_afternoon(
         raise HTTPException(status_code=400, detail="a house with no equipment has no afternoon")
 
     store: ExperienceStore = request.app.state.experiences
+    _check_idea_room(request, household_id)
     preferences: PreferencesStore = request.app.state.preferences
     settings_of_the_house = preferences.get(household_id)
     # Two mechanisms and two sources. What has already been used comes out of every
@@ -535,16 +555,25 @@ async def devise_afternoon(
     finally:
         _count(counter, household_id, KIND_TEXT, outcome, spent)
 
-    stored = store.offer(
+    _check_idea_room(request, household_id)
+    stored = store.finish_generation(
         OfferedExperience(
             id=experience.experience_id,
             household_id=household_id,
             experience=experience.to_dict(),
             created_at=time.time(),
-        )
+        ), token,
     )
     _read_it_back(afterwards, request, household_id, experience)
     return {"id": stored.id, "title": stored.title, "state": stored.state}
+
+
+def _check_idea_room(request: Request, household_id: str) -> None:
+    from ..experiences import ready_count
+
+    wanted = request.app.state.rhythm.get(household_id).scripts_wanted
+    if ready_count(request.app.state.experiences, household_id) >= wanted:
+        raise HTTPException(status_code=409, detail="ideas_full")
 
 
 def _read_it_back(
@@ -617,11 +646,13 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     this whole feature rests on would be held up by the hub's own code rather than by the
     panel. It pulls; nothing is ever pushed to a house.
 
-    ``waiting`` is how many are with the parent, undecided, and ``wanted`` is how many
-    they asked to have waiting. The house writes one more whenever the first is under the
+    ``waiting`` counts pending and approved ideas that have not begun; ``wanted`` is the
+    target stock. The house writes one more whenever the first is under the
     second, at any hour — writing a script puts nothing in a room, and a queue that only
     fills during the afternoon band is empty whenever anybody opens the panel.
     """
+    from ..experiences import ready_count
+
     store: ExperienceStore = request.app.state.experiences
     rhythm: RhythmStore = request.app.state.rhythm
     runnable = [
@@ -629,7 +660,7 @@ def afternoons_for_the_house(household_id: str, _: DeviceKey, request: Request) 
     ]
     return {
         "experiences": [row.to_device() for row in runnable],
-        "waiting": len(store.list(household_id, ApprovalState.PENDING.value)),
+        "waiting": ready_count(store, household_id),
         "wanted": rhythm.get(household_id).scripts_wanted,
     }
 

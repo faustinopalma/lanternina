@@ -8,6 +8,108 @@ from panel.steering import InMemorySteeringStore, SteeringConflict, clean_feedba
 from shared.steering import Steering
 
 
+def test_saved_guidance_is_independent_for_each_language() -> None:
+    store = InMemorySteeringStore()
+    italian = store.get("family", "it")
+    saved_it = store.save(italian.edited("Testo italiano", "Indicazioni italiane"), 0)
+    english = store.get("family", "en")
+    assert english.steering == Steering.initial("en")
+    assert english.revision == 0
+    saved_en = store.save(english.edited("English text", "English guidance"), 0)
+    assert store.get("family", "it") == saved_it
+    assert store.get("family", "en") == saved_en
+
+
+def test_api_language_selects_independent_prompts_and_resets() -> None:
+    from tests.test_preferences import client_for, headers
+
+    client = client_for()
+    italian = client.get("/api/steering?language=it", headers=headers()).json()
+    english = client.get("/api/steering?language=en", headers=headers()).json()
+    assert english["instructions"] == Steering.initial("en").instructions
+    assert italian["topics"] != english["topics"]
+    for language in ("it", "en"):
+        response = client.post(
+            f"/api/steering?language={language}", headers=headers(),
+            json={"revision": 0, "instructions": language, "topics": "", "adaptive": language},
+        )
+        assert response.status_code == 200 and response.json()["topics"] == ""
+    reset = client.post(
+        "/api/steering?language=en", headers=headers(),
+        json={"revision": 1, "action": "restore_topics"},
+    ).json()
+    assert reset["topics"] == english["defaultTopics"]
+    assert reset["instructions"] == "en"
+    saved_it = client.get("/api/steering?language=it", headers=headers()).json()
+    assert saved_it["topics"] == "" and saved_it["revision"] == 1
+    assert client.get("/api/steering?language=fr", headers=headers()).status_code == 422
+
+
+def test_cosmos_preserves_legacy_italian_and_stores_english_separately() -> None:
+    from azure.cosmos.exceptions import CosmosResourceNotFoundError
+
+    from panel.cosmos_store import CosmosSteeringStore
+
+    class Container:
+        def __init__(self):
+            self.rows = {"steering-family": {
+                "id": "steering-family", "instructions": "Saved Italian", "adaptive": "Notes",
+                "revision": 7, "conduct": "", "_etag": "legacy",
+            }}
+
+        def read_item(self, *, item, partition_key):
+            assert partition_key == "family"
+            if item not in self.rows:
+                raise CosmosResourceNotFoundError(status_code=404)
+            return dict(self.rows[item])
+
+        def create_item(self, *, body):
+            assert body["id"] not in self.rows
+            self.rows[body["id"]] = {**body, "_etag": "new"}
+
+    store = CosmosSteeringStore.__new__(CosmosSteeringStore)
+    store._container = Container()
+    italian = store.get("family", "it")
+    assert italian.revision == 7 and italian.steering.conduct == ""
+    assert italian.steering.topics == Steering.initial("it").topics
+    english = store.get("family", "en")
+    assert english.revision == 0 and english.steering == Steering.initial("en")
+    store.save(english.edited("English only", "English feedback", topics=""), 0)
+    assert store.get("family", "it") == italian
+    assert store.get("family", "en").steering.topics == ""
+
+
+def test_synthesis_uses_the_selected_language_not_the_household_preference(monkeypatch) -> None:
+    from panel import steering_summary
+    from tests.test_preferences import client_for, headers, household_of
+
+    client = client_for()
+    household = household_of(client)
+    store = client.app.state.steering
+    for language in ("it", "en"):
+        current = store.get(household, language)
+        store.save(current.receive(clean_feedback(language, "task", "Title", [], language)), 0)
+    italian = store.get(household, "it")
+
+    async def summarize(current, language):
+        assert language == "en" and current.language == "en"
+        return "English summary", None
+
+    monkeypatch.setattr(steering_summary, "summarize", summarize)
+    result = client.post("/api/steering/synthesize?language=en", headers=headers())
+    assert result.status_code == 200
+    assert store.get(household, "it") == italian
+    assert store.get(household, "en").steering.adaptive == "English summary"
+
+
+def test_default_topics_have_twenty_entries_in_each_language() -> None:
+    import re
+
+    for language in ("it", "en"):
+        value = Steering.initial(language)
+        assert len(re.findall(r"^\d+\. ", value.topics, flags=re.MULTILINE)) == 20
+
+
 def test_guidance_round_trip_and_household_isolation() -> None:
     store = InMemorySteeringStore()
     original = store.get("one")
@@ -17,6 +119,7 @@ def test_guidance_round_trip_and_household_isolation() -> None:
         "parentInstructions": "Use equations.",
         "conductInstructions": original.steering.conduct,
         "reviewInstructions": original.steering.review,
+        "startingTopics": original.steering.topics,
         "feedbackGuidance": "Give a defined goal.",
     }
     assert store.get("two").steering == Steering.initial()
@@ -103,7 +206,7 @@ def test_cosmos_guidance_uses_partition_and_conditional_replace() -> None:
         collide = False
 
         def read_item(self, *, item, partition_key):
-            assert item == f"steering-{partition_key}"
+            assert item == f"steering-{partition_key}-en"
             if self.row is None:
                 raise CosmosResourceNotFoundError(status_code=404)
             return dict(self.row)
@@ -124,14 +227,14 @@ def test_cosmos_guidance_uses_partition_and_conditional_replace() -> None:
     store._container = container
     current = store.get("family", "en")
     current = store.save(current.edited("Stable", "Adaptive"), 0)
-    assert store.get("family").steering.instructions == "Stable"
+    assert store.get("family", "en").steering.instructions == "Stable"
     container.collide = True
     with pytest.raises(SteeringConflict):
         store.save(current.edited("Lost", "Lost"), 1)
     container.collide = False
     store.save(current.reset_adaptive("en"), 1)
-    assert store.get("family").steering.adaptive == Steering.initial("en").adaptive
-    assert store.get("family").steering.conduct == current.steering.conduct
+    assert store.get("family", "en").steering.adaptive == Steering.initial("en").adaptive
+    assert store.get("family", "en").steering.conduct == current.steering.conduct
     container.row.pop("conduct")
     container.row.pop("review")
     migrated = store.get("family", "en")
@@ -149,14 +252,14 @@ def test_each_prompt_can_be_edited_and_restored_without_changing_the_others() ->
     client = client_for()
     initial = client.get("/api/steering", headers=headers()).json()
     revision = 0
-    for field in ("instructions", "conduct", "review"):
+    for field in ("instructions", "conduct", "review", "topics"):
         result = client.post(
             "/api/steering", headers=headers(), json={"revision": revision, field: "My text"}
         )
         assert result.status_code == 200
         revision += 1
         assert result.json()[field] == "My text"
-        for other in {"instructions", "conduct", "review", "adaptive"} - {field}:
+        for other in {"instructions", "conduct", "review", "topics", "adaptive"} - {field}:
             assert result.json()[other] == initial[other]
         result = client.post(
             "/api/steering", headers=headers(),
@@ -350,6 +453,7 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
     steering = Steering(
         "Use a verifiable question with two constraints.", "Allow algebra.",
         conduct="Offer help only when requested.", review="Explain the first incorrect step.",
+        topics="Tides and navigation.",
     )
     prompts = [
         devise_prompt(
@@ -381,6 +485,7 @@ def test_all_activity_agents_receive_both_parent_texts_and_ignore_legacy_pitch()
     for prompt in prompts:
         assert steering.instructions in prompt and steering.adaptive in prompt
         assert steering.conduct in prompt and steering.review in prompt
+        assert steering.topics in prompt and "startingTopics" in prompt
         assert "HIDDEN_" not in prompt
         assert "takes precedence" in prompt
 

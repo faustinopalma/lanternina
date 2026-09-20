@@ -69,10 +69,11 @@ class Guidance:
     pending: tuple[Feedback, ...] = ()
     history: tuple[Feedback, ...] = ()
     feedback_count: int = 0
+    language: str = "it"
 
     def edited(
         self, instructions: str, adaptive: str, *, conduct: str | None = None,
-        review: str | None = None,
+        review: str | None = None, topics: str | None = None,
     ) -> Guidance:
         return replace(
             self,
@@ -85,6 +86,9 @@ class Guidance:
                 ),
                 review=self.steering.review if review is None else clean_text(
                     review, MAX_GUIDANCE_CHARS
+                ),
+                topics=self.steering.topics if topics is None else clean_text(
+                    topics, MAX_GUIDANCE_CHARS
                 ),
             ),
         )
@@ -124,6 +128,7 @@ class Guidance:
             "instructions": self.steering.instructions,
             "conduct": self.steering.conduct,
             "review": self.steering.review,
+            "topics": self.steering.topics,
             "adaptive": self.steering.adaptive,
             "revision": self.revision,
             "pendingCount": len(self.pending),
@@ -131,6 +136,7 @@ class Guidance:
             "defaultInstructions": initial.instructions,
             "defaultConduct": initial.conduct,
             "defaultReview": initial.review,
+            "defaultTopics": initial.topics,
             "defaultAdaptive": initial.adaptive,
             "instructionsLimit": MAX_GUIDANCE_CHARS,
             "adaptiveLimit": MAX_SUMMARY_CHARS,
@@ -147,19 +153,23 @@ class SteeringStore(Protocol):
 
 @dataclass
 class InMemorySteeringStore:
-    _rows: dict[str, Guidance] = field(default_factory=dict)
+    _rows: dict[tuple[str, str], Guidance] = field(default_factory=dict)
     _lock: threading.Lock = field(default_factory=threading.Lock)
 
     def get(self, household_id: str, language: str = "it") -> Guidance:
         with self._lock:
-            return self._rows.get(household_id, Guidance(household_id, Steering.initial(language)))
+            return self._rows.get(
+                (household_id, language),
+                Guidance(household_id, Steering.initial(language), language=language),
+            )
 
     def save(self, value: Guidance, expected_revision: int) -> Guidance:
         with self._lock:
-            stored = self._rows.get(value.household_id)
+            key = (value.household_id, value.language)
+            stored = self._rows.get(key)
             revision = stored.revision if stored else 0
             if revision != expected_revision:
                 raise SteeringConflict("guidance_changed")
             saved = replace(value, revision=revision + 1)
-            self._rows[value.household_id] = saved
+            self._rows[key] = saved
             return saved

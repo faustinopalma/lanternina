@@ -378,7 +378,8 @@ describe("the rhythm", () => {
     const user = userEvent.setup();
     renderPanel(fakeApi());
     await open(user, "Ritmo");
-    expect(await screen.findByText(/Zero le ferma/)).toBeInTheDocument();
+    expect(await screen.findByText(/Zero ferma la generazione/)).toBeInTheDocument();
+    expect(screen.getByText(/le idee già presenti restano disponibili/)).toBeInTheDocument();
   });
 
   it("sets how many activities may begin in a day, and starts from two", async () => {
