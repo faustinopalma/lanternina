@@ -1,5 +1,15 @@
 # Activity record and clock
 
+## CI corrections, 20 September 2026
+
+The four ending tests still assumed that nominal duration closed a waiting activity. They now first verify that the activity remains open past that duration, then send a targeted `close_now` command through the real command handler and verify the existing ending and reporting behavior. The simulator uses its own clock for that sequence. Production runner behavior is unchanged: only an explicit parent request starts a timed ending. The report checks still require the completion record, including sheets never returned, and closure without a configured panel.
+
+The activity record keeps its existing lack of a subtitle. Its dashboard entry now uses an empty note directly, like the photos and adolescent sections, and both catalogs remove the empty `trail.note` key. The catalog test continues to reject blank translations. This removes a configuration inconsistency without adding interface text or weakening the test.
+
+Validation used an exported Git index containing only these corrections. Ruff passed. The complete Python suite passed 1,254 tests with two skips in 119.62 seconds, measured by pytest. All 207 frontend tests passed in 49.28 seconds, measured by Vitest; TypeScript and the production build passed. The existing Python deprecation and frontend chunk-size warnings remain. These are offline checks with synthetic households; no physical device or live family state was changed.
+
+## Original request
+
 The parent asked for 24-hour times throughout the panel, deletion of individual historical activities, a step-by-step view of the current activity, and two checks of the record-clearing operation before using it again. The earlier deletion incident selected a household's documents from the shared container and removed settings as well as history.
 
 ## Time display

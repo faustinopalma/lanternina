@@ -25,9 +25,10 @@ from devices import pretend as simulated
 from devices.house import House, hand_over, show
 from devices.pretend import Pretend
 from devices.print_page import recall
-from devices.run_experience import begin, carry_on, conclude_what_is_over, waiting_runs
+from devices.run_experience import begin, carry_on, conclude_what_is_over, hear, waiting_runs
 from shared.experience import Experience
 from shared.ids import SheetId
+from shared.message import Message, Says
 from shared.vision_contracts import WhatCameBack
 
 THE_AFTERNOON = Path("experiences/un-pomeriggio-di-nuvole.json")
@@ -220,16 +221,24 @@ def test_a_whole_afternoon_runs_to_its_close(
     assert waiting_runs(house.sheets_dir) == []
 
 
-def test_the_ending_arrives_when_the_clock_is_moved_past_it(
+def test_a_requested_ending_follows_the_simulated_clock(
     where: Path, house: House, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Three hours in two commands, which is the reason the clock can be moved at all."""
+    """Elapsed nominal time keeps the activity open; a parent request starts its ending."""
     the_cloud(monkeypatch)
     experience = an_experience()
-    begin(house, experience, now=simulated.the_time(Pretend(where)), send=False)
     pretend = Pretend(where)
+    run_id = begin(house, experience, now=simulated.the_time(pretend), send=False)
+    assert run_id is not None
 
-    simulated.move_on(pretend, (experience.minutes - 20) * 60.0)
+    simulated.move_on(pretend, (experience.minutes + 60) * 60.0)
+    assert conclude_what_is_over(house, simulated.the_time(pretend), send=False) == []
+    assert waiting_runs(house.sheets_dir) == [run_id]
+    before = [line for line in simulated.read_transcript(pretend) if line["what"] == "display"]
+    assert before[-1]["heading"] != experience.moment("come-e-tornato").way_out.heading
+
+    now = simulated.the_time(pretend)
+    assert hear(house, [Message(Says.CLOSE_NOW, now, run_id=run_id)], now)
     assert conclude_what_is_over(house, simulated.the_time(pretend), send=False) == []
     said = [line for line in simulated.read_transcript(pretend) if line["what"] == "display"]
     assert said[-1]["heading"] == experience.moment("come-e-tornato").way_out.heading

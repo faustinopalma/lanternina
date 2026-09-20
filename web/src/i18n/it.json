@@ -449,7 +449,6 @@
   "trail.runUnreadable": "L'hub non riesce a leggere lo stato di questa attività.",
   "trail.waitingSince": "Da: {at}",
   "trail.endsAt": "Fine prevista: {at}",
-  "trail.note": "",
   "trail.made": "Durante l'attività",
   "trail.printedAt": "Ultima pagina stampata: {at}",
   "trail.technical": "Dettagli tecnici: piano, prompt e valutazioni",

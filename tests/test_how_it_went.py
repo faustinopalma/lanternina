@@ -25,6 +25,7 @@ from devices.house import House
 from devices.run_experience import Afternoon, begin, conclude_what_is_over
 from shared.capabilities import ENDED_WAY_OUT, NEVER_CAME_BACK
 from shared.experience import Experience
+from shared.message import Message, Says
 
 THE_AFTERNOON = Path("experiences/un-pomeriggio-di-nuvole.json")
 HOURS = 60.0 * 60.0
@@ -59,10 +60,15 @@ def waiting(house: House) -> Afternoon:
 
 
 def over(house: House, experience: Experience) -> list[str]:
-    """The two steps of an ending: the way out at T-30, then the close when its own minutes
-    are up. Both are needed, which is `conclude_what_is_over`'s own design and not a detail
-    of this test — a way out is something somebody does, not something a display finishes."""
+    """Request an ending after the nominal duration, then let its way out finish."""
     late = experience.minutes * 60.0 + HOURS
+    assert conclude_what_is_over(house, now=late, send=False) == []
+    run = waiting(house)
+    assert not run.leaving_at
+    changed = run_experience.hear(
+        house, [Message(Says.CLOSE_NOW, late, run_id=run.run_id)], now=late
+    )
+    assert changed
     conclude_what_is_over(house, now=late, send=False)
     return conclude_what_is_over(house, now=late + HOURS, send=False)
 

@@ -449,7 +449,6 @@
   "trail.runUnreadable": "The hub cannot read this activity's state.",
   "trail.waitingSince": "Since: {at}",
   "trail.endsAt": "Expected end: {at}",
-  "trail.note": "",
   "trail.made": "During the activity",
   "trail.printedAt": "Last page printed: {at}",
   "trail.technical": "Technical details: plan, prompts and assessments",

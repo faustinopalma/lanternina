@@ -136,7 +136,7 @@ export function Dashboard({ api }: { api: Api }) {
       title: t("menu.group.house"),
       sections: [
         { name: "devices", title: t("devices.title"), note: t("devices.note"), Body: Devices },
-        { name: "trail", title: t("trail.title"), note: t("trail.note"), Body: TheTrail },
+        { name: "trail", title: t("trail.title"), note: "", Body: TheTrail },
         { name: "usage", title: t("usage.title"), note: t("usage.note"), Body: Usage },
       ],
     },
