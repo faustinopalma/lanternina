@@ -101,6 +101,13 @@ param deviceHousehold string = ''
 @description('JSON mapping household IDs to unique SHA-256 key digests. Raw keys remain on the hubs.')
 param deviceKeyHashes string = '{}'
 
+@description('Resource group containing the centrally managed Foundry account.')
+param aiResourceGroupName string
+
+@description('Existing Foundry account. Its models and quota are managed separately.')
+param aiExistingAccountName string
+param aiResearchUserPrincipalId string = ''
+
 param aiFrontierModelNames array = [
   'gpt-5.6-sol'
   'gpt-5.6-terra'
@@ -108,19 +115,15 @@ param aiFrontierModelNames array = [
 ]
 
 param aiFrontierModelVersion string = '2026-07-09'
-param aiFrontierModelSku string = 'GlobalStandard'
 
-@description('Thousands of tokens per minute assigned from existing quota.')
-@minValue(1)
-param aiFrontierModelCapacity int = 1000
+@description('Existing deployment selected by the application. Empty selects the first provisioned frontier model.')
+param aiRuntimeDeployment string = ''
+
+@description('Existing comma-separated frontier deployments selected by the application. Empty uses the provisioned list.')
+param aiRuntimeFrontierDeployments string = ''
 
 param aiImageModelName string = 'gpt-image-2'
 param aiImageModelVersion string = '2026-04-21'
-param aiImageModelSku string = 'GlobalStandard'
-
-@description('Images per minute assigned from existing quota.')
-@minValue(1)
-param aiImageModelCapacity int = 2
 
 // Deterministic across redeploys, and different per subscription+environment, so two
 // forks of this repo never collide on a globally-unique name.
@@ -189,23 +192,20 @@ module data 'modules/data.bicep' = {
 }
 
 module ai 'modules/ai.bicep' = {
-  scope: rgApp
+  scope: resourceGroup(aiResourceGroupName)
   name: 'ai'
   params: {
     projectName: projectName
     environmentName: environmentName
     location: location
-    suffix: suffix
     tags: tags
+    existingAccountName: aiExistingAccountName
     runtimeIdentityPrincipalId: core.outputs.runtimeIdentityPrincipalId
+    researchUserPrincipalId: aiResearchUserPrincipalId
     frontierModelNames: aiFrontierModelNames
     frontierModelVersion: aiFrontierModelVersion
-    frontierModelSku: aiFrontierModelSku
-    frontierModelCapacity: aiFrontierModelCapacity
     imageModelName: aiImageModelName
     imageModelVersion: aiImageModelVersion
-    imageModelSku: aiImageModelSku
-    imageModelCapacity: aiImageModelCapacity
   }
 }
 
@@ -233,8 +233,8 @@ module app 'modules/app.bicep' = {
     picturesContainerName: data.outputs.picturesContainerName
     pagesContainerName: data.outputs.pagesContainerName
     foundryEndpoint: ai.outputs.projectEndpoint
-    foundryDeployment: ai.outputs.defaultDeploymentName
-    foundryFrontierDeployments: join(ai.outputs.frontierDeploymentNames, ',')
+    foundryDeployment: empty(aiRuntimeDeployment) ? ai.outputs.defaultDeploymentName : aiRuntimeDeployment
+    foundryFrontierDeployments: empty(aiRuntimeFrontierDeployments) ? join(ai.outputs.frontierDeploymentNames, ',') : aiRuntimeFrontierDeployments
     foundryImageDeployment: ai.outputs.imageDeploymentName
     aiAccountEndpoint: ai.outputs.accountEndpoint
     deviceKey: deviceKey
@@ -321,8 +321,8 @@ output cosmosEndpoint string = data.outputs.cosmosEndpoint
 output aiAccountName string = ai.outputs.accountName
 output aiProjectName string = ai.outputs.projectName
 output aiProjectEndpoint string = ai.outputs.projectEndpoint
-output aiDefaultDeploymentName string = ai.outputs.defaultDeploymentName
-output aiFrontierDeploymentNames array = ai.outputs.frontierDeploymentNames
+output aiDefaultDeploymentName string = empty(aiRuntimeDeployment) ? ai.outputs.defaultDeploymentName : aiRuntimeDeployment
+output aiFrontierDeploymentNames array = empty(aiRuntimeFrontierDeployments) ? ai.outputs.frontierDeploymentNames : split(aiRuntimeFrontierDeployments, ',')
 output aiImageDeploymentName string = ai.outputs.imageDeploymentName
 output runtimeIdentityClientId string = core.outputs.runtimeIdentityClientId
 output deployIdentityClientId string = core.outputs.deployIdentityClientId

@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from typing import Any
 
 from devices.ask_panel import PanelUnreachable, draw_page
 from devices.house import CannotRun, House, hand_over, show
@@ -44,7 +45,7 @@ class Done:
 # What a hand is handed, and what it gives back. Everything a hand needs about the afternoon
 # is on the moment, apart from which afternoon it is: that is the run, and it travels because
 # the panel files the page it draws under it.
-Moves = Callable[[House, Moment, Weight, Outgoing, bool, str], Done]
+Moves = Callable[[House, Moment, Weight, Outgoing, bool, str, dict[str, Any] | None], Done]
 
 _MOVES: dict[Act, Moves] = {}
 
@@ -66,12 +67,13 @@ def play(
     said: Outgoing,
     send: bool,
     run_id: str = "",
+    document: dict[str, Any] | None = None,
 ) -> Done:
     """Carry out one moment at one weight, whichever verb it is."""
     how = _MOVES.get(moment.act)
     if how is None:
         raise CannotRun(f"nothing in this house knows how to {moment.act}")
-    return how(house, moment, weight, said, send, run_id)
+    return how(house, moment, weight, said, send, run_id, document)
 
 
 def registered() -> frozenset[Act]:
@@ -98,7 +100,8 @@ def _spoken(said: Outgoing, moment: Moment, weight: Weight) -> list[str]:
 
 @moves(Act.SAY)
 def _say(
-    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = ""
+    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = "",
+    document: dict[str, Any] | None = None,
 ) -> Done:
     show(house, moment.heading, _spoken(said, moment, weight))
     return Done()
@@ -106,7 +109,8 @@ def _say(
 
 @moves(Act.CLOSE)
 def _close(
-    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = ""
+    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = "",
+    document: dict[str, Any] | None = None,
 ) -> Done:
     show(house, moment.heading, _spoken(said, moment, weight))
     return Done()
@@ -114,7 +118,8 @@ def _close(
 
 @moves(Act.HAND_OVER)
 def _hand_over(
-    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = ""
+    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = "",
+    document: dict[str, Any] | None = None,
 ) -> Done:
     """Print one page, or say the words written for the case where no page arrives.
 
@@ -140,6 +145,7 @@ def _hand_over(
                 household=house.household,
                 key=house.device_key,
                 run_id=run_id,
+                document=document,
             )
         except PanelUnreachable as exc:
             # Loud in the journal, silent in the room: the afternoon has words for this.
@@ -166,7 +172,8 @@ def _instead(house: House, moment: HandOver, said: Outgoing, fault: str) -> Done
 
 @moves(Act.COLLECT)
 def _collect(
-    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = ""
+    house: House, moment: Moment, weight: Weight, said: Outgoing, send: bool, run_id: str = "",
+    document: dict[str, Any] | None = None,
 ) -> Done:
     """A collect is not played. It is the seam where one stretch ends and the next is asked
     for, and reaching it here means the runner lost track of where it was."""

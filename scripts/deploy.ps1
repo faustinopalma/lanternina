@@ -3,9 +3,8 @@
     Deploy the Lanternina cloud tier. Idempotent: safe to run repeatedly.
 
 .DESCRIPTION
-    Creates every Azure resource from infra/main.bicep. Nothing tenant-specific is
-    baked into the templates, so pointing this at a different subscription or tenant is a
-    fresh deploy rather than a migration.
+    Creates Lanternina resources from infra/main.bicep and connects an existing shared
+    Foundry account. A different subscription needs its own shared account parameters.
 
     The Azure CLI session is kept in a workspace-local, gitignored folder so it never
     disturbs az logins in other terminals.
@@ -29,6 +28,9 @@ param(
 
     [string]$Owner = $env:USERNAME,
     [string]$BudgetContactEmail = '',
+    [string]$AiResourceGroupName = '',
+    [string]$AiExistingAccountName = '',
+    [string]$AiResearchUserPrincipalId = '',
 
     [switch]$Login,
 
@@ -116,6 +118,10 @@ $parameters = @(
     "owner=$Owner"
 )
 
+if ($AiResourceGroupName) { $parameters += "aiResourceGroupName=$AiResourceGroupName" }
+if ($AiExistingAccountName) { $parameters += "aiExistingAccountName=$AiExistingAccountName" }
+if ($AiResearchUserPrincipalId) { $parameters += "aiResearchUserPrincipalId=$AiResearchUserPrincipalId" }
+
 $dataResourceGroup = "rg-lanternina-$EnvironmentName-data"
 $dataGroupExists = az group exists --name $dataResourceGroup | ConvertFrom-Json
 $externalIdCount = if ($dataGroupExists) {
@@ -158,6 +164,8 @@ if ($liveApi) {
         panelAdminOidcAuthority = 'LANTERNINA_ADMIN_OIDC_AUTHORITY'
         panelAdminOidcAudience  = 'LANTERNINA_ADMIN_OIDC_AUDIENCE'
         panelAdminRole          = 'LANTERNINA_ADMIN_ROLE'
+        aiRuntimeDeployment    = 'LANTERNINA_FOUNDRY_DEPLOYMENT'
+        aiRuntimeFrontierDeployments = 'LANTERNINA_FOUNDRY_FRONTIER_DEPLOYMENTS'
     }
     foreach ($name in $carried.Keys) {
         $value = $liveEnv[$carried[$name]]

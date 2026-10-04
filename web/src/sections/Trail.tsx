@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Square, Trash2 } from "lucide-react";
+import { Download, Square, Trash2 } from "lucide-react";
 
 import { useApi } from "@/api/client";
 import type { CurrentRun, Made, Trail } from "@/api/types";
@@ -17,33 +17,51 @@ function Drawn({ pictureId }: { pictureId: string }) {
   const api = useApi();
   const { t } = useWords();
   const [url, setUrl] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let alive = true;
     let made = "";
+    let documentUrl = "";
+    const isDocument = pictureId.startsWith("doc_");
+    setUrl("");
+    setPdfUrl("");
+    setFailed(false);
     api
-      .pageContent(pictureId)
+      .pageContent(isDocument ? `${pictureId}-preview` : pictureId)
       .then((bytes) => {
         if (!alive) return;
         made = URL.createObjectURL(bytes);
         setUrl(made);
       })
       .catch(() => alive && setFailed(true));
+    if (isDocument) void api.pageContent(pictureId).then((bytes) => {
+      if (!alive) return;
+      documentUrl = URL.createObjectURL(bytes);
+      setPdfUrl(documentUrl);
+    }).catch(() => alive && setFailed(true));
     return () => {
       alive = false;
       if (made) URL.revokeObjectURL(made);
+      if (documentUrl) URL.revokeObjectURL(documentUrl);
     };
   }, [api, pictureId]);
 
   if (failed) return <Quiet className="mt-1">{t("trail.sheetGone")}</Quiet>;
   if (!url) return <Quiet className="mt-1">{t("trail.sheetLoading")}</Quiet>;
   return (
+    <div>
+    {pdfUrl ? <a href={pdfUrl} download={`${pictureId}.pdf`}
+      className="mt-2 inline-flex items-center gap-2 text-sm underline"
+      title={t("trail.downloadPdf")}><Download size={18} aria-hidden="true" />
+      {t("trail.downloadPdf")}</a> : null}
     <img
       src={url}
       alt={t("trail.sheetAlt")}
       className="mt-2 w-full max-w-[22rem] rounded-control border border-edge bg-white"
     />
+    </div>
   );
 }
 

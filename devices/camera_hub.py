@@ -35,6 +35,8 @@ from devices.trmnl_byos import photo_for
 def camera_model(values: dict[str, Any]) -> tuple[str, str]:
     board = values.get("board")
     firmware = str(values.get("firmware", ""))
+    if board == "m5stack-timer-camera" or (board is None and firmware.startswith("m5stack-")):
+        return "M5Stack", "M5Stack Timer Camera OV3660"
     if board == "waveshare-ov5640" or (board is None and firmware.startswith("waveshare-")):
         return "Waveshare", "Waveshare ESP32-S3-CAM-OV5640"
     if board == "xiao-esp32s3-sense" or (board is None and firmware.startswith("camera-")):

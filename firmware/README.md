@@ -2,7 +2,7 @@
 
 ESP32 code for the devices in the house: e-paper displays, the LCD, and the physical buttons.
 
-The [camera firmware](camera/README.md) is an isolated PlatformIO project for the XIAO ESP32S3 Sense. The e-paper firmware and provisioning procedures below remain separate.
+The camera firmware has separate PlatformIO targets for [XIAO ESP32S3 Sense](camera/README.md), [Waveshare OV5640](camera-waveshare/README.md) and [M5Stack Timer Camera OV3660](camera-m5stack/README.md). The M5Stack target provides two external button inputs for the printed enclosure. The e-paper firmware and provisioning procedures below remain separate.
 
 ## Rules for anything added here
 
@@ -13,9 +13,11 @@ The [camera firmware](camera/README.md) is an isolated PlatformIO project for th
 
 ## TRMNL displays
 
+The Lanternina release installed on CF7D04 and FB9F18 on 21 September 2026 adds indefinite Wi-Fi retries and three non-destructive button commands. Both report `1.8.12-lanternina-20260921`. [The release record](../ideas/2026-09-21-display-controls.md) contains the button map, build procedure, image hash, installation evidence, USB recovery and remaining checks.
+
 The parent chooses the normal display connection interval in Rhythm, independently of picture-generation cadence. The hub fetches the setting through its regular inventory exchange, keeps it locally and returns it as `refresh_rate` on each display request. The installed TRMNL firmware already supports this field: the display adopts the setting on its next Wi-Fi connection without USB or a firmware update. Low-battery protection may lengthen the interval and a button-response cycle temporarily shortens it. The default is 10 minutes; connection and rendering add to the wall-clock period.
 
-The 7.5-inch OG DIY kits run the tagged TRMNL firmware with the three patches in `patches/`. `trmnl-v1.8.12-mdns-byos.patch` makes the BYOS URL `http://lanternina.local:8080` independent of the hub's DHCP address. `trmnl-v1.8.12-no-button-reset.patch` takes the two destructive presses off the button: upstream wipes the Wi-Fi credentials after five seconds of holding and the device credentials after fifteen, and holding is what somebody does when a press seems not to have registered.
+The 7.5-inch OG DIY kits use tagged TRMNL firmware with the patches in `patches/`. `trmnl-v1.8.12-mdns-byos.patch` makes the BYOS URL `http://lanternina.local:8080` independent of the hub's DHCP address. `trmnl-v1.8.12-no-button-reset.patch` takes the two destructive presses off the button: upstream wipes the Wi-Fi credentials after five seconds of holding and the device credentials after fifteen, and holding is what somebody does when a press seems not to have registered.
 
 `trmnl-v1.8.12-real-battery.patch` makes the board read its battery. Upstream defines `FAKE_BATTERY_VOLTAGE` for `BOARD_XIAO_EPAPER_DISPLAY` in `src/DEV_Config.h`, with its own comment saying to take it out after testing, and `readBatteryVoltage()` therefore returns the constant `4.2f` and never touches the ADC. Both units in the house reported exactly 4.2 V for as long as anybody looked, and the panel said "batteria carica" about a display that had been off the cable for a fortnight. Everything downstream was dead with it: the 3.70 V and 3.60 V thresholds in `devices/trmnl_byos.py` could not fire, `LOW_BATTERY_REFRESH` and `CRITICAL_BATTERY_REFRESH` never applied, and the low-battery screens could not appear. The real read is in the same function, a few lines below the fake one — `PIN_VBAT_SWITCH` 6 on, eight samples of `PIN_BATTERY` 3, averaged and doubled for the divider.
 
@@ -35,7 +37,7 @@ The proven binary is kept at `/opt/lanternina/firmware/trmnl-7inch5-og-diy-kit-r
 
 Recovery does not depend on the button: the hub keeps 16 MiB of original flash per unit in `/var/lib/lanternina/trmnl-backups/` and reprovisions over USB, which is the same cable the reset would have forced anyway.
 
-For e-paper displays, USB supports explicit provisioning with the Wi-Fi configuration in `/etc/lanternina/trmnl-provisioning.json`. Automatic udev calls ignore unknown or incompletely enrolled boards, so a camera cannot receive the display image. The display wakes, fetches over Wi-Fi, updates the paper and sleeps. The camera instead stays awake on a live USB data bus.
+For e-paper displays, USB supports explicit provisioning with the Wi-Fi configuration in `/etc/lanternina/trmnl-provisioning.json`. Automatic udev calls ignore unknown or incompletely enrolled boards, so a camera cannot receive the display image. The display wakes, fetches over Wi-Fi, updates the paper and sleeps. The S3 cameras stay awake on a live USB data bus; the FTDI-connected M5Stack uses a 120-second idle window.
 
 The local BYOS server has no content-write endpoint. It accepts setup only for MAC addresses registered by the physical USB provisioner and issues a different token to each display. MAC-based bootstrap can still be spoofed by a peer already on the home LAN; this is the remaining limit of the upstream TRMNL protocol, not a device identity proof.
 
@@ -44,6 +46,6 @@ The local BYOS server has no content-write endpoint. It accepts setup only for M
 These block writing any of it, and are deliberately not guessed at:
 
 - **Authentication beyond the TRMNL token.** There is no anonymous broker or write endpoint, but the setup exchange still identifies hardware by MAC. See T6 in [../docs/THREAT-MODEL.md](../docs/THREAT-MODEL.md).
-- **Buttons**: how many, where, and whether their meaning is fixed or context-dependent. Context-dependent meanings change the protocol substantially.
+- The OG DIY display buttons have fixed functions in the September release. Controls for other devices remain separate decisions.
 - **Character set.** The previous system's embedded fonts covered ASCII only and silently dropped accented characters. If the interface language is Italian, fonts must be regenerated before any text is displayed — silently losing letters is not acceptable on a display someone is reading.
 - **E-paper refresh behaviour**: partial vs full refresh, and what the display shows while the mini-PC is unreachable.

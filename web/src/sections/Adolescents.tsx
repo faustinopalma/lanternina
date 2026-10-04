@@ -1,4 +1,4 @@
-import { Copy, KeyRound, Link, RefreshCw, UserX } from "lucide-react";
+import { Copy, KeyRound, Link, RefreshCw, Trash2, UserX } from "lucide-react";
 import { useState } from "react";
 
 import { useApi } from "@/api/client";
@@ -15,7 +15,7 @@ export function Adolescents() {
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [confirm, setConfirm] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState<{ id: string; permanent: boolean } | null>(null);
   const [issued, setIssued] = useState<(InvitationCode & { email: string }) | null>(null);
 
   async function invite(address: string) {
@@ -31,14 +31,16 @@ export function Adolescents() {
     finally { setBusy(false); }
   }
 
-  async function revoke(id: string) {
+  async function remove(id: string, permanent: boolean) {
     setBusy(true);
+    setMessage("");
     try {
-      await api.revokeAdolescent(id);
+      if (permanent) await api.deleteAdolescent(id);
+      else await api.revokeAdolescent(id);
       setIssued(null);
       setConfirm(null);
       refresh();
-    } catch { setMessage(t("access.failed")); }
+    } catch { setMessage(t("access.removeFailed")); }
     finally { setBusy(false); }
   }
 
@@ -51,8 +53,9 @@ export function Adolescents() {
 
   if (state.status === "loading") return <p role="status">{t("portal.loading")}</p>;
   if (state.status === "failed") return <Button onClick={refresh}>{t("portal.retry")}</Button>;
-  const active = state.data.members.filter((member) => member.active);
-  const invitations = state.data.invitations.filter((entry) => entry.status !== "accepted");
+  const members = state.data.members;
+  const invitations = state.data.invitations.filter((entry) => entry.status !== "accepted"
+    && !(entry.status === "revoked" && members.some((member) => member.email === entry.email)));
   return <div className="max-w-[42rem] space-y-6">
     <form onSubmit={(event) => { event.preventDefault(); void invite(email); }} className="space-y-3">
       <label className="block" htmlFor="adolescent-email">{t("access.email")}</label>
@@ -82,15 +85,18 @@ export function Adolescents() {
       </div>
     </section>}
     <p role="status">{message}</p>
-    {active.length === 0 && invitations.length === 0 && <p>{t("access.empty")}</p>}
-    {[...active.map((member) => ({ ...member, status: "active", expiresAt: 0 })), ...invitations]
+    {members.length === 0 && invitations.length === 0 && <p>{t("access.empty")}</p>}
+    {[...members.map((member) => ({ ...member, status: member.active ? "active" : "revoked", expiresAt: 0 })), ...invitations]
       .map((entry) => <div key={entry.id} className="border-t border-edge py-4 space-y-3">
         <p className="break-all font-semibold">{entry.email}</p>
         <p>{t(`access.state.${entry.status}` as Parameters<typeof t>[0])}
           {["sent", "ready"].includes(entry.status) ? ` · ${dateTime(entry.expiresAt)}` : ""}</p>
-        {confirm === entry.id ? <div className="flex flex-wrap items-center gap-3">
-          <p>{t("access.confirm")}</p>
-          <Button disabled={busy} onClick={() => void revoke(entry.id)}>{t("access.revoke")}</Button>
+        {confirm?.id === entry.id ? <div className="flex flex-wrap items-center gap-3">
+          <p>{t(confirm.permanent ? "access.deleteConfirm" : "access.confirm")}</p>
+          <Button disabled={busy} onClick={() => void remove(entry.id, confirm.permanent)}>
+            {confirm.permanent ? <Trash2 aria-hidden className="size-4" /> : <UserX aria-hidden className="size-4" />}
+            {t(confirm.permanent ? "access.delete" : "access.revoke")}
+          </Button>
           <Button disabled={busy} onClick={() => setConfirm(null)}>{t("portal.cancel")}</Button>
         </div> : <div className="flex flex-wrap gap-3">
           {entry.status !== "active" && <Button disabled={busy}
@@ -98,8 +104,12 @@ export function Adolescents() {
             <RefreshCw aria-hidden className="size-4" />{t("access.resend")}
           </Button>}
           {["active", "ready", "sent", "sending"].includes(entry.status) && <Button disabled={busy}
-            onClick={() => setConfirm(entry.id)}>
+            onClick={() => setConfirm({ id: entry.id, permanent: false })}>
             <UserX aria-hidden className="size-4" />{t("access.revoke")}
+          </Button>}
+          {["revoked", "expired", "failed"].includes(entry.status) && <Button disabled={busy}
+            onClick={() => setConfirm({ id: entry.id, permanent: true })}>
+            <Trash2 aria-hidden className="size-4" />{t("access.delete")}
           </Button>}
         </div>}
       </div>)}

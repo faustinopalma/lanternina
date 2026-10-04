@@ -110,3 +110,51 @@ def test_waveshare_status_accounts_for_psram_heap_overhead():
     ):
         with pytest.raises(ValueError):
             script["verify_status"](wrong, mac)
+
+
+def test_m5stack_guard_rejects_s3_and_other_flash_or_identity():
+    script = runpy.run_path(str(Path(__file__).parents[1] / "deploy/flash-m5stack-camera.py"))
+    mac = "3C:8A:1F:D7:A7:B4"
+    output = f"Chip is ESP32-D0WDQ6-V3 (revision v3.1)\nMAC: {mac}\nDetected flash size: 4MB\n"
+    script["verify_hardware"](output, mac)
+    for wrong in (output.replace(mac, "other"), output.replace("4MB", "8MB"),
+                  output.replace("4MB", "4MBX"), output.replace("ESP32-D0WDQ6-V3", "ESP32-S3")):
+        with pytest.raises(ValueError):
+            script["verify_hardware"](wrong, mac)
+    with pytest.raises(ValueError):
+        verify_hardware(output, mac)
+    script["validate_update"](True, False)
+    script["validate_update"](False, True)
+    for first, installed in ((True, True), (False, False)):
+        with pytest.raises(ValueError):
+            script["validate_update"](first, installed)
+
+
+def test_m5stack_status_uses_mapped_psram_and_two_external_buttons():
+    script = runpy.run_path(str(Path(__file__).parents[1] / "deploy/flash-m5stack-camera.py"))
+    mac = "3C:8A:1F:D7:A7:B4"
+    status = ("board=m5stack-timer-camera wake_gpio=13 led_gpio=2\n"
+              f"status usb=unknown psram=4192139 filesystem=1 identity={mac} button_gpio=4\n")
+    script["verify_status"](status, mac)
+    for wrong in (status.replace("4192139", "0"), status.replace("filesystem=1", "filesystem=10"),
+                  status.replace(mac, mac + "FF"), status.replace("wake_gpio=13", "wake_gpio=0"),
+                  status.replace("button_gpio=4", "button_gpio=40")):
+        with pytest.raises(ValueError):
+            script["verify_status"](wrong, mac)
+
+
+def test_m5stack_partitions_fit_three_bounded_photos_in_four_mib():
+    import csv
+
+    path = Path(__file__).parents[1] / "firmware/camera-m5stack/partitions.csv"
+    with path.open() as stream:
+        rows = list(csv.reader(stream, skipinitialspace=True))
+    assert len(rows) == 3
+    end = 0x9000
+    for row in rows:
+        offset, size = int(row[3], 0), int(row[4], 0)
+        assert offset == end and size > 0
+        end += size
+    assert end == 4 * 1024 * 1024
+    assert rows[1][2] == "factory"
+    assert int(rows[2][4], 0) > 3 * (750000 + 8192)

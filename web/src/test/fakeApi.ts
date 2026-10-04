@@ -628,6 +628,7 @@ export function fakeApi(
     familyAccess: async () => ({ members: [], invitations: [] }),
     inviteAdolescent: async () => { throw new Error("Invitations unavailable in preview"); },
     revokeAdolescent: async () => { throw new Error("No adolescent in preview"); },
+    deleteAdolescent: async () => { throw new Error("No adolescent in preview"); },
     admission: async (): Promise<Admission> => ({
       kind: "in",
       me: { accountId: "acct-demo", householdId: "house-demo", status: "active" },

@@ -64,6 +64,7 @@ def test_capture_check_does_not_confuse_progress_with_success(monkeypatch, failu
 
 @pytest.mark.parametrize("command,reply", [
     ("USB_TEST_ON", "usb_test=on button_triggers_disabled_until_disconnect"),
+    ("USB_TEST_ON", "usb_test=on button_triggers_disabled_until_sleep"),
     ("USB_TEST_OFF", "usb_test=off"),
 ])
 def test_usb_mode_requires_matching_acknowledgement(monkeypatch, command, reply):
@@ -84,4 +85,30 @@ def test_installation_requires_fresh_authenticated_status(monkeypatch, capsys):
     monkeypatch.setattr(camera_usb, "authenticated_since", lambda *args: next(fresh))
     monkeypatch.setattr(sys, "argv", ["camera_usb", "STATUS", "--authenticated-since", "100"])
     camera_usb.main()
+    assert "fresh authenticated status verified" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("identity", ["other", "3C:8A:1F:D7:A7:B4FF"])
+def test_explicit_port_refuses_capture_on_another_identity(monkeypatch, identity):
+    port = Port([f"status usb=unknown identity={identity}"])
+    monkeypatch.setattr(camera_usb, "open_port", lambda name: port)
+    monkeypatch.setattr(sys, "argv", ["camera_usb", "CAPTURE", "--mac", "3C:8A:1F:D7:A7:B4",
+                                      "--port", "/dev/serial/by-id/m5stack"])
+    with pytest.raises(RuntimeError, match="another camera"):
+        camera_usb.main()
+    assert port.sent == [b"STATUS\n"]
+
+
+def test_m5stack_report_verifies_identity_and_authentication_without_capture(monkeypatch, capsys):
+    mac = "3C:8A:1F:D7:A7:B4"
+    port = Port([f"status usb=unknown identity={mac}",
+                 "status_http=200 phase=operation_complete",
+                 f"status usb=unknown filesystem=1 identity={mac}"])
+    monkeypatch.setattr(camera_usb, "open_port", lambda name: port)
+    monkeypatch.setattr(camera_usb, "authenticated_since", lambda *args: True)
+    monkeypatch.setattr(sys, "argv", ["camera_usb", "REPORT", "--mac", mac,
+                                      "--port", "/dev/serial/by-id/m5stack",
+                                      "--authenticated-since", "100"])
+    camera_usb.main()
+    assert port.sent == [b"STATUS\n", b"REPORT\n"]
     assert "fresh authenticated status verified" in capsys.readouterr().out

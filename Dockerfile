@@ -22,6 +22,7 @@ COPY devices/ ./devices/
 # which cost nothing until the panel gained a route that calls one: the import is lazy, so
 # the app started, the route registered, and the failure waited for the first real page.
 COPY agents/ ./agents/
+COPY printing/ ./printing/
 # The manual of forms the deviser builds an afternoon from. It sits beside `shared/` here
 # because `shared/methods.py` finds it one step up from itself, which is the same step in a
 # checkout and in this image. Left out, the panel still devises: the corpus degrades to no
@@ -36,6 +37,7 @@ RUN pip install --no-cache-dir ".[panel]"
 
 RUN useradd --create-home --uid 10001 lanternina
 USER 10001
+RUN python -c "from printing.document import render_bounded; result = render_bounded(dict(title='Runtime check', language='en', paragraphs=['The document contains native text.'], steps=['Read the page.'], note=[], spaces=[])); assert result.audit['selected']['valid']; assert result.audit['selected']['fonts']; print(result.audit['selected'])"
 
 # Must match apiTargetPort in infra/modules/app.bicep, or ingress accepts the connection
 # and then times out with no useful error.

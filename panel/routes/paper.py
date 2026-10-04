@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import base64
 import io
+import json
 import logging
 import time
 from typing import Any
@@ -42,7 +43,7 @@ from ..usage import (
     at_the_limit,
     event_from,
 )
-from .trail import filed
+from .trail import filed, opened
 
 router = APIRouter()
 
@@ -57,6 +58,8 @@ class PageToDraw(BaseModel):
     # caller that predates the field, and the page is still drawn: a record is worth less
     # than a page reaching the table.
     runId: str = ""
+    format: str = "image"
+    document: dict[str, Any] = Field(default_factory=dict)
 
 
 class PagesToCompare(BaseModel):
@@ -143,6 +146,11 @@ async def draw_a_page(household_id: str, wanted: PageToDraw, _: DeviceKey, reque
     except PageError as exc:
         raise HTTPException(status_code=400, detail=f"not a page: {exc}") from exc
 
+    if wanted.format == "pdf-v1":
+        return await _document(request, household_id, wanted, page)
+    if wanted.format != "image":
+        raise HTTPException(status_code=400, detail="unsupported_document_format")
+
     from ..paper import draw_page
 
     spent: Any = None
@@ -161,6 +169,57 @@ async def draw_a_page(household_id: str, wanted: PageToDraw, _: DeviceKey, reque
         _count(counter, household_id, KIND_IMAGE, outcome, spent)
     _keep_the_drawing(request, household_id, wanted.runId, png, page, asked)
     return {"imageBase64": base64.b64encode(png).decode()}
+
+
+async def _document(request: Request, household_id: str, wanted: PageToDraw, page: Page) -> Any:
+    import hashlib
+
+    from printing.document import overview
+
+    from ..paper import compose_document
+    from ..usage import KIND_TEXT
+
+    if not wanted.document:
+        raise HTTPException(status_code=400, detail="document_requires_activity_context")
+    trace: list[dict[str, Any]] = []
+    usages: list[Any] = []
+    outcome = FAILED
+    try:
+        opened(request.app.state.trail, household_id, wanted.runId, wanted.document, time.time())
+        document = await compose_document(page, wanted.document, now=time.time(),
+                                          trace=trace, usages=usages)
+        preview = overview(document.previews)
+        identity = str(new_id("doc"))
+        archive = request.app.state.pages
+        for suffix, media, content in (
+            ("", "application/pdf", document.pdf),
+            ("-preview", "image/png", preview),
+            ("-audit", "application/json", json.dumps(document.audit).encode()),
+        ):
+            archive.save(PictureRecord(id=identity + suffix, household_id=household_id,
+                                       theme=page.title, created_at=time.time(),
+                                       kind="document", media=media), content)
+        filed(request.app.state.trail, household_id, wanted.runId, kind=WHAT_WAS_DRAWN,
+              at=time.time(), heading=page.title, picture_id=identity,
+              asked=json.dumps(trace, ensure_ascii=False))
+        outcome = SERVED
+        return {"format": "pdf-v1", "pdfBase64": base64.b64encode(document.pdf).decode(),
+                "sha256": hashlib.sha256(document.pdf).hexdigest(),
+                "imageBase64": base64.b64encode(preview).decode(),
+                "previewsBase64": [base64.b64encode(png).decode() for png in document.previews],
+                "pages": len(document.previews)}
+    except SafetyBlocked as exc:
+        outcome = REFUSED
+        raise HTTPException(status_code=422, detail="refused_by_the_gate") from exc
+    except (NoCapacityError, CloudUnavailable, ValueError) as exc:
+        filed(request.app.state.trail, household_id, wanted.runId, kind="fault",
+              at=time.time(), heading=page.title, body="Printable document needs review.",
+              why=str(exc), asked=json.dumps(trace, ensure_ascii=False))
+        raise HTTPException(status_code=503, detail="document_needs_review") from exc
+    finally:
+        for usage in usages:
+            _count(request.app.state.usage, household_id,
+                   KIND_IMAGE if usage is not None and usage.size else KIND_TEXT, outcome, usage)
 
 
 def _keep_the_drawing(

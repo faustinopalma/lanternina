@@ -17,6 +17,9 @@ from tests.test_photo_store import PHOTO, jpeg
 
 
 @pytest.mark.parametrize("values,expected", [
+    ({"board": "m5stack-timer-camera"}, ("M5Stack", "M5Stack Timer Camera OV3660")),
+    ({"firmware": "m5stack-2026-10-02"}, ("M5Stack", "M5Stack Timer Camera OV3660")),
+    ({"board": "unrecognized", "firmware": "m5stack-other"}, ("Camera", "ESP32 camera")),
     ({"board": "waveshare-ov5640"}, ("Waveshare", "Waveshare ESP32-S3-CAM-OV5640")),
     ({"firmware": "waveshare-2026-09-16-lcd1-2"},
      ("Waveshare", "Waveshare ESP32-S3-CAM-OV5640")),
@@ -48,26 +51,34 @@ def test_battery_settings_are_cached_by_identity_and_invalid_updates_preserve_th
     assert hub.battery_settings("WAVE")["batteryStatusEnabled"] is False
 
 
-def test_camera_status_reports_model_voltage_and_authenticated_battery_settings(tmp_path):
+@pytest.mark.parametrize("board,name,model,voltage,usb,level,enabled", [
+    ("waveshare-ov5640", "Waveshare", "Waveshare ESP32-S3-CAM-OV5640",
+     4.11, False, "ok", True),
+    ("m5stack-timer-camera", "M5Stack", "M5Stack Timer Camera OV3660",
+     None, None, "unknown", False),
+])
+def test_camera_status_reports_model_voltage_and_authenticated_battery_settings(
+    tmp_path, board, name, model, voltage, usb, level, enabled,
+):
     hub = CameraHub({"database": str(tmp_path / "photos.db"), "cameras": {"WAVE": "token"}},
                     House(sheets_dir=tmp_path), tmp_path / "screen.bmp")
     hub.save_battery_settings({"things": [{"id": "WAVE", "kind": "camera",
-        "batteryStatusEnabled": True, "batteryStatusMinutes": 7}]})
+        "batteryStatusEnabled": enabled, "batteryStatusMinutes": 7}]})
     server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(hub))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    values = {"board": "waveshare-ov5640", "voltage": 4.11, "rssi": -40, "usb": False}
+    values = {"board": board, "voltage": voltage, "rssi": -40, "usb": usb}
     request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/status",
         json.dumps(values).encode(), {"X-Camera-Id": "WAVE", "Authorization": "Bearer token"})
     try:
         with urllib.request.urlopen(request) as response:
-            assert json.load(response) == {"received": True, "batteryStatusEnabled": True,
+            assert json.load(response) == {"received": True, "batteryStatusEnabled": enabled,
                                           "batteryStatusMinutes": 7}
         row = hub.store.cameras()[0]
-        assert row["name"] == "Waveshare WAVE"
-        assert row["model"] == "Waveshare ESP32-S3-CAM-OV5640"
-        assert row["voltage"] == 4.11
-        assert row["level"] == "ok"
+        assert row["name"] == f"{name} WAVE"
+        assert row["model"] == model
+        assert row["voltage"] == voltage
+        assert row["level"] == level
         request.remove_header("Authorization")
         with pytest.raises(urllib.error.HTTPError) as denied:
             urllib.request.urlopen(request)

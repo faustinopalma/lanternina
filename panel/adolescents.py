@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import threading
 from collections.abc import Callable
@@ -28,7 +29,13 @@ class MemoryPortalStore:
             return result
 
     def known_subject(self, subject: str) -> bool:
-        return subject in self.read()["members"]
+        return known_subject(self.read(), subject)
+
+
+def known_subject(data: dict[str, Any], subject: str) -> bool:
+    return subject in data["members"] or hashlib.sha256(subject.encode()).hexdigest() in data.get(
+        "removedSubjects", {},
+    )
 
 
 class BlobPortalStore(MemoryPortalStore):

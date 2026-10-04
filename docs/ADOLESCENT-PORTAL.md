@@ -26,6 +26,10 @@ An adolescent may retain 200 photographs and reserve up to 1,000 uploads per rol
 
 Photo content endpoints require authentication and return `Cache-Control: no-store`. Deletion replaces archived bytes with the existing tombstone and propagates to the hub on its next synchronization. It does not undo an already printed page or completed activity. Revocation preserves photographs for the parent; it is not a request to delete family photographs.
 
+The parent can permanently delete a revoked access, or an invitation that is revoked, expired or failed. The panel asks for confirmation. Removing a membership deletes its access record and every invitation to that address in the household, including any newer code. Photos and activities stay in the family archive, and the external identity-provider account stays unchanged. A later invitation creates a new membership; the adolescent's old photographs remain available to the parent rather than transferring to that new membership.
+
+The service retains a hashed subject marker to prevent the removed adolescent identity from registering as a parent. The marker contains no email or household reference. Recent deleted invitations retain only their household and creation time for the rolling 24-hour invitation limit; later invitation writes discard expired counter entries. Other households' records are unaffected.
+
 ## Home processing
 
 The camera hub retrieves at most ten pending portal photographs per synchronization and stores them through its existing SQLite receipt path. Synchronization follows the existing worker interval of 60 seconds, plus network and processing time. A disconnected home leaves the photograph pending in the cloud.
@@ -37,6 +41,8 @@ The hub associates receipt time with a single waiting camera-return moment when 
 The code-based flow was deployed to https://app.lanternina.com/portal on 15 September 2026. The parent creates invitations at https://app.lanternina.com/#adolescents. API revision 0000123 runs image portal-code-20260915071502; the existing hub synchronizer was updated with a recoverable backup. Live checks verified the new assets, authentication refusals, CORS, the registration redirect and an authenticated hub pull. The identity provider presents its registration option. No real adolescent account was created during deployment, so its first interactive registration and redemption remain to be exercised by the family.
 
 The implementation was checked locally on 15 September 2026. Backend tests cover code generation without email, no-store responses, expiry, regeneration, revocation, matching email, redemption attempt limits, parent suspension, concurrent acceptance, household and sibling isolation, Blob ETag conflicts and restart, concurrent upload capacity, image validation, EXIF removal, idempotency, hub synchronization, processing state and deletion. Frontend tests cover code and link copying, manual redemption and correction, authentication return, explicit acceptance, mismatched email, network retry, parent controls, photo preview, retry with the same identifier and confirmed deletion.
+
+The owner confirmed role-correct entry with real parent and adolescent accounts on 19 September 2026. Permanent access removal was then tested locally for confirmation, cancellation, failure recovery, list refresh, persistent deletion, household isolation and continued denial of parent permissions. Physical photograph processing remains a separate acceptance check.
 
 Run `python -m pytest tests/test_adolescent_portal.py tests/test_panel.py tests/test_photo_blob.py tests/test_photo_sync.py tests/test_photos.py tests/test_photo_store.py tests/test_scan_archive.py tests/test_web_i18n.py -q`, then `npm --prefix web test` and `npm --prefix web run build`. Use the repository interpreter and keep live model credentials out of the test environment.
 

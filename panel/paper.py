@@ -62,6 +62,33 @@ async def draw_page(page: Page, *, now: float) -> tuple[bytes, str, ModelUsage |
     return png, asked, router.last_usage
 
 
+async def compose_document(
+    page: Page, plan: dict[str, Any], *, now: float,
+    trace: list[dict[str, Any]], usages: list[Any],
+) -> Any:
+    import asyncio
+
+    from agents.document_writer import prepare
+    from agents.page_maker import on_paper
+    from printing.document import render_bounded
+
+    router, context, gate = _cloud(now)
+    try:
+        async with asyncio.timeout(150):
+            source, image = await prepare(
+                context, page, plan, gate=gate, trace=trace, usages=usages,
+            )
+            document = await asyncio.to_thread(render_bounded, source,
+                                               on_paper(image) if image else None)
+        document.audit["source"] = source
+        document.audit["trace"] = trace
+        return document
+    except TimeoutError as exc:
+        raise ValueError("document preparation exceeded 150 seconds") from exc
+    finally:
+        await gate.aclose()
+
+
 async def read_the_page(
     blank: PageImage | None, came_back: PageImage, *, about: str, now: float,
     photograph: bool = False,

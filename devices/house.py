@@ -34,6 +34,7 @@ from devices.epaper import render_notice_bmp
 from devices.inventory import holders, jobs_language, load_jobs, return_device
 from devices.pretend import Pretend
 from devices.trmnl_byos import screen_for, sheet_layer_until
+from printing.document import Document
 from shared.capabilities import (
     JOB_RETURN,
     JOB_SCAN,
@@ -254,7 +255,7 @@ def the_sheet_layer_is_done(house: House, now: float) -> None:
 
 def hand_over(
     house: House,
-    drawn: NDArray[np.uint8],
+    drawn: NDArray[np.uint8] | Document,
     *,
     sheet_id: SheetId,
     send: bool = True,

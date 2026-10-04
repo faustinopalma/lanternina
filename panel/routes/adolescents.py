@@ -10,6 +10,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 
+from panel.adolescents import known_subject
 from panel.gate import CurrentAccount, verifier_for
 from panel.principal import Principal, principal_from_headers
 from shared.accounts import AccountStatus
@@ -36,6 +37,21 @@ def active_member(request: Request, principal: Identity) -> dict[str, Any]:
 
 
 Member = Annotated[dict[str, Any], Depends(active_member)]
+
+
+@router.get("/api/session")
+def session(principal: Identity, request: Request, response: Response) -> dict[str, str]:
+    response.headers["Cache-Control"] = "no-store"
+    data = request.app.state.portal.read()
+    if known_subject(data, principal.subject):
+        return {"destination": "adolescent"}
+    if request.app.state.store.by_subject(principal.subject) is not None:
+        return {"destination": "parent"}
+    if any(row["email"] == principal.contact.strip().casefold()
+           and row["status"] in {"ready", "sent"} and row["expiresAt"] > time.time()
+           for row in data["invitations"].values()):
+        return {"destination": "adolescent"}
+    return {"destination": "new"}
 
 
 class InviteBody(BaseModel):
@@ -84,7 +100,11 @@ def invite(body: InviteBody, account: CurrentAccount, request: Request, response
         invitations = data["invitations"]
         recent = [item for item in invitations.values()
                   if item["household"] == row["household"] and item["createdAt"] > now - 86400]
-        if len(recent) >= 10:
+        history = [item for item in data.get("invitationHistory", [])
+                   if item["createdAt"] > now - 86400]
+        data["invitationHistory"] = history
+        removed = sum(item["household"] == row["household"] for item in history)
+        if len(recent) + removed >= 10:
             raise HTTPException(429, "invitation_limit")
         for other in invitations.values():
             if other["household"] == row["household"] and other["email"] == email and (
@@ -174,3 +194,46 @@ def revoke(record_id: str, account: CurrentAccount, request: Request) -> dict:
 
     request.app.state.portal.change(remove)
     return {"revoked": True}
+
+
+@router.delete("/api/adolescents/{record_id}/permanent")
+def delete_access(record_id: str, account: CurrentAccount, request: Request) -> dict:
+    def remove(data: dict) -> None:
+        household = str(account.household_id)
+        for subject, member in data["members"].items():
+            if member["id"] != record_id or member["household"] != household:
+                continue
+            if member["active"]:
+                raise HTTPException(409, "revoke_access_first")
+            keys = [key for key, row in data["invitations"].items()
+                    if row["household"] == household and row["email"] == member["email"]]
+            _delete_invitations(data, keys)
+            data.setdefault("removedSubjects", {})[
+                hashlib.sha256(subject.encode()).hexdigest()
+            ] = True
+            del data["members"][subject]
+            return
+        for key, row in data["invitations"].items():
+            if row["id"] != record_id or row["household"] != household:
+                continue
+            if row["status"] == "accepted" or (
+                row["status"] in {"ready", "sent", "sending"}
+                and row["expiresAt"] > time.time()
+            ):
+                raise HTTPException(409, "revoke_access_first")
+            _delete_invitations(data, [key])
+            return
+        raise HTTPException(404, "unknown_access")
+
+    request.app.state.portal.change(remove)
+    return {"deleted": True}
+
+
+def _delete_invitations(data: dict, keys: list[str]) -> None:
+    since = time.time() - 86400
+    history = [item for item in data.get("invitationHistory", []) if item["createdAt"] > since]
+    for key in keys:
+        row = data["invitations"].pop(key)
+        if row["createdAt"] > since:
+            history.append({"household": row["household"], "createdAt": row["createdAt"]})
+    data["invitationHistory"] = history

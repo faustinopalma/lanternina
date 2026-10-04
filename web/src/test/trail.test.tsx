@@ -12,6 +12,23 @@ import { TheTrail } from "@/sections/Trail";
 import { renderPanel } from "@/test/render";
 
 describe("what the system wrote", () => {
+  it("shows all-page preview and downloads the composed PDF master", async () => {
+    const user = userEvent.setup();
+    const whole = await fakeApi().trail("aft_1");
+    const pageContent = vi.fn(async (id: string) => new Blob([id], {
+      type: id.endsWith("-preview") ? "image/png" : "application/pdf",
+    }));
+    renderPanel(fakeApi({ pageContent, trail: async () => ({ ...whole,
+      made: [{ ...whole.made![0]!, kind: "drawn", pictureId: "doc_native" }],
+    }) }), <TheTrail />);
+    await user.click(await screen.findByRole("button", { name: "Apri" }));
+    const download = await screen.findByRole("link", { name: "Scarica PDF" });
+    expect(download).toHaveAttribute("download", "doc_native.pdf");
+    expect(pageContent).toHaveBeenCalledWith("doc_native-preview");
+    expect(pageContent).toHaveBeenCalledWith("doc_native");
+    expect(await screen.findByRole("img")).toBeVisible();
+  });
+
   const currentRun = {
     runId: "aft_1", title: "Un pomeriggio di nuvole", beganAt: 100, endsAt: 2000,
     momentId: "clouds", heading: "Il passo attuale", phase: "waiting" as const, waitingSince: 120,

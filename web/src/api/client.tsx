@@ -139,6 +139,9 @@ export function httpApi(bearer: string | (() => Promise<string | null>)): Api {
     async revokeAdolescent(id) {
       await json(`/api/adolescents/${encodeURIComponent(id)}`, { method: "DELETE" });
     },
+    async deleteAdolescent(id) {
+      await json(`/api/adolescents/${encodeURIComponent(id)}/permanent`, { method: "DELETE" });
+    },
     async admission(): Promise<Admission> {
       const response = await call("/api/me");
       if (response.ok) return { kind: "in", me: await response.json() };

@@ -123,5 +123,6 @@ def page_content(page_id: str, account: CurrentAccount, request: Request) -> Res
             record, image = archive.get(str(account.household_id), page_id)
         except Exception:  # noqa: BLE001 - storage SDKs raise their own not-found types
             continue
-        return Response(content=image, media_type=record.media or "image/png")
+        return Response(content=image, media_type=record.media or "image/png",
+                headers={"Cache-Control": "no-store"})
     raise HTTPException(status_code=404, detail="unknown_page")

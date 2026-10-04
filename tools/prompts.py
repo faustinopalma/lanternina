@@ -67,6 +67,7 @@ def a_pitch() -> str:
 
 def every_prompt() -> list[Prompt]:
     from agents import (
+        document_writer,
         experience_agent,
         experience_continuer,
         experience_deviser,
@@ -107,6 +108,16 @@ def every_prompt() -> list[Prompt]:
     )
 
     return [
+        *[
+            Prompt(
+                f"document-{block}",
+                "agents/document_writer.py :: prepare()",
+                document_writer.SAYS.text(block),
+                "Standing instructions; actual page, plan and reviewed draft are retained "
+                "with each prepared document.",
+            )
+            for block in ("write", "review", "illustration")
+        ],
         Prompt(
             "deviser",
             "agents/experience_deviser.py :: the_prompt()",

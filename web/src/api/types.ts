@@ -569,6 +569,7 @@ export interface Api {
   familyAccess(): Promise<FamilyAccess>;
   inviteAdolescent(email: string): Promise<InvitationCode>;
   revokeAdolescent(id: string): Promise<void>;
+  deleteAdolescent(id: string): Promise<void>;
   photoContent(id: string): Promise<Blob>;
   assignPhoto(id: string, runId: string): Promise<{ queued: boolean }>;
   previewPhotoDeletion(selection: PhotoSelection): Promise<{ ids: string[] }>;

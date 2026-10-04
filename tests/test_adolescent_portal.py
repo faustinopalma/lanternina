@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import io
+import json
+import time
 
+import numpy as np
+import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 
@@ -33,6 +37,25 @@ def invitation(app, client, parent):
     return response.json()["code"]
 
 
+def test_session_routes_roles_without_registering_or_granting_access() -> None:
+    app, client, parent, teen = portal()
+    assert client.get("/api/session").status_code == client.get("/api/portal/me").status_code == 503
+    response = client.get("/api/session", headers=parent)
+    assert response.json() == {"destination": "parent"}
+    assert response.headers["cache-control"] == "no-store"
+    assert client.get("/api/session", headers=teen).json() == {"destination": "new"}
+    assert app.state.store.by_subject("teen") is None
+    token = invitation(app, client, parent)
+    assert client.get("/api/session", headers=teen).json() == {"destination": "adolescent"}
+    assert client.get("/api/portal/me", headers=teen).status_code == 403
+    client.post("/api/portal/accept", headers=teen, json={"token": token})
+    member = client.get("/api/adolescents", headers=parent).json()["members"][0]
+    client.delete(f"/api/adolescents/{member['id']}", headers=parent)
+    assert client.get("/api/session", headers=teen).json() == {"destination": "adolescent"}
+    assert client.get("/api/me", headers=teen).status_code == 403
+    assert app.state.store.by_subject("teen") is None
+
+
 def test_invitation_registration_and_revocation() -> None:
     app, client, parent, teen = portal()
     token = invitation(app, client, parent)
@@ -59,6 +82,99 @@ def test_invitation_requires_matching_account_and_expires() -> None:
         expiresAt=0,
     ))
     assert client.post("/api/portal/accept", headers=teen, json={"token": token}).status_code == 410
+
+
+def test_revoked_invitation_can_be_permanently_deleted() -> None:
+    app, client, parent, teen = portal()
+    token = invitation(app, client, parent)
+    record = client.get("/api/adolescents", headers=parent).json()["invitations"][0]
+    path = f"/api/adolescents/{record['id']}"
+    assert client.delete(path + "/permanent", headers=parent).status_code == 409
+    assert client.delete(path, headers=parent).status_code == 200
+    assert client.delete(path + "/permanent", headers=parent).status_code == 200
+    assert client.get("/api/adolescents", headers=parent).json() == {
+        "members": [], "invitations": [],
+    }
+    assert app.state.portal.read()["invitations"] == {}
+    assert client.post("/api/portal/accept", headers=teen, json={"token": token}).status_code == 410
+
+
+def test_removed_member_stays_revoked_after_restart(portal_blob_container) -> None:
+    from panel.adolescents import BlobPortalStore
+    from shared.accounts import AccountStatus
+
+    app, client, parent, teen = portal()
+    app.state.portal = BlobPortalStore(portal_blob_container)
+    token = invitation(app, client, parent)
+    assert client.post("/api/portal/accept", headers=teen, json={"token": token}).status_code == 200
+    member = client.get("/api/adolescents", headers=parent).json()["members"][0]
+    path = f"/api/adolescents/{member['id']}"
+    other = app.state.store.register(subject="other-parent", contact="other@example.test")
+    app.state.store.decide(other.id, AccountStatus.ACTIVE, decided_by="test")
+    other_headers = {"x-dev-subject": "other-parent", "x-dev-contact": "other@example.test"}
+    other_code = invitation(app, client, other_headers)
+    other_before = client.get("/api/adolescents", headers=other_headers).json()
+    assert client.delete(path + "/permanent", headers=parent).status_code == 409
+    assert client.delete(path + "/permanent", headers=teen).status_code == 403
+    assert client.delete(path + "/permanent").status_code == 503
+    assert client.delete(path + "/permanent", headers=other_headers).status_code == 404
+    assert client.delete(path, headers=parent).status_code == 200
+    new_token = invitation(app, client, parent)
+    assert client.delete(path + "/permanent", headers=parent).json() == {"deleted": True}
+    app.state.portal = BlobPortalStore(portal_blob_container)
+    assert client.get("/api/adolescents", headers=parent).json() == {
+        "members": [], "invitations": [],
+    }
+    assert client.get("/api/adolescents", headers=other_headers).json() == other_before
+    assert app.state.portal.read()["members"] == {}
+    assert app.state.portal.known_subject("teen")
+    assert client.get("/api/portal/me", headers=teen).status_code == 403
+    assert client.get("/api/me", headers=teen).status_code == 403
+    assert client.get("/api/session", headers=teen).json() == {"destination": "adolescent"}
+    assert app.state.store.by_subject("teen") is None
+    for old_token in (token, new_token):
+        assert client.post("/api/portal/accept", headers=teen,
+                           json={"token": old_token}).status_code == 410
+    assert client.delete(path + "/permanent", headers=parent).status_code == 404
+    assert client.post("/api/portal/accept", headers=teen,
+                       json={"token": other_code}).status_code == 200
+
+
+@pytest.mark.parametrize("status", ["revoked", "expired", "failed"])
+def test_permanent_invitation_deletion_is_scoped_and_removes_personal_data(status) -> None:
+    from shared.accounts import AccountStatus
+
+    app, client, parent, teen = portal()
+    invitation(app, client, parent)
+    record = client.get("/api/adolescents", headers=parent).json()["invitations"][0]
+    app.state.portal.change(lambda data: next(iter(data["invitations"].values())).update(
+        status="ready" if status == "expired" else status, expiresAt=0,
+    ))
+    other = app.state.store.register(subject="other-parent", contact="other@example.test")
+    app.state.store.decide(other.id, AccountStatus.ACTIVE, decided_by="test")
+    path = f"/api/adolescents/{record['id']}/permanent"
+    assert client.delete(path, headers={"x-dev-subject": "other-parent"}).status_code == 404
+    assert client.delete(path, headers=parent).status_code == 200
+    saved = app.state.portal.read()
+    assert saved["invitations"] == {}
+    assert "teen@example.test" not in json.dumps(saved)
+    assert record["id"] not in json.dumps(saved)
+
+
+def test_deleting_invitations_does_not_reset_the_daily_limit() -> None:
+    app, client, parent, teen = portal()
+    for _attempt in range(10):
+        invitation(app, client, parent)
+        record = client.get("/api/adolescents", headers=parent).json()["invitations"][0]
+        path = f"/api/adolescents/{record['id']}"
+        assert client.delete(path, headers=parent).status_code == 200
+        assert client.delete(path + "/permanent", headers=parent).status_code == 200
+    assert client.post("/api/adolescents/invitations", headers=parent,
+                       json={"email": "teen@example.test"}).status_code == 429
+    app.state.portal.change(lambda data: [row.update(createdAt=0)
+                                         for row in data["invitationHistory"]])
+    invitation(app, client, parent)
+    assert app.state.portal.read()["invitationHistory"] == []
 
 
 def test_resend_replaces_old_invitation_and_parent_cannot_accept() -> None:
@@ -135,6 +251,97 @@ def test_upload_refuses_non_images_and_unauthenticated_calls() -> None:
     assert client.post(path, content=b"not a photo", headers=teen).status_code == 400
     assert client.post(path, content=b"x", headers=parent).status_code == 403
     assert client.get(path + "/content", headers=teen).status_code == 404
+
+
+@pytest.mark.parametrize("outcome", ["matched", "unrelated", "uncertain", "no_activity"])
+def test_mobile_photo_uses_camera_matching_and_advances_only_once(
+    tmp_path, monkeypatch, outcome,
+) -> None:
+    from devices.camera_hub import CameraHub
+    from devices.house import House
+    from devices.run_experience import Afternoon, begin
+    from devices.sync_photos import synchronize
+    from shared.vision_contracts import PhotoMatch, WhatCameBack
+    from tests.test_pretend import an_experience
+
+    app, client, parent, teen = portal()
+    token = invitation(app, client, parent)
+    assert client.post("/api/portal/accept", headers=teen, json={"token": token}).status_code == 200
+    household = client.get("/api/me", headers=parent).json()["householdId"]
+    house = House(
+        panel="https://panel", household=household, device_key="test-device-key",
+        sheets_dir=tmp_path / "state", pretend=tmp_path / "pretend",
+    )
+    hub = CameraHub({"database": str(tmp_path / "photos.db")}, house, tmp_path / "screen.bmp")
+    monkeypatch.setattr("devices.run_experience._tell_the_panel", lambda *args: None)
+    monkeypatch.setattr("devices.hands.draw_page", lambda *args, **kwargs: np.full(
+        (64, 64), 255, dtype=np.uint8,
+    ))
+    run_ids = ("aft_first", "aft_second") if outcome != "no_activity" else ()
+    for run_id in run_ids:
+        begin(house, an_experience(), run_id=run_id, now=time.time() - 60,
+              send=False, max_open=2)
+    paths = [house.sheets_dir / "afternoons" / f"{run_id}.json" for run_id in run_ids]
+    before = [path.read_bytes() for path in paths]
+    matched = []
+    read = []
+    displayed = []
+
+    def match(image, candidates, **kwargs):
+        matched.append(image)
+        assert len(candidates) == 2
+        assert all(candidate["expected"] for candidate in candidates)
+        return PhotoMatch(candidate=1 if outcome == "matched" else None,
+                          rotation=90, uncertain=outcome == "uncertain")
+
+    def reading(blank, image, **kwargs):
+        read.append(image)
+        return WhatCameBack(written=True, same_sheet=True, describes=("a mark",), read_at=0.0)
+
+    def display(photo_id, image):
+        displayed.append((photo_id, image))
+        return "photograph displayed"
+
+    monkeypatch.setattr("devices.camera_hub.match_photo", match)
+    monkeypatch.setattr("devices.run_experience.read_page", reading)
+    monkeypatch.setattr(hub, "display_photo", display)
+    image = io.BytesIO()
+    Image.new("RGB", (30, 20), "red").save(image, "JPEG")
+    photo_id = "d" * 32
+    path = f"/api/portal/photos/{photo_id}"
+    assert client.post(path, content=image.getvalue(), headers=teen).status_code == 200
+    original = client.get(path + "/content", headers=teen).content
+
+    def ask(url, body, **kwargs):
+        response = client.post(url.removeprefix("https://panel"), json=body,
+                               headers={"X-Device-Key": kwargs["key"]})
+        assert response.status_code == 200, response.text
+        return response.json()
+
+    assert synchronize(hub, ask) == 1
+    assert hub.process_one()
+    assert synchronize(hub, ask) == 1
+    archived = client.get("/api/portal/photos", headers=teen).json()["photos"][0]
+    assert archived["state"] == "done"
+    assert client.get(path + "/content", headers=teen).content == original
+    assert hub.store.get(photo_id)["jpeg"] == original
+    assert len(matched) == (0 if outcome == "no_activity" else 1)
+    assert len(displayed) == (1 if outcome in {"unrelated", "no_activity"} else 0)
+    if outcome == "matched":
+        assert paths[0].read_bytes() == before[0]
+        advanced = Afternoon.from_dict(json.loads(paths[1].read_bytes()))
+        assert advanced.waiting_at == "l-ultimo-foglio"
+        assert advanced.answered == ("come-e-tornato:marks",)
+        assert len(read) == 1
+        assert read[0].shape[:2] == (30, 20)
+    else:
+        assert [saved.read_bytes() for saved in paths] == before
+        assert read == []
+    after = [saved.read_bytes() for saved in paths]
+    assert client.post(path, content=image.getvalue(), headers=teen).json()["state"] == "done"
+    assert synchronize(hub, ask) == 0
+    assert not hub.process_one()
+    assert [saved.read_bytes() for saved in paths] == after
 
 
 def test_code_invitation_needs_no_email_delivery() -> None:
@@ -223,14 +430,13 @@ def test_invite_rate_limit_and_competing_acceptance() -> None:
     assert response.status_code == 429
 
 
-def test_blob_store_survives_restart_and_retries_a_concurrent_change() -> None:
+@pytest.fixture
+def portal_blob_container():
     import json
     from types import SimpleNamespace
 
     from azure.core import MatchConditions
     from azure.core.exceptions import ResourceModifiedError, ResourceNotFoundError
-
-    from panel.adolescents import BlobPortalStore
 
     class Blob:
         content = None
@@ -260,7 +466,14 @@ def test_blob_store_survives_restart_and_retries_a_concurrent_change() -> None:
             self.etag += 1
 
     blob = Blob()
-    container = SimpleNamespace(get_blob_client=lambda _: blob)
+    return SimpleNamespace(get_blob_client=lambda _: blob)
+
+
+def test_blob_store_survives_restart_and_retries_a_concurrent_change(portal_blob_container) -> None:
+    from panel.adolescents import BlobPortalStore
+
+    container = portal_blob_container
+    blob = container.get_blob_client("portal/access.json")
     store = BlobPortalStore(container)
     store.change(lambda data: data["members"].update({"teen": {"active": True}}))
     blob.race = True

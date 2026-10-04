@@ -111,7 +111,7 @@ def main() -> int:
     from azure.identity import DefaultAzureCredential
 
     endpoint = os.environ.get(
-        "LANTERNINA_AI_ENDPOINT", "https://ai-lanternina-dev-ssveb.services.ai.azure.com"
+        "LANTERNINA_AI_ENDPOINT", "https://ai-shared-720467d019e0.services.ai.azure.com"
     ).rstrip("/")
     token = DefaultAzureCredential().get_token(
         "https://cognitiveservices.azure.com/.default"

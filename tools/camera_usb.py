@@ -4,15 +4,37 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sqlite3
 import time
 from pathlib import Path
+
+from devices.camera_provision import camera_mac
 
 
 def open_port(name: str):
     import serial
 
-    return serial.Serial(name, 115200, timeout=1, write_timeout=3)
+    port = serial.Serial(port=None, baudrate=115200, timeout=1, write_timeout=3)
+    port.dtr = False
+    port.rts = False
+    port.port = name
+    port.open()
+    return port
+
+
+def check_identity(port, mac: str) -> None:
+    began = time.monotonic()
+    port.write(b"STATUS\n")
+    while time.monotonic() - began < 45:
+        line = port.readline().decode("utf-8", "replace").strip()
+        if not line.startswith("status usb="):
+            continue
+        fields = dict(re.findall(r"\b(\w+)=([^\s]+)", line))
+        if fields.get("identity") != mac:
+            raise RuntimeError("the selected serial port belongs to another camera")
+        return
+    raise TimeoutError("camera identity was not confirmed; no command sent")
 
 
 def authenticated_since(mac: str, since: float) -> bool:
@@ -26,18 +48,23 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "command",
-        choices=("CAPTURE", "CAPTURE_SETTLED", "STATUS", "STORAGE", "USB_TEST_ON", "USB_TEST_OFF"),
+        choices=("CAPTURE", "CAPTURE_SETTLED", "STATUS", "REPORT", "STORAGE",
+                 "USB_TEST_ON", "USB_TEST_OFF"),
     )
     parser.add_argument("--mac", default="94:A9:90:D0:9D:D0")
+    parser.add_argument("--port", help="explicit serial port; verifies MAC before sending commands")
     parser.add_argument("--authenticated-since", type=float)
     args = parser.parse_args()
+    args.mac = camera_mac(args.mac)
     began = time.monotonic()
-    port_name = (
+    port_name = args.port or (
         "/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_" + args.mac.upper() + "-if00"
     )
     try:
         with open_port(port_name) as port:
             port.reset_input_buffer()
+            if args.port:
+                check_identity(port, args.mac)
             port.write((args.command + "\n").encode("ascii"))
             acknowledged = False
             short_probe = False
@@ -49,13 +76,14 @@ def main() -> None:
                 print(line, flush=True)
                 if "command=BUSY" in line or "UNKNOWN_OR_NO_USB" in line:
                     raise RuntimeError("camera did not accept the command")
-                if args.command == "USB_TEST_ON" and line == (
-                    "usb_test=on button_triggers_disabled_until_disconnect"
+                if args.command == "USB_TEST_ON" and line in (
+                    "usb_test=on button_triggers_disabled_until_disconnect",
+                    "usb_test=on button_triggers_disabled_until_sleep",
                 ):
                     return
                 if args.command == "USB_TEST_OFF" and line == "usb_test=off":
                     return
-                if args.command == "STATUS" and line.startswith("status usb="):
+                if args.command in ("STATUS", "REPORT") and line.startswith("status usb="):
                     if args.authenticated_since is None:
                         return
                     usb_status = "filesystem=1" in line and f"identity={args.mac.upper()}" in line
@@ -75,7 +103,7 @@ def main() -> None:
                         raise RuntimeError("capture or delivery failed")
                     acknowledged |= "upload=" in line and "accepted=1" in line
                     if acknowledged and "busy=0" in line and "queued=0" in line:
-                        print("VERDICT: photograph acknowledged; queue empty; USB awake")
+                        print("VERDICT: photograph acknowledged; queue empty; serial responsive")
                         return
             raise TimeoutError("camera did not complete the command within 60 seconds")
     finally:

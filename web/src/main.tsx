@@ -2,7 +2,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { App } from "@/App";
+import { Entry } from "@/Entry";
 import { warmUp } from "@/api/client";
 import { msalInstance } from "@/auth/msal";
 import { LanguageProvider } from "@/i18n";
@@ -43,12 +43,11 @@ if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("prev
    * provider the authorisation code is sitting in the URL and is consumed exactly once. */
   void msalInstance.initialize().then(async () => {
     warmUp();
-    const Entry = isPortal ? (await import("@/portal/Portal")).Portal : App;
     root.render(
       <StrictMode>
         <MsalProvider instance={msalInstance}>
           <LanguageProvider>
-            <Entry />
+            <Entry portalRequested={isPortal} />
           </LanguageProvider>
         </MsalProvider>
       </StrictMode>,

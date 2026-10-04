@@ -57,6 +57,8 @@ panel = [
     # OS has /usr/share/zoneinfo — and everything here is stdlib on purpose.
     "tzdata>=2024.1",
     "Pillow>=10.0",
+    "typst==0.15.0",
+    "PyMuPDF==1.28.2",
     # What the panel says about itself, and the half nobody writes: request timings, which
     # model call was slow inside one, which Cosmos query. The distro instruments FastAPI,
     # httpx and the Azure SDKs without anything being annotated. Optional at runtime —
@@ -82,6 +84,7 @@ shared = ["py.typed", "*.md"]
 agents = ["*.md"]
 panel = ["*.md"]
 devices = ["*.html"]
+printing = ["*.typ"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

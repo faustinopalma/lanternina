@@ -13,6 +13,7 @@ records: keeping a local reading meant keeping the sheet a template of declared 
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import time
 import urllib.error
@@ -23,6 +24,7 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
+from printing.document import Document
 from shared.vision_contracts import PhotoMatch, WhatCameBack
 
 # Drawing a whole page took 18.8 to 24.1 s against the real deployment on 24 August 2026, and
@@ -71,9 +73,10 @@ def draw_page(
     household: str,
     key: str,
     run_id: str = "",
+    document: dict[str, Any] | None = None,
     timeout: int = DRAW_TIMEOUT_SECONDS,
     tries: int = 2,
-) -> NDArray[np.uint8]:
+) -> NDArray[np.uint8] | Document:
     """The page a model drew, as one grey image. Raises :class:`PanelUnreachable`.
 
     Tries again once when the cloud says it is busy, because that is a transient thing and
@@ -87,7 +90,8 @@ def draw_page(
         try:
             answer = _ask(
                 f"{panel.rstrip('/')}/api/device/{household}/page",
-                {"page": page, "runId": run_id},
+                {"page": page, "runId": run_id,
+                 **({"format": "pdf-v1", "document": document} if document else {})},
                 key=key,
                 timeout=timeout,
             )
@@ -97,6 +101,19 @@ def draw_page(
                 continue
             raise
         break
+    if document:
+        try:
+            pdf = base64.b64decode(str(answer["pdfBase64"]), validate=True)
+            previews = tuple(base64.b64decode(encoded, validate=True)
+                             for encoded in answer["previewsBase64"])
+            if (answer.get("format") != "pdf-v1" or not pdf.startswith(b"%PDF")
+                    or hashlib.sha256(pdf).hexdigest() != answer.get("sha256")
+                    or not 1 <= len(previews) <= 2 or len(previews) != answer.get("pages")
+                    or any(not png.startswith(b"\x89PNG") for png in previews)):
+                raise ValueError("invalid PDF document envelope")
+            return Document(pdf, previews, {})
+        except (ValueError, KeyError, TypeError) as exc:
+            raise PanelUnreachable(f"the panel sent an invalid document: {exc}") from exc
     encoded = answer.get("imageBase64")
     if not isinstance(encoded, str) or not encoded:
         raise PanelUnreachable("the panel answered without a page")

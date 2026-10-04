@@ -1,5 +1,7 @@
 # The camera
 
+The [M5Stack Timer Camera guide](../../firmware/camera-m5stack/README.md) documents the third camera type added on 2 October 2026, including separate external wake and shutter buttons for a printed enclosure. Physical capture and battery tests are deferred.
+
 The [Waveshare ESP32-S3-CAM-OV5640 note](waveshare-ov5640.md) documents the second camera purchased on 16 September 2026. Its independent firmware has completed two USB diagnostic captures, nominal battery reporting, BOOT restart and battery-only BOOT and timer wake tests. It will be evaluated alongside the XIAO described here; external controls and current consumption still require physical tests.
 
 Lanternina's camera uses a Seeed Studio XIAO ESP32S3 and Sense expansion board. The person holding it frames an object and presses a button. The device takes a photograph and signals the outcome with an LED. The design calls for delivery to lanternina hub over the home Wi-Fi network.

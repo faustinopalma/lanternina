@@ -93,6 +93,10 @@ def one_afternoon(run_id: str, account: CurrentAccount, request: Request) -> Any
 def throw_it_away(account: CurrentAccount, request: Request) -> Any:
     """Delete this household's activity record, leaving its settings and approvals intact."""
     store: TrailStore = request.app.state.trail
+    archive = request.app.state.pages
+    for record in archive.list(str(account.household_id), limit=None):
+        if record.kind == "document":
+            archive.delete(str(account.household_id), record.id)
     return {"forgotten": store.forget_everything(str(account.household_id))}
 
 
@@ -100,7 +104,19 @@ def throw_it_away(account: CurrentAccount, request: Request) -> Any:
 def throw_one_away(run_id: str, account: CurrentAccount, request: Request) -> Any:
     """Delete one run and its entries for the authenticated household."""
     store: TrailStore = request.app.state.trail
+    _delete_documents(request, str(account.household_id), run_id)
     return {"forgotten": store.forget(str(account.household_id), run_id)}
+
+
+def _delete_documents(request: Request, household_id: str, run_id: str) -> None:
+    trail = request.app.state.trail.get(household_id, run_id)
+    if trail is None:
+        return
+    for made in trail.to_public().get("made", []):
+        identity = made.get("pictureId", "")
+        if identity.startswith("doc_"):
+            for suffix in ("", "-preview", "-audit"):
+                request.app.state.pages.delete(household_id, identity + suffix)
 
 
 def opened(

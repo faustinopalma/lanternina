@@ -403,8 +403,12 @@ def test_a_short_press_is_recorded_and_a_timer_wake_is_not(tmp_path: Path) -> No
     base_url = f"http://127.0.0.1:{httpd.server_port}"
     try:
         headers = {"ID": MAC, "Access-Token": device.token}
-        get(f"{base_url}/api/display", {**headers, "Update-Source": "timer"})
-        assert not button.exists(), "a scheduled poll is not somebody asking for anything"
+        for source in ("timer", "lanternina-refresh", "lanternina-status"):
+            response, _payload = get(
+                f"{base_url}/api/display", {**headers, "Update-Source": source}
+            )
+            assert response == 200
+            assert not button.exists(), f"{source} must not request a scan"
 
         get(f"{base_url}/api/display", {**headers, "Update-Source": "EXT0"})
         assert json.loads(button.read_text(encoding="utf-8"))["mac"] == MAC

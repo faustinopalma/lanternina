@@ -4,7 +4,7 @@
 // id, no email. The subscription comes from the CLI context and the two personal values
 // (owner, budget contact) are supplied by scripts/deploy.ps1 at run time.
 //
-// A fork of this repository can deploy with this file unchanged.
+// A fork supplies its own existing Foundry account and resource group.
 
 using './main.bicep'
 
@@ -30,18 +30,15 @@ param externalIdDomainPrefix = ''
 
 param monthlyBudgetAmount = 50
 
-// Live catalog and quota measured in Sweden Central on 8 August 2026. Standard
-// deployments are billed on use; these capacities allocate existing rate-limit quota.
+param aiResourceGroupName = 'rg-shared-ai'
+param aiExistingAccountName = 'ai-shared-720467d019e0'
+
 param aiFrontierModelNames = [
 	'gpt-5.6-sol'
 	'gpt-5.6-terra'
 	'gpt-5.6-luna'
 ]
 param aiFrontierModelVersion = '2026-07-09'
-param aiFrontierModelSku = 'GlobalStandard'
-param aiFrontierModelCapacity = 1000
 
 param aiImageModelName = 'gpt-image-2'
 param aiImageModelVersion = '2026-04-21'
-param aiImageModelSku = 'GlobalStandard'
-param aiImageModelCapacity = 2

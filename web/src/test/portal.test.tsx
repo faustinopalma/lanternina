@@ -134,6 +134,66 @@ it("sends a parent invitation and requires confirmation to revoke a membership",
   await waitFor(() => expect(revokeAdolescent).toHaveBeenCalledWith("teen"));
 });
 
+it.each(["revoked", "expired", "failed"] as const)("permanently removes a %s invitation after confirmation", async (status) => {
+  let deleted = false;
+  const deleteAdolescent = vi.fn(async () => { deleted = true; });
+  renderPanel(fakeApi({ deleteAdolescent,
+    familyAccess: async () => ({ members: [], invitations: deleted ? [] : [
+      { id: "invite", email: "test@example.test", expiresAt: 1000, status },
+    ] }),
+  }), <Adolescents />);
+  await userEvent.click(await screen.findByRole("button", { name: "Elimina definitivamente" }));
+  expect(deleteAdolescent).not.toHaveBeenCalled();
+  await userEvent.click(screen.getByRole("button", { name: "Annulla" }));
+  expect(deleteAdolescent).not.toHaveBeenCalled();
+  await userEvent.click(screen.getByRole("button", { name: "Elimina definitivamente" }));
+  expect(screen.getByText(/Le foto e le attività restano conservate/)).toBeVisible();
+  await userEvent.click(screen.getByRole("button", { name: "Elimina definitivamente" }));
+  expect(await screen.findByText("Nessun accesso adolescente.")).toBeVisible();
+  expect(deleteAdolescent).toHaveBeenCalledWith("invite");
+  expect(screen.queryByText("test@example.test")).toBeNull();
+});
+
+it("removes the revoked membership rather than only one of its old invitations and permits retry", async () => {
+  let deleted = false;
+  const deleteAdolescent = vi.fn(async () => { deleted = true; })
+    .mockRejectedValueOnce(new Error("offline"));
+  renderPanel(fakeApi({ deleteAdolescent,
+    familyAccess: async () => ({
+      members: deleted ? [] : [{ id: "teen", email: "teen@example.test", active: false, joinedAt: 100 }],
+      invitations: deleted ? [] : [
+        { id: "invite-one", email: "teen@example.test", expiresAt: 1000, status: "revoked" },
+        { id: "invite-two", email: "teen@example.test", expiresAt: 1000, status: "revoked" },
+      ],
+    }),
+  }), <Adolescents />);
+  expect(await screen.findByText("teen@example.test")).toBeVisible();
+  expect(screen.getAllByRole("button", { name: "Elimina definitivamente" })).toHaveLength(1);
+  await userEvent.click(screen.getByRole("button", { name: "Elimina definitivamente" }));
+  await userEvent.click(screen.getByRole("button", { name: "Elimina definitivamente" }));
+  expect(await screen.findByText("Non riesco a rimuovere l'accesso. Riprova.")).toBeVisible();
+  expect(screen.getByText("teen@example.test")).toBeVisible();
+  await userEvent.click(screen.getByRole("button", { name: "Elimina definitivamente" }));
+  expect(await screen.findByText("Nessun accesso adolescente.")).toBeVisible();
+  expect(deleteAdolescent).toHaveBeenNthCalledWith(1, "teen");
+  expect(deleteAdolescent).toHaveBeenNthCalledWith(2, "teen");
+});
+
+it("requires revocation before offering permanent deletion for active access", async () => {
+  let active = true;
+  const revokeAdolescent = vi.fn(async () => { active = false; });
+  renderPanel(fakeApi({ revokeAdolescent,
+    familyAccess: async () => ({ invitations: [],
+      members: [{ id: "teen", email: "teen@example.test", active, joinedAt: 100 }] }),
+  }), <Adolescents />);
+  await screen.findByText("teen@example.test");
+  expect(screen.queryByRole("button", { name: "Elimina definitivamente" })).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Revoca accesso" }));
+  await userEvent.click(screen.getByRole("button", { name: "Revoca accesso" }));
+  expect(await screen.findByRole("button", { name: "Elimina definitivamente" })).toBeVisible();
+  expect(screen.getByText("Accesso revocato")).toBeVisible();
+});
+
 it("keeps an unsent preview through a network outage but closes it on confirmed revocation", async () => {
   const service = api();
   const { container } = render(<LanguageProvider><PortalSession api={service} /></LanguageProvider>);

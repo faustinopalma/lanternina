@@ -23,6 +23,7 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
+from printing.document import Document, overview
 from printing.paper import BLANK_DPI, ink_fraction, to_paper, to_pdf
 from shared.ids import SheetId
 
@@ -91,9 +92,17 @@ def waiting(directory: Path) -> list[SheetId]:
 
 
 def make_sheet(
-    drawn: NDArray[np.uint8], *, sheets_dir: Path, sheet_id: SheetId
+    drawn: NDArray[np.uint8] | Document, *, sheets_dir: Path, sheet_id: SheetId
 ) -> tuple[NDArray[np.uint8], bytes]:
     """Put the drawn page on A4, remember it, and return the blank and the PDF."""
+    if isinstance(drawn, Document):
+        blank = cv2.imdecode(np.frombuffer(overview(drawn.previews), dtype=np.uint8),
+                            cv2.IMREAD_GRAYSCALE)
+        if blank is None:
+            raise ValueError("document preview cannot be decoded")
+        remember(sheets_dir, sheet_id, blank)
+        (sheets_dir / f"{sheet_id}.pdf").write_bytes(drawn.pdf)
+        return blank, drawn.pdf
     blank = to_paper(drawn, dpi=BLANK_DPI)
     remember(sheets_dir, sheet_id, blank)
     return blank, to_pdf(drawn)
@@ -151,7 +160,7 @@ def _give_up_on(job: str) -> None:
 
 
 def print_page(
-    drawn: NDArray[np.uint8],
+    drawn: NDArray[np.uint8] | Document,
     *,
     sheets_dir: Path,
     sheet_id: SheetId,

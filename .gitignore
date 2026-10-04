@@ -117,6 +117,7 @@ profiles/
 *.sqlite3
 *.csv
 !firmware/camera-waveshare/partitions.csv
+!firmware/camera-m5stack/partitions.csv
 *.parquet
 
 # Backups pulled off the device, and archives generally — a CM5 backup is a
@@ -152,6 +153,7 @@ venv/
 .ruff_cache/
 .coverage
 htmlcov/
+*.tsbuildinfo
 
 # ── Firmware build output ────────────────────────────────────────────────────
 firmware/**/build/

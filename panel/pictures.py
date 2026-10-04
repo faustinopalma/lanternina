@@ -104,13 +104,15 @@ def _from_metadata(value: str) -> str:
 class PictureArchive(Protocol):
     def save(self, record: PictureRecord, image: bytes) -> PictureRecord: ...
 
-    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]: ...
+    def list(self, household_id: str, limit: int | None = 50) -> list[PictureRecord]: ...
 
     def page(
         self, household_id: str, *, offset: int, limit: int
     ) -> tuple[list[PictureRecord], int]: ...
 
     def get(self, household_id: str, picture_id: str) -> tuple[PictureRecord, bytes]: ...
+
+    def delete(self, household_id: str, picture_id: str) -> None: ...
 
 
 @dataclass
@@ -132,7 +134,7 @@ class InMemoryPictureArchive:
             ]
         return sorted(rows, key=lambda r: r.created_at, reverse=True)
 
-    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+    def list(self, household_id: str, limit: int | None = 50) -> list[PictureRecord]:
         return self._newest_first(household_id)[:limit]
 
     def page(
@@ -144,6 +146,10 @@ class InMemoryPictureArchive:
     def get(self, household_id: str, picture_id: str) -> tuple[PictureRecord, bytes]:
         with self._lock:
             return self._rows[(household_id, picture_id)]
+
+    def delete(self, household_id: str, picture_id: str) -> None:
+        with self._lock:
+            self._rows.pop((household_id, picture_id), None)
 
 
 class BlobPictureArchive:
@@ -160,6 +166,14 @@ class BlobPictureArchive:
     def _name(self, household_id: str, picture_id: str) -> str:
         # Household first, so a prefix listing cannot cross a family boundary.
         return f"{household_id}/{picture_id}.bmp"
+
+    def delete(self, household_id: str, picture_id: str) -> None:
+        from azure.core.exceptions import ResourceNotFoundError
+
+        try:
+            self._container.delete_blob(self._name(household_id, picture_id))
+        except ResourceNotFoundError:
+            pass
 
     def save(self, record: PictureRecord, image: bytes) -> PictureRecord:
         metadata = {
@@ -192,7 +206,7 @@ class BlobPictureArchive:
         ]
         return sorted(rows, key=lambda r: r.created_at, reverse=True)
 
-    def list(self, household_id: str, limit: int = 50) -> list[PictureRecord]:
+    def list(self, household_id: str, limit: int | None = 50) -> list[PictureRecord]:
         return self._newest_first(household_id)[:limit]
 
     def page(
@@ -214,6 +228,7 @@ class BlobPictureArchive:
                 created_at=float(metadata.get("createdAt") or 0.0),
                 kind=str(metadata.get("kind") or "ok"),
                 display=_from_metadata(str(metadata.get("display") or "")),
+                media=str(metadata.get("media") or "image/bmp"),
             ),
             bytes(image),
         )

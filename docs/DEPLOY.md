@@ -113,8 +113,25 @@ Committed defaults live in [infra/main.bicepparam](../infra/main.bicepparam). Th
 | `deployExternalId` | `true` | Set `false` to reuse an existing directory. |
 | `externalIdDomainPrefix` | derived | **Maximum 10 characters** — see §4. |
 | `monthlyBudgetAmount` | `50` | Alerts at 50 / 80 / 100 per cent. |
+| `aiResourceGroupName` | `rg-shared-ai` | Existing shared Foundry resource group. |
+| `aiExistingAccountName` | `ai-shared-720467d019e0` | Existing shared Foundry account. Supply the account for your subscription when deploying elsewhere. |
+| `aiResearchUserPrincipalId` | empty | Optional Entra user object ID for local research calls. |
 
 Resource names end in a five-character hash of the subscription id plus project and environment. It is deterministic, so redeploys are stable, and it is different per subscription, so two forks never collide on a globally unique name.
+
+### Shared Foundry
+
+Lanternina uses the existing account `ai-shared-720467d019e0` in `rg-shared-ai`, Sweden Central. The AI module creates the `lanternina-dev` project and grants the runtime identity access. Account creation, model deployments and quota allocation are managed separately. An application redeploy therefore leaves the shared models unchanged.
+
+The runtime uses `Cognitive Services OpenAI User` at account scope for OpenAI calls. A custom role permits Content Safety plus the MaaS text, image and native Cohere `v1/embed` operations. `Foundry User` is scoped to Lanternina's own project. The account uses Entra authentication with local keys disabled. Other applications need their own role assignments and share the same deployment rate limits.
+
+Both Container Apps receive `LANTERNINA_FOUNDRY_ENDPOINT`, `LANTERNINA_FOUNDRY_ACCOUNT_ENDPOINT` and `LANTERNINA_CONTENT_SAFETY_ENDPOINT` from the shared account. The deploy script preserves the API's selected model and frontier list. The research environment retains its own model selections and uses the same account.
+
+For another subscription, pass `-AiResourceGroupName <group> -AiExistingAccountName <account>` to `scripts/deploy.ps1`. The account must already contain the named text and image deployments. The caller also needs permission to create the project, custom role and role assignments in its resource group.
+
+Pass `-AiResearchUserPrincipalId <user-object-id>` to grant a local researcher the same data access and project scope as the runtime. This is an Entra object ID, not an application client ID. Omitting it leaves existing assignments unchanged under incremental deployment; revoke an assignment explicitly when access should end.
+
+The migration record and measured checks are in [the shared Foundry decision](../ideas/2026-10-04-shared-foundry.md).
 
 ### The panel in the browser
 

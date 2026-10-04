@@ -1,0 +1,372 @@
+diff --git a/include/config.h b/include/config.h
+index f511e89..b04bfec 100644
+--- a/include/config.h
++++ b/include/config.h
+@@ -14,7 +14,12 @@
+ #endif
+ 
+ // Compile-time firmware version string
++#if defined(BOARD_XIAO_EPAPER_DISPLAY) && !defined(MINI_EPD)
++#define LANTERNINA_DISPLAY
++#define FW_VERSION_STRING "1.8.12-lanternina-20260921"
++#else
+ #define FW_VERSION_STRING    TOSTRING(FW_MAJOR_VERSION) "." TOSTRING(FW_MINOR_VERSION) "." TOSTRING(FW_PATCH_VERSION)
++#endif
+ 
+ #define LOG_MAX_NOTES_NUMBER 10
+ 
+@@ -172,7 +177,9 @@ enum WIFI_CONNECT_RETRY_TIME // Time to sleep before trying to connect to the Wi
+ #endif
+ 
+ // DHCP hostname prefix (hyphens instead of spaces).
+-#if defined(BOARD_X_CLASS)
++#if defined(LANTERNINA_DISPLAY)
++#define WIFI_CLIENT_HOSTNAME_PREFIX "Lanternina"
++#elif defined(BOARD_X_CLASS)
+ #define WIFI_CLIENT_HOSTNAME_PREFIX "TRMNL-X"
+ #elif defined(BOARD_TRMNL) || defined(BOARD_TRMNL_GEN2)
+ #define WIFI_CLIENT_HOSTNAME_PREFIX "TRMNL-OG"
+diff --git a/include/display.h b/include/display.h
+index 7a91ffa..547a83f 100644
+--- a/include/display.h
++++ b/include/display.h
+@@ -87,6 +87,8 @@ extern "C" {
+  */
+ void display_show_battery(float f);
+ 
++void display_show_lanternina(const char *first, const char *second, const char *third);
++
+ /**
+  * @brief Function to reset the display
+  * @param none
+diff --git a/lib/trmnl/include/api_types.h b/lib/trmnl/include/api_types.h
+index b375dbb..4906167 100644
+--- a/lib/trmnl/include/api_types.h
++++ b/lib/trmnl/include/api_types.h
+@@ -94,7 +94,7 @@ typedef struct DeviceStatusStamp {
+   char wifi_status[30];
+   uint32_t refresh_rate;
+   uint32_t time_since_last_sleep;
+-  char current_fw_version[10];
++  char current_fw_version[32];
+   char special_function[100];
+   float battery_voltage;
+   char wakeup_reason[30];
+diff --git a/src/bl.cpp b/src/bl.cpp
+index 525192f..d0cbd6f 100644
+--- a/src/bl.cpp
++++ b/src/bl.cpp
+@@ -84,6 +84,20 @@ char filename[1024];      // image URL
+ char message_buffer[128]; // message to show on the screen
+ uint32_t time_since_sleep;
+ static float vBatt;
++#ifdef LANTERNINA_DISPLAY
++static int lanterninaButton = 0;
++static const int lanterninaPins[] = {2, 3, 5};
++
++static void lanterninaStatus(const char *connection)
++{
++  char battery[64];
++  snprintf(battery, sizeof(battery), "Batteria: %.2f V", vBatt);
++  char identity[64];
++  snprintf(identity, sizeof(identity), "Display %s", WiFi.macAddress().c_str());
++  display_show_lanternina(connection, battery, identity);
++  DisplayedImage::clear();
++}
++#endif
+ bool status = false;          // need to download a new image
+ bool reset_firmware = false;  // need to reset credentials
+ bool log_retry = false;                                              // need to log connection retry
+@@ -864,6 +878,10 @@ void bl_init(void)
+   Log.info("%s [%d]: modem needed = %d\n\r", __FILE__, __LINE__, bModemNeeded);
+ #endif // X
+   pins_init();
++#ifdef LANTERNINA_DISPLAY
++  for (int pin : lanterninaPins)
++    pinMode(pin, INPUT_PULLUP);
++#endif
+   sensor_init();
+ #ifdef BOARD_TRMNL_X
+   // Debug: Print all wakeup_stub_iqs_status structure fields
+@@ -905,6 +923,25 @@ void bl_init(void)
+   Log_info("preferences end");
+   #ifndef BOARD_TRMNL_X
+   bool double_click = false;
++#ifdef LANTERNINA_DISPLAY
++  if (gpio_wakeup)
++  {
++    const uint64_t pressed = esp_sleep_get_ext1_wakeup_status();
++    for (int index = 0; index < 3; ++index)
++    {
++      if ((pressed & (1ULL << lanterninaPins[index])) ||
++          digitalRead(lanterninaPins[index]) == LOW)
++      {
++        lanterninaButton = index + 1;
++        break;
++      }
++    }
++    if (!lanterninaButton && wakeup_reason == ESP_SLEEP_WAKEUP_EXT0)
++      lanterninaButton = 3;
++  }
++  wait_for_serial();
++  Log_info("Lanternina button: %d", lanterninaButton);
++#else
+   if (gpio_wakeup)
+   {
+     Log_info("GPIO wakeup detected (%d)", wakeup_reason);
+@@ -938,6 +975,7 @@ void bl_init(void)
+     wait_for_serial();
+     Log_info("Non-GPIO wakeup (%d) -> didn't read buttons", wakeup_reason);
+   }
++#endif
+ #else // BOARD_TRMNL_X
+   // Notify IQS323 task about wakeup type BEFORE starting the task
+ 
+@@ -1101,7 +1139,7 @@ void bl_init(void)
+     else if (!WifiCaptivePortal.isSaved()) {
+       showMessageWithLogo(NONE);
+     }
+-#else
++#elif !defined(LANTERNINA_DISPLAY)
+     display_show_image(storedLogoOrDefault(1), DEFAULT_IMAGE_SIZE, false, true);
+ #endif // BOARD_TRMNL_X
+     // Force the display to show the current playlist image after the loading screen
+@@ -1325,11 +1363,19 @@ void bl_init(void)
+ 
+       Log_fatal_submit("Connection failed! WL Status: %d", WiFi.status());
+ 
++    #ifdef LANTERNINA_DISPLAY
++      if (lanterninaButton == 2)
++        lanterninaStatus("Wi-Fi non collegato. Riprovo automaticamente.");
++    #endif
+       wifiErrorDeepSleep();
+     }
+   }
+   else
+   {
++#ifdef LANTERNINA_DISPLAY
++    showMessageWithLogo(WIFI_CONNECT);
++    wifiErrorDeepSleep();
++#else
+     // WiFi credentials are not saved - start captive portal
+     Log.info("%s [%d]: WiFi NOT saved\r\n", __FILE__, __LINE__);
+ 
+@@ -1387,6 +1433,7 @@ void bl_init(void)
+     }
+     Log.info("%s [%d]: WiFi connected\r\n", __FILE__, __LINE__);
+     preferences.putInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT, 1);
++#endif
+   }
+ 
+ #endif
+@@ -1423,9 +1470,26 @@ void bl_init(void)
+   log_retry = true;
+ 
+   // OTA checking, image checking and drawing
++#ifdef LANTERNINA_DISPLAY
++  const int lanterninaRssi = WiFi.RSSI();
++#endif
+   https_request_err_e request_result = downloadAndShow();
+   Log.info("%s [%d]: request result - %s\r\n", __FILE__, __LINE__, szHTTPErrors[request_result]);
+ 
++#ifdef LANTERNINA_DISPLAY
++  if (lanterninaButton == 2)
++  {
++    char connection[80];
++    snprintf(connection, sizeof(connection), "Wi-Fi: %d dBm. Hub: %s.", lanterninaRssi,
++             (request_result == HTTPS_SUCCESS || request_result == HTTPS_NO_ERR)
++                 ? "collegato" : "non raggiunto");
++    lanterninaStatus(connection);
++    preferences.putUInt(PREFERENCES_SLEEP_TIME_KEY, 60);
++    display_sleep();
++    goToSleep();
++  }
++#endif
++
+   if (request_result == HTTPS_IMAGE_FILE_TOO_BIG)
+   {
+     iqs323_task_i2c_lock();
+@@ -1497,11 +1561,14 @@ void bl_init(void)
+   // reset checking
+   if (request_result == HTTPS_RESET)
+   {
++#ifndef LANTERNINA_DISPLAY
+     Log.info("%s [%d]: Device reseting...\r\n", __FILE__, __LINE__);
+     resetDeviceCredentials();
++#endif
+   }
+ 
+   // OTA update checking
++#ifndef LANTERNINA_DISPLAY
+   if (firmwareUpdateService.isUpdateDue(
+           apiDisplayResult.response.update_firmware,
+           apiDisplayResult.response.firmware_url))
+@@ -1516,6 +1583,7 @@ void bl_init(void)
+     if (firmwareUpdateResult.failureMessage != NONE)
+       showMessageWithLogo(firmwareUpdateResult.failureMessage);
+   }
++    #endif
+ 
+   // error handling
+   switch (request_result)
+@@ -1623,6 +1691,17 @@ ApiDisplayInputs loadApiDisplayInputs(Preferences &preferences)
+     inputs.updateSource = "unknown";
+   }
+ 
++#ifdef LANTERNINA_DISPLAY
++  if (lanterninaButton == 1)
++    inputs.updateSource = "lanternina-refresh";
++  else if (lanterninaButton == 2)
++    inputs.updateSource = "lanternina-status";
++  else if (lanterninaButton == 3)
++    inputs.updateSource = "EXT0";
++  else if (wakeup_reason == ESP_SLEEP_WAKEUP_EXT1)
++    inputs.updateSource = "lanternina-refresh";
++#endif
++
+   if (preferences.isKey(PREFERENCES_API_KEY))
+   {
+     inputs.apiKey = preferences.getString(PREFERENCES_API_KEY, PREFERENCES_API_KEY_DEFAULT);
+@@ -2250,7 +2329,11 @@ https_request_err_e handleApiDisplayResponse(ApiDisplayResponse &apiResponse)
+     {
+       String image_url = apiResponse.image_url;
+       uint64_t rate = apiResponse.refresh_rate;
++    #ifdef LANTERNINA_DISPLAY
++      reset_firmware = false;
++    #else
+       reset_firmware = apiResponse.reset_firmware;
++    #endif
+ 
+       bool sleep_5_seconds = false;
+ 
+@@ -3198,7 +3281,16 @@ void goToSleep(void)
+   preferences.end();
+   esp_sleep_enable_timer_wakeup((uint64_t)time_to_sleep * SLEEP_uS_TO_S_FACTOR);
+   // Configure GPIO pin for wakeup
+-#if CONFIG_IDF_TARGET_ESP32
++#if defined(LANTERNINA_DISPLAY)
++  uint64_t released = 0;
++  for (int pin : lanterninaPins)
++    if (digitalRead(pin) == HIGH)
++      released |= 1ULL << pin;
++  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_EXT0);
++  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_EXT1);
++  if (released)
++    esp_sleep_enable_ext1_wakeup(released, ESP_EXT1_WAKEUP_ANY_LOW);
++#elif CONFIG_IDF_TARGET_ESP32
+   #define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO)  // 2 ^ GPIO_NUMBER in hex
+   esp_sleep_enable_ext1_wakeup(BUTTON_PIN_BITMASK(PIN_INTERRUPT), ESP_EXT1_WAKEUP_ALL_LOW);
+ #elif defined(CONFIG_IDF_TARGET_ESP32C3) || defined (CONFIG_IDF_TARGET_ESP32C5)
+@@ -3693,7 +3785,7 @@ static void wifiErrorDeepSleep()
+     preferences.putInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT, 1);
+   }
+ 
+-  uint8_t retry_count = preferences.getInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT);
++  int retry_count = preferences.getInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT);
+ 
+   Log_info("WIFI connection failed! Retry count: %d \n", retry_count);
+ 
+@@ -3712,13 +3804,12 @@ static void wifiErrorDeepSleep()
+     break;
+ 
+   default:
+-    preferences.putInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT, 1);
+-    showMessageWithLogo(WIFI_RETRY_LIMIT);
+-    display_sleep();
+-    goToSleepButtonOnly();
+-    return;
++    preferences.putUInt(PREFERENCES_SLEEP_TIME_KEY, WIFI_CONNECT_RETRY_TIME::WIFI_THIRD_RETRY);
++    retry_count = 3;
++    break;
+   }
+-  retry_count++;
++  if (retry_count < 3)
++    retry_count++;
+   preferences.putInt(PREFERENCES_CONNECT_WIFI_RETRY_COUNT, retry_count);
+ 
+   display_sleep();
+diff --git a/src/display.cpp b/src/display.cpp
+index 1d2c625..320af36 100644
+--- a/src/display.cpp
++++ b/src/display.cpp
+@@ -1901,8 +1901,69 @@ uint8_t *buffer;
+  * @param message_type type of message that will show on the screen
+  * @return none
+  */
++#ifdef LANTERNINA_DISPLAY
++void display_show_lanternina(const char *first, const char *second, const char *third)
++{
++    if (bbep.allocBuffer(false) != BBEP_SUCCESS)
++        return;
++    bbep.fillScreen(BBEP_WHITE);
++    bbep.setFont(nicoclean_8);
++    bbep.setTextColor(BBEP_BLACK, BBEP_WHITE);
++    const char *lines[] = {"LANTERNINA", first, second, third};
++    for (int line = 0; line < 4; ++line)
++    {
++        BB_RECT bounds;
++        bbep.getStringBox(lines[line], &bounds);
++        bbep.setCursor((bbep.width() - bounds.w) / 2, 120 + line * 64);
++        bbep.print(lines[line]);
++    }
++    display_update_epaper(REFRESH_FULL, true, true, PLANE_0);
++    bbep.freeBuffer();
++}
++
++static void display_lanternina_message(MSG message_type)
++{
++    switch (message_type)
++    {
++    case WIFI_FAILED:
++    case WIFI_WEAK:
++    case WIFI_RETRY_LIMIT:
++        return;
++    case WIFI_CONNECT:
++    case WIFI_RESET_CONFIRM:
++    case CAPTIVE_WIFI_TIMEOUT:
++    case MAC_NOT_REGISTERED:
++    case API_SETUP_FAILED:
++        display_show_lanternina("Collega il display all'hub via USB.", "", "");
++        break;
++    case FW_UPDATE:
++        display_show_lanternina("Aggiornamento in corso.", "", "");
++        break;
++    case FW_UPDATE_SUCCESS:
++        display_show_lanternina("Aggiornamento completato.", "Riavvio in corso.", "");
++        break;
++    case FW_UPDATE_FAILED:
++    case API_FIRMWARE_UPDATE_ERROR:
++        display_show_lanternina("Aggiornamento da completare.",
++                                "Collega il display all'hub via USB.", "");
++        break;
++    case NONE:
++        display_show_lanternina("Collegamento in corso.", "", "");
++        break;
++    default:
++        display_show_lanternina("Contenuto non disponibile.",
++                                "Riprovo automaticamente.", "");
++        break;
++    }
++}
++#endif
++
+ void display_show_msg(uint8_t *image_buffer, MSG message_type, const char *message_text)
+ {
++#ifdef LANTERNINA_DISPLAY
++    display_lanternina_message(message_type);
++    return;
++#endif
+     auto width = display_width();
+     auto height = display_height();
+     UWORD Imagesize = ((width % 8 == 0) ? (width / 8) : (width / 8 + 1)) * height;
+@@ -2538,6 +2599,10 @@ void display_show_msg_qa(uint8_t *image_buffer, const float *voltage, const floa
+  */
+ void display_show_msg(uint8_t *image_buffer, MSG message_type, String friendly_id, bool id, const char *fw_version, String message)
+ {
++#ifdef LANTERNINA_DISPLAY
++    display_lanternina_message(message_type);
++    return;
++#endif
+     Log_info("Free heap in display_show_msg - %d", ESP.getMaxAllocHeap());
+     Log_info("maximum_compatibility = %d\n", apiDisplayResult.response.maximum_compatibility);
+ #ifdef BB_EPAPER

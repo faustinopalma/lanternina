@@ -166,6 +166,44 @@ def test_a_house_that_has_handed_nothing_out_is_waiting_for_nothing(tmp_path: Pa
     assert waiting(tmp_path / "never-made") == []
 
 
+def test_composed_master_is_submitted_once_without_raster_reconstruction(tmp_path, monkeypatch):
+    from printing.document import Document
+    from tests.test_page_maker import as_png
+
+    pdf = b"%PDF-1.7\nexact-master-fixture"
+    previews = (as_png(a_drawing(100, 70)), as_png(a_drawing(100, 70, 200)))
+    document = Document(pdf, previews, {})
+    submitted = []
+    monkeypatch.setattr(print_page_module, "_hand_to_cups",
+                        lambda body, *args: submitted.append(body) or "job-1")
+    monkeypatch.setattr(print_page_module, "_still_queued", lambda *args: False)
+    blank = print_page(document, sheets_dir=tmp_path, sheet_id=SHEET, printer="test")
+    assert submitted == [pdf]
+    assert (tmp_path / f"{SHEET}.pdf").read_bytes() == pdf
+    assert blank.shape == (220, 70)
+    assert waiting(tmp_path) == [SHEET]
+
+
+def test_hub_refuses_damaged_document_instead_of_printing_preview(monkeypatch):
+    import base64
+    import hashlib
+
+    from devices.ask_panel import PanelUnreachable, draw_page
+    from printing.document import Document
+    from tests.test_page_maker import as_png
+
+    pdf = b"%PDF-master"
+    reply = {"format": "pdf-v1", "pdfBase64": base64.b64encode(pdf).decode(),
+             "sha256": hashlib.sha256(pdf).hexdigest(), "pages": 1,
+             "previewsBase64": [base64.b64encode(as_png(a_drawing(10, 10))).decode()]}
+    monkeypatch.setattr("devices.ask_panel._ask", lambda *args, **kwargs: reply)
+    result = draw_page({}, panel="https://test", household="hh", key="key", document={"a": 1})
+    assert isinstance(result, Document) and result.pdf == pdf
+    reply["sha256"] = "wrong"
+    with pytest.raises(PanelUnreachable, match="invalid document"):
+        draw_page({}, panel="https://test", household="hh", key="key", document={"a": 1})
+
+
 # ── Accepted by the queue is not out of the printer ──────────────────────────────────
 #
 # On 5 September 2026 an afternoon ran for an hour and forty asking for a page that was
