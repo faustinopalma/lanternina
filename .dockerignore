@@ -50,6 +50,5 @@ attic
 # Dockerfile copies none of it, and its node_modules alone is 166 MB of context to upload.
 web
 vision
-printing
 *.md
 !README.md
